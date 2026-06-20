@@ -142,15 +142,25 @@
 }
 .dn-item.active .dn-icon { stroke: #ffffff; }
 
-/* Hover — non-active circles brighten blue glow */
+/* Hover — non-active flips to solid blue + gold text */
 .dn-item:hover {
-  background: #08102e !important;
-  box-shadow: 0 0 22px rgba(43,92,232,0.6), inset 0 1px 0 rgba(43,92,232,0.18) !important;
+  background: #0d2166 !important;
+  border-color: var(--gold) !important;
+  color: var(--gold-light) !important;
+  box-shadow: 0 0 24px rgba(13,33,102,0.7), 0 0 8px rgba(232,168,40,0.4) !important;
   transform: scale(1.08) !important;
 }
+.dn-item:hover .dn-icon {
+  stroke: var(--gold-light) !important;
+}
+/* Active circle hover — slightly lighter blue */
 .dn-item.active:hover {
   background: #1530a8 !important;
   border-color: var(--gold-light) !important;
+  color: #ffffff !important;
+}
+.dn-item.active:hover .dn-icon {
+  stroke: #ffffff !important;
 }
 
 /* Icon */
