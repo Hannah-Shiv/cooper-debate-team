@@ -8,14 +8,56 @@
 #radial-nav { display: none !important; }
 
 /* === CENTER BUTTON === */
+#circ-wrap {
+  position: fixed;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px !important;
+  z-index: 9999;
+}
+
 #circ-btn {
+  position: relative;
   width: 72px !important;
   height: 72px !important;
+  border-radius: 50%;
+  background: var(--navy);
+  border: 2.5px solid var(--gold);
+  cursor: pointer;
+  transition: background 0.25s ease;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
   flex-direction: column;
-  gap: 0;
+  gap: 5px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
-#circ-wrap { width: 72px !important; }
-#circ-btn.open { transform: none; }
+#circ-btn:hover { background: #122f5c; }
+#circ-btn.open  { transform: none; }
+
+/* Pulse rings */
+#circ-btn::before,
+#circ-btn::after {
+  content: '';
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  border: 1px solid rgba(212,160,23,0.32);
+  animation: dnPulse 3.6s ease-out infinite;
+  pointer-events: none;
+}
+#circ-btn::after {
+  inset: -16px;
+  border-color: rgba(212,160,23,0.14);
+  animation-delay: 1.2s;
+}
+@keyframes dnPulse {
+  0%   { transform: scale(1);    opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+#circ-btn.open::before,
+#circ-btn.open::after { animation: none; opacity: 0; }
 
 /* === DOME BACKDROP === */
 #circ-wrap::before {
