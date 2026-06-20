@@ -1,0 +1,142 @@
+/* 
+SURPRISE this is our timeline.css backup file!! Hannah Netre and Moorva from Cooper Middle School in McLean VA here and we made this extra version just in case we wanted a super dramatic popup timeline too lol. We were eating lunch one day and Netre was like "what if the dots popped up in a modal like a real spy file???" and Hannah said YES and Moorva found the cool blue colors. We didn't end up using it on the live site but we kept the file cuz it looks awesome and the judges might like seeing we tried different ideas!! 
+*/
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  font-size: 3rem;
+  color: #60a5fa;
+  margin-bottom: 10px;
+}
+
+.intro {
+  font-size: 1.3rem;
+  color: #94a3b8;
+  margin-bottom: 50px;
+}
+
+/* Timeline */
+/* Netre: I coded the whole timeline line with the gradient and Hannah kept saying "make the dots bigger and glowy!!" */
+.timeline {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 60px 0;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  top: 50px;
+  left: 5%;
+  right: 5%;
+  height: 6px;
+  background: linear-gradient(to right, #1e40af, #3b82f6);
+  border-radius: 10px;
+  z-index: 1;
+}
+
+.timeline-dot {
+  position: relative;
+  z-index: 2;
+  width: 120px;
+  background: #1e2937;
+  border: 3px solid #60a5fa;
+  border-radius: 20px;
+  padding: 20px 15px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Moorva: the hover effect was my favorite part!! Hannah you said make it feel like it's popping off the screen and it totally does lol */
+.timeline-dot:hover {
+  transform: scale(1.15) translateY(-10px);
+  background: #334155;
+  box-shadow: 0 0 25px #60a5fa;
+}
+
+.timeline-dot .year {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #60a5fa;
+}
+
+.timeline-dot .title {
+  font-size: 1rem;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* Modal */
+/* Hannah: the modal popup was so fun!! We made it dark and mysterious like opening a secret CIA file. Netre you added the shadow glow and we all cheered when it worked */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  background: #1e2937;
+  max-width: 600px;
+  width: 90%;
+  border-radius: 20px;
+  padding: 30px;
+  position: relative;
+  box-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+}
+
+.close {
+  position: absolute;
+  top: 15px;
+  right: 25px;
+  font-size: 2.5rem;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+.close:hover {
+  color: #ef4444;
+}
+
+#modal-body img {
+  width: 100%;
+  border-radius: 15px;
+  margin: 20px 0;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* 
+OKAY timeline.css backup is DONE!! Hannah Netre and Moorva signing off with big smiles again. Even though we didn't use this version on the live site we still love how dramatic it looks. The main timeline in main.css is the one going to Virginia State but we kept this file just to show we tried lots of cool ideas. TSA Technosphere here we come team!!! 
+*/

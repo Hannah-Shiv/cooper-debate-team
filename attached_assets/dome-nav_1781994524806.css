@@ -1,0 +1,617 @@
+      /* HOME PAGE DOME NAV - Hannah, Netre, Moorva - TSA 2026 */
+      #radial-nav {
+        display: none !important;
+      }
+
+      #circ-btn {
+        width: 72px !important;
+        height: 72px !important;
+      }
+      #circ-wrap {
+        width: 72px !important;
+      }
+      #circ-btn {
+        flex-direction: column;
+        gap: 0;
+      }
+      #circ-btn.open {
+        transform: none;
+      }
+
+      /* -- Dome backdrop -- */
+      #circ-wrap::before {
+        content: "";
+        position: absolute;
+        width: 356px;
+        height: 223px;
+        left: -148px;
+        top: -8px;
+        background: rgba(5, 8, 16, 0.97);
+        border-radius: 0 0 178px 178px;
+        border-left: 1px solid rgba(255, 229, 143, 0.18);
+        border-right: 1px solid rgba(255, 229, 143, 0.18);
+        border-bottom: 1px solid rgba(255, 229, 143, 0.18);
+        display: none;
+        pointer-events: none;
+        z-index: -1;
+      }
+      #circ-wrap.open::before {
+        display: block;
+      }
+      /* sub-open: any submenu active — dome expands to contain pill column */
+      #circ-wrap.open.sub-open::before {
+        width: 356px;
+        height: 395px;
+        left: -148px;
+        top: -8px;
+        border-radius: 0 0 40px 40px;
+      }
+
+      /* -- Main circles --─ */
+      .dn-item {
+        position: absolute;
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: #050810;
+        border: 2.5px solid var(--red);
+        color: var(--gold);
+        font-family: "Josefin Sans", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1.25;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-decoration: none;
+        cursor: pointer;
+        padding: 9px 0 0;
+        opacity: 0;
+        transform: scale(0.15);
+        pointer-events: none;
+        transition:
+          opacity 0.3s ease-out,
+          transform 0.4s cubic-bezier(0.4, 0, 0.6, 1),
+          background 0.18s ease,
+          border-color 0.18s ease;
+        z-index: 10000;
+      }
+      button.dn-item {
+        outline: none;
+      }
+
+      #circ-wrap.open .dn-item {
+        opacity: 1;
+        transform: scale(1);
+        pointer-events: auto;
+        transition:
+          opacity 0.26s ease,
+          transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+          background 0.18s ease,
+          border-color 0.18s ease;
+      }
+      .dn-item.active {
+        background: var(--red);
+        border-color: var(--gold);
+        color: #fff;
+      }
+      .dn-item.sub-active {
+        background: var(--red);
+        border-color: var(--gold);
+        color: #fff;
+      }
+
+      /* Icon pinned to top of each circle */
+      .dn-icon {
+        position: absolute;
+        top: 9px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 14px;
+        height: 14px;
+        stroke: #ffe58f;
+        fill: none;
+        stroke-width: 1.8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+        margin: 0;
+      }
+
+      /* -- Circle positions  R=130, semicircle 180–360° -------------------- */
+      .dn-p1 {
+        left: -136px;
+        top: -6px;
+        transform-origin: 172px 42px;
+      } /* Home      */
+      .dn-p2 {
+        left: -111px;
+        top: 70px;
+        transform-origin: 147px -34px;
+      } /* Story     */
+      .dn-p3 {
+        left: -46px;
+        top: 118px;
+        transform-origin: 82px -82px;
+      } /* Research  */
+      .dn-p4 {
+        left: 34px;
+        top: 118px;
+        transform-origin: 2px -82px;
+      } /* Impact    */
+      .dn-p5 {
+        left: 99px;
+        top: 70px;
+        transform-origin: -63px -34px;
+      } /* Process   */
+      .dn-p6 {
+        left: 124px;
+        top: -6px;
+        transform-origin: -88px 42px;
+      } /* Reference */
+
+      .dn-p1,
+      .dn-p2 {
+        font-size: 13px;
+      }
+      .dn-p6 {
+        font-size: 9.5px;
+        letter-spacing: 0.01em;
+      }
+
+      /* Staggered open delays */
+      #circ-wrap.open .dn-p1,
+      #circ-wrap.open .dn-p6 {
+        transition-delay: 0.05s;
+      }
+      #circ-wrap.open .dn-p2,
+      #circ-wrap.open .dn-p5 {
+        transition-delay: 0.1s;
+      }
+      #circ-wrap.open .dn-p3,
+      #circ-wrap.open .dn-p4 {
+        transition-delay: 0.15s;
+      }
+
+      /* -- Pill sub-items --─ */
+      .dn-sub {
+        position: absolute;
+        width: 168px;
+        height: 38px;
+        border-radius: 19px;
+        background: #050810;
+        border: 2px solid var(--red);
+        color: var(--gold);
+        font-family: "Josefin Sans", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        padding: 0 10px;
+        white-space: nowrap;
+        text-decoration: none;
+        cursor: pointer;
+        opacity: 0;
+        transform: scale(0.12);
+        pointer-events: none;
+        transition:
+          opacity 0.28s ease-out,
+          transform 0.38s cubic-bezier(0.4, 0, 0.6, 1),
+          background 0.18s ease,
+          border-color 0.18s ease;
+        z-index: 10000;
+      }
+      /* Icon pinned left; label centred across full pill width */
+      .dn-sub .dn-icon {
+        position: absolute;
+        left: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 12px;
+        height: 12px;
+      }
+      .dn-sub span {
+        flex: 1;
+        text-align: center;
+      }
+
+      /* Pills centred under hamburger (x=36), 30px below ring bottom (y=190).
+       168px wide → left = 36−84 = −48px. Origins: hamburger(36,36) in pill space. */
+      .dn-sp1 {
+        left: -48px;
+        top: 220px;
+        transform-origin: 84px -184px;
+      }
+      .dn-sp2 {
+        left: -48px;
+        top: 276px;
+        transform-origin: 84px -240px;
+      }
+      .dn-sp3 {
+        left: -48px;
+        top: 332px;
+        transform-origin: 84px -296px;
+      }
+
+      /* OPEN: show pills for the active group only, staggered cascade */
+      #circ-wrap.open.home-open .dn-home,
+      #circ-wrap.open.story-open .dn-story,
+      #circ-wrap.open.res-open .dn-res,
+      #circ-wrap.open.imp-open .dn-imp,
+      #circ-wrap.open.proc-open .dn-proc,
+      #circ-wrap.open.ref-open .dn-ref {
+        opacity: 1;
+        pointer-events: auto;
+        transition:
+          opacity 0.24s ease,
+          transform 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+          background 0.18s ease,
+          border-color 0.18s ease;
+      }
+      #circ-wrap.open.home-open .dn-home.dn-sp1,
+      #circ-wrap.open.story-open .dn-story.dn-sp1,
+      #circ-wrap.open.res-open .dn-res.dn-sp1,
+      #circ-wrap.open.imp-open .dn-imp.dn-sp1,
+      #circ-wrap.open.proc-open .dn-proc.dn-sp1,
+      #circ-wrap.open.ref-open .dn-ref.dn-sp1 {
+        transform: scale(1);
+        transition-delay: 0s;
+      }
+
+      #circ-wrap.open.home-open .dn-home.dn-sp2,
+      #circ-wrap.open.story-open .dn-story.dn-sp2,
+      #circ-wrap.open.res-open .dn-res.dn-sp2,
+      #circ-wrap.open.imp-open .dn-imp.dn-sp2,
+      #circ-wrap.open.proc-open .dn-proc.dn-sp2,
+      #circ-wrap.open.ref-open .dn-ref.dn-sp2 {
+        transform: scale(1);
+        transition-delay: 0.08s;
+      }
+
+      #circ-wrap.open.home-open .dn-home.dn-sp3,
+      #circ-wrap.open.story-open .dn-story.dn-sp3,
+      #circ-wrap.open.res-open .dn-res.dn-sp3,
+      #circ-wrap.open.imp-open .dn-imp.dn-sp3,
+      #circ-wrap.open.proc-open .dn-proc.dn-sp3,
+      #circ-wrap.open.ref-open .dn-ref.dn-sp3 {
+        transform: scale(1);
+        transition-delay: 0.16s;
+      }
+
+      /* -- Vertical rail: centred, spans all pill nodes ---------------------- */
+      #dn-vline {
+        position: absolute;
+        left: 35px;
+        top: 225px;
+        width: 2px;
+        height: 145px; /* top(225) → sp3 bottom(370) */
+        background: #ffe58f;
+        border-radius: 1px;
+        opacity: 0;
+        transition: opacity 0.3s ease 0.1s;
+        z-index: 9999;
+        pointer-events: none;
+      }
+      #circ-wrap.open.sub-open #dn-vline {
+        opacity: 1;
+      }
+
+      /* -- Connector paths: stroke-dasharray draw animation (3.9) ----------─ */
+      .dn-conn {
+        fill: none;
+        stroke: #ffe58f;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 800;
+        stroke-dashoffset: 800;
+        transition: stroke-dashoffset 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
+      }
+      #circ-wrap.open.home-open #dn-conn-home {
+        stroke-dashoffset: 0;
+      }
+      #circ-wrap.open.story-open #dn-conn-story {
+        stroke-dashoffset: 0;
+      }
+      #circ-wrap.open.res-open #dn-conn-res {
+        stroke-dashoffset: 0;
+      }
+      #circ-wrap.open.imp-open #dn-conn-imp {
+        stroke-dashoffset: 0;
+      }
+      #circ-wrap.open.proc-open #dn-conn-proc {
+        stroke-dashoffset: 0;
+      }
+      #circ-wrap.open.ref-open #dn-conn-ref {
+        stroke-dashoffset: 0;
+      }
+
+      /* -- Dim non-active circles: very slight dimness only -- */
+      #circ-wrap.open.sub-open .dn-item:not(.sub-active) {
+        opacity: 0.88 !important;
+        transition: opacity 0.25s ease;
+      }
+      #circ-wrap.open.sub-open .dn-item.sub-active {
+        opacity: 1 !important;
+      }
+
+      /* Hamburger rotates when open */
+      #circ-wrap.open #circ-btn .dn-hamburger {
+        transform: rotate(90deg);
+      }
+
+      /* Hover */
+      .dn-item:hover {
+        background: var(--red) !important;
+        border-color: var(--gold) !important;
+        color: #fff !important;
+      }
+      .dn-sub:hover {
+        background: var(--red) !important;
+        border-color: var(--gold) !important;
+        color: #fff !important;
+      }
+
+      /* -- Mobile (≤600px) ------------------------------------------------─ */
+      @media (max-width: 600px) {
+        #circ-btn {
+          width: 56px !important;
+          height: 56px !important;
+        }
+        #circ-wrap {
+          width: 56px !important;
+        }
+
+        #circ-wrap::before {
+          width: 276px;
+          height: 178px;
+          left: -108px;
+          top: -8px;
+          border-radius: 0 0 138px 138px;
+        }
+        /* Mobile sub-open: dome expands to contain pill column */
+        #circ-wrap.open.sub-open::before {
+          width: 276px;
+          height: 315px;
+          left: -108px;
+          top: -8px;
+          border-radius: 0 0 40px 40px;
+        }
+
+        .dn-item {
+          width: 56px;
+          height: 56px;
+          font-size: 8.5px;
+        }
+        .dn-icon {
+          width: 11px;
+          height: 11px;
+        }
+
+        /* Mobile circle positions */
+        .dn-p1 {
+          left: -104px;
+          top: -4px;
+          transform-origin: 132px 32px;
+        }
+        .dn-p2 {
+          left: -83px;
+          top: 54px;
+          transform-origin: 111px -26px;
+        }
+        .dn-p3 {
+          left: -32px;
+          top: 92px;
+          transform-origin: 60px -64px;
+        }
+        .dn-p4 {
+          left: 26px;
+          top: 92px;
+          transform-origin: 2px -64px;
+        }
+        .dn-p5 {
+          left: 77px;
+          top: 54px;
+          transform-origin: -49px -26px;
+        }
+        .dn-p6 {
+          left: 98px;
+          top: -4px;
+          transform-origin: -70px 32px;
+        }
+
+        /* Mobile pills: 140x30px, 140/2=70 → left = 28−70 = −42px */
+        .dn-sub {
+          width: 140px;
+          height: 30px;
+          border-radius: 15px;
+          font-size: 9.5px;
+          padding: 0 8px;
+          white-space: nowrap;
+        }
+        .dn-sub .dn-icon {
+          left: 8px;
+          width: 10px;
+          height: 10px;
+        }
+        .dn-sp1 {
+          left: -42px;
+          top: 175px;
+          transform-origin: 70px -147px;
+        }
+        .dn-sp2 {
+          left: -42px;
+          top: 219px;
+          transform-origin: 70px -191px;
+        }
+        .dn-sp3 {
+          left: -42px;
+          top: 263px;
+          transform-origin: 70px -235px;
+        }
+
+        /* Mobile rail */
+        #dn-vline {
+          left: 27px;
+          top: 175px;
+          height: 118px;
+        }
+
+        /* Mobile connector paths — Home/Ref start at absolute outer edge of circle.
+         Home: leftmost point = center(-76)+r(-28)=−104, y=24. Clears Story left=−83 ✓
+         Ref:  rightmost pt  = center(126)+r(28) =154,  y=24. Clears Process right=133 ✓ */
+        #dn-conn-home {
+          d: path(
+            "M -104 24 L -104 147 Q -104 161 -90 161 L 13 161 Q 27 161 27 175"
+          );
+        }
+        #dn-conn-story {
+          d: path(
+            "M  -55 110 L  -55 147 Q  -55 161 -41 161 L 13 161 Q 27 161 27 175"
+          );
+        }
+        #dn-conn-res {
+          d: path(
+            "M   -4 148 L   -4 153 Q   -4 161   4 161 L 13 161 Q 27 161 27 175"
+          );
+        }
+        #dn-conn-imp {
+          d: path(
+            "M   54 148 L   54 153 Q   54 161  48 161 L 41 161 Q 27 161 27 175"
+          );
+        }
+        #dn-conn-proc {
+          d: path(
+            "M  105 110 L  105 147 Q  105 161  91 161 L 41 161 Q 27 161 27 175"
+          );
+        }
+        #dn-conn-ref {
+          d: path(
+            "M  154 24  L  154 147 Q  154 161 140 161 L 41 161 Q 27 161 27 175"
+          );
+        }
+        .hero-content {
+          padding-top: 190px;
+        }
+        .hero-tag {
+          font-size: 22px;
+          letter-spacing: 0.06em;
+        }
+      }
+
+      /* -- Hero content: compressed spacing so it clears the dome (~395px) -- */
+      /* Dome top = viewport 8px + circ-wrap top -8px = 8px; dome bottom ≈ 395px.
+       Reducing margins/padding brings the content block to start below ~400px. */
+      .hero-content {
+        padding-bottom: 32px;
+        transition: padding-top 0.35s ease;
+      }
+      .hero-tag {
+        margin-bottom: 22px;
+        font-size: 34px;
+        animation: none;
+        letter-spacing: normal;
+      }
+      .hero-title {
+        margin-bottom: 8px;
+      }
+      .hero-sub {
+        margin-bottom: 6px;
+      }
+      .hero-sub-extra {
+        margin-bottom: 12px;
+        color: #fff;
+        border-left-color: rgba(255, 255, 255, 0.45);
+        font-style: normal;
+      }
+      .page-nav {
+        padding: 16px 120px 24px;
+      }
+      .hero-scroll-hint {
+        margin-top: 10px;
+      }
+
+      /* -- DECLASSIFIED: center-out type animation -------------------------- */
+      /* Each character is wrapped in a span by JS and animated individually   */
+      .hero-tag {
+        display: flex;
+        justify-content: center;
+        gap: 0.28em;
+        align-items: center;
+      }
+      .hero-tag-char {
+        display: inline-block;
+        opacity: 0;
+        filter: blur(3px);
+        transform: scaleX(0.4);
+        animation: dcType 0.18s ease forwards;
+      }
+      @keyframes dcType {
+        to {
+          opacity: 1;
+          filter: blur(0);
+          transform: scaleX(1);
+        }
+      }
+
+      /* Home hero slides down when dome menu opens */
+      .home-hero {
+        transition: margin-top 0.35s ease;
+      }
+      #circ-wrap.open ~ .home-hero {
+        margin-top: 215px;
+      }
+      #circ-wrap.open.sub-open ~ .home-hero {
+        margin-top: 270px;
+      }
+
+      /* Inner-page content drops when dome menu opens */
+      .page-header {
+        transition: margin-top 0.35s ease;
+      }
+      #circ-wrap.open ~ .page-header {
+        margin-top: 215px;
+      }
+      #circ-wrap.open.sub-open ~ .page-header {
+        margin-top: 260px;
+      }
+
+      /* Breadcrumb drops below expanded dome — driven by JS classes (dome-open / dome-sub-open) */
+      .breadcrumb {
+        transition: margin-top 0.35s ease;
+      }
+      .breadcrumb.dome-open {
+        margin-top: 195px;
+      }
+      .breadcrumb.dome-sub-open {
+        margin-top: 260px;
+      }
+
+      /* === INTELLIGENCE THREADS — radiate from nav centre when dome opens === */
+      #intel-threads {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 130px;
+        pointer-events: none;
+        z-index: 9997;
+        opacity: 0;
+        transition: opacity 0.48s ease;
+      }
+      #intel-threads.open { opacity: 1; }
+      .thr-dot {
+        animation: thr-pulse 2.4s ease-in-out infinite;
+      }
+      @keyframes thr-pulse {
+        0%, 100% { opacity: 0.55; }
+        50%       { opacity: 1;   }
+      }

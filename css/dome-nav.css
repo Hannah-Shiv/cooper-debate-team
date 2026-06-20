@@ -1,8 +1,13 @@
 /* ============================================================
    COOPER DEBATE TEAM — dome-nav.css
-   Adapted from Langley Legacy TSA 2026 (Hannah Shiv, Netre, Moorva)
-   Re-themed: Navy + Crimson + Gold for Cooper Debate
+   Dome navigation adapted from Langley Legacy TSA 2026
+   by Hannah Shiv, Netre, and Moorva — Cooper Middle School
    ============================================================ */
+
+:root {
+  --red:      #b30000;
+  --nav-gold: #ffe58f;
+}
 
 #radial-nav { display: none !important; }
 
@@ -12,50 +17,44 @@
   top: 8px;
   left: 50%;
   transform: translateX(-50%);
-  width: 84px !important;
+  width: 72px !important;
   z-index: 9999;
 }
 
-/* === CENTER BUTTON === */
+/* === CENTER BUTTON (exact Langley spec) === */
 #circ-btn {
   position: relative;
-  width: 84px !important;
-  height: 84px !important;
+  width: 72px !important;
+  height: 72px !important;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #C42222 0%, #7A0E0E 55%, #4a0808 100%);
-  border: 3px solid var(--gold);
-  box-shadow:
-    0 0 26px rgba(163,21,21,0.6),
-    0 4px 32px rgba(0,0,0,0.65),
-    inset 0 1px 0 rgba(250,224,124,0.28);
+  background: var(--red);
+  border: 2px solid var(--nav-gold);
+  box-shadow: 0 0 20px rgba(179,0,0,0.50), 0 4px 24px rgba(0,0,0,0.60);
   cursor: pointer;
-  transition: background 0.25s ease, box-shadow 0.25s ease;
+  transition: background 0.25s ease;
   display: flex !important;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 5px;
+  gap: 0;
 }
-#circ-btn:hover {
-  background: radial-gradient(circle at 40% 35%, #D83030 0%, #961212 55%, #5c0a0a 100%);
-  box-shadow: 0 0 36px rgba(163,21,21,0.8), 0 4px 32px rgba(0,0,0,0.65), inset 0 1px 0 rgba(250,224,124,0.28);
-}
-#circ-btn.open { transform: none; }
+#circ-btn:hover { background: #900000; }
+#circ-btn.open  { transform: none; }
 
 /* Pulse rings */
 #circ-btn::before,
 #circ-btn::after {
   content: '';
   position: absolute;
-  inset: -8px;
+  inset: -6px;
   border-radius: 50%;
-  border: 1px solid rgba(250,224,124,0.35);
+  border: 1px solid rgba(255, 229, 143, 0.28);
   animation: dnPulse 3.6s ease-out infinite;
   pointer-events: none;
 }
 #circ-btn::after {
-  inset: -18px;
-  border-color: rgba(250,224,124,0.15);
+  inset: -14px;
+  border-color: rgba(255, 229, 143, 0.14);
   animation-delay: 1.2s;
 }
 @keyframes dnPulse {
@@ -68,38 +67,36 @@
 /* Hamburger rotation when open */
 #circ-wrap.open #circ-btn .dn-hamburger { transform: rotate(90deg); }
 
-/* === DOME BACKDROP === */
+/* === DOME BACKDROP (exact Langley spec) === */
 #circ-wrap::before {
   content: "";
   position: absolute;
-  width: 388px;
-  height: 252px;
-  left: -152px;
+  width: 356px;
+  height: 223px;
+  left: -148px;
   top: -8px;
-  background: rgba(4, 9, 26, 0.96);
-  border-radius: 0 0 194px 194px;
-  border-left:   1px solid rgba(250,224,124,0.24);
-  border-right:  1px solid rgba(250,224,124,0.24);
-  border-bottom: 1px solid rgba(250,224,124,0.24);
-  box-shadow: inset 0 0 70px rgba(4,9,26,0.5);
+  background: rgba(5, 8, 16, 0.97);
+  border-radius: 0 0 178px 178px;
+  border-left:   1px solid rgba(255, 229, 143, 0.18);
+  border-right:  1px solid rgba(255, 229, 143, 0.18);
+  border-bottom: 1px solid rgba(255, 229, 143, 0.18);
   display: none;
   pointer-events: none;
   z-index: -1;
 }
 #circ-wrap.open::before { display: block; }
 
-/* === MAIN CIRCLE ITEMS === */
+/* === MAIN CIRCLE ITEMS (exact Langley spec) === */
 .dn-item {
   position: absolute;
-  width: 84px;
-  height: 84px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: #04091c;
-  border: 3px solid #A31515;
-  box-shadow: 0 0 16px rgba(163,21,21,0.45), inset 0 1px 0 rgba(163,21,21,0.12);
-  color: #FFD700;
+  background: #050810;
+  border: 2.5px solid var(--red);
+  color: var(--nav-gold);
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.03em;
   text-transform: uppercase;
@@ -110,15 +107,16 @@
   justify-content: center;
   flex-direction: column;
   text-decoration: none;
-  padding: 10px 0 0;
+  cursor: pointer;
+  padding: 9px 0 0;
   opacity: 0;
   transform: scale(0.15);
   pointer-events: none;
   transition:
-    opacity    0.3s  ease-out,
-    transform  0.4s  cubic-bezier(0.4, 0, 0.6, 1),
-    background 0.2s  ease,
-    box-shadow 0.2s  ease;
+    opacity      0.3s  ease-out,
+    transform    0.4s  cubic-bezier(0.4, 0, 0.6, 1),
+    background   0.18s ease,
+    border-color 0.18s ease;
   z-index: 10000;
 }
 
@@ -127,51 +125,37 @@
   transform: scale(1);
   pointer-events: auto;
   transition:
-    opacity    0.26s ease,
-    transform  0.4s  cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.2s  ease,
-    box-shadow 0.2s  ease;
+    opacity      0.26s ease,
+    transform    0.4s  cubic-bezier(0.16, 1, 0.3, 1),
+    background   0.18s ease,
+    border-color 0.18s ease;
 }
 
-/* Active page circle — solid deep crimson fill, white text */
+/* Active page circle */
 .dn-item.active {
-  background: #8B1111;
-  border: 3px solid var(--gold);
-  color: #ffffff;
-  box-shadow: 0 0 26px rgba(139,17,17,0.75), 0 0 10px rgba(250,224,124,0.5), inset 0 1px 0 rgba(255,255,255,0.18);
+  background: var(--red);
+  border-color: var(--nav-gold);
+  color: #fff;
 }
-.dn-item.active .dn-icon { stroke: #ffffff; }
+.dn-item.active .dn-icon { stroke: #fff; }
 
-/* Hover — non-active flips to solid crimson + bright gold text */
+/* Hover */
 .dn-item:hover {
-  background: #8B1111 !important;
-  border-color: #FFD700 !important;
-  color: #FFD700 !important;
-  box-shadow: 0 0 26px rgba(139,17,17,0.75), 0 0 10px rgba(255,215,0,0.5) !important;
-  transform: scale(1.08) !important;
+  background:   var(--red)      !important;
+  border-color: var(--nav-gold) !important;
+  color:        #fff            !important;
 }
-.dn-item:hover .dn-icon {
-  stroke: #FFD700 !important;
-}
-/* Active circle hover */
-.dn-item.active:hover {
-  background: #A31515 !important;
-  border-color: #FFD700 !important;
-  color: #ffffff !important;
-}
-.dn-item.active:hover .dn-icon {
-  stroke: #ffffff !important;
-}
+.dn-item:hover .dn-icon { stroke: #fff !important; }
 
 /* Icon */
 .dn-icon {
   position: absolute;
-  top: 10px;
+  top: 9px;
   left: 50%;
   transform: translateX(-50%);
-  width: 15px;
-  height: 15px;
-  stroke: #FFD700;
+  width: 14px;
+  height: 14px;
+  stroke: #ffe58f;
   fill: none;
   stroke-width: 1.8;
   stroke-linecap: round;
@@ -180,15 +164,16 @@
   margin: 0;
 }
 
-/* === CIRCLE POSITIONS — R=130, downward semicircle, 84px circles === */
-.dn-p1 { left: -142px; top:  -12px; transform-origin: 184px  54px; }
-.dn-p2 { left: -117px; top:   64px; transform-origin: 159px -22px; }
-.dn-p3 { left:  -52px; top:  112px; transform-origin:  94px -70px; }
-.dn-p4 { left:   28px; top:  112px; transform-origin:  14px -70px; }
-.dn-p5 { left:   93px; top:   64px; transform-origin: -51px -22px; }
-.dn-p6 { left:  118px; top:  -12px; transform-origin: -76px  54px; }
+/* === CIRCLE POSITIONS — R=130, downward semicircle (exact Langley) === */
+.dn-p1 { left: -136px; top:  -6px; transform-origin:  172px  42px; }
+.dn-p2 { left: -111px; top:  70px; transform-origin:  147px -34px; }
+.dn-p3 { left:  -46px; top: 118px; transform-origin:   82px -82px; }
+.dn-p4 { left:   34px; top: 118px; transform-origin:    2px -82px; }
+.dn-p5 { left:   99px; top:  70px; transform-origin:  -63px -34px; }
+.dn-p6 { left:  124px; top:  -6px; transform-origin:  -88px  42px; }
 
-.dn-p6 { font-size: 11px; letter-spacing: 0.01em; }
+.dn-p1, .dn-p2 { font-size: 13px; }
+.dn-p6 { font-size: 9.5px; letter-spacing: 0.01em; }
 
 /* Staggered open delays */
 #circ-wrap.open .dn-p1,
@@ -198,11 +183,12 @@
 #circ-wrap.open .dn-p3,
 #circ-wrap.open .dn-p4 { transition-delay: 0.15s; }
 
-/* === INTEL THREADS === */
+/* === INTEL THREADS (built dynamically by dome-nav.js) === */
 #intel-threads {
   position: fixed;
   top: 0; left: 0;
-  width: 100%; height: 160px;
+  width: 100%;
+  height: 130px;
   pointer-events: none;
   z-index: 9997;
   opacity: 0;
@@ -210,29 +196,25 @@
 }
 #intel-threads.open { opacity: 1; }
 
-/* === THREAD BULBS (glowing dots on radial lines) === */
-.thr-bulb {
-  animation: bulbGlow 2.4s ease-in-out infinite;
-}
 .thr-dot {
-  filter: drop-shadow(0 0 5px rgba(255,215,0,0.95));
+  animation: thrPulse 2.4s ease-in-out infinite;
 }
-@keyframes bulbGlow {
-  0%, 100% { opacity: 0.45; filter: drop-shadow(0 0 3px rgba(255,215,0,0.7)); }
-  50%       { opacity: 1.0;  filter: drop-shadow(0 0 9px rgba(255,215,0,1.0)); }
+@keyframes thrPulse {
+  0%, 100% { opacity: 0.55; }
+  50%       { opacity: 1.0;  }
 }
 
 /* === MEMBER LOGIN PILL === */
 #member-login-btn {
   position: fixed;
-  top: 20px;
+  top: 18px;
   right: 20px;
   z-index: 9998;
   display: flex;
   align-items: center;
   gap: 6px;
   background: transparent;
-  border: 1.5px solid rgba(250,224,124,0.45);
+  border: 1.5px solid rgba(255, 229, 143, 0.40);
   border-radius: 50px;
   padding: 8px 16px;
   font-family: 'Josefin Sans', sans-serif;
@@ -240,14 +222,14 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(250,224,124,0.85);
+  color: rgba(255, 229, 143, 0.80);
   text-decoration: none;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 #member-login-btn:hover {
-  background: rgba(250,224,124,0.12);
-  border-color: #FAE07C;
-  color: #FAE07C;
+  background: rgba(255, 229, 143, 0.10);
+  border-color: var(--nav-gold);
+  color: var(--nav-gold);
 }
 #member-login-btn svg {
   width: 12px; height: 12px;
@@ -255,32 +237,31 @@
 }
 
 /* === HERO / PAGE HEADER PUSH === */
-#circ-wrap.open ~ .home-hero .hero-content { padding-top: 270px; }
-#circ-wrap.open ~ .page-header { padding-top: 260px; }
+#circ-wrap.open ~ .home-hero .hero-content { padding-top: 250px; }
+#circ-wrap.open ~ .page-header { padding-top: 240px; }
 
-/* === MOBILE (≤600px) === */
+/* === MOBILE (≤600px, exact Langley spec) === */
 @media (max-width: 600px) {
-  #circ-btn { width: 66px !important; height: 66px !important; }
-  #circ-wrap { width: 66px !important; }
+  #circ-btn  { width: 56px !important; height: 56px !important; }
+  #circ-wrap { width: 56px !important; }
 
   #circ-wrap::before {
-    width: 308px; height: 205px;
-    left: -121px; top: -8px;
-    border-radius: 0 0 154px 154px;
+    width: 276px; height: 178px;
+    left: -108px; top: -8px;
+    border-radius: 0 0 138px 138px;
   }
 
-  .dn-item { width: 66px; height: 66px; font-size: 9.5px; }
-  .dn-icon  { width: 12px; height: 12px; top: 9px; }
+  .dn-item { width: 56px; height: 56px; font-size: 8.5px; }
+  .dn-icon  { width: 11px; height: 11px; }
 
-  .dn-p1 { left: -109px; top:  -9px; transform-origin: 142px  42px; }
-  .dn-p2 { left:  -88px; top:  49px; transform-origin: 121px -16px; }
-  .dn-p3 { left:  -37px; top:  87px; transform-origin:  70px -54px; }
-  .dn-p4 { left:   21px; top:  87px; transform-origin:  12px -54px; }
-  .dn-p5 { left:   72px; top:  49px; transform-origin: -39px -16px; }
-  .dn-p6 { left:   93px; top:  -9px; transform-origin: -60px  42px; }
+  .dn-p1 { left: -104px; top:  -4px; transform-origin: 132px  32px; }
+  .dn-p2 { left:  -83px; top:  54px; transform-origin: 111px -26px; }
+  .dn-p3 { left:  -32px; top:  92px; transform-origin:  60px -64px; }
+  .dn-p4 { left:   26px; top:  92px; transform-origin:   2px -64px; }
+  .dn-p5 { left:   77px; top:  54px; transform-origin: -49px -26px; }
+  .dn-p6 { left:   98px; top:  -4px; transform-origin: -70px  32px; }
 
-  #circ-wrap.open ~ .home-hero .hero-content { padding-top: 220px; }
-  #circ-wrap.open ~ .page-header { padding-top: 210px; }
+  #circ-wrap.open ~ .home-hero .hero-content { padding-top: 210px; }
+  #circ-wrap.open ~ .page-header { padding-top: 200px; }
   #member-login-btn { display: none; }
-  #dn-star-field { display: none; }
 }
