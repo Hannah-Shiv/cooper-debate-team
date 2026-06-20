@@ -119,7 +119,11 @@ function buildIntelThreads(wrap) {
     arc(rx,ry,  rx+rw*0.50, 56,       W,  72,  0.19, [[0.38,0.68]]);
   }
 
-  document.body.appendChild(svg);
+  /* Append INSIDE wrap so z-index is relative to the same stacking context
+     as ::before (backdrop at z-index -1). intel-threads at z-index 1 paints
+     above the backdrop but below circle items (z-index 3).
+     position:fixed on the SVG still anchors it to the viewport, not wrap.  */
+  wrap.appendChild(svg);
 
   /* Initial visibility sync (MutationObserver only fires on changes) */
   svg.classList.toggle('open', wrap.classList.contains('open'));

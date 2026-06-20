@@ -1,1 +1,2 @@
 - [Cooper Debate site](cooper-debate-site.md) — Plain HTML/CSS/JS, GitHub Pages target, dome nav adapted from Langley Legacy; Phase 2 = Firebase members portal.
+- [Fixed-child containing block trap](fixed-in-transformed-parent.md) — CSS transform on a fixed ancestor breaks position:fixed children; use calc() centering instead.
