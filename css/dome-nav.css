@@ -94,9 +94,9 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #152660 0%, #08143a 60%, #040a1c 100%);
-  border: 2.5px solid var(--gold);
-  box-shadow: 0 0 12px rgba(232,168,40,0.28), inset 0 1px 0 rgba(247,200,66,0.16);
+  background: #04091c;
+  border: 2.5px solid #2B5CE8;
+  box-shadow: 0 0 14px rgba(43,92,232,0.38), inset 0 1px 0 rgba(43,92,232,0.12);
   color: var(--gold-light);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
@@ -133,23 +133,24 @@
     box-shadow 0.2s  ease;
 }
 
-/* Active page circle */
+/* Active page circle — solid royal blue fill, white text */
 .dn-item.active {
-  background: var(--gold);
-  border-color: var(--gold-light);
-  color: #04091a;
-  box-shadow: 0 0 22px rgba(232,168,40,0.6), inset 0 1px 0 rgba(255,255,255,0.25);
+  background: #0d2166;
+  border: 2.5px solid var(--gold);
+  color: #ffffff;
+  box-shadow: 0 0 24px rgba(13,33,102,0.7), 0 0 8px rgba(232,168,40,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
 }
-.dn-item.active .dn-icon { stroke: #04091a; }
+.dn-item.active .dn-icon { stroke: #ffffff; }
 
-/* Hover */
+/* Hover — non-active circles brighten blue glow */
 .dn-item:hover {
-  background: radial-gradient(circle at 38% 32%, #1e3280 0%, #0d1f5a 60%, #060d28 100%) !important;
-  box-shadow: 0 0 22px rgba(232,168,40,0.5), inset 0 1px 0 rgba(247,200,66,0.22) !important;
+  background: #08102e !important;
+  box-shadow: 0 0 22px rgba(43,92,232,0.6), inset 0 1px 0 rgba(43,92,232,0.18) !important;
   transform: scale(1.08) !important;
 }
 .dn-item.active:hover {
-  background: var(--gold-light) !important;
+  background: #1530a8 !important;
+  border-color: var(--gold-light) !important;
 }
 
 /* Icon */
