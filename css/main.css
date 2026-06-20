@@ -14,19 +14,19 @@ html { overflow-x: hidden; }
 
 /* === CSS VARIABLES === */
 :root {
-  --navy:       #0B2545;
-  --navy-dark:  #071a36;
-  --navy-mid:   #0d2e56;
-  --gold:       #D4A017;
-  --gold-light: #f0c040;
-  --gold-pale:  #f5d87a;
+  --navy:       #0d2166;
+  --navy-dark:  #060d1f;
+  --navy-mid:   #112870;
+  --gold:       #E8A828;
+  --gold-light: #F7C842;
+  --gold-pale:  #FAE07C;
   --white:      #FFFFFF;
   --gray-light: #F5F7FA;
   --gray:       #e2e8f0;
   --gray-mid:   #94a3b8;
   --accent:     #3B82F6;
-  --card-bg:    #0f2d52;
-  --overlay:    rgba(7, 26, 54, 0.85);
+  --card-bg:    #0e2464;
+  --overlay:    rgba(6, 13, 31, 0.88);
 }
 
 /* === BASE === */

@@ -22,10 +22,11 @@
   width: 72px !important;
   height: 72px !important;
   border-radius: 50%;
-  background: var(--navy);
+  background: radial-gradient(circle at 38% 32%, #1e3a8a 0%, #0d2166 55%, #081645 100%);
   border: 2.5px solid var(--gold);
+  box-shadow: 0 0 18px rgba(232,168,40,0.3), 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(247,200,66,0.2);
   cursor: pointer;
-  transition: background 0.25s ease;
+  transition: background 0.25s ease, box-shadow 0.25s ease;
   display: flex !important;
   align-items: center;
   justify-content: center;
@@ -93,8 +94,9 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: #050c1e;
+  background: radial-gradient(circle at 38% 32%, #1a3280 0%, #0d2166 55%, #081645 100%);
   border: 2.5px solid var(--gold);
+  box-shadow: 0 0 10px rgba(232,168,40,0.25), inset 0 1px 0 rgba(247,200,66,0.15);
   color: var(--gold-light);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
@@ -117,7 +119,8 @@
     opacity    0.3s  ease-out,
     transform  0.4s  cubic-bezier(0.4, 0, 0.6, 1),
     background 0.18s ease,
-    border-color 0.18s ease;
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
   z-index: 10000;
 }
 button.dn-item { outline: none; }
@@ -185,8 +188,9 @@ button.dn-item { outline: none; }
   width: 168px;
   height: 38px;
   border-radius: 19px;
-  background: #050c1e;
+  background: radial-gradient(circle at 38% 32%, #1a3280 0%, #0d2166 55%, #081645 100%);
   border: 2px solid var(--gold);
+  box-shadow: 0 0 8px rgba(232,168,40,0.2), inset 0 1px 0 rgba(247,200,66,0.12);
   color: var(--gold-light);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 12px;
