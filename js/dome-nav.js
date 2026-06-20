@@ -58,43 +58,53 @@
     if (e.key === 'Escape' && menuOpen) closeMenu();
   });
 
-  /* ── STAR FIELD ────────────────────────────────────────── */
-  function makeStar(cx, cy, r) {
-    var d = r;
-    var s = r * 0.32;
-    return [
-      '<g class="dn-sparkle">',
-      '  <circle cx="'+cx+'" cy="'+cy+'" r="'+s+'" fill="#FAE07C"/>',
-      '  <line x1="'+(cx-d)+'" y1="'+cy+'" x2="'+(cx+d)+'" y2="'+cy+'"',
-      '        stroke="#E8A828" stroke-width="0.9" opacity="0.75"/>',
-      '  <line x1="'+cx+'" y1="'+(cy-d)+'" x2="'+cx+'" y2="'+(cy+d)+'"',
-      '        stroke="#E8A828" stroke-width="0.9" opacity="0.75"/>',
-      '  <line x1="'+(cx-d*0.65)+'" y1="'+(cy-d*0.65)+'" x2="'+(cx+d*0.65)+'" y2="'+(cy+d*0.65)+'"',
-      '        stroke="#E8A828" stroke-width="0.55" opacity="0.45"/>',
-      '  <line x1="'+(cx+d*0.65)+'" y1="'+(cy-d*0.65)+'" x2="'+(cx-d*0.65)+'" y2="'+(cy+d*0.65)+'"',
-      '        stroke="#E8A828" stroke-width="0.55" opacity="0.45"/>',
-      '</g>'
-    ].join('\n');
-  }
+  /* ── THREAD BULBS ──────────────────────────────────────────
+     Inject glowing gold bulbs along the radial lines that fan
+     out from the center nav button (intel-threads SVG).
+     The SVG uses viewBox "0 0 1200 140"; center is (600,40).
+  ────────────────────────────────────────────────────────── */
+  if (!threads) return;
 
-  /* Stars: [cx-percent-of-width, cy-px, radius] */
-  var leftStars  = [[5,38,5],[10,90,3],[16,30,4],[22,115,3],[28,65,3.5],[35,42,2.5],[38,130,2.5]];
-  var rightStars = [[95,38,5],[90,90,3],[84,30,4],[78,115,3],[72,65,3.5],[65,42,2.5],[62,130,2.5]];
+  var NS = 'http://www.w3.org/2000/svg';
+  var cx0 = 600, cy0 = 40;
 
-  var vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-  var svgParts = [
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 '+vw+' 200"',
-    '     style="width:100%;height:200px;" preserveAspectRatio="none"',
-    '     aria-hidden="true">'
+  /* Endpoints must match the <line> elements in each page's
+     intel-threads SVG (order doesn't matter for effect)      */
+  var lines = [
+    { x: 80,   y: 130 },
+    { x: 240,  y: 140 },
+    { x: 380,  y: 140 },
+    { x: 760,  y: 140 },
+    { x: 920,  y: 130 },
+    { x: 1100, y: 110 }
   ];
 
-  leftStars.forEach(function(s)  { svgParts.push(makeStar(s[0]/100*vw, s[1], s[2])); });
-  rightStars.forEach(function(s) { svgParts.push(makeStar(s[0]/100*vw, s[1], s[2])); });
-  svgParts.push('</svg>');
+  /* t-values along each line: 3 bulbs per ray               */
+  var tSteps = [0.28, 0.54, 0.80];
+  /* Bulb radius decreases toward the tip                     */
+  var radii  = [2.8, 2.2, 1.6];
 
-  var field = document.createElement('div');
-  field.id = 'dn-star-field';
-  field.innerHTML = svgParts.join('\n');
-  document.body.appendChild(field);
+  lines.forEach(function (ep, li) {
+    tSteps.forEach(function (t, bi) {
+      var bx = (cx0 + t * (ep.x - cx0)).toFixed(1);
+      var by = (cy0 + t * (ep.y - cy0)).toFixed(1);
+      var c  = document.createElementNS(NS, 'circle');
+      c.setAttribute('cx', bx);
+      c.setAttribute('cy', by);
+      c.setAttribute('r',  radii[bi]);
+      c.setAttribute('fill', '#FFD700');
+      c.setAttribute('class', 'thr-bulb');
+      /* Stagger animation so bulbs pulse like travelling light */
+      c.style.animationDelay = ((li * 0.15) + (bi * 0.32)) + 's';
+      threads.appendChild(c);
+    });
+  });
+
+  /* Also brighten the existing endpoint dots                 */
+  threads.querySelectorAll('.thr-dot').forEach(function (dot) {
+    dot.setAttribute('fill', '#FFD700');
+    dot.setAttribute('opacity', '0.9');
+    dot.setAttribute('r', parseFloat(dot.getAttribute('r') || 2) + 0.5);
+  });
 
 })();
