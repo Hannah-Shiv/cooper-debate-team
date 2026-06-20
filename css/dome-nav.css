@@ -240,26 +240,30 @@
 #circ-wrap.open ~ .home-hero .hero-content { padding-top: 250px; }
 #circ-wrap.open ~ .page-header { padding-top: 240px; }
 
-/* === MOBILE (≤600px, exact Langley spec) === */
+/* === MOBILE (≤600px) === */
 @media (max-width: 600px) {
-  #circ-btn  { width: 56px !important; height: 56px !important; }
-  #circ-wrap { width: 56px !important; }
+  /* 52px circles — enough room for all 6 without collision */
+  #circ-btn  { width: 52px !important; height: 52px !important; }
+  #circ-wrap { width: 52px !important; }
 
   #circ-wrap::before {
-    width: 276px; height: 178px;
-    left: -108px; top: -8px;
-    border-radius: 0 0 138px 138px;
+    width: 282px; height: 182px;
+    left: -115px; top: -8px;
+    border-radius: 0 0 141px 141px;
   }
 
-  .dn-item { width: 56px; height: 56px; font-size: 8.5px; }
-  .dn-icon  { width: 11px; height: 11px; }
+  .dn-item { width: 52px; height: 52px; font-size: 8px; }
+  .dn-icon  { width: 10px; height: 10px; top: 8px; }
 
-  .dn-p1 { left: -104px; top:  -4px; transform-origin: 132px  32px; }
-  .dn-p2 { left:  -83px; top:  54px; transform-origin: 111px -26px; }
-  .dn-p3 { left:  -32px; top:  92px; transform-origin:  60px -64px; }
-  .dn-p4 { left:   26px; top:  92px; transform-origin:   2px -64px; }
-  .dn-p5 { left:   77px; top:  54px; transform-origin: -49px -26px; }
-  .dn-p6 { left:   98px; top:  -4px; transform-origin: -70px  32px; }
+  /* Positions scaled for 52px circles, R≈118.
+     transform-origin = (wrap_center - circle_top_left)
+     wrap_center = (26, 26) for 52px wrap.             */
+  .dn-p1 { left: -104px; top:  -4px; transform-origin: 130px  30px; }
+  .dn-p2 { left:  -83px; top:  54px; transform-origin: 109px -28px; }
+  .dn-p3 { left:  -40px; top:  96px; transform-origin:  66px -70px; }
+  .dn-p4 { left:   28px; top:  96px; transform-origin:  -2px -70px; }
+  .dn-p5 { left:   79px; top:  54px; transform-origin: -53px -28px; }
+  .dn-p6 { left:  100px; top:  -4px; transform-origin: -74px  30px; }
 
   #circ-wrap.open ~ .home-hero .hero-content { padding-top: 210px; }
   #circ-wrap.open ~ .page-header { padding-top: 200px; }

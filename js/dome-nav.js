@@ -43,11 +43,11 @@ function buildIntelThreads(wrap) {
   var defs = document.createElementNS(ns, 'defs');
   var filt = document.createElementNS(ns, 'filter');
   filt.id = 'thr-glow';
-  filt.setAttribute('x', '-100%'); filt.setAttribute('y', '-100%');
-  filt.setAttribute('width', '300%'); filt.setAttribute('height', '300%');
+  filt.setAttribute('x', '-150%'); filt.setAttribute('y', '-150%');
+  filt.setAttribute('width', '400%'); filt.setAttribute('height', '400%');
   var blur = document.createElementNS(ns, 'feGaussianBlur');
   blur.setAttribute('in', 'SourceGraphic');
-  blur.setAttribute('stdDeviation', '3.5');
+  blur.setAttribute('stdDeviation', '5');
   blur.setAttribute('result', 'blur');
   var merge = document.createElementNS(ns, 'feMerge');
   var mn1   = document.createElementNS(ns, 'feMergeNode'); mn1.setAttribute('in', 'blur');
@@ -81,8 +81,8 @@ function buildIntelThreads(wrap) {
       var dot = document.createElementNS(ns, 'circle');
       dot.setAttribute('cx', pt.x.toFixed(1));
       dot.setAttribute('cy', pt.y.toFixed(1));
-      dot.setAttribute('r',  '2.8');
-      dot.setAttribute('fill',   'rgba(255,185,45,0.9)');
+      dot.setAttribute('r',  '3.4');
+      dot.setAttribute('fill',   'rgba(255,225,80,1.0)');
       dot.setAttribute('filter', 'url(#thr-glow)');
       dot.classList.add('thr-dot');
       dot.style.animationDelay = td[1].toFixed(2) + 's';
@@ -90,22 +90,34 @@ function buildIntelThreads(wrap) {
     });
   }
 
-  /* LEFT arcs — from left side of center button outward */
-  arc(lx,ly,  lx*0.42, ly,          0,  36,  0.30, [[0.28,0.00],[0.60,0.42],[0.88,0.80]]);
-  arc(lx,ly,  lx*0.28,  6,          4,   0,  0.22, [[0.30,0.18],[0.65,0.62]]);
-  arc(lx,ly,  lx*0.36, 82,          0, 124,  0.26, [[0.32,0.38],[0.68,0.78]]);
-  arc(lx,ly,  cx*0.38,  4,   cx*0.20,   0,  0.18, [[0.40,0.52],[0.76,1.02]]);
-  arc(lx,ly,  lx*0.18, 96,          0,   H,  0.14, [[0.50,1.18]]);
-  arc(lx,ly,  lx*0.50, 56,          0,  72,  0.19, [[0.38,0.64]]);
-
-  /* RIGHT arcs — mirror */
+  var isMobile = W < 640;
   var rw = W - rx;
-  arc(rx,ry,  rx+rw*0.58, ry,       W,  36,  0.30, [[0.28,0.08],[0.60,0.48],[0.88,0.86]]);
-  arc(rx,ry,  rx+rw*0.72,  6,     W-4,   0,  0.22, [[0.30,0.22],[0.65,0.68]]);
-  arc(rx,ry,  rx+rw*0.64, 82,       W, 124,  0.26, [[0.32,0.42],[0.68,0.82]]);
-  arc(rx,ry,  cx*1.62,     4,  cx*1.80,  0,  0.18, [[0.40,0.56],[0.76,1.06]]);
-  arc(rx,ry,  rx+rw*0.82, 96,       W,   H,  0.14, [[0.50,1.22]]);
-  arc(rx,ry,  rx+rw*0.50, 56,       W,  72,  0.19, [[0.38,0.68]]);
+
+  if (isMobile) {
+    /* Mobile — 3 arcs per side, 1 dot each (less congested) */
+    arc(lx,ly,  lx*0.40, ly,          0,  36,  0.32, [[0.50,0.00]]);
+    arc(lx,ly,  lx*0.34, 72,          0, 110,  0.28, [[0.48,0.35]]);
+    arc(lx,ly,  lx*0.48, 48,          0,  66,  0.22, [[0.45,0.70]]);
+
+    arc(rx,ry,  rx+rw*0.60, ry,       W,  36,  0.32, [[0.50,0.10]]);
+    arc(rx,ry,  rx+rw*0.66, 72,       W, 110,  0.28, [[0.48,0.45]]);
+    arc(rx,ry,  rx+rw*0.52, 48,       W,  66,  0.22, [[0.45,0.80]]);
+  } else {
+    /* Desktop — 6 arcs per side, 2–3 dots each */
+    arc(lx,ly,  lx*0.42, ly,          0,  36,  0.30, [[0.28,0.00],[0.60,0.42],[0.88,0.80]]);
+    arc(lx,ly,  lx*0.28,  6,          4,   0,  0.22, [[0.30,0.18],[0.65,0.62]]);
+    arc(lx,ly,  lx*0.36, 82,          0, 124,  0.26, [[0.32,0.38],[0.68,0.78]]);
+    arc(lx,ly,  cx*0.38,  4,   cx*0.20,  0,  0.18, [[0.40,0.52],[0.76,1.02]]);
+    arc(lx,ly,  lx*0.18, 96,          0,   H,  0.14, [[0.50,1.18]]);
+    arc(lx,ly,  lx*0.50, 56,          0,  72,  0.19, [[0.38,0.64]]);
+
+    arc(rx,ry,  rx+rw*0.58, ry,       W,  36,  0.30, [[0.28,0.08],[0.60,0.48],[0.88,0.86]]);
+    arc(rx,ry,  rx+rw*0.72,  6,     W-4,   0,  0.22, [[0.30,0.22],[0.65,0.68]]);
+    arc(rx,ry,  rx+rw*0.64, 82,       W, 124,  0.26, [[0.32,0.42],[0.68,0.82]]);
+    arc(rx,ry,  cx*1.62,     4,  cx*1.80,  0,  0.18, [[0.40,0.56],[0.76,1.06]]);
+    arc(rx,ry,  rx+rw*0.82, 96,       W,   H,  0.14, [[0.50,1.22]]);
+    arc(rx,ry,  rx+rw*0.50, 56,       W,  72,  0.19, [[0.38,0.68]]);
+  }
 
   document.body.appendChild(svg);
 
