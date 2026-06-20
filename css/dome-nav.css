@@ -95,8 +95,8 @@
   height: 72px;
   border-radius: 50%;
   background: #04091c;
-  border: 2.5px solid #2B5CE8;
-  box-shadow: 0 0 14px rgba(43,92,232,0.38), inset 0 1px 0 rgba(43,92,232,0.12);
+  border: 2.5px solid #A31515;
+  box-shadow: 0 0 14px rgba(163,21,21,0.4), inset 0 1px 0 rgba(163,21,21,0.1);
   color: var(--gold-light);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
@@ -133,29 +133,29 @@
     box-shadow 0.2s  ease;
 }
 
-/* Active page circle — solid royal blue fill, white text */
+/* Active page circle — solid deep crimson fill, white text */
 .dn-item.active {
-  background: #0d2166;
+  background: #8B1111;
   border: 2.5px solid var(--gold);
   color: #ffffff;
-  box-shadow: 0 0 24px rgba(13,33,102,0.7), 0 0 8px rgba(232,168,40,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
+  box-shadow: 0 0 24px rgba(139,17,17,0.7), 0 0 8px rgba(232,168,40,0.45), inset 0 1px 0 rgba(255,255,255,0.18);
 }
 .dn-item.active .dn-icon { stroke: #ffffff; }
 
-/* Hover — non-active flips to solid blue + gold text */
+/* Hover — non-active flips to solid crimson + gold text */
 .dn-item:hover {
-  background: #0d2166 !important;
+  background: #8B1111 !important;
   border-color: var(--gold) !important;
   color: var(--gold-light) !important;
-  box-shadow: 0 0 24px rgba(13,33,102,0.7), 0 0 8px rgba(232,168,40,0.4) !important;
+  box-shadow: 0 0 24px rgba(139,17,17,0.7), 0 0 8px rgba(232,168,40,0.4) !important;
   transform: scale(1.08) !important;
 }
 .dn-item:hover .dn-icon {
   stroke: var(--gold-light) !important;
 }
-/* Active circle hover — slightly lighter blue */
+/* Active circle hover — slightly brighter crimson */
 .dn-item.active:hover {
-  background: #1530a8 !important;
+  background: #A31515 !important;
   border-color: var(--gold-light) !important;
   color: #ffffff !important;
 }
