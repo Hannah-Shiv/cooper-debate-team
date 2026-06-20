@@ -22,10 +22,10 @@
   width: 72px !important;
   height: 72px !important;
   border-radius: 50%;
-  background: radial-gradient(circle at 40% 35%, #1a2f6a 0%, #09163c 55%, #040a1c 100%);
+  background: radial-gradient(circle at 40% 35%, #B22020 0%, #7A0E0E 55%, #4a0808 100%);
   border: 2.5px solid var(--gold);
   box-shadow:
-    0 0 20px rgba(232,168,40,0.35),
+    0 0 22px rgba(163,21,21,0.55),
     0 4px 28px rgba(0,0,0,0.6),
     inset 0 1px 0 rgba(247,200,66,0.22);
   cursor: pointer;
@@ -37,8 +37,8 @@
   gap: 5px;
 }
 #circ-btn:hover {
-  background: radial-gradient(circle at 40% 35%, #253d82 0%, #0e1e50 55%, #060d24 100%);
-  box-shadow: 0 0 28px rgba(232,168,40,0.5), 0 4px 28px rgba(0,0,0,0.6), inset 0 1px 0 rgba(247,200,66,0.22);
+  background: radial-gradient(circle at 40% 35%, #CC2828 0%, #921111 55%, #5c0a0a 100%);
+  box-shadow: 0 0 32px rgba(163,21,21,0.7), 0 4px 28px rgba(0,0,0,0.6), inset 0 1px 0 rgba(247,200,66,0.22);
 }
 #circ-btn.open { transform: none; }
 
