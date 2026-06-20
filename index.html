@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team — Metro Finals Champions, Nationals 4th Place. Cooper Middle School, McLean VA. Speak. Reason. Lead."/>
+  <title>Cooper Debate Team — Speak · Reason · Lead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement-bar">
+  <div class="announcement-inner">
+    <span class="announcement-badge">News</span>
+    <p class="announcement-text">🏆 Cooper Debate placed <strong>4th at NSDA Nationals</strong> — our best finish ever! <a href="awards.html">See full results →</a></p>
+  </div>
+  <button class="announcement-close" aria-label="Close announcement">✕</button>
+</div>
+
+<!-- MEMBER LOGIN BUTTON -->
+<a id="member-login-btn" href="members.html">
+  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+  Member Login
+</a>
+
+<!-- INTEL THREADS (gold radiating lines) -->
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80"  y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="240" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.25"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="1100" y2="110" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <circle cx="80"  cy="130" r="3" fill="#D4A017" opacity="0.5" class="thr-dot"/>
+  <circle cx="240" cy="140" r="2" fill="#D4A017" opacity="0.4" class="thr-dot" style="animation-delay:0.4s"/>
+  <circle cx="380" cy="140" r="2" fill="#D4A017" opacity="0.4" class="thr-dot" style="animation-delay:0.8s"/>
+  <circle cx="760" cy="140" r="2" fill="#D4A017" opacity="0.4" class="thr-dot" style="animation-delay:0.6s"/>
+  <circle cx="920" cy="130" r="3" fill="#D4A017" opacity="0.5" class="thr-dot" style="animation-delay:0.2s"/>
+  <circle cx="1100" cy="110" r="2" fill="#D4A017" opacity="0.4" class="thr-dot" style="animation-delay:1s"/>
+</svg>
+
+<!-- DOME NAV -->
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+
+  <button class="dn-item dn-p1" type="button" data-section="about" onclick="toggleSub('about',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    <span>About</span>
+  </button>
+  <button class="dn-item dn-p2" type="button" data-section="awards" onclick="toggleSub('awards',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+    <span>Awards</span>
+  </button>
+  <button class="dn-item dn-p3" type="button" data-section="tourn" onclick="toggleSub('tourn',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <span>Tourneys</span>
+  </button>
+  <button class="dn-item dn-p4" type="button" data-section="res" onclick="toggleSub('res',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg>
+    <span>Resources</span>
+  </button>
+  <button class="dn-item dn-p5" type="button" data-section="gallery" onclick="toggleSub('gallery',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+    <span>Gallery</span>
+  </button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)" aria-expanded="false">
+    <svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+    <span>Members</span>
+  </button>
+
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<!-- HERO SECTION -->
+<section class="home-hero">
+  <div class="hero-bg"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Cooper Middle School · McLean, VA · FCPS
+    </div>
+    <h1 class="hero-title">Cooper<br/><span>Debate</span> Team</h1>
+    <p class="hero-school">Public Forum · WACFL · NSDA Nationals</p>
+    <p class="hero-tagline">Speak <span>·</span> Reason <span>·</span> Lead</p>
+    <div class="hero-buttons">
+      <a href="about.html#join" class="btn btn-gold">Join Debate</a>
+      <a href="tournaments.html" class="btn btn-outline">Tournament Calendar</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span class="hero-scroll-label">Scroll to explore</span>
+    <div class="hero-scroll-line"></div>
+  </div>
+</section>
+
+<!-- ACHIEVEMENT BANNER -->
+<div class="achievement-banner">
+  <div class="achievement-banner-inner">
+    <div class="achievement-item">
+      <span class="achievement-icon">🏆</span>
+      <span class="achievement-text">Metro Finals Champions</span>
+    </div>
+    <div class="achievement-divider"></div>
+    <div class="achievement-item">
+      <span class="achievement-icon">🥇</span>
+      <span class="achievement-text">NSDA Nationals — 4th Place</span>
+    </div>
+    <div class="achievement-divider"></div>
+    <div class="achievement-item">
+      <span class="achievement-icon">⚡</span>
+      <span class="achievement-text">WACFL Regional Champions</span>
+    </div>
+    <div class="achievement-divider"></div>
+    <div class="achievement-item">
+      <span class="achievement-icon">🎙️</span>
+      <span class="achievement-text">Multiple Speaker Awards</span>
+    </div>
+  </div>
+</div>
+
+<!-- STATISTICS SECTION -->
+<section class="stats-section">
+  <div class="section-wrap">
+    <div class="stats-grid stagger">
+      <div class="stat-card fade-up">
+        <span class="stat-icon">👥</span>
+        <span class="stat-number" data-target="28" data-suffix="">0</span>
+        <span class="stat-label">Active Members</span>
+      </div>
+      <div class="stat-card fade-up">
+        <span class="stat-icon">🏆</span>
+        <span class="stat-number" data-target="47" data-suffix="+">0</span>
+        <span class="stat-label">Tournament Awards</span>
+      </div>
+      <div class="stat-card fade-up">
+        <span class="stat-icon">🎙️</span>
+        <span class="stat-number" data-target="31" data-suffix="">0</span>
+        <span class="stat-label">Speaker Awards</span>
+      </div>
+      <div class="stat-card fade-up">
+        <span class="stat-icon">📅</span>
+        <span class="stat-number" data-target="12" data-suffix="">0</span>
+        <span class="stat-label">Tournaments This Season</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LATEST RESULTS -->
+<section class="results-section">
+  <div class="section-wrap">
+    <div class="results-header">
+      <div>
+        <p class="section-label">Recent Competition</p>
+        <h2 class="section-title">Latest Results</h2>
+      </div>
+      <a href="awards.html" class="btn btn-outline">All Results →</a>
+    </div>
+    <div class="results-grid stagger">
+      <div class="result-card fade-up">
+        <div class="result-place">4<sup>th</sup></div>
+        <div class="result-tournament">NSDA Nationals</div>
+        <div class="result-detail">June 2025 · Public Forum</div>
+        <span class="result-tag result-tag-gold">🏅 National Qualifier</span>
+      </div>
+      <div class="result-card fade-up">
+        <div class="result-place">1<sup>st</sup></div>
+        <div class="result-tournament">Metro Finals</div>
+        <div class="result-detail">May 2025 · WACFL Championship</div>
+        <span class="result-tag result-tag-gold">🏆 Champions</span>
+      </div>
+      <div class="result-card fade-up">
+        <div class="result-place">2<sup>nd</sup></div>
+        <div class="result-tournament">WACFL Regionals</div>
+        <div class="result-detail">April 2025 · Public Forum</div>
+        <span class="result-tag result-tag-blue">🥈 Runner-Up</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UPCOMING EVENTS -->
+<section class="events-section">
+  <div class="section-wrap">
+    <div class="events-layout">
+      <div>
+        <p class="section-label">What's Coming Up</p>
+        <h2 class="section-title">Upcoming Events</h2>
+        <p class="section-sub" style="margin-bottom:36px;">Stay current on tournament dates, registration deadlines, and team practices.</p>
+
+        <div class="event-item fade-up">
+          <div class="event-date-block">
+            <div class="event-month">Aug</div>
+            <div class="event-day">29</div>
+          </div>
+          <div class="event-info">
+            <div class="event-name">Season Kickoff Practice</div>
+            <div class="event-location">Cooper Middle School — Room 214</div>
+            <span class="event-type-tag">Practice</span>
+          </div>
+        </div>
+
+        <div class="event-item fade-up">
+          <div class="event-date-block">
+            <div class="event-month">Sep</div>
+            <div class="event-day">14</div>
+          </div>
+          <div class="event-info">
+            <div class="event-name">WACFL Tournament #1</div>
+            <div class="event-location">TBD — Northern Virginia</div>
+            <span class="event-type-tag">Tournament</span>
+          </div>
+        </div>
+
+        <div class="event-item fade-up">
+          <div class="event-date-block">
+            <div class="event-month">Oct</div>
+            <div class="event-day">05</div>
+          </div>
+          <div class="event-info">
+            <div class="event-name">Fall Invitational</div>
+            <div class="event-location">George Mason University</div>
+            <span class="event-type-tag">Tournament</span>
+          </div>
+        </div>
+
+        <div class="event-item fade-up">
+          <div class="event-date-block">
+            <div class="event-month">Oct</div>
+            <div class="event-day">18</div>
+          </div>
+          <div class="event-info">
+            <div class="event-name">Registration Deadline — Nov. Tournament</div>
+            <div class="event-location">Submit via team portal</div>
+            <span class="event-type-tag">Deadline</span>
+          </div>
+        </div>
+
+        <a href="tournaments.html" class="btn btn-outline" style="margin-top:28px;">Full Calendar →</a>
+      </div>
+
+      <!-- Countdown widget -->
+      <div>
+        <div class="countdown-widget fade-in">
+          <div class="countdown-label">Next Tournament</div>
+          <div class="countdown-event-name" id="countdown-target" data-date="2025-09-14T08:00:00">WACFL Tournament #1</div>
+          <div class="countdown-grid">
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-days">--</span>
+              <div class="countdown-unit-label">Days</div>
+            </div>
+            <div class="countdown-colon">:</div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-hours">--</span>
+              <div class="countdown-unit-label">Hours</div>
+            </div>
+            <div class="countdown-colon">:</div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-mins">--</span>
+              <div class="countdown-unit-label">Mins</div>
+            </div>
+            <div class="countdown-colon">:</div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-secs">--</span>
+              <div class="countdown-unit-label">Secs</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current PF Topic -->
+        <div style="margin-top:24px;background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.2);border-radius:10px;padding:28px;">
+          <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Current PF Resolution</p>
+          <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1rem;color:var(--white);line-height:1.6;margin-bottom:16px;">"Resolved: The benefits of the United States federal government's use of artificial intelligence for national security outweigh the harms."</p>
+          <a href="resources.html" class="btn btn-outline" style="font-size:0.72rem;padding:10px 20px;">Explore Resources →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY PREVIEW -->
+<section class="gallery-section">
+  <div class="section-wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0;flex-wrap:wrap;gap:16px;">
+      <div>
+        <p class="section-label">Team Moments</p>
+        <h2 class="section-title">Gallery</h2>
+      </div>
+      <a href="gallery.html" class="btn btn-outline">View All Photos →</a>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item gallery-placeholder-1">
+        <div class="gallery-overlay">
+          <span class="gallery-caption">NSDA Nationals 2025</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-placeholder-2">
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Metro Finals Champions</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-placeholder-3">
+        <div class="gallery-overlay">
+          <span class="gallery-caption">WACFL Regional Tournament</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-placeholder-4">
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Team Practice Session</span>
+        </div>
+      </div>
+      <div class="gallery-item gallery-placeholder-5">
+        <div class="gallery-overlay">
+          <span class="gallery-caption">Award Ceremony</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN CTA -->
+<section class="join-section">
+  <div class="join-content">
+    <span class="join-icon">🎙️</span>
+    <h2 class="join-title">Ready to Find Your Voice?</h2>
+    <p class="join-description">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
+    <div class="join-buttons">
+      <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
+      <a href="about.html" class="btn btn-outline">Learn More</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">Cooper Debate Team</div>
+        <div class="footer-brand-school">Cooper Middle School · McLean, VA</div>
+        <p class="footer-tagline">"Speak · Reason · Lead"</p>
+        <p style="font-size:0.78rem;color:var(--gray-mid);line-height:1.7;">Competing in Public Forum debate at WACFL tournaments and NSDA Nationals. Metro Finals Champions.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="about.html">About</a></li>
+          <li><a href="awards.html">Awards</a></li>
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Quick Links</div>
+        <ul class="footer-links">
+          <li><a href="about.html#join">Join the Team</a></li>
+          <li><a href="tournaments.html#parent-info">Parent Information</a></li>
+          <li><a href="resources.html">PF Topic Center</a></li>
+          <li><a href="members.html">Member Login</a></li>
+          <li><a href="blog.html">Team Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <ul class="footer-links">
+          <li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li>
+          <li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li>
+          <li><a href="tournaments.html">Tournament Schedule</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · Fairfax County Public Schools</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer community-service initiative</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

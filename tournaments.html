@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team tournament calendar, results, and parent information for WACFL and NSDA competitions."/>
+  <title>Tournaments — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    .calendar-grid { display:flex; flex-direction:column; gap:0; }
+    .cal-month { margin-bottom:40px; }
+    .cal-month-title {
+      font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.75rem;
+      letter-spacing:0.18em; text-transform:uppercase; color:var(--gold);
+      padding:10px 0; border-bottom:1px solid rgba(212,160,23,0.2);
+      margin-bottom:16px; display:flex; align-items:center; gap:12px;
+    }
+    .cal-month-title::after { content:''; flex:1; height:1px; background:rgba(212,160,23,0.12); }
+
+    .cal-event {
+      display:grid; grid-template-columns:80px 1fr auto;
+      gap:20px; align-items:center;
+      padding:20px 24px; border-radius:8px;
+      background:rgba(11,37,69,0.45);
+      border:1px solid rgba(212,160,23,0.12);
+      margin-bottom:10px;
+      transition:border-color 0.25s, transform 0.25s;
+    }
+    .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
+    .cal-event.past { opacity:0.55; }
+    .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
+    .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
+
+    .cal-date { text-align:center; }
+    .cal-month-sm { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
+    .cal-day { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:var(--white); line-height:1; }
+
+    .cal-info {}
+    .cal-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; color:var(--white); margin-bottom:3px; }
+    .cal-location { font-size:0.78rem; color:var(--gray-mid); margin-bottom:6px; }
+    .cal-tags { display:flex; gap:6px; flex-wrap:wrap; }
+    .cal-tag { padding:2px 8px; border-radius:3px; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
+    .tag-tourn { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
+    .tag-wacfl { background:rgba(212,160,23,0.12); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.25); }
+    .tag-national { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
+    .tag-practice { background:rgba(34,197,94,0.12); color:#86efac; border:1px solid rgba(34,197,94,0.2); }
+    .tag-deadline { background:rgba(249,115,22,0.12); color:#fdba74; border:1px solid rgba(249,115,22,0.2); }
+    .tag-next { background:rgba(212,160,23,0.25); color:var(--gold); border:1px solid rgba(212,160,23,0.5); }
+
+    .cal-status { text-align:right; }
+    .status-result { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--gold); }
+    .status-upcoming { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray-mid); }
+
+    .result-row {
+      display:grid; grid-template-columns:1fr 3fr 1fr 1fr 1fr;
+      gap:12px; padding:16px 20px;
+      border-bottom:1px solid rgba(255,255,255,0.05);
+      align-items:center; transition:background 0.2s;
+    }
+    .result-row:hover { background:rgba(13,46,86,0.4); }
+    .result-row.header {
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase; color:var(--gold);
+      border-bottom:1px solid rgba(212,160,23,0.2); padding-bottom:12px;
+      background:none !important;
+    }
+    .result-place-badge {
+      display:inline-flex; align-items:center; justify-content:center;
+      width:36px; height:36px; border-radius:50%;
+      font-family:'Playfair Display',serif; font-size:0.9rem; font-weight:700;
+    }
+    .place-1 { background:rgba(212,160,23,0.2); color:var(--gold); border:1.5px solid rgba(212,160,23,0.5); }
+    .place-2 { background:rgba(148,163,184,0.15); color:#94a3b8; border:1.5px solid rgba(148,163,184,0.3); }
+    .place-3 { background:rgba(180,120,60,0.15); color:#cd853f; border:1.5px solid rgba(180,120,60,0.3); }
+    .place-other { background:rgba(71,85,105,0.15); color:var(--gray-mid); border:1.5px solid rgba(71,85,105,0.2); }
+
+    .parent-card {
+      background:rgba(13,46,86,0.45); border:1px solid rgba(212,160,23,0.15);
+      border-radius:10px; padding:28px 24px;
+    }
+    .parent-card-icon { font-size:1.8rem; margin-bottom:12px; display:block; }
+    .parent-card-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
+    .parent-card-text { font-size:0.85rem; color:var(--gray-mid); line-height:1.7; }
+
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+    .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    @media(max-width:900px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}}
+    @media(max-width:600px){.three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}}
+  </style>
+</head>
+<body>
+
+<a id="member-login-btn" href="members.html"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Member Login</a>
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+</svg>
+
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+  <button class="dn-item dn-p1" type="button" data-section="about" onclick="toggleSub('about',event)"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></button>
+  <button class="dn-item dn-p2" type="button" data-section="awards" onclick="toggleSub('awards',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></button>
+  <button class="dn-item dn-p3 active" type="button" data-section="tourn" onclick="toggleSub('tourn',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></button>
+  <button class="dn-item dn-p4" type="button" data-section="res" onclick="toggleSub('res',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></button>
+  <button class="dn-item dn-p5" type="button" data-section="gallery" onclick="toggleSub('gallery',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Members</span></button>
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">WACFL · NSDA</p>
+    <h1 class="page-title">Tournaments</h1>
+    <p class="page-subtitle">Calendar, results, and everything families need to know</p>
+  </div>
+</div>
+
+<!-- CALENDAR -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
+      <div>
+        <p class="section-label">2025–2026 Season</p>
+        <h2 class="section-title">Tournament Calendar</h2>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <span class="cal-tag tag-wacfl" style="padding:5px 12px;">WACFL</span>
+        <span class="cal-tag tag-national" style="padding:5px 12px;">National</span>
+        <span class="cal-tag tag-practice" style="padding:5px 12px;">Practice</span>
+        <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
+      </div>
+    </div>
+
+    <div class="calendar-grid">
+      <div class="cal-month">
+        <div class="cal-month-title">August 2025</div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Aug</div><div class="cal-day">29</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Season Kickoff Practice</div>
+            <div class="cal-location">📍 Cooper MS — Room 214</div>
+            <div class="cal-tags"><span class="cal-tag tag-practice">Practice</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">All members</div></div>
+        </div>
+      </div>
+
+      <div class="cal-month">
+        <div class="cal-month-title">September 2025</div>
+        <div class="cal-event next">
+          <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">6</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Registration Deadline — WACFL #1</div>
+            <div class="cal-location">📍 Submit via team portal</div>
+            <div class="cal-tags"><span class="cal-tag tag-deadline">Deadline</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">⚠️ Urgent</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">14</div></div>
+          <div class="cal-info">
+            <div class="cal-name">WACFL Tournament #1</div>
+            <div class="cal-location">📍 TBD — Northern Virginia</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span><span class="cal-tag tag-tourn">Tournament</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+      </div>
+
+      <div class="cal-month">
+        <div class="cal-month-title">October 2025</div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Oct</div><div class="cal-day">5</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Fall Invitational</div>
+            <div class="cal-location">📍 George Mason University, Fairfax</div>
+            <div class="cal-tags"><span class="cal-tag tag-tourn">Tournament</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Oct</div><div class="cal-day">18</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Registration Deadline — WACFL #2</div>
+            <div class="cal-location">📍 Submit via team portal</div>
+            <div class="cal-tags"><span class="cal-tag tag-deadline">Deadline</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Deadline</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Oct</div><div class="cal-day">26</div></div>
+          <div class="cal-info">
+            <div class="cal-name">WACFL Tournament #2</div>
+            <div class="cal-location">📍 TBD — Fairfax County</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span><span class="cal-tag tag-tourn">Tournament</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+      </div>
+
+      <div class="cal-month">
+        <div class="cal-month-title">November – December 2025</div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Nov</div><div class="cal-day">9</div></div>
+          <div class="cal-info">
+            <div class="cal-name">WACFL Tournament #3</div>
+            <div class="cal-location">📍 TBD — Northern Virginia</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Dec</div><div class="cal-day">7</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Winter Invitational</div>
+            <div class="cal-location">📍 TBD</div>
+            <div class="cal-tags"><span class="cal-tag tag-tourn">Tournament</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+      </div>
+
+      <div class="cal-month">
+        <div class="cal-month-title">January – March 2026</div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Jan</div><div class="cal-day">18</div></div>
+          <div class="cal-info">
+            <div class="cal-name">WACFL Tournament #4</div>
+            <div class="cal-location">📍 TBD — Fairfax County</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Upcoming</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Mar</div><div class="cal-day">8</div></div>
+          <div class="cal-info">
+            <div class="cal-name">WACFL Regionals</div>
+            <div class="cal-location">📍 TBD — Regional Championship</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span><span class="cal-tag tag-national">Regional Championship</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Championship</div></div>
+        </div>
+      </div>
+
+      <div class="cal-month">
+        <div class="cal-month-title">April – June 2026</div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">May</div><div class="cal-day">3</div></div>
+          <div class="cal-info">
+            <div class="cal-name">Metro Finals — WACFL Championship</div>
+            <div class="cal-location">📍 TBD — Northern Virginia</div>
+            <div class="cal-tags"><span class="cal-tag tag-wacfl">WACFL</span><span class="cal-tag tag-national">Metro Finals</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">Championship</div></div>
+        </div>
+        <div class="cal-event upcoming">
+          <div class="cal-date"><div class="cal-month-sm">Jun</div><div class="cal-day">14</div></div>
+          <div class="cal-info">
+            <div class="cal-name">NSDA Nationals</div>
+            <div class="cal-location">📍 TBD — National Championship</div>
+            <div class="cal-tags"><span class="cal-tag tag-national">NSDA National</span><span class="cal-tag tag-next">Qualifier Required</span></div>
+          </div>
+          <div class="cal-status"><div class="status-upcoming">National</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAST RESULTS -->
+<section id="results" class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <p class="section-label">2024–2025 Season</p>
+    <h2 class="section-title" style="margin-bottom:32px;">Past Results</h2>
+    <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.12);border-radius:10px;overflow:hidden;">
+      <div class="result-row header">
+        <div>Place</div>
+        <div>Tournament</div>
+        <div class="result-r-record">Record</div>
+        <div class="result-r-teams">Teams</div>
+        <div>Date</div>
+      </div>
+      <div class="result-row fade-up">
+        <div><span class="result-place-badge place-other">4th</span></div>
+        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">NSDA Nationals</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · National</div></div>
+        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–2</div>
+        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">128 teams</div>
+        <div style="font-size:0.78rem;color:var(--gray-mid);">Jun 2025</div>
+      </div>
+      <div class="result-row fade-up">
+        <div><span class="result-place-badge place-1">1st</span></div>
+        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">Metro Finals — WACFL Championship</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
+        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">6–0</div>
+        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">32 teams</div>
+        <div style="font-size:0.78rem;color:var(--gray-mid);">May 2025</div>
+      </div>
+      <div class="result-row fade-up">
+        <div><span class="result-place-badge place-2">2nd</span></div>
+        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">WACFL Regionals</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
+        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–1</div>
+        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">24 teams</div>
+        <div style="font-size:0.78rem;color:var(--gray-mid);">Apr 2025</div>
+      </div>
+      <div class="result-row fade-up">
+        <div><span class="result-place-badge place-1">1st</span></div>
+        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">Fall Invitational</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · Invitational</div></div>
+        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–0</div>
+        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">18 teams</div>
+        <div style="font-size:0.78rem;color:var(--gray-mid);">Oct 2024</div>
+      </div>
+      <div class="result-row fade-up">
+        <div><span class="result-place-badge place-3">3rd</span></div>
+        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">WACFL Tournament #3</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
+        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">4–2</div>
+        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">20 teams</div>
+        <div style="font-size:0.78rem;color:var(--gray-mid);">Jan 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PARENT INFO -->
+<section id="parent-info" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="section-label" style="justify-content:center;">For Families</p>
+      <h2 class="section-title">Parent &amp; Family Guide</h2>
+      <p class="section-sub" style="margin:0 auto;">Everything you need to know about supporting your debater at tournaments</p>
+    </div>
+    <div class="three-col">
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">🕐</span>
+        <div class="parent-card-title">Tournament Day Schedule</div>
+        <p class="parent-card-text">WACFL tournaments typically run from 8:30 AM to 5:00 PM. Students should arrive 30 minutes early. Rounds run throughout the day with lunch breaks.</p>
+      </div>
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">👔</span>
+        <div class="parent-card-title">Dress Code</div>
+        <p class="parent-card-text">Business professional attire is required for all tournament participants. Boys: suit or dress pants/shirt/tie. Girls: professional suit, dress, or pantsuit.</p>
+      </div>
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">🚗</span>
+        <div class="parent-card-title">Transportation</div>
+        <p class="parent-card-text">Parents are responsible for transporting students to and from tournaments unless otherwise arranged. Carpooling info will be shared by coaches before each tournament.</p>
+      </div>
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">📋</span>
+        <div class="parent-card-title">Registration &amp; Fees</div>
+        <p class="parent-card-text">Tournament entry fees vary. The team charges a seasonal activity fee that covers most WACFL tournaments. Nationals requires additional registration.</p>
+      </div>
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">📱</span>
+        <div class="parent-card-title">Communication</div>
+        <p class="parent-card-text">Coaches will send tournament-day updates via email and the team app. Please ensure your contact information is current in the team portal.</p>
+      </div>
+      <div class="parent-card fade-up">
+        <span class="parent-card-icon">🏆</span>
+        <div class="parent-card-title">Watching Rounds</div>
+        <p class="parent-card-text">Parents are generally welcome to observe rounds at WACFL tournaments — but please remain silent and avoid signaling to debaters during rounds.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
+      <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="awards.html">Awards</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><div class="footer-col-title">Tournaments</div><ul class="footer-links"><li><a href="tournaments.html">Calendar</a></li><li><a href="tournaments.html#results">Results</a></li><li><a href="tournaments.html#parent-info">Parent Info</a></li></ul></div>
+      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · FCPS</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer initiative</p>
+    </div>
+  </div>
+</footer>
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

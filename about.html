@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Learn about the Cooper Debate Team — our mission, coaches, Public Forum format, WACFL, and how to join."/>
+  <title>About — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    .value-card {
+      background: rgba(13,46,86,0.45);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 10px;
+      padding: 32px 28px;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .value-card:hover { border-color: rgba(212,160,23,0.5); transform: translateY(-4px); }
+    .value-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
+    .value-title { font-family: 'Playfair Display', serif; font-size: 1.2rem; margin-bottom: 10px; color: var(--white); }
+    .value-text { font-size: 0.88rem; color: var(--gray-mid); line-height: 1.7; }
+
+    .benefit-item {
+      display: flex;
+      gap: 20px;
+      padding: 24px 0;
+      border-bottom: 1px solid rgba(212,160,23,0.08);
+    }
+    .benefit-item:last-child { border-bottom: none; }
+    .benefit-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: rgba(212,160,23,0.25);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 48px;
+    }
+    .benefit-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold-pale); margin-bottom: 6px; }
+    .benefit-text { font-size: 0.88rem; color: var(--gray-mid); line-height: 1.7; }
+
+    .format-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(212,160,23,0.08);
+    }
+    .format-step:last-child { border-bottom: none; }
+    .format-step-badge {
+      flex-shrink: 0;
+      background: rgba(212,160,23,0.12);
+      border: 1px solid rgba(212,160,23,0.3);
+      border-radius: 6px;
+      padding: 8px 14px;
+      text-align: center;
+      min-width: 80px;
+    }
+    .format-step-time { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; color: var(--gold); line-height: 1; }
+    .format-step-unit { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-mid); }
+    .format-step-name { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); margin-bottom: 4px; }
+    .format-step-desc { font-size: 0.82rem; color: var(--gray-mid); }
+
+    .coach-card {
+      background: rgba(13,46,86,0.45);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 10px;
+      padding: 32px;
+      text-align: center;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .coach-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-4px); }
+    .coach-avatar {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy-mid), var(--navy-dark));
+      border: 2px solid rgba(212,160,23,0.4);
+      margin: 0 auto 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+    }
+    .coach-name { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 4px; }
+    .coach-role { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
+    .coach-bio { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.7; }
+
+    .join-step {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+      padding: 20px 0;
+    }
+    .join-step-num {
+      flex-shrink: 0;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(212,160,23,0.15);
+      border: 1.5px solid rgba(212,160,23,0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .join-step-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); margin-bottom: 4px; }
+    .join-step-desc { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.6; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+
+    @media (max-width: 900px) {
+      .two-col { grid-template-columns: 1fr; }
+      .three-col { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .three-col { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<a id="member-login-btn" href="members.html">
+  <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+  Member Login
+</a>
+
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80"  y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="240" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.25"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="1100" y2="110" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+</svg>
+
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+  <button class="dn-item dn-p1 active" type="button" data-section="about" onclick="toggleSub('about',event)"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></button>
+  <button class="dn-item dn-p2" type="button" data-section="awards" onclick="toggleSub('awards',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></button>
+  <button class="dn-item dn-p3" type="button" data-section="tourn" onclick="toggleSub('tourn',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></button>
+  <button class="dn-item dn-p4" type="button" data-section="res" onclick="toggleSub('res',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></button>
+  <button class="dn-item dn-p5" type="button" data-section="gallery" onclick="toggleSub('gallery',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Members</span></button>
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Cooper Middle School · McLean, VA</p>
+    <h1 class="page-title">About Cooper Debate</h1>
+    <p class="page-subtitle">Building tomorrow's leaders through the power of argument</p>
+  </div>
+</div>
+
+<!-- MISSION & VISION -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div class="two-col">
+      <div>
+        <p class="section-label">Who We Are</p>
+        <h2 class="section-title">Our Mission</h2>
+        <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:20px;">The Cooper Debate Team develops middle school students into confident, critical thinkers and effective communicators. Through the discipline of Public Forum debate, we equip students with skills that extend far beyond the debate round.</p>
+        <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:28px;">We believe every student has something important to say — and the power to say it well. Our team competes at the highest levels while fostering collaboration, curiosity, and mutual respect.</p>
+        <div style="padding:24px;background:rgba(212,160,23,0.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;">
+          <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.05rem;color:var(--gold-pale);line-height:1.7;">"The aim of argument, or of discussion, should not be victory, but progress." — Joseph Joubert</p>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">What We Stand For</p>
+        <h2 class="section-title">Core Values</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div class="value-card fade-up">
+            <span class="value-icon">🎙️</span>
+            <div class="value-title">Speak with Clarity</div>
+            <p class="value-text">We develop voices that are articulate, persuasive, and grounded in evidence.</p>
+          </div>
+          <div class="value-card fade-up">
+            <span class="value-icon">🧠</span>
+            <div class="value-title">Reason with Rigor</div>
+            <p class="value-text">Critical thinking, research, and logical argumentation are the heart of what we do.</p>
+          </div>
+          <div class="value-card fade-up">
+            <span class="value-icon">🌟</span>
+            <div class="value-title">Lead with Integrity</div>
+            <p class="value-text">We compete fiercely and always with sportsmanship, respect, and honesty.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY DEBATE -->
+<section class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <div class="two-col">
+      <div>
+        <p class="section-label">The Benefits</p>
+        <h2 class="section-title">Why Debate?</h2>
+        <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:32px;">Debate is one of the most transformative academic activities a student can pursue. The research is clear — debaters outperform peers in critical thinking, academic achievement, and career outcomes.</p>
+        <div class="benefit-item fade-up">
+          <div class="benefit-num">01</div>
+          <div><div class="benefit-title">Public Speaking</div><p class="benefit-text">Overcome stage fright and develop the poise to speak confidently in front of any audience.</p></div>
+        </div>
+        <div class="benefit-item fade-up">
+          <div class="benefit-num">02</div>
+          <div><div class="benefit-title">Critical Thinking</div><p class="benefit-text">Analyze complex issues, evaluate evidence, and construct logical arguments under pressure.</p></div>
+        </div>
+        <div class="benefit-item fade-up">
+          <div class="benefit-num">03</div>
+          <div><div class="benefit-title">Research Skills</div><p class="benefit-text">Learn to find, evaluate, and cite credible sources on real-world policy issues.</p></div>
+        </div>
+        <div class="benefit-item fade-up">
+          <div class="benefit-num">04</div>
+          <div><div class="benefit-title">Leadership &amp; Confidence</div><p class="benefit-text">Build the self-assurance to lead, persuade, and make a difference in any field.</p></div>
+        </div>
+      </div>
+      <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:12px;padding:36px;">
+        <p class="section-label">Public Forum Debate</p>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--white);margin-bottom:16px;">The Format We Compete In</h3>
+        <p style="color:var(--gray-mid);font-size:0.88rem;line-height:1.7;margin-bottom:24px;">Public Forum (PF) is a two-on-two debate format focused on current events and policy issues. Teams alternate arguing both sides of a resolution — developing intellectual flexibility and a deep understanding of real-world issues.</p>
+        <div class="format-step">
+          <div class="format-step-badge"><div class="format-step-time">4</div><div class="format-step-unit">min</div></div>
+          <div><div class="format-step-name">Constructive</div><p class="format-step-desc">Each team presents their initial case arguments.</p></div>
+        </div>
+        <div class="format-step">
+          <div class="format-step-badge"><div class="format-step-time">3</div><div class="format-step-unit">min</div></div>
+          <div><div class="format-step-name">Crossfire</div><p class="format-step-desc">Both teams question each other's arguments directly.</p></div>
+        </div>
+        <div class="format-step">
+          <div class="format-step-badge"><div class="format-step-time">4</div><div class="format-step-unit">min</div></div>
+          <div><div class="format-step-name">Rebuttal</div><p class="format-step-desc">Teams attack the opposing case and defend their own.</p></div>
+        </div>
+        <div class="format-step">
+          <div class="format-step-badge"><div class="format-step-time">2</div><div class="format-step-unit">min</div></div>
+          <div><div class="format-step-name">Summary</div><p class="format-step-desc">Each team crystallizes the most important voting issues.</p></div>
+        </div>
+        <div class="format-step">
+          <div class="format-step-badge"><div class="format-step-time">2</div><div class="format-step-unit">min</div></div>
+          <div><div class="format-step-name">Final Focus</div><p class="format-step-desc">Last chance to persuade the judge — usually 2-3 key arguments.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WACFL -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div style="max-width:800px;margin:0 auto;text-align:center;">
+      <p class="section-label" style="justify-content:center;">Our Circuit</p>
+      <h2 class="section-title">WACFL</h2>
+      <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:32px;">The Washington Area Competitive Forensics League (WACFL) is the premier middle and high school debate circuit in the DC/Northern Virginia region. Cooper Debate competes at WACFL tournaments throughout the fall and spring seasons, culminating in the Metro Finals championship.</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;text-align:left;">
+        <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🏅</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Regular Season</div>
+          <p style="font-size:0.82rem;color:var(--gray-mid);">Multiple WACFL tournaments throughout the year with varsity and junior varsity divisions.</p>
+        </div>
+        <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🏆</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Metro Finals</div>
+          <p style="font-size:0.82rem;color:var(--gray-mid);">The regional championship — Cooper won it in 2025 to advance to NSDA Nationals.</p>
+        </div>
+        <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+          <div style="font-size:1.8rem;margin-bottom:10px;">🌎</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">NSDA Nationals</div>
+          <p style="font-size:0.82rem;color:var(--gray-mid);">The national championship — we placed 4th, our best finish in program history.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COACHES -->
+<section id="coaches" class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="section-label" style="justify-content:center;">The Team Behind the Team</p>
+      <h2 class="section-title">Meet the Coaches</h2>
+    </div>
+    <div class="three-col">
+      <div class="coach-card fade-up">
+        <div class="coach-avatar">👩‍🏫</div>
+        <div class="coach-name">Coach Name</div>
+        <div class="coach-role">Head Coach</div>
+        <p class="coach-bio">Debate coach with years of experience developing competitive PF programs. Passionate about helping students find their voice and argue effectively.</p>
+      </div>
+      <div class="coach-card fade-up">
+        <div class="coach-avatar">👨‍🏫</div>
+        <div class="coach-name">Coach Name</div>
+        <div class="coach-role">Assistant Coach</div>
+        <p class="coach-bio">Specializes in research methodology and evidence analysis. Helps students build rigorous, evidence-driven cases for every tournament.</p>
+      </div>
+      <div class="coach-card fade-up">
+        <div class="coach-avatar">🎓</div>
+        <div class="coach-name">Faculty Advisor</div>
+        <div class="coach-role">Faculty Sponsor</div>
+        <p class="coach-bio">Cooper Middle School faculty sponsor who supports the team's administrative needs and helps coordinate tournament logistics.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN THE TEAM -->
+<section id="join" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div class="two-col">
+      <div>
+        <p class="section-label">Get Involved</p>
+        <h2 class="section-title">Join Cooper Debate</h2>
+        <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:32px;">No experience necessary. We welcome any Cooper Middle School student who is committed, curious, and ready to work hard. Here's how to get started:</p>
+        <div class="join-step fade-up">
+          <div class="join-step-num">1</div>
+          <div><div class="join-step-title">Attend an Info Session</div><p class="join-step-desc">Come to one of our open practice sessions at the start of the school year to learn what debate is all about.</p></div>
+        </div>
+        <div class="join-step fade-up">
+          <div class="join-step-num">2</div>
+          <div><div class="join-step-title">Submit an Application</div><p class="join-step-desc">Fill out the short application form describing why you want to join and what you hope to gain from the experience.</p></div>
+        </div>
+        <div class="join-step fade-up">
+          <div class="join-step-num">3</div>
+          <div><div class="join-step-title">Attend Tryouts</div><p class="join-step-desc">Participate in a short practice debate so coaches can assess your current skills and potential.</p></div>
+        </div>
+        <div class="join-step fade-up">
+          <div class="join-step-num">4</div>
+          <div><div class="join-step-title">Start Competing</div><p class="join-step-desc">Once accepted, you'll begin practicing and compete in your first WACFL tournament!</p></div>
+        </div>
+      </div>
+      <div>
+        <div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.25);border-radius:12px;padding:36px;margin-bottom:24px;">
+          <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">What We Look For</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;">
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Curiosity about current events and policy issues</li>
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Commitment to practice and preparation</li>
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Willingness to argue both sides of any issue</li>
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Sportsmanship and respect for opponents</li>
+            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Cooper Middle School enrollment (any grade)</li>
+          </ul>
+        </div>
+        <a href="mailto:debate@cooperms.fcps.edu" class="btn btn-gold" style="width:100%;justify-content:center;">Apply Now — Email Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEVELOPER CREDIT SECTION -->
+<section class="section" style="background:var(--navy-mid);padding:48px 0;">
+  <div class="section-wrap" style="max-width:700px;text-align:center;">
+    <div style="background:rgba(11,37,69,0.6);border:1px solid rgba(212,160,23,0.15);border-radius:10px;padding:32px;">
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">About This Website</p>
+      <p style="font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--white);margin-bottom:10px;">Designed &amp; developed by <strong>Hannah Shiv</strong>, Cooper Debate '26</p>
+      <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">Built as a volunteer community-service initiative to serve the Cooper Debate community — students, coaches, and families — at no cost to the team.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand-name">Cooper Debate Team</div>
+        <div class="footer-brand-school">Cooper Middle School · McLean, VA</div>
+        <p class="footer-tagline">"Speak · Reason · Lead"</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="awards.html">Awards</a></li>
+          <li><a href="tournaments.html">Tournaments</a></li>
+          <li><a href="resources.html">Resources</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="blog.html">Blog</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">About</div>
+        <ul class="footer-links">
+          <li><a href="about.html">Mission &amp; Vision</a></li>
+          <li><a href="about.html#coaches">Meet Coaches</a></li>
+          <li><a href="about.html#join">Join the Team</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <ul class="footer-links">
+          <li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li>
+          <li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · FCPS</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer initiative</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

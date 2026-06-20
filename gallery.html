@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team photo gallery — tournament moments, team events, and award ceremonies."/>
+  <title>Gallery — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    .filter-bar {
+      display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px;
+    }
+    .filter-btn {
+      padding: 8px 20px; border-radius: 50px;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.72rem;
+      font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      cursor: pointer; border: 1.5px solid rgba(212,160,23,0.3);
+      background: transparent; color: var(--gray-mid);
+      transition: all 0.2s ease;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: rgba(212,160,23,0.15); border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .masonry-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .photo-card {
+      position: relative; overflow: hidden; border-radius: 6px;
+      cursor: pointer; background: var(--card-bg);
+      transition: transform 0.3s ease;
+    }
+    .photo-card:hover { transform: scale(1.02); }
+    .photo-card:nth-child(4n+1) { aspect-ratio: 4/3; }
+    .photo-card:nth-child(4n+2) { aspect-ratio: 3/4; }
+    .photo-card:nth-child(4n+3) { aspect-ratio: 16/9; }
+    .photo-card:nth-child(4n+4) { aspect-ratio: 1/1; }
+
+    .photo-placeholder {
+      width: 100%; height: 100%; min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem; flex-direction: column; gap: 8px;
+    }
+
+    .photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(7,26,54,0.92) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.3s ease;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: 16px;
+    }
+    .photo-card:hover .photo-overlay { opacity: 1; }
+    .photo-caption {
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem;
+      font-weight: 700; letter-spacing: 0.04em; color: var(--white); margin-bottom: 4px;
+    }
+    .photo-meta { font-size: 0.68rem; color: var(--gray-mid); }
+
+    .video-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px;
+    }
+    .video-card {
+      background: rgba(13,46,86,0.5);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 10px; overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .video-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-4px); }
+    .video-thumb {
+      aspect-ratio: 16/9; background: var(--card-bg);
+      display: flex; align-items: center; justify-content: center;
+      position: relative; cursor: pointer; overflow: hidden;
+    }
+    .video-play {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(212,160,23,0.2); border: 2px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; transition: transform 0.2s, background 0.2s;
+    }
+    .video-card:hover .video-play {
+      transform: scale(1.1); background: rgba(212,160,23,0.4);
+    }
+    .video-info { padding: 20px; }
+    .video-title {
+      font-family: 'Josefin Sans', sans-serif; font-weight: 700;
+      font-size: 0.88rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 4px;
+    }
+    .video-date { font-size: 0.75rem; color: var(--gray-mid); }
+
+    .g1 { background: linear-gradient(135deg, #1a3a6b 0%, #0d2040 100%); }
+    .g2 { background: linear-gradient(135deg, #2a1a00 0%, #1a0d00 100%); }
+    .g3 { background: linear-gradient(135deg, #0a2040 0%, #1a3060 100%); }
+    .g4 { background: linear-gradient(135deg, #1a2a10 0%, #0a1a05 100%); }
+    .g5 { background: linear-gradient(135deg, #2a1a3a 0%, #1a0a2a 100%); }
+    .g6 { background: linear-gradient(135deg, #0a1a2a 0%, #102030 100%); }
+    .g7 { background: linear-gradient(135deg, #2a1500 0%, #180a00 100%); }
+    .g8 { background: linear-gradient(135deg, #001a2a 0%, #002a40 100%); }
+    .g9 { background: linear-gradient(135deg, #1a0a1a 0%, #2a102a 100%); }
+
+    @media(max-width:900px){ .masonry-grid{grid-template-columns:repeat(2,1fr);} .video-grid{grid-template-columns:1fr;} }
+    @media(max-width:600px){ .masonry-grid{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<a id="member-login-btn" href="members.html"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Member Login</a>
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+</svg>
+
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+  <button class="dn-item dn-p1" type="button" data-section="about" onclick="toggleSub('about',event)"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></button>
+  <button class="dn-item dn-p2" type="button" data-section="awards" onclick="toggleSub('awards',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></button>
+  <button class="dn-item dn-p3" type="button" data-section="tourn" onclick="toggleSub('tourn',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></button>
+  <button class="dn-item dn-p4" type="button" data-section="res" onclick="toggleSub('res',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></button>
+  <button class="dn-item dn-p5 active" type="button" data-section="gallery" onclick="toggleSub('gallery',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Members</span></button>
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Moments &amp; Memories</p>
+    <h1 class="page-title">Gallery</h1>
+    <p class="page-subtitle">Photos and videos from tournaments, practices, and team events</p>
+  </div>
+</div>
+
+<!-- PHOTOS -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px;">
+      <div>
+        <p class="section-label">Team Moments</p>
+        <h2 class="section-title">Photos</h2>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterGallery('all',this)">All Photos</button>
+      <button class="filter-btn" onclick="filterGallery('tournament',this)">Tournaments</button>
+      <button class="filter-btn" onclick="filterGallery('awards',this)">Awards</button>
+      <button class="filter-btn" onclick="filterGallery('practice',this)">Practice</button>
+      <button class="filter-btn" onclick="filterGallery('events',this)">Team Events</button>
+    </div>
+    <div class="masonry-grid" id="photo-grid">
+      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g1"><span>🎙️</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Tournament Round</span></div><div class="photo-overlay"><div class="photo-caption">NSDA Nationals 2025 — Final Round</div><div class="photo-meta">June 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="awards"><div class="photo-placeholder g2"><span>🏆</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Award Ceremony</span></div><div class="photo-overlay"><div class="photo-caption">Metro Finals Championship Trophy</div><div class="photo-meta">May 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g3"><span>📋</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Prep Room</span></div><div class="photo-overlay"><div class="photo-caption">Prep Room — WACFL Regionals</div><div class="photo-meta">April 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="events"><div class="photo-placeholder g4"><span>👥</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Team Photo</span></div><div class="photo-overlay"><div class="photo-caption">End-of-Season Team Photo 2025</div><div class="photo-meta">June 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="awards"><div class="photo-placeholder g5"><span>🥇</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Top Speaker Award</span></div><div class="photo-overlay"><div class="photo-caption">Top Speaker — NSDA Nationals</div><div class="photo-meta">June 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="practice"><div class="photo-placeholder g6"><span>✏️</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Practice Session</span></div><div class="photo-overlay"><div class="photo-caption">Weekly Practice — Case Prep</div><div class="photo-meta">March 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g7"><span>🏫</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Tournament Site</span></div><div class="photo-overlay"><div class="photo-caption">George Mason — Fall Invitational</div><div class="photo-meta">October 2024</div></div></div>
+      <div class="photo-card fade-up" data-cat="events"><div class="photo-placeholder g8"><span>🎓</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Banquet</span></div><div class="photo-overlay"><div class="photo-caption">WACFL End-of-Season Banquet</div><div class="photo-meta">June 2025</div></div></div>
+      <div class="photo-card fade-up" data-cat="practice"><div class="photo-placeholder g9"><span>💬</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Crossfire Drill</span></div><div class="photo-overlay"><div class="photo-caption">Crossfire Practice Drill</div><div class="photo-meta">February 2025</div></div></div>
+    </div>
+    <div style="text-align:center;margin-top:36px;">
+      <p style="font-size:0.82rem;color:var(--gray-mid);margin-bottom:16px;">More photos will be added throughout the season. Check back after each tournament!</p>
+    </div>
+  </div>
+</section>
+
+<!-- VIDEOS -->
+<section id="videos" class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <p class="section-label">Highlights</p>
+    <h2 class="section-title" style="margin-bottom:40px;">Videos</h2>
+    <div class="video-grid">
+      <div class="video-card fade-up">
+        <div class="video-thumb g1"><div class="video-play">▶</div></div>
+        <div class="video-info">
+          <div class="video-title">NSDA Nationals 2025 — Highlight Reel</div>
+          <div class="video-date">June 2025 · 4:32</div>
+        </div>
+      </div>
+      <div class="video-card fade-up">
+        <div class="video-thumb g2"><div class="video-play">▶</div></div>
+        <div class="video-info">
+          <div class="video-title">Metro Finals Championship Moment</div>
+          <div class="video-date">May 2025 · 2:18</div>
+        </div>
+      </div>
+      <div class="video-card fade-up">
+        <div class="video-thumb g3"><div class="video-play">▶</div></div>
+        <div class="video-info">
+          <div class="video-title">What is Public Forum Debate? — Intro Video</div>
+          <div class="video-date">September 2024 · 6:45</div>
+        </div>
+      </div>
+      <div class="video-card fade-up">
+        <div class="video-thumb g4"><div class="video-play">▶</div></div>
+        <div class="video-info">
+          <div class="video-title">Cooper Debate — Season Recap 2024–2025</div>
+          <div class="video-date">June 2025 · 8:12</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS GALLERY -->
+<section id="events" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">Team Events</p>
+    <h2 class="section-title" style="margin-bottom:40px;">Event Highlights</h2>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+      <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;overflow:hidden;" class="fade-up">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#1a3a6b,#0d2040);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🏆</div>
+        <div style="padding:20px;">
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.04em;color:var(--white);margin-bottom:4px;">WACFL End-of-Season Banquet</div>
+          <div style="font-size:0.75rem;color:var(--gray-mid);">June 2025 · Awards &amp; celebration dinner</div>
+        </div>
+      </div>
+      <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;overflow:hidden;" class="fade-up">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#2a1a00,#1a0d00);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🎙️</div>
+        <div style="padding:20px;">
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.04em;color:var(--white);margin-bottom:4px;">Season Kickoff Practice</div>
+          <div style="font-size:0.75rem;color:var(--gray-mid);">August 2024 · First practice of the year</div>
+        </div>
+      </div>
+      <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;overflow:hidden;" class="fade-up">
+        <div style="aspect-ratio:16/9;background:linear-gradient(135deg,#0a2040,#1a3060);display:flex;align-items:center;justify-content:center;font-size:2.5rem;">🌟</div>
+        <div style="padding:20px;">
+          <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.04em;color:var(--white);margin-bottom:4px;">Team Scrimmage Night</div>
+          <div style="font-size:0.75rem;color:var(--gray-mid);">November 2024 · Internal tournament</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
+      <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="awards.html">Awards</a></li><li><a href="tournaments.html">Tournaments</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><div class="footer-col-title">Gallery</div><ul class="footer-links"><li><a href="gallery.html">All Photos</a></li><li><a href="gallery.html#videos">Videos</a></li><li><a href="gallery.html#events">Events</a></li></ul></div>
+      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · FCPS</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer initiative</p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+<script>
+function filterGallery(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('#photo-grid .photo-card').forEach(card => {
+    card.style.display = (cat === 'all' || card.dataset.cat === cat) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

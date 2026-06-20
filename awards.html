@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team awards — Metro Finals Champions, NSDA Nationals 4th Place, speaker awards and full results."/>
+  <title>Awards — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    .trophy-card {
+      background: rgba(13,46,86,0.5);
+      border: 1px solid rgba(212,160,23,0.2);
+      border-radius: 10px;
+      padding: 32px 28px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    }
+    .trophy-card:hover { transform: translateY(-5px); border-color: rgba(212,160,23,0.55); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+    .trophy-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); opacity:0; transition:opacity 0.3s; }
+    .trophy-card:hover::before { opacity:1; }
+    .trophy-icon { font-size:2.8rem; margin-bottom:14px; display:block; }
+    .trophy-place { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:var(--gold); line-height:1; margin-bottom:6px; }
+    .trophy-event { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.85rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--white); margin-bottom:4px; }
+    .trophy-date { font-size:0.78rem; color:var(--gray-mid); margin-bottom:12px; }
+    .trophy-badge { display:inline-block; padding:4px 12px; border-radius:50px; font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:rgba(212,160,23,0.15); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.3); }
+
+    .speaker-card {
+      display:flex; align-items:center; gap:20px;
+      padding:20px 24px;
+      background:rgba(11,37,69,0.5);
+      border:1px solid rgba(212,160,23,0.15);
+      border-radius:8px;
+      transition:border-color 0.25s, transform 0.25s;
+    }
+    .speaker-card:hover { border-color:rgba(212,160,23,0.45); transform:translateX(4px); }
+    .speaker-rank { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:rgba(212,160,23,0.4); flex-shrink:0; width:36px; }
+    .speaker-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; color:var(--white); margin-bottom:3px; }
+    .speaker-detail { font-size:0.78rem; color:var(--gray-mid); }
+    .speaker-award { margin-left:auto; flex-shrink:0; font-size:1.2rem; }
+
+    .timeline-item {
+      display:flex; gap:24px; padding:28px 0;
+      border-bottom:1px solid rgba(212,160,23,0.08);
+    }
+    .timeline-item:last-child { border-bottom:none; }
+    .timeline-year {
+      flex-shrink:0; width:80px; text-align:center;
+      background:rgba(212,160,23,0.1); border:1px solid rgba(212,160,23,0.25);
+      border-radius:6px; padding:12px 8px; height:fit-content;
+    }
+    .timeline-year-num { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; color:var(--gold); line-height:1; }
+    .timeline-content { flex:1; }
+    .timeline-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; text-transform:uppercase; color:var(--white); margin-bottom:6px; }
+    .timeline-desc { font-size:0.85rem; color:var(--gray-mid); line-height:1.7; }
+    .timeline-tags { margin-top:10px; display:flex; gap:8px; flex-wrap:wrap; }
+    .timeline-tag { padding:3px 10px; border-radius:50px; font-size:0.65rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; background:rgba(212,160,23,0.12); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.25); }
+
+    .four-col { display:grid; grid-template-columns:repeat(4,1fr); gap:20px; }
+    .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
+    @media(max-width:900px){.four-col{grid-template-columns:repeat(2,1fr);}.three-col{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}}
+    @media(max-width:600px){.four-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<a id="member-login-btn" href="members.html"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Member Login</a>
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+</svg>
+
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+  <button class="dn-item dn-p1" type="button" data-section="about" onclick="toggleSub('about',event)"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></button>
+  <button class="dn-item dn-p2 active" type="button" data-section="awards" onclick="toggleSub('awards',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></button>
+  <button class="dn-item dn-p3" type="button" data-section="tourn" onclick="toggleSub('tourn',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></button>
+  <button class="dn-item dn-p4" type="button" data-section="res" onclick="toggleSub('res',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></button>
+  <button class="dn-item dn-p5" type="button" data-section="gallery" onclick="toggleSub('gallery',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Members</span></button>
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Cooper Debate Team</p>
+    <h1 class="page-title">Awards &amp; Achievements</h1>
+    <p class="page-subtitle">A record of excellence on the national stage</p>
+  </div>
+</div>
+
+<!-- THIS SEASON -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">2024–2025 Season</p>
+    <h2 class="section-title" style="margin-bottom:40px;">This Season's Results</h2>
+    <div class="three-col stagger">
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">🏆</span>
+        <div class="trophy-place">1<sup style="font-size:0.5em;">st</sup></div>
+        <div class="trophy-event">Metro Finals Championship</div>
+        <div class="trophy-date">May 2025 · WACFL</div>
+        <span class="trophy-badge">Regional Champions</span>
+      </div>
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">🥇</span>
+        <div class="trophy-place">4<sup style="font-size:0.5em;">th</sup></div>
+        <div class="trophy-event">NSDA Nationals</div>
+        <div class="trophy-date">June 2025 · Public Forum</div>
+        <span class="trophy-badge">National Qualifier</span>
+      </div>
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">🥈</span>
+        <div class="trophy-place">2<sup style="font-size:0.5em;">nd</sup></div>
+        <div class="trophy-event">WACFL Regionals</div>
+        <div class="trophy-date">April 2025 · Public Forum</div>
+        <span class="trophy-badge">Runner-Up</span>
+      </div>
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">🏅</span>
+        <div class="trophy-place">1<sup style="font-size:0.5em;">st</sup></div>
+        <div class="trophy-event">Fall Invitational</div>
+        <div class="trophy-date">October 2024 · George Mason</div>
+        <span class="trophy-badge">Tournament Winner</span>
+      </div>
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">⭐</span>
+        <div class="trophy-place">3<sup style="font-size:0.5em;">rd</sup></div>
+        <div class="trophy-event">WACFL Tournament #3</div>
+        <div class="trophy-date">January 2025</div>
+        <span class="trophy-badge">Semifinalist</span>
+      </div>
+      <div class="trophy-card fade-up">
+        <span class="trophy-icon">🎙️</span>
+        <div class="trophy-place">5+</div>
+        <div class="trophy-event">Top Speaker Awards</div>
+        <div class="trophy-date">Across all tournaments</div>
+        <span class="trophy-badge">Individual Excellence</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPEAKER AWARDS -->
+<section class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
+      <div>
+        <p class="section-label">Individual Excellence</p>
+        <h2 class="section-title" style="margin-bottom:28px;">Speaker Awards</h2>
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="speaker-card fade-up">
+            <div class="speaker-rank">1</div>
+            <div><div class="speaker-name">Debater Name</div><div class="speaker-detail">Top Speaker · NSDA Nationals 2025</div></div>
+            <span class="speaker-award">🥇</span>
+          </div>
+          <div class="speaker-card fade-up">
+            <div class="speaker-rank">2</div>
+            <div><div class="speaker-name">Debater Name</div><div class="speaker-detail">Top Speaker · Metro Finals 2025</div></div>
+            <span class="speaker-award">🏆</span>
+          </div>
+          <div class="speaker-card fade-up">
+            <div class="speaker-rank">3</div>
+            <div><div class="speaker-name">Debater Name</div><div class="speaker-detail">Top Speaker · Fall Invitational 2024</div></div>
+            <span class="speaker-award">🎙️</span>
+          </div>
+          <div class="speaker-card fade-up">
+            <div class="speaker-rank">4</div>
+            <div><div class="speaker-name">Debater Name</div><div class="speaker-detail">2nd Speaker · WACFL Regional 2025</div></div>
+            <span class="speaker-award">⭐</span>
+          </div>
+          <div class="speaker-card fade-up">
+            <div class="speaker-rank">5</div>
+            <div><div class="speaker-name">Debater Name</div><div class="speaker-detail">Top Speaker · WACFL Tournament #2</div></div>
+            <span class="speaker-award">🎯</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <p class="section-label">Team Awards</p>
+        <h2 class="section-title" style="margin-bottom:28px;">Team Recognition</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.2);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.6rem;margin-bottom:8px;">🏆</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--white);margin-bottom:4px;">Best Team Record</div>
+            <div style="font-size:0.8rem;color:var(--gray-mid);">12 wins · WACFL 2024–2025 Regular Season</div>
+          </div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.2);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.6rem;margin-bottom:8px;">📈</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--white);margin-bottom:4px;">Most Improved Program</div>
+            <div style="font-size:0.8rem;color:var(--gray-mid);">Recognized at the WACFL end-of-season banquet</div>
+          </div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.2);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.6rem;margin-bottom:8px;">🌟</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.06em;text-transform:uppercase;color:var(--white);margin-bottom:4px;">Sportsmanship Award</div>
+            <div style="font-size:0.8rem;color:var(--gray-mid);">Voted by tournament judges for exemplary conduct</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATISTICS -->
+<section id="statistics" class="stats-section">
+  <div class="section-wrap">
+    <p class="section-label" style="justify-content:center;margin-bottom:8px;">By the Numbers</p>
+    <h2 class="section-title" style="text-align:center;margin-bottom:40px;">Program Statistics</h2>
+    <div class="stats-grid stagger">
+      <div class="stat-card fade-up"><span class="stat-icon">🏆</span><span class="stat-number" data-target="47" data-suffix="+">0</span><span class="stat-label">Total Awards</span></div>
+      <div class="stat-card fade-up"><span class="stat-icon">🎙️</span><span class="stat-number" data-target="31" data-suffix="">0</span><span class="stat-label">Speaker Awards</span></div>
+      <div class="stat-card fade-up"><span class="stat-icon">📅</span><span class="stat-number" data-target="38" data-suffix="">0</span><span class="stat-label">Tournaments Competed</span></div>
+      <div class="stat-card fade-up"><span class="stat-icon">🥇</span><span class="stat-number" data-target="12" data-suffix="">0</span><span class="stat-label">Tournament Wins</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HALL OF FAME -->
+<section id="hall-of-fame" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div style="text-align:center;margin-bottom:48px;">
+      <p class="section-label" style="justify-content:center;">Program History</p>
+      <h2 class="section-title">Hall of Fame</h2>
+      <p class="section-sub" style="margin:0 auto;">A timeline of Cooper Debate's most historic achievements</p>
+    </div>
+    <div style="max-width:800px;margin:0 auto;">
+      <div class="timeline-item fade-up">
+        <div class="timeline-year"><div class="timeline-year-num">2025</div></div>
+        <div class="timeline-content">
+          <div class="timeline-title">NSDA Nationals — 4th Place Finish</div>
+          <p class="timeline-desc">Cooper Debate competed on the national stage for the first time in program history, finishing 4th at NSDA Nationals — the highest finish any Cooper debate team has ever achieved.</p>
+          <div class="timeline-tags"><span class="timeline-tag">National</span><span class="timeline-tag">Historic Best</span></div>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <div class="timeline-year"><div class="timeline-year-num">2025</div></div>
+        <div class="timeline-content">
+          <div class="timeline-title">Metro Finals Champions</div>
+          <p class="timeline-desc">Swept the WACFL Metro Finals to claim the regional championship, earning the team's first-ever regional title and a national qualifying bid.</p>
+          <div class="timeline-tags"><span class="timeline-tag">WACFL</span><span class="timeline-tag">Regional Champs</span></div>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <div class="timeline-year"><div class="timeline-year-num">2024</div></div>
+        <div class="timeline-content">
+          <div class="timeline-title">WACFL Regular Season Excellence</div>
+          <p class="timeline-desc">Finished the regular WACFL season with the best win-loss record in program history, earning top seeding entering the championship rounds.</p>
+          <div class="timeline-tags"><span class="timeline-tag">WACFL</span><span class="timeline-tag">Best Record</span></div>
+        </div>
+      </div>
+      <div class="timeline-item fade-up">
+        <div class="timeline-year"><div class="timeline-year-num">2023</div></div>
+        <div class="timeline-content">
+          <div class="timeline-title">First Regional Semifinal Appearance</div>
+          <p class="timeline-desc">Cooper Debate reached the WACFL semifinal round for the first time, signaling the program's rise to competitive prominence in the Northern Virginia circuit.</p>
+          <div class="timeline-tags"><span class="timeline-tag">WACFL</span><span class="timeline-tag">Breakthrough</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
+      <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="tournaments.html">Tournaments</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="blog.html">Blog</a></li></ul></div>
+      <div><div class="footer-col-title">Awards</div><ul class="footer-links"><li><a href="awards.html">This Season</a></li><li><a href="awards.html#hall-of-fame">Hall of Fame</a></li><li><a href="awards.html#statistics">Statistics</a></li></ul></div>
+      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · FCPS</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer initiative</p>
+    </div>
+  </div>
+</footer>
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+- [Cooper Debate site](cooper-debate-site.md) — Plain HTML/CSS/JS, GitHub Pages target, dome nav adapted from Langley Legacy; Phase 2 = Firebase members portal.

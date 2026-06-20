@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team resources — PF topic research, debate skills, and templates for WACFL competitors."/>
+  <title>Resources — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    .resource-card {
+      background: rgba(13,46,86,0.5); border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 10px; padding: 28px 24px;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      display: flex; flex-direction: column;
+    }
+    .resource-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,0.35); }
+    .resource-icon { font-size: 2rem; margin-bottom: 14px; }
+    .resource-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+    .resource-desc { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.7; flex: 1; margin-bottom: 18px; }
+    .resource-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--gold); transition: gap 0.2s;
+    }
+    .resource-card:hover .resource-link { gap: 10px; }
+
+    .topic-box {
+      background: rgba(11,37,69,0.6); border: 1px solid rgba(212,160,23,0.25);
+      border-radius: 12px; padding: 36px; margin-bottom: 32px;
+    }
+    .topic-resolution {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--white);
+      line-height: 1.6; margin-bottom: 24px;
+      padding: 20px 24px; border-left: 3px solid var(--gold);
+      background: rgba(212,160,23,0.05); border-radius: 0 8px 8px 0;
+    }
+
+    .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .arg-card {
+      border-radius: 8px; padding: 20px;
+    }
+    .arg-card-pro { background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.2); }
+    .arg-card-con { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); }
+    .arg-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+    .arg-label-pro { color: #86efac; }
+    .arg-label-con { color: #fca5a5; }
+    .arg-point { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.82rem; color: var(--gray-mid); line-height: 1.5; }
+    .arg-bullet-pro { color: #86efac; flex-shrink: 0; }
+    .arg-bullet-con { color: #fca5a5; flex-shrink: 0; }
+
+    .skill-row {
+      display: flex; gap: 24px; align-items: flex-start;
+      padding: 24px 0; border-bottom: 1px solid rgba(212,160,23,0.08);
+    }
+    .skill-row:last-child { border-bottom: none; }
+    .skill-num {
+      flex-shrink: 0; width: 48px; height: 48px; border-radius: 8px;
+      background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem;
+    }
+    .skill-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 5px; }
+    .skill-desc { font-size: 0.83rem; color: var(--gray-mid); line-height: 1.7; }
+    .skill-tip {
+      margin-top: 10px; padding: 10px 14px;
+      background: rgba(212,160,23,0.07); border-radius: 4px;
+      font-size: 0.78rem; color: var(--gold-pale); font-style: italic;
+    }
+
+    .template-card {
+      background: rgba(11,37,69,0.5); border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 8px; padding: 24px;
+      display: flex; align-items: center; gap: 20px;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .template-card:hover { border-color: rgba(212,160,23,0.45); transform: translateX(4px); }
+    .template-icon { font-size: 2rem; flex-shrink: 0; }
+    .template-name { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 4px; }
+    .template-desc { font-size: 0.78rem; color: var(--gray-mid); }
+    .template-download { margin-left: auto; flex-shrink: 0; }
+
+    .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} .pro-con-grid{grid-template-columns:1fr;} }
+    @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<a id="member-login-btn" href="members.html"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>Member Login</a>
+<svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
+  <line x1="600" y1="40" x2="80" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+</svg>
+
+<div id="circ-wrap">
+  <button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation" aria-expanded="false">
+    <span class="dn-hamburger" aria-hidden="true" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;pointer-events:none;transition:transform 0.3s ease;">
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+      <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
+    </span>
+  </button>
+  <button class="dn-item dn-p1" type="button" data-section="about" onclick="toggleSub('about',event)"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></button>
+  <button class="dn-item dn-p2" type="button" data-section="awards" onclick="toggleSub('awards',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></button>
+  <button class="dn-item dn-p3" type="button" data-section="tourn" onclick="toggleSub('tourn',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></button>
+  <button class="dn-item dn-p4 active" type="button" data-section="res" onclick="toggleSub('res',event)"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></button>
+  <button class="dn-item dn-p5" type="button" data-section="gallery" onclick="toggleSub('gallery',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Gallery</span></button>
+  <button class="dn-item dn-p6" type="button" data-section="members" onclick="toggleSub('members',event)"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Members</span></button>
+  <a class="dn-sub dn-about dn-sp1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>Mission &amp; Vision</span></a>
+  <a class="dn-sub dn-about dn-sp2" href="about.html#coaches"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Meet Coaches</span></a>
+  <a class="dn-sub dn-about dn-sp3" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join the Team</span></a>
+  <a class="dn-sub dn-awards dn-sp1" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>This Season</span></a>
+  <a class="dn-sub dn-awards dn-sp2" href="awards.html#hall-of-fame"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M17 5H7l2 8h6l2-8zM5 5h14"/></svg><span>Hall of Fame</span></a>
+  <a class="dn-sub dn-awards dn-sp3" href="awards.html#statistics"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg><span>Statistics</span></a>
+  <a class="dn-sub dn-tourn dn-sp1" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Calendar</span></a>
+  <a class="dn-sub dn-tourn dn-sp2" href="tournaments.html#results"><svg class="dn-icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>Results</span></a>
+  <a class="dn-sub dn-tourn dn-sp3" href="tournaments.html#parent-info"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Parent Info</span></a>
+  <a class="dn-sub dn-res dn-sp1" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg><span>PF Topic</span></a>
+  <a class="dn-sub dn-res dn-sp2" href="resources.html#skills"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg><span>Debate Skills</span></a>
+  <a class="dn-sub dn-res dn-sp3" href="resources.html#templates"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Templates</span></a>
+  <a class="dn-sub dn-gallery dn-sp1" href="gallery.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Photos</span></a>
+  <a class="dn-sub dn-gallery dn-sp2" href="gallery.html#videos"><svg class="dn-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Videos</span></a>
+  <a class="dn-sub dn-gallery dn-sp3" href="gallery.html#events"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Events</span></a>
+  <a class="dn-sub dn-members dn-sp1" href="members.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span>Member Login</span></a>
+  <a class="dn-sub dn-members dn-sp2" href="about.html#join"><svg class="dn-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Join Team</span></a>
+  <a class="dn-sub dn-members dn-sp3" href="blog.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span>Team Blog</span></a>
+  <div id="dn-vline" aria-hidden="true"></div>
+  <svg id="dn-arc" aria-hidden="true" style="position:absolute;left:0;top:0;width:1px;height:1px;overflow:visible;pointer-events:none;z-index:9999;">
+    <path id="dn-conn-about"   class="dn-conn" d="M -120 30  L -120 185 Q -120 205 -100 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-awards"  class="dn-conn" d="M  -75 142 L  -75 185 Q  -75 205  -55 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-tourn"   class="dn-conn" d="M  -10 190 L  -10 197 Q  -10 205   -2 205 L 15 205 Q 35 205 35 225"/>
+    <path id="dn-conn-res"     class="dn-conn" d="M   70 190 L   70 197 Q   70 205   62 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-gallery" class="dn-conn" d="M  135 142 L  135 185 Q  135 205  115 205 L 55 205 Q 35 205 35 225"/>
+    <path id="dn-conn-members" class="dn-conn" d="M  180 30  L  180 185 Q  180 205  160 205 L 55 205 Q 35 205 35 225"/>
+  </svg>
+</div>
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Debate Preparation Center</p>
+    <h1 class="page-title">Resources</h1>
+    <p class="page-subtitle">PF topic research, skills training, and debate templates</p>
+  </div>
+</div>
+
+<!-- PF TOPIC CENTER -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">Current Resolution</p>
+    <h2 class="section-title" style="margin-bottom:32px;">PF Topic Center</h2>
+
+    <div class="topic-box">
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Fall 2025</p>
+      <div class="topic-resolution">"Resolved: The benefits of the United States federal government's use of artificial intelligence for national security outweigh the harms."</div>
+
+      <div class="pro-con-grid">
+        <div class="arg-card arg-card-pro">
+          <div class="arg-label arg-label-pro">✓ Pro Arguments</div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>AI dramatically improves threat detection and prevention capabilities</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Reduces human risk in intelligence operations</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Counter-terrorism benefits outweigh marginal privacy costs</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Allied nations coordinate more effectively through AI-shared intelligence</span></div>
+        </div>
+        <div class="arg-card arg-card-con">
+          <div class="arg-label arg-label-con">✗ Con Arguments</div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Mass surveillance creates chilling effects on civil liberties</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Algorithmic bias leads to discriminatory enforcement</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>AI systems are vulnerable to adversarial manipulation</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Autonomous weapons systems escalate risk of accidental conflict</span></div>
+        </div>
+      </div>
+
+      <p style="font-size:0.78rem;color:var(--gray-mid);margin-top:8px;">💡 Full evidence files, briefs, and flows available in the <a href="members.html" style="color:var(--gold-pale);text-decoration:underline;">Members Portal</a></p>
+    </div>
+
+    <!-- KEY EVIDENCE SOURCES -->
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">Key Research Sources</h3>
+    <div class="three-col">
+      <div class="resource-card fade-up">
+        <div class="resource-icon">🔍</div>
+        <div class="resource-title">NSDA Topic Guide</div>
+        <p class="resource-desc">The official NSDA Public Forum topic analysis including definitions, background, and key stakeholders for the current resolution.</p>
+        <a href="https://www.speechanddebate.org" target="_blank" rel="noopener" class="resource-link">Visit NSDA →</a>
+      </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">📰</div>
+        <div class="resource-title">Government Sources</div>
+        <p class="resource-desc">CISA, DNI, DOD, and Congressional Research Service reports on AI in national security — the gold standard for pro evidence.</p>
+        <a href="https://crsreports.congress.gov" target="_blank" rel="noopener" class="resource-link">CRS Reports →</a>
+      </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">🎓</div>
+        <div class="resource-title">Academic Journals</div>
+        <p class="resource-desc">Peer-reviewed research on AI ethics, surveillance, civil liberties, and international security from major universities.</p>
+        <a href="https://scholar.google.com" target="_blank" rel="noopener" class="resource-link">Google Scholar →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEBATE SKILLS -->
+<section id="skills" class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <div class="two-col">
+      <div>
+        <p class="section-label">Build Your Toolkit</p>
+        <h2 class="section-title" style="margin-bottom:32px;">Debate Skills</h2>
+
+        <div class="skill-row fade-up">
+          <div class="skill-num">✍️</div>
+          <div>
+            <div class="skill-title">Case Writing</div>
+            <p class="skill-desc">A strong 4-minute constructive has 2–3 contentions, each with a clear claim, warrant, and impact. Lead with your strongest argument and pre-empt top counterarguments.</p>
+            <div class="skill-tip">"Make your tag line a thesis statement, not a label."</div>
+          </div>
+        </div>
+        <div class="skill-row fade-up">
+          <div class="skill-num">💬</div>
+          <div>
+            <div class="skill-title">Crossfire</div>
+            <p class="skill-desc">Use crossfire strategically: ask short, closed questions to expose contradictions. Never answer a question you haven't thought through. Control pace — don't let your opponent run the clock.</p>
+            <div class="skill-tip">"Ask questions, don't make speeches."</div>
+          </div>
+        </div>
+        <div class="skill-row fade-up">
+          <div class="skill-num">🎯</div>
+          <div>
+            <div class="skill-title">Summary &amp; Final Focus</div>
+            <p class="skill-desc">In summary, extend 2–3 key issues with offense. Respond to the most damaging attacks. In Final Focus, crystalize 1–2 voting issues and explain why you win them.</p>
+            <div class="skill-tip">"Tell the judge what to weigh and why your evidence is better."</div>
+          </div>
+        </div>
+        <div class="skill-row fade-up">
+          <div class="skill-num">📊</div>
+          <div>
+            <div class="skill-title">Impact Calculus</div>
+            <p class="skill-desc">Compare arguments using magnitude (how big), probability (how likely), and timeframe (how soon). A clear calculus framing wins close rounds.</p>
+            <div class="skill-tip">"Don't just win an argument — tell the judge why it matters MORE than theirs."</div>
+          </div>
+        </div>
+        <div class="skill-row fade-up">
+          <div class="skill-num">🗣️</div>
+          <div>
+            <div class="skill-title">Delivery</div>
+            <p class="skill-desc">Speak conversationally in PF — judges want to understand you, not be impressed by speed. Eye contact, vocal variation, and clear signposting make you a more persuasive speaker.</p>
+            <div class="skill-tip">"If the judge can't follow you, you're losing."</div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <p class="section-label">Practice Methods</p>
+        <h2 class="section-title" style="margin-bottom:24px;">How We Train</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.5rem;margin-bottom:8px;">⏱️</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Timed Practice Rounds</div>
+            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We run full practice rounds weekly to build comfort with PF timing. Timers always running — no exceptions.</p>
+          </div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.5rem;margin-bottom:8px;">📝</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Flow Practice</div>
+            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">Flowing is a critical skill. We practice flowing pre-written speeches until every debater can flow at full speaking speed.</p>
+          </div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
+            <div style="font-size:1.5rem;margin-bottom:8px;">🎤</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Video Review</div>
+            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We record and review practice rounds to identify speech habits, argument gaps, and crossfire patterns to improve.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATES -->
+<section id="templates" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">Downloadable Resources</p>
+    <h2 class="section-title" style="margin-bottom:32px;">Templates &amp; Flows</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:800px;">
+      <div class="template-card fade-up">
+        <div class="template-icon">📋</div>
+        <div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div>
+        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+      </div>
+      <div class="template-card fade-up">
+        <div class="template-icon">📊</div>
+        <div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div>
+        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+      </div>
+      <div class="template-card fade-up">
+        <div class="template-icon">📝</div>
+        <div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div>
+        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+      </div>
+      <div class="template-card fade-up">
+        <div class="template-icon">🔍</div>
+        <div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div>
+        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+      </div>
+      <div class="template-card fade-up">
+        <div class="template-icon">⚖️</div>
+        <div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div>
+        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+      </div>
+    </div>
+    <p style="margin-top:24px;font-size:0.82rem;color:var(--gray-mid);">Full template library available to members. <a href="members.html" style="color:var(--gold-pale);text-decoration:underline;">Log in to access →</a></p>
+  </div>
+</section>
+
+<footer>
+  <div class="section-wrap">
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
+      <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="awards.html">Awards</a></li><li><a href="tournaments.html">Tournaments</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
+      <div><div class="footer-col-title">Resources</div><ul class="footer-links"><li><a href="resources.html">PF Topic</a></li><li><a href="resources.html#skills">Debate Skills</a></li><li><a href="resources.html#templates">Templates</a></li></ul></div>
+      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:debate@cooperms.fcps.edu">debate@cooperms.fcps.edu</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2025 Cooper Debate Team · Cooper Middle School · FCPS</p>
+      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> · Volunteer initiative</p>
+    </div>
+  </div>
+</footer>
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
