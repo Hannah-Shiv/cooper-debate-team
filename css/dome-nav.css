@@ -4,10 +4,9 @@
    Re-themed: Navy + Gold for Cooper Debate
    ============================================================ */
 
-/* Hide the old radial nav — we use dome only */
 #radial-nav { display: none !important; }
 
-/* === CENTER BUTTON === */
+/* === WRAP — fixed, top center === */
 #circ-wrap {
   position: fixed;
   top: 8px;
@@ -17,14 +16,18 @@
   z-index: 9999;
 }
 
+/* === CENTER BUTTON === */
 #circ-btn {
   position: relative;
   width: 72px !important;
   height: 72px !important;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #1e3a8a 0%, #0d2166 55%, #081645 100%);
+  background: radial-gradient(circle at 40% 35%, #1a2f6a 0%, #09163c 55%, #040a1c 100%);
   border: 2.5px solid var(--gold);
-  box-shadow: 0 0 18px rgba(232,168,40,0.3), 0 4px 24px rgba(0,0,0,0.5), inset 0 1px 0 rgba(247,200,66,0.2);
+  box-shadow:
+    0 0 20px rgba(232,168,40,0.35),
+    0 4px 28px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(247,200,66,0.22);
   cursor: pointer;
   transition: background 0.25s ease, box-shadow 0.25s ease;
   display: flex !important;
@@ -32,10 +35,12 @@
   justify-content: center;
   flex-direction: column;
   gap: 5px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
 }
-#circ-btn:hover { background: #122f5c; }
-#circ-btn.open  { transform: none; }
+#circ-btn:hover {
+  background: radial-gradient(circle at 40% 35%, #253d82 0%, #0e1e50 55%, #060d24 100%);
+  box-shadow: 0 0 28px rgba(232,168,40,0.5), 0 4px 28px rgba(0,0,0,0.6), inset 0 1px 0 rgba(247,200,66,0.22);
+}
+#circ-btn.open { transform: none; }
 
 /* Pulse rings */
 #circ-btn::before,
@@ -44,13 +49,13 @@
   position: absolute;
   inset: -7px;
   border-radius: 50%;
-  border: 1px solid rgba(212,160,23,0.32);
+  border: 1px solid rgba(232,168,40,0.32);
   animation: dnPulse 3.6s ease-out infinite;
   pointer-events: none;
 }
 #circ-btn::after {
   inset: -16px;
-  border-color: rgba(212,160,23,0.14);
+  border-color: rgba(232,168,40,0.14);
   animation-delay: 1.2s;
 }
 @keyframes dnPulse {
@@ -60,33 +65,28 @@
 #circ-btn.open::before,
 #circ-btn.open::after { animation: none; opacity: 0; }
 
+/* Hamburger rotation when open */
+#circ-wrap.open #circ-btn .dn-hamburger { transform: rotate(90deg); }
+
 /* === DOME BACKDROP === */
 #circ-wrap::before {
   content: "";
   position: absolute;
   width: 356px;
-  height: 223px;
+  height: 230px;
   left: -148px;
   top: -8px;
-  background: rgba(5, 12, 30, 0.97);
+  background: rgba(4, 9, 26, 0.96);
   border-radius: 0 0 178px 178px;
-  border-left:   1px solid rgba(212, 160, 23, 0.18);
-  border-right:  1px solid rgba(212, 160, 23, 0.18);
-  border-bottom: 1px solid rgba(212, 160, 23, 0.18);
+  border-left:   1px solid rgba(232,168,40,0.22);
+  border-right:  1px solid rgba(232,168,40,0.22);
+  border-bottom: 1px solid rgba(232,168,40,0.22);
+  box-shadow: inset 0 0 60px rgba(4,9,26,0.5);
   display: none;
   pointer-events: none;
   z-index: -1;
 }
 #circ-wrap.open::before { display: block; }
-
-/* Dome expands when submenu is active */
-#circ-wrap.open.sub-open::before {
-  width: 356px;
-  height: 395px;
-  left: -148px;
-  top: -8px;
-  border-radius: 0 0 40px 40px;
-}
 
 /* === MAIN CIRCLE ITEMS === */
 .dn-item {
@@ -94,9 +94,9 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: radial-gradient(circle at 38% 32%, #1a3280 0%, #0d2166 55%, #081645 100%);
+  background: radial-gradient(circle at 38% 32%, #152660 0%, #08143a 60%, #040a1c 100%);
   border: 2.5px solid var(--gold);
-  box-shadow: 0 0 10px rgba(232,168,40,0.25), inset 0 1px 0 rgba(247,200,66,0.15);
+  box-shadow: 0 0 12px rgba(232,168,40,0.28), inset 0 1px 0 rgba(247,200,66,0.16);
   color: var(--gold-light);
   font-family: 'Josefin Sans', sans-serif;
   font-size: 11px;
@@ -110,7 +110,6 @@
   justify-content: center;
   flex-direction: column;
   text-decoration: none;
-  cursor: pointer;
   padding: 9px 0 0;
   opacity: 0;
   transform: scale(0.15);
@@ -118,12 +117,10 @@
   transition:
     opacity    0.3s  ease-out,
     transform  0.4s  cubic-bezier(0.4, 0, 0.6, 1),
-    background 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease;
+    background 0.2s  ease,
+    box-shadow 0.2s  ease;
   z-index: 10000;
 }
-button.dn-item { outline: none; }
 
 #circ-wrap.open .dn-item {
   opacity: 1;
@@ -132,18 +129,30 @@ button.dn-item { outline: none; }
   transition:
     opacity    0.26s ease,
     transform  0.4s  cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.18s ease,
-    border-color 0.18s ease;
+    background 0.2s  ease,
+    box-shadow 0.2s  ease;
 }
 
-.dn-item.active,
-.dn-item.sub-active {
+/* Active page circle */
+.dn-item.active {
   background: var(--gold);
   border-color: var(--gold-light);
-  color: var(--navy-dark);
+  color: #04091a;
+  box-shadow: 0 0 22px rgba(232,168,40,0.6), inset 0 1px 0 rgba(255,255,255,0.25);
+}
+.dn-item.active .dn-icon { stroke: #04091a; }
+
+/* Hover */
+.dn-item:hover {
+  background: radial-gradient(circle at 38% 32%, #1e3280 0%, #0d1f5a 60%, #060d28 100%) !important;
+  box-shadow: 0 0 22px rgba(232,168,40,0.5), inset 0 1px 0 rgba(247,200,66,0.22) !important;
+  transform: scale(1.08) !important;
+}
+.dn-item.active:hover {
+  background: var(--gold-light) !important;
 }
 
-/* Icon pinned to top of each circle */
+/* Icon */
 .dn-icon {
   position: absolute;
   top: 9px;
@@ -160,18 +169,14 @@ button.dn-item { outline: none; }
   margin: 0;
 }
 
-.dn-item.active .dn-icon,
-.dn-item.sub-active .dn-icon { stroke: var(--navy-dark); }
+/* === CIRCLE POSITIONS — R=130, downward semicircle === */
+.dn-p1 { left: -136px; top:  -6px; transform-origin:  172px  42px; }
+.dn-p2 { left: -111px; top:  70px; transform-origin:  147px -34px; }
+.dn-p3 { left:  -46px; top: 118px; transform-origin:   82px -82px; }
+.dn-p4 { left:   34px; top: 118px; transform-origin:    2px -82px; }
+.dn-p5 { left:   99px; top:  70px; transform-origin:  -63px -34px; }
+.dn-p6 { left:  124px; top:  -6px; transform-origin:  -88px  42px; }
 
-/* === CIRCLE POSITIONS — R=130, semicircle 180°→360° === */
-.dn-p1 { left: -136px; top:  -6px; transform-origin:  172px  42px; } /* About      */
-.dn-p2 { left: -111px; top:  70px; transform-origin:  147px -34px; } /* Awards     */
-.dn-p3 { left:  -46px; top: 118px; transform-origin:   82px -82px; } /* Tournaments*/
-.dn-p4 { left:   34px; top: 118px; transform-origin:    2px -82px; } /* Resources  */
-.dn-p5 { left:   99px; top:  70px; transform-origin:  -63px -34px; } /* Gallery    */
-.dn-p6 { left:  124px; top:  -6px; transform-origin:  -88px  42px; } /* Members    */
-
-.dn-p1, .dn-p2 { font-size: 13px; }
 .dn-p6 { font-size: 10px; letter-spacing: 0.01em; }
 
 /* Staggered open delays */
@@ -182,158 +187,53 @@ button.dn-item { outline: none; }
 #circ-wrap.open .dn-p3,
 #circ-wrap.open .dn-p4 { transition-delay: 0.15s; }
 
-/* === PILL SUB-ITEMS === */
-.dn-sub {
-  position: absolute;
-  width: 168px;
-  height: 38px;
-  border-radius: 19px;
-  background: radial-gradient(circle at 38% 32%, #1a3280 0%, #0d2166 55%, #081645 100%);
-  border: 2px solid var(--gold);
-  box-shadow: 0 0 8px rgba(232,168,40,0.2), inset 0 1px 0 rgba(247,200,66,0.12);
-  color: var(--gold-light);
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
+/* === INTEL THREADS === */
+#intel-threads {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 140px;
+  pointer-events: none;
+  z-index: 9997;
+  opacity: 0;
+  transition: opacity 0.48s ease;
+}
+#intel-threads.open { opacity: 1; }
+
+/* === MEMBER LOGIN PILL === */
+#member-login-btn {
+  position: fixed;
+  top: 18px;
+  right: 20px;
+  z-index: 9998;
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  padding: 0 10px;
-  white-space: nowrap;
+  gap: 6px;
+  background: transparent;
+  border: 1.5px solid rgba(232,168,40,0.45);
+  border-radius: 50px;
+  padding: 8px 16px;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(232,168,40,0.85);
   text-decoration: none;
-  cursor: pointer;
-  opacity: 0;
-  transform: scale(0.12);
-  pointer-events: none;
-  transition:
-    opacity    0.28s ease-out,
-    transform  0.38s cubic-bezier(0.4, 0, 0.6, 1),
-    background 0.18s ease,
-    border-color 0.18s ease;
-  z-index: 10000;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+#member-login-btn:hover {
+  background: rgba(232,168,40,0.12);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+#member-login-btn svg {
+  width: 12px; height: 12px;
+  stroke: currentColor; fill: none; stroke-width: 2;
 }
 
-.dn-sub .dn-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 12px;
-  height: 12px;
-}
-.dn-sub span { flex: 1; text-align: center; }
-
-/* Pill positions — centred under hamburger, below ring */
-.dn-sp1 { left: -48px; top: 220px; transform-origin: 84px -184px; }
-.dn-sp2 { left: -48px; top: 276px; transform-origin: 84px -240px; }
-.dn-sp3 { left: -48px; top: 332px; transform-origin: 84px -296px; }
-
-/* Show pills for the active group — staggered cascade */
-#circ-wrap.open.about-open   .dn-about,
-#circ-wrap.open.awards-open  .dn-awards,
-#circ-wrap.open.tourn-open   .dn-tourn,
-#circ-wrap.open.res-open     .dn-res,
-#circ-wrap.open.gallery-open .dn-gallery,
-#circ-wrap.open.members-open .dn-members {
-  opacity: 1;
-  pointer-events: auto;
-  transition:
-    opacity    0.24s ease,
-    transform  0.38s cubic-bezier(0.16, 1, 0.3, 1),
-    background 0.18s ease,
-    border-color 0.18s ease;
-}
-
-#circ-wrap.open.about-open   .dn-about.dn-sp1,
-#circ-wrap.open.awards-open  .dn-awards.dn-sp1,
-#circ-wrap.open.tourn-open   .dn-tourn.dn-sp1,
-#circ-wrap.open.res-open     .dn-res.dn-sp1,
-#circ-wrap.open.gallery-open .dn-gallery.dn-sp1,
-#circ-wrap.open.members-open .dn-members.dn-sp1 { transform: scale(1); transition-delay: 0s; }
-
-#circ-wrap.open.about-open   .dn-about.dn-sp2,
-#circ-wrap.open.awards-open  .dn-awards.dn-sp2,
-#circ-wrap.open.tourn-open   .dn-tourn.dn-sp2,
-#circ-wrap.open.res-open     .dn-res.dn-sp2,
-#circ-wrap.open.gallery-open .dn-gallery.dn-sp2,
-#circ-wrap.open.members-open .dn-members.dn-sp2 { transform: scale(1); transition-delay: 0.08s; }
-
-#circ-wrap.open.about-open   .dn-about.dn-sp3,
-#circ-wrap.open.awards-open  .dn-awards.dn-sp3,
-#circ-wrap.open.tourn-open   .dn-tourn.dn-sp3,
-#circ-wrap.open.res-open     .dn-res.dn-sp3,
-#circ-wrap.open.gallery-open .dn-gallery.dn-sp3,
-#circ-wrap.open.members-open .dn-members.dn-sp3 { transform: scale(1); transition-delay: 0.16s; }
-
-/* === VERTICAL GOLD RAIL === */
-#dn-vline {
-  position: absolute;
-  left: 35px;
-  top: 225px;
-  width: 2px;
-  height: 145px;
-  background: var(--gold);
-  border-radius: 1px;
-  opacity: 0;
-  transition: opacity 0.3s ease 0.1s;
-  z-index: 9999;
-  pointer-events: none;
-}
-#circ-wrap.open.sub-open #dn-vline { opacity: 1; }
-
-/* === CONNECTOR PATHS (animated draw) === */
-.dn-conn {
-  fill: none;
-  stroke: var(--gold);
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-dasharray: 800;
-  stroke-dashoffset: 800;
-  transition: stroke-dashoffset 0.55s cubic-bezier(0.4, 0, 0.2, 1) 0.05s;
-}
-#circ-wrap.open.about-open   #dn-conn-about   { stroke-dashoffset: 0; }
-#circ-wrap.open.awards-open  #dn-conn-awards  { stroke-dashoffset: 0; }
-#circ-wrap.open.tourn-open   #dn-conn-tourn   { stroke-dashoffset: 0; }
-#circ-wrap.open.res-open     #dn-conn-res     { stroke-dashoffset: 0; }
-#circ-wrap.open.gallery-open #dn-conn-gallery { stroke-dashoffset: 0; }
-#circ-wrap.open.members-open #dn-conn-members { stroke-dashoffset: 0; }
-
-/* Dim non-active circles when sub-menu open */
-#circ-wrap.open.sub-open .dn-item:not(.sub-active) {
-  opacity: 0.75 !important;
-  transition: opacity 0.25s ease;
-}
-#circ-wrap.open.sub-open .dn-item.sub-active { opacity: 1 !important; }
-
-/* Hamburger rotates when open */
-#circ-wrap.open #circ-btn .dn-hamburger {
-  transform: rotate(90deg);
-}
-
-/* Hover states */
-.dn-item:hover {
-  background: var(--gold) !important;
-  border-color: var(--gold-light) !important;
-  color: var(--navy-dark) !important;
-}
-.dn-item:hover .dn-icon { stroke: var(--navy-dark) !important; }
-
-.dn-sub:hover {
-  background: var(--gold) !important;
-  border-color: var(--gold-light) !important;
-  color: var(--navy-dark) !important;
-}
-
-/* === HERO PUSH when dome opens === */
+/* === HERO / PAGE HEADER PUSH === */
 #circ-wrap.open ~ .home-hero .hero-content { padding-top: 250px; }
-#circ-wrap.open.sub-open ~ .home-hero .hero-content { padding-top: 420px; }
-
 #circ-wrap.open ~ .page-header { padding-top: 240px; }
-#circ-wrap.open.sub-open ~ .page-header { padding-top: 410px; }
 
 /* === MOBILE (≤600px) === */
 @media (max-width: 600px) {
@@ -341,24 +241,14 @@ button.dn-item { outline: none; }
   #circ-wrap { width: 56px !important; }
 
   #circ-wrap::before {
-    width: 276px;
-    height: 178px;
-    left: -108px;
-    top: -8px;
+    width: 276px; height: 185px;
+    left: -108px; top: -8px;
     border-radius: 0 0 138px 138px;
-  }
-  #circ-wrap.open.sub-open::before {
-    width: 276px;
-    height: 315px;
-    left: -108px;
-    top: -8px;
-    border-radius: 0 0 40px 40px;
   }
 
   .dn-item { width: 56px; height: 56px; font-size: 8.5px; }
-  .dn-icon { width: 11px; height: 11px; }
+  .dn-icon  { width: 11px; height: 11px; }
 
-  /* Mobile circle positions */
   .dn-p1 { left: -104px; top:  -4px; transform-origin:  132px  32px; }
   .dn-p2 { left:  -83px; top:  54px; transform-origin:  111px -26px; }
   .dn-p3 { left:  -32px; top:  92px; transform-origin:   60px -64px; }
@@ -366,30 +256,7 @@ button.dn-item { outline: none; }
   .dn-p5 { left:   77px; top:  54px; transform-origin:  -49px -26px; }
   .dn-p6 { left:   98px; top:  -4px; transform-origin:  -70px  32px; }
 
-  /* Mobile pills */
-  .dn-sub {
-    width: 140px;
-    height: 30px;
-    border-radius: 15px;
-    font-size: 9.5px;
-    padding: 0 8px;
-  }
-  .dn-sub .dn-icon { left: 8px; width: 10px; height: 10px; }
-  .dn-sp1 { left: -42px; top: 175px; transform-origin: 70px -147px; }
-  .dn-sp2 { left: -42px; top: 219px; transform-origin: 70px -191px; }
-  .dn-sp3 { left: -42px; top: 263px; transform-origin: 70px -235px; }
-
-  /* Mobile vertical rail */
-  #dn-vline { left: 27px; top: 175px; height: 118px; }
-
-  /* Mobile connector paths */
-  #dn-conn-about   { d: path("M -104 24 L -104 147 Q -104 161 -90 161 L 13 161 Q 27 161 27 175"); }
-  #dn-conn-awards  { d: path("M  -55 110 L  -55 147 Q  -55 161 -41 161 L 13 161 Q 27 161 27 175"); }
-  #dn-conn-tourn   { d: path("M   -4 148 L   -4 153 Q   -4 161   4 161 L 13 161 Q 27 161 27 175"); }
-  #dn-conn-res     { d: path("M   54 148 L   54 153 Q   54 161  48 161 L 41 161 Q 27 161 27 175"); }
-  #dn-conn-gallery { d: path("M  105 110 L  105 147 Q  105 161  91 161 L 41 161 Q 27 161 27 175"); }
-  #dn-conn-members { d: path("M  154 24  L  154 147 Q  154 161 140 161 L 41 161 Q 27 161 27 175"); }
-
-  #circ-wrap.open ~ .home-hero .hero-content { padding-top: 220px; }
-  #circ-wrap.open.sub-open ~ .home-hero .hero-content { padding-top: 340px; }
+  #circ-wrap.open ~ .home-hero .hero-content { padding-top: 210px; }
+  #circ-wrap.open ~ .page-header { padding-top: 200px; }
+  #member-login-btn { display: none; }
 }
