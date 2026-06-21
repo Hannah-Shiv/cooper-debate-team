@@ -151,13 +151,9 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   background:
-    /* Blue spotlight beam — upper left */
-    linear-gradient(128deg, rgba(18,65,210,0.58) 0%, rgba(18,65,210,0.18) 38%, transparent 62%),
-    /* Crimson spotlight beam — upper right */
-    linear-gradient(232deg, rgba(155,12,12,0.52) 0%, rgba(155,12,12,0.14) 38%, transparent 62%),
-    /* Base dark overlay */
-    linear-gradient(180deg, rgba(4,8,22,0.55) 0%, rgba(4,8,22,0.88) 100%),
-    url('https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80') center/cover no-repeat;
+    /* Subtle dark overlay for text readability — let the image breathe */
+    linear-gradient(180deg, rgba(4,8,22,0.38) 0%, rgba(4,8,22,0.62) 100%),
+    url('../images/hero-stage.png') center/cover no-repeat;
   z-index: 0;
 }
 
