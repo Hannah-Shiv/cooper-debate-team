@@ -980,6 +980,38 @@ a { text-decoration: none; color: inherit; }
   margin-top: -4px;
 }
 
+/* === MOBILE HERO — show both podiums ===
+   cover + portrait viewport crops the landscape image to center only,
+   hiding both podiums. Fix: scale image to full width, anchor bottom. */
+@media (max-width: 768px) {
+  .hero-bg {
+    background-size: 100% auto;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    /* Strengthen gradient at top so area above image (no photo) blends in */
+    background-image:
+      linear-gradient(180deg, rgba(4,8,22,0.72) 0%, rgba(4,8,22,0.30) 70%, rgba(4,8,22,0.10) 100%),
+      url('../images/hero-stage.png');
+  }
+
+  /* The real photo already has blue/red lighting — beams are redundant on mobile */
+  .hero-beams { display: none; }
+
+  /* Tighten the hero so the podiums appear in the lower ~30% of the screen */
+  .home-hero { min-height: 100svh; }
+
+  .hero-content {
+    padding-top: 100px;
+    padding-bottom: 40px;
+  }
+
+  /* Slightly smaller title on mobile so it doesn't push podiums off screen */
+  .hero-title {
+    font-size: clamp(3rem, 16vw, 5.5rem);
+    line-height: 0.96;
+  }
+}
+
 @media (max-width: 600px) {
   .philosophy-quote-inner {
     grid-template-columns: 1fr;
