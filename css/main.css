@@ -984,32 +984,50 @@ a { text-decoration: none; color: inherit; }
    cover + portrait viewport crops the landscape image to center only,
    hiding both podiums. Fix: scale image to full width, anchor bottom. */
 @media (max-width: 768px) {
+  /* --- Background ---
+     100% width keeps the full landscape image visible (both podiums).
+     center 50% lifts the image so podiums land in the middle of the viewport
+     rather than below the fold. */
   .hero-bg {
     background-size: 100% auto;
-    background-position: center bottom;
+    background-position: center 50%;
     background-repeat: no-repeat;
-    /* Strengthen gradient at top so area above image (no photo) blends in */
     background-image:
-      linear-gradient(180deg, rgba(4,8,22,0.72) 0%, rgba(4,8,22,0.30) 70%, rgba(4,8,22,0.10) 100%),
+      linear-gradient(180deg, rgba(4,8,22,0.68) 0%, rgba(4,8,22,0.20) 60%, rgba(4,8,22,0.04) 100%),
       url('../images/hero-stage.png');
   }
 
-  /* The real photo already has blue/red lighting — beams are redundant on mobile */
+  /* Real photo already has the blue/red stage lighting */
   .hero-beams { display: none; }
 
-  /* Tighten the hero so the podiums appear in the lower ~30% of the screen */
-  .home-hero { min-height: 100svh; }
+  /* --- Hero layout ---
+     align-items: flex-start lets padding-top control vertical position
+     so the title can start at the midpoint of the podiums. */
+  .home-hero {
+    min-height: 100svh;
+    align-items: flex-start;
+  }
 
+  /* Push content down to ~55 % of viewport height —
+     that puts "Cooper" right at the podium midline. */
   .hero-content {
-    padding-top: 100px;
-    padding-bottom: 40px;
+    padding-top: 55vh;
+    padding-bottom: 14px;
+    width: 100%;
   }
 
-  /* Slightly smaller title on mobile so it doesn't push podiums off screen */
+  /* Compact title: each word on its own line, slightly smaller on narrow screens */
   .hero-title {
-    font-size: clamp(3rem, 16vw, 5.5rem);
-    line-height: 0.96;
+    font-size: clamp(2.8rem, 15vw, 4.8rem);
+    line-height: 0.97;
+    margin-bottom: 10px;
   }
+
+  /* Tighten spacing below title to keep everything on screen */
+  .hero-school   { margin-bottom: 10px; font-size: 0.7rem; }
+  .hero-tagline  { margin-bottom: 18px; font-size: 1rem; }
+  .hero-buttons  { gap: 10px; }
+  .hero-scroll   { display: none; }
 }
 
 @media (max-width: 600px) {
