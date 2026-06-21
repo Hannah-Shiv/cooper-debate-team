@@ -1020,15 +1020,17 @@ a { text-decoration: none; color: inherit; }
   }
 
   /* padding-top 130px → "Team" (3rd line) lands at ≈284px = 35% of 812px
-     which is exactly where the stretched podium tops appear */
+     which is exactly where the podium tops appear.
+     flex:1 lets margin-top:auto on .hero-school push subtitle down to the
+     podium floor level (≈72% × 812px ≈ 585px). padding-bottom controls fine-tuning. */
   .hero-content {
-    flex: 0 0 auto;
+    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
     padding-top: 130px;
-    padding-bottom: 80px;
+    padding-bottom: 96px;   /* tune: subtitle lands at ~812 - 96 - 120 ≈ 596px (podium floor) */
     max-width: 100%;
     width: 100%;
   }
@@ -1036,11 +1038,12 @@ a { text-decoration: none; color: inherit; }
   .hero-title {
     font-size: clamp(2.6rem, 14vw, 4.4rem);
     line-height: 0.95;
-    margin-bottom: 22px;
+    margin-bottom: 0;
   }
 
+  /* margin-top: auto pushes subtitle block to the podium-floor level */
   .hero-school {
-    margin-top: 0;
+    margin-top: auto;
     margin-bottom: 8px;
     font-size: 0.68rem;
   }
