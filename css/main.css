@@ -1246,23 +1246,35 @@ footer {
 .footer-links a:hover { color: var(--gold-pale); }
 
 .footer-bottom {
-  border-top: 1px solid rgba(212,160,23,0.22);
-  padding-top: 28px;
+  border-top: 1.5px solid rgba(212,160,23,0.55);
+  padding: 18px 0 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
-.footer-copyright {
-  font-size: 0.84rem;
-  color: rgba(255,255,255,0.60);
+/* Left — italic signature, like reference site */
+.footer-sig {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  color: rgba(255,255,255,0.88);
+  letter-spacing: 0.01em;
 }
 
+.footer-sig em {
+  font-style: italic;
+  color: var(--gold-pale);
+}
+
+/* Right — compact credits + copyright on one line */
 .footer-credit {
-  font-size: 0.82rem;
-  color: rgba(212,160,23,0.85);
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.76rem;
+  letter-spacing: 0.05em;
+  color: rgba(255,255,255,0.50);
   text-align: right;
 }
 
