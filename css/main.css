@@ -274,9 +274,10 @@ a { text-decoration: none; color: inherit; }
   color: var(--gold);
 }
 
-/* Force "Team" onto its own line on mobile; hidden on desktop */
+/* Force "Team" onto its own line on mobile + iPad portrait; hidden on desktop/landscape */
 .mob-br { display: none; }
 @media (max-width: 768px) { .mob-br { display: inline; } }
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) { .mob-br { display: inline; } }
 
 .hero-school {
   font-family: 'Josefin Sans', sans-serif;
@@ -1085,7 +1086,7 @@ a { text-decoration: none; color: inherit; }
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: 160px;   /* below nav; "Team" lands near podium tops on iPad */
+    padding-top: 220px;   /* start Cooper a bit lower on the iPad portrait canvas */
     padding-bottom: 36px;
     max-width: 100%;
     width: 100%;
