@@ -274,6 +274,10 @@ a { text-decoration: none; color: inherit; }
   color: var(--gold);
 }
 
+/* Force "Team" onto its own line on mobile; hidden on desktop */
+.mob-br { display: none; }
+@media (max-width: 768px) { .mob-br { display: inline; } }
+
 .hero-school {
   font-family: 'Josefin Sans', sans-serif;
   font-size: clamp(0.75rem, 1.5vw, 0.9rem);
@@ -984,20 +988,22 @@ a { text-decoration: none; color: inherit; }
    cover + portrait viewport crops the landscape image to center only,
    hiding both podiums. Fix: scale image to full width, anchor bottom. */
 @media (max-width: 768px) {
-  /* Background: full width so both podiums are visible.
-     Dark top + dark bottom; transparent window in the middle
-     lets the podiums show through between the title and the subtitle. */
+  /* Background: 100% width so both podiums visible.
+     Position ~12% from top so the podium TOPS land at the "Team" line (~185-235px).
+     Gradient: semi-dark at top (title readable), open window over the podium zone,
+     then solid dark below the image for the subtitle area. */
   .hero-bg {
     background-size: 100% auto;
-    background-position: center center;
+    background-position: center 12%;
     background-repeat: no-repeat;
     background-image:
       linear-gradient(180deg,
-        rgba(4,8,22,0.75) 0%,
-        rgba(4,8,22,0.08) 32%,
-        rgba(4,8,22,0.04) 52%,
-        rgba(4,8,22,0.08) 68%,
-        rgba(4,8,22,0.72) 100%),
+        rgba(4,8,22,0.68) 0%,
+        rgba(4,8,22,0.30) 12%,
+        rgba(4,8,22,0.04) 22%,
+        rgba(4,8,22,0.04) 38%,
+        rgba(4,8,22,0.72) 52%,
+        rgba(4,8,22,0.78) 100%),
       url('../images/hero-stage.png');
   }
 
