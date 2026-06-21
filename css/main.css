@@ -4,7 +4,7 @@
    Designer & Developer: Hannah Shiv
    ============================================================ */
 
-html { overflow-x: hidden; }
+html { overflow-x: hidden; font-size: 17px; }
 
 *, *::before, *::after {
   box-sizing: border-box;
