@@ -1,0 +1,7 @@
+attached_assets/
+.agents/
+.cache/
+.canvas/
+.local/
+.replit
+replit.md
