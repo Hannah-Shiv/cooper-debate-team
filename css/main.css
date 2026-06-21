@@ -990,19 +990,23 @@ a { text-decoration: none; color: inherit; }
    podium tops at y≈284, Debate stays just above. Subtitle/buttons flow on
    the stage with a semi-dark overlay for readability. */
 @media (max-width: 768px) {
+  /* Hide desktop pseudo-element layers so mobile background-image shows through */
+  .hero-bg::after,
+  .hero-bg::before { display: none; }
+
   .hero-bg {
-    background-size: cover;            /* portrait image fills screen natively — no stretch */
+    background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
     background-image:
       linear-gradient(180deg,
-        rgba(4,8,22,0.82) 0%,          /* 0–130px: dark above title */
-        rgba(4,8,22,0.45) 16%,         /* stage lights visible behind Cooper */
-        rgba(4,8,22,0.12) 28%,         /* Debate line — very open */
-        rgba(4,8,22,0.04) 38%,         /* Team / podium-tops — most transparent */
-        rgba(4,8,22,0.22) 52%,         /* subtitle over podium bodies */
-        rgba(4,8,22,0.58) 68%,         /* buttons area */
-        rgba(4,8,22,0.75) 82%,         /* stage floor */
+        rgba(4,8,22,0.82) 0%,
+        rgba(4,8,22,0.45) 16%,
+        rgba(4,8,22,0.12) 28%,
+        rgba(4,8,22,0.04) 38%,
+        rgba(4,8,22,0.22) 52%,
+        rgba(4,8,22,0.58) 68%,
+        rgba(4,8,22,0.75) 82%,
         rgba(4,8,22,0.68) 100%),
       url('../images/hero-stage-mobile.png');
   }
@@ -1051,12 +1055,16 @@ a { text-decoration: none; color: inherit; }
   .hero-scroll   { display: none; }
 }
 
-/* === IPAD PORTRAIT — use portrait stage image, same sandwich layout ===
+/* === IPAD PORTRAIT — use landscape stage image (same as desktop/laptop) ===
    iPad Air/Pro portrait (769–1024px wide). Landscape is already fine (desktop CSS). */
 @media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  /* Hide desktop pseudo-element layers so iPad portrait background-image shows through */
+  .hero-bg::after,
+  .hero-bg::before { display: none; }
+
   .hero-bg {
     background-size: cover;
-    background-position: center top;
+    background-position: center center;
     background-repeat: no-repeat;
     background-image:
       linear-gradient(180deg,
@@ -1068,7 +1076,7 @@ a { text-decoration: none; color: inherit; }
         rgba(4,8,22,0.55) 66%,
         rgba(4,8,22,0.72) 80%,
         rgba(4,8,22,0.65) 100%),
-      url('../images/hero-stage-mobile.png');
+      url('../images/hero-stage.png');
   }
   .hero-beams { display: none; }
   .home-hero  {
