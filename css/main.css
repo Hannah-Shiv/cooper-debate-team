@@ -1030,7 +1030,7 @@ a { text-decoration: none; color: inherit; }
     align-items: center;
     text-align: center;
     padding-top: 130px;
-    padding-bottom: 96px;   /* tune: subtitle lands at ~812 - 96 - 120 ≈ 596px (podium floor) */
+    padding-bottom: 28px;   /* small bottom pad — margin-top:auto drives subtitle to floor */
     max-width: 100%;
     width: 100%;
   }
@@ -1051,6 +1051,54 @@ a { text-decoration: none; color: inherit; }
   .hero-tagline  { font-size: 0.95rem; margin-bottom: 20px; }
   .hero-buttons  { gap: 10px; }
   .hero-scroll   { display: none; }
+}
+
+/* === IPAD PORTRAIT — use portrait stage image, same sandwich layout ===
+   iPad Air/Pro portrait (769–1024px wide). Landscape is already fine (desktop CSS). */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
+  .hero-bg {
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-image:
+      linear-gradient(180deg,
+        rgba(4,8,22,0.80) 0%,
+        rgba(4,8,22,0.40) 14%,
+        rgba(4,8,22,0.10) 26%,
+        rgba(4,8,22,0.04) 36%,
+        rgba(4,8,22,0.18) 50%,
+        rgba(4,8,22,0.55) 66%,
+        rgba(4,8,22,0.72) 80%,
+        rgba(4,8,22,0.65) 100%),
+      url('../images/hero-stage-mobile.png');
+  }
+  .hero-beams { display: none; }
+  .home-hero  {
+    min-height: 100svh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  }
+  .hero-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 160px;   /* below nav; "Team" lands near podium tops on iPad */
+    padding-bottom: 36px;
+    max-width: 100%;
+    width: 100%;
+  }
+  .hero-title {
+    font-size: clamp(3.8rem, 9vw, 5.5rem);
+    line-height: 0.95;
+    margin-bottom: 0;
+  }
+  .hero-school { margin-top: auto; margin-bottom: 10px; font-size: 0.78rem; }
+  .hero-tagline { font-size: 1.05rem; margin-bottom: 22px; }
+  .hero-buttons { gap: 14px; }
+  .hero-scroll  { display: none; }
 }
 
 @media (max-width: 600px) {
