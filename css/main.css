@@ -985,66 +985,67 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* === MOBILE HERO ===
-   Image is 1536×1024 (3:2). At 375px wide → 250px tall; 430px → 287px tall.
-   Layout: image anchored to top of hero (just below fixed nav dome).
-   Title overlays image: Cooper(y≈80), Debate(y≈130), Team(y≈180–230) — Team sits
-   in the dark center gap between both podiums. Subtitle flows right after, no gap. */
+   Image (1536×1024) is stretched to 100% × 100% so it fills the full
+   portrait viewport without cropping, keeping both podiums visible.
+   At 100svh ≈ 812px tall, podium tops land at 35% ≈ y=284px.
+   padding-top: 130px → Cooper(130), Debate(183), Team(236) — Team overlaps
+   podium tops at y≈284, Debate stays just above. Subtitle/buttons flow on
+   the stage with a semi-dark overlay for readability. */
 @media (max-width: 768px) {
   .hero-bg {
-    background-size: 100% auto;
-    background-position: center top;   /* image starts at top of hero */
+    background-size: 100% 100%;       /* stretch image to fill full portrait screen */
+    background-position: center center;
     background-repeat: no-repeat;
     background-image:
       linear-gradient(180deg,
-        rgba(4,8,22,0.78) 0%,          /* dark above image for nav clearance */
-        rgba(4,8,22,0.40) 18%,         /* title starts — semi-transparent */
-        rgba(4,8,22,0.10) 32%,         /* open so stage lights show through */
-        rgba(4,8,22,0.06) 50%,         /* podium zone — most transparent */
-        rgba(4,8,22,0.55) 64%,         /* image bottom (≈250px / ~400px hero) */
-        rgba(4,8,22,0.90) 72%,         /* subtitle starts — solid dark */
-        rgba(4,8,22,0.95) 100%),
+        rgba(4,8,22,0.82) 0%,          /* 0–130px: dark above title */
+        rgba(4,8,22,0.45) 16%,         /* stage lights visible behind Cooper */
+        rgba(4,8,22,0.12) 28%,         /* Debate line — very open */
+        rgba(4,8,22,0.04) 38%,         /* Team / podium-tops — most transparent */
+        rgba(4,8,22,0.22) 52%,         /* subtitle over podium bodies */
+        rgba(4,8,22,0.58) 68%,         /* buttons area */
+        rgba(4,8,22,0.75) 82%,         /* stage floor */
+        rgba(4,8,22,0.68) 100%),
       url('../images/hero-stage.png');
   }
 
   .hero-beams { display: none; }
 
-  /* Hero shrinks to content height on mobile — no full-screen blank space */
+  /* Full-screen portrait hero */
   .home-hero {
-    min-height: auto;
-    height: auto;
+    min-height: 100svh;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
   }
 
-  /* Natural column flow — title on top, subtitle immediately after */
+  /* padding-top 130px → "Team" (3rd line) lands at ≈284px = 35% of 812px
+     which is exactly where the stretched podium tops appear */
   .hero-content {
     flex: 0 0 auto;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: 80px;      /* snug under the dome nav button */
-    padding-bottom: 44px;
+    padding-top: 130px;
+    padding-bottom: 80px;
     max-width: 100%;
     width: 100%;
   }
 
-  /* One word per line; tight line-height so "Team" lands over podium gap */
   .hero-title {
     font-size: clamp(2.6rem, 14vw, 4.4rem);
     line-height: 0.95;
-    margin-bottom: 18px;   /* gap before subtitle — flows right after image */
+    margin-bottom: 22px;
   }
 
-  /* Subtitle flows naturally — NO margin-top:auto */
   .hero-school {
     margin-top: 0;
     margin-bottom: 8px;
     font-size: 0.68rem;
   }
 
-  .hero-tagline  { font-size: 0.95rem; margin-bottom: 18px; }
+  .hero-tagline  { font-size: 0.95rem; margin-bottom: 20px; }
   .hero-buttons  { gap: 10px; }
   .hero-scroll   { display: none; }
 }
