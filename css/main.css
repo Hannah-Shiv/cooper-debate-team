@@ -151,8 +151,13 @@ a { text-decoration: none; color: inherit; }
   position: absolute;
   inset: 0;
   background:
-    /* Subtle dark overlay for text readability — let the image breathe */
-    linear-gradient(180deg, rgba(4,8,22,0.38) 0%, rgba(4,8,22,0.62) 100%),
+    /* Top: light overlay for text; middle/bottom: open so podiums stay vivid */
+    linear-gradient(180deg,
+      rgba(4,8,22,0.44) 0%,
+      rgba(4,8,22,0.22) 38%,
+      rgba(4,8,22,0.06) 58%,
+      rgba(4,8,22,0.10) 78%,
+      rgba(4,8,22,0.28) 100%),
     url('../images/hero-stage.png') center/cover no-repeat;
   z-index: 0;
 }
