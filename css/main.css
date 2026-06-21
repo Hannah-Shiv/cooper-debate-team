@@ -154,27 +154,25 @@ a { text-decoration: none; color: inherit; }
   z-index: 0;
 }
 
-/* Brightened image layer — filter lifts podium blue/red to source vividness */
+/* Image layer — rendered at natural colour, no filter */
 .hero-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: url('../images/hero-stage.png') center/cover no-repeat;
-  filter: brightness(1.5) saturate(1.35);
   z-index: 0;
 }
 
-/* Gradient overlay: dark at top for text, fully clear over podiums, soft at bottom */
+/* Gradient overlay: just enough at top for text legibility, zero elsewhere */
 .hero-bg::before {
   content: '';
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,
-    rgba(4,8,22,0.50) 0%,
-    rgba(4,8,22,0.15) 30%,
-    rgba(4,8,22,0.00) 44%,
-    rgba(4,8,22,0.00) 80%,
-    rgba(4,8,22,0.22) 100%);
+    rgba(4,8,22,0.52) 0%,
+    rgba(4,8,22,0.18) 28%,
+    rgba(4,8,22,0.00) 42%,
+    rgba(4,8,22,0.00) 100%);
   z-index: 1;
   pointer-events: none;
 }
