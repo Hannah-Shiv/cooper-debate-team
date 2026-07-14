@@ -510,30 +510,32 @@
       <div>
 
         <!--
-          FORMSPREE SETUP INSTRUCTIONS (for Hannah / Coach Konde):
-          1. Go to https://formspree.io and sign up with CooperDebateTeam@fcpsschools.net
-          2. Create a new form — copy the form ID (looks like "xpwzabcd")
-          3. Replace REPLACE_WITH_YOUR_FORM_ID below with your actual form ID
-          4. Remove the .formspree-notice div below once activated
-          5. Test with one submission to confirm emails arrive
+          FORMSUBMIT ACTIVATION (one-time, no account needed):
+          1. The form is already wired to CooperDebateTeam@fcpsschools.net via formsubmit.co
+          2. When the FIRST real application is submitted, formsubmit.co will send a
+             confirmation email to CooperDebateTeam@fcpsschools.net — just click the link.
+          3. After that, every submission arrives directly in that inbox. Done.
+          4. Remove the .formspree-notice div below once the first submission confirms.
         -->
 
         <div class="formspree-notice">
-          <strong>Setup required:</strong> Replace <code>REPLACE_WITH_YOUR_FORM_ID</code> in the
-          form tag below with your Formspree form ID. Sign up free at formspree.io with
-          CooperDebateTeam@fcpsschools.net — submissions will arrive directly in that inbox.
+          <strong>One-time activation required:</strong> When the first application is submitted,
+          a confirmation email will be sent to <strong>CooperDebateTeam@fcpsschools.net</strong>.
+          Click the confirmation link in that email — all future submissions will then arrive
+          directly in that inbox automatically. No account or signup needed.
         </div>
 
         <form
           id="apply-form"
-          action="https://formspree.io/f/REPLACE_WITH_YOUR_FORM_ID"
+          action="https://formsubmit.co/CooperDebateTeam@fcpsschools.net"
           method="POST"
           novalidate
         >
-          <!-- Hidden fields for Formspree -->
-          <input type="hidden" name="_subject" value="New Cooper Debate Team Application"/>
-          <input type="hidden" name="_replyto" value=""/>
-          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off"/>
+          <!-- Hidden fields for formsubmit.co -->
+          <input type="hidden" name="_subject" value="New Cooper Debate Team Application 2026-27"/>
+          <input type="hidden" name="_captcha" value="false"/>
+          <input type="hidden" name="_template" value="table"/>
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
           <!-- ── SECTION 1: Student Information ── -->
           <div class="form-card">
