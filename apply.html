@@ -535,7 +535,7 @@
           <input type="hidden" name="_subject" value="New Cooper Debate Team Application 2026-27"/>
           <input type="hidden" name="_captcha" value="false"/>
           <input type="hidden" name="_template" value="table"/>
-          <!-- CC a second email — replace SECOND_EMAIL_HERE with the real address -->
+          <input type="hidden" name="_next" value="apply.html?success=1"/>
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
           <!-- ── SECTION 1: Student Information ── -->
@@ -991,10 +991,15 @@
   const successDiv = document.getElementById('form-success');
   const submitBtn = document.getElementById('submit-btn');
 
-  form.addEventListener('submit', async function(e) {
-    e.preventDefault();
+  // Show success message if redirected back after submission
+  if (window.location.search.includes('success=1')) {
+    form.style.display = 'none';
+    successDiv.classList.add('visible');
+    successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 
-    // Basic validation: check all required fields
+  form.addEventListener('submit', function(e) {
+    // Client-side validation before allowing the POST through
     const required = form.querySelectorAll('[required]');
     let valid = true;
     required.forEach(el => {
@@ -1008,6 +1013,7 @@
     });
 
     if (!valid) {
+      e.preventDefault();
       const firstError = form.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
@@ -1015,27 +1021,7 @@
 
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
-
-    try {
-      const data = new FormData(form);
-      const response = await fetch(form.action, {
-        method: 'POST',
-        body: data,
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (response.ok) {
-        form.style.display = 'none';
-        successDiv.classList.add('visible');
-        successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      } else {
-        throw new Error('Server error');
-      }
-    } catch (err) {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Application →';
-      alert('There was a problem submitting your application. Please try again or email Hannahbshiv@gmail.com directly.');
-    }
+    // Let the form POST through to FormSubmit normally
   });
 
   // Reset red borders on input
