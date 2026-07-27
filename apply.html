@@ -557,7 +557,7 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="grade">Grade in 2026–27 <span class="req">*</span></label>
-                <select class="form-select" id="grade" name="Student Grade" required>
+                <select class="form-select" id="grade" name="Grade in 2026-27" required>
                   <option value="" disabled selected>Select grade</option>
                   <option value="7th Grade">7th Grade</option>
                   <option value="8th Grade">8th Grade</option>
@@ -565,7 +565,7 @@
               </div>
               <div class="form-group">
                 <label class="form-label" for="student-id">Student ID <span class="req">*</span></label>
-                <input class="form-input" type="text" id="student-id" name="Student ID (FCPS)" placeholder="FCPS Student ID" required/>
+                <input class="form-input" type="text" id="student-id" name="Student ID" placeholder="FCPS Student ID" required/>
               </div>
             </div>
 
@@ -604,11 +604,11 @@
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="parent-first">Parent / Guardian First Name <span class="req">*</span></label>
-                <input class="form-input" type="text" id="parent-first" name="Parent First Name" placeholder="First name" required autocomplete="given-name"/>
+                <input class="form-input" type="text" id="parent-first" name="Parent/Guardian First Name" placeholder="First name" required autocomplete="given-name"/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="parent-last">Parent / Guardian Last Name <span class="req">*</span></label>
-                <input class="form-input" type="text" id="parent-last" name="Parent Last Name" placeholder="Last name" required autocomplete="family-name"/>
+                <input class="form-input" type="text" id="parent-last" name="Parent/Guardian Last Name" placeholder="Last name" required autocomplete="family-name"/>
               </div>
             </div>
 
@@ -626,7 +626,7 @@
             <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="parent-relation">Relationship to Student <span class="req">*</span></label>
-                <select class="form-select" id="parent-relation" name="Parent Relation" required>
+                <select class="form-select" id="parent-relation" name="Relationship to Student" required>
                   <option value="" disabled selected>Select relationship</option>
                   <option value="Mother">Mother</option>
                   <option value="Father">Father</option>
@@ -656,7 +656,7 @@
 
             <div class="check-group">
               <label class="check-item">
-                <input type="checkbox" name="Commits to Tuesday Practices" value="Yes" required/>
+                <input type="checkbox" name="Student commits to Tuesday practice sessions (2:30-4:30 PM)" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Tuesday Practices</strong> — I understand I must attend Tuesday practice
                   sessions (2:30–4:30 PM) regularly throughout the season.
@@ -664,7 +664,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Commits to Weekend Tournaments" value="Yes" required/>
+                <input type="checkbox" name="Student commits to attending at least 3 of 5 Saturday tournaments" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Saturday Tournaments</strong> — I understand I must attend at least
                   3 of 5 Saturday preliminary tournaments (approximately 1 per month).
@@ -672,7 +672,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Commits to Partner Prep" value="Yes" required/>
+                <input type="checkbox" name="Student commits to not dropping their debate partner" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Partner Commitment</strong> — I understand that dropping my debate partner
                   at the last minute is not acceptable. It directly harms my partner and will not
@@ -681,7 +681,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Commits to Independent Research" value="Yes" required/>
+                <input type="checkbox" name="Student commits to independent research and speech prep" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Research &amp; Prep</strong> — I understand debate requires independent
                   research, writing 4+ minute speeches, preparing Crossfire questions, and staying
@@ -690,7 +690,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Parent Acknowledges Activity Fee" value="Yes" required/>
+                <input type="checkbox" name="Parent is aware of the $15 per student team fee" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Parent: Team Fee</strong> — My parent/guardian is aware of the
                   <strong>$15 per student per year</strong> team fee. (Fee waivers are available —
@@ -699,7 +699,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Parent Will Judge" value="Yes" required/>
+                <input type="checkbox" name="Parent will volunteer as a tournament judge for at least 1 tournament" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Parent: Judge Volunteer</strong> — My parent/guardian understands they
                   are expected to volunteer as a tournament judge for at least 1 tournament.
@@ -708,7 +708,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Parent Will Drive" value="Yes" required/>
+                <input type="checkbox" name="Parent will arrange driving or carpooling to tournaments" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Parent: Transportation</strong> — My parent/guardian understands there
                   is no FCPS transportation to tournaments and will arrange driving or carpooling.
@@ -716,7 +716,7 @@
               </label>
 
               <label class="check-item">
-                <input type="checkbox" name="Parent Attends Orientation" value="Yes" required/>
+                <input type="checkbox" name="Parent will attend the required team Google Meet sessions" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Parent: Required Google Meets</strong> — My parent/guardian will attend
                   the required 1-hour team Google Meet sessions (one per semester: October and January).
@@ -736,7 +736,7 @@
             <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="why-join">Why do you want to join the Cooper Debate Team? <span class="req">*</span></label>
-                <textarea class="form-textarea" id="why-join" name="Why Do You Want to Join" placeholder="Tell us in 3–5 sentences. What drew you to debate?" required style="min-height:120px;"></textarea>
+                <textarea class="form-textarea" id="why-join" name="Why do you want to join the Cooper Debate Team?" placeholder="Tell us in 3–5 sentences. What drew you to debate?" required style="min-height:120px;"></textarea>
               </div>
             </div>
 
@@ -745,7 +745,7 @@
             <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="experience-detail">Describe any debate or public speaking experience you have.</label>
-                <textarea class="form-textarea" id="experience-detail" name="Experience Details" placeholder="If none, write 'None — I am brand new to debate.' That is perfectly fine." style="min-height:90px;"></textarea>
+                <textarea class="form-textarea" id="experience-detail" name="Describe any debate or public speaking experience you have" placeholder="If none, write 'None — I am brand new to debate.' That is perfectly fine." style="min-height:90px;"></textarea>
               </div>
             </div>
 
@@ -754,7 +754,7 @@
             <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="schedule-conflicts">Is there anything that might affect your ability to attend Tuesday sessions or Saturday tournaments this season?</label>
-                <textarea class="form-textarea" id="schedule-conflicts" name="Schedule Conflicts" placeholder="Examples: sports season, religious observance, family travel. If none, write 'No known conflicts.'" style="min-height:90px;"></textarea>
+                <textarea class="form-textarea" id="schedule-conflicts" name="Anything that might affect attending Tuesday sessions or Saturday tournaments?" placeholder="Examples: sports season, religious observance, family travel. If none, write 'No known conflicts.'" style="min-height:90px;"></textarea>
               </div>
             </div>
 
@@ -763,7 +763,7 @@
             <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="anything-else">Is there anything else you would like Coach Konde to know about you?</label>
-                <textarea class="form-textarea" id="anything-else" name="Anything Else" placeholder="Optional — share anything relevant." style="min-height:80px;"></textarea>
+                <textarea class="form-textarea" id="anything-else" name="Anything else you would like Coach Konde to know?" placeholder="Optional — share anything relevant." style="min-height:80px;"></textarea>
               </div>
             </div>
           </div>
@@ -779,7 +779,7 @@
 
             <div class="check-group">
               <label class="check-item">
-                <input type="checkbox" name="Parent Agreement" value="Yes" required/>
+                <input type="checkbox" name="Parent/Guardian has read and agrees to all commitments above" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>I, the parent/guardian, have read all student and parent commitments
                   and agree to support my student's participation in the Cooper Debate Team
@@ -791,7 +791,7 @@
             <div class="form-row full" style="margin-top:18px;">
               <div class="form-group">
                 <label class="form-label" for="parent-sig">Parent / Guardian Name (typed signature) <span class="req">*</span></label>
-                <input class="form-input" type="text" id="parent-sig" name="Parent Signature" placeholder="Type your full name as your signature" required/>
+                <input class="form-input" type="text" id="parent-sig" name="Parent/Guardian Name (typed signature)" placeholder="Type your full name as your signature" required/>
               </div>
             </div>
 
