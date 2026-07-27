@@ -1544,4 +1544,26 @@ footer {
   #member-login-btn { display: none; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .footer-credit { text-align: center; }
+  #site-badge { width: 48px; top: 6px; left: 6px; }
+}
+
+/* === SITE BADGE (home link, top-left, all pages) === */
+#site-badge {
+  position: fixed;
+  top: 8px;
+  left: 16px;
+  width: 58px;
+  z-index: 9997;
+  display: block;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  opacity: 0.92;
+}
+#site-badge:hover {
+  transform: scale(1.08);
+  opacity: 1;
+}
+#site-badge img {
+  width: 100%;
+  height: auto;
+  display: block;
 }
