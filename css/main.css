@@ -136,6 +136,20 @@ a { text-decoration: none; color: inherit; }
   transform: translateY(-2px);
 }
 
+.btn-navy-gold {
+  background: rgba(10, 30, 65, 0.75);
+  color: var(--gold);
+  border-color: var(--gold);
+  backdrop-filter: blur(8px);
+}
+.btn-navy-gold:hover {
+  background: rgba(212, 160, 23, 0.12);
+  border-color: var(--gold-light);
+  color: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(212, 160, 23, 0.2);
+}
+
 /* === HOMEPAGE HERO === */
 .home-hero {
   position: relative;
