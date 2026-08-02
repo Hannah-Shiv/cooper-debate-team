@@ -3,118 +3,61 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Cooper Debate Team blog — tournament recaps, team stories, and debate insights."/>
-  <title>Blog — Cooper Debate Team</title>
+  <meta name="description" content="Cooper Debate Team news and announcements — resolutions, tournament updates, and team news."/>
+  <title>News & Announcements — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=5"/>
+  <link rel="stylesheet" href="css/main.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
-    .blog-hero-post {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center;
-      background: rgba(13,46,86,0.5); border: 1px solid rgba(212,160,23,0.2);
-      border-radius: 12px; overflow: hidden; margin-bottom: 56px;
+    .ann-card {
+      background: rgba(13,46,86,0.45);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 12px; overflow: hidden;
+      margin-bottom: 28px;
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    .blog-hero-img {
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, #1a3a6b 0%, #0d2040 100%);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 4rem;
+    .ann-card:hover { border-color: rgba(212,160,23,0.4); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+    .ann-card-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 28px 32px 0;
     }
-    .blog-hero-content { padding: 40px; }
-    .blog-tag {
-      display: inline-block; padding: 4px 10px; border-radius: 3px;
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
-      margin-bottom: 16px;
+    .ann-card-emoji { font-size: 2rem; flex-shrink: 0; }
+    .ann-card-meta { display: flex; flex-direction: column; gap: 6px; }
+    .ann-card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+      color: var(--white); line-height: 1.35;
     }
-    .tag-recap { background: rgba(212,160,23,0.15); color: var(--gold-pale); border: 1px solid rgba(212,160,23,0.3); }
-    .tag-story { background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3); }
-    .tag-insight { background: rgba(34,197,94,0.12); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
-    .tag-news { background: rgba(239,68,68,0.12); color: #fca5a5; border: 1px solid rgba(239,68,68,0.25); }
-
-    .blog-hero-title {
-      font-family: 'Cormorant Garamond', serif; font-size: clamp(1.5rem, 3vw, 2rem);
-      color: var(--white); margin-bottom: 14px; line-height: 1.3;
+    .ann-card-date {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem; color: var(--gray-mid); letter-spacing: 0.06em;
     }
-    .blog-hero-excerpt { font-size: 0.9rem; color: var(--gray-mid); line-height: 1.75; margin-bottom: 20px; }
-    .blog-meta { font-size: 0.72rem; color: var(--gray-mid); display: flex; gap: 16px; align-items: center; margin-bottom: 20px; }
-    .blog-meta-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--gray-mid); }
-
-    .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-    .blog-card {
-      background: rgba(13,46,86,0.45); border: 1px solid rgba(212,160,23,0.12);
-      border-radius: 10px; overflow: hidden;
-      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+    .ann-card-body {
+      padding: 20px 32px 28px;
+      font-size: 0.9rem; color: rgba(255,255,255,0.78);
+      line-height: 1.8; white-space: pre-wrap;
     }
-    .blog-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-5px); box-shadow: 0 16px 36px rgba(0,0,0,0.4); }
-    .blog-card-img {
-      aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
+    .ann-card-footer {
+      padding: 0 32px 24px;
     }
-    .bc1 { background: linear-gradient(135deg, #2a1a00, #1a0d00); }
-    .bc2 { background: linear-gradient(135deg, #0a2040, #1a3060); }
-    .bc3 { background: linear-gradient(135deg, #1a2a10, #0a1a05); }
-    .bc4 { background: linear-gradient(135deg, #2a1a3a, #1a0a2a); }
-    .bc5 { background: linear-gradient(135deg, #0a1a2a, #102030); }
-    .bc6 { background: linear-gradient(135deg, #2a1500, #180a00); }
-
-    .blog-card-body { padding: 24px; }
-    .blog-card-title {
-      font-family: 'Cormorant Garamond', serif; font-size: 1.05rem;
-      color: var(--white); margin-bottom: 10px; line-height: 1.4;
+    .ann-empty {
+      text-align: center; padding: 64px 24px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.85rem; color: var(--gray-mid); letter-spacing: 0.05em;
     }
-    .blog-card-excerpt { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.7; margin-bottom: 16px; }
-    .blog-card-meta { font-size: 0.7rem; color: var(--gray-mid); display: flex; gap: 12px; align-items: center; }
-    .blog-card-read-more {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--gold);
-      margin-top: 14px; transition: gap 0.2s;
+    @media(max-width:600px) {
+      .ann-card-header { padding: 20px 20px 0; }
+      .ann-card-body { padding: 16px 20px 20px; }
+      .ann-card-footer { padding: 0 20px 18px; }
     }
-    .blog-card:hover .blog-card-read-more { gap: 10px; }
-
-    .search-bar {
-      display: flex; gap: 10px; margin-bottom: 36px; max-width: 480px;
-    }
-    .search-bar input {
-      flex: 1; padding: 12px 18px; border-radius: 6px;
-      background: rgba(13,46,86,0.5); border: 1.5px solid rgba(212,160,23,0.2);
-      color: var(--white); font-family: 'Josefin Sans', sans-serif; font-size: 0.85rem;
-      outline: none; transition: border-color 0.2s;
-    }
-    .search-bar input:focus { border-color: rgba(212,160,23,0.6); }
-    .search-bar input::placeholder { color: var(--gray-mid); }
-
-    .sidebar-section { margin-bottom: 36px; }
-    .sidebar-title {
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold);
-      margin-bottom: 16px; padding-bottom: 8px;
-      border-bottom: 1px solid rgba(212,160,23,0.2);
-    }
-    .sidebar-post { display: flex; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .sidebar-post:last-child { border-bottom: none; }
-    .sidebar-thumb { width: 56px; height: 44px; border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
-    .sidebar-post-title { font-size: 0.8rem; font-weight: 600; color: var(--white); margin-bottom: 3px; line-height: 1.4; }
-    .sidebar-post-date { font-size: 0.68rem; color: var(--gray-mid); }
-
-    .category-chip {
-      display: inline-block; padding: 6px 14px; border-radius: 50px; margin: 0 5px 8px 0;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-      cursor: pointer; border: 1.5px solid rgba(212,160,23,0.2);
-      background: transparent; color: var(--gray-mid); transition: all 0.2s;
-    }
-    .category-chip:hover { border-color: var(--gold); color: var(--gold); }
-
-    .blog-layout { display: grid; grid-template-columns: 1fr 300px; gap: 48px; align-items: start; }
-    @media(max-width:900px){ .blog-hero-post{grid-template-columns:1fr;} .blog-hero-img{min-height:200px;} .blog-layout{grid-template-columns:1fr;} .blog-grid{grid-template-columns:1fr 1fr;} }
-    @media(max-width:600px){ .blog-grid{grid-template-columns:1fr;} }
   </style>
 </head>
 <body>
 
 <!-- SITE BADGE (home link) -->
-<a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
 
@@ -134,7 +77,7 @@
       <span style="display:block;width:22px;height:2.5px;background:#fff;border-radius:1.5px;"></span>
     </span>
   </button>
-    <a class="dn-item dn-p1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></a>
+  <a class="dn-item dn-p1" href="about.html"><svg class="dn-icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg><span>About</span></a>
   <a class="dn-item dn-p2" href="awards.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><span>Awards</span></a>
   <a class="dn-item dn-p3" href="tournaments.html"><svg class="dn-icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><span>Tourneys</span></a>
   <a class="dn-item dn-p4" href="resources.html"><svg class="dn-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M4 19.5V5a2 2 0 012-2h14v17H6.5A2.5 2.5 0 014 19.5z"/></svg><span>Resources</span></a>
@@ -144,150 +87,16 @@
 
 <div class="page-header">
   <div class="page-header-content">
-    <p class="page-header-label">Stories from the Team</p>
-    <h1 class="page-title">Team Blog</h1>
-    <p class="page-subtitle">Tournament recaps, team stories, and debate insights</p>
+    <p class="page-header-label">Cooper Debate Team</p>
+    <h1 class="page-title">News & Announcements</h1>
+    <p class="page-subtitle">Resolutions, tournament updates, and team news</p>
   </div>
 </div>
 
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-
-    <!-- FEATURED POST -->
-    <div class="blog-hero-post fade-in">
-      <div class="blog-hero-img">🏆</div>
-      <div class="blog-hero-content">
-        <span class="blog-tag tag-recap">Tournament Recap</span>
-        <h2 class="blog-hero-title">We Made History: A Look Back at NSDA Nationals 2025</h2>
-        <div class="blog-meta">
-          <span>By Cooper Debate Team</span>
-          <span class="blog-meta-dot"></span>
-          <span>June 28, 2025</span>
-          <span class="blog-meta-dot"></span>
-          <span>8 min read</span>
-        </div>
-        <p class="blog-hero-excerpt">From the first round nerves to the final ballot, here is the full story of how Cooper Debate finished 4th at NSDA Nationals — the best result in program history. We broke records, made friends, and proved that McLean's finest can compete on the national stage.</p>
-        <a href="#" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Read Full Story →</a>
-      </div>
-    </div>
-
-    <!-- BLOG LAYOUT: POSTS + SIDEBAR -->
-    <div class="blog-layout">
-      <div>
-        <!-- SEARCH -->
-        <div class="search-bar">
-          <input type="text" id="blog-search" placeholder="Search posts..." autocomplete="off"/>
-        </div>
-
-        <!-- POST GRID -->
-        <div class="blog-grid" id="blog-grid">
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc1">🏅</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-recap">Recap</span>
-              <h3 class="blog-card-title">Metro Finals Champions: How We Won the Regional Title</h3>
-              <p class="blog-card-excerpt">A round-by-round breakdown of our championship run at the WACFL Metro Finals — the tournament that sent us to Nationals.</p>
-              <div class="blog-card-meta"><span>May 15, 2025</span><span>·</span><span>6 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc2">🧠</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-insight">Debate Insight</span>
-              <h3 class="blog-card-title">How to Write a Winning Final Focus in 2 Minutes</h3>
-              <p class="blog-card-excerpt">The final focus is your last chance to win the round. Here's the framework we use to consistently close out debates effectively.</p>
-              <div class="blog-card-meta"><span>April 22, 2025</span><span>·</span><span>5 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc3">🎙️</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-story">Team Story</span>
-              <h3 class="blog-card-title">From Zero Experience to National Qualifier: A Rookie's Journey</h3>
-              <p class="blog-card-excerpt">One debater shares what it was like to join the team with no debate experience and make it all the way to NSDA Nationals in one year.</p>
-              <div class="blog-card-meta"><span>April 5, 2025</span><span>·</span><span>7 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc4">📊</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-insight">Analysis</span>
-              <h3 class="blog-card-title">Breaking Down the May 2025 PF Resolution: Our Research Framework</h3>
-              <p class="blog-card-excerpt">How we approached the AI &amp; National Security resolution — our research process, key evidence, and strategic framework for both sides.</p>
-              <div class="blog-card-meta"><span>March 12, 2025</span><span>·</span><span>9 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc5">🌟</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-story">Team Story</span>
-              <h3 class="blog-card-title">The Crossfire That Won the Round: Our WACFL Semifinal Story</h3>
-              <p class="blog-card-excerpt">Sometimes the round turns on a single moment. This is the story of how a 3-minute crossfire at WACFL Regionals changed everything.</p>
-              <div class="blog-card-meta"><span>February 18, 2025</span><span>·</span><span>4 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-
-          <div class="blog-card fade-up">
-            <div class="blog-card-img bc6">🏫</div>
-            <div class="blog-card-body">
-              <span class="blog-tag tag-news">News</span>
-              <h3 class="blog-card-title">Cooper Debate Wins Fall Invitational — Full Recap</h3>
-              <p class="blog-card-excerpt">October's Fall Invitational at George Mason was our first tournament win of the season — and it set the tone for everything that followed.</p>
-              <div class="blog-card-meta"><span>October 9, 2024</span><span>·</span><span>5 min read</span></div>
-              <a href="#" class="blog-card-read-more">Read More →</a>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SIDEBAR -->
-      <aside>
-        <div style="background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;padding:28px;position:sticky;top:24px;">
-          <div class="sidebar-section">
-            <div class="sidebar-title">Recent Posts</div>
-            <div class="sidebar-post">
-              <div class="sidebar-thumb bc1">🏆</div>
-              <div><div class="sidebar-post-title">We Made History: NSDA Nationals 2025</div><div class="sidebar-post-date">June 28, 2025</div></div>
-            </div>
-            <div class="sidebar-post">
-              <div class="sidebar-thumb bc2">🏅</div>
-              <div><div class="sidebar-post-title">Metro Finals Champions</div><div class="sidebar-post-date">May 15, 2025</div></div>
-            </div>
-            <div class="sidebar-post">
-              <div class="sidebar-thumb bc3">🧠</div>
-              <div><div class="sidebar-post-title">How to Write a Winning Final Focus</div><div class="sidebar-post-date">April 22, 2025</div></div>
-            </div>
-          </div>
-
-          <div class="sidebar-section">
-            <div class="sidebar-title">Categories</div>
-            <div>
-              <span class="category-chip">Recaps</span>
-              <span class="category-chip">Team Stories</span>
-              <span class="category-chip">Debate Insights</span>
-              <span class="category-chip">News</span>
-              <span class="category-chip">Analysis</span>
-              <span class="category-chip">Tips</span>
-            </div>
-          </div>
-
-          <div class="sidebar-section">
-            <div class="sidebar-title">Subscribe</div>
-            <p style="font-size:0.78rem;color:var(--gray-mid);margin-bottom:14px;line-height:1.6;">Get notified when we post a new tournament recap or team story.</p>
-            <input type="email" placeholder="your@fcpsschools.net" style="width:100%;padding:10px 14px;border-radius:6px;background:rgba(11,37,69,0.6);border:1.5px solid rgba(212,160,23,0.2);color:var(--white);font-family:'Josefin Sans',sans-serif;font-size:0.8rem;outline:none;margin-bottom:10px;"/>
-            <button class="btn btn-gold" style="width:100%;justify-content:center;font-size:0.72rem;padding:10px;">Subscribe</button>
-          </div>
-        </div>
-      </aside>
+    <div id="ann-list">
+      <div class="ann-empty">Loading announcements…</div>
     </div>
   </div>
 </section>
@@ -297,8 +106,8 @@
     <div class="footer-grid">
       <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
       <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="awards.html">Awards</a></li><li><a href="tournaments.html">Tournaments</a></li><li><a href="gallery.html">Gallery</a></li></ul></div>
-      <div><div class="footer-col-title">Blog</div><ul class="footer-links"><li><a href="blog.html">Latest Posts</a></li><li><a href="blog.html">Team Stories</a></li><li><a href="blog.html">Tournament Recaps</a></li></ul></div>
-      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:Hannahbshiv@gmail.com">Hannahbshiv@gmail.com</a></li></ul></div>
+      <div><div class="footer-col-title">News</div><ul class="footer-links"><li><a href="blog.html">All Announcements</a></li><li><a href="resources.html">PF Topic Center</a></li><li><a href="tournaments.html">Tournament Schedule</a></li></ul></div>
+      <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:Hannahbshiv@gmail.com">Hannahbshiv@gmail.com</a></li><li><a href="members.html">Member Login</a></li></ul></div>
     </div>
     <div class="footer-bottom">
       <p class="footer-sig"><em>Cooper Debate Team</em></p>
@@ -306,7 +115,42 @@
     </div>
   </div>
 </footer>
+
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script src="data/announcements.js"></script>
+<script>
+  const tagClasses = {
+    resolution: 'tag-resolution',
+    tournament: 'tag-tournament',
+    team:       'tag-team',
+    news:       'tag-news-ann'
+  };
+
+  function renderAnnouncements(posts, containerId, limit) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    const items = limit ? posts.slice(0, limit) : posts;
+    if (!items.length) {
+      container.innerHTML = '<div class="ann-empty">No announcements yet — check back soon.</div>';
+      return;
+    }
+    container.innerHTML = items.map(post => `
+      <div class="ann-card">
+        <div class="ann-card-header">
+          <div class="ann-card-emoji">${post.emoji}</div>
+          <div class="ann-card-meta">
+            <span class="news-card-tag ${tagClasses[post.tag] || 'tag-news-ann'}">${post.tagLabel}</span>
+            <div class="ann-card-title">${post.title}</div>
+            <div class="ann-card-date">${post.date}</div>
+          </div>
+        </div>
+        <div class="ann-card-body">${post.body}</div>
+      </div>
+    `).join('');
+  }
+
+  renderAnnouncements(ANNOUNCEMENTS, 'ann-list');
+</script>
 </body>
 </html>

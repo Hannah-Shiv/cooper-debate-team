@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=5"/>
+  <link rel="stylesheet" href="css/main.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
 </head>
 <body>
@@ -94,6 +94,25 @@
   </span>
   <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;border-radius:4px;text-decoration:none;white-space:nowrap;transition:background 0.2s;">Apply Now →</a>
 </div>
+
+<!-- CURRENT RESOLUTION BANNER -->
+<section class="resolution-banner">
+  <div class="section-wrap">
+    <div class="resolution-card">
+      <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
+      <div class="resolution-label">Current Resolution</div>
+      <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+      <div class="resolution-stats">
+        <span>🗳️ 80% coach vote</span>
+        <span class="dot"></span>
+        <span>68% student vote</span>
+        <span class="dot"></span>
+        <span>530 coaches · 2,401 students voted</span>
+      </div>
+      <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+    </div>
+  </div>
+</section>
 
 <!-- ACHIEVEMENT BANNER -->
 <div class="achievement-banner">
@@ -350,6 +369,19 @@
   </div>
 </section>
 
+<!-- LATEST NEWS STRIP -->
+<section class="news-strip">
+  <div class="section-wrap">
+    <div class="news-strip-header">
+      <div class="news-strip-title">📢 Latest News & Announcements</div>
+      <a href="blog.html" class="news-strip-all">View All →</a>
+    </div>
+    <div class="news-cards" id="home-news-cards">
+      <!-- Populated by announcements.js -->
+    </div>
+  </div>
+</section>
+
 <!-- PHILOSOPHY QUOTE -->
 <div class="philosophy-quote">
   <div class="section-wrap">
@@ -424,5 +456,25 @@
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script src="data/announcements.js"></script>
+<script>
+  const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
+  const container = document.getElementById('home-news-cards');
+  if (container && typeof ANNOUNCEMENTS !== 'undefined') {
+    const items = ANNOUNCEMENTS.slice(0, 2);
+    if (items.length) {
+      container.innerHTML = items.map(p => `
+        <div class="news-card">
+          <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
+          <div class="news-card-title">${p.emoji} ${p.title}</div>
+          <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
+          <div class="news-card-meta">${p.date}</div>
+        </div>
+      `).join('');
+    } else {
+      container.innerHTML = '<p style="color:var(--gray-mid);font-size:0.85rem;">No announcements yet.</p>';
+    }
+  }
+</script>
 </body>
 </html>
