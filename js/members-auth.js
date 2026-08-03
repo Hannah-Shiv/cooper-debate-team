@@ -81,7 +81,7 @@ function sendSignInLink() {
     .catch(err => {
       btn.disabled    = false;
       btn.textContent = "Send Sign-In Link →";
-      showError("Could not send sign-in link. Please try again.");
+      showError("Error " + (err.code || "unknown") + ": " + (err.message || "Could not send sign-in link."));
       console.error("sendSignInLinkToEmail error:", err);
     });
 }
