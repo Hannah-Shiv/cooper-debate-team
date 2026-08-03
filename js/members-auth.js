@@ -81,7 +81,11 @@ function sendSignInLink() {
     .catch(err => {
       btn.disabled    = false;
       btn.textContent = "Send Sign-In Link →";
-      showError("Error " + (err.code || "unknown") + ": " + (err.message || "Could not send sign-in link."));
+      if (err.code === "auth/quota-exceeded") {
+        showError("Daily sign-in limit reached. Please try again tomorrow, or contact Coach Konde for help.");
+      } else {
+        showError("Could not send sign-in link. Please try again.");
+      }
       console.error("sendSignInLinkToEmail error:", err);
     });
 }
