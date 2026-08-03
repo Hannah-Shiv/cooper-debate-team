@@ -1,4 +1,0 @@
-- [Cooper Debate site](cooper-debate-site.md) — Plain HTML/CSS/JS, GitHub Pages target, dome nav adapted from Langley Legacy; Phase 2 = Firebase members portal.
-- [Fixed-child containing block trap](fixed-in-transformed-parent.md) — CSS transform on a fixed ancestor breaks position:fixed children; use calc() centering instead.
-- [CSS cache-busting chain](css-cache-busting.md) — Must bump version on BOTH the CSS <link> href AND image URLs inside CSS together, or the browser serves the stale half.
-- [Mobile hero pseudo-element trap](mobile-hero-pseudo-elements.md) — Desktop ::after/::before on .hero-bg block mobile background-image; must display:none both pseudo-elements in mobile media queries.
