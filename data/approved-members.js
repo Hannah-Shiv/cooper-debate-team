@@ -17,7 +17,6 @@ const APPROVED_MEMBERS = [
 
   // ── Coaches ─────────────────────────────────────────────
   "Hannahbshiv@gmail.com",
-  "shivpn@hotmail.com",
 
   // ── Team Members ────────────────────────────────────────
   // Add student emails below, one per line:
