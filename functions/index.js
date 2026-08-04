@@ -2,20 +2,18 @@
 // Triggered when a new announcement is added to Firestore.
 // Sends an FCM push notification to every registered device token.
 
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
-const { initializeApp }     = require("firebase-admin/app");
-const { getMessaging }      = require("firebase-admin/messaging");
-const { getFirestore }      = require("firebase-admin/firestore");
+const functions = require("firebase-functions");
+const admin     = require("firebase-admin");
 
-initializeApp();
+admin.initializeApp();
 
-exports.notifyOnAnnouncement = onDocumentCreated(
-  "announcements/{docId}",
-  async (event) => {
-    const data = event.data.data();
+exports.notifyOnAnnouncement = functions.firestore
+  .document("announcements/{docId}")
+  .onCreate(async (snap, context) => {
+    const data = snap.data();
     if (!data) return null;
 
-    const db       = getFirestore();
+    const db       = admin.firestore();
     const postedBy = (data.postedBy || "").toLowerCase();
 
     // Fetch all registered FCM tokens
@@ -37,7 +35,7 @@ exports.notifyOnAnnouncement = onDocumentCreated(
       ? data.details.substring(0, 100)
       : "Tap to open the Members Portal.";
 
-    const response = await getMessaging().sendEachForMulticast({
+    const response = await admin.messaging().sendEachForMulticast({
       tokens,
       notification: {
         title: `Cooper Debate — ${data.category || "General"}`,
@@ -80,5 +78,4 @@ exports.notifyOnAnnouncement = onDocumentCreated(
     }
 
     return null;
-  }
-);
+  });

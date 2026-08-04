@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "docx": "^9.7.1"
+    "docx": "^9.7.1",
+    "google-auth-library": "^10.9.1"
   }
 }
