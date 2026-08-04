@@ -161,6 +161,9 @@ function showDashboard(email) {
   // Start real-time announcements listener
   loadAnnouncements();
 
+  // Request notification permission (prompts browser dialog once)
+  requestNotificationPermission();
+
   showState("dashboard");
 }
 
@@ -211,10 +214,22 @@ function loadAnnouncements() {
 
   if (unsubAnnouncements) unsubAnnouncements(); // detach old listener
 
+  let firstLoad = true;
+
   unsubAnnouncements = db.collection("announcements")
     .orderBy("timestamp", "desc")
     .limit(30)
     .onSnapshot(snapshot => {
+      // Fire browser notification for newly added docs (not on first load)
+      if (!firstLoad) {
+        snapshot.docChanges().forEach(change => {
+          if (change.type === "added") {
+            notifyNewAnnouncement(change.doc.data());
+          }
+        });
+      }
+      firstLoad = false;
+
       if (snapshot.empty) {
         feed.innerHTML = '<div class="ann-empty">📢 No announcements yet — check back soon.</div>';
         return;
@@ -224,6 +239,71 @@ function loadAnnouncements() {
       console.error("loadAnnouncements error:", err);
       feed.innerHTML = '<div class="ann-empty">Could not load announcements. Please refresh the page.</div>';
     });
+}
+
+// ── Browser notifications ─────────────────────────────────────
+function requestNotificationPermission() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission === "default") {
+    // Delay slightly so it doesn't fire the instant the page loads
+    setTimeout(() => {
+      Notification.requestPermission().then(updateNotifBtn);
+    }, 1500);
+  }
+  updateNotifBtn();
+}
+
+function updateNotifBtn() {
+  const btn = document.getElementById("notif-btn");
+  if (!btn || !("Notification" in window)) return;
+  const perm = Notification.permission;
+  if (perm === "granted") {
+    btn.textContent = "🔔";
+    btn.title       = "Notifications on — you'll be alerted when Coach posts";
+    btn.style.opacity = "1";
+  } else if (perm === "denied") {
+    btn.textContent = "🔕";
+    btn.title       = "Notifications blocked — enable in browser settings";
+    btn.style.opacity = "0.45";
+  } else {
+    btn.textContent = "🔔";
+    btn.title       = "Click to enable notifications";
+    btn.style.opacity = "0.55";
+  }
+}
+
+function toggleNotifications() {
+  if (!("Notification" in window)) {
+    alert("Your browser does not support notifications.");
+    return;
+  }
+  if (Notification.permission === "granted") {
+    alert("Notifications are on ✓\nYou'll see a pop-up whenever Coach or a mentor posts an announcement.");
+    return;
+  }
+  if (Notification.permission === "denied") {
+    alert("Notifications are blocked.\nTo enable: click the lock icon in your browser address bar → Notifications → Allow.");
+    return;
+  }
+  Notification.requestPermission().then(updateNotifBtn);
+}
+
+function notifyNewAnnouncement(data) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  // Don't notify if this user posted it
+  if (data.postedBy === currentUserEmail) return;
+
+  const body = data.details
+    ? data.details.substring(0, 120)
+    : "Tap to view in the portal.";
+
+  const n = new Notification("Cooper Debate Team", {
+    body:  `[${data.category || "General"}] ${data.title}\n${body}`,
+    icon:  "/images/cooper-debate-badge.png",
+    badge: "/images/cooper-debate-badge.png",
+    tag:   "cooper-announcement-" + Date.now(),
+  });
+  n.onclick = () => { window.focus(); n.close(); };
 }
 
 // ── Delete announcement ───────────────────────────────────────

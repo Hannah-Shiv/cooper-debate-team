@@ -326,6 +326,8 @@
     .ann-delete-btn { background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.7rem; padding:2px 8px; border-radius:4px; transition:color 0.2s,background 0.2s; }
     .ann-delete-btn:hover { color:#fca5a5; background:rgba(239,68,68,0.1); }
     .ann-empty { text-align:center; padding:40px 24px; color:var(--gray-mid); font-size:0.85rem; background:rgba(11,37,69,0.3); border:1px solid rgba(212,160,23,0.08); border-radius:10px; }
+    .notif-btn { background:none; border:1px solid rgba(212,160,23,0.2); border-radius:6px; padding:6px 10px; font-size:1rem; cursor:pointer; opacity:0.55; transition:opacity 0.2s,border-color 0.2s; }
+    .notif-btn:hover { opacity:1; border-color:rgba(212,160,23,0.5); }
     @media(max-width:600px){
       .form-row { grid-template-columns:1fr; }
       .admin-panel { padding:20px 16px; }
@@ -454,7 +456,10 @@
         <h1>Members Portal</h1>
         <p id="member-email" style="color:var(--gray-mid);"></p>
       </div>
-      <button class="signout-btn" onclick="handleSignOut()">Sign Out</button>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button id="notif-btn" class="notif-btn" onclick="toggleNotifications()" title="Enable notifications">🔔</button>
+        <button class="signout-btn" onclick="handleSignOut()">Sign Out</button>
+      </div>
     </div>
 
     <!-- ── ADMIN PANEL (coach + mentor only) ──────────────── -->
