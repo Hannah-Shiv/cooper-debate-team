@@ -265,6 +265,72 @@
       .auth-title { font-size: 1.9rem; }
     }
 
+    /* ── Admin Panel ─────────────────────────────────────── */
+    .admin-panel {
+      background: rgba(13,46,86,0.65);
+      border: 1px solid rgba(212,160,23,0.35);
+      border-radius: 12px;
+      padding: 28px 32px 24px;
+      margin-bottom: 36px;
+    }
+    .admin-panel-header { display:flex; align-items:center; gap:14px; margin-bottom:22px; }
+    .admin-panel-header > span { font-size:1.6rem; }
+    .admin-panel-title {
+      font-family:'Josefin Sans',sans-serif; font-weight:700;
+      font-size:0.82rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold);
+    }
+    .admin-panel-sub { font-size:0.78rem; color:var(--gray-mid); margin-top:3px; }
+
+    .form-row { display:grid; grid-template-columns:1fr 160px; gap:16px; }
+    .form-group { margin-bottom:16px; }
+    .form-label {
+      display:block; font-family:'Josefin Sans',sans-serif;
+      font-size:0.68rem; font-weight:700; letter-spacing:0.1em;
+      text-transform:uppercase; color:rgba(212,160,23,0.75); margin-bottom:7px;
+    }
+    .form-input {
+      width:100%; background:rgba(11,37,69,0.7);
+      border:1px solid rgba(212,160,23,0.18); border-radius:6px;
+      padding:10px 14px; color:var(--white);
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+      outline:none; box-sizing:border-box; transition:border-color 0.2s;
+    }
+    .form-input:focus { border-color:rgba(212,160,23,0.5); }
+    .form-input::placeholder { color:rgba(255,255,255,0.25); }
+    .form-select { cursor:pointer; }
+    .form-select option { background:#0b2545; }
+    .form-textarea { resize:vertical; min-height:82px; line-height:1.65; font-family:inherit; }
+
+    /* ── Announcement cards ──────────────────────────────── */
+    .announcement-card {
+      background:rgba(11,37,69,0.5); border:1px solid rgba(212,160,23,0.14);
+      border-radius:10px; padding:18px 22px; margin-bottom:10px; transition:border-color 0.2s;
+    }
+    .announcement-card:hover { border-color:rgba(212,160,23,0.28); }
+    .ann-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
+    .ann-title-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .ann-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.9rem; letter-spacing:0.03em; color:var(--white); }
+    .ann-cat-badge { padding:2px 9px; border-radius:3px; flex-shrink:0; font-size:0.58rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+    .ann-cat-practice   { background:rgba(34,197,94,0.12);  color:#86efac; border:1px solid rgba(34,197,94,0.2); }
+    .ann-cat-tournament { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
+    .ann-cat-general    { background:rgba(148,163,184,0.1); color:#94a3b8; border:1px solid rgba(148,163,184,0.2); }
+    .ann-meta { font-size:0.7rem; color:var(--gray-mid); white-space:nowrap; flex-shrink:0; }
+    .ann-details { font-size:0.84rem; color:rgba(255,255,255,0.72); line-height:1.7; margin-bottom:10px; white-space:pre-line; }
+    .ann-drive-link {
+      display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--gold);
+      text-decoration:none; font-family:'Josefin Sans',sans-serif; font-weight:600; letter-spacing:0.04em;
+    }
+    .ann-drive-link:hover { text-decoration:underline; }
+    .ann-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); }
+    .ann-poster { font-size:0.7rem; color:rgba(255,255,255,0.3); }
+    .ann-delete-btn { background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.7rem; padding:2px 8px; border-radius:4px; transition:color 0.2s,background 0.2s; }
+    .ann-delete-btn:hover { color:#fca5a5; background:rgba(239,68,68,0.1); }
+    .ann-empty { text-align:center; padding:40px 24px; color:var(--gray-mid); font-size:0.85rem; background:rgba(11,37,69,0.3); border:1px solid rgba(212,160,23,0.08); border-radius:10px; }
+    @media(max-width:600px){
+      .form-row { grid-template-columns:1fr; }
+      .admin-panel { padding:20px 16px; }
+    }
+
   </style>
 </head>
 <body>
@@ -384,11 +450,61 @@
 
     <div class="dashboard-header">
       <div class="dashboard-header-left">
-        <span class="member-badge">✓ Team Member</span>
+        <span class="member-badge" id="member-role-badge">✓ Team Member</span>
         <h1>Members Portal</h1>
         <p id="member-email" style="color:var(--gray-mid);"></p>
       </div>
       <button class="signout-btn" onclick="handleSignOut()">Sign Out</button>
+    </div>
+
+    <!-- ── ADMIN PANEL (coach + mentor only) ──────────────── -->
+    <div id="admin-panel" class="admin-panel" style="display:none;">
+      <div class="admin-panel-header">
+        <span>🛡️</span>
+        <div>
+          <div class="admin-panel-title" id="admin-panel-title">Coach Panel</div>
+          <div class="admin-panel-sub">Post an announcement to the whole team</div>
+        </div>
+      </div>
+      <div class="announce-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="ann-title">Title *</label>
+            <input class="form-input" id="ann-title" type="text"
+                   placeholder="e.g. Practice moved to Room 215" maxlength="100"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="ann-category">Category *</label>
+            <select class="form-input form-select" id="ann-category">
+              <option value="General">General</option>
+              <option value="Practice">Practice</option>
+              <option value="Tournament">Tournament</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ann-details">Details</label>
+          <textarea class="form-input form-textarea" id="ann-details"
+                    placeholder="Add more context here…" rows="3" maxlength="1000"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="ann-drive">Drive Link <span style="font-weight:400;opacity:0.55;">(optional)</span></label>
+          <input class="form-input" id="ann-drive" type="url"
+                 placeholder="https://drive.google.com/…"/>
+        </div>
+        <div style="display:flex;align-items:center;gap:14px;">
+          <button class="btn btn-gold" id="announce-btn" onclick="postAnnouncement()">Announce →</button>
+          <span id="announce-status" style="font-size:0.8rem;display:none;"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCEMENTS FEED (all members) ───────────────── -->
+    <div class="portal-section">
+      <div class="portal-section-title">Team Announcements</div>
+      <div id="announcements-feed">
+        <div class="ann-empty" style="color:var(--gray-mid);">Loading…</div>
+      </div>
     </div>
 
     <!-- Resources & Documents -->
@@ -500,9 +616,11 @@
 <!-- Firebase SDKs (compat — no build tool required) -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <!-- Portal data & auth logic -->
 <script src="data/approved-members.js?v=2"></script>
+<script src="data/admins.js"></script>
 <script src="js/members-auth.js"></script>
 
 <!-- Dome nav -->

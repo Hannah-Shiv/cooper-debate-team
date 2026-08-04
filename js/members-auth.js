@@ -13,28 +13,27 @@ const FIREBASE_CONFIG = {
   appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
 
-// Where Firebase redirects after the user clicks the magic link in their email
 const SIGN_IN_REDIRECT_URL = "https://cooperdebateteam.com/members.html";
-
 const STORAGE_KEY = "cooper_signin_email";
 
 // ── Initialise Firebase ──────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth = firebase.auth();
+const db   = firebase.firestore();
 
-// Persist session across browser close (user stays logged in on this device)
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+// ── Session state ─────────────────────────────────────────────
+let currentUserEmail  = "";
+let currentUserRole   = "member"; // "coach" | "mentor" | "member"
+let unsubAnnouncements = null;
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
-
-  // Case 1: user just clicked a magic link in their email
   if (auth.isSignInWithEmailLink(window.location.href)) {
     completeMagicLinkSignIn();
     return;
   }
-
-  // Case 2: user is already signed in from a previous session
   auth.onAuthStateChanged(user => {
     if (user) {
       handleAuthenticatedUser(user.email);
@@ -57,7 +56,6 @@ function sendSignInLink() {
     return;
   }
 
-  // Pre-check whitelist so unapproved users never get an email
   if (!isApprovedMember(email)) {
     showError("This email is not on the approved members list. Please contact Coach Konde to request access.");
     return;
@@ -66,14 +64,8 @@ function sendSignInLink() {
   btn.disabled    = true;
   btn.textContent = "Sending…";
 
-  const actionCodeSettings = {
-    url: SIGN_IN_REDIRECT_URL,
-    handleCodeInApp: true
-  };
-
-  auth.sendSignInLinkToEmail(email, actionCodeSettings)
+  auth.sendSignInLinkToEmail(email, { url: SIGN_IN_REDIRECT_URL, handleCodeInApp: true })
     .then(() => {
-      // Save email so we can complete sign-in when the user returns via the link
       localStorage.setItem(STORAGE_KEY, email);
       document.getElementById("pending-email").textContent = email;
       showState("pending");
@@ -95,21 +87,14 @@ function completeMagicLinkSignIn() {
   showState("completing");
 
   let email = localStorage.getItem(STORAGE_KEY);
-
-  // Edge case: user clicked the link on a different device than they requested it from
   if (!email) {
     email = window.prompt("Please re-enter your email address to complete sign-in:");
   }
-
-  if (!email) {
-    showState("login");
-    return;
-  }
+  if (!email) { showState("login"); return; }
 
   auth.signInWithEmailLink(email.trim().toLowerCase(), window.location.href)
     .then(result => {
       localStorage.removeItem(STORAGE_KEY);
-      // Clean the magic-link tokens from the URL bar
       window.history.replaceState({}, document.title, window.location.pathname);
       handleAuthenticatedUser(result.user.email);
     })
@@ -125,18 +110,18 @@ function handleAuthenticatedUser(email) {
   if (isApprovedMember(email)) {
     showDashboard(email);
   } else {
-    // Signed in via Firebase but not on the whitelist
     auth.signOut();
     showState("denied");
   }
 }
 
-// ── Sign out ─────────────────────────────────────────────────
+// ── Sign out ──────────────────────────────────────────────────
 function handleSignOut() {
+  if (unsubAnnouncements) { unsubAnnouncements(); unsubAnnouncements = null; }
   auth.signOut().then(() => showState("login"));
 }
 
-// ── Utility: go back to login from other states ───────────────
+// ── Go back to login ──────────────────────────────────────────
 function showLogin() {
   clearError();
   const input = document.getElementById("email-input");
@@ -144,36 +129,200 @@ function showLogin() {
   showState("login");
 }
 
-// ── Whitelist check ───────────────────────────────────────────
-function isApprovedMember(email) {
-  const normalised = email.toLowerCase();
-  return APPROVED_MEMBERS.some(e => e.toLowerCase() === normalised);
+// ── Show dashboard + role-based UI ───────────────────────────
+function showDashboard(email) {
+  currentUserEmail = email.toLowerCase();
+  currentUserRole  = getAdminRole(email); // from data/admins.js
+
+  // Email display
+  const emailEl = document.getElementById("member-email");
+  if (emailEl) emailEl.textContent = email;
+
+  // Role badge
+  const badgeEl = document.getElementById("member-role-badge");
+  if (badgeEl) {
+    if (currentUserRole === "coach") {
+      badgeEl.textContent = "🛡️ Coach";
+      badgeEl.style.cssText += ";background:rgba(212,160,23,0.22);border-color:rgba(212,160,23,0.5);color:var(--gold);";
+    } else if (currentUserRole === "mentor") {
+      badgeEl.textContent = "⭐ Mentor";
+      badgeEl.style.cssText += ";background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);color:#d8b4fe;";
+    }
+  }
+
+  // Show admin panel for coach + mentor
+  const adminPanel = document.getElementById("admin-panel");
+  if (adminPanel && (currentUserRole === "coach" || currentUserRole === "mentor")) {
+    adminPanel.style.display = "";
+    const titleEl = document.getElementById("admin-panel-title");
+    if (titleEl) titleEl.textContent = currentUserRole === "coach" ? "Coach Panel" : "Mentor Panel";
+  }
+
+  // Start real-time announcements listener
+  loadAnnouncements();
+
+  showState("dashboard");
 }
 
-// ── UI state machine ─────────────────────────────────────────
-// States: login | pending | completing | dashboard | denied
-function showState(state) {
-  ["login", "pending", "completing", "dashboard", "denied"].forEach(s => {
-    const el = document.getElementById("state-" + s);
-    if (el) el.style.display = (s === state) ? "" : "none";
+// ── Post announcement ─────────────────────────────────────────
+function postAnnouncement() {
+  const title     = (document.getElementById("ann-title").value    || "").trim();
+  const category  =  document.getElementById("ann-category").value;
+  const details   = (document.getElementById("ann-details").value  || "").trim();
+  const driveLink = (document.getElementById("ann-drive").value    || "").trim();
+
+  if (!title) { showAnnounceStatus("Please enter a title.", true); return; }
+
+  const btn = document.getElementById("announce-btn");
+  btn.disabled    = true;
+  btn.textContent = "Posting…";
+
+  db.collection("announcements").add({
+    title,
+    category,
+    details,
+    driveLink,
+    postedBy:     currentUserEmail,
+    postedByRole: currentUserRole,
+    timestamp:    firebase.firestore.FieldValue.serverTimestamp(),
+  })
+  .then(() => {
+    document.getElementById("ann-title").value    = "";
+    document.getElementById("ann-details").value  = "";
+    document.getElementById("ann-drive").value    = "";
+    document.getElementById("ann-category").value = "General";
+    btn.disabled    = false;
+    btn.textContent = "Announce →";
+    showAnnounceStatus("✓ Posted!", false);
+    setTimeout(hideAnnounceStatus, 3000);
+  })
+  .catch(err => {
+    console.error("postAnnouncement error:", err);
+    btn.disabled    = false;
+    btn.textContent = "Announce →";
+    showAnnounceStatus("Failed to post. Please try again.", true);
   });
 }
 
-function showDashboard(email) {
-  const el = document.getElementById("member-email");
-  if (el) el.textContent = email;
-  showState("dashboard");
+// ── Load announcements (real-time listener) ───────────────────
+function loadAnnouncements() {
+  const feed = document.getElementById("announcements-feed");
+  if (!feed) return;
+
+  if (unsubAnnouncements) unsubAnnouncements(); // detach old listener
+
+  unsubAnnouncements = db.collection("announcements")
+    .orderBy("timestamp", "desc")
+    .limit(30)
+    .onSnapshot(snapshot => {
+      if (snapshot.empty) {
+        feed.innerHTML = '<div class="ann-empty">📢 No announcements yet — check back soon.</div>';
+        return;
+      }
+      feed.innerHTML = snapshot.docs.map(doc => renderAnnouncement(doc.id, doc.data())).join("");
+    }, err => {
+      console.error("loadAnnouncements error:", err);
+      feed.innerHTML = '<div class="ann-empty">Could not load announcements. Please refresh the page.</div>';
+    });
+}
+
+// ── Delete announcement ───────────────────────────────────────
+function deleteAnnouncement(id) {
+  if (!confirm("Delete this announcement?")) return;
+  db.collection("announcements").doc(id).delete()
+    .catch(err => console.error("deleteAnnouncement error:", err));
+}
+
+// ── Render one announcement card ──────────────────────────────
+function renderAnnouncement(id, data) {
+  const catClass = {
+    Practice:   "ann-cat-practice",
+    Tournament: "ann-cat-tournament",
+    General:    "ann-cat-general"
+  }[data.category] || "ann-cat-general";
+
+  const timeStr   = timeAgo(data.timestamp);
+  const details   = data.details   ? `<div class="ann-details">${escHtml(data.details)}</div>` : "";
+  const driveLink = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" rel="noopener" class="ann-drive-link">📎 Open Drive File →</a>` : "";
+
+  // Coach can delete any; mentor can delete their own
+  const canDelete = currentUserRole === "coach" || data.postedBy === currentUserEmail;
+  const deleteBtn = canDelete
+    ? `<button class="ann-delete-btn" onclick="deleteAnnouncement('${id}')" title="Delete">✕ Remove</button>`
+    : "";
+
+  const posterLabel = data.postedByRole === "coach" ? "Coach" : "Mentor";
+
+  return `
+    <div class="announcement-card" id="ann-${id}">
+      <div class="ann-header">
+        <div class="ann-title-row">
+          <span class="ann-cat-badge ${catClass}">${escHtml(data.category || "General")}</span>
+          <span class="ann-title">${escHtml(data.title)}</span>
+        </div>
+        <span class="ann-meta">${timeStr}</span>
+      </div>
+      ${details}
+      ${driveLink}
+      <div class="ann-footer">
+        <span class="ann-poster">Posted by ${posterLabel}</span>
+        ${deleteBtn}
+      </div>
+    </div>`;
+}
+
+// ── Whitelist check ───────────────────────────────────────────
+function isApprovedMember(email) {
+  return APPROVED_MEMBERS.some(e => e.toLowerCase() === email.toLowerCase());
+}
+
+// ── UI state machine ─────────────────────────────────────────
+function showState(state) {
+  ["login","pending","completing","dashboard","denied"].forEach(s => {
+    const el = document.getElementById("state-" + s);
+    if (el) el.style.display = s === state ? "" : "none";
+  });
 }
 
 // ── Error helpers ─────────────────────────────────────────────
 function showError(msg) {
   const el = document.getElementById("login-error");
   if (!el) return;
-  el.textContent = msg;
+  el.textContent  = msg;
   el.style.display = "block";
 }
-
 function clearError() {
   const el = document.getElementById("login-error");
   if (el) el.style.display = "none";
+}
+function showAnnounceStatus(msg, isError) {
+  const el = document.getElementById("announce-status");
+  if (!el) return;
+  el.textContent   = msg;
+  el.style.color   = isError ? "#fca5a5" : "#86efac";
+  el.style.display = "";
+}
+function hideAnnounceStatus() {
+  const el = document.getElementById("announce-status");
+  if (el) el.style.display = "none";
+}
+
+// ── Utility helpers ───────────────────────────────────────────
+function timeAgo(timestamp) {
+  if (!timestamp) return "";
+  const then = timestamp.toDate ? timestamp.toDate().getTime() : Date.now();
+  const diff = Math.floor((Date.now() - then) / 1000);
+  if (diff < 60)    return "just now";
+  if (diff < 3600)  return Math.floor(diff / 60)   + "m ago";
+  if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
+  const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
+function escHtml(str) {
+  return (str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
