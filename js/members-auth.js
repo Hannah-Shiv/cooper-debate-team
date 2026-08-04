@@ -13,13 +13,17 @@ const FIREBASE_CONFIG = {
   appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
 
+// Web Push VAPID key — from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
+const VAPID_KEY = "REPLACE_WITH_VAPID_KEY";
+
 const SIGN_IN_REDIRECT_URL = "https://cooperdebateteam.com/members.html";
 const STORAGE_KEY = "cooper_signin_email";
 
 // ── Initialise Firebase ──────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
-const auth = firebase.auth();
-const db   = firebase.firestore();
+const auth      = firebase.auth();
+const db        = firebase.firestore();
+const messaging = firebase.messaging ? firebase.messaging() : null;
 
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -164,6 +168,9 @@ function showDashboard(email) {
   // Request notification permission (prompts browser dialog once)
   requestNotificationPermission();
 
+  // Register FCM token for background push (Phase 2)
+  registerFcmToken(currentUserEmail);
+
   showState("dashboard");
 }
 
@@ -239,6 +246,34 @@ function loadAnnouncements() {
       console.error("loadAnnouncements error:", err);
       feed.innerHTML = '<div class="ann-empty">Could not load announcements. Please refresh the page.</div>';
     });
+}
+
+// ── FCM token registration (background push — Phase 2) ────────
+async function registerFcmToken(email) {
+  if (!messaging || VAPID_KEY === "REPLACE_WITH_VAPID_KEY") return;
+  if (!("serviceWorker" in navigator)) return;
+
+  try {
+    // Register the service worker that handles background messages
+    const swReg = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
+
+    // Get (or refresh) the FCM token for this device
+    const token = await messaging.getToken({
+      vapidKey:           VAPID_KEY,
+      serviceWorkerRegistration: swReg,
+    });
+
+    if (!token) return;
+
+    // Store under the user's email so the Cloud Function can look it up
+    await db.collection("fcm-tokens").doc(email.toLowerCase()).set({
+      token,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+  } catch (err) {
+    // Non-fatal — Phase 1 (tab-open) notifications still work
+    console.warn("FCM token registration failed:", err.message);
+  }
 }
 
 // ── Browser notifications ─────────────────────────────────────
