@@ -2,18 +2,22 @@
 // Triggered when a new announcement is added to Firestore.
 // Sends an FCM push notification to every registered device token.
 
-const functions = require("firebase-functions");
-const admin     = require("firebase-admin");
+const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { initializeApp }     = require("firebase-admin/app");
+const { getMessaging }      = require("firebase-admin/messaging");
+const { getFirestore }      = require("firebase-admin/firestore");
 
-admin.initializeApp();
+initializeApp();
 
-exports.notifyOnAnnouncement = functions.firestore
-  .document("announcements/{docId}")
-  .onCreate(async (snap, context) => {
+exports.notifyOnAnnouncement = onDocumentCreated(
+  "announcements/{docId}",
+  async (event) => {
+    const snap = event.data;
+    if (!snap) return null;
     const data = snap.data();
     if (!data) return null;
 
-    const db       = admin.firestore();
+    const db       = getFirestore();
     const postedBy = (data.postedBy || "").toLowerCase();
 
     // Fetch all registered FCM tokens
@@ -35,7 +39,7 @@ exports.notifyOnAnnouncement = functions.firestore
       ? data.details.substring(0, 100)
       : "Tap to open the Members Portal.";
 
-    const response = await admin.messaging().sendEachForMulticast({
+    const response = await getMessaging().sendEachForMulticast({
       tokens,
       notification: {
         title: `Cooper Debate — ${data.category || "General"}`,
@@ -53,7 +57,7 @@ exports.notifyOnAnnouncement = functions.firestore
       },
     });
 
-    // Clean up stale/invalid tokens so they don't pile up
+    // Clean up stale/invalid tokens
     const staleTokens = [];
     response.responses.forEach((resp, idx) => {
       if (!resp.success) {
@@ -78,4 +82,5 @@ exports.notifyOnAnnouncement = functions.firestore
     }
 
     return null;
-  });
+  }
+);
