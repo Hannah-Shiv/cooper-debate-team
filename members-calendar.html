@@ -172,37 +172,37 @@
     /* ── Next Tournament Banner ───────────────────────────── */
     .next-tournament-banner {
       display: none; align-items: center; gap: 0;
-      background: linear-gradient(90deg, rgba(12,25,65,0.95) 0%, rgba(8,18,50,0.95) 100%);
-      border: 1px solid rgba(232,184,75,0.3); border-radius: 10px;
+      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #7f1d1d 100%);
+      border: 1px solid rgba(220,38,38,0.55); border-radius: 10px;
       padding: 0; margin-bottom: 16px; overflow: hidden;
-      width: fit-content; max-width: 100%;
+      width: 100%;
     }
     .next-trophy {
-      padding: 12px 14px; font-size: 1.2rem;
-      background: rgba(232,184,75,0.08); border-right: 1px solid rgba(232,184,75,0.2);
+      padding: 14px 16px; font-size: 1.4rem;
+      background: rgba(0,0,0,0.18); border-right: 1px solid rgba(255,255,255,0.15);
       flex-shrink: 0;
     }
     .next-label {
-      font-size: 0.58rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold); padding: 12px 12px; border-right: 1px solid rgba(255,255,255,0.1);
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 0.16em; text-transform: uppercase;
+      color: #ffffff; padding: 14px 14px; border-right: 1px solid rgba(255,255,255,0.15);
       flex-shrink: 0; white-space: nowrap;
     }
     .next-name {
-      font-size: 0.9rem; font-weight: 700; color: #ffffff;
-      padding: 12px 14px; border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
-      white-space: nowrap;
+      font-size: 1.25rem; font-weight: 900; color: #ffffff; letter-spacing: 0.02em;
+      padding: 14px 18px; border-right: 1px solid rgba(255,255,255,0.15); flex: 1;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .next-date {
       display: flex; align-items: center; gap: 6px;
-      font-size: 0.82rem; color: #ffffff; font-weight: 600;
-      padding: 12px 14px; border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+      font-size: 1rem; color: #ffffff; font-weight: 700;
+      padding: 14px 16px; border-right: 1px solid rgba(255,255,255,0.15); flex-shrink: 0;
       white-space: nowrap;
     }
     .next-countdown {
       display: flex; align-items: center; gap: 6px;
-      font-size: 0.75rem; font-weight: 700; color: var(--gold);
-      background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25);
-      padding: 6px 14px; border-radius: 20px; margin: 0 12px; flex-shrink: 0; white-space: nowrap;
+      font-size: 0.88rem; font-weight: 800; color: #ffffff;
+      background: rgba(0,0,0,0.22); border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 18px; border-radius: 20px; margin: 0 14px; flex-shrink: 0; white-space: nowrap;
     }
 
     /* ── Legend ──────────────────────────────────────────── */
@@ -289,19 +289,19 @@
       border-radius: 0 0 10px 10px;
     }
     .fc td, .fc th { border-color: var(--border) !important; }
-    .fc .fc-col-header { background: rgba(6,16,40,0.95) !important; }
-    .fc .fc-col-header-cell { background: rgba(8,20,52,0.95) !important; }
+    .fc .fc-col-header { background: #1a3a8a !important; }
+    .fc .fc-col-header-cell { background: #1e44a0 !important; border-bottom: 2px solid #2d5fcc !important; }
     .fc .fc-col-header-cell-cushion {
-      font-size: 0.6rem !important; font-weight: 900 !important;
-      letter-spacing: 0.12em !important; text-transform: uppercase !important;
+      font-size: 0.65rem !important; font-weight: 900 !important;
+      letter-spacing: 0.14em !important; text-transform: uppercase !important;
       color: #ffffff !important; text-decoration: none !important;
-      padding: 10px 0 !important;
+      padding: 11px 0 !important;
     }
 
     /* Day cells */
     .fc .fc-daygrid-day { background: var(--cell) !important; }
     .fc .fc-daygrid-day:hover { background: rgba(10,25,65,0.95) !important; }
-    .fc .fc-day-today { background: rgba(232,184,75,0.06) !important; }
+    .fc .fc-day-today { background: rgba(232,184,75,0.18) !important; border: 2px solid rgba(232,184,75,0.5) !important; }
     .fc .fc-day-other .fc-daygrid-day-number { opacity: 0.35 !important; }
     .fc .fc-daygrid-day-number {
       font-size: 1.05rem !important; font-weight: 700 !important;
@@ -309,19 +309,34 @@
       padding: 6px 10px !important;
     }
     .fc .fc-day-today .fc-daygrid-day-number {
-      color: var(--gold) !important; font-weight: 900 !important;
+      color: #ffd700 !important; font-weight: 900 !important; font-size: 1.15rem !important;
     }
+
+    /* Fill entire cell with event color */
+    .fc .fc-daygrid-day-frame { display: flex !important; flex-direction: column !important; }
+    .fc .fc-daygrid-day-top { flex-shrink: 0 !important; }
+    .fc .fc-daygrid-day-events {
+      flex: 1 !important; display: flex !important; flex-direction: column !important;
+      padding: 0 !important; margin: 0 !important;
+    }
+    .fc .fc-daygrid-event-harness {
+      flex: 1 !important; display: flex !important; flex-direction: column !important;
+    }
+    .fc .fc-daygrid-event-harness .fc-event {
+      flex: 1 !important; border-radius: 0 !important; margin: 0 !important;
+      align-items: center !important; min-height: 36px !important;
+    }
+    .fc .fc-daygrid-day-bg { display: none !important; }
 
     /* Event pills */
     .fc .fc-event {
-      border-radius: 4px !important;
-      padding: 2px 6px !important;
-      font-size: 0.68rem !important; font-weight: 700 !important;
+      padding: 4px 8px !important;
+      font-size: 0.72rem !important; font-weight: 700 !important;
       cursor: pointer !important; transition: filter 0.15s !important;
       border: none !important;
     }
-    .fc .fc-event:hover { filter: brightness(1.15) !important; }
-    .fc .fc-event-title { font-size: 0.68rem !important; font-weight: 700 !important; }
+    .fc .fc-event:hover { filter: brightness(1.12) !important; }
+    .fc .fc-event-title { font-size: 0.72rem !important; font-weight: 700 !important; }
     .fc .fc-more-link {
       color: rgba(255,255,255,0.5) !important;
       font-size: 0.62rem !important; font-weight: 700 !important;
@@ -649,7 +664,7 @@
       <div class="cal-legend">
         <div class="leg-item"><div class="leg-dot" style="background:#cc0000"></div>Tournament</div>
         <div class="leg-item"><div class="leg-dot" style="background:#1d4ed8"></div>Virtual</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#d97706"></div>Entry Deadline</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#7c3aed"></div>Entry Deadline</div>
       </div>
 
       <!-- FullCalendar mount -->
@@ -754,7 +769,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=4"></script>
+<script src="js/calendar.js?v=5"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>

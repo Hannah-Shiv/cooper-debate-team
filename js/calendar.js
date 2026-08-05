@@ -121,8 +121,8 @@ function buildFcEvents(docs) {
       start: t.start?.toDate ? t.start.toDate() : new Date(t.start),
       end:   t.end?.toDate   ? t.end.toDate()   : (t.end ? new Date(t.end) : null),
       allDay: t.allDay !== false,
-      backgroundColor: isDeadline ? "#b45309" : (t.isVirtual ? "#1d4ed8" : "#b30000"),
-      borderColor:     isDeadline ? "#d97706" : (t.isVirtual ? "#3b82f6" : "#cc0000"),
+      backgroundColor: isDeadline ? "#5b21b6" : (t.isVirtual ? "#1d4ed8" : "#b30000"),
+      borderColor:     isDeadline ? "#7c3aed" : (t.isVirtual ? "#3b82f6" : "#cc0000"),
       extendedProps:   t,
     });
 
@@ -137,8 +137,8 @@ function buildFcEvents(docs) {
           start:           dlDate,
           end:             null,
           allDay:          true,
-          backgroundColor: "#b45309",
-          borderColor:     "#d97706",
+          backgroundColor: "#5b21b6",
+          borderColor:     "#7c3aed",
           extendedProps:   t,   // points to parent tournament so its modal opens
         });
       }
@@ -363,7 +363,7 @@ function openEventDetail(fcEvent) {
     : "";
 
   const typeLabel = isDeadline ? "⚠️ Entry Deadline" : (t.isVirtual ? "🖥 Virtual Tournament" : "🏆 Tournament");
-  const accentColor = isDeadline ? "#d97706" : (t.isVirtual ? "#3b82f6" : "#cc0000");
+  const accentColor = isDeadline ? "#7c3aed" : (t.isVirtual ? "#3b82f6" : "#cc0000");
 
   document.getElementById("det-modal-body").innerHTML = `
     <div class="det-type-badge" style="background:${accentColor}22;color:${accentColor};border-color:${accentColor}55">${typeLabel}</div>
