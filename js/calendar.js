@@ -179,6 +179,24 @@ function initFullCalendar() {
     dayMaxEvents: 3,
     events:       buildFcEvents(_tournaments),
     eventClick:   info => openEventDetail(info.event),
+    eventContent: info => {
+      const isDeadlineChip = info.event.id.endsWith("__deadline");
+      const viewType = info.view.type;
+      const isListView  = viewType.startsWith("list");
+      const isWeekGrid  = viewType === "timeGridWeek";
+
+      if (isDeadlineChip && (isListView || isWeekGrid)) {
+        // Render a distinct badge + tournament name so the event is scannable
+        // without relying on colour alone.
+        const parentTitle = calEsc(info.event.extendedProps.title || "");
+        return {
+          html: `<span class="fc-deadline-chip-badge">⚠ Entry Deadline</span>`
+              + `<span class="fc-deadline-chip-title">${parentTitle}</span>`
+        };
+      }
+      // Default rendering for all other events / views
+      return true;
+    },
     eventDidMount: info => {
       // Soft strikethrough style for past events
       if (info.event.start < new Date()) {
