@@ -144,6 +144,19 @@ function buildFcEvents(docs) {
       extendedProps:   t,
     });
 
+    // Background event — fills the full column width in week/day views
+    if (!isDeadline && !allDay && startDate && endDate) {
+      events.push({
+        id:              t.id + "__bg",
+        start:           startDate,
+        end:             endDate,
+        allDay:          false,
+        display:         "background",
+        backgroundColor: "#991b1b",
+        extendedProps:   { _isBg: true },
+      });
+    }
+
     // Synthetic entry-deadline chip
     if (t.entryDeadline) {
       const dlDate = t.entryDeadline?.toDate ? t.entryDeadline.toDate() : new Date(t.entryDeadline);
@@ -211,8 +224,12 @@ function initFullCalendar() {
     nowIndicator: true,
     dayMaxEvents: 3,
     events:       buildFcEvents(_tournaments),
-    eventClick:   info => openEventDetail(info.event),
+    eventClick: info => {
+      if (info.event.extendedProps._isBg) return; // background fill — not clickable
+      openEventDetail(info.event);
+    },
     eventContent: info => {
+      if (info.event.extendedProps._isBg) return false; // no content for background events
       const title = calEsc(info.event.title || "");
       return { html: `<span class="cal-evt-title">${title}</span>` };
     },
@@ -229,7 +246,9 @@ function initFullCalendar() {
       }, 0);
     },
     eventDidMount: info => {
-      const viewType  = info.view.type;
+      if (info.event.extendedProps._isBg) return; // background fill handled by FC
+
+      const viewType   = info.view.type;
       const isDeadline = info.event.id.endsWith("__deadline");
       const cellColor  = isDeadline ? "#ffd700" : "#991b1b";
       const textColor  = isDeadline ? "#000000" : "#ffffff";
@@ -242,17 +261,18 @@ function initFullCalendar() {
           cell.style.setProperty("background", cellColor, "important");
           if (isPast) cell.style.setProperty("opacity", "0.6", "important");
         }
-        // Make pill transparent so text floats on colored cell
+        // Pill is transparent — text floats on the colored cell
         info.el.style.setProperty("background", "transparent", "important");
         info.el.style.setProperty("border",     "none",        "important");
         info.el.style.setProperty("box-shadow", "none",        "important");
         info.el.style.setProperty("color",      textColor,     "important");
 
       } else if (viewType === "timeGridWeek" || viewType === "timeGridDay") {
-        // Color the timed block itself
-        info.el.style.setProperty("background",   cellColor, "important");
-        info.el.style.setProperty("border-color", cellColor, "important");
-        info.el.style.setProperty("color",        textColor, "important");
+        // Background event fills full column width — regular event shows text only
+        info.el.style.setProperty("background",   "transparent", "important");
+        info.el.style.setProperty("border",       "none",        "important");
+        info.el.style.setProperty("box-shadow",   "none",        "important");
+        info.el.style.setProperty("color",        textColor,     "important");
         if (isPast) info.el.style.setProperty("opacity", "0.65", "important");
       }
     }
@@ -297,7 +317,8 @@ function renderNextBanner() {
 function openEventDetail(fcEvent) {
   const t = fcEvent.extendedProps;
   const isEditor = calUserRole === "coach" || calUserRole === "captain";
-  const isDeadline = t.type === "deadline";
+  // Deadline chips have id ending in __deadline; extendedProps point to the parent tournament
+  const isDeadline = fcEvent.id.endsWith("__deadline");
 
   const start  = fcEvent.start || (t.start?.toDate ? t.start.toDate() : new Date(t.start));
   const end    = fcEvent.end   || (t.end?.toDate   ? t.end.toDate()   : null);
@@ -407,12 +428,14 @@ function openEventDetail(fcEvent) {
   const gcLink = buildGcalLink(t, start, end);
 
   // Edit button
+  // Strip __deadline suffix so edit modal looks up the parent tournament
+  const editTargetId = fcEvent.id.replace(/__deadline$/, "");
   const editBtn = isEditor
-    ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(fcEvent.id)}')">✎ Edit</button>`
+    ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
 
   const typeLabel = isDeadline ? "⚠️ Entry Deadline" : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
-  const accentColor = isDeadline ? "#7c3aed" : "#cc0000";
+  const accentColor = isDeadline ? "#b45309" : "#cc0000";
 
   document.getElementById("det-modal-body").innerHTML = `
     <div class="det-type-badge" style="background:${accentColor}22;color:${accentColor};border-color:${accentColor}55">${typeLabel}</div>
@@ -463,7 +486,8 @@ function buildGcalLink(t, start, end) {
 
 // ── Post / Edit event modal ───────────────────────────────────
 function openPostModal(editId) {
-  _editingId = editId || null;
+  // Strip __deadline suffix so we always look up the parent tournament
+  _editingId = editId ? editId.replace(/__deadline$/, "") : null;
   const existing = _editingId ? _tournaments.find(t => t.id === _editingId) : null;
 
   // Populate form
