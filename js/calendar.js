@@ -221,7 +221,7 @@ function initFullCalendar() {
       // Force dark-navy on column header cells
       setTimeout(() => {
         const hdrs = info.el.querySelectorAll(".fc-col-header-cell");
-        hdrs.forEach(th => th.style.setProperty("background", "#050e28", "important"));
+        hdrs.forEach(th => th.style.setProperty("background", "#1e44a0", "important"));
       }, 0);
     },
     eventDidMount: info => {
