@@ -34,18 +34,32 @@ async function sendToAllTokens(title, body, link, skipTokensForEmails = []) {
 
   if (tokens.length === 0) return;
 
-  const response = await getMessaging().sendEachForMulticast({
-    tokens,
-    notification: { title, body },
-    webpush: {
-      notification: {
-        icon:  "https://cooperdebateteam.com/images/cooper-debate-badge.png",
-        badge: "https://cooperdebateteam.com/images/cooper-debate-badge.png",
-        requireInteraction: false,
+  let response;
+  try {
+    response = await getMessaging().sendEachForMulticast({
+      tokens,
+      notification: { title, body },
+      webpush: {
+        notification: {
+          icon:  "https://cooperdebateteam.com/images/cooper-debate-badge.png",
+          badge: "https://cooperdebateteam.com/images/cooper-debate-badge.png",
+          requireInteraction: false,
+        },
+        fcm_options: { link },
       },
-      fcm_options: { link },
-    },
-  });
+    });
+  } catch (err) {
+    console.error(
+      "sendToAllTokens: sendEachForMulticast threw an unhandled error.",
+      {
+        errorCode:    err && err.code,
+        errorMessage: err && err.message,
+        title,
+        tokenCount:   tokens.length,
+      }
+    );
+    return; // Gracefully exit without crashing the Cloud Function
+  }
 
   // Clean up stale/invalid tokens
   const staleTokens = [];
