@@ -96,6 +96,18 @@ function calSignOut() {
   calAuth.signOut().then(() => { window.location.href = "members.html"; });
 }
 
+// ── Reset all month-view day cells to dark navy ───────────────
+// Must be called BEFORE removeAllEvents/addEventSource so that
+// stale inline colours from colorDayCells() are wiped first.
+function resetAllCellColors() {
+  const container = document.getElementById("cal-container");
+  if (!container) return;
+  container.querySelectorAll("td.fc-daygrid-day").forEach(td => {
+    td.style.setProperty("background", "#050e28", "important");
+    td.style.removeProperty("opacity");
+  });
+}
+
 // ── Firestore: load tournaments ───────────────────────────────
 function loadTournaments() {
   calDb.collection("tournaments").orderBy("start").onSnapshot(snap => {
@@ -103,6 +115,7 @@ function loadTournaments() {
     if (!calInstance) {
       initFullCalendar();
     } else {
+      resetAllCellColors();          // wipe stale colours before re-render
       calInstance.removeAllEvents();
       calInstance.addEventSource(buildFcEvents(_tournaments));
     }
@@ -478,8 +491,10 @@ function openEventDetail(fcEvent) {
   const editBtn = isEditor
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
-  const deleteBtn = isEditor
-    ? `<button class="det-delete-btn" onclick="deleteEventFromDetail('${calEsc(editTargetId)}')">
+  // Deadline chips are synthetic — deleting them would remove the whole parent
+  // tournament, which is confusing. Only show Delete on actual events.
+  const deleteBtn = (isEditor && !isDeadline)
+    ? `<button class="det-delete-btn" onclick="deleteEventFromDetail('${calEsc(editTargetId)}','${calEsc(t.title)}')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
         Delete
       </button>`
@@ -669,12 +684,14 @@ async function deleteEvent() {
 }
 
 // Delete directly from the detail modal (no edit modal needed)
-async function deleteEventFromDetail(eventId) {
+async function deleteEventFromDetail(eventId, eventTitle) {
   if (!eventId) return;
-  if (!confirm("Delete this event? This cannot be undone.")) return;
+  const label = eventTitle ? `"${eventTitle}"` : "this event";
+  if (!confirm(`Delete ${label}? This cannot be undone.`)) return;
   try {
     await calDb.collection("tournaments").doc(eventId).delete();
     closeEventDetail();
+    // Snapshot listener will call resetAllCellColors() + re-render automatically
   } catch (err) {
     alert("Could not delete event: " + err.message);
   }
