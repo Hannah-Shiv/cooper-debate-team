@@ -315,7 +315,20 @@
     }
 
     /* Minimum cell height */
-    .fc .fc-daygrid-day-frame { min-height: 80px !important; }
+    .fc .fc-daygrid-day-frame { min-height: 80px !important; position: relative !important; }
+
+    /* "Today" watermark — visible only when the cell has no event */
+    .cal-today-watermark {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255, 215, 0, 0.28);
+      pointer-events: none; user-select: none;
+      z-index: 0; white-space: nowrap;
+    }
 
     /* Event pills — JS controls bg; CSS ensures wrap + cursor */
     .fc .fc-event {
@@ -816,7 +829,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=16"></script>
+<script src="js/calendar.js?v=17"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>

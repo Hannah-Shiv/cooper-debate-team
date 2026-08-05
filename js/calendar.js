@@ -106,6 +106,9 @@ function resetAllCellColors() {
     td.style.setProperty("background", "#050e28", "important");
     td.style.removeProperty("opacity");
   });
+  // Re-show "Today" watermark — eventDidMount will hide it again if an event still exists
+  const wm = container.querySelector(".cal-today-watermark");
+  if (wm) wm.style.display = "";
 }
 
 // ── Firestore: load tournaments ───────────────────────────────
@@ -289,8 +292,17 @@ function initFullCalendar() {
       return { html: `<span class="cal-evt-title">${title}</span>` };
     },
     dayCellDidMount: info => {
-      // Force royal blue on every day cell — CSS alone can't beat FC's inline styles
       info.el.style.setProperty("background", "#050e28", "important");
+      // Inject "Today" watermark — hidden by eventDidMount if an event lands here
+      if (info.isToday) {
+        const frame = info.el.querySelector(".fc-daygrid-day-frame");
+        if (frame && !frame.querySelector(".cal-today-watermark")) {
+          const lbl = document.createElement("div");
+          lbl.className = "cal-today-watermark";
+          lbl.textContent = "Today";
+          frame.appendChild(lbl);
+        }
+      }
     },
     viewDidMount: info => {
       localStorage.setItem("calLastView", info.view.type);
@@ -311,6 +323,12 @@ function initFullCalendar() {
       const isPast     = info.event.start < new Date();
 
       if (viewType === "dayGridMonth") {
+        // Hide "Today" watermark if an event falls on today's cell
+        const todayCell = document.querySelector("td.fc-daygrid-day.fc-day-today");
+        if (todayCell) {
+          const wm = todayCell.querySelector(".cal-today-watermark");
+          if (wm) wm.style.display = "none";
+        }
         // Color every day in the range (handles multi-day tournaments)
         const container = document.getElementById("cal-container");
         colorDayCells(
