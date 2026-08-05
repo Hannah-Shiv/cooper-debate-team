@@ -492,7 +492,10 @@
       min-height: 260px;
       text-decoration: none;
       transition: transform 0.25s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, border-color 0.25s;
-      display: flex; flex-direction: column;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: 14px;
+      align-content: start;
       position: relative;
       overflow: hidden;
     }
@@ -518,17 +521,24 @@
         0 0    70px rgba(var(--ca),0.14);
     }
 
-    .portal-card-icon { font-size: 2.65rem; margin-bottom: 14px; display: block;
-      filter: drop-shadow(0 0 10px rgba(var(--ca),0.6)); }
+    .portal-card-icon {
+      font-size: 2.1rem; display: block; margin-bottom: 0;
+      grid-column: 1; grid-row: 1; align-self: center;
+      filter: drop-shadow(0 0 10px rgba(var(--ca),0.6));
+    }
     .portal-card-title {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 1.1rem; font-weight: 700; color: #fff;
-      margin-bottom: 7px; letter-spacing: 0.02em;
+      margin-bottom: 0; letter-spacing: 0.02em;
+      grid-column: 2; grid-row: 1; align-self: center;
     }
-    .portal-card-desc { font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+    .portal-card-desc {
+      font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6;
+      grid-column: 1 / -1; margin-top: 8px;
+    }
     .portal-card-status {
-      display: inline-block; margin-top: auto; padding-top: 14px;
-      align-self: flex-start;
+      display: inline-block; margin-top: 10px;
+      grid-column: 1 / -1; align-self: start;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.84rem; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; padding: 5px 12px;
@@ -549,6 +559,7 @@
       background: rgba(0,0,0,0.22);
       border-radius: 6px;
       border: 1px solid rgba(var(--ca),0.18);
+      grid-column: 1 / -1;
     }
     .card-file-count {
       font-family: 'Josefin Sans', sans-serif;
@@ -564,6 +575,7 @@
     .card-files {
       display: none; flex-direction: column;
       gap: 4px; margin-bottom: 10px;
+      grid-column: 1 / -1;
     }
     .card-file-item {
       display: flex; flex-direction: column; gap: 2px;
@@ -668,11 +680,16 @@
     }
 
     /* ── Full-width card (Tournament Calendar) ──────────── */
-    .portal-card.portal-card-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 20px; }
-    .portal-card.portal-card-wide .portal-card-icon { font-size: 2.2rem; margin-bottom: 0; flex-shrink: 0; }
-    .portal-card.portal-card-wide .portal-card-title { margin-bottom: 4px; }
-    .portal-card.portal-card-wide .portal-card-desc  { margin: 0; }
-    .portal-card.portal-card-wide .portal-card-status { margin-top: 0; margin-left: auto; flex-shrink: 0; }
+    .portal-card.portal-card-wide {
+      grid-column: 1 / -1;
+      grid-template-columns: auto auto 1fr auto;
+      grid-template-rows: 1fr;
+      align-items: center; gap: 0 20px;
+    }
+    .portal-card.portal-card-wide .portal-card-icon  { grid-column: 1; grid-row: 1; font-size: 2.2rem; }
+    .portal-card.portal-card-wide .portal-card-title { grid-column: 2; grid-row: 1; white-space: nowrap; }
+    .portal-card.portal-card-wide .portal-card-desc  { grid-column: 3; grid-row: 1; margin: 0; }
+    .portal-card.portal-card-wide .portal-card-status { grid-column: 4; grid-row: 1; margin: 0; white-space: nowrap; }
 
     /* ── 3-column grid for Coming Soon ──────────────────── */
     .portal-cards-3col { grid-template-columns: repeat(3, 1fr); }
