@@ -388,7 +388,7 @@ function renderNextBanner() {
   if (!banner) return;
   const now = new Date();
   const upcoming = _tournaments
-    .filter(t => t.type !== "deadline" && t.start?.toDate && t.start.toDate() > now)
+    .filter(t => t.type === "tournament" && t.start?.toDate && t.start.toDate() > now)
     .sort((a, b) => a.start.toDate() - b.start.toDate());
   if (!upcoming.length) { banner.style.display = "none"; return; }
   const next    = upcoming[0];
