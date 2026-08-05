@@ -309,8 +309,19 @@ function renderTimeline(docs) {
 
 function tlScroll(dir) {
   const wrap = document.getElementById("ann-tl-wrap");
-  if (wrap) { wrap.scrollBy({ left: dir * 340, behavior: "smooth" }); }
-  setTimeout(updateArrows, 350);
+  if (!wrap) return;
+  const start  = wrap.scrollLeft;
+  const target = Math.max(0, Math.min(start + dir * 340, wrap.scrollWidth - wrap.clientWidth));
+  const duration = 500;
+  const t0 = performance.now();
+  function ease(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2; }
+  function step(now) {
+    const p = Math.min((now - t0) / duration, 1);
+    wrap.scrollLeft = start + (target - start) * ease(p);
+    if (p < 1) requestAnimationFrame(step);
+    else updateArrows();
+  }
+  requestAnimationFrame(step);
 }
 
 function updateArrows() {

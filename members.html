@@ -194,11 +194,17 @@
 
     /* ── Announcement timeline ───────────────────────────── */
     .ann-view-all-link {
-      margin-left: auto; font-size: 0.75rem; color: #e8b84b;
-      text-decoration: none; letter-spacing: 0.05em;
-      font-family: 'Josefin Sans', sans-serif; font-weight: 600;
+      margin-left: auto; font-size: 0.7rem; color: #e8b84b;
+      text-decoration: none; letter-spacing: 0.08em; white-space: nowrap;
+      font-family: 'Josefin Sans', sans-serif; font-weight: 700;
+      border: 1px solid rgba(232,184,75,0.45); border-radius: 50px;
+      padding: 4px 13px; background: rgba(232,184,75,0.07);
+      transition: background 0.18s, border-color 0.18s;
     }
-    .ann-view-all-link:hover { text-decoration: underline; }
+    .ann-view-all-link:hover {
+      background: rgba(232,184,75,0.18); border-color: rgba(232,184,75,0.8);
+      text-decoration: none;
+    }
 
     /* Nav wrapper with arrow buttons flanking the scroll track */
     .ann-tl-nav { display: flex; align-items: center; gap: 8px; }
@@ -405,7 +411,7 @@
     /* ── Floating Post Button (FAB) ──────────────────────── */
     .post-fab {
       position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 999;
-      width: 88px; height: 88px;
+      width: 108px; height: 90px;
       background: none; border: none;
       cursor: pointer; padding: 0;
       display: none; align-items: center; justify-content: center;
@@ -776,9 +782,9 @@
       .dashboard-header { flex-direction: column; align-items: flex-start; }
       .portal-cards { grid-template-columns: 1fr; }
       .dashboard-header-left h1 { font-size: 2rem; }
-      .post-fab { right: 12px; left: auto; top: 50%; transform: translateY(-50%); width: 72px; height: 72px; }
+      .post-fab { right: 10px; left: auto; top: 50%; transform: translateY(-50%); width: 86px; height: 72px; }
       .post-fab:hover { transform: translateY(-50%) scale(1.09); }
-      .post-fab svg { width: 72px; height: 72px; }
+      .post-fab svg { width: 86px; height: 72px; }
       .modal-box { padding: 20px 18px 24px; }
     }
 
@@ -1046,36 +1052,34 @@
 
   <!-- ── Floating Post Button (coach/captain only) ──────────── -->
   <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement" aria-label="Post Announcement">
-    <svg viewBox="0 0 88 88" width="88" height="88" xmlns="http://www.w3.org/2000/svg">
+    <!-- Speech-bubble callout: rounded rect body + rightward tail -->
+    <svg viewBox="0 0 108 90" width="108" height="90" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="fab-bg" cx="40%" cy="38%" r="65%">
+        <linearGradient id="fab-bg" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stop-color="#c40000"/>
-          <stop offset="100%" stop-color="#850000"/>
-        </radialGradient>
-        <!-- Top arc: r=27, well inside the edge -->
-        <path id="fab-top-arc" d="M 17,44 A 27,27 0 0,1 71,44"/>
-        <!-- Bottom arc: r=30, well inside the edge -->
-        <path id="fab-bot-arc" d="M 14,44 A 30,30 0 0,0 74,44"/>
+          <stop offset="100%" stop-color="#820000"/>
+        </linearGradient>
       </defs>
-      <!-- Red circle, no border -->
-      <circle cx="44" cy="44" r="43" fill="url(#fab-bg)"/>
-      <!-- "POST" arched along top -->
-      <text font-family="'Josefin Sans', sans-serif" font-size="10" font-weight="900"
-            letter-spacing="3" fill="white" text-anchor="middle">
-        <textPath href="#fab-top-arc" startOffset="50%">POST</textPath>
-      </text>
-      <!-- Megaphone icon: left-center of circle -->
-      <g transform="translate(31,29) scale(1.25)" fill="none" stroke="white" stroke-width="1.8"
+      <!-- Callout path: rounded rect (0-92 wide, 0-90 tall) + tail pointing right at center -->
+      <path d="M 16,2 H 76 Q 92,2 92,16 V 36 L 106,45 L 92,54 V 74 Q 92,88 76,88 H 16 Q 2,88 2,74 V 16 Q 2,2 16,2 Z"
+            fill="url(#fab-bg)"/>
+      <!-- POST label -->
+      <text x="47" y="21" font-family="'Josefin Sans', sans-serif" font-size="11" font-weight="900"
+            letter-spacing="3.5" fill="white" text-anchor="middle">POST</text>
+      <!-- Divider line -->
+      <line x1="14" y1="28" x2="80" y2="28" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <!-- Megaphone icon centred in body -->
+      <g transform="translate(33,33) scale(1.15)" fill="none" stroke="white" stroke-width="1.9"
          stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
       </g>
-      <!-- "ANNOUNCEMENT" arched along bottom -->
-      <text font-family="'Josefin Sans', sans-serif" font-size="9.5" font-weight="800"
-            letter-spacing="0.8" fill="white" text-anchor="middle">
-        <textPath href="#fab-bot-arc" startOffset="50%">ANNOUNCEMENT</textPath>
-      </text>
+      <!-- Divider line -->
+      <line x1="14" y1="62" x2="80" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+      <!-- ANNOUNCEMENT label -->
+      <text x="47" y="78" font-family="'Josefin Sans', sans-serif" font-size="7.5" font-weight="800"
+            letter-spacing="1.5" fill="white" text-anchor="middle">ANNOUNCEMENT</text>
     </svg>
   </button>
 
