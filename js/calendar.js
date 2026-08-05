@@ -27,18 +27,26 @@ let _editingId   = null;    // doc ID being edited (null = new)
 let _countdownInterval = null;
 let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
+// ── Auth helpers (mirrors members-auth.js; members-auth.js is not loaded here) ──
+function isApprovedMember(email) {
+  return Array.isArray(APPROVED_MEMBERS) &&
+    APPROVED_MEMBERS.some(m => m.toLowerCase() === email.toLowerCase());
+}
+
 // ── On page load ─────────────────────────────────────────────
-// Scripts load at end of <body> so DOMContentLoaded has already fired —
-// run the auth check immediately instead of waiting for the event.
 calAuth.onAuthStateChanged(user => {
-  if (user && isApprovedMember(user.email)) {
-    showCalState("loading");
-    initCalDashboard(user.email);
-  } else if (user) {
-    calAuth.signOut();
-    window.location.href = "members.html";
-  } else {
-    // Not signed in — send back to portal login
+  try {
+    if (user && isApprovedMember(user.email)) {
+      showCalState("loading");
+      initCalDashboard(user.email);
+    } else if (user) {
+      calAuth.signOut();
+      window.location.href = "members.html";
+    } else {
+      window.location.href = "members.html";
+    }
+  } catch (err) {
+    console.error("[Calendar] auth callback error:", err);
     window.location.href = "members.html";
   }
 });
