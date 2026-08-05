@@ -616,6 +616,53 @@
       white-space: nowrap; font-variant-numeric: tabular-nums;
     }
 
+    /* ── Resource card pin (Phase D) ────────────────────── */
+    .card-pin { grid-column: 1 / -1; }
+    .card-pin-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; margin-bottom: 6px; border-radius: 7px;
+      background: rgba(232,184,75,0.1);
+      border: 1px solid rgba(232,184,75,0.32);
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .card-pin-row:hover { background: rgba(232,184,75,0.2); }
+    .card-pin-icon  { font-size: 0.85rem; flex-shrink: 0; }
+    .card-pin-label {
+      font-size: 0.82rem; font-family: 'Josefin Sans', sans-serif;
+      color: #e8b84b; font-weight: 700;
+      flex: 1; min-width: 0; overflow: hidden;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .card-pin-badge {
+      font-size: 0.55rem; font-weight: 900; letter-spacing: 0.1em;
+      background: rgba(232,184,75,0.2); color: #e8b84b;
+      border: 1px solid rgba(232,184,75,0.4);
+      padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .card-pin-edit {
+      background: none; border: none; cursor: pointer;
+      color: rgba(232,184,75,0.5); font-size: 0.8rem;
+      padding: 0 2px; line-height: 1; flex-shrink: 0;
+      transition: color 0.15s;
+    }
+    .card-pin-edit:hover { color: rgba(232,184,75,0.9); }
+    .card-pin-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      margin: 6px 0 4px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(232,184,75,0.6);
+      background: none; border: 1px dashed rgba(232,184,75,0.28);
+      border-radius: 6px; padding: 4px 10px; cursor: pointer;
+      transition: color 0.15s, border-color 0.15s, background 0.15s;
+    }
+    .card-pin-btn:hover {
+      color: #e8b84b; border-color: rgba(232,184,75,0.6);
+      background: rgba(232,184,75,0.07);
+    }
+
     /* ── What's New This Week panel ─────────────────────── */
     #whats-new-panel {
       display: none;
@@ -969,6 +1016,7 @@
           <div class="portal-card-title">Evidence &amp; Case Briefs</div>
           <div class="portal-card-desc">Full evidence files, case briefs, and research for the current resolution.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -978,6 +1026,7 @@
           <div class="portal-card-title">Flows &amp; Notes</div>
           <div class="portal-card-desc">Round flows and post-round notes from practice and tournaments.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -987,6 +1036,7 @@
           <div class="portal-card-title">Research Materials</div>
           <div class="portal-card-desc">Background reading, source documents, and topic analysis.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -996,6 +1046,7 @@
           <div class="portal-card-title">Practice Schedule</div>
           <div class="portal-card-desc">Weekly practice times, locations, and any changes from Coach Konde.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -1005,6 +1056,7 @@
           <div class="portal-card-title">Assignments</div>
           <div class="portal-card-desc">Current assignments, due dates, and submission instructions.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -1014,6 +1066,7 @@
           <div class="portal-card-title">Tournament Prep Docs</div>
           <div class="portal-card-desc">Coach strategy notes, pairings, registration info, and what to expect.</div>
           <div class="card-drive-meta"></div>
+          <div class="card-pin"></div>
           <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
@@ -1110,6 +1163,37 @@
       </text>
     </svg>
   </button>
+
+  <!-- ── Pin File Modal (coach / captain only) ─────────────── -->
+  <div class="modal-overlay" id="pin-modal" style="display:none" onclick="if(event.target===this)closePinModal()">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span id="pin-modal-title">📌 Pin a File</span>
+        <button class="modal-close-btn" onclick="closePinModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="announce-form" style="padding-top:8px">
+        <div class="form-group">
+          <label class="form-label" for="pin-link">Google Drive Link *</label>
+          <input class="form-input" id="pin-link" type="url" placeholder="https://docs.google.com/…"/>
+        </div>
+        <div class="form-group" style="margin-top:12px">
+          <label class="form-label" for="pin-label-input">Display Label *</label>
+          <input class="form-input" id="pin-label-input" type="text" placeholder="e.g. Current Tournament Brief" maxlength="80"/>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
+          <button id="pin-remove-btn" class="ann-det-delete" style="display:none;margin-right:auto"
+                  onclick="removePinForCard()">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+            Remove Pin
+          </button>
+          <button class="modal-close-btn" style="position:static;background:rgba(255,255,255,0.07);padding:8px 16px;border-radius:8px;font-size:0.8rem;font-family:'Josefin Sans',sans-serif;letter-spacing:0.05em" onclick="closePinModal()">Cancel</button>
+          <button onclick="savePinForCard()" style="background:rgba(232,184,75,0.14);border:1px solid rgba(232,184,75,0.4);color:#e8b84b;font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:8px;cursor:pointer;transition:background 0.15s">Save Pin</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ── Post Announcement Modal ───────────────────────────── -->
   <div class="modal-overlay" id="post-modal" style="display:none" onclick="if(event.target===this)closePostModal()">

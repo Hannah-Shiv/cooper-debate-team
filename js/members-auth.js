@@ -165,6 +165,9 @@ function showDashboard(email) {
   // Start real-time announcements listener
   loadAnnouncements();
 
+  // Load pinned files for resource cards (Phase D)
+  loadResourcePins();
+
   // Request notification permission (prompts browser dialog once)
   requestNotificationPermission();
 
@@ -677,4 +680,109 @@ function escHtml(str) {
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
+}
+
+// ── Resource card pins (Phase D) ─────────────────────────────
+let _activePinCardId = null;
+let _pins = {}; // cardId → { driveLink, label, pinnedBy, … }
+
+function loadResourcePins() {
+  db.collection("resource-pins").onSnapshot(snap => {
+    _pins = {};
+    snap.forEach(doc => { _pins[doc.id] = doc.data(); });
+    renderAllPins();
+  }, err => console.warn("resource-pins listener:", err.message));
+}
+
+function renderAllPins() {
+  const isEditor = currentUserRole === "coach" || currentUserRole === "captain";
+  document.querySelectorAll(".portal-card[id^='drive-']").forEach(card => {
+    const cardId = card.id;
+    const pinEl  = card.querySelector(".card-pin");
+    if (!pinEl) return;
+    const pin = _pins[cardId];
+    pinEl.innerHTML = "";
+
+    if (pin) {
+      // Clickable pinned-file row — stopPropagation so the card <a> doesn't fire
+      const row = document.createElement("a");
+      row.className = "card-pin-row";
+      row.href      = pin.driveLink;
+      row.target    = "_blank";
+      row.rel       = "noopener noreferrer";
+      row.addEventListener("click", e => e.stopPropagation());
+      row.innerHTML = `
+        <span class="card-pin-icon">📌</span>
+        <span class="card-pin-label">${escHtml(pin.label)}</span>
+        <span class="card-pin-badge">Pinned</span>
+        ${isEditor
+          ? `<button class="card-pin-edit" title="Edit pin"
+               onclick="event.stopPropagation();event.preventDefault();openPinModal('${escHtml(cardId)}')">✎</button>`
+          : ""}
+      `;
+      pinEl.appendChild(row);
+    } else if (isEditor) {
+      const btn = document.createElement("button");
+      btn.className   = "card-pin-btn";
+      btn.textContent = "📌 Pin a file";
+      btn.addEventListener("click", e => {
+        e.stopPropagation();
+        e.preventDefault();
+        openPinModal(cardId);
+      });
+      pinEl.appendChild(btn);
+    }
+  });
+}
+
+function openPinModal(cardId) {
+  _activePinCardId = cardId;
+  const cardEl    = document.getElementById(cardId);
+  const cardTitle = cardEl?.querySelector(".portal-card-title")?.textContent?.trim() || "Card";
+  const pin       = _pins[cardId];
+  document.getElementById("pin-modal-title").textContent = `📌 Pin a File — ${cardTitle}`;
+  document.getElementById("pin-link").value        = pin?.driveLink || "";
+  document.getElementById("pin-label-input").value = pin?.label    || "";
+  const removeBtn = document.getElementById("pin-remove-btn");
+  if (removeBtn) removeBtn.style.display = pin ? "inline-flex" : "none";
+  document.getElementById("pin-modal").style.display = "flex";
+}
+
+function closePinModal() {
+  document.getElementById("pin-modal").style.display = "none";
+  _activePinCardId = null;
+}
+
+async function savePinForCard() {
+  const cardId    = _activePinCardId;
+  const driveLink = document.getElementById("pin-link").value.trim();
+  const label     = document.getElementById("pin-label-input").value.trim();
+  if (!cardId || !driveLink || !label) {
+    alert("Please fill in both the Drive link and a display label.");
+    return;
+  }
+  try {
+    await db.collection("resource-pins").doc(cardId).set({
+      driveLink,
+      label,
+      pinnedBy:     currentUserEmail,
+      pinnedByRole: currentUserRole,
+      pinnedAt:     firebase.firestore.FieldValue.serverTimestamp(),
+    });
+    closePinModal();
+  } catch (err) {
+    alert("Could not save pin: " + err.message);
+  }
+}
+
+async function removePinForCard() {
+  const cardId = _activePinCardId;
+  if (!cardId) return;
+  if (!confirm("Remove this pinned file?")) return;
+  try {
+    await db.collection("resource-pins").doc(cardId).delete();
+    closePinModal();
+  } catch (err) {
+    alert("Could not remove pin: " + err.message);
+  }
 }
