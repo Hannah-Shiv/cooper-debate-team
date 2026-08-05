@@ -286,6 +286,125 @@
     .status-live, .status-soon { background:none; color:inherit; border:none;
       background: rgba(var(--ca),0.15); color: rgb(var(--ca)); border: 1px solid rgba(var(--ca),0.35); }
 
+    /* ── Drive API: card meta row ───────────────────────── */
+    .card-drive-meta {
+      display: none; align-items: center; justify-content: space-between;
+      gap: 8px; margin: 10px 0 8px;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.22);
+      border-radius: 6px;
+      border: 1px solid rgba(var(--ca),0.18);
+    }
+    .card-file-count {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em;
+      color: rgb(var(--ca)); opacity: 0.9;
+    }
+    .card-updated {
+      font-size: 0.75rem; color: rgba(180,200,230,0.5);
+      font-family: 'Josefin Sans', sans-serif;
+    }
+
+    /* ── Drive API: latest files list ───────────────────── */
+    .card-files {
+      display: none; flex-direction: column;
+      gap: 4px; margin-bottom: 10px;
+    }
+    .card-file-item {
+      display: flex; align-items: center; gap: 7px;
+      padding: 5px 8px; border-radius: 6px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.05);
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+      cursor: pointer;
+    }
+    .card-file-item:hover {
+      background: rgba(var(--ca),0.12);
+      border-color: rgba(var(--ca),0.3);
+    }
+    .card-file-icon { font-size: 0.85rem; flex-shrink: 0; }
+    .card-file-name {
+      font-size: 0.78rem; color: rgba(210,225,245,0.82);
+      font-family: 'Josefin Sans', sans-serif;
+      flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .card-file-new {
+      font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em;
+      background: rgb(var(--ca)); color: #000;
+      padding: 1px 5px; border-radius: 3px;
+      flex-shrink: 0; line-height: 1.5;
+    }
+    .card-file-age {
+      font-size: 0.7rem; color: rgba(180,200,230,0.4);
+      font-family: 'Josefin Sans', sans-serif;
+      flex-shrink: 0; white-space: nowrap;
+    }
+
+    /* ── What's New This Week panel ─────────────────────── */
+    #whats-new-panel {
+      display: none;
+      background: linear-gradient(135deg, rgba(15,40,90,0.85) 0%, rgba(10,28,65,0.9) 100%);
+      border: 1px solid rgba(212,160,23,0.35);
+      border-top: 3px solid rgba(212,160,23,0.65);
+      border-radius: 12px;
+      padding: 20px 22px 16px;
+      margin-bottom: 32px;
+    }
+    .wn-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 14px;
+    }
+    .wn-header-icon { font-size: 1.2rem; }
+    .wn-header-title {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.13em;
+      text-transform: uppercase; color: #e8b84b;
+    }
+    .wn-header-sub {
+      font-size: 0.72rem; color: rgba(180,200,230,0.5);
+      font-family: 'Josefin Sans', sans-serif; margin-left: auto;
+    }
+    #whats-new-list {
+      display: none; flex-direction: column; gap: 4px;
+    }
+    .wn-item {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 10px; border-radius: 7px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.05);
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .wn-item:hover {
+      background: rgba(212,160,23,0.1);
+      border-color: rgba(212,160,23,0.3);
+    }
+    .wn-icon  { font-size: 0.9rem; flex-shrink: 0; }
+    .wn-name  {
+      font-size: 0.82rem; color: rgba(220,235,255,0.85);
+      font-family: 'Josefin Sans', sans-serif;
+      flex: 1; min-width: 0;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .wn-section {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
+      color: rgba(212,160,23,0.7); text-transform: uppercase;
+      flex-shrink: 0; white-space: nowrap;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+    .wn-age {
+      font-size: 0.7rem; color: rgba(180,200,230,0.4);
+      font-family: 'Josefin Sans', sans-serif;
+      flex-shrink: 0; white-space: nowrap;
+    }
+    #whats-new-empty {
+      display: none; font-size: 0.82rem;
+      color: rgba(180,200,230,0.4); text-align: center;
+      padding: 8px 0; font-family: 'Josefin Sans', sans-serif;
+    }
+
     /* ── Coming soon card (non-link) ────────────────────── */
     .portal-card.no-link { cursor: default; opacity: 0.5; filter: saturate(0.4); }
     .portal-card.no-link:hover {
@@ -588,6 +707,17 @@
     <!-- ── RIGHT COLUMN: resources ────────────────────────── -->
     <div class="dashboard-right">
 
+    <!-- What's New This Week -->
+    <div id="whats-new-panel">
+      <div class="wn-header">
+        <span class="wn-header-icon">✨</span>
+        <span class="wn-header-title">What's New This Week</span>
+        <span class="wn-header-sub">Last 7 days</span>
+      </div>
+      <div id="whats-new-list"></div>
+      <div id="whats-new-empty">No new files in the last 7 days.</div>
+    </div>
+
     <!-- Resources & Documents -->
     <div class="portal-section">
       <div class="portal-section-title">Resources &amp; Documents</div>
@@ -597,6 +727,8 @@
           <span class="portal-card-icon">📋</span>
           <div class="portal-card-title">Evidence &amp; Case Briefs</div>
           <div class="portal-card-desc">Full evidence files, case briefs, and research for the current resolution.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -604,6 +736,8 @@
           <span class="portal-card-icon">📝</span>
           <div class="portal-card-title">Flows &amp; Notes</div>
           <div class="portal-card-desc">Round flows and post-round notes from practice and tournaments.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -611,6 +745,8 @@
           <span class="portal-card-icon">🔬</span>
           <div class="portal-card-title">Research Materials</div>
           <div class="portal-card-desc">Background reading, source documents, and topic analysis.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -626,6 +762,8 @@
           <span class="portal-card-icon">📅</span>
           <div class="portal-card-title">Practice Schedule</div>
           <div class="portal-card-desc">Weekly practice times, locations, and any changes from Coach Konde.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -633,6 +771,8 @@
           <span class="portal-card-icon">✏️</span>
           <div class="portal-card-title">Assignments</div>
           <div class="portal-card-desc">Current assignments, due dates, and submission instructions.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -648,6 +788,8 @@
           <span class="portal-card-icon">🎯</span>
           <div class="portal-card-title">Tournament Prep Docs</div>
           <div class="portal-card-desc">Coach strategy notes, pairings, registration info, and what to expect.</div>
+          <div class="card-drive-meta"></div>
+          <div class="card-files"></div>
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
@@ -706,6 +848,7 @@
 <!-- Portal data & auth logic -->
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
+<script src="js/drive-api.js"></script>
 <script src="js/members-auth.js"></script>
 
 <!-- Dome nav -->

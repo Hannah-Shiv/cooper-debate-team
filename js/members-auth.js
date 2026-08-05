@@ -172,6 +172,9 @@ function showDashboard(email) {
   registerFcmToken(currentUserEmail);
 
   showState("dashboard");
+
+  // Load Drive file data for resource cards (Phase C)
+  if (typeof loadDriveData === 'function') loadDriveData();
 }
 
 // ── Post announcement ─────────────────────────────────────────
