@@ -110,19 +110,34 @@ function loadTournaments() {
   }, err => console.warn("tournaments listener:", err.message));
 }
 
+// ── Event colour/time defaults by type ───────────────────────
+function evtColors(type) {
+  switch (type) {
+    case "practice": return { bg: "#65a30d", text: "#000000" };
+    case "meeting":  return { bg: "#ffd700", text: "#000000" };
+    default:         return { bg: "#991b1b", text: "#ffffff" }; // tournament
+  }
+}
+function evtDefaultTimes(type) {
+  switch (type) {
+    case "practice": return { start: "14:30", end: "16:30" };
+    case "meeting":  return { start: "14:30", end: "15:30" };
+    default:         return { start: "08:00", end: "17:00" }; // tournament
+  }
+}
+
 // ── Build FullCalendar event objects ──────────────────────────
 function buildFcEvents(docs) {
   const events = [];
   docs.forEach(t => {
-    const isDeadline = t.type === "deadline";
+    const colors  = evtColors(t.type);
 
     let startDate = t.start?.toDate ? t.start.toDate() : new Date(t.start);
     let endDate   = t.end?.toDate   ? t.end.toDate()   : (t.end ? new Date(t.end) : null);
     let allDay    = t.allDay !== false;
 
-    // If the tournament has saved start/end times, make it a timed event so
-    // week/day views render a coloured block spanning those hours.
-    if (!isDeadline && t.startTime && t.endTime) {
+    // If start/end times are saved, make it a timed event for week/day views.
+    if (t.startTime && t.endTime) {
       const [sh, sm] = t.startTime.split(":").map(Number);
       const [eh, em] = t.endTime.split(":").map(Number);
       startDate = new Date(startDate); startDate.setHours(sh, sm, 0, 0);
@@ -138,21 +153,21 @@ function buildFcEvents(docs) {
       start:           startDate,
       end:             endDate,
       allDay:          allDay,
-      backgroundColor: isDeadline ? "#ffd700" : "#991b1b",
-      borderColor:     isDeadline ? "#ffd700" : "#991b1b",
-      textColor:       isDeadline ? "#000000" : "#ffffff",
+      backgroundColor: colors.bg,
+      borderColor:     colors.bg,
+      textColor:       colors.text,
       extendedProps:   t,
     });
 
     // Background event — fills the full column width in week/day views
-    if (!isDeadline && !allDay && startDate && endDate) {
+    if (!allDay && startDate && endDate) {
       events.push({
         id:              t.id + "__bg",
         start:           startDate,
         end:             endDate,
         allDay:          false,
         display:         "background",
-        backgroundColor: "#991b1b",
+        backgroundColor: colors.bg,
         extendedProps:   { _isBg: true },
       });
     }
@@ -250,29 +265,28 @@ function initFullCalendar() {
 
       const viewType   = info.view.type;
       const isDeadline = info.event.id.endsWith("__deadline");
-      const cellColor  = isDeadline ? "#ffd700" : "#991b1b";
-      const textColor  = isDeadline ? "#000000" : "#ffffff";
+      // Deadline chips keep yellow; all other events use type-based colors
+      const colors     = isDeadline ? { bg: "#ffd700", text: "#000000" }
+                                    : evtColors(info.event.extendedProps.type);
       const isPast     = info.event.start < new Date();
 
       if (viewType === "dayGridMonth") {
-        // Color the entire td cell
         const cell = info.el.closest("td.fc-daygrid-day");
         if (cell) {
-          cell.style.setProperty("background", cellColor, "important");
+          cell.style.setProperty("background", colors.bg, "important");
           if (isPast) cell.style.setProperty("opacity", "0.6", "important");
         }
-        // Pill is transparent — text floats on the colored cell
         info.el.style.setProperty("background", "transparent", "important");
         info.el.style.setProperty("border",     "none",        "important");
         info.el.style.setProperty("box-shadow", "none",        "important");
-        info.el.style.setProperty("color",      textColor,     "important");
+        info.el.style.setProperty("color",      colors.text,   "important");
 
       } else if (viewType === "timeGridWeek" || viewType === "timeGridDay") {
-        // Background event fills full column width — regular event shows text only
+        // Background event fills full column — regular event shows text only
         info.el.style.setProperty("background",   "transparent", "important");
         info.el.style.setProperty("border",       "none",        "important");
         info.el.style.setProperty("box-shadow",   "none",        "important");
-        info.el.style.setProperty("color",        textColor,     "important");
+        info.el.style.setProperty("color",        colors.text,   "important");
         if (isPast) info.el.style.setProperty("opacity", "0.65", "important");
       }
     }
@@ -434,8 +448,14 @@ function openEventDetail(fcEvent) {
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
 
-  const typeLabel = isDeadline ? "⚠️ Entry Deadline" : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
-  const accentColor = isDeadline ? "#b45309" : "#cc0000";
+  const typeLabel = isDeadline  ? "⚠️ Entry Deadline"
+    : t.type === "practice"     ? "🟢 Practice"
+    : t.type === "meeting"      ? "📋 Meeting"
+    : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
+  const accentColor = isDeadline ? "#b45309"
+    : t.type === "practice"     ? "#65a30d"
+    : t.type === "meeting"      ? "#b45309"
+    : "#cc0000";
 
   document.getElementById("det-modal-body").innerHTML = `
     <div class="det-type-badge" style="background:${accentColor}22;color:${accentColor};border-color:${accentColor}55">${typeLabel}</div>
@@ -490,16 +510,18 @@ function openPostModal(editId) {
   _editingId = editId ? editId.replace(/__deadline$/, "") : null;
   const existing = _editingId ? _tournaments.find(t => t.id === _editingId) : null;
 
+  const type = existing?.type || "tournament";
+  const defaults = evtDefaultTimes(type);
+
   // Populate form
   document.getElementById("evt-title").value      = existing?.title || "";
-  document.getElementById("evt-type").value       = existing?.type  || "tournament";
+  document.getElementById("evt-type").value       = type;
   document.getElementById("evt-start").value      = existing?.start ? toInputDate(existing.start) : "";
   document.getElementById("evt-end").value        = existing?.end   ? toInputDate(existing.end)   : "";
-  document.getElementById("evt-start-time").value = existing?.startTime || "08:00";
-  document.getElementById("evt-end-time").value   = existing?.endTime   || "16:30";
+  document.getElementById("evt-start-time").value = existing?.startTime || defaults.start;
+  document.getElementById("evt-end-time").value   = existing?.endTime   || defaults.end;
   document.getElementById("evt-virtual").checked  = existing?.isVirtual || false;
   document.getElementById("evt-location").value   = existing?.location || "";
-  document.getElementById("evt-deadline").value   = existing?.entryDeadline ? toInputDate(existing.entryDeadline) : "";
   document.getElementById("evt-schedule").value   = existing?.scheduleLink  || "";
   document.getElementById("evt-notes").value      = existing?.notes || "";
 
@@ -507,10 +529,21 @@ function openPostModal(editId) {
   if (deleteBtn) deleteBtn.style.display = _editingId ? "inline-flex" : "none";
 
   document.getElementById("post-modal-title").textContent =
-    _editingId ? "✎ Edit Event" : "📅 Post Tournament Event";
+    _editingId ? "✎ Edit Event" : "📅 Post Event";
 
   toggleVirtualLabel();
   document.getElementById("post-event-modal").style.display = "flex";
+}
+
+// Auto-fill default times when event type changes
+function onTypeChange() {
+  const type     = document.getElementById("evt-type").value;
+  const defaults = evtDefaultTimes(type);
+  // Only overwrite if user hasn't already set custom times
+  const startEl = document.getElementById("evt-start-time");
+  const endEl   = document.getElementById("evt-end-time");
+  startEl.value = defaults.start;
+  endEl.value   = defaults.end;
 }
 
 function closePostModal() {
@@ -538,7 +571,6 @@ async function saveEvent() {
   const endTime   = document.getElementById("evt-end-time").value   || "16:30";
   const isVirtual = document.getElementById("evt-virtual").checked;
   const location  = document.getElementById("evt-location").value.trim();
-  const deadlineStr  = document.getElementById("evt-deadline").value;
   const scheduleLink = document.getElementById("evt-schedule").value.trim();
   const notes     = document.getElementById("evt-notes").value.trim();
 
@@ -560,9 +592,6 @@ async function saveEvent() {
     endTime,
     isVirtual,
     location:  location || null,
-    entryDeadline: deadlineStr
-      ? firebase.firestore.Timestamp.fromDate(new Date(deadlineStr + "T23:59:59"))
-      : null,
     scheduleLink: scheduleLink || null,
     notes:     notes || null,
     postedBy:  calUserEmail,
