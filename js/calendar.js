@@ -140,6 +140,11 @@ function buildFcEvents(docs) {
 }
 
 // ── Initialise FullCalendar ───────────────────────────────────
+const VALID_VIEWS = ["dayGridMonth", "timeGridWeek", "timeGridDay", "listYear"];
+const _savedView  = VALID_VIEWS.includes(localStorage.getItem("calLastView"))
+  ? localStorage.getItem("calLastView")
+  : "dayGridMonth";
+
 function initFullCalendar() {
   const el = document.getElementById("cal-container");
   if (!el || typeof FullCalendar === "undefined") {
@@ -147,7 +152,7 @@ function initFullCalendar() {
     return;
   }
   calInstance = new FullCalendar.Calendar(el, {
-    initialView:  "dayGridMonth",
+    initialView:  _savedView,
     headerToolbar: {
       left:   "prev,next today",
       center: "title",
@@ -198,6 +203,9 @@ function initFullCalendar() {
       }
       // Default rendering for all other events / views
       return true;
+    },
+    viewDidMount: info => {
+      localStorage.setItem("calLastView", info.view.type);
     },
     eventDidMount: info => {
       // Soft strikethrough style for past events
