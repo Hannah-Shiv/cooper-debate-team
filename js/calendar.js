@@ -212,14 +212,23 @@ function initFullCalendar() {
       const title = calEsc(info.event.title || "");
       return { html: `<span style="margin-right:3px">${icon}</span><span>${title}</span>` };
     },
+    dayCellDidMount: info => {
+      // Force royal blue on every day cell — CSS alone can't beat FC's inline styles
+      info.el.style.setProperty("background", "#1e44a0", "important");
+    },
     viewDidMount: info => {
       localStorage.setItem("calLastView", info.view.type);
+      // Force dark-navy on column header cells
+      setTimeout(() => {
+        const hdrs = info.el.querySelectorAll(".fc-col-header-cell");
+        hdrs.forEach(th => th.style.setProperty("background", "#050e28", "important"));
+      }, 0);
     },
     eventDidMount: info => {
       if (info.view.type !== "dayGridMonth") return;
 
       const isDeadline = info.event.id.endsWith("__deadline");
-      // Deep saturated colours that read well with white text
+      // Deep saturated colours that read well with bright white text
       const cellColor = isDeadline ? "#4c1d95" : "#991b1b";
 
       // ── Color the entire td cell ──────────────────────────
@@ -231,7 +240,7 @@ function initFullCalendar() {
         }
       }
 
-      // ── Make event pill invisible so white text floats cleanly ──
+      // ── Make event pill invisible so white text floats on colored cell ──
       info.el.style.setProperty("background", "transparent", "important");
       info.el.style.setProperty("border",     "none",        "important");
       info.el.style.setProperty("box-shadow", "none",        "important");
