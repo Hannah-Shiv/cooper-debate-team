@@ -116,6 +116,21 @@ function buildFcEvents(docs) {
       borderColor:     isDeadline ? "#d97706" : (t.isVirtual ? "#3b82f6" : "#cc0000"),
       extendedProps:   t,
     });
+
+    // Synthetic entry-deadline event — shown as its own amber chip on the calendar
+    if (t.entryDeadline) {
+      const dlDate = t.entryDeadline?.toDate ? t.entryDeadline.toDate() : new Date(t.entryDeadline);
+      events.push({
+        id:              t.id + "__deadline",
+        title:           "⚠️ " + t.title + " — Entry Deadline",
+        start:           dlDate,
+        end:             null,
+        allDay:          true,
+        backgroundColor: "#b45309",
+        borderColor:     "#d97706",
+        extendedProps:   t,   // points to parent tournament so its modal opens
+      });
+    }
   });
   return events;
 }
