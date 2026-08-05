@@ -121,8 +121,8 @@ function buildFcEvents(docs) {
       start: t.start?.toDate ? t.start.toDate() : new Date(t.start),
       end:   t.end?.toDate   ? t.end.toDate()   : (t.end ? new Date(t.end) : null),
       allDay: t.allDay !== false,
-      backgroundColor: isDeadline ? "#5b21b6" : (t.isVirtual ? "#1d4ed8" : "#b30000"),
-      borderColor:     isDeadline ? "#7c3aed" : (t.isVirtual ? "#3b82f6" : "#cc0000"),
+      backgroundColor: isDeadline ? "#5b21b6" : "#b30000",
+      borderColor:     isDeadline ? "#7c3aed" : "#cc0000",
       extendedProps:   t,
     });
 
@@ -276,6 +276,20 @@ function openEventDetail(fcEvent) {
   } else if (!t.allDay && !isDeadline) {
     dateHtml += ` at ${fmtTime(start)}`;
   }
+  if (!isDeadline && (t.startTime || t.endTime)) {
+    const fmt12 = s => {
+      if (!s) return "";
+      const [h, m] = s.split(":").map(Number);
+      const ampm = h >= 12 ? "PM" : "AM";
+      const h12  = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2,"0")} ${ampm} EST`;
+    };
+    if (t.startTime && t.endTime) {
+      dateHtml += ` &nbsp;·&nbsp; ${fmt12(t.startTime)} – ${fmt12(t.endTime)}`;
+    } else if (t.startTime) {
+      dateHtml += ` &nbsp;·&nbsp; Starts ${fmt12(t.startTime)}`;
+    }
+  }
 
   // Countdown
   const now  = new Date();
@@ -362,8 +376,8 @@ function openEventDetail(fcEvent) {
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(fcEvent.id)}')">✎ Edit</button>`
     : "";
 
-  const typeLabel = isDeadline ? "⚠️ Entry Deadline" : (t.isVirtual ? "🖥 Virtual Tournament" : "🏆 Tournament");
-  const accentColor = isDeadline ? "#7c3aed" : (t.isVirtual ? "#3b82f6" : "#cc0000");
+  const typeLabel = isDeadline ? "⚠️ Entry Deadline" : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
+  const accentColor = isDeadline ? "#7c3aed" : "#cc0000";
 
   document.getElementById("det-modal-body").innerHTML = `
     <div class="det-type-badge" style="background:${accentColor}22;color:${accentColor};border-color:${accentColor}55">${typeLabel}</div>
@@ -418,15 +432,17 @@ function openPostModal(editId) {
   const existing = _editingId ? _tournaments.find(t => t.id === _editingId) : null;
 
   // Populate form
-  document.getElementById("evt-title").value    = existing?.title || "";
-  document.getElementById("evt-type").value     = existing?.type  || "tournament";
-  document.getElementById("evt-start").value    = existing?.start ? toInputDate(existing.start) : "";
-  document.getElementById("evt-end").value      = existing?.end   ? toInputDate(existing.end)   : "";
-  document.getElementById("evt-virtual").checked = existing?.isVirtual || false;
-  document.getElementById("evt-location").value  = existing?.location || "";
-  document.getElementById("evt-deadline").value  = existing?.entryDeadline ? toInputDate(existing.entryDeadline) : "";
-  document.getElementById("evt-schedule").value  = existing?.scheduleLink  || "";
-  document.getElementById("evt-notes").value     = existing?.notes || "";
+  document.getElementById("evt-title").value      = existing?.title || "";
+  document.getElementById("evt-type").value       = existing?.type  || "tournament";
+  document.getElementById("evt-start").value      = existing?.start ? toInputDate(existing.start) : "";
+  document.getElementById("evt-end").value        = existing?.end   ? toInputDate(existing.end)   : "";
+  document.getElementById("evt-start-time").value = existing?.startTime || "08:00";
+  document.getElementById("evt-end-time").value   = existing?.endTime   || "16:30";
+  document.getElementById("evt-virtual").checked  = existing?.isVirtual || false;
+  document.getElementById("evt-location").value   = existing?.location || "";
+  document.getElementById("evt-deadline").value   = existing?.entryDeadline ? toInputDate(existing.entryDeadline) : "";
+  document.getElementById("evt-schedule").value   = existing?.scheduleLink  || "";
+  document.getElementById("evt-notes").value      = existing?.notes || "";
 
   const deleteBtn = document.getElementById("evt-delete-btn");
   if (deleteBtn) deleteBtn.style.display = _editingId ? "inline-flex" : "none";
@@ -455,15 +471,17 @@ function toInputDate(ts) {
 }
 
 async function saveEvent() {
-  const title    = document.getElementById("evt-title").value.trim();
-  const type     = document.getElementById("evt-type").value;
-  const startStr = document.getElementById("evt-start").value;
-  const endStr   = document.getElementById("evt-end").value;
+  const title     = document.getElementById("evt-title").value.trim();
+  const type      = document.getElementById("evt-type").value;
+  const startStr  = document.getElementById("evt-start").value;
+  const endStr    = document.getElementById("evt-end").value;
+  const startTime = document.getElementById("evt-start-time").value || "08:00";
+  const endTime   = document.getElementById("evt-end-time").value   || "16:30";
   const isVirtual = document.getElementById("evt-virtual").checked;
   const location  = document.getElementById("evt-location").value.trim();
-  const deadlineStr = document.getElementById("evt-deadline").value;
+  const deadlineStr  = document.getElementById("evt-deadline").value;
   const scheduleLink = document.getElementById("evt-schedule").value.trim();
-  const notes    = document.getElementById("evt-notes").value.trim();
+  const notes     = document.getElementById("evt-notes").value.trim();
 
   if (!title || !startStr) {
     alert("Event title and start date are required.");
@@ -479,6 +497,8 @@ async function saveEvent() {
     start:     firebase.firestore.Timestamp.fromDate(startDate),
     end:       endDate ? firebase.firestore.Timestamp.fromDate(endDate) : null,
     allDay:    true,
+    startTime,
+    endTime,
     isVirtual,
     location:  location || null,
     entryDeadline: deadlineStr
