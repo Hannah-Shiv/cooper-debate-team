@@ -221,71 +221,76 @@
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
     }
-    /* Per-card accent colour (RGB triplet, defaults to gold) */
+    /* ── Per-card accent + background (RGB triplet for glow) */
     .portal-card { --ca: 212,160,23; }
-    #drive-evidence-link   { --ca: 16,185,129;  }  /* emerald   */
-    #drive-flows-link      { --ca: 56,189,248;  }  /* sky blue  */
-    #drive-research-link   { --ca: 167,139,250; }  /* purple    */
-    #drive-schedule-link   { --ca: 34,211,238;  }  /* cyan      */
-    #drive-assignments-link{ --ca: 251,146,60;  }  /* orange    */
-    #drive-tournament-link { --ca: 244,114,182; }  /* rose      */
+
+    #drive-evidence-link    { --ca:45,212,191;  background:linear-gradient(145deg,#0a3d3d 0%,#052525 100%); }
+    #drive-flows-link       { --ca:96,165,250;  background:linear-gradient(145deg,#0d1f5c 0%,#070d38 100%); }
+    #drive-research-link    { --ca:192,132,252; background:linear-gradient(145deg,#2a0f5e 0%,#160740 100%); }
+    #drive-schedule-link    { --ca:52,211,153;  background:linear-gradient(145deg,#063520 0%,#031d10 100%); }
+    #drive-assignments-link { --ca:251,113,133; background:linear-gradient(145deg,#4a0e1e 0%,#2a060f 100%); }
+    #drive-tournament-link  { --ca:251,146,60;  background:linear-gradient(145deg,#3d1908 0%,#220d03 100%); }
 
     .portal-card {
-      background: linear-gradient(140deg, rgba(16,54,110,0.85) 0%, rgba(10,36,78,0.95) 100%);
-      border: 1px solid rgba(var(--ca),0.22);
-      border-left: 3px solid rgba(var(--ca),0.55);
-      border-radius: 12px; padding: 24px;
+      background: linear-gradient(145deg, #0f2d5e 0%, #081a3d 100%); /* gold default */
+      border: 1px solid rgba(var(--ca),0.28);
+      border-left: 3px solid rgba(var(--ca),0.7);
+      border-radius: 14px; padding: 26px;
       text-decoration: none;
-      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+      transition: transform 0.25s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, border-color 0.25s;
       display: block;
       position: relative;
       overflow: hidden;
     }
+    /* inner corner glow using card's own colour */
     .portal-card::before {
       content: '';
       position: absolute; inset: 0;
-      background: radial-gradient(ellipse at top left, rgba(var(--ca),0.08) 0%, transparent 65%);
+      background: radial-gradient(ellipse 80% 60% at 0% 0%, rgba(var(--ca),0.13) 0%, transparent 70%);
       pointer-events: none;
+      transition: opacity 0.25s;
     }
+    .portal-card:hover::before { opacity: 1.6; }
+
     .portal-card:hover {
-      border-color: rgba(var(--ca),0.65);
+      border-color: rgba(var(--ca),0.95);
       border-left-color: rgb(var(--ca));
-      transform: translateY(-4px);
+      transform: translateY(-7px) scale(1.015);
       box-shadow:
-        0 0 0 1px rgba(var(--ca),0.22),
-        0 16px 48px rgba(0,0,0,0.5),
-        0 0 28px rgba(var(--ca),0.18);
+        0 0 0 1px   rgba(var(--ca),0.45),
+        0 8px  20px rgba(0,0,0,0.45),
+        0 20px 55px rgba(0,0,0,0.55),
+        0 0    35px rgba(var(--ca),0.32),
+        0 0    70px rgba(var(--ca),0.14);
     }
-    .portal-card-icon  { font-size: 2.2rem; margin-bottom: 14px; display: block; filter: drop-shadow(0 2px 8px rgba(var(--ca),0.45)); }
+
+    .portal-card-icon { font-size: 2.4rem; margin-bottom: 14px; display: block;
+      filter: drop-shadow(0 0 10px rgba(var(--ca),0.6)); }
     .portal-card-title {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 1rem; font-weight: 700; color: #ffffff;
+      font-size: 1rem; font-weight: 700; color: #fff;
       margin-bottom: 7px; letter-spacing: 0.02em;
     }
-    .portal-card-desc  { font-size: 0.92rem; color: rgba(180,200,230,0.75); line-height: 1.6; }
+    .portal-card-desc { font-size: 0.92rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
     .portal-card-status {
       display: inline-block; margin-top: 14px;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.76rem; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; padding: 5px 12px;
       border-radius: 50px;
+      background: rgba(var(--ca),0.15);
+      color: rgb(var(--ca));
+      border: 1px solid rgba(var(--ca),0.35);
     }
-    .status-live {
-      background: rgba(134,239,172,0.12); color: #6ee7a0;
-      border: 1px solid rgba(134,239,172,0.3);
-    }
-    .status-soon {
-      background: rgba(147,197,253,0.1); color: #7dd3fc;
-      border: 1px solid rgba(147,197,253,0.25);
-    }
+    /* Override status colours — card accent drives them now */
+    .status-live, .status-soon { background:none; color:inherit; border:none;
+      background: rgba(var(--ca),0.15); color: rgb(var(--ca)); border: 1px solid rgba(var(--ca),0.35); }
 
     /* ── Coming soon card (non-link) ────────────────────── */
-    .portal-card.no-link { cursor: default; opacity: 0.6; }
+    .portal-card.no-link { cursor: default; opacity: 0.5; filter: saturate(0.4); }
     .portal-card.no-link:hover {
-      transform: none;
-      box-shadow: none;
-      border-color: rgba(212,160,23,0.22);
-      border-left-color: rgba(212,160,23,0.5);
+      transform: none; box-shadow: none;
+      border-color: rgba(var(--ca),0.28);
     }
 
     /* ── Access denied ──────────────────────────────────── */
