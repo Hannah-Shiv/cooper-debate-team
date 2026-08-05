@@ -214,7 +214,7 @@ function initFullCalendar() {
     },
     dayCellDidMount: info => {
       // Force royal blue on every day cell — CSS alone can't beat FC's inline styles
-      info.el.style.setProperty("background", "#1e44a0", "important");
+      info.el.style.setProperty("background", "#050e28", "important");
     },
     viewDidMount: info => {
       localStorage.setItem("calLastView", info.view.type);
