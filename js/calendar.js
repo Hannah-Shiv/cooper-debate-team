@@ -115,31 +115,50 @@ function buildFcEvents(docs) {
   const events = [];
   docs.forEach(t => {
     const isDeadline = t.type === "deadline";
+
+    let startDate = t.start?.toDate ? t.start.toDate() : new Date(t.start);
+    let endDate   = t.end?.toDate   ? t.end.toDate()   : (t.end ? new Date(t.end) : null);
+    let allDay    = t.allDay !== false;
+
+    // If the tournament has saved start/end times, make it a timed event so
+    // week/day views render a coloured block spanning those hours.
+    if (!isDeadline && t.startTime && t.endTime) {
+      const [sh, sm] = t.startTime.split(":").map(Number);
+      const [eh, em] = t.endTime.split(":").map(Number);
+      startDate = new Date(startDate); startDate.setHours(sh, sm, 0, 0);
+      const base = endDate ? new Date(endDate) : new Date(startDate);
+      base.setHours(eh, em, 0, 0);
+      endDate = base;
+      allDay  = false;
+    }
+
     events.push({
-      id:    t.id,
-      title: t.title,
-      start: t.start?.toDate ? t.start.toDate() : new Date(t.start),
-      end:   t.end?.toDate   ? t.end.toDate()   : (t.end ? new Date(t.end) : null),
-      allDay: t.allDay !== false,
-      backgroundColor: isDeadline ? "#5b21b6" : "#b30000",
-      borderColor:     isDeadline ? "#7c3aed" : "#cc0000",
+      id:              t.id,
+      title:           t.title,
+      start:           startDate,
+      end:             endDate,
+      allDay:          allDay,
+      backgroundColor: isDeadline ? "#ffd700" : "#991b1b",
+      borderColor:     isDeadline ? "#ffd700" : "#991b1b",
+      textColor:       isDeadline ? "#000000" : "#ffffff",
       extendedProps:   t,
     });
 
-    // Synthetic entry-deadline event — shown as its own amber chip on the calendar
+    // Synthetic entry-deadline chip
     if (t.entryDeadline) {
       const dlDate = t.entryDeadline?.toDate ? t.entryDeadline.toDate() : new Date(t.entryDeadline);
       const isPast = dlDate < new Date();
       if (!isPast || _showPastDeadlines) {
         events.push({
           id:              t.id + "__deadline",
-          title:           "⚠️ " + t.title + " — Entry Deadline",
+          title:           t.title + " — Entry Deadline",
           start:           dlDate,
           end:             null,
           allDay:          true,
-          backgroundColor: "#5b21b6",
-          borderColor:     "#7c3aed",
-          extendedProps:   t,   // points to parent tournament so its modal opens
+          backgroundColor: "#ffd700",
+          borderColor:     "#ffd700",
+          textColor:       "#000000",
+          extendedProps:   t,
         });
       }
     }
@@ -194,23 +213,8 @@ function initFullCalendar() {
     events:       buildFcEvents(_tournaments),
     eventClick:   info => openEventDetail(info.event),
     eventContent: info => {
-      const isDeadlineChip = info.event.id.endsWith("__deadline");
-      const viewType = info.view.type;
-      const isListView  = viewType.startsWith("list");
-      const isWeekGrid  = viewType === "timeGridWeek";
-      const isMonthGrid = viewType === "dayGridMonth";
-
-      const isDayGrid  = viewType === "timeGridDay";
-
-      if (isDeadlineChip) {
-        // Deadline chip — just "⚠ ENTRY DEADLINE", clean and scannable
-        return { html: `<span class="fc-deadline-chip-badge">⚠ Entry Deadline</span>` };
-      }
-      // Tournament / virtual events — add icon prefix
-      const isVirtual = info.event.extendedProps.isVirtual;
-      const icon = isVirtual ? "🖥" : "🏆";
       const title = calEsc(info.event.title || "");
-      return { html: `<span style="margin-right:3px">${icon}</span><span>${title}</span>` };
+      return { html: `<span class="cal-evt-title">${title}</span>` };
     },
     dayCellDidMount: info => {
       // Force royal blue on every day cell — CSS alone can't beat FC's inline styles
@@ -225,26 +229,32 @@ function initFullCalendar() {
       }, 0);
     },
     eventDidMount: info => {
-      if (info.view.type !== "dayGridMonth") return;
-
+      const viewType  = info.view.type;
       const isDeadline = info.event.id.endsWith("__deadline");
-      // Deep saturated colours that read well with bright white text
-      const cellColor = isDeadline ? "#4c1d95" : "#991b1b";
+      const cellColor  = isDeadline ? "#ffd700" : "#991b1b";
+      const textColor  = isDeadline ? "#000000" : "#ffffff";
+      const isPast     = info.event.start < new Date();
 
-      // ── Color the entire td cell ──────────────────────────
-      const cell = info.el.closest("td.fc-daygrid-day");
-      if (cell) {
-        cell.style.setProperty("background", cellColor, "important");
-        if (info.event.start < new Date()) {
-          cell.style.setProperty("opacity", "0.6", "important");
+      if (viewType === "dayGridMonth") {
+        // Color the entire td cell
+        const cell = info.el.closest("td.fc-daygrid-day");
+        if (cell) {
+          cell.style.setProperty("background", cellColor, "important");
+          if (isPast) cell.style.setProperty("opacity", "0.6", "important");
         }
-      }
+        // Make pill transparent so text floats on colored cell
+        info.el.style.setProperty("background", "transparent", "important");
+        info.el.style.setProperty("border",     "none",        "important");
+        info.el.style.setProperty("box-shadow", "none",        "important");
+        info.el.style.setProperty("color",      textColor,     "important");
 
-      // ── Make event pill invisible so white text floats on colored cell ──
-      info.el.style.setProperty("background", "transparent", "important");
-      info.el.style.setProperty("border",     "none",        "important");
-      info.el.style.setProperty("box-shadow", "none",        "important");
-      info.el.style.setProperty("color",      "#ffffff",     "important");
+      } else if (viewType === "timeGridWeek" || viewType === "timeGridDay") {
+        // Color the timed block itself
+        info.el.style.setProperty("background",   cellColor, "important");
+        info.el.style.setProperty("border-color", cellColor, "important");
+        info.el.style.setProperty("color",        textColor, "important");
+        if (isPast) info.el.style.setProperty("opacity", "0.65", "important");
+      }
     }
   });
   calInstance.render();
