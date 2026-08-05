@@ -425,13 +425,29 @@ function hideAnnounceStatus() {
 // ── Utility helpers ───────────────────────────────────────────
 function timeAgo(timestamp) {
   if (!timestamp) return "";
-  const then = timestamp.toDate ? timestamp.toDate().getTime() : Date.now();
-  const diff = Math.floor((Date.now() - then) / 1000);
-  if (diff < 60)    return "just now";
-  if (diff < 3600)  return Math.floor(diff / 60)   + "m ago";
-  if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
-  const d = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const d    = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+  const diff = Math.floor((Date.now() - d.getTime()) / 1000);
+
+  if (diff < 60)   return "just now";
+  if (diff < 3600) return Math.floor(diff / 60) + "m ago";
+
+  const timeStr = d.toLocaleTimeString("en-US", {
+    hour:     "numeric",
+    minute:   "2-digit",
+    timeZone: "America/New_York"
+  });
+
+  const today  = new Date().toLocaleDateString("en-US", { timeZone: "America/New_York" });
+  const postDay = d.toLocaleDateString("en-US",  { timeZone: "America/New_York" });
+
+  if (today === postDay) return timeStr + " EST";
+
+  const dateStr = d.toLocaleDateString("en-US", {
+    month:    "short",
+    day:      "numeric",
+    timeZone: "America/New_York"
+  });
+  return dateStr + " at " + timeStr + " EST";
 }
 
 function escHtml(str) {
