@@ -226,20 +226,19 @@
       padding: 18px 20px 10px;
     }
     /* ── Gold connecting line ─────────────────────────────
-       Line sits at pip centre = padding-top(18) + date-height(28) + pip-gap(6) + pip-radius(9) = 61px */
+       Pip centre = padding-top(18) + date-height(28) + pip-radius(6.5) = 52.5px ≈ 53px */
     .ann-tl-line {
-      position: absolute; top: 61px; left: 20px; right: 20px;
+      position: absolute; top: 53px; left: 20px; right: 20px;
       height: 2px;
-      background: linear-gradient(to right,
-        rgba(200,140,0,0.25) 0%, #e8b84b 15%, #f5cc5a 50%, #e8b84b 85%, rgba(200,140,0,0.25) 100%);
-      box-shadow: 0 0 10px rgba(232,184,75,0.45), 0 0 30px rgba(232,184,75,0.15);
+      background: #e8b84b;
+      box-shadow: 0 0 10px rgba(232,184,75,0.55), 0 0 28px rgba(232,184,75,0.2);
       pointer-events: none;
     }
 
     .ann-tl-dot {
       display: flex; flex-direction: column; align-items: center;
-      width: 100px; cursor: pointer; outline: none; position: relative;
-      padding: 0 4px; user-select: none;
+      width: 200px; cursor: pointer; outline: none; position: relative;
+      padding: 0 8px; user-select: none;
     }
     .ann-tl-dot:focus-visible { outline: 2px solid rgba(212,160,23,0.6); outline-offset: 4px; border-radius: 6px; }
 
@@ -261,34 +260,27 @@
       transition: color 0.15s; text-transform: uppercase;
     }
     .ann-dot-pip {
-      width: 18px; height: 18px; border-radius: 50%; border: 2px solid;
+      width: 13px; height: 13px; border-radius: 50%; border: 2px solid;
       position: relative; z-index: 2; flex-shrink: 0;
       transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
     }
     .ann-dot-time {
-      margin-top: 6px;
-      font-size: 0.76rem; font-weight: 600;
+      margin-top: 8px;
+      font-size: 0.88rem; font-weight: 700;
       font-family: 'Josefin Sans', sans-serif;
-      color: rgba(180,210,255,0.5); white-space: nowrap; text-align: center;
-      transition: color 0.15s;
+      color: rgba(180,210,255,0.55); white-space: nowrap; text-align: center;
+      transition: color 0.15s; letter-spacing: 0.03em;
     }
-    .ann-dot-label {
-      margin-top: 6px;
-      font-size: 0.64rem; font-family: 'Josefin Sans', sans-serif;
-      color: rgba(150,180,225,0.35); text-align: center; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; width: 92px;
-      transition: color 0.15s;
-    }
+    /* Title label removed — no element rendered */
+    .ann-dot-label { display: none; }
 
     /* Hover / active glow */
     .ann-tl-dot:hover .ann-dot-pip,
-    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.65); }
+    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.45); }
     .ann-tl-dot:hover .ann-dot-date,
     .ann-tl-dot.active .ann-dot-date { color: rgba(240,250,255,0.95); }
     .ann-tl-dot:hover .ann-dot-time,
-    .ann-tl-dot.active .ann-dot-time { color: rgba(215,235,255,0.8); }
-    .ann-tl-dot:hover .ann-dot-label,
-    .ann-tl-dot.active .ann-dot-label { color: rgba(210,230,255,0.7); }
+    .ann-tl-dot.active .ann-dot-time { color: rgba(215,235,255,0.85); }
 
     /* ── Category pip colours ─────────────────────────────
        Normal  = bright lime green
@@ -302,8 +294,8 @@
       box-shadow: 0 0 0 3px rgba(163,230,53,0.2);
     }
     .ann-pip-important {
-      border-color: #f87171; background: #f87171;
-      box-shadow: 0 0 0 3px rgba(248,113,113,0.22);
+      border-color: #b30000; background: #b30000;
+      box-shadow: 0 0 0 3px rgba(179,0,0,0.22);
       animation: impBlink 2s ease-in-out infinite;
     }
     .ann-tl-dot:hover  .ann-pip-normal,
@@ -311,7 +303,7 @@
     .ann-tl-dot:hover  .ann-pip-important,
     .ann-tl-dot.active .ann-pip-important {
       animation: none;
-      box-shadow: 0 0 0 5px rgba(248,113,113,0.3), 0 0 26px rgba(248,113,113,0.7);
+      box-shadow: 0 0 0 5px rgba(179,0,0,0.3), 0 0 26px rgba(179,0,0,0.75);
     }
 
     /* Legend */
@@ -342,7 +334,7 @@
       text-transform: uppercase; padding: 3px 9px; border-radius: 50px;
     }
     .ann-cat-normal    { background: rgba(163,230,53,0.15);  color: #a3e635; border: 1px solid rgba(163,230,53,0.35); }
-    .ann-cat-important { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.4); }
+    .ann-cat-important { background: rgba(179,0,0,0.15); color: #c00; border: 1px solid rgba(179,0,0,0.4); }
     /* legacy categories map to normal for old docs */
     .ann-cat-general, .ann-cat-practice, .ann-cat-tournament { background: rgba(163,230,53,0.12); color: #a3e635; border: 1px solid rgba(163,230,53,0.3); }
 
@@ -358,7 +350,7 @@
       transition: opacity 0.14s;
     }
     .ann-hover-tip.ann-tip-normal    { border-top: 2px solid rgba(163,230,53,0.65); }
-    .ann-hover-tip.ann-tip-important { border-top: 2px solid rgba(248,113,113,0.7); }
+    .ann-hover-tip.ann-tip-important { border-top: 2px solid rgba(179,0,0,0.8); }
     .tip-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; gap: 8px; }
     .tip-meta { font-size: 0.7rem; color: rgba(160,190,235,0.5); font-family: 'Josefin Sans', sans-serif; white-space: nowrap; }
     .tip-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.97rem; color: #fff; margin-bottom: 8px; line-height: 1.3; }

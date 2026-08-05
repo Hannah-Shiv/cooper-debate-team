@@ -333,8 +333,7 @@ function renderTimelineDot(id, data, index, isNewest) {
   const timeStr = ts
     ? ts.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })
     : "";
-  const title   = data.title || "";
-  const label   = title.length > 20 ? title.slice(0, 20) + "…" : title;
+  const title    = data.title || "";
   const newBadge = isNewest ? '<span class="ann-dot-new-badge">NEW</span>' : "";
   return `
     <div class="ann-tl-dot${isNewest ? " newest" : ""}" data-id="${id}" tabindex="0" role="button" aria-label="${escHtml(title)}">
@@ -342,7 +341,6 @@ function renderTimelineDot(id, data, index, isNewest) {
       <div class="ann-dot-date">${dateStr}</div>
       <div class="ann-dot-pip ann-pip-${catKey}"></div>
       <div class="ann-dot-time">${timeStr}</div>
-      <div class="ann-dot-label">${escHtml(label)}</div>
     </div>`;
 }
 
@@ -424,7 +422,7 @@ function openAnnDetModal(dotEl, id, data) {
   const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnDetModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
   const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
 
-  const catColors = { normal: "163,230,53", important: "239,68,68" };
+  const catColors = { normal: "163,230,53", important: "179,0,0" };
   m.style.setProperty("--det-ca", catColors[catKey] || "163,230,53");
 
   m.querySelector("#ann-det-modal-cat").innerHTML =
