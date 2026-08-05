@@ -29,7 +29,7 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 // ── Session state ─────────────────────────────────────────────
 let currentUserEmail  = "";
-let currentUserRole   = "member"; // "coach" | "mentor" | "member"
+let currentUserRole   = "member"; // "coach" | "captain" | "member"
 let unsubAnnouncements = null;
 
 // ── On page load ─────────────────────────────────────────────
@@ -148,18 +148,18 @@ function showDashboard(email) {
     if (currentUserRole === "coach") {
       badgeEl.textContent = "🛡️ Coach";
       badgeEl.style.cssText += ";background:rgba(212,160,23,0.22);border-color:rgba(212,160,23,0.5);color:var(--gold);";
-    } else if (currentUserRole === "mentor") {
-      badgeEl.textContent = "⭐ Mentor";
+    } else if (currentUserRole === "captain") {
+      badgeEl.textContent = "⭐ Captain";
       badgeEl.style.cssText += ";background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);color:#d8b4fe;";
     }
   }
 
-  // Show admin panel for coach + mentor
+  // Show admin panel for coach + captain
   const adminPanel = document.getElementById("admin-panel");
-  if (adminPanel && (currentUserRole === "coach" || currentUserRole === "mentor")) {
+  if (adminPanel && (currentUserRole === "coach" || currentUserRole === "captain")) {
     adminPanel.style.display = "";
     const titleEl = document.getElementById("admin-panel-title");
-    if (titleEl) titleEl.textContent = currentUserRole === "coach" ? "Coach Panel" : "Mentor Panel";
+    if (titleEl) titleEl.textContent = currentUserRole === "coach" ? "Coach Panel" : "Captain Panel";
   }
 
   // Start real-time announcements listener
@@ -316,7 +316,7 @@ function toggleNotifications() {
     return;
   }
   if (Notification.permission === "granted") {
-    alert("Notifications are on ✓\nYou'll see a pop-up whenever Coach or a mentor posts an announcement.");
+    alert("Notifications are on ✓\nYou'll see a pop-up whenever Coach or a Captain posts an announcement.");
     return;
   }
   if (Notification.permission === "denied") {
@@ -363,13 +363,13 @@ function renderAnnouncement(id, data) {
   const details   = data.details   ? `<div class="ann-details">${escHtml(data.details)}</div>` : "";
   const driveLink = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" rel="noopener" class="ann-drive-link">📎 Open Drive File →</a>` : "";
 
-  // Coach can delete any; mentor can delete their own
+  // Coach can delete any; captain can delete their own
   const canDelete = currentUserRole === "coach" || data.postedBy === currentUserEmail;
   const deleteBtn = canDelete
     ? `<button class="ann-delete-btn" onclick="deleteAnnouncement('${id}')" title="Delete">✕ Remove</button>`
     : "";
 
-  const posterLabel = data.postedByRole === "coach" ? "Coach" : "Mentor";
+  const posterLabel = data.postedByRole === "coach" ? "Coach" : "Captain";
 
   return `
     <div class="announcement-card" id="ann-${id}">

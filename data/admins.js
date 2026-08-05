@@ -4,13 +4,15 @@
 // Defines who has admin access in the Members Portal.
 //
 // ROLES:
-//   "coach"  — Can post announcements + delete any announcement
-//   "mentor" — Can post announcements + delete their own
+//   "coach"   — Full control: post + delete any announcement
+//   "captain" — Can post announcements + delete their own.
+//               Use for trusted high school mentors and key
+//               middle school students Coach Konde approves.
 //
-// HOW TO ADD AN ADMIN:
-//   { email: "email@example.com", role: "coach" },
+// HOW TO ADD:
+//   { email: "email@example.com", role: "captain" },
 //
-// HOW TO REMOVE AN ADMIN:
+// HOW TO REMOVE:
 //   Delete their line.
 //
 // Save and push to GitHub — changes are live instantly.
@@ -19,12 +21,12 @@
 const ADMIN_ROLES = [
 
   // ── Coach ────────────────────────────────────────────────
-  { email: "hannahbshiv@gmail.com", role: "coach" },   // testing — swap for pgkonde@fcps.edu when ready
-  // { email: "pgkonde@fcps.edu",   role: "coach" },   // Coach Konde (uncomment when ready)
+  // { email: "pgkonde@fcps.edu",      role: "coach" },     // Coach Konde (uncomment when ready)
+  { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
 
-  // ── Mentors ──────────────────────────────────────────────
-  // { email: "mentor1@gmail.com", role: "mentor" },
-  // { email: "mentor2@gmail.com", role: "mentor" },
+  // ── Captains ─────────────────────────────────────────────
+  // { email: "hannahbshiv@gmail.com", role: "captain" },   // testing captain view
+  // { email: "captain@fcps.edu",      role: "captain" },
 
 ];
 
