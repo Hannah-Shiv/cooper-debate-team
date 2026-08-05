@@ -25,7 +25,7 @@ let calInstance  = null;
 let _tournaments = [];      // raw Firestore docs
 let _editingId   = null;    // doc ID being edited (null = new)
 let _countdownInterval = null;
-let _showPastDeadlines = false;  // toggle for past entry-deadline chips
+let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
@@ -158,6 +158,7 @@ function initFullCalendar() {
         text: "Show past deadlines",
         click() {
           _showPastDeadlines = !_showPastDeadlines;
+          localStorage.setItem("showPastDeadlines", _showPastDeadlines);
           // Update button label
           const btn = el.querySelector(".fc-togglePastDeadlines-button");
           if (btn) btn.textContent = _showPastDeadlines ? "Hide past deadlines" : "Show past deadlines";
@@ -205,6 +206,12 @@ function initFullCalendar() {
     }
   });
   calInstance.render();
+
+  // Restore button label to match persisted preference
+  if (_showPastDeadlines) {
+    const btn = el.querySelector(".fc-togglePastDeadlines-button");
+    if (btn) btn.textContent = "Hide past deadlines";
+  }
 }
 
 // ── Next-tournament banner ─────────────────────────────────────
