@@ -62,58 +62,62 @@
     }
     .cal-header-left .back-link {
       display: inline-flex; align-items: center; gap: 4px;
-      color: rgba(255,255,255,0.4); font-size: 0.68rem; font-weight: 700;
+      color: rgba(255,255,255,0.75); font-size: 0.68rem; font-weight: 700;
       letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
       transition: color 0.15s;
     }
-    .cal-header-left .back-link:hover { color: rgba(255,255,255,0.8); }
+    .cal-header-left .back-link:hover { color: #ffffff; }
     .cal-header-left h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.8rem; font-weight: 700; color: var(--white);
+      font-size: 2.8rem; font-weight: 700; color: #ffffff;
       line-height: 1.1; margin: 6px 0 4px; letter-spacing: 0.01em;
     }
     .cal-header-left .cal-email {
-      font-size: 0.78rem; color: rgba(255,255,255,0.4); letter-spacing: 0.03em;
+      font-size: 0.78rem; color: rgba(255,255,255,0.75); letter-spacing: 0.03em;
     }
 
+    /* Header right — stacked: row1 = badge+signout, row2 = POST EVENT button */
     .cal-header-right {
-      display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 4px;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-top: 4px;
+    }
+    .cal-header-right-top {
+      display: flex; align-items: center; gap: 10px;
     }
 
     /* Role badge */
     .member-badge {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 5px 13px; border-radius: 50px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2);
       font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(255,255,255,0.55);
+      text-transform: uppercase; color: #ffffff;
     }
 
     /* Sign out button */
     .signout-btn {
       display: inline-flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.55); font-family: 'Josefin Sans', sans-serif;
+      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff; font-family: 'Josefin Sans', sans-serif;
       font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
       text-transform: uppercase; padding: 8px 16px; border-radius: 8px;
       cursor: pointer; transition: background 0.15s, color 0.15s;
     }
-    .signout-btn:hover { background: rgba(255,255,255,0.12); color: var(--white); }
-    .signout-btn svg { opacity: 0.6; }
+    .signout-btn:hover { background: rgba(255,255,255,0.15); color: var(--white); }
+    .signout-btn svg { opacity: 0.9; }
 
     /* ── POST / ADD EVENT button ──────────────────────────── */
     .post-event-btn {
       display: none; align-items: center; gap: 0;
       background: linear-gradient(135deg, #0a2a0a 0%, #113811 50%, #0d2f0d 100%);
       border: 1.5px solid #3a9a3a;
-      border-radius: 12px; padding: 10px 16px 10px 12px;
+      border-radius: 12px; padding: 10px 18px 10px 12px;
       cursor: pointer; transition: all 0.2s;
-      box-shadow: 0 0 18px rgba(58,180,58,0.25), inset 0 1px 0 rgba(100,220,100,0.1);
-      min-width: 180px;
+      box-shadow: 0 0 18px rgba(58,180,58,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
+      width: 100%;
     }
     .post-event-btn:hover {
       border-color: #5cbf5c;
-      box-shadow: 0 0 28px rgba(58,180,58,0.45), inset 0 1px 0 rgba(100,220,100,0.15);
+      box-shadow: 0 0 28px rgba(58,180,58,0.45), inset 0 1px 0 rgba(255,255,255,0.12);
       transform: translateY(-1px);
     }
     /* Wave bars on the left */
@@ -121,22 +125,22 @@
       display: flex; flex-direction: column; gap: 3px; margin-right: 10px; flex-shrink: 0;
     }
     .peb-waves span {
-      display: block; height: 2px; background: rgba(100,220,100,0.6);
+      display: block; height: 2px; background: rgba(255,255,255,0.75);
       border-radius: 2px;
     }
     .peb-waves span:nth-child(1) { width: 14px; animation: wave 1.2s ease-in-out infinite; }
     .peb-waves span:nth-child(2) { width: 10px; animation: wave 1.2s ease-in-out 0.2s infinite; }
     .peb-waves span:nth-child(3) { width: 16px; animation: wave 1.2s ease-in-out 0.4s infinite; }
     @keyframes wave {
-      0%, 100% { opacity: 0.4; transform: scaleX(1); }
+      0%, 100% { opacity: 0.45; transform: scaleX(1); }
       50%       { opacity: 1;   transform: scaleX(1.15); }
     }
 
     /* Calendar icon with checkmark */
     .peb-icon {
-      position: relative; flex-shrink: 0; margin-right: 10px;
+      position: relative; flex-shrink: 0; margin-right: 12px;
     }
-    .peb-icon svg.peb-cal { width: 28px; height: 28px; }
+    .peb-icon svg.peb-cal { width: 30px; height: 30px; }
     .peb-check {
       position: absolute; bottom: -3px; right: -5px;
       width: 14px; height: 14px; border-radius: 50%;
@@ -150,19 +154,19 @@
       display: flex; flex-direction: column; align-items: flex-start; flex: 1;
     }
     .peb-sub {
-      font-size: 0.55rem; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase; color: rgba(150,255,150,0.7); line-height: 1;
-      margin-bottom: 1px;
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 0.16em;
+      text-transform: uppercase; color: #ffffff; line-height: 1;
+      margin-bottom: 3px;
     }
     .peb-main {
-      font-size: 1rem; font-weight: 900; letter-spacing: 0.06em;
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 0.06em;
       text-transform: uppercase; color: #ffffff; line-height: 1;
     }
 
     /* Arrow */
     .peb-arrow {
-      font-size: 1.2rem; color: rgba(150,255,150,0.6);
-      margin-left: 8px; font-weight: 700; flex-shrink: 0;
+      font-size: 1.4rem; color: #ffffff;
+      margin-left: 10px; font-weight: 700; flex-shrink: 0;
     }
 
     /* ── Next Tournament Banner ───────────────────────────── */
@@ -171,32 +175,34 @@
       background: linear-gradient(90deg, rgba(12,25,65,0.95) 0%, rgba(8,18,50,0.95) 100%);
       border: 1px solid rgba(232,184,75,0.3); border-radius: 10px;
       padding: 0; margin-bottom: 16px; overflow: hidden;
+      width: fit-content; max-width: 100%;
     }
     .next-trophy {
-      padding: 12px 16px; font-size: 1.2rem;
+      padding: 12px 14px; font-size: 1.2rem;
       background: rgba(232,184,75,0.08); border-right: 1px solid rgba(232,184,75,0.2);
       flex-shrink: 0;
     }
     .next-label {
       font-size: 0.58rem; font-weight: 900; letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--gold); padding: 12px 14px; border-right: 1px solid rgba(255,255,255,0.06);
-      flex-shrink: 0;
+      color: var(--gold); padding: 12px 12px; border-right: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0; white-space: nowrap;
     }
     .next-name {
-      font-size: 0.88rem; font-weight: 700; color: var(--white);
-      padding: 12px 16px; border-right: 1px solid rgba(255,255,255,0.06); flex: 1;
-      min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      font-size: 0.9rem; font-weight: 700; color: #ffffff;
+      padding: 12px 14px; border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+      white-space: nowrap;
     }
     .next-date {
       display: flex; align-items: center; gap: 6px;
-      font-size: 0.8rem; color: rgba(255,255,255,0.6);
-      padding: 12px 16px; border-right: 1px solid rgba(255,255,255,0.06); flex-shrink: 0;
+      font-size: 0.82rem; color: #ffffff; font-weight: 600;
+      padding: 12px 14px; border-right: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;
+      white-space: nowrap;
     }
     .next-countdown {
       display: flex; align-items: center; gap: 6px;
-      font-size: 0.72rem; font-weight: 700; color: var(--gold);
+      font-size: 0.75rem; font-weight: 700; color: var(--gold);
       background: rgba(232,184,75,0.1); border: 1px solid rgba(232,184,75,0.25);
-      padding: 5px 12px; border-radius: 20px; margin: 0 14px; flex-shrink: 0; white-space: nowrap;
+      padding: 6px 14px; border-radius: 20px; margin: 0 12px; flex-shrink: 0; white-space: nowrap;
     }
 
     /* ── Legend ──────────────────────────────────────────── */
@@ -207,7 +213,7 @@
     .leg-item {
       display: flex; align-items: center; gap: 7px;
       font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(255,255,255,0.45);
+      text-transform: uppercase; color: #ffffff;
     }
     .leg-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
 
@@ -288,7 +294,7 @@
     .fc .fc-col-header-cell-cushion {
       font-size: 0.6rem !important; font-weight: 900 !important;
       letter-spacing: 0.12em !important; text-transform: uppercase !important;
-      color: rgba(255,255,255,0.45) !important; text-decoration: none !important;
+      color: #ffffff !important; text-decoration: none !important;
       padding: 10px 0 !important;
     }
 
@@ -296,11 +302,11 @@
     .fc .fc-daygrid-day { background: var(--cell) !important; }
     .fc .fc-daygrid-day:hover { background: rgba(10,25,65,0.95) !important; }
     .fc .fc-day-today { background: rgba(232,184,75,0.06) !important; }
-    .fc .fc-day-other .fc-daygrid-day-number { opacity: 0.3 !important; }
+    .fc .fc-day-other .fc-daygrid-day-number { opacity: 0.35 !important; }
     .fc .fc-daygrid-day-number {
-      font-size: 0.78rem !important; font-weight: 600 !important;
-      color: rgba(255,255,255,0.7) !important; text-decoration: none !important;
-      padding: 6px 8px !important;
+      font-size: 1.05rem !important; font-weight: 700 !important;
+      color: #ffffff !important; text-decoration: none !important;
+      padding: 6px 10px !important;
     }
     .fc .fc-day-today .fc-daygrid-day-number {
       color: var(--gold) !important; font-weight: 900 !important;
@@ -592,31 +598,34 @@
           <p class="cal-email" id="cal-user-email"></p>
         </div>
         <div class="cal-header-right">
-          <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
-          <button class="signout-btn" onclick="calSignOut()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Sign Out
-          </button>
-          <!-- POST / ADD EVENT — coach/captain only -->
+          <!-- Row 1: role badge + sign out -->
+          <div class="cal-header-right-top">
+            <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
+            <button class="signout-btn" onclick="calSignOut()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+              Sign Out
+            </button>
+          </div>
+          <!-- Row 2: POST / ADD EVENT — coach/captain only -->
           <button class="post-event-btn" id="post-event-btn" onclick="openPostModal()">
             <div class="peb-waves"><span></span><span></span><span></span></div>
             <div class="peb-icon">
-              <!-- Calendar grid icon -->
+              <!-- Calendar grid icon — all white -->
               <svg class="peb-cal" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="4" width="24" height="22" rx="3" fill="rgba(60,180,60,0.25)" stroke="rgba(100,220,100,0.7)" stroke-width="1.5"/>
-                <rect x="2" y="4" width="24" height="7" rx="3" fill="rgba(60,180,60,0.4)"/>
-                <line x1="9" y1="2" x2="9" y2="7" stroke="rgba(150,255,150,0.8)" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="19" y1="2" x2="19" y2="7" stroke="rgba(150,255,150,0.8)" stroke-width="1.8" stroke-linecap="round"/>
-                <rect x="6"  y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.5)"/>
-                <rect x="12" y="14" width="4" height="3" rx="0.8" fill="rgba(60,180,60,0.7)"/>
-                <rect x="18" y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.5)"/>
-                <rect x="6"  y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.5)"/>
-                <rect x="12" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.5)"/>
-                <rect x="18" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.5)"/>
+                <rect x="2" y="4" width="24" height="22" rx="3" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
+                <rect x="2" y="4" width="24" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
+                <line x1="9" y1="2" x2="9" y2="7" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"/>
+                <line x1="19" y1="2" x2="19" y2="7" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"/>
+                <rect x="6"  y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
+                <rect x="12" y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.9)"/>
+                <rect x="18" y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
+                <rect x="6"  y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
+                <rect x="12" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
+                <rect x="18" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
               </svg>
               <div class="peb-check">
                 <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -745,7 +754,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=3"></script>
+<script src="js/calendar.js?v=4"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>

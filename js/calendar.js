@@ -245,13 +245,16 @@ function renderNextBanner() {
   const days    = Math.floor(diff / 86400000);
   const hours   = Math.floor((diff % 86400000) / 3600000);
   const dateStr = next.start.toDate().toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+  const dayWord  = days === 1 ? "1 day" : `${days} days`;
+  const hourWord = hours === 1 ? "1 hour" : `${hours} hours`;
+  const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
   banner.style.display = "flex";
   banner.innerHTML = `
     <span class="next-trophy">🏆</span>
     <span class="next-label">Next Tournament</span>
     <span class="next-name">${calEsc(next.title)}</span>
     <span class="next-date">📅 ${dateStr}</span>
-    <span class="next-countdown">⏱ ${days}d ${hours}h away</span>
+    <span class="next-countdown">⏱ ${countdownText}</span>
   `;
 }
 
