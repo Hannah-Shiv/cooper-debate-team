@@ -2,6 +2,18 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // ── Helper: is the caller a known coach? ─────────────────────────────────
+    // The email comes from the verified Firebase Auth token, not from the client.
+    // Update this list whenever coach accounts change (same workflow as admins.js).
+    function isCoach() {
+      return request.auth != null &&
+        request.auth.token.email != null &&
+        request.auth.token.email.lower() in [
+          'pgkonde@fcps.edu',        // Coach Konde
+          'hannahbshiv@gmail.com'    // temp coach for testing
+        ];
+    }
+
     // Announcements — any signed-in member can read
     // Write access (coach/captain only) is enforced in app logic
     match /announcements/{docId} {
@@ -28,5 +40,13 @@ service cloud.firestore {
       allow read:  if request.auth != null;
       allow write: if request.auth != null;
     }
+
+    // Notification error log — written only by Cloud Functions (admin SDK bypasses rules).
+    // Readable only by coaches; no client writes permitted.
+    match /notification-errors/{docId} {
+      allow read:  if isCoach();
+      allow write: if false;  // Cloud Functions use admin SDK — rules don't apply
+    }
+
   }
 }

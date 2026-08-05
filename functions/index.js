@@ -5,7 +5,7 @@
 const { onDocumentCreated } = require("firebase-functions/v2/firestore");
 const { initializeApp }     = require("firebase-admin/app");
 const { getMessaging }      = require("firebase-admin/messaging");
-const { getFirestore }      = require("firebase-admin/firestore");
+const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 
 initializeApp();
 
@@ -63,12 +63,22 @@ async function sendToAllTokens(title, body, link, skipTokensForEmails = []) {
 
   if (staleTokens.length > 0) {
     const batch = db.batch();
+    const affectedEmails = [];
     tokensSnap.forEach(doc => {
       if (staleTokens.includes(doc.data().token)) {
+        affectedEmails.push(doc.id); // doc.id is the member's email
         batch.delete(doc.ref);
       }
     });
     await batch.commit();
+
+    // Log a notification-errors record so the coach can see who lost their token
+    await db.collection("notification-errors").add({
+      emails:      affectedEmails,
+      count:       affectedEmails.length,
+      trigger:     title,   // which notification exposed the stale token
+      detectedAt:  FieldValue.serverTimestamp(),
+    });
   }
 }
 

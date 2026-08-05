@@ -801,6 +801,38 @@
     }
     .admin-panel-sub { font-size:1.034rem; color:rgba(180,200,230,0.65); margin-top:3px; }
 
+    /* ── Notification Error Log (coach only) ─────────────── */
+    #notif-errors-panel { display:none; }
+    .ne-empty {
+      font-family:'Josefin Sans',sans-serif; font-size:0.9rem;
+      color:rgba(180,200,230,0.5); padding:12px 0; text-align:center;
+    }
+    .ne-list { display:flex; flex-direction:column; gap:10px; }
+    .ne-row {
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:8px 16px;
+      align-items:start;
+      background:rgba(6,18,44,0.6);
+      border:1px solid rgba(239,68,68,0.22);
+      border-left:3px solid rgba(239,68,68,0.55);
+      border-radius:8px; padding:12px 16px;
+      font-family:'Josefin Sans',sans-serif;
+    }
+    .ne-emails {
+      font-size:0.88rem; color:#fca5a5; line-height:1.7;
+      word-break:break-all;
+    }
+    .ne-meta {
+      font-size:0.75rem; color:rgba(180,200,230,0.5);
+      white-space:nowrap; text-align:right; padding-top:2px;
+    }
+    .ne-trigger {
+      grid-column:1/-1;
+      font-size:0.75rem; color:rgba(180,200,230,0.45);
+      margin-top:2px;
+    }
+
     .form-row { display:grid; grid-template-columns:1fr 180px; gap:16px; }
     .form-group { margin-bottom:18px; }
     .form-label {
@@ -997,6 +1029,18 @@
 
     <!-- ── Single-column dashboard content ───────────────── -->
     <div class="dashboard-content">
+
+    <!-- ── Notification Error Log (coach-only) ───────────── -->
+    <div id="notif-errors-panel" class="admin-panel">
+      <div class="admin-panel-header">
+        <span>🔕</span>
+        <div>
+          <div class="admin-panel-title">Device Token Errors</div>
+          <div class="admin-panel-sub">Members whose device stopped receiving push notifications</div>
+        </div>
+      </div>
+      <div id="notif-errors-list"><div class="ne-empty">Loading…</div></div>
+    </div>
 
     <!-- What's New This Week -->
     <div id="whats-new-panel">

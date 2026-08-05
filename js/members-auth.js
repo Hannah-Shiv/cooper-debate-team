@@ -162,6 +162,13 @@ function showDashboard(email) {
     fab.style.display = "flex";
   }
 
+  // Show notification error log for coaches only
+  if (currentUserRole === "coach") {
+    const panel = document.getElementById("notif-errors-panel");
+    if (panel) panel.style.display = "";
+    loadNotifErrors();
+  }
+
   // Start real-time announcements listener
   loadAnnouncements();
 
@@ -779,6 +786,49 @@ async function savePinForCard() {
   } catch (err) {
     alert("Could not save pin: " + err.message);
   }
+}
+
+// ── Notification Error Log (coach only) ──────────────────────
+function loadNotifErrors() {
+  db.collection("notification-errors")
+    .orderBy("detectedAt", "desc")
+    .limit(20)
+    .onSnapshot(snap => {
+      renderNotifErrors(snap.docs);
+    }, err => {
+      console.warn("notification-errors listener:", err.message);
+      const el = document.getElementById("notif-errors-list");
+      if (el) el.innerHTML = '<div class="ne-empty">Could not load error log.</div>';
+    });
+}
+
+function renderNotifErrors(docs) {
+  const el = document.getElementById("notif-errors-list");
+  if (!el) return;
+
+  if (!docs || docs.length === 0) {
+    el.innerHTML = '<div class="ne-empty">✓ No device token errors recorded yet.</div>';
+    return;
+  }
+
+  el.innerHTML = '<div class="ne-list">' + docs.map(doc => {
+    const d = doc.data();
+    const emails = Array.isArray(d.emails) ? d.emails : [];
+    const ts = d.detectedAt?.toDate?.();
+    const dateStr = ts
+      ? ts.toLocaleDateString("en-US", { month:"short", day:"numeric", year:"numeric", timeZone:"America/New_York" })
+        + " at "
+        + ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" })
+        + " EST"
+      : "Unknown time";
+    const trigger = d.trigger ? escHtml(d.trigger) : "";
+    return `
+      <div class="ne-row">
+        <div class="ne-emails">${emails.map(e => escHtml(e)).join("<br>") || "—"}</div>
+        <div class="ne-meta">${dateStr}</div>
+        ${trigger ? `<div class="ne-trigger">Detected during: "${trigger}"</div>` : ""}
+      </div>`;
+  }).join("") + '</div>';
 }
 
 async function removePinForCard() {
