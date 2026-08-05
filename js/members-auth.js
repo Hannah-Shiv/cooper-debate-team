@@ -32,6 +32,7 @@ let currentUserEmail  = "";
 let currentUserRole   = "member"; // "coach" | "captain" | "member"
 let unsubAnnouncements = null;
 let allAnnouncementDocs = [];
+let hidePreviewTimer   = null;
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
@@ -246,6 +247,11 @@ function loadAnnouncements() {
 }
 
 // ── Timeline ──────────────────────────────────────────────────
+// Docs arrive newest-first from Firestore; reverse → oldest left, newest right
+function catKeyFor(cat) {
+  return (cat || "").toLowerCase() === "important" ? "important" : "normal";
+}
+
 function renderTimeline(docs) {
   const tl = document.getElementById("ann-timeline");
   if (!tl) return;
@@ -253,39 +259,73 @@ function renderTimeline(docs) {
     tl.innerHTML = '<div class="ann-tl-empty">📢 No announcements yet — check back soon.</div>';
     return;
   }
+
+  // Reverse so oldest = left, newest = right
+  const ordered = docs.slice().reverse();
+
   tl.innerHTML = `
-    <div class="ann-tl-track-wrap">
-      <div class="ann-tl-track">
-        <div class="ann-tl-line"></div>
-        ${docs.map((doc, i) => renderTimelineDot(doc.id, doc.data(), i)).join("")}
+    <div class="ann-tl-nav">
+      <button class="ann-tl-arrow" id="tl-arr-l" onclick="tlScroll(-1)" aria-label="Older announcements">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="ann-tl-track-wrap" id="ann-tl-wrap">
+        <div class="ann-tl-track" id="ann-tl-track">
+          <div class="ann-tl-line"></div>
+          ${ordered.map((doc, i) => renderTimelineDot(doc.id, doc.data(), i, i === ordered.length - 1)).join("")}
+        </div>
       </div>
+      <button class="ann-tl-arrow" id="tl-arr-r" onclick="tlScroll(1)" aria-label="Newer announcements">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
     </div>
     <div class="ann-tl-legend">
-      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-general"></span>General</span>
-      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-practice"></span>Practice</span>
-      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-tournament"></span>Tournament</span>
-      <span class="ann-tl-legend-hint">Click any dot to read</span>
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-normal"></span>Normal</span>
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-important"></span>Important</span>
+      <span class="ann-tl-legend-hint">Hover a dot to preview · click to expand</span>
     </div>`;
 
-  docs.forEach((doc) => {
+  // Wire hover + click per dot
+  ordered.forEach((doc) => {
     const dotEl = tl.querySelector(`.ann-tl-dot[data-id="${doc.id}"]`);
     if (!dotEl) return;
+    dotEl.addEventListener("mouseenter", () => showHoverTip(dotEl, doc.id, doc.data()));
+    dotEl.addEventListener("mouseleave", () => scheduleHideTip());
     dotEl.addEventListener("click", () => openAnnDetModal(dotEl, doc.id, doc.data()));
     dotEl.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") openAnnDetModal(dotEl, doc.id, doc.data()); });
-    dotEl.addEventListener("mouseenter", () => {
-      document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
-      dotEl.classList.add("active");
-    });
-    dotEl.addEventListener("mouseleave", () => dotEl.classList.remove("active"));
   });
 
-  // Mark newest dot visually
-  const first = tl.querySelector(".ann-tl-dot");
-  if (first) first.classList.add("newest");
+  // Wire tooltip hover-stay
+  const tip = document.getElementById("ann-hover-tip");
+  if (tip) {
+    tip.addEventListener("mouseenter", () => clearTimeout(hidePreviewTimer));
+    tip.addEventListener("mouseleave", () => scheduleHideTip(0));
+  }
+
+  // Auto-scroll to newest (rightmost) after paint
+  requestAnimationFrame(() => {
+    const wrap = document.getElementById("ann-tl-wrap");
+    if (wrap) wrap.scrollLeft = wrap.scrollWidth;
+    updateArrows();
+  });
 }
 
-function renderTimelineDot(id, data, index) {
-  const catKey  = (data.category || "General").toLowerCase();
+function tlScroll(dir) {
+  const wrap = document.getElementById("ann-tl-wrap");
+  if (wrap) { wrap.scrollBy({ left: dir * 340, behavior: "smooth" }); }
+  setTimeout(updateArrows, 350);
+}
+
+function updateArrows() {
+  const wrap = document.getElementById("ann-tl-wrap");
+  if (!wrap) return;
+  const l = document.getElementById("tl-arr-l");
+  const r = document.getElementById("tl-arr-r");
+  if (l) l.style.opacity = wrap.scrollLeft <= 4 ? "0.3" : "1";
+  if (r) r.style.opacity = wrap.scrollLeft >= wrap.scrollWidth - wrap.clientWidth - 4 ? "0.3" : "1";
+}
+
+function renderTimelineDot(id, data, index, isNewest) {
+  const catKey  = catKeyFor(data.category);
   const ts      = data.timestamp?.toDate?.();
   const dateStr = ts
     ? ts.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" })
@@ -293,25 +333,88 @@ function renderTimelineDot(id, data, index) {
   const timeStr = ts
     ? ts.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })
     : "";
-  const titleEl = `<div class="ann-dot-label">${escHtml(data.title).slice(0, 22)}${data.title?.length > 22 ? "…" : ""}</div>`;
+  const title   = data.title || "";
+  const label   = title.length > 20 ? title.slice(0, 20) + "…" : title;
+  const newBadge = isNewest ? '<span class="ann-dot-new-badge">NEW</span>' : "";
   return `
-    <div class="ann-tl-dot" data-id="${id}" tabindex="0" role="button" aria-label="${escHtml(data.title)}">
+    <div class="ann-tl-dot${isNewest ? " newest" : ""}" data-id="${id}" tabindex="0" role="button" aria-label="${escHtml(title)}">
+      ${newBadge}
       <div class="ann-dot-date">${dateStr}</div>
       <div class="ann-dot-pip ann-pip-${catKey}"></div>
       <div class="ann-dot-time">${timeStr}</div>
-      ${titleEl}
+      <div class="ann-dot-label">${escHtml(label)}</div>
     </div>`;
 }
 
+// ── Hover tooltip ─────────────────────────────────────────────
+function showHoverTip(dotEl, id, data) {
+  clearTimeout(hidePreviewTimer);
+  const tip = document.getElementById("ann-hover-tip");
+  if (!tip) return;
+
+  document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
+  dotEl.classList.add("active");
+
+  const catKey   = catKeyFor(data.category);
+  const catLabel = catKey === "important" ? "Important" : "Normal";
+  const ts       = data.timestamp?.toDate?.();
+  const dateStr  = ts ? ts.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", timeZone:"America/New_York" }) : "";
+  const timeStr  = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
+  const bodyRaw  = data.details || "";
+  const bodySnip = bodyRaw.length > 160 ? bodyRaw.slice(0, 160).trimEnd() + "…" : bodyRaw;
+  const body     = bodySnip ? `<div class="tip-body">${escHtml(bodySnip)}</div>` : "";
+  const drive    = data.driveLink ? `<div class="tip-drive">📎 Drive file attached</div>` : "";
+  const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
+
+  tip.className = `ann-hover-tip ann-tip-${catKey}`;
+  tip.innerHTML = `
+    <div class="tip-header">
+      <span class="ann-cat-badge ann-cat-${catKey}">${catLabel}</span>
+      <span class="tip-meta">${dateStr}${timeStr ? " · " + timeStr : ""}</span>
+    </div>
+    <div class="tip-title">${escHtml(data.title || "")}</div>
+    ${body}${drive}
+    <div class="tip-footer">Posted by ${byLabel} &nbsp;·&nbsp; click dot to expand</div>`;
+
+  // Measure, then position near dot
+  tip.style.opacity = "0";
+  tip.style.display = "block";
+  tip.style.pointerEvents = "auto";
+  const tw   = tip.offsetWidth;
+  const th   = tip.offsetHeight;
+  const rect = dotEl.getBoundingClientRect();
+  const cx   = rect.left + rect.width / 2;
+  let left   = Math.max(8, Math.min(window.innerWidth - tw - 8, cx - tw / 2));
+  const top  = rect.top > th + 20 ? rect.top - th - 14 : rect.bottom + 14;
+  tip.style.left = left + "px";
+  tip.style.top  = top + "px";
+  tip.style.opacity = "1";
+}
+
+function scheduleHideTip(delay = 180) {
+  clearTimeout(hidePreviewTimer);
+  hidePreviewTimer = setTimeout(() => {
+    const tip = document.getElementById("ann-hover-tip");
+    if (tip) {
+      tip.style.opacity = "0";
+      tip.style.pointerEvents = "none";
+      setTimeout(() => { if (tip.style.opacity === "0") tip.style.display = "none"; }, 160);
+    }
+    document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
+  }, delay);
+}
+
+// ── Detail modal (click / keyboard) ──────────────────────────
 function openAnnDetModal(dotEl, id, data) {
+  scheduleHideTip(0); // hide tooltip immediately
   document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
   dotEl.classList.add("active");
 
   const m = document.getElementById("ann-det-modal");
   if (!m) return;
 
-  const catKey   = (data.category || "General").toLowerCase();
-  const catLabel = data.category || "General";
+  const catKey   = catKeyFor(data.category);
+  const catLabel = catKey === "important" ? "Important" : "Normal";
   const ts       = data.timestamp?.toDate?.();
   const fullDate = ts ? ts.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric", timeZone:"America/New_York" }) : "";
   const timeOnly = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
@@ -321,15 +424,14 @@ function openAnnDetModal(dotEl, id, data) {
   const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnDetModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
   const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
 
-  // Set accent color variable on modal for themed border
-  const catColors = { general: "212,160,23", practice: "110,231,160", tournament: "144,205,244" };
-  m.style.setProperty("--det-ca", catColors[catKey] || "212,160,23");
+  const catColors = { normal: "163,230,53", important: "239,68,68" };
+  m.style.setProperty("--det-ca", catColors[catKey] || "163,230,53");
 
   m.querySelector("#ann-det-modal-cat").innerHTML =
     `<span class="ann-cat-badge ann-cat-${catKey}">${catLabel}</span>`;
   m.querySelector("#ann-det-modal-body").innerHTML = `
-    <h2 class="ann-det-modal-title">${escHtml(data.title)}</h2>
-    <div class="ann-det-modal-meta">${fullDate}${timeOnly ? ' &mdash; ' + timeOnly : ''} &nbsp;·&nbsp; Posted by ${byLabel}</div>
+    <h2 class="ann-det-modal-title">${escHtml(data.title || "")}</h2>
+    <div class="ann-det-modal-meta">${fullDate}${timeOnly ? " &mdash; " + timeOnly : ""} &nbsp;·&nbsp; Posted by ${byLabel}</div>
     ${body}${drive}
     <div class="ann-det-modal-footer">${delBtn}</div>`;
 

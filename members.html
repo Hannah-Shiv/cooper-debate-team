@@ -200,119 +200,171 @@
     }
     .ann-view-all-link:hover { text-decoration: underline; }
 
+    /* Nav wrapper with arrow buttons flanking the scroll track */
+    .ann-tl-nav { display: flex; align-items: center; gap: 8px; }
+    .ann-tl-arrow {
+      flex-shrink: 0; width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.3);
+      color: #e8b84b; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.18s, border-color 0.18s, opacity 0.2s;
+      z-index: 2;
+    }
+    .ann-tl-arrow:hover { background: rgba(212,160,23,0.22); border-color: rgba(212,160,23,0.65); }
+
     .ann-tl-track-wrap {
-      overflow-x: auto; overflow-y: visible;
-      padding: 0 0 2px;
-      scrollbar-width: thin;
-      scrollbar-color: rgba(212,160,23,0.2) transparent;
+      flex: 1; overflow-x: auto; overflow-y: visible;
+      padding: 0; scrollbar-width: thin;
+      scrollbar-color: rgba(212,160,23,0.25) transparent;
     }
     .ann-tl-track-wrap::-webkit-scrollbar { height: 4px; }
-    .ann-tl-track-wrap::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.25); border-radius: 2px; }
+    .ann-tl-track-wrap::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.3); border-radius: 2px; }
+
     .ann-tl-track {
       display: flex; align-items: flex-start;
       position: relative; min-width: max-content;
-      padding: 16px 32px 8px;
+      padding: 18px 20px 10px;
     }
-    /* Horizontal connecting line — sits at pip centre.
-       pip is at: padding-top(16) + date-height(24) + date-gap(6) = 46px from track top,
-       pip centre = 46 + 9 = 55px */
+    /* ── Gold connecting line ─────────────────────────────
+       Line sits at pip centre = padding-top(18) + date-height(28) + pip-gap(6) + pip-radius(9) = 61px */
     .ann-tl-line {
-      position: absolute; top: 55px; left: 32px; right: 32px;
-      height: 1.5px;
-      background: linear-gradient(to right, rgba(212,160,23,0.6) 0%, rgba(212,160,23,0.08) 100%);
+      position: absolute; top: 61px; left: 20px; right: 20px;
+      height: 2px;
+      background: linear-gradient(to right,
+        rgba(200,140,0,0.25) 0%, #e8b84b 15%, #f5cc5a 50%, #e8b84b 85%, rgba(200,140,0,0.25) 100%);
+      box-shadow: 0 0 10px rgba(232,184,75,0.45), 0 0 30px rgba(232,184,75,0.15);
       pointer-events: none;
     }
+
     .ann-tl-dot {
       display: flex; flex-direction: column; align-items: center;
-      width: 96px; cursor: pointer; outline: none; position: relative;
-      padding: 0 4px;
-      transition: opacity 0.15s;
+      width: 100px; cursor: pointer; outline: none; position: relative;
+      padding: 0 4px; user-select: none;
     }
-    .ann-tl-dot:focus-visible { outline: 2px solid rgba(212,160,23,0.6); outline-offset: 3px; border-radius: 6px; }
+    .ann-tl-dot:focus-visible { outline: 2px solid rgba(212,160,23,0.6); outline-offset: 4px; border-radius: 6px; }
 
-    /* Date label — fixed height so all pips align */
+    /* NEW badge for most-recent dot */
+    .ann-dot-new-badge {
+      position: absolute; top: 0; right: 2px;
+      font-size: 0.5rem; font-weight: 900; letter-spacing: 0.1em;
+      color: #e8b84b; background: rgba(212,160,23,0.15);
+      border: 1px solid rgba(212,160,23,0.45); border-radius: 3px; padding: 1px 4px;
+      font-family: 'Josefin Sans', sans-serif;
+    }
+
+    /* Date label — fixed 28px height so every pip is perfectly level */
     .ann-dot-date {
-      height: 24px; display: flex; align-items: flex-end; padding-bottom: 6px;
-      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
-      font-family: 'Josefin Sans', sans-serif; color: rgba(160,185,225,0.5);
+      height: 28px; display: flex; align-items: flex-end; padding-bottom: 6px;
+      font-size: 0.82rem; font-weight: 800; letter-spacing: 0.05em;
+      font-family: 'Josefin Sans', sans-serif; color: rgba(190,215,255,0.65);
       white-space: nowrap; text-align: center; line-height: 1;
-      transition: color 0.15s;
-      text-transform: uppercase;
+      transition: color 0.15s; text-transform: uppercase;
     }
     .ann-dot-pip {
       width: 18px; height: 18px; border-radius: 50%; border: 2px solid;
       position: relative; z-index: 2; flex-shrink: 0;
       transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
     }
-    /* Time label */
     .ann-dot-time {
       margin-top: 6px;
-      font-size: 0.65rem; font-family: 'Josefin Sans', sans-serif;
-      color: rgba(140,170,215,0.4); white-space: nowrap; text-align: center;
-      transition: color 0.15s;
-    }
-    /* Short title label */
-    .ann-dot-label {
-      margin-top: 7px;
-      font-size: 0.63rem; font-family: 'Josefin Sans', sans-serif;
-      color: rgba(140,170,215,0.3); text-align: center; white-space: nowrap;
-      overflow: hidden; text-overflow: ellipsis; width: 88px;
-      transition: color 0.15s;
-    }
-
-    /* Hover / active states */
-    .ann-tl-dot:hover .ann-dot-pip,
-    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.6); }
-    .ann-tl-dot:hover .ann-dot-date,
-    .ann-tl-dot.active .ann-dot-date { color: rgba(220,235,255,0.9); }
-    .ann-tl-dot:hover .ann-dot-time,
-    .ann-tl-dot.active .ann-dot-time { color: rgba(200,220,255,0.7); }
-    .ann-tl-dot:hover .ann-dot-label,
-    .ann-tl-dot.active .ann-dot-label { color: rgba(200,220,255,0.65); }
-
-    /* Category pip colours */
-    .ann-pip-general    { border-color:#e8b84b; background:#e8b84b; box-shadow:0 0 0 3px rgba(212,160,23,0.18); }
-    .ann-pip-practice   { border-color:#6ee7a0; background:#6ee7a0; box-shadow:0 0 0 3px rgba(34,197,94,0.18); }
-    .ann-pip-tournament { border-color:#90cdf4; background:#90cdf4; box-shadow:0 0 0 3px rgba(99,179,237,0.18); }
-    .ann-tl-dot:hover  .ann-pip-general,
-    .ann-tl-dot.active .ann-pip-general    { box-shadow:0 0 0 5px rgba(212,160,23,0.25),0 0 24px rgba(212,160,23,0.65); }
-    .ann-tl-dot:hover  .ann-pip-practice,
-    .ann-tl-dot.active .ann-pip-practice   { box-shadow:0 0 0 5px rgba(34,197,94,0.25), 0 0 24px rgba(34,197,94,0.65); }
-    .ann-tl-dot:hover  .ann-pip-tournament,
-    .ann-tl-dot.active .ann-pip-tournament { box-shadow:0 0 0 5px rgba(99,179,237,0.25),0 0 24px rgba(99,179,237,0.65); }
-    /* Newest dot extra indicator */
-    .ann-tl-dot.newest::after {
-      content: 'NEW';
-      position: absolute; top: -2px; right: 0;
-      font-size: 0.52rem; font-weight: 800; letter-spacing: 0.08em;
-      color: #e8b84b; background: rgba(212,160,23,0.15);
-      border: 1px solid rgba(212,160,23,0.4);
-      border-radius: 3px; padding: 1px 4px;
+      font-size: 0.76rem; font-weight: 600;
       font-family: 'Josefin Sans', sans-serif;
+      color: rgba(180,210,255,0.5); white-space: nowrap; text-align: center;
+      transition: color 0.15s;
+    }
+    .ann-dot-label {
+      margin-top: 6px;
+      font-size: 0.64rem; font-family: 'Josefin Sans', sans-serif;
+      color: rgba(150,180,225,0.35); text-align: center; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; width: 92px;
+      transition: color 0.15s;
     }
 
-    /* Legend row */
+    /* Hover / active glow */
+    .ann-tl-dot:hover .ann-dot-pip,
+    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.65); }
+    .ann-tl-dot:hover .ann-dot-date,
+    .ann-tl-dot.active .ann-dot-date { color: rgba(240,250,255,0.95); }
+    .ann-tl-dot:hover .ann-dot-time,
+    .ann-tl-dot.active .ann-dot-time { color: rgba(215,235,255,0.8); }
+    .ann-tl-dot:hover .ann-dot-label,
+    .ann-tl-dot.active .ann-dot-label { color: rgba(210,230,255,0.7); }
+
+    /* ── Category pip colours ─────────────────────────────
+       Normal  = bright lime green
+       Important = vivid red (with gentle blink)             */
+    @keyframes impBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.35; }
+    }
+    .ann-pip-normal    {
+      border-color: #a3e635; background: #a3e635;
+      box-shadow: 0 0 0 3px rgba(163,230,53,0.2);
+    }
+    .ann-pip-important {
+      border-color: #f87171; background: #f87171;
+      box-shadow: 0 0 0 3px rgba(248,113,113,0.22);
+      animation: impBlink 2s ease-in-out infinite;
+    }
+    .ann-tl-dot:hover  .ann-pip-normal,
+    .ann-tl-dot.active .ann-pip-normal    { box-shadow: 0 0 0 5px rgba(163,230,53,0.3),  0 0 26px rgba(163,230,53,0.7); }
+    .ann-tl-dot:hover  .ann-pip-important,
+    .ann-tl-dot.active .ann-pip-important {
+      animation: none;
+      box-shadow: 0 0 0 5px rgba(248,113,113,0.3), 0 0 26px rgba(248,113,113,0.7);
+    }
+
+    /* Legend */
     .ann-tl-legend {
-      display: flex; align-items: center; gap: 18px;
-      padding: 6px 0 0; flex-wrap: wrap;
+      display: flex; align-items: center; gap: 16px;
+      padding: 8px 0 0; flex-wrap: wrap;
     }
     .ann-tl-legend-item {
       display: flex; align-items: center; gap: 5px;
-      font-size: 0.68rem; color: rgba(160,185,225,0.5);
+      font-size: 0.7rem; color: rgba(170,195,235,0.55);
       font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.05em;
     }
-    .ann-leg-pip {
-      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-    }
+    .ann-leg-pip { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .ann-tl-legend-hint {
-      margin-left: auto; font-size: 0.65rem;
+      margin-left: auto; font-size: 0.67rem;
       color: rgba(140,165,210,0.35); font-family: 'Josefin Sans', sans-serif;
       font-style: italic;
     }
     .ann-tl-empty {
-      text-align:center; padding:32px; color:rgba(180,200,230,0.45);
-      font-size:0.95rem; font-family:'Josefin Sans',sans-serif;
+      text-align: center; padding: 32px; color: rgba(180,200,230,0.45);
+      font-size: 0.95rem; font-family: 'Josefin Sans', sans-serif;
     }
+
+    /* ── Category badges ──────────────────────────────────── */
+    .ann-cat-badge {
+      display: inline-block; font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.65rem; font-weight: 800; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 3px 9px; border-radius: 50px;
+    }
+    .ann-cat-normal    { background: rgba(163,230,53,0.15);  color: #a3e635; border: 1px solid rgba(163,230,53,0.35); }
+    .ann-cat-important { background: rgba(248,113,113,0.15); color: #f87171; border: 1px solid rgba(248,113,113,0.4); }
+    /* legacy categories map to normal for old docs */
+    .ann-cat-general, .ann-cat-practice, .ann-cat-tournament { background: rgba(163,230,53,0.12); color: #a3e635; border: 1px solid rgba(163,230,53,0.3); }
+
+    /* ── Hover tooltip (fixed-position, zero layout shift) ── */
+    .ann-hover-tip {
+      position: fixed; z-index: 1800;
+      width: 310px; max-width: calc(100vw - 20px);
+      background: linear-gradient(148deg, #0e2660 0%, #07102e 100%);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 16px 20px 14px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.65), 0 0 0 1px rgba(255,255,255,0.04);
+      pointer-events: none; display: none;
+      transition: opacity 0.14s;
+    }
+    .ann-hover-tip.ann-tip-normal    { border-top: 2px solid rgba(163,230,53,0.65); }
+    .ann-hover-tip.ann-tip-important { border-top: 2px solid rgba(248,113,113,0.7); }
+    .tip-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; gap: 8px; }
+    .tip-meta { font-size: 0.7rem; color: rgba(160,190,235,0.5); font-family: 'Josefin Sans', sans-serif; white-space: nowrap; }
+    .tip-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.97rem; color: #fff; margin-bottom: 8px; line-height: 1.3; }
+    .tip-body { font-size: 0.82rem; color: rgba(210,230,250,0.75); line-height: 1.6; margin-bottom: 8px; }
+    .tip-drive { font-size: 0.75rem; color: #e8b84b; margin-bottom: 6px; font-family: 'Josefin Sans', sans-serif; }
+    .tip-footer { font-size: 0.64rem; color: rgba(140,165,210,0.32); font-family: 'Josefin Sans', sans-serif; font-style: italic; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 6px; }
 
     /* ── Announcement Detail Modal ───────────────────────── */
     .ann-det-modal-box {
@@ -721,10 +773,7 @@
     .ann-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
     .ann-title-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .ann-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:1.06rem; letter-spacing:0.03em; color:#fff; }
-    .ann-cat-badge { padding:3px 10px; border-radius:4px; flex-shrink:0; font-size:0.73rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
-    .ann-cat-practice   { background:rgba(34,197,94,0.15);  color:#6ee7a0; border:1px solid rgba(34,197,94,0.3); }
-    .ann-cat-tournament { background:rgba(99,179,237,0.15); color:#90cdf4; border:1px solid rgba(99,179,237,0.3); }
-    .ann-cat-general    { background:rgba(212,160,23,0.12);  color:#e8b84b; border:1px solid rgba(212,160,23,0.25); }
+    /* ann-cat-badge defined above in timeline section */
     .ann-meta { font-size:0.85rem; color:rgba(180,200,230,0.55); white-space:nowrap; flex-shrink:0; }
     .ann-details { font-size:1.0rem; color:rgba(210,225,245,0.82); line-height:1.7; margin-bottom:10px; white-space:pre-line; }
     .ann-drive-link {
@@ -1038,9 +1087,8 @@
           <div class="form-group">
             <label class="form-label" for="ann-category">Category *</label>
             <select class="form-input form-select" id="ann-category">
-              <option value="General">General</option>
-              <option value="Practice">Practice</option>
-              <option value="Tournament">Tournament</option>
+              <option value="Normal">Normal</option>
+              <option value="Important">Important ⚠️</option>
             </select>
           </div>
         </div>
@@ -1093,6 +1141,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
+
+<!-- Fixed hover tooltip for timeline dots (zero layout shift) -->
+<div id="ann-hover-tip" class="ann-hover-tip" style="display:none;opacity:0;"></div>
 
 <!-- Portal data & auth logic -->
 <script src="data/approved-members.js?v=2"></script>
