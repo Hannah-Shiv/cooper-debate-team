@@ -15,7 +15,10 @@
     /* ── Page shell ─────────────────────────────────────── */
     .portal-page {
       min-height: 100vh;
-      background: var(--navy-dark);
+      background: #060f1e;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(18,60,130,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 30% at 80% 80%, rgba(10,40,90,0.2) 0%, transparent 60%);
       padding: 100px 40px 80px;
       position: relative;
       overflow: hidden;
@@ -23,9 +26,9 @@
     .portal-page::before {
       content: '';
       position: absolute;
-      width: 800px; height: 800px;
+      width: 900px; height: 900px;
       border-radius: 50%;
-      border: 1px solid rgba(212,160,23,0.06);
+      border: 1px solid rgba(212,160,23,0.08);
       top: 40%; left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -33,9 +36,9 @@
     .portal-page::after {
       content: '';
       position: absolute;
-      width: 1200px; height: 1200px;
+      width: 1400px; height: 1400px;
       border-radius: 50%;
-      border: 1px solid rgba(212,160,23,0.03);
+      border: 1px solid rgba(212,160,23,0.04);
       top: 40%; left: 50%;
       transform: translate(-50%, -50%);
       pointer-events: none;
@@ -74,10 +77,11 @@
 
     /* ── Login card ─────────────────────────────────────── */
     .login-card {
-      background: rgba(13,46,86,0.5);
-      border: 1px solid rgba(212,160,23,0.2);
+      background: rgba(13,46,100,0.7);
+      border: 1px solid rgba(212,160,23,0.3);
       border-radius: 14px; padding: 36px;
       text-align: left;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
     }
     .login-field   { margin-bottom: 22px; }
     .login-label   {
@@ -152,7 +156,7 @@
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px;
       padding-bottom: 28px;
-      border-bottom: 1px solid rgba(212,160,23,0.15);
+      border-bottom: 1px solid rgba(212,160,23,0.22);
       margin-bottom: 40px;
     }
     .dashboard-header-left h1 {
@@ -204,60 +208,72 @@
     .portal-section-title {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.82rem; font-weight: 700; letter-spacing: 0.15em;
-      text-transform: uppercase; color: var(--gold);
+      text-transform: uppercase; color: #e8b84b;
       margin-bottom: 16px;
       display: flex; align-items: center; gap: 10px;
     }
     .portal-section-title::after {
       content: ''; flex: 1; height: 1px;
-      background: rgba(212,160,23,0.15);
+      background: rgba(212,160,23,0.25);
     }
     .portal-cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 14px;
+      gap: 16px;
     }
     .portal-card {
-      background: rgba(13,46,86,0.5);
-      border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 12px; padding: 22px;
+      background: linear-gradient(140deg, rgba(16,54,110,0.85) 0%, rgba(10,36,78,0.95) 100%);
+      border: 1px solid rgba(212,160,23,0.22);
+      border-left: 3px solid rgba(212,160,23,0.5);
+      border-radius: 12px; padding: 24px;
       text-decoration: none;
-      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
       display: block;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at top left, rgba(212,160,23,0.06) 0%, transparent 65%);
+      pointer-events: none;
     }
     .portal-card:hover {
-      border-color: rgba(212,160,23,0.4);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      border-color: rgba(212,160,23,0.65);
+      border-left-color: #e8b84b;
+      transform: translateY(-4px);
+      box-shadow: 0 0 0 1px rgba(212,160,23,0.2), 0 16px 48px rgba(0,0,0,0.5), 0 0 24px rgba(212,160,23,0.12);
     }
-    .portal-card-icon  { font-size: 2rem; margin-bottom: 12px; display: block; }
+    .portal-card-icon  { font-size: 2.2rem; margin-bottom: 14px; display: block; filter: drop-shadow(0 2px 6px rgba(212,160,23,0.3)); }
     .portal-card-title {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 1rem; font-weight: 700; color: var(--white);
-      margin-bottom: 6px;
+      font-size: 1rem; font-weight: 700; color: #ffffff;
+      margin-bottom: 7px; letter-spacing: 0.02em;
     }
-    .portal-card-desc  { font-size: 0.92rem; color: var(--gray-mid); line-height: 1.6; }
+    .portal-card-desc  { font-size: 0.92rem; color: rgba(180,200,230,0.75); line-height: 1.6; }
     .portal-card-status {
-      display: inline-block; margin-top: 12px;
+      display: inline-block; margin-top: 14px;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.76rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; padding: 4px 11px;
+      text-transform: uppercase; padding: 5px 12px;
       border-radius: 50px;
     }
     .status-live {
-      background: rgba(134,239,172,0.1); color: #86efac;
-      border: 1px solid rgba(134,239,172,0.25);
+      background: rgba(134,239,172,0.12); color: #6ee7a0;
+      border: 1px solid rgba(134,239,172,0.3);
     }
     .status-soon {
-      background: rgba(147,197,253,0.1); color: #93c5fd;
-      border: 1px solid rgba(147,197,253,0.2);
+      background: rgba(147,197,253,0.1); color: #7dd3fc;
+      border: 1px solid rgba(147,197,253,0.25);
     }
 
     /* ── Coming soon card (non-link) ────────────────────── */
-    .portal-card.no-link { cursor: default; }
+    .portal-card.no-link { cursor: default; opacity: 0.6; }
     .portal-card.no-link:hover {
-      transform: none; box-shadow: none;
-      border-color: rgba(212,160,23,0.15);
+      transform: none;
+      box-shadow: none;
+      border-color: rgba(212,160,23,0.22);
+      border-left-color: rgba(212,160,23,0.5);
     }
 
     /* ── Access denied ──────────────────────────────────── */
@@ -281,67 +297,77 @@
 
     /* ── Admin Panel ─────────────────────────────────────── */
     .admin-panel {
-      background: rgba(13,46,86,0.65);
-      border: 1px solid rgba(212,160,23,0.35);
+      background: linear-gradient(140deg, rgba(16,54,110,0.9) 0%, rgba(10,36,78,0.95) 100%);
+      border: 1px solid rgba(212,160,23,0.4);
+      border-top: 3px solid rgba(212,160,23,0.7);
       border-radius: 12px;
       padding: 28px 32px 24px;
       margin-bottom: 36px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(212,160,23,0.06);
     }
     .admin-panel-header { display:flex; align-items:center; gap:14px; margin-bottom:22px; }
-    .admin-panel-header > span { font-size:2rem; }
+    .admin-panel-header > span { font-size:2rem; filter:drop-shadow(0 0 8px rgba(212,160,23,0.4)); }
     .admin-panel-title {
       font-family:'Josefin Sans',sans-serif; font-weight:700;
-      font-size:1rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold);
+      font-size:1rem; letter-spacing:0.12em; text-transform:uppercase; color:#e8b84b;
     }
-    .admin-panel-sub { font-size:0.94rem; color:var(--gray-mid); margin-top:3px; }
+    .admin-panel-sub { font-size:0.94rem; color:rgba(180,200,230,0.65); margin-top:3px; }
 
     .form-row { display:grid; grid-template-columns:1fr 180px; gap:16px; }
     .form-group { margin-bottom:18px; }
     .form-label {
       display:block; font-family:'Josefin Sans',sans-serif;
       font-size:0.82rem; font-weight:700; letter-spacing:0.1em;
-      text-transform:uppercase; color:rgba(212,160,23,0.75); margin-bottom:8px;
+      text-transform:uppercase; color:rgba(232,184,75,0.85); margin-bottom:8px;
     }
     .form-input {
-      width:100%; background:rgba(11,37,69,0.7);
-      border:1px solid rgba(212,160,23,0.18); border-radius:6px;
-      padding:12px 16px; color:var(--white);
+      width:100%; background:rgba(6,20,50,0.8);
+      border:1px solid rgba(212,160,23,0.22); border-radius:6px;
+      padding:12px 16px; color:#fff;
       font-family:'Josefin Sans',sans-serif; font-size:1rem;
-      outline:none; box-sizing:border-box; transition:border-color 0.2s;
+      outline:none; box-sizing:border-box; transition:border-color 0.2s, box-shadow 0.2s;
     }
-    .form-input:focus { border-color:rgba(212,160,23,0.5); }
-    .form-input::placeholder { color:rgba(255,255,255,0.25); }
+    .form-input:focus { border-color:rgba(212,160,23,0.6); box-shadow:0 0 0 3px rgba(212,160,23,0.08); }
+    .form-input::placeholder { color:rgba(255,255,255,0.2); }
     .form-select { cursor:pointer; }
     .form-select option { background:#0b2545; }
     .form-textarea { resize:vertical; min-height:90px; line-height:1.65; font-family:inherit; }
 
     /* ── Announcement cards ──────────────────────────────── */
     .announcement-card {
-      background:rgba(11,37,69,0.5); border:1px solid rgba(212,160,23,0.14);
-      border-radius:10px; padding:18px 22px; margin-bottom:10px; transition:border-color 0.2s;
+      background: linear-gradient(140deg, rgba(14,48,96,0.75) 0%, rgba(9,32,70,0.9) 100%);
+      border: 1px solid rgba(212,160,23,0.18);
+      border-left: 3px solid rgba(212,160,23,0.45);
+      border-radius:10px; padding:18px 22px; margin-bottom:12px;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
     }
-    .announcement-card:hover { border-color:rgba(212,160,23,0.28); }
+    .announcement-card:hover {
+      border-color: rgba(212,160,23,0.4);
+      border-left-color: #e8b84b;
+      transform: translateX(2px);
+      box-shadow: 0 6px 28px rgba(0,0,0,0.35), 0 0 16px rgba(212,160,23,0.08);
+    }
     .ann-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:10px; }
     .ann-title-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-    .ann-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:1.06rem; letter-spacing:0.03em; color:var(--white); }
-    .ann-cat-badge { padding:2px 9px; border-radius:3px; flex-shrink:0; font-size:0.73rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
-    .ann-cat-practice   { background:rgba(34,197,94,0.12);  color:#86efac; border:1px solid rgba(34,197,94,0.2); }
-    .ann-cat-tournament { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
-    .ann-cat-general    { background:rgba(148,163,184,0.1); color:#94a3b8; border:1px solid rgba(148,163,184,0.2); }
-    .ann-meta { font-size:0.85rem; color:var(--gray-mid); white-space:nowrap; flex-shrink:0; }
-    .ann-details { font-size:1.0rem; color:rgba(255,255,255,0.72); line-height:1.7; margin-bottom:10px; white-space:pre-line; }
+    .ann-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:1.06rem; letter-spacing:0.03em; color:#fff; }
+    .ann-cat-badge { padding:3px 10px; border-radius:4px; flex-shrink:0; font-size:0.73rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; }
+    .ann-cat-practice   { background:rgba(34,197,94,0.15);  color:#6ee7a0; border:1px solid rgba(34,197,94,0.3); }
+    .ann-cat-tournament { background:rgba(99,179,237,0.15); color:#90cdf4; border:1px solid rgba(99,179,237,0.3); }
+    .ann-cat-general    { background:rgba(212,160,23,0.12);  color:#e8b84b; border:1px solid rgba(212,160,23,0.25); }
+    .ann-meta { font-size:0.85rem; color:rgba(180,200,230,0.55); white-space:nowrap; flex-shrink:0; }
+    .ann-details { font-size:1.0rem; color:rgba(210,225,245,0.82); line-height:1.7; margin-bottom:10px; white-space:pre-line; }
     .ann-drive-link {
-      display:inline-flex; align-items:center; gap:6px; font-size:0.78rem; color:var(--gold);
+      display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; color:#e8b84b;
       text-decoration:none; font-family:'Josefin Sans',sans-serif; font-weight:600; letter-spacing:0.04em;
     }
-    .ann-drive-link:hover { text-decoration:underline; }
-    .ann-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05); }
-    .ann-poster { font-size:0.85rem; color:rgba(255,255,255,0.3); }
-    .ann-delete-btn { background:none; border:none; color:rgba(255,255,255,0.2); cursor:pointer; font-size:0.85rem; padding:2px 8px; border-radius:4px; transition:color 0.2s,background 0.2s; }
-    .ann-delete-btn:hover { color:#fca5a5; background:rgba(239,68,68,0.1); }
-    .ann-empty { text-align:center; padding:40px 24px; color:var(--gray-mid); font-size:1.0rem; background:rgba(11,37,69,0.3); border:1px solid rgba(212,160,23,0.08); border-radius:10px; }
-    .notif-btn { background:none; border:1px solid rgba(212,160,23,0.2); border-radius:6px; padding:8px 12px; font-size:1.2rem; cursor:pointer; opacity:0.55; transition:opacity 0.2s,border-color 0.2s; }
-    .notif-btn:hover { opacity:1; border-color:rgba(212,160,23,0.5); }
+    .ann-drive-link:hover { color:#f5cc6a; text-decoration:underline; }
+    .ann-footer { display:flex; align-items:center; justify-content:space-between; margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06); }
+    .ann-poster { font-size:0.85rem; color:rgba(180,200,230,0.35); }
+    .ann-delete-btn { background:none; border:none; color:rgba(255,255,255,0.25); cursor:pointer; font-size:0.85rem; padding:2px 8px; border-radius:4px; transition:color 0.2s,background 0.2s; }
+    .ann-delete-btn:hover { color:#fca5a5; background:rgba(239,68,68,0.12); }
+    .ann-empty { text-align:center; padding:40px 24px; color:rgba(180,200,230,0.5); font-size:1.0rem; background:rgba(10,32,70,0.5); border:1px solid rgba(212,160,23,0.1); border-radius:10px; }
+    .notif-btn { background:rgba(212,160,23,0.08); border:1px solid rgba(212,160,23,0.3); border-radius:6px; padding:8px 12px; font-size:1.2rem; cursor:pointer; transition:all 0.2s; }
+    .notif-btn:hover { background:rgba(212,160,23,0.18); border-color:rgba(212,160,23,0.6); box-shadow:0 0 12px rgba(212,160,23,0.2); }
 
     @media(max-width:859px){
       .dashboard-inner { display:block; }
