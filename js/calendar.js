@@ -169,6 +169,25 @@ function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast) {
   }
 }
 
+// ── EST timezone helpers ──────────────────────────────────────
+// Returns the calendar date string "YYYY-MM-DD" in America/New_York for any JS Date
+function toESTDateStr(d) {
+  return d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+// Returns a JS Date representing timeStr ("HH:MM") in America/New_York on the
+// same calendar date as baseDate (a JS Date). Handles EST/EDT automatically.
+function applyTimeEST(baseDate, timeStr) {
+  const dateStr = toESTDateStr(baseDate);
+  // Treat the time as if UTC to build a temp anchor, then compute real NY offset
+  const asUTC   = new Date(`${dateStr}T${timeStr}:00Z`);
+  const nyHour  = parseInt(new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York", hour: "numeric", hour12: false
+  }).format(asUTC), 10);
+  const offsetH = asUTC.getUTCHours() - nyHour; // 5 for EST, 4 for EDT
+  return new Date(asUTC.getTime() + offsetH * 3600000);
+}
+
 // ── Build FullCalendar event objects ──────────────────────────
 function buildFcEvents(docs) {
   const events = [];
@@ -180,14 +199,13 @@ function buildFcEvents(docs) {
     let allDay    = t.allDay !== false;
 
     // If start/end times are saved, make it a timed event for week/day views.
+    // Always apply times in America/New_York so week/day view is correct regardless
+    // of the viewer's laptop timezone.
     if (t.startTime && t.endTime) {
-      const [sh, sm] = t.startTime.split(":").map(Number);
-      const [eh, em] = t.endTime.split(":").map(Number);
-      startDate = new Date(startDate); startDate.setHours(sh, sm, 0, 0);
+      startDate = applyTimeEST(startDate, t.startTime);
       const base = endDate ? new Date(endDate) : new Date(startDate);
-      base.setHours(eh, em, 0, 0);
-      endDate = base;
-      allDay  = false;
+      endDate   = applyTimeEST(base, t.endTime);
+      allDay    = false;
     }
 
     events.push({
@@ -250,6 +268,7 @@ function initFullCalendar() {
     return;
   }
   calInstance = new FullCalendar.Calendar(el, {
+    timeZone:     "America/New_York",
     initialView:  _savedView,
     headerToolbar: {
       left:   "prev,next today",
@@ -376,7 +395,7 @@ function renderNextBanner() {
   const diff    = next.start.toDate() - now;
   const days    = Math.floor(diff / 86400000);
   const hours   = Math.floor((diff % 86400000) / 3600000);
-  const dateStr = next.start.toDate().toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
+  const dateStr = next.start.toDate().toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric" });
   const dayWord  = days === 1 ? "1 day" : `${days} days`;
   const hourWord = hours === 1 ? "1 hour" : `${hours} hours`;
   const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
@@ -400,8 +419,8 @@ function openEventDetail(fcEvent) {
   const start  = fcEvent.start || (t.start?.toDate ? t.start.toDate() : new Date(t.start));
   const end    = fcEvent.end   || (t.end?.toDate   ? t.end.toDate()   : null);
 
-  const fmtDate = d => d.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric" });
-  const fmtTime = d => d.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit" });
+  const fmtDate = d => d.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long", month:"long", day:"numeric", year:"numeric" });
+  const fmtTime = d => d.toLocaleTimeString("en-US", { timeZone:"America/New_York", hour:"numeric", minute:"2-digit" });
 
   let dateHtml = fmtDate(start);
   if (end && end.toDateString() !== start.toDateString()) {
@@ -630,7 +649,8 @@ function toggleVirtualLabel() {
 
 function toInputDate(ts) {
   const d = ts?.toDate ? ts.toDate() : new Date(ts);
-  return d.toISOString().slice(0, 10);
+  // Extract the calendar date as seen in America/New_York (en-CA = YYYY-MM-DD)
+  return d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 }
 
 async function saveEvent() {
@@ -650,8 +670,10 @@ async function saveEvent() {
     return;
   }
 
-  const startDate = new Date(startStr + "T00:00:00");
-  const endDate   = endStr ? new Date(endStr + "T23:59:59") : null;
+  // Use noon UTC so the stored Timestamp represents the correct calendar date in
+  // every timezone (midnight local would drift depending on the saver's laptop).
+  const startDate = new Date(startStr + "T12:00:00Z");
+  const endDate   = endStr ? new Date(endStr + "T12:00:00Z") : null;
 
   const data = {
     title,
