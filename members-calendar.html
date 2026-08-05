@@ -220,7 +220,7 @@
     /* ── FullCalendar overrides ───────────────────────────── */
     #cal-container { border-radius: 10px; overflow: hidden; }
 
-    .fc { font-family: 'Josefin Sans', sans-serif !important; }
+    .fc { font-family: 'Josefin Sans', sans-serif !important; --fc-bg-event-opacity: 1; }
 
     /* Toolbar */
     .fc .fc-toolbar {
@@ -291,6 +291,7 @@
     .fc td, .fc th { border-color: rgba(30,68,160,0.35) !important; }
     .fc .fc-col-header { background: #1e44a0 !important; }
     .fc .fc-col-header-cell { background: #1e44a0 !important; border-bottom: none !important; }
+    .fc .fc-col-header-cell.fc-day-today { background: #1e44a0 !important; }
     .fc .fc-col-header-cell-cushion {
       font-size: 0.65rem !important; font-weight: 900 !important;
       letter-spacing: 0.14em !important; text-transform: uppercase !important;
@@ -829,7 +830,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=17"></script>
+<script src="js/calendar.js?v=18"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
