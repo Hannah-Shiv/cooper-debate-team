@@ -126,6 +126,33 @@ function evtDefaultTimes(type) {
   }
 }
 
+// ── Color every day cell in a date range (month view) ─────────
+// allDay events: FC end is exclusive. Timed events: end day is inclusive.
+function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast) {
+  const cur = new Date(evStart);
+  cur.setHours(0, 0, 0, 0);
+
+  let stop;
+  if (evEnd) {
+    stop = new Date(evEnd);
+    stop.setHours(0, 0, 0, 0);
+    if (!evAllDay) stop.setDate(stop.getDate() + 1); // timed: include end day
+  } else {
+    stop = new Date(cur);
+    stop.setDate(stop.getDate() + 1); // single-day fallback
+  }
+
+  while (cur < stop) {
+    const ds = cur.toISOString().slice(0, 10);
+    const cell = container.querySelector(`td.fc-daygrid-day[data-date="${ds}"]`);
+    if (cell) {
+      cell.style.setProperty("background", color, "important");
+      if (isPast) cell.style.setProperty("opacity", "0.6", "important");
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+}
+
 // ── Build FullCalendar event objects ──────────────────────────
 function buildFcEvents(docs) {
   const events = [];
@@ -271,11 +298,16 @@ function initFullCalendar() {
       const isPast     = info.event.start < new Date();
 
       if (viewType === "dayGridMonth") {
-        const cell = info.el.closest("td.fc-daygrid-day");
-        if (cell) {
-          cell.style.setProperty("background", colors.bg, "important");
-          if (isPast) cell.style.setProperty("opacity", "0.6", "important");
-        }
+        // Color every day in the range (handles multi-day tournaments)
+        const container = document.getElementById("cal-container");
+        colorDayCells(
+          container,
+          info.event.start,
+          info.event.end,
+          info.event.allDay,
+          colors.bg,
+          isPast
+        );
         info.el.style.setProperty("background", "transparent", "important");
         info.el.style.setProperty("border",     "none",        "important");
         info.el.style.setProperty("box-shadow", "none",        "important");
