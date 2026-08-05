@@ -697,14 +697,19 @@ function loadResourcePins() {
 function renderAllPins() {
   const isEditor = currentUserRole === "coach" || currentUserRole === "captain";
   document.querySelectorAll(".portal-card[id^='drive-']").forEach(card => {
-    const cardId = card.id;
-    const pinEl  = card.querySelector(".card-pin");
+    const cardId  = card.id;
+    const pinEl   = card.querySelector(".card-pin");
+    const titleEl = card.querySelector(".portal-card-title");
     if (!pinEl) return;
+
+    // Always clean up any previously injected title button
+    titleEl?.querySelector(".card-pin-title-btn")?.remove();
+
     const pin = _pins[cardId];
     pinEl.innerHTML = "";
 
     if (pin) {
-      // Clickable pinned-file row — stopPropagation so the card <a> doesn't fire
+      // Pinned file row inside the card body
       const row = document.createElement("a");
       row.className = "card-pin-row";
       row.href      = pin.driveLink;
@@ -721,16 +726,17 @@ function renderAllPins() {
           : ""}
       `;
       pinEl.appendChild(row);
-    } else if (isEditor) {
+    } else if (isEditor && titleEl) {
+      // No pin yet — inject a small "Pin a file" button into the title row (right-justified)
       const btn = document.createElement("button");
-      btn.className   = "card-pin-btn";
-      btn.textContent = "📌 Pin a file";
+      btn.className = "card-pin-title-btn";
+      btn.innerHTML = `<span class="pin-icon">📌</span>Pin a file`;
       btn.addEventListener("click", e => {
         e.stopPropagation();
         e.preventDefault();
         openPinModal(cardId);
       });
-      pinEl.appendChild(btn);
+      titleEl.appendChild(btn);
     }
   });
 }

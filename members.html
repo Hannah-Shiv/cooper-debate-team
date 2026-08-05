@@ -531,7 +531,18 @@
       font-size: 1.1rem; font-weight: 700; color: #fff;
       margin-bottom: 0; letter-spacing: 0.02em;
       grid-column: 2; grid-row: 1; align-self: center;
+      display: flex; justify-content: space-between; align-items: center;
     }
+    .card-pin-title-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #b30000;
+      padding: 2px 4px 2px 8px; white-space: nowrap; flex-shrink: 0;
+      transition: opacity 0.15s;
+    }
+    .card-pin-title-btn:hover { opacity: 0.75; }
+    .card-pin-title-btn .pin-icon { font-size: 1rem; vertical-align: -1px; margin-right: 3px; }
     .portal-card-desc {
       font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6;
       grid-column: 1 / -1; margin-top: 8px;
