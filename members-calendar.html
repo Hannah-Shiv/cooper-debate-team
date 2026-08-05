@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team — Tournament Calendar"/>
+  <title>Tournament Calendar — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css?v=8"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <!-- FullCalendar v6 -->
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+  <style>
+    /* ── Page shell ─────────────────────────────────────── */
+    :root {
+      --gold:        #e8b84b;
+      --gold-pale:   #d4a017;
+      --white:       #ffffff;
+      --gray-mid:    rgba(255,255,255,0.5);
+      --red:         #b30000;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Josefin Sans', sans-serif; background: #060f1e; color: #fff; }
+
+    .portal-page {
+      min-height: 100vh;
+      background: #060f1e;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(18,60,130,0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 30% at 80% 80%, rgba(10,40,90,0.2) 0%, transparent 60%);
+      padding: 100px 40px 80px;
+      position: relative; overflow: hidden;
+    }
+    .portal-page::before {
+      content:''; position:absolute; width:900px; height:900px; border-radius:50%;
+      border:1px solid rgba(212,160,23,0.08); top:40%; left:50%;
+      transform:translate(-50%,-50%); pointer-events:none;
+    }
+    .portal-page::after {
+      content:''; position:absolute; width:1400px; height:1400px; border-radius:50%;
+      border:1px solid rgba(212,160,23,0.04); top:40%; left:50%;
+      transform:translate(-50%,-50%); pointer-events:none;
+    }
+
+    /* ── Auth / loading states ──────────────────────────── */
+    .auth-wrap {
+      position:relative; z-index:1;
+      display:flex; align-items:center; justify-content:center;
+      min-height:calc(100vh - 180px);
+    }
+    .auth-box { width:100%; max-width:460px; text-align:center; }
+    .auth-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:2.4rem; font-weight:600; color:#fff; margin-bottom:10px;
+    }
+    .auth-sub { font-size:0.88rem; color:var(--gray-mid); line-height:1.75; }
+
+    /* spinner */
+    .spinner {
+      width:40px; height:40px; border-radius:50%;
+      border:3px solid rgba(232,184,75,0.15);
+      border-top-color:#e8b84b;
+      animation:spin 0.8s linear infinite; margin:0 auto 24px;
+    }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    /* ── Dashboard shell ─────────────────────────────────── */
+    .cal-wrap { position:relative; z-index:1; }
+
+    .cal-header {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      flex-wrap:wrap; gap:16px; margin-bottom:28px;
+    }
+    .cal-header-left h1 {
+      font-family:'Cormorant Garamond',serif;
+      font-size:2.6rem; font-weight:700; color:#fff;
+      margin:0 0 4px; letter-spacing:0.01em;
+    }
+    .cal-header-left p { margin:0; color:var(--gray-mid); font-size:0.82rem; }
+    .cal-header-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+
+    .member-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 12px; border-radius:50px;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      font-family:'Josefin Sans',sans-serif;
+      font-size:0.62rem; font-weight:700; letter-spacing:0.1em;
+      text-transform:uppercase; color:rgba(255,255,255,0.65);
+    }
+
+    .post-event-btn {
+      display:none; align-items:center; gap:8px;
+      background:rgba(179,0,0,0.15); border:1px solid rgba(179,0,0,0.4);
+      color:#ff6b6b; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.08em;
+      text-transform:uppercase; padding:8px 18px; border-radius:8px;
+      cursor:pointer; transition:background 0.15s, border-color 0.15s;
+    }
+    .post-event-btn:hover { background:rgba(179,0,0,0.28); border-color:rgba(179,0,0,0.65); }
+
+    .signout-btn {
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.55); font-family:'Josefin Sans',sans-serif;
+      font-size:0.68rem; font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+      padding:7px 16px; border-radius:8px; cursor:pointer; transition:background 0.15s;
+    }
+    .signout-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
+    .back-link {
+      display:inline-flex; align-items:center; gap:5px;
+      color:var(--gray-mid); font-size:0.72rem; font-weight:600;
+      letter-spacing:0.06em; text-transform:uppercase; text-decoration:none;
+      transition:color 0.15s;
+    }
+    .back-link:hover { color:#fff; }
+
+    /* ── Next Tournament Banner ───────────────────────────── */
+    .next-tournament-banner {
+      display:none; align-items:center; gap:12px; flex-wrap:wrap;
+      background:rgba(232,184,75,0.07); border:1px solid rgba(232,184,75,0.22);
+      border-radius:10px; padding:12px 20px; margin-bottom:22px;
+    }
+    .next-label {
+      font-size:0.6rem; font-weight:900; letter-spacing:0.12em; text-transform:uppercase;
+      color:rgba(232,184,75,0.6); flex-shrink:0;
+    }
+    .next-name  { font-size:0.9rem; font-weight:700; color:#fff; }
+    .next-date  { font-size:0.8rem; color:var(--gray-mid); }
+    .next-countdown {
+      margin-left:auto; font-size:0.78rem; font-weight:700;
+      color:#e8b84b; background:rgba(232,184,75,0.1);
+      border:1px solid rgba(232,184,75,0.3);
+      padding:3px 10px; border-radius:20px; white-space:nowrap;
+    }
+
+    /* ── Legend ──────────────────────────────────────────── */
+    .cal-legend {
+      display:flex; gap:16px; flex-wrap:wrap; margin-bottom:16px;
+    }
+    .leg-item {
+      display:flex; align-items:center; gap:5px;
+      font-size:0.68rem; font-weight:600; letter-spacing:0.05em;
+      text-transform:uppercase; color:var(--gray-mid);
+    }
+    .leg-dot {
+      width:9px; height:9px; border-radius:50%; flex-shrink:0;
+    }
+
+    /* ── FullCalendar theme overrides ─────────────────────── */
+    #cal-container { position:relative; z-index:1; }
+
+    .fc { font-family:'Josefin Sans',sans-serif !important; }
+
+    /* Toolbar */
+    .fc .fc-toolbar { flex-wrap:wrap; gap:8px; margin-bottom:20px !important; }
+    .fc .fc-toolbar-title {
+      font-family:'Cormorant Garamond',serif !important;
+      font-size:1.6rem !important; font-weight:700 !important; color:#fff !important;
+      letter-spacing:0.02em;
+    }
+    .fc .fc-button {
+      background:rgba(255,255,255,0.07) !important;
+      border:1px solid rgba(255,255,255,0.12) !important;
+      color:rgba(255,255,255,0.65) !important;
+      font-family:'Josefin Sans',sans-serif !important;
+      font-size:0.67rem !important; font-weight:700 !important;
+      letter-spacing:0.07em !important; text-transform:uppercase !important;
+      padding:6px 13px !important; border-radius:6px !important;
+      transition:background 0.15s, border-color 0.15s, color 0.15s !important;
+      box-shadow:none !important;
+    }
+    .fc .fc-button:hover {
+      background:rgba(255,255,255,0.14) !important;
+      border-color:rgba(255,255,255,0.25) !important;
+      color:#fff !important;
+    }
+    .fc .fc-button-active,
+    .fc .fc-button-primary:not(:disabled).fc-button-active {
+      background:rgba(232,184,75,0.15) !important;
+      border-color:rgba(232,184,75,0.45) !important;
+      color:#e8b84b !important;
+    }
+    .fc .fc-button-primary:focus { box-shadow:none !important; }
+
+    /* Grid / cells */
+    .fc .fc-scrollgrid { border-color:rgba(255,255,255,0.08) !important; border-radius:10px; overflow:hidden; }
+    .fc .fc-scrollgrid-sync-table { border-color:rgba(255,255,255,0.08) !important; }
+    .fc td, .fc th { border-color:rgba(255,255,255,0.07) !important; }
+    .fc .fc-daygrid-day { background:rgba(255,255,255,0.02) !important; }
+    .fc .fc-daygrid-day:hover { background:rgba(255,255,255,0.05) !important; }
+    .fc .fc-day-today { background:rgba(232,184,75,0.06) !important; }
+    .fc .fc-day-today .fc-daygrid-day-number { color:#e8b84b !important; font-weight:700 !important; }
+    .fc .fc-col-header-cell { background:rgba(255,255,255,0.04) !important; }
+    .fc .fc-col-header-cell-cushion {
+      color:rgba(255,255,255,0.45) !important;
+      font-size:0.62rem !important; font-weight:700 !important;
+      letter-spacing:0.1em !important; text-transform:uppercase !important;
+      text-decoration:none !important;
+    }
+    .fc .fc-daygrid-day-number {
+      color:rgba(255,255,255,0.55) !important;
+      font-size:0.78rem !important; text-decoration:none !important;
+    }
+    .fc .fc-event {
+      border-radius:4px !important; padding:1px 5px !important;
+      font-size:0.72rem !important; font-weight:700 !important;
+      cursor:pointer !important; transition:opacity 0.15s !important;
+    }
+    .fc .fc-event:hover { opacity:0.85 !important; }
+    .fc .fc-event-title { font-size:0.7rem !important; }
+    .fc .fc-more-link { color:#e8b84b !important; font-weight:700 !important; font-size:0.68rem !important; }
+    .fc .fc-list-event:hover td { background:rgba(255,255,255,0.05) !important; }
+    .fc .fc-list-day-cushion { background:rgba(255,255,255,0.04) !important; }
+    .fc .fc-list-day-text, .fc .fc-list-day-side-text {
+      color:rgba(255,255,255,0.55) !important; text-decoration:none !important;
+    }
+    .fc .fc-list-event-title a { color:#fff !important; text-decoration:none !important; }
+    .fc .fc-timegrid-slot-label-cushion { color:rgba(255,255,255,0.35) !important; font-size:0.65rem !important; }
+    .fc .fc-now-indicator-line { border-color:#e8b84b !important; }
+    .fc .fc-popover {
+      background:#0d1f3c !important; border:1px solid rgba(255,255,255,0.12) !important;
+      border-radius:8px !important; box-shadow:0 8px 32px rgba(0,0,0,0.5) !important;
+    }
+    .fc .fc-popover-title { background:rgba(255,255,255,0.05) !important; color:#fff !important; }
+    .fc .fc-popover-close { color:rgba(255,255,255,0.5) !important; }
+
+    /* ── Modals ───────────────────────────────────────────── */
+    .modal-overlay {
+      position:fixed; inset:0; z-index:1000;
+      background:rgba(4,12,32,0.88); backdrop-filter:blur(6px);
+      display:none; align-items:center; justify-content:center;
+      padding:20px;
+    }
+    .modal-box {
+      background:linear-gradient(145deg,#0d1f3c,#071428);
+      border:1px solid rgba(255,255,255,0.1);
+      border-radius:16px; padding:28px 30px 32px;
+      width:100%; max-width:560px; position:relative;
+      max-height:90vh; overflow-y:auto;
+    }
+    .modal-box.modal-wide { max-width:700px; }
+    .modal-header {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:20px; padding-bottom:14px;
+      border-bottom:1px solid rgba(255,255,255,0.08);
+    }
+    .modal-header > span {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.35rem; font-weight:700; color:#fff;
+    }
+    .modal-close-btn {
+      background:none; border:none; color:rgba(255,255,255,0.4);
+      cursor:pointer; padding:4px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      transition:color 0.15s, background 0.15s;
+    }
+    .modal-close-btn:hover { color:#fff; background:rgba(255,255,255,0.08); }
+
+    /* Post event form */
+    .evt-form { display:flex; flex-direction:column; gap:14px; }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .form-group { display:flex; flex-direction:column; gap:5px; }
+    .form-label {
+      font-size:0.65rem; font-weight:700; letter-spacing:0.1em;
+      text-transform:uppercase; color:rgba(255,255,255,0.45);
+    }
+    .form-input {
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      border-radius:8px; padding:9px 12px; color:#fff;
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+      transition:border-color 0.15s;
+    }
+    .form-input:focus { outline:none; border-color:rgba(232,184,75,0.45); }
+    .form-input::placeholder { color:rgba(255,255,255,0.25); }
+    .form-select { cursor:pointer; }
+    .form-select option { background:#0d1f3c; }
+    .form-textarea { resize:vertical; min-height:80px; }
+    .toggle-row {
+      display:flex; align-items:center; gap:10px;
+      font-size:0.82rem; color:rgba(255,255,255,0.65);
+    }
+    .toggle-row input[type="checkbox"] { width:16px; height:16px; accent-color:#e8b84b; cursor:pointer; }
+    .form-footer { display:flex; align-items:center; justify-content:flex-end; gap:10px; flex-wrap:wrap; margin-top:4px; }
+    .btn-save {
+      background:rgba(232,184,75,0.14); border:1px solid rgba(232,184,75,0.4);
+      color:#e8b84b; font-family:'Josefin Sans',sans-serif;
+      font-size:0.78rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+      padding:9px 22px; border-radius:8px; cursor:pointer; transition:background 0.15s;
+    }
+    .btn-save:hover { background:rgba(232,184,75,0.25); }
+    .btn-cancel {
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.55); font-family:'Josefin Sans',sans-serif;
+      font-size:0.78rem; font-weight:600; letter-spacing:0.06em;
+      padding:9px 18px; border-radius:8px; cursor:pointer; transition:background 0.15s;
+    }
+    .btn-cancel:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .btn-delete {
+      display:none; align-items:center; gap:6px; margin-right:auto;
+      background:rgba(179,0,0,0.1); border:1px solid rgba(179,0,0,0.3);
+      color:#ff6b6b; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.06em;
+      padding:8px 14px; border-radius:8px; cursor:pointer; transition:background 0.15s;
+    }
+    .btn-delete:hover { background:rgba(179,0,0,0.22); }
+
+    /* Event detail modal */
+    .det-type-badge {
+      display:inline-flex; align-items:center;
+      padding:3px 10px; border-radius:4px; border:1px solid;
+      font-size:0.6rem; font-weight:900; letter-spacing:0.1em; text-transform:uppercase;
+      margin-bottom:10px;
+    }
+    .det-title {
+      font-family:'Cormorant Garamond',serif;
+      font-size:1.9rem; font-weight:700; color:#fff; margin:0 0 6px;
+      line-height:1.2;
+    }
+    .det-date {
+      font-size:0.85rem; color:rgba(255,255,255,0.65); margin-bottom:12px;
+    }
+    .det-countdown {
+      display:inline-flex; align-items:center;
+      background:rgba(232,184,75,0.1); border:1px solid rgba(232,184,75,0.3);
+      color:#e8b84b; font-size:0.75rem; font-weight:700;
+      padding:4px 12px; border-radius:20px; margin-bottom:20px;
+    }
+    .det-countdown.past {
+      background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.35);
+    }
+    .det-section { margin-bottom:18px; }
+    .det-section-label {
+      font-size:0.6rem; font-weight:900; letter-spacing:0.12em; text-transform:uppercase;
+      color:rgba(255,255,255,0.35); margin-bottom:8px;
+    }
+    .det-address { font-size:0.88rem; color:rgba(255,255,255,0.75); margin-bottom:10px; }
+    .det-map {
+      width:100%; height:220px; border-radius:10px;
+      border:1px solid rgba(255,255,255,0.1); margin-bottom:12px;
+    }
+    .det-directions-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .det-from-input {
+      flex:1; min-width:0;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      border-radius:8px; padding:8px 12px; color:#fff;
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+    }
+    .det-from-input::placeholder { color:rgba(255,255,255,0.25); }
+    .det-from-input:focus { outline:none; border-color:rgba(232,184,75,0.4); }
+    .det-dir-btn {
+      background:rgba(232,184,75,0.12); border:1px solid rgba(232,184,75,0.35);
+      color:#e8b84b; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.06em;
+      padding:8px 14px; border-radius:8px; cursor:pointer; white-space:nowrap;
+      transition:background 0.15s;
+    }
+    .det-dir-btn:hover { background:rgba(232,184,75,0.22); }
+    .det-virtual-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(29,78,216,0.15); border:1px solid rgba(59,130,246,0.3);
+      color:#93c5fd; font-size:0.8rem; font-weight:700;
+      padding:5px 12px; border-radius:6px; margin-bottom:8px;
+    }
+    .det-deadline-row {
+      display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    }
+    .det-deadline-date { font-size:0.85rem; color:rgba(255,255,255,0.75); }
+    .det-deadline-count {
+      font-size:0.7rem; font-weight:700;
+      background:rgba(217,119,6,0.15); border:1px solid rgba(217,119,6,0.35);
+      color:#fbbf24; padding:2px 10px; border-radius:20px;
+    }
+    .det-deadline-count.past {
+      background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.1);
+      color:rgba(255,255,255,0.35);
+    }
+    .det-link-btn {
+      display:inline-flex; align-items:center;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      color:rgba(255,255,255,0.75); font-family:'Josefin Sans',sans-serif;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.05em;
+      padding:7px 14px; border-radius:8px; text-decoration:none;
+      transition:background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .det-link-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+    .det-notes { font-size:0.85rem; color:rgba(255,255,255,0.6); line-height:1.65; }
+    .det-footer {
+      display:flex; align-items:center; justify-content:flex-end; gap:10px;
+      flex-wrap:wrap; margin-top:24px; padding-top:16px;
+      border-top:1px solid rgba(255,255,255,0.08);
+    }
+    .det-gcal-btn {
+      display:inline-flex; align-items:center;
+      background:rgba(66,133,244,0.1); border:1px solid rgba(66,133,244,0.3);
+      color:#7cb9f4; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.05em;
+      padding:7px 14px; border-radius:8px; text-decoration:none;
+      transition:background 0.15s;
+    }
+    .det-gcal-btn:hover { background:rgba(66,133,244,0.2); }
+    .det-edit-btn {
+      background:rgba(232,184,75,0.1); border:1px solid rgba(232,184,75,0.3);
+      color:#e8b84b; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.06em;
+      padding:7px 14px; border-radius:8px; cursor:pointer; transition:background 0.15s;
+    }
+    .det-edit-btn:hover { background:rgba(232,184,75,0.2); }
+
+    /* ── Responsive ──────────────────────────────────────── */
+    @media (max-width:768px) {
+      .portal-page { padding:90px 16px 60px; }
+      .cal-header { flex-direction:column; }
+      .form-row { grid-template-columns:1fr; }
+      .fc .fc-toolbar { gap:6px; }
+      .fc .fc-toolbar-title { font-size:1.2rem !important; }
+      .fc .fc-button { font-size:0.6rem !important; padding:5px 9px !important; }
+      .modal-box { padding:20px 18px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Dome nav -->
+<script>window.__NAV_PAGE="members";</script>
+<div id="dome-nav-root"></div>
+
+<main class="portal-page">
+
+  <!-- ── STATE: loading ──────────────────────────────────── -->
+  <div id="cal-state-loading" class="auth-wrap">
+    <div class="auth-box">
+      <div class="spinner"></div>
+      <h1 class="auth-title">Loading Calendar…</h1>
+      <p class="auth-sub">Checking your session.</p>
+    </div>
+  </div>
+
+  <!-- ── STATE: denied ───────────────────────────────────── -->
+  <div id="cal-state-denied" class="auth-wrap" style="display:none">
+    <div class="auth-box">
+      <span style="font-size:3rem;display:block;margin-bottom:18px">🚫</span>
+      <h1 class="auth-title">Access Not Approved</h1>
+      <p class="auth-sub">Your email is not on the approved members list.</p>
+      <a href="members.html" style="display:inline-block;margin-top:20px;color:var(--gold-pale);text-decoration:underline;font-size:0.85rem;">← Back to Portal</a>
+    </div>
+  </div>
+
+  <!-- ── STATE: dashboard ────────────────────────────────── -->
+  <div id="cal-state-dashboard" style="display:none">
+    <div class="cal-wrap">
+
+      <!-- Header -->
+      <div class="cal-header">
+        <div class="cal-header-left">
+          <a class="back-link" href="members.html">← Members Portal</a>
+          <h1 style="margin-top:8px">Tournament Calendar</h1>
+          <p id="cal-user-email" style="color:var(--gray-mid);font-size:0.82rem;margin:4px 0 0;"></p>
+        </div>
+        <div class="cal-header-right">
+          <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
+          <button class="post-event-btn" id="post-event-btn" onclick="openPostModal()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Post Event
+          </button>
+          <button class="signout-btn" onclick="calSignOut()">Sign Out</button>
+        </div>
+      </div>
+
+      <!-- Next tournament banner -->
+      <div class="next-tournament-banner" id="next-tournament-banner"></div>
+
+      <!-- Legend -->
+      <div class="cal-legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#b30000"></div>Tournament</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1d4ed8"></div>Virtual</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#b45309"></div>Entry Deadline</div>
+      </div>
+
+      <!-- FullCalendar mount point -->
+      <div id="cal-container"></div>
+
+    </div>
+  </div>
+
+</main>
+
+<!-- ── Event Detail Modal ──────────────────────────────────── -->
+<div class="modal-overlay" id="det-modal" style="display:none"
+     onclick="if(event.target===this)closeEventDetail()">
+  <div class="modal-box modal-wide">
+    <div class="modal-header">
+      <span>Event Details</span>
+      <button class="modal-close-btn" onclick="closeEventDetail()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div id="det-modal-body"></div>
+  </div>
+</div>
+
+<!-- ── Post / Edit Event Modal ─────────────────────────────── -->
+<div class="modal-overlay" id="post-event-modal" style="display:none"
+     onclick="if(event.target===this)closePostModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span id="post-modal-title">📅 Post Tournament Event</span>
+      <button class="modal-close-btn" onclick="closePostModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="evt-form">
+      <div class="form-row">
+        <div class="form-group" style="grid-column:1/-1">
+          <label class="form-label" for="evt-title">Tournament Name *</label>
+          <input class="form-input" id="evt-title" type="text" placeholder="e.g. Langley Fall Invitational" maxlength="100"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="evt-type">Event Type</label>
+          <select class="form-input form-select" id="evt-type">
+            <option value="tournament">🏆 Tournament</option>
+            <option value="deadline">⚠️ Entry Deadline</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="evt-start">Start Date *</label>
+          <input class="form-input" id="evt-start" type="date"/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="evt-end">End Date <span style="opacity:.5;font-weight:400">(multi-day)</span></label>
+          <input class="form-input" id="evt-end" type="date"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="evt-deadline">Entry Deadline</label>
+          <input class="form-input" id="evt-deadline" type="date"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="toggle-row">
+          <input type="checkbox" id="evt-virtual" onchange="toggleVirtualLabel()"/>
+          <label for="evt-virtual">Virtual / Online event</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" id="evt-location-label" for="evt-location">Venue Address (optional)</label>
+        <input class="form-input" id="evt-location" type="text" placeholder="123 Main St, Fairfax, VA"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="evt-schedule">Round Schedule Link <span style="opacity:.5;font-weight:400">(optional)</span></label>
+        <input class="form-input" id="evt-schedule" type="url" placeholder="https://docs.google.com/…"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="evt-notes">Notes <span style="opacity:.5;font-weight:400">(optional)</span></label>
+        <textarea class="form-input form-textarea" id="evt-notes" placeholder="Anything members should know…" rows="3" maxlength="600"></textarea>
+      </div>
+      <div class="form-footer">
+        <button class="btn-delete" id="evt-delete-btn" onclick="deleteEvent()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+          Delete
+        </button>
+        <button class="btn-cancel" onclick="closePostModal()">Cancel</button>
+        <button class="btn-save" id="evt-save-btn" onclick="saveEvent()">Save Event</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="data/approved-members.js?v=2"></script>
+<script src="data/admins.js"></script>
+<script src="js/calendar.js"></script>
+
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
