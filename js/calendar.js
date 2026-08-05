@@ -202,17 +202,15 @@ function initFullCalendar() {
 
       const isDayGrid  = viewType === "timeGridDay";
 
-      if (isDeadlineChip && (isListView || isWeekGrid || isMonthGrid || isDayGrid)) {
-        // Render a distinct badge + tournament name so the event is scannable
-        // without relying on colour alone.
-        const parentTitle = calEsc(info.event.extendedProps.title || "");
-        return {
-          html: `<span class="fc-deadline-chip-badge">⚠ Entry Deadline</span>`
-              + `<span class="fc-deadline-chip-title">${parentTitle}</span>`
-        };
+      if (isDeadlineChip) {
+        // Deadline chip — just "⚠ ENTRY DEADLINE", clean and scannable
+        return { html: `<span class="fc-deadline-chip-badge">⚠ Entry Deadline</span>` };
       }
-      // Default rendering for all other events / views
-      return true;
+      // Tournament / virtual events — add icon prefix
+      const isVirtual = info.event.extendedProps.isVirtual;
+      const icon = isVirtual ? "🖥" : "🏆";
+      const title = calEsc(info.event.title || "");
+      return { html: `<span style="margin-right:3px">${icon}</span><span>${title}</span>` };
     },
     viewDidMount: info => {
       localStorage.setItem("calLastView", info.view.type);
@@ -242,17 +240,18 @@ function renderNextBanner() {
     .filter(t => t.type !== "deadline" && t.start?.toDate && t.start.toDate() > now)
     .sort((a, b) => a.start.toDate() - b.start.toDate());
   if (!upcoming.length) { banner.style.display = "none"; return; }
-  const next = upcoming[0];
-  const diff  = next.start.toDate() - now;
-  const days  = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
+  const next    = upcoming[0];
+  const diff    = next.start.toDate() - now;
+  const days    = Math.floor(diff / 86400000);
+  const hours   = Math.floor((diff % 86400000) / 3600000);
   const dateStr = next.start.toDate().toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric" });
   banner.style.display = "flex";
   banner.innerHTML = `
+    <span class="next-trophy">🏆</span>
     <span class="next-label">Next Tournament</span>
     <span class="next-name">${calEsc(next.title)}</span>
-    <span class="next-date">${dateStr}</span>
-    <span class="next-countdown">${days}d ${hours}h away</span>
+    <span class="next-date">📅 ${dateStr}</span>
+    <span class="next-countdown">⏱ ${days}d ${hours}h away</span>
   `;
 }
 
