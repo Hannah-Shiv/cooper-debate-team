@@ -299,31 +299,25 @@
     }
 
     /* Day cells */
-    .fc .fc-daygrid-day { background: #0d2060 !important; overflow: hidden !important; }
-    .fc .fc-daygrid-day:hover { background: #102470 !important; }
-    .fc .fc-day-today { background: rgba(232,184,75,0.22) !important; }
+    .fc .fc-daygrid-day { background: #1e44a0 !important; }
+    .fc .fc-daygrid-day:hover { background: #2350bb !important; }
+    /* Today — date number gold only, no cell tint */
+    .fc .fc-day-today { background: #1e44a0 !important; }
     .fc .fc-day-other .fc-daygrid-day-number { opacity: 0.3 !important; }
     .fc .fc-daygrid-day-number {
       font-size: 1.05rem !important; font-weight: 700 !important;
       color: #ffffff !important; text-decoration: none !important;
-      padding: 6px 10px !important; position: relative !important; z-index: 2 !important;
+      padding: 6px 10px !important;
     }
     .fc .fc-day-today .fc-daygrid-day-number {
       color: #ffd700 !important; font-weight: 900 !important; font-size: 1.15rem !important;
     }
 
-    /* Fill entire cell with event color */
-    .fc .fc-daygrid-day-frame {
-      position: relative !important; min-height: 80px !important;
-    }
-    .fc .fc-daygrid-day-top { position: relative !important; z-index: 2 !important; }
-    .fc .fc-daygrid-day-events {
-      position: absolute !important;
-      top: 32px !important; left: 0 !important; right: 0 !important; bottom: 0 !important;
-      padding: 0 !important; margin: 0 !important; overflow: hidden !important;
-    }
-    .fc .fc-daygrid-event-harness { height: 100% !important; }
-    .fc .fc-daygrid-event-harness .fc-event {
+    /* Cell frame needs min-height so JS fill has space to work */
+    .fc .fc-daygrid-day-frame { min-height: 80px !important; position: relative !important; }
+    /* Events injected by JS to fill from below date number */
+    .fc .fc-daygrid-event-harness.fc-cell-fill { position: absolute !important; left: 0 !important; right: 0 !important; bottom: 0 !important; }
+    .fc .fc-daygrid-event-harness.fc-cell-fill .fc-event {
       height: 100% !important; border-radius: 0 !important; margin: 0 !important;
       display: flex !important; align-items: center !important;
     }
@@ -779,7 +773,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=6"></script>
+<script src="js/calendar.js?v=7"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>

@@ -216,9 +216,28 @@ function initFullCalendar() {
       localStorage.setItem("calLastView", info.view.type);
     },
     eventDidMount: info => {
-      // Soft strikethrough style for past events
+      // Soft style for past events
       if (info.event.start < new Date()) {
-        info.el.style.opacity = "0.55";
+        info.el.style.opacity = "0.6";
+      }
+      // Fill entire day cell (month grid only)
+      if (info.view.type === "dayGridMonth") {
+        setTimeout(() => {
+          const frame   = info.el.closest(".fc-daygrid-day-frame");
+          const dayTop  = frame?.querySelector(".fc-daygrid-day-top");
+          const harness = info.el.closest(".fc-daygrid-event-harness");
+          if (!frame || !dayTop || !harness) return;
+
+          const topH = dayTop.offsetHeight || 30;
+          harness.classList.add("fc-cell-fill");
+          harness.style.top = topH + "px";
+          info.el.style.height    = "100%";
+          info.el.style.borderRadius = "0";
+          info.el.style.margin    = "0";
+          info.el.style.padding   = "4px 10px";
+          info.el.style.alignItems = "center";
+          info.el.style.display   = "flex";
+        }, 0);
       }
     }
   });
