@@ -160,8 +160,6 @@ function showDashboard(email) {
   const fab = document.getElementById("post-fab");
   if (fab && (currentUserRole === "coach" || currentUserRole === "captain")) {
     fab.style.display = "flex";
-    const label = document.getElementById("post-fab-label");
-    if (label) label.style.display = "block";
   }
 
   // Start real-time announcements listener
