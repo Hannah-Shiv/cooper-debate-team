@@ -28,19 +28,19 @@ let _countdownInterval = null;
 let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
 // ── On page load ─────────────────────────────────────────────
-window.addEventListener("DOMContentLoaded", () => {
-  calAuth.onAuthStateChanged(user => {
-    if (user && isApprovedMember(user.email)) {
-      showCalState("loading");
-      initCalDashboard(user.email);
-    } else if (user) {
-      calAuth.signOut();
-      window.location.href = "members.html";
-    } else {
-      // Not signed in — send back to portal login
-      window.location.href = "members.html";
-    }
-  });
+// Scripts load at end of <body> so DOMContentLoaded has already fired —
+// run the auth check immediately instead of waiting for the event.
+calAuth.onAuthStateChanged(user => {
+  if (user && isApprovedMember(user.email)) {
+    showCalState("loading");
+    initCalDashboard(user.email);
+  } else if (user) {
+    calAuth.signOut();
+    window.location.href = "members.html";
+  } else {
+    // Not signed in — send back to portal login
+    window.location.href = "members.html";
+  }
 });
 
 // ── Helpers ───────────────────────────────────────────────────
