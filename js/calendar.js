@@ -25,6 +25,7 @@ let calInstance  = null;
 let _tournaments = [];      // raw Firestore docs
 let _editingId   = null;    // doc ID being edited (null = new)
 let _countdownInterval = null;
+let _showPastDeadlines = false;  // toggle for past entry-deadline chips
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
@@ -120,16 +121,19 @@ function buildFcEvents(docs) {
     // Synthetic entry-deadline event — shown as its own amber chip on the calendar
     if (t.entryDeadline) {
       const dlDate = t.entryDeadline?.toDate ? t.entryDeadline.toDate() : new Date(t.entryDeadline);
-      events.push({
-        id:              t.id + "__deadline",
-        title:           "⚠️ " + t.title + " — Entry Deadline",
-        start:           dlDate,
-        end:             null,
-        allDay:          true,
-        backgroundColor: "#b45309",
-        borderColor:     "#d97706",
-        extendedProps:   t,   // points to parent tournament so its modal opens
-      });
+      const isPast = dlDate < new Date();
+      if (!isPast || _showPastDeadlines) {
+        events.push({
+          id:              t.id + "__deadline",
+          title:           "⚠️ " + t.title + " — Entry Deadline",
+          start:           dlDate,
+          end:             null,
+          allDay:          true,
+          backgroundColor: "#b45309",
+          borderColor:     "#d97706",
+          extendedProps:   t,   // points to parent tournament so its modal opens
+        });
+      }
     }
   });
   return events;
@@ -147,7 +151,21 @@ function initFullCalendar() {
     headerToolbar: {
       left:   "prev,next today",
       center: "title",
-      right:  "dayGridMonth,timeGridWeek,timeGridDay,listYear"
+      right:  "togglePastDeadlines dayGridMonth,timeGridWeek,timeGridDay,listYear"
+    },
+    customButtons: {
+      togglePastDeadlines: {
+        text: "Show past deadlines",
+        click() {
+          _showPastDeadlines = !_showPastDeadlines;
+          // Update button label
+          const btn = el.querySelector(".fc-togglePastDeadlines-button");
+          if (btn) btn.textContent = _showPastDeadlines ? "Hide past deadlines" : "Show past deadlines";
+          // Refresh events
+          calInstance.removeAllEvents();
+          calInstance.addEventSource(buildFcEvents(_tournaments));
+        }
+      }
     },
     buttonText: {
       today:        "Today",
