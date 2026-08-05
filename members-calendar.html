@@ -283,14 +283,14 @@
       border-color: rgba(217,119,6,0.6) !important;
     }
 
-    /* Column headers (SUN / MON / TUE…) */
+    /* Column headers (SUN / MON / TUE…) — dark navy, clearly darker than royal-blue cells */
     .fc .fc-scrollgrid {
-      border-color: var(--border) !important;
+      border-color: rgba(30,68,160,0.4) !important;
       border-radius: 0 0 10px 10px;
     }
-    .fc td, .fc th { border-color: var(--border) !important; }
-    .fc .fc-col-header { background: #0f2060 !important; }
-    .fc .fc-col-header-cell { background: #0f2060 !important; border-bottom: 2px solid #1e44a0 !important; }
+    .fc td, .fc th { border-color: rgba(30,68,160,0.35) !important; }
+    .fc .fc-col-header { background: #050e28 !important; }
+    .fc .fc-col-header-cell { background: #050e28 !important; border-bottom: 3px solid #1e44a0 !important; }
     .fc .fc-col-header-cell-cushion {
       font-size: 0.65rem !important; font-weight: 900 !important;
       letter-spacing: 0.14em !important; text-transform: uppercase !important;
@@ -298,43 +298,39 @@
       padding: 11px 0 !important;
     }
 
-    /* Day cells */
+    /* Day cells — royal blue base (JS overrides for event days) */
+    td.fc-daygrid-day,
     .fc .fc-daygrid-day { background: #1e44a0 !important; }
-    .fc .fc-daygrid-day:hover { background: #2350bb !important; }
-    /* Today — date number gold only, no cell tint */
+    td.fc-daygrid-day:hover,
+    .fc .fc-daygrid-day:hover { background: #2452c0 !important; }
     .fc .fc-day-today { background: #1e44a0 !important; }
     .fc .fc-day-other .fc-daygrid-day-number { opacity: 0.3 !important; }
     .fc .fc-daygrid-day-number {
       font-size: 1.05rem !important; font-weight: 700 !important;
       color: #ffffff !important; text-decoration: none !important;
-      padding: 6px 10px !important;
+      padding: 6px 10px !important; position: relative !important; z-index: 3 !important;
     }
     .fc .fc-day-today .fc-daygrid-day-number {
       color: #ffd700 !important; font-weight: 900 !important; font-size: 1.15rem !important;
     }
 
-    /* Cell frame needs min-height so JS fill has space to work */
-    .fc .fc-daygrid-day-frame { min-height: 80px !important; position: relative !important; }
-    /* Events injected by JS to fill from below date number */
-    .fc .fc-daygrid-event-harness.fc-cell-fill { position: absolute !important; left: 0 !important; right: 0 !important; bottom: 0 !important; }
-    .fc .fc-daygrid-event-harness.fc-cell-fill .fc-event {
-      height: 100% !important; border-radius: 0 !important; margin: 0 !important;
-      display: flex !important; align-items: center !important;
-    }
-    .fc .fc-daygrid-day-bg { display: none !important; }
+    /* Minimum cell height */
+    .fc .fc-daygrid-day-frame { min-height: 80px !important; }
 
-    /* Event pills */
+    /* Event pills — JS controls bg; CSS just ensures text + cursor */
     .fc .fc-event {
-      padding: 4px 8px !important;
-      font-size: 0.72rem !important; font-weight: 700 !important;
-      cursor: pointer !important; transition: filter 0.15s !important;
-      border: none !important;
+      padding: 3px 8px !important;
+      font-size: 0.78rem !important; font-weight: 800 !important;
+      cursor: pointer !important;
+      border: none !important; border-radius: 3px !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: #ffffff !important;
     }
-    .fc .fc-event:hover { filter: brightness(1.12) !important; }
-    .fc .fc-event-title { font-size: 0.72rem !important; font-weight: 700 !important; }
+    .fc .fc-event-title { color: #ffffff !important; font-size: 0.78rem !important; font-weight: 800 !important; }
     .fc .fc-more-link {
-      color: rgba(255,255,255,0.5) !important;
-      font-size: 0.62rem !important; font-weight: 700 !important;
+      color: rgba(255,255,255,0.7) !important;
+      font-size: 0.65rem !important; font-weight: 700 !important;
     }
 
     /* Deadline chips */
@@ -773,7 +769,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=8"></script>
+<script src="js/calendar.js?v=9"></script>
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>

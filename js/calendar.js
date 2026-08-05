@@ -216,29 +216,26 @@ function initFullCalendar() {
       localStorage.setItem("calLastView", info.view.type);
     },
     eventDidMount: info => {
-      // Soft style for past events
-      if (info.event.start < new Date()) {
-        info.el.style.opacity = "0.6";
-      }
-      // Fill entire day cell (month grid only)
-      if (info.view.type === "dayGridMonth") {
-        setTimeout(() => {
-          const frame   = info.el.closest(".fc-daygrid-day-frame");
-          const dayTop  = frame?.querySelector(".fc-daygrid-day-top");
-          const harness = info.el.closest(".fc-daygrid-event-harness");
-          if (!frame || !dayTop || !harness) return;
+      if (info.view.type !== "dayGridMonth") return;
 
-          const topH = dayTop.offsetHeight || 30;
-          harness.classList.add("fc-cell-fill");
-          harness.style.top = topH + "px";
-          info.el.style.height    = "100%";
-          info.el.style.borderRadius = "0";
-          info.el.style.margin    = "0";
-          info.el.style.padding   = "4px 10px";
-          info.el.style.alignItems = "center";
-          info.el.style.display   = "flex";
-        }, 0);
+      const isDeadline = info.event.id.endsWith("__deadline");
+      // Deep saturated colours that read well with white text
+      const cellColor = isDeadline ? "#4c1d95" : "#991b1b";
+
+      // ── Color the entire td cell ──────────────────────────
+      const cell = info.el.closest("td.fc-daygrid-day");
+      if (cell) {
+        cell.style.setProperty("background", cellColor, "important");
+        if (info.event.start < new Date()) {
+          cell.style.setProperty("opacity", "0.6", "important");
+        }
       }
+
+      // ── Make event pill invisible so white text floats cleanly ──
+      info.el.style.setProperty("background", "transparent", "important");
+      info.el.style.setProperty("border",     "none",        "important");
+      info.el.style.setProperty("box-shadow", "none",        "important");
+      info.el.style.setProperty("color",      "#ffffff",     "important");
     }
   });
   calInstance.render();
