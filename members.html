@@ -202,93 +202,163 @@
 
     .ann-tl-track-wrap {
       overflow-x: auto; overflow-y: visible;
-      padding: 8px 0 4px;
+      padding: 0 0 2px;
       scrollbar-width: thin;
-      scrollbar-color: rgba(212,160,23,0.25) transparent;
+      scrollbar-color: rgba(212,160,23,0.2) transparent;
     }
+    .ann-tl-track-wrap::-webkit-scrollbar { height: 4px; }
+    .ann-tl-track-wrap::-webkit-scrollbar-thumb { background: rgba(212,160,23,0.25); border-radius: 2px; }
     .ann-tl-track {
       display: flex; align-items: flex-start;
       position: relative; min-width: max-content;
-      padding: 36px 32px 20px;
+      padding: 16px 32px 8px;
     }
+    /* Horizontal connecting line — sits at pip centre.
+       pip is at: padding-top(16) + date-height(24) + date-gap(6) = 46px from track top,
+       pip centre = 46 + 9 = 55px */
     .ann-tl-line {
-      position: absolute; top: 44px; left: 32px; right: 32px;
-      height: 2px;
-      background: linear-gradient(to right, rgba(212,160,23,0.65), rgba(212,160,23,0.12));
+      position: absolute; top: 55px; left: 32px; right: 32px;
+      height: 1.5px;
+      background: linear-gradient(to right, rgba(212,160,23,0.6) 0%, rgba(212,160,23,0.08) 100%);
       pointer-events: none;
     }
     .ann-tl-dot {
       display: flex; flex-direction: column; align-items: center;
-      width: 110px; cursor: pointer; outline: none; position: relative;
+      width: 96px; cursor: pointer; outline: none; position: relative;
+      padding: 0 4px;
+      transition: opacity 0.15s;
+    }
+    .ann-tl-dot:focus-visible { outline: 2px solid rgba(212,160,23,0.6); outline-offset: 3px; border-radius: 6px; }
+
+    /* Date label — fixed height so all pips align */
+    .ann-dot-date {
+      height: 24px; display: flex; align-items: flex-end; padding-bottom: 6px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+      font-family: 'Josefin Sans', sans-serif; color: rgba(160,185,225,0.5);
+      white-space: nowrap; text-align: center; line-height: 1;
+      transition: color 0.15s;
+      text-transform: uppercase;
     }
     .ann-dot-pip {
-      width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid;
+      width: 18px; height: 18px; border-radius: 50%; border: 2px solid;
       position: relative; z-index: 2; flex-shrink: 0;
-      transition: transform 0.18s cubic-bezier(.34,1.56,.64,1), box-shadow 0.18s;
+      transition: transform 0.2s cubic-bezier(.34,1.56,.64,1), box-shadow 0.2s;
     }
-    .ann-tl-dot:hover .ann-dot-pip,
-    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.55); }
-    /* Category pip colours */
-    .ann-pip-general    { border-color:#e8b84b; background:#e8b84b; box-shadow:0 0 0 3px rgba(212,160,23,0.2); }
-    .ann-pip-practice   { border-color:#6ee7a0; background:#6ee7a0; box-shadow:0 0 0 3px rgba(34,197,94,0.2); }
-    .ann-pip-tournament { border-color:#90cdf4; background:#90cdf4; box-shadow:0 0 0 3px rgba(99,179,237,0.2); }
-    .ann-tl-dot.active .ann-pip-general,
-    .ann-tl-dot:hover  .ann-pip-general    { box-shadow:0 0 0 4px rgba(212,160,23,0.3),0 0 20px rgba(212,160,23,0.55); }
-    .ann-tl-dot.active .ann-pip-practice,
-    .ann-tl-dot:hover  .ann-pip-practice   { box-shadow:0 0 0 4px rgba(34,197,94,0.3), 0 0 20px rgba(34,197,94,0.55); }
-    .ann-tl-dot.active .ann-pip-tournament,
-    .ann-tl-dot:hover  .ann-pip-tournament { box-shadow:0 0 0 4px rgba(99,179,237,0.3),0 0 20px rgba(99,179,237,0.55); }
-    .ann-dot-date {
-      margin-top: 10px; font-size: 0.68rem; text-align: center; white-space: nowrap;
-      font-family: 'Josefin Sans', sans-serif; color: rgba(180,200,230,0.45);
+    /* Time label */
+    .ann-dot-time {
+      margin-top: 6px;
+      font-size: 0.65rem; font-family: 'Josefin Sans', sans-serif;
+      color: rgba(140,170,215,0.4); white-space: nowrap; text-align: center;
+      transition: color 0.15s;
     }
-    .ann-tl-dot.active .ann-dot-date { color: rgba(220,235,255,0.85); }
+    /* Short title label */
+    .ann-dot-label {
+      margin-top: 7px;
+      font-size: 0.63rem; font-family: 'Josefin Sans', sans-serif;
+      color: rgba(140,170,215,0.3); text-align: center; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; width: 88px;
+      transition: color 0.15s;
+    }
 
-    /* Detail card */
-    .ann-tl-detail { margin-top: 4px; }
-    .ann-det-card {
-      background: linear-gradient(140deg, rgba(15,40,90,0.85) 0%, rgba(10,28,65,0.9) 100%);
-      border: 1px solid rgba(212,160,23,0.22); border-left: 3px solid rgba(212,160,23,0.7);
-      border-radius: 10px; padding: 18px 22px;
-      animation: detFade 0.18s ease;
+    /* Hover / active states */
+    .ann-tl-dot:hover .ann-dot-pip,
+    .ann-tl-dot.active .ann-dot-pip { transform: scale(1.6); }
+    .ann-tl-dot:hover .ann-dot-date,
+    .ann-tl-dot.active .ann-dot-date { color: rgba(220,235,255,0.9); }
+    .ann-tl-dot:hover .ann-dot-time,
+    .ann-tl-dot.active .ann-dot-time { color: rgba(200,220,255,0.7); }
+    .ann-tl-dot:hover .ann-dot-label,
+    .ann-tl-dot.active .ann-dot-label { color: rgba(200,220,255,0.65); }
+
+    /* Category pip colours */
+    .ann-pip-general    { border-color:#e8b84b; background:#e8b84b; box-shadow:0 0 0 3px rgba(212,160,23,0.18); }
+    .ann-pip-practice   { border-color:#6ee7a0; background:#6ee7a0; box-shadow:0 0 0 3px rgba(34,197,94,0.18); }
+    .ann-pip-tournament { border-color:#90cdf4; background:#90cdf4; box-shadow:0 0 0 3px rgba(99,179,237,0.18); }
+    .ann-tl-dot:hover  .ann-pip-general,
+    .ann-tl-dot.active .ann-pip-general    { box-shadow:0 0 0 5px rgba(212,160,23,0.25),0 0 24px rgba(212,160,23,0.65); }
+    .ann-tl-dot:hover  .ann-pip-practice,
+    .ann-tl-dot.active .ann-pip-practice   { box-shadow:0 0 0 5px rgba(34,197,94,0.25), 0 0 24px rgba(34,197,94,0.65); }
+    .ann-tl-dot:hover  .ann-pip-tournament,
+    .ann-tl-dot.active .ann-pip-tournament { box-shadow:0 0 0 5px rgba(99,179,237,0.25),0 0 24px rgba(99,179,237,0.65); }
+    /* Newest dot extra indicator */
+    .ann-tl-dot.newest::after {
+      content: 'NEW';
+      position: absolute; top: -2px; right: 0;
+      font-size: 0.52rem; font-weight: 800; letter-spacing: 0.08em;
+      color: #e8b84b; background: rgba(212,160,23,0.15);
+      border: 1px solid rgba(212,160,23,0.4);
+      border-radius: 3px; padding: 1px 4px;
+      font-family: 'Josefin Sans', sans-serif;
     }
-    @keyframes detFade { from { opacity:0; transform:translateY(-3px); } to { opacity:1; transform:none; } }
-    .ann-det-general    { border-left-color: rgba(212,160,23,0.75); }
-    .ann-det-practice   { border-left-color: rgba(110,231,160,0.75); }
-    .ann-det-tournament { border-left-color: rgba(144,205,244,0.75); }
-    .ann-det-head { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px; }
-    .ann-det-title {
-      font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:1.05rem;
-      color:#fff; flex:1; min-width:0;
+
+    /* Legend row */
+    .ann-tl-legend {
+      display: flex; align-items: center; gap: 18px;
+      padding: 6px 0 0; flex-wrap: wrap;
     }
-    .ann-det-time {
-      font-size:0.78rem; color:rgba(180,200,230,0.5); white-space:nowrap; flex-shrink:0;
-      font-family:'Josefin Sans',sans-serif;
+    .ann-tl-legend-item {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; color: rgba(160,185,225,0.5);
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.05em;
     }
-    .ann-det-body {
-      font-size:0.95rem; color:rgba(210,225,245,0.82); line-height:1.7;
-      margin-bottom:10px; white-space:pre-line;
+    .ann-leg-pip {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
     }
-    .ann-det-drive {
-      display:inline-flex; align-items:center; gap:6px; font-size:0.82rem; color:#e8b84b;
-      text-decoration:none; font-family:'Josefin Sans',sans-serif; font-weight:600;
-      letter-spacing:0.04em; margin-bottom:10px; display:block;
+    .ann-tl-legend-hint {
+      margin-left: auto; font-size: 0.65rem;
+      color: rgba(140,165,210,0.35); font-family: 'Josefin Sans', sans-serif;
+      font-style: italic;
     }
-    .ann-det-drive:hover { color:#f5cc6a; text-decoration:underline; }
-    .ann-det-footer {
-      display:flex; align-items:center; justify-content:space-between;
-      margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);
-    }
-    .ann-det-poster { font-size:0.82rem; color:rgba(180,200,230,0.35); }
-    .ann-det-delete {
-      background:none; border:none; color:rgba(255,255,255,0.25); cursor:pointer;
-      font-size:0.82rem; padding:2px 8px; border-radius:4px; transition:color 0.2s,background 0.2s;
-    }
-    .ann-det-delete:hover { color:#fca5a5; background:rgba(239,68,68,0.12); }
     .ann-tl-empty {
       text-align:center; padding:32px; color:rgba(180,200,230,0.45);
       font-size:0.95rem; font-family:'Josefin Sans',sans-serif;
     }
+
+    /* ── Announcement Detail Modal ───────────────────────── */
+    .ann-det-modal-box {
+      background: linear-gradient(150deg, #0c2254 0%, #070e30 100%);
+      border: 1px solid rgba(var(--det-ca,212,160,23),0.3);
+      border-top: 3px solid rgb(var(--det-ca,212,160,23));
+      border-radius: 18px; width: 100%; max-width: 560px;
+      max-height: 88vh; overflow-y: auto; padding: 30px 34px 34px;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.7), 0 0 80px rgba(var(--det-ca,212,160,23),0.06);
+      animation: modalSlideUp 0.22s cubic-bezier(.22,.68,0,1.1);
+    }
+    @keyframes modalSlideUp { from { opacity:0; transform:translateY(16px) scale(0.98); } to { opacity:1; transform:none; } }
+    .ann-det-modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.75rem; font-weight: 600; color: #fff;
+      line-height: 1.25; margin: 16px 0 10px;
+    }
+    .ann-det-modal-meta {
+      font-size: 0.78rem; color: rgba(160,185,230,0.5);
+      font-family: 'Josefin Sans', sans-serif; margin-bottom: 20px;
+      padding-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.07);
+    }
+    .ann-det-body {
+      font-size: 1.0rem; color: rgba(215,230,250,0.85); line-height: 1.75;
+      margin-bottom: 20px; white-space: pre-line;
+    }
+    .ann-det-drive {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.3);
+      border-radius: 8px; padding: 10px 18px; margin-bottom: 20px;
+      font-size: 0.85rem; color: #e8b84b;
+      text-decoration: none; font-family: 'Josefin Sans', sans-serif;
+      font-weight: 700; letter-spacing: 0.05em;
+      transition: background 0.18s, border-color 0.18s;
+    }
+    .ann-det-drive:hover { background: rgba(212,160,23,0.18); border-color: rgba(212,160,23,0.55); }
+    .ann-det-modal-footer { margin-top: 18px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: flex-end; }
+    .ann-det-delete {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: none; border: 1px solid rgba(239,68,68,0.2); border-radius: 7px;
+      color: rgba(252,165,165,0.5); cursor: pointer; font-size: 0.8rem;
+      padding: 7px 14px; font-family: 'Josefin Sans', sans-serif;
+      font-weight: 600; letter-spacing: 0.04em;
+      transition: color 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .ann-det-delete:hover { color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.45); }
 
     /* ── Floating Post Button (FAB) ──────────────────────── */
     .post-fab {
@@ -360,10 +430,11 @@
     }
     .portal-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
       align-items: stretch;
     }
+    @media (max-width: 580px) { .portal-cards { grid-template-columns: 1fr; } }
     /* ── Per-card accent + background (RGB triplet for glow) */
     .portal-card { --ca: 212,160,23; }
 
@@ -378,7 +449,8 @@
       background: linear-gradient(145deg, #0f2d5e 0%, #081a3d 100%); /* gold default */
       border: 1px solid rgba(var(--ca),0.28);
       border-left: 3px solid rgba(var(--ca),0.7);
-      border-radius: 14px; padding: 26px;
+      border-radius: 14px; padding: 28px 28px 24px;
+      min-height: 260px;
       text-decoration: none;
       transition: transform 0.25s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, border-color 0.25s;
       display: flex; flex-direction: column;
@@ -471,10 +543,15 @@
     .card-file-row2 { display: flex; justify-content: flex-end; padding-left: 20px; }
     .card-file-icon { font-size: 0.85rem; flex-shrink: 0; }
     .card-file-name {
-      font-size: 0.78rem; color: rgba(210,225,245,0.85);
+      font-size: 0.8rem; color: rgba(210,225,245,0.88);
       font-family: 'Josefin Sans', sans-serif;
       flex: 1; min-width: 0;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      /* Allow up to 2 lines so names don't get cut */
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      line-height: 1.35;
     }
     .card-file-new {
       font-size: 0.6rem; font-weight: 800; letter-spacing: 0.1em;
@@ -483,9 +560,9 @@
       flex-shrink: 0; line-height: 1.5;
     }
     .card-file-age {
-      font-size: 0.7rem; color: rgba(180,200,230,0.4);
+      font-size: 0.72rem; color: rgba(180,200,230,0.45);
       font-family: 'Josefin Sans', sans-serif;
-      white-space: nowrap;
+      white-space: nowrap; font-variant-numeric: tabular-nums;
     }
 
     /* ── What's New This Week panel ─────────────────────── */
@@ -936,7 +1013,12 @@
   </div><!-- /dashboard-wrap -->
 
   <!-- ── Floating Post Button (coach/captain only) ──────────── -->
-  <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement">📣</button>
+  <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement" aria-label="Post Announcement">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 20h9"/>
+      <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+    </svg>
+  </button>
   <span id="post-fab-label">Post Announcement</span>
 
   <!-- ── Post Announcement Modal ───────────────────────────── -->
@@ -977,6 +1059,19 @@
           <span id="announce-status" style="font-size:0.95rem;display:none;"></span>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- ── Announcement Detail Modal ────────────────────────── -->
+  <div class="modal-overlay" id="ann-det-modal" style="display:none;--det-ca:212,160,23" onclick="if(event.target===this)closeAnnDetModal()">
+    <div class="ann-det-modal-box">
+      <div class="modal-header">
+        <span id="ann-det-modal-cat"></span>
+        <button class="modal-close-btn" onclick="closeAnnDetModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="ann-det-modal-body"></div>
     </div>
   </div>
 

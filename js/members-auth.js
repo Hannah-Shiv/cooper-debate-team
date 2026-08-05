@@ -260,20 +260,28 @@ function renderTimeline(docs) {
         ${docs.map((doc, i) => renderTimelineDot(doc.id, doc.data(), i)).join("")}
       </div>
     </div>
-    <div class="ann-tl-detail" id="ann-tl-detail"></div>`;
+    <div class="ann-tl-legend">
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-general"></span>General</span>
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-practice"></span>Practice</span>
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-tournament"></span>Tournament</span>
+      <span class="ann-tl-legend-hint">Click any dot to read</span>
+    </div>`;
 
   docs.forEach((doc) => {
     const dotEl = tl.querySelector(`.ann-tl-dot[data-id="${doc.id}"]`);
     if (!dotEl) return;
-    const activate = () => activateTimelineDot(dotEl, doc.id, doc.data());
-    dotEl.addEventListener("click", activate);
-    dotEl.addEventListener("mouseenter", activate);
-    dotEl.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") activate(); });
+    dotEl.addEventListener("click", () => openAnnDetModal(dotEl, doc.id, doc.data()));
+    dotEl.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") openAnnDetModal(dotEl, doc.id, doc.data()); });
+    dotEl.addEventListener("mouseenter", () => {
+      document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
+      dotEl.classList.add("active");
+    });
+    dotEl.addEventListener("mouseleave", () => dotEl.classList.remove("active"));
   });
 
-  // Pre-activate newest dot
+  // Mark newest dot visually
   const first = tl.querySelector(".ann-tl-dot");
-  if (first) activateTimelineDot(first, docs[0].id, docs[0].data());
+  if (first) first.classList.add("newest");
 }
 
 function renderTimelineDot(id, data, index) {
@@ -282,41 +290,57 @@ function renderTimelineDot(id, data, index) {
   const dateStr = ts
     ? ts.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" })
     : "—";
+  const timeStr = ts
+    ? ts.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })
+    : "";
+  const titleEl = `<div class="ann-dot-label">${escHtml(data.title).slice(0, 22)}${data.title?.length > 22 ? "…" : ""}</div>`;
   return `
     <div class="ann-tl-dot" data-id="${id}" tabindex="0" role="button" aria-label="${escHtml(data.title)}">
-      <div class="ann-dot-pip ann-pip-${catKey}"></div>
       <div class="ann-dot-date">${dateStr}</div>
+      <div class="ann-dot-pip ann-pip-${catKey}"></div>
+      <div class="ann-dot-time">${timeStr}</div>
+      ${titleEl}
     </div>`;
 }
 
-function activateTimelineDot(dotEl, id, data) {
+function openAnnDetModal(dotEl, id, data) {
   document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
   dotEl.classList.add("active");
-  const detail = document.getElementById("ann-tl-detail");
-  if (!detail) return;
+
+  const m = document.getElementById("ann-det-modal");
+  if (!m) return;
 
   const catKey   = (data.category || "General").toLowerCase();
   const catLabel = data.category || "General";
-  const timeStr  = timeAgo(data.timestamp);
+  const ts       = data.timestamp?.toDate?.();
+  const fullDate = ts ? ts.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric", timeZone:"America/New_York" }) : "";
+  const timeOnly = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
   const body     = data.details   ? `<div class="ann-det-body">${escHtml(data.details)}</div>` : "";
-  const drive    = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" class="ann-det-drive">📎 Open Drive File →</a>` : "";
+  const drive    = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" class="ann-det-drive"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Open Drive File</a>` : "";
   const canDel   = currentUserRole === "coach" || data.postedBy === currentUserEmail;
-  const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}')">✕ Remove</button>` : "";
+  const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnDetModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
   const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
 
-  detail.innerHTML = `
-    <div class="ann-det-card ann-det-${catKey}">
-      <div class="ann-det-head">
-        <span class="ann-cat-badge ann-cat-${catKey}">${catLabel}</span>
-        <span class="ann-det-title">${escHtml(data.title)}</span>
-        <span class="ann-det-time">${timeStr}</span>
-      </div>
-      ${body}${drive}
-      <div class="ann-det-footer">
-        <span class="ann-det-poster">Posted by ${byLabel}</span>
-        ${delBtn}
-      </div>
-    </div>`;
+  // Set accent color variable on modal for themed border
+  const catColors = { general: "212,160,23", practice: "110,231,160", tournament: "144,205,244" };
+  m.style.setProperty("--det-ca", catColors[catKey] || "212,160,23");
+
+  m.querySelector("#ann-det-modal-cat").innerHTML =
+    `<span class="ann-cat-badge ann-cat-${catKey}">${catLabel}</span>`;
+  m.querySelector("#ann-det-modal-body").innerHTML = `
+    <h2 class="ann-det-modal-title">${escHtml(data.title)}</h2>
+    <div class="ann-det-modal-meta">${fullDate}${timeOnly ? ' &mdash; ' + timeOnly : ''} &nbsp;·&nbsp; Posted by ${byLabel}</div>
+    ${body}${drive}
+    <div class="ann-det-modal-footer">${delBtn}</div>`;
+
+  m.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
+function closeAnnDetModal() {
+  const m = document.getElementById("ann-det-modal");
+  if (m) { m.style.display = "none"; document.body.style.overflow = ""; }
+  document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
 }
 
 // ── View-all modal list ───────────────────────────────────────
