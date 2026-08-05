@@ -534,15 +534,18 @@
       display: flex; justify-content: space-between; align-items: center;
     }
     .card-pin-title-btn {
-      background: none; border: none; cursor: pointer;
+      background: rgba(232,184,75,0.1); cursor: pointer;
+      border: 1px solid rgba(232,184,75,0.45); border-radius: 5px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em;
-      text-transform: uppercase; color: #b30000;
-      padding: 2px 4px 2px 8px; white-space: nowrap; flex-shrink: 0;
-      transition: opacity 0.15s;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.07em;
+      text-transform: uppercase; color: #e8b84b;
+      padding: 2px 8px 2px 6px; white-space: nowrap; flex-shrink: 0;
+      transition: background 0.15s, border-color 0.15s;
     }
-    .card-pin-title-btn:hover { opacity: 0.75; }
-    .card-pin-title-btn .pin-icon { font-size: 1rem; vertical-align: -1px; margin-right: 3px; }
+    .card-pin-title-btn:hover {
+      background: rgba(232,184,75,0.2); border-color: rgba(232,184,75,0.7);
+    }
+    .card-pin-title-btn .pin-icon { font-size: 0.95rem; vertical-align: -1px; margin-right: 4px; }
     .portal-card-desc {
       font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6;
       grid-column: 1 / -1; margin-top: 8px;
