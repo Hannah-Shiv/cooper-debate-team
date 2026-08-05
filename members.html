@@ -1051,28 +1051,28 @@
           <stop offset="0%" stop-color="#c40000"/>
           <stop offset="100%" stop-color="#850000"/>
         </radialGradient>
-        <!-- Top arc: left→right through top (clockwise) -->
-        <path id="fab-top-arc" d="M 11,44 A 33,33 0 0,1 77,44"/>
-        <!-- Bottom arc: left→right through bottom (counterclockwise) -->
-        <path id="fab-bot-arc" d="M 8,44 A 36,36 0 0,0 80,44"/>
+        <!-- Top arc: r=27, well inside the edge -->
+        <path id="fab-top-arc" d="M 17,44 A 27,27 0 0,1 71,44"/>
+        <!-- Bottom arc: r=30, well inside the edge -->
+        <path id="fab-bot-arc" d="M 14,44 A 30,30 0 0,0 74,44"/>
       </defs>
       <!-- Red circle, no border -->
       <circle cx="44" cy="44" r="43" fill="url(#fab-bg)"/>
       <!-- "POST" arched along top -->
       <text font-family="'Josefin Sans', sans-serif" font-size="10" font-weight="900"
-            letter-spacing="3.5" fill="white" text-anchor="middle">
+            letter-spacing="3" fill="white" text-anchor="middle">
         <textPath href="#fab-top-arc" startOffset="50%">POST</textPath>
       </text>
-      <!-- Megaphone icon centred slightly above middle to balance arcs -->
-      <g transform="translate(31,32) scale(1.15)" fill="none" stroke="white" stroke-width="1.9"
+      <!-- Megaphone icon: left-center of circle -->
+      <g transform="translate(22,29) scale(1.25)" fill="none" stroke="white" stroke-width="1.8"
          stroke-linecap="round" stroke-linejoin="round">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
       </g>
       <!-- "ANNOUNCEMENT" arched along bottom -->
-      <text font-family="'Josefin Sans', sans-serif" font-size="6.2" font-weight="800"
-            letter-spacing="1.8" fill="white" text-anchor="middle">
+      <text font-family="'Josefin Sans', sans-serif" font-size="8" font-weight="800"
+            letter-spacing="1.2" fill="white" text-anchor="middle">
         <textPath href="#fab-bot-arc" startOffset="50%">ANNOUNCEMENT</textPath>
       </text>
     </svg>
