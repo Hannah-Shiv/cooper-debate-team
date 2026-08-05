@@ -473,11 +473,16 @@ function openEventDetail(fcEvent) {
   // Google Calendar link
   const gcLink = buildGcalLink(t, start, end);
 
-  // Edit button
-  // Strip __deadline suffix so edit modal looks up the parent tournament
+  // Edit + Delete buttons (coaches/captains only)
   const editTargetId = fcEvent.id.replace(/__deadline$/, "");
   const editBtn = isEditor
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
+    : "";
+  const deleteBtn = isEditor
+    ? `<button class="det-delete-btn" onclick="deleteEventFromDetail('${calEsc(editTargetId)}')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+        Delete
+      </button>`
     : "";
 
   const typeLabel = isDeadline  ? "⚠️ Entry Deadline"
@@ -499,6 +504,7 @@ function openEventDetail(fcEvent) {
     ${scheduleHtml}
     ${notesHtml}
     <div class="det-footer">
+      ${deleteBtn}
       <a class="det-gcal-btn" href="${gcLink}" target="_blank" rel="noopener">+ Add to Google Calendar</a>
       ${editBtn}
     </div>
@@ -652,10 +658,22 @@ async function saveEvent() {
 
 async function deleteEvent() {
   if (!_editingId) return;
-  if (!confirm("Delete this tournament event? This cannot be undone.")) return;
+  if (!confirm("Delete this event? This cannot be undone.")) return;
   try {
     await calDb.collection("tournaments").doc(_editingId).delete();
     closePostModal();
+    closeEventDetail();
+  } catch (err) {
+    alert("Could not delete event: " + err.message);
+  }
+}
+
+// Delete directly from the detail modal (no edit modal needed)
+async function deleteEventFromDetail(eventId) {
+  if (!eventId) return;
+  if (!confirm("Delete this event? This cannot be undone.")) return;
+  try {
+    await calDb.collection("tournaments").doc(eventId).delete();
     closeEventDetail();
   } catch (err) {
     alert("Could not delete event: " + err.message);
