@@ -39,14 +39,14 @@
   }
 
   function timeAgoShort(iso) {
-    const diff = Date.now() - new Date(iso).getTime();
-    const mins  = Math.floor(diff / 60000);
-    const hours = Math.floor(diff / 3600000);
-    const days  = Math.floor(diff / 86400000);
-    if (mins  < 60) return `${mins}m ago`;
-    if (hours < 24) return `${hours}h ago`;
-    if (days  <  7) return `${days}d ago`;
-    return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const date  = new Date(iso);
+    const hours = (Date.now() - date.getTime()) / 3600000;
+    if (hours < 24) {
+      // Same day — show HH:MM AM/PM
+      return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    }
+    // Older — show "Aug 4"
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   }
 
   function isNew(iso) {
@@ -76,8 +76,9 @@
     // File count + last updated
     const count   = files.length;
     const lastMod = files[0]?.modifiedTime ?? null;
+    const countLabel = count === 0 ? 'No files' : `${count} file${count !== 1 ? 's' : ''}`;
     metaEl.innerHTML =
-      `<span class="card-file-count">📁 ${count} file${count !== 1 ? 's' : ''}</span>` +
+      `<span class="card-file-count">📁 ${countLabel}</span>` +
       (lastMod ? `<span class="card-updated">Updated ${timeAgoShort(lastMod)}</span>` : '');
     metaEl.style.display = 'flex';
 
@@ -87,10 +88,14 @@
       filesEl.innerHTML = top3.map(f =>
         `<a href="${escHtml(f.webViewLink)}" target="_blank"
             class="card-file-item" onclick="event.stopPropagation();event.preventDefault();window.open('${escHtml(f.webViewLink)}','_blank')">
-          <span class="card-file-icon">${mimeIcon(f.mimeType)}</span>
-          <span class="card-file-name">${escHtml(f.name)}</span>
-          ${isNew(f.modifiedTime) ? '<span class="card-file-new">NEW</span>' : ''}
-          <span class="card-file-age">${timeAgoShort(f.modifiedTime)}</span>
+          <div class="card-file-row1">
+            <span class="card-file-icon">${mimeIcon(f.mimeType)}</span>
+            <span class="card-file-name">${escHtml(f.name)}</span>
+            ${isNew(f.modifiedTime) ? '<span class="card-file-new">NEW</span>' : ''}
+          </div>
+          <div class="card-file-row2">
+            <span class="card-file-age">${timeAgoShort(f.modifiedTime)}</span>
+          </div>
         </a>`
       ).join('');
       filesEl.style.display = 'flex';

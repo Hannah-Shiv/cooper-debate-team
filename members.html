@@ -220,6 +220,7 @@
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 16px;
+      align-items: stretch;
     }
     /* ── Per-card accent + background (RGB triplet for glow) */
     .portal-card { --ca: 212,160,23; }
@@ -238,7 +239,7 @@
       border-radius: 14px; padding: 26px;
       text-decoration: none;
       transition: transform 0.25s cubic-bezier(.22,.68,0,1.2), box-shadow 0.25s, border-color 0.25s;
-      display: block;
+      display: flex; flex-direction: column;
       position: relative;
       overflow: hidden;
     }
@@ -273,7 +274,8 @@
     }
     .portal-card-desc { font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
     .portal-card-status {
-      display: inline-block; margin-top: 14px;
+      display: inline-block; margin-top: auto; padding-top: 14px;
+      align-self: flex-start;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.84rem; font-weight: 700; letter-spacing: 0.1em;
       text-transform: uppercase; padding: 5px 12px;
@@ -311,8 +313,8 @@
       gap: 4px; margin-bottom: 10px;
     }
     .card-file-item {
-      display: flex; align-items: center; gap: 7px;
-      padding: 5px 8px; border-radius: 6px;
+      display: flex; flex-direction: column; gap: 2px;
+      padding: 6px 8px; border-radius: 6px;
       background: rgba(0,0,0,0.2);
       border: 1px solid rgba(255,255,255,0.05);
       text-decoration: none;
@@ -323,9 +325,11 @@
       background: rgba(var(--ca),0.12);
       border-color: rgba(var(--ca),0.3);
     }
+    .card-file-row1 { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .card-file-row2 { display: flex; justify-content: flex-end; padding-left: 20px; }
     .card-file-icon { font-size: 0.85rem; flex-shrink: 0; }
     .card-file-name {
-      font-size: 0.78rem; color: rgba(210,225,245,0.82);
+      font-size: 0.78rem; color: rgba(210,225,245,0.85);
       font-family: 'Josefin Sans', sans-serif;
       flex: 1; min-width: 0;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -339,7 +343,7 @@
     .card-file-age {
       font-size: 0.7rem; color: rgba(180,200,230,0.4);
       font-family: 'Josefin Sans', sans-serif;
-      flex-shrink: 0; white-space: nowrap;
+      white-space: nowrap;
     }
 
     /* ── What's New This Week panel ─────────────────────── */
@@ -404,6 +408,18 @@
       color: rgba(180,200,230,0.4); text-align: center;
       padding: 8px 0; font-family: 'Josefin Sans', sans-serif;
     }
+
+    /* ── Full-width card (Tournament Calendar) ──────────── */
+    .portal-card.portal-card-wide { grid-column: 1 / -1; flex-direction: row; align-items: center; gap: 20px; }
+    .portal-card.portal-card-wide .portal-card-icon { font-size: 2.2rem; margin-bottom: 0; flex-shrink: 0; }
+    .portal-card.portal-card-wide .portal-card-title { margin-bottom: 4px; }
+    .portal-card.portal-card-wide .portal-card-desc  { margin: 0; }
+    .portal-card.portal-card-wide .portal-card-status { margin-top: 0; margin-left: auto; flex-shrink: 0; }
+
+    /* ── 3-column grid for Coming Soon ──────────────────── */
+    .portal-cards-3col { grid-template-columns: repeat(3, 1fr); }
+    @media (max-width: 860px) { .portal-cards-3col { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 500px) { .portal-cards-3col { grid-template-columns: 1fr; } }
 
     /* ── Coming soon card (non-link) ────────────────────── */
     .portal-card.no-link { cursor: default; opacity: 0.5; filter: saturate(0.4); }
@@ -718,9 +734,9 @@
       <div id="whats-new-empty">No new files in the last 7 days.</div>
     </div>
 
-    <!-- Resources & Documents -->
+    <!-- All 6 Drive resource cards — flat 2-column grid (3 even rows) -->
     <div class="portal-section">
-      <div class="portal-section-title">Resources &amp; Documents</div>
+      <div class="portal-section-title">Team Resources</div>
       <div class="portal-cards">
 
         <a href="https://drive.google.com/drive/folders/10PY63bQqPJl40fIvwCnyii8vBS890cL1?usp=sharing" target="_blank" class="portal-card" id="drive-evidence-link">
@@ -750,14 +766,6 @@
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
-      </div>
-    </div>
-
-    <!-- Schedule -->
-    <div class="portal-section">
-      <div class="portal-section-title">Schedule &amp; Assignments</div>
-      <div class="portal-cards">
-
         <a href="https://drive.google.com/drive/folders/1WBwF33mAmuHzIBshaOGa0l9z-ptBovP4?usp=sharing" target="_blank" class="portal-card" id="drive-schedule-link">
           <span class="portal-card-icon">📅</span>
           <div class="portal-card-title">Practice Schedule</div>
@@ -776,14 +784,6 @@
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
-      </div>
-    </div>
-
-    <!-- Tournament Prep -->
-    <div class="portal-section">
-      <div class="portal-section-title">Tournament Preparation</div>
-      <div class="portal-cards">
-
         <a href="https://drive.google.com/drive/folders/1bRpZgA1kYIMl-LjnmnMOzSOH3Cn4BToM?usp=sharing" target="_blank" class="portal-card" id="drive-tournament-link">
           <span class="portal-card-icon">🎯</span>
           <div class="portal-card-title">Tournament Prep Docs</div>
@@ -793,20 +793,26 @@
           <span class="portal-card-status status-live">Open in Drive</span>
         </a>
 
-        <a href="tournaments.html" class="portal-card">
+      </div>
+    </div>
+
+    <!-- Tournament Calendar — full-width row -->
+    <div class="portal-section">
+      <div class="portal-section-title">Tournament Calendar</div>
+      <div class="portal-cards">
+        <a href="tournaments.html" class="portal-card portal-card-wide">
           <span class="portal-card-icon">📆</span>
           <div class="portal-card-title">Tournament Calendar</div>
           <div class="portal-card-desc">Full season schedule with dates, locations, and registration deadlines.</div>
           <span class="portal-card-status status-live">View Calendar</span>
         </a>
-
       </div>
     </div>
 
-    <!-- Coming in Path B -->
+    <!-- Coming Soon -->
     <div class="portal-section">
       <div class="portal-section-title">Coming Soon</div>
-      <div class="portal-cards">
+      <div class="portal-cards portal-cards-3col">
 
         <div class="portal-card no-link">
           <span class="portal-card-icon">📊</span>
