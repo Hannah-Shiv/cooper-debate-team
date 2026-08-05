@@ -31,6 +31,7 @@ auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 let currentUserEmail  = "";
 let currentUserRole   = "member"; // "coach" | "captain" | "member"
 let unsubAnnouncements = null;
+let allAnnouncementDocs = [];
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
@@ -154,12 +155,12 @@ function showDashboard(email) {
     }
   }
 
-  // Show admin panel for coach + captain
-  const adminPanel = document.getElementById("admin-panel");
-  if (adminPanel && (currentUserRole === "coach" || currentUserRole === "captain")) {
-    adminPanel.style.display = "";
-    const titleEl = document.getElementById("admin-panel-title");
-    if (titleEl) titleEl.textContent = currentUserRole === "coach" ? "Coach Panel" : "Captain Panel";
+  // Show floating post button for coach + captain
+  const fab = document.getElementById("post-fab");
+  if (fab && (currentUserRole === "coach" || currentUserRole === "captain")) {
+    fab.style.display = "flex";
+    const label = document.getElementById("post-fab-label");
+    if (label) label.style.display = "block";
   }
 
   // Start real-time announcements listener
@@ -207,7 +208,7 @@ function postAnnouncement() {
     btn.disabled    = false;
     btn.textContent = "Announce →";
     showAnnounceStatus("✓ Posted!", false);
-    setTimeout(hideAnnounceStatus, 3000);
+    setTimeout(() => { hideAnnounceStatus(); closePostModal(); }, 1400);
   })
   .catch(err => {
     console.error("postAnnouncement error:", err);
@@ -217,39 +218,121 @@ function postAnnouncement() {
   });
 }
 
-// ── Load announcements (real-time listener) ───────────────────
+// ── Load announcements → renders timeline ─────────────────────
 function loadAnnouncements() {
-  const feed = document.getElementById("announcements-feed");
-  if (!feed) return;
-
-  if (unsubAnnouncements) unsubAnnouncements(); // detach old listener
-
+  if (unsubAnnouncements) unsubAnnouncements();
   let firstLoad = true;
 
   unsubAnnouncements = db.collection("announcements")
     .orderBy("timestamp", "desc")
     .limit(30)
     .onSnapshot(snapshot => {
-      // Fire browser notification for newly added docs (not on first load)
       if (!firstLoad) {
         snapshot.docChanges().forEach(change => {
-          if (change.type === "added") {
-            notifyNewAnnouncement(change.doc.data());
-          }
+          if (change.type === "added") notifyNewAnnouncement(change.doc.data());
         });
       }
       firstLoad = false;
-
-      if (snapshot.empty) {
-        feed.innerHTML = '<div class="ann-empty">📢 No announcements yet — check back soon.</div>';
-        return;
-      }
-      feed.innerHTML = snapshot.docs.map(doc => renderAnnouncement(doc.id, doc.data())).join("");
+      allAnnouncementDocs = snapshot.docs;
+      renderTimeline(snapshot.docs.slice(0, 10));
+      // Refresh view-all modal if it's open
+      const m = document.getElementById("all-modal");
+      if (m && m.style.display !== "none") renderAllList();
     }, err => {
-      console.error("loadAnnouncements error:", err);
-      feed.innerHTML = '<div class="ann-empty">Could not load announcements. Please refresh the page.</div>';
+      console.error("loadAnnouncements:", err);
+      const tl = document.getElementById("ann-timeline");
+      if (tl) tl.innerHTML = '<div class="ann-tl-empty">Could not load announcements. Please refresh.</div>';
     });
 }
+
+// ── Timeline ──────────────────────────────────────────────────
+function renderTimeline(docs) {
+  const tl = document.getElementById("ann-timeline");
+  if (!tl) return;
+  if (!docs.length) {
+    tl.innerHTML = '<div class="ann-tl-empty">📢 No announcements yet — check back soon.</div>';
+    return;
+  }
+  tl.innerHTML = `
+    <div class="ann-tl-track-wrap">
+      <div class="ann-tl-track">
+        <div class="ann-tl-line"></div>
+        ${docs.map((doc, i) => renderTimelineDot(doc.id, doc.data(), i)).join("")}
+      </div>
+    </div>
+    <div class="ann-tl-detail" id="ann-tl-detail"></div>`;
+
+  docs.forEach((doc) => {
+    const dotEl = tl.querySelector(`.ann-tl-dot[data-id="${doc.id}"]`);
+    if (!dotEl) return;
+    const activate = () => activateTimelineDot(dotEl, doc.id, doc.data());
+    dotEl.addEventListener("click", activate);
+    dotEl.addEventListener("mouseenter", activate);
+    dotEl.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") activate(); });
+  });
+
+  // Pre-activate newest dot
+  const first = tl.querySelector(".ann-tl-dot");
+  if (first) activateTimelineDot(first, docs[0].id, docs[0].data());
+}
+
+function renderTimelineDot(id, data, index) {
+  const catKey  = (data.category || "General").toLowerCase();
+  const ts      = data.timestamp?.toDate?.();
+  const dateStr = ts
+    ? ts.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/New_York" })
+    : "—";
+  return `
+    <div class="ann-tl-dot" data-id="${id}" tabindex="0" role="button" aria-label="${escHtml(data.title)}">
+      <div class="ann-dot-pip ann-pip-${catKey}"></div>
+      <div class="ann-dot-date">${dateStr}</div>
+    </div>`;
+}
+
+function activateTimelineDot(dotEl, id, data) {
+  document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
+  dotEl.classList.add("active");
+  const detail = document.getElementById("ann-tl-detail");
+  if (!detail) return;
+
+  const catKey   = (data.category || "General").toLowerCase();
+  const catLabel = data.category || "General";
+  const timeStr  = timeAgo(data.timestamp);
+  const body     = data.details   ? `<div class="ann-det-body">${escHtml(data.details)}</div>` : "";
+  const drive    = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" class="ann-det-drive">📎 Open Drive File →</a>` : "";
+  const canDel   = currentUserRole === "coach" || data.postedBy === currentUserEmail;
+  const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}')">✕ Remove</button>` : "";
+  const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
+
+  detail.innerHTML = `
+    <div class="ann-det-card ann-det-${catKey}">
+      <div class="ann-det-head">
+        <span class="ann-cat-badge ann-cat-${catKey}">${catLabel}</span>
+        <span class="ann-det-title">${escHtml(data.title)}</span>
+        <span class="ann-det-time">${timeStr}</span>
+      </div>
+      ${body}${drive}
+      <div class="ann-det-footer">
+        <span class="ann-det-poster">Posted by ${byLabel}</span>
+        ${delBtn}
+      </div>
+    </div>`;
+}
+
+// ── View-all modal list ───────────────────────────────────────
+function renderAllList() {
+  const list = document.getElementById("all-ann-list");
+  if (!list) return;
+  list.innerHTML = allAnnouncementDocs.length
+    ? allAnnouncementDocs.map(doc => renderAnnouncement(doc.id, doc.data())).join("")
+    : '<div class="ann-empty">No announcements yet.</div>';
+}
+
+// ── Modal controls ────────────────────────────────────────────
+function openPostModal()  { const m = document.getElementById("post-modal"); if(m){m.style.display="flex";document.body.style.overflow="hidden";} }
+function closePostModal() { const m = document.getElementById("post-modal"); if(m){m.style.display="none"; document.body.style.overflow="";} }
+function openAllModal()   { const m = document.getElementById("all-modal");  if(m){m.style.display="flex";renderAllList();document.body.style.overflow="hidden";} }
+function closeAllModal()  { const m = document.getElementById("all-modal");  if(m){m.style.display="none"; document.body.style.overflow="";} }
 
 // ── FCM token registration (background push — Phase 2) ────────
 async function registerFcmToken(email) {
