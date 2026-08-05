@@ -192,7 +192,9 @@ function initFullCalendar() {
       const isWeekGrid  = viewType === "timeGridWeek";
       const isMonthGrid = viewType === "dayGridMonth";
 
-      if (isDeadlineChip && (isListView || isWeekGrid || isMonthGrid)) {
+      const isDayGrid  = viewType === "timeGridDay";
+
+      if (isDeadlineChip && (isListView || isWeekGrid || isMonthGrid || isDayGrid)) {
         // Render a distinct badge + tournament name so the event is scannable
         // without relying on colour alone.
         const parentTitle = calEsc(info.event.extendedProps.title || "");
