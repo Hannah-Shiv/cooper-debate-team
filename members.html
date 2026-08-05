@@ -411,7 +411,7 @@
     /* ── Floating Post Button (FAB) ──────────────────────── */
     .post-fab {
       position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 999;
-      width: 108px; height: 90px;
+      width: 88px; height: 88px;
       background: none; border: none;
       cursor: pointer; padding: 0;
       display: none; align-items: center; justify-content: center;
@@ -782,9 +782,9 @@
       .dashboard-header { flex-direction: column; align-items: flex-start; }
       .portal-cards { grid-template-columns: 1fr; }
       .dashboard-header-left h1 { font-size: 2rem; }
-      .post-fab { right: 10px; left: auto; top: 50%; transform: translateY(-50%); width: 86px; height: 72px; }
+      .post-fab { right: 10px; left: auto; top: 50%; transform: translateY(-50%); width: 70px; height: 70px; }
       .post-fab:hover { transform: translateY(-50%) scale(1.09); }
-      .post-fab svg { width: 86px; height: 72px; }
+      .post-fab svg { width: 70px; height: 70px; }
       .modal-box { padding: 20px 18px 24px; }
     }
 
@@ -1052,34 +1052,58 @@
 
   <!-- ── Floating Post Button (coach/captain only) ──────────── -->
   <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement" aria-label="Post Announcement">
-    <!-- Speech-bubble callout: rounded rect body + rightward tail -->
-    <svg viewBox="0 0 108 90" width="108" height="90" xmlns="http://www.w3.org/2000/svg">
+    <svg viewBox="0 0 88 88" width="88" height="88" xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <linearGradient id="fab-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#c40000"/>
-          <stop offset="100%" stop-color="#820000"/>
-        </linearGradient>
+        <!-- Top arc for "POST" -->
+        <path id="fab-top-arc" d="M 15,44 A 29,29 0 0,1 73,44"/>
+        <!-- Bottom arc for "ANNOUNCEMENT" -->
+        <path id="fab-bot-arc" d="M 10,44 A 34,34 0 0,0 78,44"/>
       </defs>
-      <!-- Callout path: rounded rect (0-92 wide, 0-90 tall) + tail pointing right at center -->
-      <path d="M 16,2 H 76 Q 92,2 92,16 V 36 L 106,45 L 92,54 V 74 Q 92,88 76,88 H 16 Q 2,88 2,74 V 16 Q 2,2 16,2 Z"
-            fill="url(#fab-bg)"/>
-      <!-- POST label -->
-      <text x="47" y="21" font-family="'Josefin Sans', sans-serif" font-size="11" font-weight="900"
-            letter-spacing="3.5" fill="white" text-anchor="middle">POST</text>
-      <!-- Divider line -->
-      <line x1="14" y1="28" x2="80" y2="28" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-      <!-- Megaphone icon centred in body -->
-      <g transform="translate(33,33) scale(1.15)" fill="none" stroke="white" stroke-width="1.9"
-         stroke-linecap="round" stroke-linejoin="round">
+
+      <!-- White filled circle base -->
+      <circle cx="44" cy="44" r="43" fill="white"/>
+      <!-- Red ring -->
+      <circle cx="44" cy="44" r="40" fill="none" stroke="#cc0000" stroke-width="2.8"/>
+
+      <!-- "POST" arched along top -->
+      <text font-family="'Josefin Sans', sans-serif" font-size="10.5" font-weight="900"
+            letter-spacing="3" fill="#cc0000" text-anchor="middle">
+        <textPath href="#fab-top-arc" startOffset="50%">POST</textPath>
+      </text>
+
+      <!-- Left dot -->
+      <circle cx="14" cy="44" r="2.8" fill="#cc0000"/>
+      <!-- Right dot -->
+      <circle cx="74" cy="44" r="2.8" fill="#cc0000"/>
+
+      <!-- Megaphone icon (filled red), upper area -->
+      <g transform="translate(14,16) scale(1.45)" fill="#cc0000" stroke="none">
         <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+      </g>
+      <!-- Megaphone sound waves (stroked) -->
+      <g transform="translate(14,16) scale(1.45)" fill="none" stroke="#cc0000"
+         stroke-linecap="round" stroke-width="2">
         <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
         <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
       </g>
-      <!-- Divider line -->
-      <line x1="14" y1="62" x2="80" y2="62" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-      <!-- ANNOUNCEMENT label -->
-      <text x="47" y="78" font-family="'Josefin Sans', sans-serif" font-size="7.5" font-weight="800"
-            letter-spacing="1.5" fill="white" text-anchor="middle">ANNOUNCEMENT</text>
+
+      <!-- Document / paper icon (outline red), lower-center -->
+      <g transform="translate(30,37)" fill="none" stroke="#cc0000"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
+        <!-- Paper body with folded top-right corner -->
+        <path d="M0,0 H12 L18,6 V22 H0 Z"/>
+        <path d="M12,0 V6 H18"/>
+        <!-- Text lines on paper -->
+        <line x1="3" y1="10" x2="14" y2="10"/>
+        <line x1="3" y1="14" x2="14" y2="14"/>
+        <line x1="3" y1="18" x2="10" y2="18"/>
+      </g>
+
+      <!-- "ANNOUNCEMENT" arched along bottom -->
+      <text font-family="'Josefin Sans', sans-serif" font-size="7.2" font-weight="900"
+            letter-spacing="1.2" fill="#cc0000" text-anchor="middle">
+        <textPath href="#fab-bot-arc" startOffset="50%">ANNOUNCEMENT</textPath>
+      </text>
     </svg>
   </button>
 
