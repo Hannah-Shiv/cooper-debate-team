@@ -1710,38 +1710,43 @@ body.dome-open .page-header { padding-top: 240px; }
   position: fixed;
   top: 8px;
   left: 16px;
-  width: 88px;
-  height: 88px;
+  width: 72px;
+  height: 72px;
   z-index: 9997;
   display: block;
   transition: transform 0.2s ease, opacity 0.2s ease;
   opacity: 0.92;
 }
 #site-badge:hover {
-  transform: scale(1.08);
+  transform: scale(1.06);
   opacity: 1;
 }
 #site-badge img {
-  width: 88px;
-  height: 88px;
+  width: 72px;
+  height: 72px;
   object-fit: contain;
   display: block;
 }
 
-/* ── Fixed top bar — transparent; just reserves z-index layer for member pages ── */
+/* ── Fixed top bar — member pages header containing badge, dome, and userbar ── */
 .mp-topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 62px;
+  height: 88px;
+  background: rgba(7, 13, 32, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 9990;
   pointer-events: none;
 }
 
-/* ── Member Userbar — fixed horizontal bar, top-right, all member pages ── */
+/* ── Member Userbar — vertically centred inside the 88px header bar ── */
 .member-userbar {
   position: fixed;
-  top: 14px;
+  top: 0;
   right: 16px;
+  height: 88px;
   z-index: 9998;
   display: none;
   flex-direction: row;
@@ -1749,6 +1754,14 @@ body.dome-open .page-header { padding-top: 240px; }
   gap: 0;
 }
 .member-userbar.visible { display: flex; }
+
+/* ── Mobile overrides for the member header bar ── */
+@media (max-width: 600px) {
+  .mp-topbar { height: 70px; }
+  .member-userbar { height: 70px; }
+  #site-badge { width: 54px; height: 54px; top: 8px; left: 10px; }
+  #site-badge img { width: 54px; height: 54px; }
+}
 
 /* Bell icon button */
 .mub-bell {
