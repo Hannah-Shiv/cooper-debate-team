@@ -1728,15 +1728,11 @@ body.dome-open .page-header { padding-top: 240px; }
   display: block;
 }
 
-/* ── Fixed top bar — sits behind logo, dome nav, and userbar on member pages ── */
+/* ── Fixed top bar — transparent; just reserves z-index layer for member pages ── */
 .mp-topbar {
   position: fixed;
   top: 0; left: 0; right: 0;
   height: 62px;
-  background: rgba(7, 13, 32, 0.90);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   z-index: 9990;
   pointer-events: none;
 }
