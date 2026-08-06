@@ -169,6 +169,10 @@ function showDashboard(email) {
     loadNotifErrors();
   }
 
+  // Reveal fixed userbar
+  const userbar = document.getElementById("member-userbar");
+  if (userbar) userbar.classList.add("visible");
+
   // Start real-time announcements listener
   loadAnnouncements();
 

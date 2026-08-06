@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=9"/>
+  <link rel="stylesheet" href="css/main.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
@@ -644,6 +644,14 @@
 <script>window.__NAV_PAGE = "calendar";</script>
 <div id="dome-nav-root"></div>
 
+<!-- CAL USERBAR — fixed vertical column, top-right, shown after auth -->
+<div class="member-userbar" id="cal-userbar">
+  <button class="signout-btn" onclick="calSignOut()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+  <span class="mub-email" id="cal-user-email"></span>
+  <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
+  <button id="cal-notif-btn" class="notif-btn" onclick="calToggleNotif()" title="Notifications">🔔</button>
+</div>
+
 <main class="portal-page">
 
   <!-- ── STATE: loading ──────────────────────────────────── -->
@@ -676,19 +684,7 @@
           <h1>Tournament Calendar</h1>
         </div>
         <div class="cal-header-right">
-          <!-- Row 1: user chip + notif + sign out -->
-          <div class="cal-header-right-top">
-            <div class="puc-info">
-              <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
-              <span class="puc-email" id="cal-user-email"></span>
-            </div>
-            <button id="cal-notif-btn" class="notif-btn" onclick="calToggleNotif()" title="Enable notifications">🔔</button>
-            <button class="signout-btn" onclick="calSignOut()">
-              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              Sign Out
-            </button>
-          </div>
-          <!-- Row 2: POST / ADD EVENT — coach/captain only -->
+          <!-- POST / ADD EVENT — coach/captain only -->
           <button class="post-event-btn" id="post-event-btn" onclick="openPostModal()">
             <div class="peb-waves"><span></span><span></span><span></span></div>
             <div class="peb-icon">

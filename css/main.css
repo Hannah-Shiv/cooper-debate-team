@@ -1727,25 +1727,26 @@ footer {
   display: block;
 }
 
-/* ── Portal user chip — role badge + email, top-right on all member pages ── */
-.portal-user-chip {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.puc-info {
-  display: flex;
+/* ── Fixed member userbar — vertical column, top-right, all member pages ── */
+.member-userbar {
+  position: fixed;
+  top: 14px;
+  right: 16px;
+  z-index: 9998;
+  display: none;            /* revealed via JS after auth */
   flex-direction: column;
   align-items: flex-end;
-  gap: 4px;
+  gap: 8px;
 }
-.puc-email {
+.member-userbar.visible { display: flex; }
+.mub-email {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.63rem;
-  color: rgba(255,255,255,0.48);
+  font-size: 0.62rem;
+  color: rgba(255,255,255,0.50);
   letter-spacing: 0.02em;
   max-width: 210px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  text-align: right;
 }

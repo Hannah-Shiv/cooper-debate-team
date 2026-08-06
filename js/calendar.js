@@ -87,6 +87,10 @@ function initCalDashboard(email) {
   const postBtn = document.getElementById("post-event-btn");
   if (postBtn && isEditor) postBtn.style.display = "inline-flex";
 
+  // Reveal fixed userbar
+  const userbar = document.getElementById("cal-userbar");
+  if (userbar) userbar.classList.add("visible");
+
   showCalState("dashboard");
   loadTournaments();
 }

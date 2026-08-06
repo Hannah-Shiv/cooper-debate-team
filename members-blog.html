@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=9"/>
+  <link rel="stylesheet" href="css/main.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
     /* ── Auth states ─────────────────────────────────────────── */
@@ -19,9 +19,7 @@
     .auth-title { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;margin-bottom:10px; }
     .auth-sub   { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.6; }
 
-    /* ── Fixed member topbar ─────────────────────────────────── */
-    .member-topbar { position:fixed;top:14px;right:16px;z-index:9998;display:none;align-items:center;gap:10px; }
-    .member-topbar.visible { display:flex; }
+    /* member-userbar comes from main.css */
     .member-badge { display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:50px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;white-space:nowrap; }
     .signout-btn { display:inline-flex;align-items:center;gap:6px;background:rgba(179,0,0,0.80);border:1.5px solid #cc0000;color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.70rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:50px;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
     .signout-btn:hover { background:#b30000;border-color:#e03030;box-shadow:0 0 14px rgba(179,0,0,0.45); }
@@ -47,16 +45,11 @@
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
 
-<!-- MEMBER TOPBAR — role, email, sign out -->
-<div class="member-topbar" id="member-topbar">
-  <div class="puc-info">
-    <span class="member-badge" id="mp-role-badge">✓ Team Member</span>
-    <span class="puc-email" id="mp-user-email"></span>
-  </div>
-  <button class="signout-btn" onclick="mpSignOut()">
-    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-    Sign Out
-  </button>
+<!-- MEMBER USERBAR — fixed vertical column, top-right, shown after auth -->
+<div class="member-userbar" id="member-userbar">
+  <button class="signout-btn" onclick="mpSignOut()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+  <span class="mub-email" id="mp-user-email"></span>
+  <span class="member-badge" id="mp-role-badge">✓ Team Member</span>
 </div>
 
 <script>window.__NAV_PAGE = "blog";</script>
@@ -124,7 +117,7 @@ _mpAuth.onAuthStateChanged(function(user) {
     const email = document.getElementById('mp-user-email');
     if (badge) badge.textContent = role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
     if (email) email.textContent = user.email;
-    document.getElementById('member-topbar').classList.add('visible');
+    document.getElementById('member-userbar').classList.add('visible');
     document.getElementById('mp-loading').style.display = 'none';
     document.getElementById('mp-content').style.display = 'block';
     renderAnnouncements(ANNOUNCEMENTS, 'ann-list');
