@@ -247,6 +247,14 @@
 #circ-wrap.open ~ .home-hero .hero-content { padding-top: 250px; }
 #circ-wrap.open ~ .page-header { padding-top: 240px; }
 
+/* === MEMBER PORTAL NAV — font-size overrides ===
+   Long labels (Resources, Calendar, Directory) need smaller text.
+   Scoped to .member-dome so public nav is unaffected.             */
+#circ-wrap.member-dome .dn-p1,
+#circ-wrap.member-dome .dn-p2 { font-size: 8px !important; }
+#circ-wrap.member-dome .dn-p3 { font-size: 8px !important; }
+#circ-wrap.member-dome .dn-p6 { font-size: 9px !important; letter-spacing: 0.02em !important; }
+
 /* === MOBILE (≤600px) === */
 @media (max-width: 600px) {
   /* 52px circles — enough room for all 6 without collision */
