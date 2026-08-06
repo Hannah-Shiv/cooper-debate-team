@@ -1,5 +1,5 @@
 /* ============================================================
-   COOPER DEBATE TEAM — members-nav.js  v5
+   COOPER DEBATE TEAM — members-nav.js  v6
    Member-portal version of the dome navigation.
    Injects #circ-wrap into #dome-nav-root on all member pages.
    Set window.__NAV_PAGE before loading this script:
@@ -28,31 +28,31 @@
   /* ── Nav items ─────────────────────────────────────────── */
   var ITEMS = [
     {
-      cls: 'dn-p1', href: 'members-resources.html', label: 'Members-Resources',
+      cls: 'dn-p1', href: 'members-resources.html', label: 'Resources',
       active: PAGE === 'resources',
       /* open book */
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 19.5V5a2 2 0 0 1 2-2h14v17H6.5A2.5 2.5 0 0 1 4 19.5z"/>'
     },
     {
-      cls: 'dn-p2', href: 'members-calendar.html', label: 'Members-Calendar',
+      cls: 'dn-p2', href: 'members-calendar.html', label: 'Calendar',
       active: PAGE === 'calendar',
       /* calendar grid */
       icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'
     },
     {
-      cls: 'dn-p3', href: 'members-directory.html', label: 'Members-Directory',
+      cls: 'dn-p3', href: 'members-directory.html', label: 'Directory',
       active: PAGE === 'directory',
       /* two people */
       icon: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/>'
     },
     {
-      cls: 'dn-p4', href: 'members-stats.html', label: 'Members-Stats',
+      cls: 'dn-p4', href: 'members-stats.html', label: 'Stats',
       active: PAGE === 'stats',
       /* bar chart */
       icon: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>'
     },
     {
-      cls: 'dn-p5', href: 'members-blog.html', label: 'Members-Blog',
+      cls: 'dn-p5', href: 'members-blog.html', label: 'Blog',
       active: PAGE === 'blog',
       /* document with lines */
       icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>'
