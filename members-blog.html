@@ -140,7 +140,7 @@ _mpAuth.onAuthStateChanged(function(user) {
     const initials = document.getElementById('mp-initials');
     if (badge) badge.textContent = role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
     if (email) email.textContent = user.email;
-    if (initials) initials.textContent = user.email.split('@')[0].slice(0, 2).toUpperCase();
+    if (initials) initials.textContent = (MEMBER_INITIALS[user.email.toLowerCase()] || user.email.slice(0,2).toUpperCase());
     document.getElementById('member-userbar').classList.add('visible');
     document.getElementById('mp-loading').style.display = 'none';
     document.getElementById('mp-content').style.display = 'block';

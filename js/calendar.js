@@ -72,7 +72,7 @@ function initCalDashboard(email) {
   if (emailEl) emailEl.textContent = email;
 
   const initialsEl = document.getElementById("cal-initials");
-  if (initialsEl) initialsEl.textContent = email.split('@')[0].slice(0, 2).toUpperCase();
+  if (initialsEl) initialsEl.textContent = (MEMBER_INITIALS[email.toLowerCase()] || email.slice(0,2).toUpperCase());
 
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {
