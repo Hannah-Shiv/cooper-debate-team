@@ -58,8 +58,19 @@
     .template-download { margin-left:auto;flex-shrink:0; }
     .three-col { display:grid;grid-template-columns:repeat(3,1fr);gap:20px; }
     .two-col { display:grid;grid-template-columns:1fr 1fr;gap:48px; }
-    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} .pro-con-grid{grid-template-columns:1fr;} }
+    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} }
     @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
+    /* Announcement cards */
+    .ann-card { background:rgba(13,46,86,0.45);border:1px solid rgba(212,160,23,0.15);border-radius:12px;overflow:hidden;margin-bottom:28px;transition:border-color 0.25s,box-shadow 0.25s; }
+    .ann-card:hover { border-color:rgba(212,160,23,0.4);box-shadow:0 12px 32px rgba(0,0,0,0.35); }
+    .ann-card-header { display:flex;align-items:center;gap:16px;padding:28px 32px 0; }
+    .ann-card-emoji { font-size:2rem;flex-shrink:0; }
+    .ann-card-meta { display:flex;flex-direction:column;gap:6px; }
+    .ann-card-title { font-family:'Cormorant Garamond',serif;font-size:clamp(1.15rem,2.5vw,1.45rem);color:var(--white);line-height:1.35; }
+    .ann-card-date { font-family:'Josefin Sans',sans-serif;font-size:0.68rem;color:var(--gray-mid);letter-spacing:0.06em; }
+    .ann-card-body { padding:20px 32px 28px;font-size:0.9rem;color:rgba(255,255,255,0.78);line-height:1.8;white-space:pre-wrap; }
+    .ann-empty { text-align:center;padding:64px 24px;font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:var(--gray-mid);letter-spacing:0.05em; }
+    @media(max-width:600px){ .ann-card-header{padding:20px 20px 0;} .ann-card-body{padding:16px 20px 20px;} }
   </style>
 </head>
 <body>
@@ -106,84 +117,65 @@
 
 <div class="page-header">
   <div class="page-header-content">
-    <p class="page-header-label">Debate Preparation Center</p>
-    <h1 class="page-title">Members-Resources</h1>
-    <p class="page-subtitle">PF topic research, skills training, and debate templates</p>
+    <p class="page-header-label">Cooper Debate Team</p>
+    <h1 class="page-title">Members Portal</h1>
+    <p class="page-subtitle">Announcements, team files, and resources — members only</p>
   </div>
 </div>
 
-<!-- PF TOPIC CENTER -->
+<!-- ANNOUNCEMENTS -->
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-    <p class="section-label">Current Resolution</p>
-    <h2 class="section-title" style="margin-bottom:32px;">PF Topic Center</h2>
-    <div class="topic-box">
-      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Sept/Oct 2026</p>
-      <div class="topic-resolution">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
-      <div class="pro-con-grid">
-        <div class="arg-card arg-card-pro">
-          <div class="arg-label arg-label-pro">✓ Pro Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>AI dramatically improves threat detection and prevention capabilities</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Reduces human risk in intelligence operations</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Counter-terrorism benefits outweigh marginal privacy costs</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Allied nations coordinate more effectively through AI-shared intelligence</span></div>
-        </div>
-        <div class="arg-card arg-card-con">
-          <div class="arg-label arg-label-con">✗ Con Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Mass surveillance creates chilling effects on civil liberties</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Algorithmic bias leads to discriminatory enforcement</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>AI systems are vulnerable to adversarial manipulation</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Autonomous weapons systems escalate risk of accidental conflict</span></div>
-        </div>
-      </div>
+    <p class="section-label">From Coach &amp; Captains</p>
+    <h2 class="section-title" style="margin-bottom:32px;">Announcements</h2>
+    <div id="ann-list">
+      <div class="ann-empty">Loading announcements…</div>
     </div>
+  </div>
+</section>
 
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">Key Research Sources</h3>
+<!-- GOOGLE DRIVE -->
+<section class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <p class="section-label">Team Files</p>
+    <h2 class="section-title" style="margin-bottom:32px;">Google Drive</h2>
     <div class="three-col">
-      <div class="resource-card fade-up"><div class="resource-icon">🔍</div><div class="resource-title">NSDA Topic Guide</div><p class="resource-desc">The official NSDA Public Forum topic analysis including definitions, background, and key stakeholders for the current resolution.</p><a href="https://www.speechanddebate.org" target="_blank" rel="noopener" class="resource-link">Visit NSDA →</a></div>
-      <div class="resource-card fade-up"><div class="resource-icon">📰</div><div class="resource-title">Government Sources</div><p class="resource-desc">CISA, DNI, DOD, and Congressional Research Service reports on AI in national security — the gold standard for pro evidence.</p><a href="https://crsreports.congress.gov" target="_blank" rel="noopener" class="resource-link">CRS Reports →</a></div>
-      <div class="resource-card fade-up"><div class="resource-icon">🎓</div><div class="resource-title">Academic Journals</div><p class="resource-desc">Peer-reviewed research on AI ethics, surveillance, civil liberties, and international security from major universities.</p><a href="https://scholar.google.com" target="_blank" rel="noopener" class="resource-link">Google Scholar →</a></div>
-    </div>
-  </div>
-</section>
-
-<!-- DEBATE SKILLS -->
-<section id="skills" class="section" style="background:var(--navy-mid);">
-  <div class="section-wrap">
-    <div class="two-col">
-      <div>
-        <p class="section-label">Build Your Toolkit</p>
-        <h2 class="section-title" style="margin-bottom:32px;">Debate Skills</h2>
-        <div class="skill-row fade-up"><div class="skill-num">✍️</div><div><div class="skill-title">Case Writing</div><p class="skill-desc">A strong 4-minute constructive has 2–3 contentions, each with a clear claim, warrant, and impact. Lead with your strongest argument and pre-empt top counterarguments.</p><div class="skill-tip">"Make your tag line a thesis statement, not a label."</div></div></div>
-        <div class="skill-row fade-up"><div class="skill-num">💬</div><div><div class="skill-title">Crossfire</div><p class="skill-desc">Use crossfire strategically: ask short, closed questions to expose contradictions. Never answer a question you haven't thought through. Control pace — don't let your opponent run the clock.</p><div class="skill-tip">"Ask questions, don't make speeches."</div></div></div>
-        <div class="skill-row fade-up"><div class="skill-num">🎯</div><div><div class="skill-title">Summary &amp; Final Focus</div><p class="skill-desc">In summary, extend 2–3 key issues with offense. Respond to the most damaging attacks. In Final Focus, crystalize 1–2 voting issues and explain why you win them.</p><div class="skill-tip">"Tell the judge what to weigh and why your evidence is better."</div></div></div>
-        <div class="skill-row fade-up"><div class="skill-num">📊</div><div><div class="skill-title">Impact Calculus</div><p class="skill-desc">Compare arguments using magnitude (how big), probability (how likely), and timeframe (how soon). A clear calculus framing wins close rounds.</p><div class="skill-tip">"Don't just win an argument — tell the judge why it matters MORE than theirs."</div></div></div>
-        <div class="skill-row fade-up"><div class="skill-num">🗣️</div><div><div class="skill-title">Delivery</div><p class="skill-desc">Speak conversationally in PF — judges want to understand you, not be impressed by speed. Eye contact, vocal variation, and clear signposting make you a more persuasive speaker.</p><div class="skill-tip">"If the judge can't follow you, you're losing."</div></div></div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">📁</div>
+        <div class="resource-title">Evidence Files</div>
+        <p class="resource-desc">Case evidence, cut cards, and source documents for the current resolution.</p>
+        <a id="drive-evidence-link" href="https://drive.google.com/drive/folders/10PY63bQqPJl40fIvwCnyii8vBS890cL1" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
       </div>
-      <div>
-        <p class="section-label">Practice Methods</p>
-        <h2 class="section-title" style="margin-bottom:24px;">How We Train</h2>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">⏱️</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Timed Practice Rounds</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We run full practice rounds weekly to build comfort with PF timing. Timers always running — no exceptions.</p></div>
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">📝</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Flow Practice</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">Flowing is a critical skill. We practice flowing pre-written speeches until every debater can flow at full speaking speed.</p></div>
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">🎤</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Video Review</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We record and review practice rounds to identify speech habits, argument gaps, and crossfire patterns to improve.</p></div>
-        </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">📊</div>
+        <div class="resource-title">Flows &amp; Notes</div>
+        <p class="resource-desc">Practice round flows, judge notes, and in-round observations from the team.</p>
+        <a id="drive-flows-link" href="https://drive.google.com/drive/folders/1SHmgfvi6YlGFBtaM6bdcdcBsFU8Kqr8E" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- TEMPLATES -->
-<section id="templates" class="section" style="background:var(--navy-dark);">
-  <div class="section-wrap">
-    <p class="section-label">Downloadable Resources</p>
-    <h2 class="section-title" style="margin-bottom:32px;">Templates &amp; Flows</h2>
-    <div style="display:flex;flex-direction:column;gap:12px;max-width:800px;">
-      <div class="template-card fade-up"><div class="template-icon">📋</div><div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">📊</div><div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">📝</div><div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">🔍</div><div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">⚖️</div><div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">🔍</div>
+        <div class="resource-title">Research</div>
+        <p class="resource-desc">Background research, topic analysis, and reading lists curated by the team.</p>
+        <a id="drive-research-link" href="https://drive.google.com/drive/folders/1ZDlvJJLC0HqXGtHIIqlrDbFgjyuQKAEx" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
+      </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">📅</div>
+        <div class="resource-title">Schedule</div>
+        <p class="resource-desc">Practice schedule, tournament dates, and team meeting times.</p>
+        <a id="drive-schedule-link" href="https://drive.google.com/drive/folders/1WBwF33mAmuHzIBshaOGa0l9z-ptBovP4" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
+      </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">📋</div>
+        <div class="resource-title">Assignments</div>
+        <p class="resource-desc">Coach-assigned prep work, research tasks, and weekly assignments.</p>
+        <a id="drive-assignments-link" href="https://drive.google.com/drive/folders/112MTL_rSk-sJF7_hfBUbm4SRMTfsy0g_" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
+      </div>
+      <div class="resource-card fade-up">
+        <div class="resource-icon">🏆</div>
+        <div class="resource-title">Tournament Files</div>
+        <p class="resource-desc">Registration docs, ballots, results, and prep materials for past and upcoming tournaments.</p>
+        <a id="drive-tournament-link" href="https://drive.google.com/drive/folders/1bRpZgA1kYIMl-LjnmnMOzSOH3Cn4BToM" target="_blank" rel="noopener" class="resource-link">Open Folder →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -196,6 +188,8 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
+<script src="data/announcements.js"></script>
+<script src="js/drive-api.js"></script>
 
 <script>
 const _MP_CONFIG = {
@@ -242,6 +236,8 @@ _mpAuth.onAuthStateChanged(function(user) {
     document.getElementById('mp-loading').style.display  = 'none';
     document.getElementById('mp-content').style.display  = 'block';
     mpUpdateNotifState();
+    renderAnnouncements(ANNOUNCEMENTS, 'ann-list');
+    if (typeof loadDriveData === 'function') loadDriveData();
   } else if (user) {
     _mpAuth.signOut();
     window.location.href = 'members.html';
@@ -249,6 +245,25 @@ _mpAuth.onAuthStateChanged(function(user) {
     window.location.href = 'members.html';
   }
 });
+
+const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
+function renderAnnouncements(posts, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!posts || !posts.length) { container.innerHTML = '<div class="ann-empty">No announcements yet — check back soon.</div>'; return; }
+  container.innerHTML = posts.map(p => `
+    <div class="ann-card">
+      <div class="ann-card-header">
+        <div class="ann-card-emoji">${p.emoji}</div>
+        <div class="ann-card-meta">
+          <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
+          <div class="ann-card-title">${p.title}</div>
+          <div class="ann-card-date">${p.date}</div>
+        </div>
+      </div>
+      <div class="ann-card-body">${p.body}</div>
+    </div>`).join('');
+}
 </script>
 
 <script src="js/members-nav.js?v=6"></script>
