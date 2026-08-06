@@ -16,7 +16,7 @@ const FIREBASE_CONFIG = {
 // Web Push VAPID key — from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
 const VAPID_KEY = "BFwWFUfvb37fGaFBKYNJa29rEKtBHaT4FGnGsAKXTj_M7fxvDjsKgZobBGuKVytQrZ1-p8Yl_uZ_TNUlo0q0jsg";
 
-const SIGN_IN_REDIRECT_URL = window.location.origin + "/members.html";
+const SIGN_IN_REDIRECT_URL = window.location.origin + "/members-signon.html";
 const STORAGE_KEY = "cooper_signin_email";
 
 // ── Initialise Firebase ──────────────────────────────────────
@@ -114,10 +114,10 @@ function completeMagicLinkSignIn() {
 // ── Handle a verified, signed-in user ────────────────────────
 function handleAuthenticatedUser(email) {
   if (isApprovedMember(email)) {
-    // members.html is the auth gateway — redirect to the main member landing page.
+    // members-signon.html and members.html are auth gateways — redirect to portal home.
     // On any other member page, show the dashboard in place (avoids redirect loop).
     var page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
-    if (page === 'members.html' || page === '') {
+    if (page === 'members-signon.html' || page === 'members.html' || page === '') {
       window.location.href = 'members-resources.html';
     } else {
       showDashboard(email);

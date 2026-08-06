@@ -28,7 +28,7 @@
   /* ── Nav items ─────────────────────────────────────────── */
   var ITEMS = [
     {
-      cls: 'dn-p1', href: 'members.html', label: 'Home',
+      cls: 'dn-p1', href: 'members-resources.html', label: 'Home',
       active: PAGE === 'portal',
       /* open book */
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 19.5V5a2 2 0 0 1 2-2h14v17H6.5A2.5 2.5 0 0 1 4 19.5z"/>'

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Sign in to the Cooper Debate Team Members Portal."/>
+  <title>Member Sign-In — Cooper Debate Team</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css?v=13"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    /* ── Page shell ─────────────────────────────────────── */
+    .portal-page {
+      min-height: 100vh;
+      background: #1c2030;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(20,40,100,0.22) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 30% at 80% 80%, rgba(15,30,80,0.12) 0%, transparent 60%);
+      padding: 100px 40px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .portal-page::before {
+      content: '';
+      position: absolute;
+      width: 900px; height: 900px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,160,23,0.08);
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .portal-page::after {
+      content: '';
+      position: absolute;
+      width: 1400px; height: 1400px;
+      border-radius: 50%;
+      border: 1px solid rgba(212,160,23,0.04);
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    /* ── Auth states ────────────────────────────────────── */
+    .auth-wrap {
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      min-height: calc(100vh - 180px);
+    }
+    .auth-box {
+      width: 100%; max-width: 460px;
+      text-align: center;
+    }
+    .auth-icon   { font-size: 3rem; display: block; margin-bottom: 18px; }
+    .auth-badge  {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 5px 14px; border-radius: 50px;
+      background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.25);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--gold-pale);
+      margin-bottom: 20px;
+    }
+    .auth-title  {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem; font-weight: 600; color: var(--white);
+      margin-bottom: 10px;
+    }
+    .auth-sub    {
+      font-size: 0.88rem; color: var(--gray-mid);
+      line-height: 1.75; margin-bottom: 32px;
+    }
+    .auth-sub strong { color: var(--white); }
+
+    /* ── Login card ─────────────────────────────────────── */
+    .login-card {
+      background: rgba(13,46,100,0.7);
+      border: 1px solid rgba(212,160,23,0.3);
+      border-radius: 14px; padding: 36px;
+      text-align: left;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+    }
+    .login-field   { margin-bottom: 22px; }
+    .login-label   {
+      display: block;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 0.13em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+    }
+    .login-input   {
+      width: 100%; padding: 13px 16px; border-radius: 8px;
+      background: rgba(7,26,54,0.7); border: 1.5px solid rgba(212,160,23,0.22);
+      color: var(--white); font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.88rem; outline: none;
+      transition: border-color 0.2s;
+      box-sizing: border-box;
+    }
+    .login-input:focus { border-color: rgba(212,160,23,0.6); }
+    .login-hint {
+      margin-top: 7px; font-size: 0.78rem;
+      color: rgba(255,255,255,0.35); line-height: 1.5;
+    }
+    .btn-send {
+      width: 100%; padding: 14px; font-size: 0.82rem; letter-spacing: 0.1em;
+      border-radius: 8px; margin-top: 4px;
+    }
+    .login-error {
+      display: none; margin-top: 14px; padding: 10px 14px;
+      background: rgba(220,38,38,0.15); border: 1px solid rgba(220,38,38,0.3);
+      border-radius: 6px; color: #fca5a5; font-size: 0.82rem;
+    }
+
+    /* ── Email check card ───────────────────────────────── */
+    .email-check-card {
+      background: rgba(13,46,100,0.55);
+      border: 1px solid rgba(212,160,23,0.2);
+      border-radius: 12px; padding: 24px 28px;
+      font-size: 0.86rem; color: var(--gray-mid);
+      line-height: 1.7; text-align: left;
+    }
+    .email-check-card p { margin-bottom: 10px; }
+    .email-check-card p:last-child { margin-bottom: 0; }
+    .text-link {
+      background: none; border: none; padding: 0;
+      color: var(--gold); cursor: pointer; font-size: inherit;
+      text-decoration: underline;
+    }
+
+    /* ── Denied card ────────────────────────────────────── */
+    .denied-card {
+      background: rgba(60,10,10,0.45);
+      border: 1px solid rgba(220,38,38,0.25);
+      border-radius: 12px; padding: 20px 24px;
+      font-size: 0.86rem; color: rgba(255,255,255,0.6);
+      text-align: left; margin-bottom: 10px;
+    }
+
+    /* ── Spinner ────────────────────────────────────────── */
+    .spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(212,160,23,0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      margin: 0 auto 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Responsive ─────────────────────────────────────── */
+    @media(max-width:600px){
+      .portal-page { padding: 90px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="mp-topbar"></div>
+<!-- SITE BADGE -->
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+  <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+
+<div id="dome-nav-root"></div>
+
+<main class="portal-page">
+
+  <!-- ── STATE: login ──────────────────────────────────── -->
+  <div id="state-login" class="auth-wrap">
+    <div class="auth-box">
+      <span class="auth-icon">🔐</span>
+      <div class="auth-badge">Members Only</div>
+      <h1 class="auth-title">Members Portal</h1>
+      <p class="auth-sub">Enter your email to receive a secure sign-in link.<br/>No password needed — ever.</p>
+
+      <div class="login-card">
+        <div class="login-field">
+          <label class="login-label" for="email-input">Email Address</label>
+          <input class="login-input" id="email-input" type="email"
+                 placeholder="yourname@fcpsschools.net"
+                 autocomplete="email"
+                 onkeydown="if(event.key==='Enter') sendSignInLink()"/>
+          <p class="login-hint">Use your FCPS school email or the email Coach Konde approved you with.</p>
+        </div>
+
+        <button class="btn btn-gold btn-send" id="send-link-btn" onclick="sendSignInLink()">
+          Send Sign-In Link →
+        </button>
+
+        <div class="login-error" id="login-error"></div>
+      </div>
+
+      <p style="margin-top:24px;font-size:0.858rem;color:var(--gray-mid);">
+        Not a member yet? <a href="apply.html" style="color:var(--gold);text-decoration:underline;">Apply to join the team →</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ── STATE: pending (email sent) ───────────────────── -->
+  <div id="state-pending" class="auth-wrap" style="display:none;">
+    <div class="auth-box">
+      <span class="auth-icon">📬</span>
+      <h1 class="auth-title">Check Your Email</h1>
+      <p class="auth-sub">A sign-in link was sent to<br/><strong id="pending-email"></strong></p>
+
+      <div class="email-check-card">
+        <p>Click the link in the email to access the portal. The link is valid for 1 hour.</p>
+        <p>
+          Didn't receive it? Check your spam folder, or
+          <button class="text-link" onclick="showLogin()">try again with a different email</button>.
+        </p>
+        <p style="margin-top:6px;font-size:0.825rem;color:rgba(255,255,255,0.35);">
+          If you're on a school computer, the link will open on that same computer automatically.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── STATE: completing (processing magic link) ──────── -->
+  <div id="state-completing" class="auth-wrap" style="display:none;">
+    <div class="auth-box">
+      <div class="spinner"></div>
+      <h1 class="auth-title" style="font-size:1.76rem;">Signing you in…</h1>
+      <p class="auth-sub">Just a moment.</p>
+    </div>
+  </div>
+
+  <!-- ── STATE: access denied ──────────────────────────── -->
+  <div id="state-denied" class="auth-wrap" style="display:none;">
+    <div class="auth-box">
+      <span class="auth-icon">🚫</span>
+      <h1 class="auth-title">Access Not Approved</h1>
+      <p class="auth-sub">Your email is not on the approved members list.</p>
+
+      <div class="denied-card">
+        <p>If you believe this is an error, contact <strong style="color:var(--white);">Coach Konde</strong> and ask to be added to the portal access list.</p>
+      </div>
+
+      <button onclick="showLogin()" class="btn btn-outline" style="margin-top:24px;">
+        ← Try a different email
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<!-- Firebase SDKs (auth only — no Firestore/Messaging needed for sign-in) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="data/approved-members.js?v=2"></script>
+<script src="data/admins.js"></script>
+<script src="js/members-auth.js?v=3"></script>
+
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>

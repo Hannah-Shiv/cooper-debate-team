@@ -41,13 +41,13 @@ calAuth.onAuthStateChanged(user => {
       initCalDashboard(user.email);
     } else if (user) {
       calAuth.signOut();
-      window.location.href = "members.html";
+      window.location.href = "members-signon.html";
     } else {
-      window.location.href = "members.html";
+      window.location.href = "members-signon.html";
     }
   } catch (err) {
     console.error("[Calendar] auth callback error:", err);
-    window.location.href = "members.html";
+    window.location.href = "members-signon.html";
   }
 });
 
@@ -98,7 +98,7 @@ function initCalDashboard(email) {
 
 // ── Sign out ──────────────────────────────────────────────────
 function calSignOut() {
-  calAuth.signOut().then(() => { window.location.href = "members.html"; });
+  calAuth.signOut().then(() => { window.location.href = "members-signon.html"; });
 }
 
 // ── Reset all month-view day cells to dark navy ───────────────

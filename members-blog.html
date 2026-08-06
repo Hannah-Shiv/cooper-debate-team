@@ -123,7 +123,7 @@ function isApprovedMember(email) {
 }
 
 function mpSignOut() {
-  _mpAuth.signOut().then(() => window.location.href = 'members.html');
+  _mpAuth.signOut().then(() => window.location.href = 'members-signon.html');
 }
 
 function mpUpdateNotifState() {
@@ -153,9 +153,9 @@ _mpAuth.onAuthStateChanged(function(user) {
     renderAnnouncements(ANNOUNCEMENTS, 'ann-list');
   } else if (user) {
     _mpAuth.signOut();
-    window.location.href = 'members.html';
+    window.location.href = 'members-signon.html';
   } else {
-    window.location.href = 'members.html';
+    window.location.href = 'members-signon.html';
   }
 });
 
