@@ -86,7 +86,14 @@ function initCalDashboard(email) {
   // Show post-event button for coach/captain
   const isEditor = calUserRole === "coach" || calUserRole === "captain";
   const postBtn = document.getElementById("post-fab");
-  if (postBtn && isEditor) postBtn.style.display = "flex";
+  if (postBtn && isEditor) {
+    postBtn.style.opacity = "0";
+    postBtn.style.display = "flex";
+    requestAnimationFrame(() => {
+      postBtn.style.transition = "opacity 0.35s ease";
+      postBtn.style.opacity = "1";
+    });
+  }
 
   // Reveal fixed userbar
   const userbar = document.getElementById("cal-userbar");
