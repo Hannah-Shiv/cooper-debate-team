@@ -106,12 +106,16 @@ if (!firebase.apps.length) firebase.initializeApp(_MP_CONFIG);
 const _mpAuth = firebase.auth();
 _mpAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
+function isApprovedMember(email) {
+  return APPROVED_MEMBERS.some(e => e.toLowerCase() === email.toLowerCase());
+}
+
 function mpSignOut() {
   _mpAuth.signOut().then(() => window.location.href = 'index.html');
 }
 
 _mpAuth.onAuthStateChanged(function(user) {
-  if (user && typeof isApprovedMember === 'function' && isApprovedMember(user.email)) {
+  if (user && isApprovedMember(user.email)) {
     const role = typeof getAdminRole === 'function' ? getAdminRole(user.email) : 'member';
     const badge = document.getElementById('mp-role-badge');
     const email = document.getElementById('mp-user-email');
