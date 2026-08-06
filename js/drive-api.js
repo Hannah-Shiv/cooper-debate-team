@@ -61,7 +61,7 @@
     );
     const fields = encodeURIComponent('files(id,name,mimeType,modifiedTime,webViewLink)');
     const url    = `https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime+desc&pageSize=20&fields=${fields}&key=${API_KEY}`;
-    const res    = await fetch(url);
+    const res    = await fetch(url, { referrerPolicy: 'unsafe-url' });
     if (!res.ok) throw new Error(`Drive API ${res.status} for folder ${folderId}`);
     return (await res.json()).files || [];
   }
@@ -152,7 +152,7 @@
           console.warn(`[Drive] Failed to load ${cardId}:`, err.message);
           const metaEl = cardEl.querySelector('.card-drive-meta');
           if (metaEl) {
-            metaEl.innerHTML = `<span class="card-updated" style="color:rgba(255,100,100,0.6);font-size:0.65rem;">${err.message || err.name || 'Unknown error'}</span>`;
+            metaEl.innerHTML = '<span class="card-updated" style="color:rgba(255,100,100,0.6)">Could not load files</span>';
             metaEl.style.display = 'flex';
           }
           return [];
