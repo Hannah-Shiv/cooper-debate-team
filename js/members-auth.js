@@ -154,10 +154,8 @@ function showDashboard(email) {
   if (badgeEl) {
     if (currentUserRole === "coach") {
       badgeEl.textContent = "🛡️ Coach";
-      badgeEl.style.cssText += ";background:rgba(212,160,23,0.22);border-color:rgba(212,160,23,0.5);color:var(--gold);";
     } else if (currentUserRole === "captain") {
       badgeEl.textContent = "⭐ Captain";
-      badgeEl.style.cssText += ";background:rgba(168,85,247,0.15);border-color:rgba(168,85,247,0.4);color:#d8b4fe;";
     }
   }
 
