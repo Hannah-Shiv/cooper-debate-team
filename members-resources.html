@@ -483,7 +483,7 @@
 
     /* ── Modals ───────────────────────────────────────────── */
     .modal-overlay {
-      position: fixed; inset: 0; z-index: 2000;
+      position: fixed; inset: 0; z-index: 10000;
       background: rgba(3,8,20,0.88); backdrop-filter: blur(6px);
       display: flex; align-items: center; justify-content: center; padding: 20px;
     }
@@ -521,10 +521,7 @@
       margin-bottom: 16px;
       display: flex; align-items: center; gap: 10px;
     }
-    .portal-section-title::after {
-      content: ''; flex: 1; height: 1px;
-      background: rgba(212,160,23,0.25);
-    }
+    .portal-section-title::after { display: none; }
     .portal-cards {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
