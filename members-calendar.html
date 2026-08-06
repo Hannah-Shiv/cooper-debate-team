@@ -93,17 +93,35 @@
       text-transform: uppercase; color: #ffffff;
     }
 
+    /* Notification button */
+    .notif-btn {
+      background: rgba(212,160,23,0.08); border: 1px solid rgba(212,160,23,0.3);
+      border-radius: 6px; padding: 8px 12px; font-size: 1.32rem;
+      cursor: pointer; transition: all 0.2s; line-height: 1;
+    }
+    .notif-btn:hover {
+      background: rgba(212,160,23,0.18); border-color: rgba(212,160,23,0.6);
+      box-shadow: 0 0 12px rgba(212,160,23,0.2);
+    }
+
     /* Sign out button */
     .signout-btn {
       display: inline-flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(179,0,0,0.80); border: 1.5px solid #cc0000;
       color: #ffffff; font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 8px 16px; border-radius: 8px;
-      cursor: pointer; transition: background 0.15s, color 0.15s;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 9px 18px; border-radius: 50px;
+      cursor: pointer; transition: all 0.2s; white-space: nowrap;
     }
-    .signout-btn:hover { background: rgba(255,255,255,0.15); color: var(--white); }
-    .signout-btn svg { opacity: 0.9; }
+    .signout-btn:hover {
+      background: #b30000; border-color: #e03030;
+      box-shadow: 0 0 14px rgba(179,0,0,0.45);
+    }
+    .signout-btn svg {
+      width: 13px; height: 13px; flex-shrink: 0;
+      stroke: currentColor; fill: none;
+      stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+    }
 
     /* ── POST / ADD EVENT button ──────────────────────────── */
     .post-event-btn {
@@ -618,6 +636,11 @@
 </head>
 <body>
 
+<!-- SITE BADGE — home link, top left -->
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+  <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+
 <script>window.__NAV_PAGE = "calendar";</script>
 <div id="dome-nav-root"></div>
 
@@ -657,12 +680,9 @@
           <!-- Row 1: role badge + sign out -->
           <div class="cal-header-right-top">
             <span class="member-badge" id="cal-role-badge">✓ Team Member</span>
+            <button id="cal-notif-btn" class="notif-btn" onclick="calToggleNotif()" title="Enable notifications">🔔</button>
             <button class="signout-btn" onclick="calSignOut()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-              </svg>
+              <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
               Sign Out
             </button>
           </div>
@@ -835,6 +855,28 @@
 <script src="js/members-nav.js?v=3"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+
+<script>
+/* ── Notification toggle (calendar page) ─────────────────── */
+function calToggleNotif() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(function (perm) {
+    var btn = document.getElementById('cal-notif-btn');
+    if (!btn) return;
+    btn.title   = perm === 'granted' ? 'Notifications on' : 'Enable notifications';
+    btn.style.opacity = perm === 'granted' ? '1' : '0.55';
+  });
+}
+document.addEventListener('DOMContentLoaded', function () {
+  var btn = document.getElementById('cal-notif-btn');
+  if (!btn) return;
+  if ('Notification' in window && Notification.permission === 'granted') {
+    btn.title = 'Notifications on';
+  } else {
+    btn.style.opacity = '0.55';
+  }
+});
+</script>
 
 </body>
 </html>
