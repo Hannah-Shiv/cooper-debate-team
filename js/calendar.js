@@ -424,12 +424,18 @@ function renderNextBanner() {
 // Shrink banner font-size until all content fits on one line
 function fitBannerText(banner) {
   if (!banner) return;
-  let size = 1.0;
-  banner.style.fontSize = size + 'rem';
-  while (banner.scrollWidth > banner.offsetWidth && size > 0.45) {
-    size = Math.round((size - 0.02) * 100) / 100;
-    banner.style.fontSize = size + 'rem';
-  }
+  // Defer so the browser has finished layout before we measure
+  setTimeout(() => {
+    banner.style.fontSize = '1rem';
+    // Temporarily lift overflow:hidden so scrollWidth reflects true content width
+    banner.style.overflow = 'visible';
+    let size = 1.0;
+    while (banner.scrollWidth > banner.offsetWidth && size > 0.4) {
+      size = Math.round((size - 0.02) * 100) / 100;
+      banner.style.fontSize = size + 'rem';
+    }
+    banner.style.overflow = 'hidden';
+  }, 0);
 }
 
 // ── Event detail modal ────────────────────────────────────────
