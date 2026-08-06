@@ -413,6 +413,7 @@ function renderNextBanner() {
   banner.style.display = "flex";
   banner.innerHTML = `
     <span class="next-trophy">🏆</span>
+    <span class="next-label">Upcoming Tournament</span>
     <span class="next-name">${calEsc(next.title)}</span>
     <span class="next-date">📅 ${dateStr}</span>
     <span class="next-countdown">⏱ ${countdownText}</span>
