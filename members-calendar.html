@@ -90,24 +90,28 @@
     /* userbar styles live in main.css (.mub-*) */
 
     /* ── POST / ADD EVENT button ──────────────────────────── */
-    /* ── Circular POST EVENT FAB (coach/captain only) ───────── */
+    /* ── Banner + FAB row ───────────────────────────────────── */
+    .banner-fab-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    }
+
+    /* ── Circular CREATE EVENT FAB (coach/captain only) ──────── */
     .post-fab {
-      position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 999;
-      width: 110px; height: 110px;
+      width: 68px; height: 68px; flex-shrink: 0;
       background: none; border: none;
       cursor: pointer; padding: 0;
       display: none; align-items: center; justify-content: center;
+      border-radius: 50%;
       transition: transform 0.2s, filter 0.2s;
-      filter: drop-shadow(0 6px 18px rgba(179,0,0,0.55)) drop-shadow(0 2px 6px rgba(0,0,0,0.45));
+      filter: drop-shadow(0 3px 10px rgba(0,150,150,0.45));
+    }
+    .post-fab img {
+      width: 100%; height: 100%; object-fit: contain; border-radius: 50%;
+      display: block;
     }
     .post-fab:hover {
-      transform: translateY(-50%) scale(1.09);
-      filter: drop-shadow(0 10px 28px rgba(179,0,0,0.75)) drop-shadow(0 3px 10px rgba(0,0,0,0.5));
-    }
-    @media(max-width:600px){
-      .post-fab { right: 8px; top: 50%; transform: translateY(-50%); width: 86px; height: 86px; }
-      .post-fab:hover { transform: translateY(-50%) scale(1.09); }
-      .post-fab svg { width: 86px; height: 86px; }
+      transform: scale(1.1);
+      filter: drop-shadow(0 5px 16px rgba(0,150,150,0.7));
     }
 
     /* ── Next Tournament Banner ───────────────────────────── */
@@ -115,8 +119,8 @@
       display: none; align-items: center; gap: 0;
       background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #7f1d1d 100%);
       border: 1px solid rgba(220,38,38,0.55); border-radius: 10px;
-      padding: 0; margin-bottom: 16px; overflow: hidden;
-      width: 100%;
+      padding: 0; overflow: hidden;
+      flex: 1; min-width: 0;
     }
     .next-trophy {
       padding: 9px 14px; font-size: 1.3rem;
@@ -621,8 +625,13 @@
         
       </div>
 
-      <!-- Next tournament banner -->
-      <div class="next-tournament-banner" id="next-tournament-banner"></div>
+      <!-- Banner + Create Event FAB on same row -->
+      <div class="banner-fab-row">
+        <div class="next-tournament-banner" id="next-tournament-banner"></div>
+        <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event" aria-label="Create Event">
+          <img src="attached_assets/create-event-nobg.png" alt="Create Event">
+        </button>
+      </div>
 
       <!-- Legend -->
       <div class="cal-legend">
@@ -637,36 +646,6 @@
     </div>
   </div>
 
-  <!-- ── Circular FAB: Add Event (coach/captain only) ──────── -->
-  <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Add Event" aria-label="Add Event">
-    <svg viewBox="0 0 110 110" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <path id="cal-top-arc" d="M 20,55 A 35,35 0 0,1 90,55"/>
-        <path id="cal-bot-arc" d="M 12,55 A 43,43 0 0,0 98,55"/>
-      </defs>
-      <circle cx="55" cy="55" r="54" fill="white"/>
-      <circle cx="55" cy="55" r="50" fill="none" stroke="#cc0000" stroke-width="3"/>
-      <text font-family="'Josefin Sans', sans-serif" font-size="13" font-weight="900"
-            letter-spacing="4" fill="#cc0000" text-anchor="middle">
-        <textPath href="#cal-top-arc" startOffset="50%">ADD</textPath>
-      </text>
-      <circle cx="16" cy="55" r="3.5" fill="#cc0000"/>
-      <circle cx="94" cy="55" r="3.5" fill="#cc0000"/>
-      <!-- Calendar + plus icon -->
-      <g transform="translate(29, 28)" fill="none" stroke="#cc0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="1" y="3" width="22" height="21" rx="2.5" stroke-width="2"/>
-        <line x1="1" y1="9" x2="23" y2="9"/>
-        <line x1="7" y1="1" x2="7" y2="5"/>
-        <line x1="17" y1="1" x2="17" y2="5"/>
-        <line x1="12" y1="14" x2="12" y2="20"/>
-        <line x1="9"  y1="17" x2="15" y2="17"/>
-      </g>
-      <text font-family="'Josefin Sans', sans-serif" font-size="9.5" font-weight="900"
-            letter-spacing="1.5" fill="#cc0000" text-anchor="middle">
-        <textPath href="#cal-bot-arc" startOffset="50%">EVENT</textPath>
-      </text>
-    </svg>
-  </button>
 
 </main>
 
