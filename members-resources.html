@@ -172,6 +172,21 @@
       position: relative; z-index: 1;
       max-width: 1280px; margin: 0 auto;
     }
+    .portal-page-title {
+      margin-bottom: 40px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(212,160,23,0.25);
+    }
+    .portal-page-title h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      color: #FFD700;
+      letter-spacing: 0.02em;
+      line-height: 1.1;
+      margin: 0;
+      text-shadow: 0 0 40px rgba(255,215,0,0.25);
+    }
     .dashboard-header {
       display: flex; align-items: center; justify-content: space-between;
       flex-wrap: wrap; gap: 16px;
@@ -968,6 +983,9 @@
 <div id="mp-content" style="display:none;">
 <main class="portal-main">
   <div id="state-dashboard" class="dashboard-wrap">
+    <div class="portal-page-title">
+      <h1>Announcements &amp; Resources</h1>
+    </div>
     <div class="dashboard-content">
     <!-- Announcements Timeline -->
     <div class="portal-section">

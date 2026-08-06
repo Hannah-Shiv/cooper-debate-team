@@ -68,17 +68,12 @@
       display: flex; align-items: flex-start; justify-content: space-between;
       flex-wrap: wrap; gap: 16px; margin-bottom: 22px;
     }
-    .cal-header-left .back-link {
-      display: inline-flex; align-items: center; gap: 4px;
-      color: rgba(255,255,255,0.75); font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none;
-      transition: color 0.15s;
-    }
-    .cal-header-left .back-link:hover { color: #ffffff; }
     .cal-header-left h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.8rem; font-weight: 700; color: #ffffff;
-      line-height: 1.1; margin: 6px 0 4px; letter-spacing: 0.01em;
+      font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
+      color: #FFD700;
+      line-height: 1.1; margin: 0 0 4px; letter-spacing: 0.02em;
+      text-shadow: 0 0 40px rgba(255,215,0,0.25);
     }
     .cal-header-left .cal-email {
       font-size: 0.78rem; color: rgba(255,255,255,0.75); letter-spacing: 0.03em;
@@ -653,7 +648,7 @@
       <span style="font-size:3rem;display:block;margin-bottom:18px">🚫</span>
       <h1 class="auth-title">Access Not Approved</h1>
       <p class="auth-sub">Your email is not on the approved members list.</p>
-      <a href="members-resources.html" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:underline;font-size:0.85rem;">← Back to Portal</a>
+      <a href="members-resources.html" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:underline;font-size:0.85rem;">Return to Resources</a>
     </div>
   </div>
 
@@ -664,8 +659,7 @@
       <!-- Header -->
       <div class="cal-header">
         <div class="cal-header-left">
-          <a class="back-link" href="members-resources.html">← Members-Resources</a>
-          <h1>Members-Calendar</h1>
+          <h1>Calendar</h1>
         </div>
         <div class="cal-header-right">
           <!-- POST / ADD EVENT — coach/captain only -->
