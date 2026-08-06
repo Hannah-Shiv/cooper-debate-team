@@ -1727,103 +1727,134 @@ footer {
   display: block;
 }
 
-/* ── Fixed member userbar — vertical column, top-right, all member pages ── */
-/* ── Member Userbar — fixed top-right panel, all 4 rows unified ── */
+/* ── Member Userbar — fixed horizontal bar, top-right, all member pages ── */
 .member-userbar {
   position: fixed;
   top: 14px;
   right: 16px;
   z-index: 9998;
   display: none;
-  flex-direction: column;
-  align-items: stretch;
-  background: rgba(7, 13, 32, 0.93);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1.5px solid rgba(200, 0, 0, 0.50);
-  border-radius: 14px;
-  overflow: hidden;
-  min-width: 175px;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  background: #0d1526;
+  border-radius: 12px;
+  padding: 6px 6px 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.45);
 }
 .member-userbar.visible { display: flex; }
 
-/* Sign Out row — red background */
+/* Bell icon button */
+.mub-bell {
+  position: relative;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  padding: 0;
+}
+.mub-bell:hover { background: rgba(255, 255, 255, 0.14); }
+.mub-bell svg { stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Red notification dot on bell */
+.mub-dot {
+  position: absolute;
+  top: 6px;
+  right: 7px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #dd0000;
+  border: 1.5px solid #0d1526;
+}
+
+/* Vertical separator */
+.mub-sep {
+  width: 1px;
+  height: 30px;
+  background: rgba(255, 255, 255, 0.13);
+  margin: 0 10px;
+  flex-shrink: 0;
+}
+
+/* Initials circle */
+.mub-initials {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #1b3d72;
+  color: #fff;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 10px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+/* Email + role column */
+.mub-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-right: 14px;
+}
+
+/* Email text */
+.mub-email {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 190px;
+}
+
+/* Role label */
+.mub-badge {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.67rem;
+  font-weight: 700;
+  color: #d4a820;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+/* Sign Out button */
 .mub-signout {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 7px;
-  padding: 11px 20px;
-  background: rgba(180, 0, 0, 0.90);
+  padding: 9px 15px;
+  background: #7a1010;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
   color: #ffffff;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.72rem;
+  font-size: 0.70rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.10em;
   text-transform: uppercase;
   cursor: pointer;
+  flex-shrink: 0;
   transition: background 0.2s;
-  width: 100%;
 }
-.mub-signout:hover { background: rgba(210, 0, 0, 1); }
-.mub-signout svg {
-  width: 13px; height: 13px; flex-shrink: 0;
-  stroke: currentColor; fill: none;
-  stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-}
-
-/* Shared inner row */
-.mub-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  text-align: center;
-}
-.mub-row:last-child { border-bottom: none; }
-
-/* Email */
-.mub-email {
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.60rem;
-  color: rgba(255, 255, 255, 0.68);
-  letter-spacing: 0.02em;
-  max-width: 190px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  text-align: center;
-}
-
-/* Role badge */
-.mub-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 4px 13px;
-  border-radius: 50px;
-  background: rgba(255, 255, 255, 0.10);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.62rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #ffffff;
-  white-space: nowrap;
-}
-
-/* Bell */
-.mub-bell {
-  background: none;
-  border: none;
-  font-size: 1.15rem;
-  cursor: pointer;
-  line-height: 1;
-  padding: 0;
-  transition: transform 0.2s;
-}
-.mub-bell:hover { transform: scale(1.18) rotate(-10deg); }
+.mub-signout:hover { background: #9a1414; }
+.mub-signout svg { stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
