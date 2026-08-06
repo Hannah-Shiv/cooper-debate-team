@@ -114,8 +114,14 @@ function completeMagicLinkSignIn() {
 // ── Handle a verified, signed-in user ────────────────────────
 function handleAuthenticatedUser(email) {
   if (isApprovedMember(email)) {
-    // members.html is the auth gateway — redirect to the main member landing page
-    window.location.href = 'members-resources.html';
+    // members.html is the auth gateway — redirect to the main member landing page.
+    // On any other member page, show the dashboard in place (avoids redirect loop).
+    var page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+    if (page === 'members.html' || page === '') {
+      window.location.href = 'members-resources.html';
+    } else {
+      showDashboard(email);
+    }
   } else {
     auth.signOut();
     showState("denied");
