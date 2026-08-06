@@ -90,67 +90,24 @@
     /* userbar styles live in main.css (.mub-*) */
 
     /* ── POST / ADD EVENT button ──────────────────────────── */
-    .post-event-btn {
-      display: none; align-items: center; gap: 0;
-      background: linear-gradient(135deg, #0a2a0a 0%, #113811 50%, #0d2f0d 100%);
-      border: 1.5px solid #3a9a3a;
-      border-radius: 12px; padding: 10px 18px 10px 12px;
-      cursor: pointer; transition: all 0.2s;
-      box-shadow: 0 0 18px rgba(58,180,58,0.25), inset 0 1px 0 rgba(255,255,255,0.08);
-      width: 100%;
+    /* ── Circular POST EVENT FAB (coach/captain only) ───────── */
+    .post-fab {
+      position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 999;
+      width: 110px; height: 110px;
+      background: none; border: none;
+      cursor: pointer; padding: 0;
+      display: none; align-items: center; justify-content: center;
+      transition: transform 0.2s, filter 0.2s;
+      filter: drop-shadow(0 6px 18px rgba(179,0,0,0.55)) drop-shadow(0 2px 6px rgba(0,0,0,0.45));
     }
-    .post-event-btn:hover {
-      border-color: #5cbf5c;
-      box-shadow: 0 0 28px rgba(58,180,58,0.45), inset 0 1px 0 rgba(255,255,255,0.12);
-      transform: translateY(-1px);
+    .post-fab:hover {
+      transform: translateY(-50%) scale(1.09);
+      filter: drop-shadow(0 10px 28px rgba(179,0,0,0.75)) drop-shadow(0 3px 10px rgba(0,0,0,0.5));
     }
-    /* Wave bars on the left */
-    .peb-waves {
-      display: flex; flex-direction: column; gap: 3px; margin-right: 10px; flex-shrink: 0;
-    }
-    .peb-waves span {
-      display: block; height: 2px; background: rgba(255,255,255,0.75);
-      border-radius: 2px;
-    }
-    .peb-waves span:nth-child(1) { width: 14px; animation: wave 1.2s ease-in-out infinite; }
-    .peb-waves span:nth-child(2) { width: 10px; animation: wave 1.2s ease-in-out 0.2s infinite; }
-    .peb-waves span:nth-child(3) { width: 16px; animation: wave 1.2s ease-in-out 0.4s infinite; }
-    @keyframes wave {
-      0%, 100% { opacity: 0.45; transform: scaleX(1); }
-      50%       { opacity: 1;   transform: scaleX(1.15); }
-    }
-
-    /* Calendar icon with checkmark */
-    .peb-icon {
-      position: relative; flex-shrink: 0; margin-right: 12px;
-    }
-    .peb-icon svg.peb-cal { width: 30px; height: 30px; }
-    .peb-check {
-      position: absolute; bottom: -3px; right: -5px;
-      width: 14px; height: 14px; border-radius: 50%;
-      background: #3cb43c; border: 1.5px solid #0d2f0d;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .peb-check svg { width: 8px; height: 8px; }
-
-    /* Text */
-    .peb-text {
-      display: flex; flex-direction: column; align-items: flex-start; flex: 1;
-    }
-    .peb-sub {
-      font-size: 0.65rem; font-weight: 900; letter-spacing: 0.16em;
-      text-transform: uppercase; color: #ffffff; line-height: 1;
-      margin-bottom: 3px;
-    }
-    .peb-main {
-      font-size: 1.3rem; font-weight: 900; letter-spacing: 0.06em;
-      text-transform: uppercase; color: #ffffff; line-height: 1;
-    }
-
-    /* Arrow */
-    .peb-arrow {
-      font-size: 1.4rem; color: #ffffff;
-      margin-left: 10px; font-weight: 700; flex-shrink: 0;
+    @media(max-width:600px){
+      .post-fab { right: 8px; top: 50%; transform: translateY(-50%); width: 86px; height: 86px; }
+      .post-fab:hover { transform: translateY(-50%) scale(1.09); }
+      .post-fab svg { width: 86px; height: 86px; }
     }
 
     /* ── Next Tournament Banner ───────────────────────────── */
@@ -661,37 +618,7 @@
         <div class="cal-header-left">
           <h1>Calendar</h1>
         </div>
-        <div class="cal-header-right">
-          <!-- POST / ADD EVENT — coach/captain only -->
-          <button class="post-event-btn" id="post-event-btn" onclick="openPostModal()">
-            <div class="peb-waves"><span></span><span></span><span></span></div>
-            <div class="peb-icon">
-              <!-- Calendar grid icon — all white -->
-              <svg class="peb-cal" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="2" y="4" width="24" height="22" rx="3" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.85)" stroke-width="1.5"/>
-                <rect x="2" y="4" width="24" height="7" rx="3" fill="rgba(255,255,255,0.25)"/>
-                <line x1="9" y1="2" x2="9" y2="7" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"/>
-                <line x1="19" y1="2" x2="19" y2="7" stroke="rgba(255,255,255,0.9)" stroke-width="1.8" stroke-linecap="round"/>
-                <rect x="6"  y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
-                <rect x="12" y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.9)"/>
-                <rect x="18" y="14" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
-                <rect x="6"  y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
-                <rect x="12" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
-                <rect x="18" y="19" width="4" height="3" rx="0.8" fill="rgba(255,255,255,0.7)"/>
-              </svg>
-              <div class="peb-check">
-                <svg viewBox="0 0 10 10" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="1.5,5 4,7.5 8.5,2.5"/>
-                </svg>
-              </div>
-            </div>
-            <div class="peb-text">
-              <span class="peb-sub">Post / Add</span>
-              <span class="peb-main">Event</span>
-            </div>
-            <div class="peb-arrow">›</div>
-          </button>
-        </div>
+        
       </div>
 
       <!-- Next tournament banner -->
@@ -709,6 +636,37 @@
 
     </div>
   </div>
+
+  <!-- ── Circular FAB: Add Event (coach/captain only) ──────── -->
+  <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Add Event" aria-label="Add Event">
+    <svg viewBox="0 0 110 110" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="cal-top-arc" d="M 20,55 A 35,35 0 0,1 90,55"/>
+        <path id="cal-bot-arc" d="M 12,55 A 43,43 0 0,0 98,55"/>
+      </defs>
+      <circle cx="55" cy="55" r="54" fill="white"/>
+      <circle cx="55" cy="55" r="50" fill="none" stroke="#cc0000" stroke-width="3"/>
+      <text font-family="'Josefin Sans', sans-serif" font-size="13" font-weight="900"
+            letter-spacing="4" fill="#cc0000" text-anchor="middle">
+        <textPath href="#cal-top-arc" startOffset="50%">ADD</textPath>
+      </text>
+      <circle cx="16" cy="55" r="3.5" fill="#cc0000"/>
+      <circle cx="94" cy="55" r="3.5" fill="#cc0000"/>
+      <!-- Calendar + plus icon -->
+      <g transform="translate(29, 28)" fill="none" stroke="#cc0000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="3" width="22" height="21" rx="2.5" stroke-width="2"/>
+        <line x1="1" y1="9" x2="23" y2="9"/>
+        <line x1="7" y1="1" x2="7" y2="5"/>
+        <line x1="17" y1="1" x2="17" y2="5"/>
+        <line x1="12" y1="14" x2="12" y2="20"/>
+        <line x1="9"  y1="17" x2="15" y2="17"/>
+      </g>
+      <text font-family="'Josefin Sans', sans-serif" font-size="9.5" font-weight="900"
+            letter-spacing="1.5" fill="#cc0000" text-anchor="middle">
+        <textPath href="#cal-bot-arc" startOffset="50%">EVENT</textPath>
+      </text>
+    </svg>
+  </button>
 
 </main>
 

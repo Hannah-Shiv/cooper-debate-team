@@ -85,8 +85,8 @@ function initCalDashboard(email) {
 
   // Show post-event button for coach/captain
   const isEditor = calUserRole === "coach" || calUserRole === "captain";
-  const postBtn = document.getElementById("post-event-btn");
-  if (postBtn && isEditor) postBtn.style.display = "inline-flex";
+  const postBtn = document.getElementById("post-fab");
+  if (postBtn && isEditor) postBtn.style.display = "flex";
 
   // Reveal fixed userbar
   const userbar = document.getElementById("cal-userbar");
