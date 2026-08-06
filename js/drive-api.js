@@ -150,10 +150,9 @@
           return files.map(f => ({ ...f, _section: section }));
         } catch (err) {
           console.warn(`[Drive] Failed to load ${cardId}:`, err.message);
-          // Show subtle error state on card
           const metaEl = cardEl.querySelector('.card-drive-meta');
           if (metaEl) {
-            metaEl.innerHTML = '<span class="card-updated" style="color:rgba(255,100,100,0.6)">Could not load files</span>';
+            metaEl.innerHTML = `<span class="card-updated" style="color:rgba(255,100,100,0.6);font-size:0.65rem;">${err.message || err.name || 'Unknown error'}</span>`;
             metaEl.style.display = 'flex';
           }
           return [];
