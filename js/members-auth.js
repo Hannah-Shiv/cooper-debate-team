@@ -16,7 +16,7 @@ const FIREBASE_CONFIG = {
 // Web Push VAPID key — from Firebase Console → Project Settings → Cloud Messaging → Web Push certificates
 const VAPID_KEY = "BFwWFUfvb37fGaFBKYNJa29rEKtBHaT4FGnGsAKXTj_M7fxvDjsKgZobBGuKVytQrZ1-p8Yl_uZ_TNUlo0q0jsg";
 
-const SIGN_IN_REDIRECT_URL = "https://cooperdebateteam.com/members.html";
+const SIGN_IN_REDIRECT_URL = window.location.origin + "/members.html";
 const STORAGE_KEY = "cooper_signin_email";
 
 // ── Initialise Firebase ──────────────────────────────────────
