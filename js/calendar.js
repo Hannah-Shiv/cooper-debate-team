@@ -141,7 +141,7 @@ function loadTournaments() {
 // ── Event colour/time defaults by type ───────────────────────
 function evtColors(type) {
   switch (type) {
-    case "practice": return { bg: "#65a30d", text: "#000000" };
+    case "practice": return { bg: "#65a30d", text: "#ffffff" };
     case "meeting":  return { bg: "#ffd700", text: "#000000" };
     default:         return { bg: "#991b1b", text: "#ffffff" }; // tournament
   }
