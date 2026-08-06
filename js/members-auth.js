@@ -602,22 +602,16 @@ function requestNotificationPermission() {
 }
 
 function updateNotifBtn() {
-  const btn = document.getElementById("notif-btn");
-  if (!btn || !("Notification" in window)) return;
+  const btn   = document.getElementById("notif-btn");
+  const badge = document.getElementById("notif-state");
+  if (!("Notification" in window)) return;
   const perm = Notification.permission;
-  if (perm === "granted") {
-    btn.textContent = "🔔";
-    btn.title       = "Notifications on — you'll be alerted when Coach posts";
-    btn.style.opacity = "1";
-  } else if (perm === "denied") {
-    btn.textContent = "🔕";
-    btn.title       = "Notifications blocked — enable in browser settings";
-    btn.style.opacity = "0.45";
-  } else {
-    btn.textContent = "🔔";
-    btn.title       = "Click to enable notifications";
-    btn.style.opacity = "0.55";
-  }
+  if (btn) btn.title = perm === "granted"
+    ? "Notifications on — you'll be alerted when Coach posts"
+    : perm === "denied"
+    ? "Notifications blocked — enable in browser settings"
+    : "Click to enable notifications";
+  if (badge) badge.classList.toggle("on", perm === "granted");
 }
 
 function toggleNotifications() {

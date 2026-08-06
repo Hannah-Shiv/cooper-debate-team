@@ -73,7 +73,7 @@
 <div class="member-userbar" id="member-userbar">
   <button class="mub-bell" onclick="mpToggleNotif()" title="Notifications">
     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    <span class="mub-dot"></span>
+    <span class="mub-notif-state" id="mp-notif-state"></span>
   </button>
   <div class="mub-sep"></div>
   <span class="mub-name" id="mp-name"></span>
@@ -217,12 +217,15 @@ function mpSignOut() {
   _mpAuth.signOut().then(() => window.location.href = 'members.html');
 }
 
+function mpUpdateNotifState() {
+  var badge = document.getElementById('mp-notif-state');
+  if (badge && 'Notification' in window) badge.classList.toggle('on', Notification.permission === 'granted');
+}
 function mpToggleNotif() {
   if (!('Notification' in window)) return;
-  Notification.requestPermission().then(function(perm) {
-    var btn = document.querySelector('.mub-bell');
-    if (btn) btn.title = perm === 'granted' ? 'Notifications on' : 'Enable notifications';
-  });
+  if (Notification.permission === 'granted') return;
+  if (Notification.permission === 'denied') { alert('Notifications are blocked.\nEnable via the lock icon in your browser address bar.'); return; }
+  Notification.requestPermission().then(mpUpdateNotifState);
 }
 
 _mpAuth.onAuthStateChanged(function(user) {
@@ -237,6 +240,7 @@ _mpAuth.onAuthStateChanged(function(user) {
     document.getElementById('member-userbar').classList.add('visible');
     document.getElementById('mp-loading').style.display  = 'none';
     document.getElementById('mp-content').style.display  = 'block';
+    mpUpdateNotifState();
   } else if (user) {
     _mpAuth.signOut();
     window.location.href = 'members.html';
