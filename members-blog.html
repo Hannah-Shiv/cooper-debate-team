@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team — Members News &amp; Announcements"/>
+  <title>News — Cooper Debate Team Members</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css?v=9"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    /* ── Auth states ─────────────────────────────────────────── */
+    .auth-wrap { min-height:100vh;display:flex;align-items:center;justify-content:center; }
+    .auth-box { background:rgba(13,28,57,0.92);border:1px solid rgba(212,160,23,0.22);border-radius:16px;padding:48px 40px;max-width:420px;width:90%;text-align:center; }
+    .spinner { width:36px;height:36px;border:3px solid rgba(255,229,143,0.15);border-top-color:#ffe58f;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px; }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .auth-title { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;margin-bottom:10px; }
+    .auth-sub   { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.6; }
+
+    /* ── Fixed member topbar ─────────────────────────────────── */
+    .member-topbar { position:fixed;top:14px;right:16px;z-index:9998;display:none;align-items:center;gap:10px; }
+    .member-topbar.visible { display:flex; }
+    .member-badge { display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:50px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;white-space:nowrap; }
+    .signout-btn { display:inline-flex;align-items:center;gap:6px;background:rgba(179,0,0,0.80);border:1.5px solid #cc0000;color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.70rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:50px;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
+    .signout-btn:hover { background:#b30000;border-color:#e03030;box-shadow:0 0 14px rgba(179,0,0,0.45); }
+    .signout-btn svg { width:13px;height:13px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round; }
+
+    /* ── Blog cards ──────────────────────────────────────────── */
+    .ann-card { background:rgba(13,46,86,0.45);border:1px solid rgba(212,160,23,0.15);border-radius:12px;overflow:hidden;margin-bottom:28px;transition:border-color 0.25s,box-shadow 0.25s; }
+    .ann-card:hover { border-color:rgba(212,160,23,0.4);box-shadow:0 12px 32px rgba(0,0,0,0.35); }
+    .ann-card-header { display:flex;align-items:center;gap:16px;padding:28px 32px 0; }
+    .ann-card-emoji { font-size:2rem;flex-shrink:0; }
+    .ann-card-meta { display:flex;flex-direction:column;gap:6px; }
+    .ann-card-title { font-family:'Cormorant Garamond',serif;font-size:clamp(1.15rem,2.5vw,1.45rem);color:var(--white);line-height:1.35; }
+    .ann-card-date { font-family:'Josefin Sans',sans-serif;font-size:0.68rem;color:var(--gray-mid);letter-spacing:0.06em; }
+    .ann-card-body { padding:20px 32px 28px;font-size:0.9rem;color:rgba(255,255,255,0.78);line-height:1.8;white-space:pre-wrap; }
+    .ann-empty { text-align:center;padding:64px 24px;font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:var(--gray-mid);letter-spacing:0.05em; }
+    @media(max-width:600px){ .ann-card-header{padding:20px 20px 0;} .ann-card-body{padding:16px 20px 20px;} }
+  </style>
+</head>
+<body>
+
+<!-- SITE BADGE — home link, top left -->
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+  <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+
+<!-- MEMBER TOPBAR — role, email, sign out -->
+<div class="member-topbar" id="member-topbar">
+  <div class="puc-info">
+    <span class="member-badge" id="mp-role-badge">✓ Team Member</span>
+    <span class="puc-email" id="mp-user-email"></span>
+  </div>
+  <button class="signout-btn" onclick="mpSignOut()">
+    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
+  </button>
+</div>
+
+<script>window.__NAV_PAGE = "blog";</script>
+<div id="dome-nav-root"></div>
+
+<!-- ── STATE: loading ──────────────────────────────────── -->
+<div id="mp-loading" class="auth-wrap">
+  <div class="auth-box">
+    <div class="spinner"></div>
+    <h1 class="auth-title">Loading…</h1>
+    <p class="auth-sub">Checking your session.</p>
+  </div>
+</div>
+
+<!-- ── STATE: content ──────────────────────────────────── -->
+<div id="mp-content" style="display:none;">
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Cooper Debate Team</p>
+    <h1 class="page-title">News &amp; Announcements</h1>
+    <p class="page-subtitle">Resolutions, tournament updates, and team news</p>
+  </div>
+</div>
+
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <div id="ann-list">
+      <div class="ann-empty">Loading announcements…</div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /mp-content -->
+
+<!-- Firebase SDKs (auth only) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script src="data/approved-members.js?v=2"></script>
+<script src="data/admins.js"></script>
+<script src="data/announcements.js"></script>
+
+<script>
+const _MP_CONFIG = {
+  apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+  authDomain:        "cooper-debate-team.firebaseapp.com",
+  projectId:         "cooper-debate-team",
+  storageBucket:     "cooper-debate-team.firebasestorage.app",
+  messagingSenderId: "112813790184",
+  appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
+};
+if (!firebase.apps.length) firebase.initializeApp(_MP_CONFIG);
+const _mpAuth = firebase.auth();
+_mpAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+function mpSignOut() {
+  _mpAuth.signOut().then(() => window.location.href = 'index.html');
+}
+
+_mpAuth.onAuthStateChanged(function(user) {
+  if (user && typeof isApprovedMember === 'function' && isApprovedMember(user.email)) {
+    const role = typeof getAdminRole === 'function' ? getAdminRole(user.email) : 'member';
+    const badge = document.getElementById('mp-role-badge');
+    const email = document.getElementById('mp-user-email');
+    if (badge) badge.textContent = role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
+    if (email) email.textContent = user.email;
+    document.getElementById('member-topbar').classList.add('visible');
+    document.getElementById('mp-loading').style.display = 'none';
+    document.getElementById('mp-content').style.display = 'block';
+    renderAnnouncements(ANNOUNCEMENTS, 'ann-list');
+  } else if (user) {
+    _mpAuth.signOut();
+    window.location.href = 'members.html';
+  } else {
+    window.location.href = 'members.html';
+  }
+});
+
+const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
+function renderAnnouncements(posts, containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  if (!posts || !posts.length) { container.innerHTML = '<div class="ann-empty">No announcements yet — check back soon.</div>'; return; }
+  container.innerHTML = posts.map(p => `
+    <div class="ann-card">
+      <div class="ann-card-header">
+        <div class="ann-card-emoji">${p.emoji}</div>
+        <div class="ann-card-meta">
+          <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
+          <div class="ann-card-title">${p.title}</div>
+          <div class="ann-card-date">${p.date}</div>
+        </div>
+      </div>
+      <div class="ann-card-body">${p.body}</div>
+    </div>`).join('');
+}
+</script>
+
+<script src="js/members-nav.js?v=4"></script>
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Cooper Debate Team — Members Resources"/>
+  <title>Resources — Cooper Debate Team Members</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/main.css?v=9"/>
+  <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    /* ── Auth states ─────────────────────────────────────────── */
+    .auth-wrap { min-height:100vh; display:flex; align-items:center; justify-content:center; }
+    .auth-box { background:rgba(13,28,57,0.92); border:1px solid rgba(212,160,23,0.22); border-radius:16px; padding:48px 40px; max-width:420px; width:90%; text-align:center; }
+    .spinner { width:36px;height:36px;border:3px solid rgba(255,229,143,0.15);border-top-color:#ffe58f;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 20px; }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .auth-title { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;margin-bottom:10px; }
+    .auth-sub   { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.6; }
+
+    /* ── Fixed member topbar ─────────────────────────────────── */
+    .member-topbar {
+      position:fixed; top:14px; right:16px; z-index:9998;
+      display:none; align-items:center; gap:10px;
+    }
+    .member-topbar.visible { display:flex; }
+    .member-badge {
+      display:inline-flex;align-items:center;gap:6px;
+      padding:5px 13px;border-radius:50px;
+      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);
+      font-size:0.62rem;font-weight:700;letter-spacing:0.1em;
+      text-transform:uppercase;color:#fff;white-space:nowrap;
+    }
+    .signout-btn {
+      display:inline-flex;align-items:center;gap:6px;
+      background:rgba(179,0,0,0.80);border:1.5px solid #cc0000;
+      color:#fff;font-family:'Josefin Sans',sans-serif;
+      font-size:0.70rem;font-weight:700;letter-spacing:0.08em;
+      text-transform:uppercase;padding:8px 16px;border-radius:50px;
+      cursor:pointer;transition:all 0.2s;white-space:nowrap;
+    }
+    .signout-btn:hover { background:#b30000;border-color:#e03030;box-shadow:0 0 14px rgba(179,0,0,0.45); }
+    .signout-btn svg { width:13px;height:13px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round; }
+
+    /* ── Resources content (same as resources.html) ──────────── */
+    .resource-card { background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;padding:28px 24px;transition:border-color 0.25s,transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column; }
+    .resource-card:hover { border-color:rgba(212,160,23,0.45);transform:translateY(-4px);box-shadow:0 14px 32px rgba(0,0,0,0.35); }
+    .resource-icon { font-size:2rem;margin-bottom:14px; }
+    .resource-title { font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:8px; }
+    .resource-desc { font-size:0.82rem;color:var(--gray-mid);line-height:1.7;flex:1;margin-bottom:18px; }
+    .resource-link { display:inline-flex;align-items:center;gap:6px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gold);transition:gap 0.2s; }
+    .resource-card:hover .resource-link { gap:10px; }
+    .topic-box { background:rgba(11,37,69,0.6);border:1px solid rgba(212,160,23,0.25);border-radius:12px;padding:36px;margin-bottom:32px; }
+    .topic-resolution { font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.5rem);color:var(--white);line-height:1.6;margin-bottom:24px;padding:20px 24px;border-left:3px solid var(--gold);background:rgba(212,160,23,0.05);border-radius:0 8px 8px 0; }
+    .pro-con-grid { display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px; }
+    .arg-card { border-radius:8px;padding:20px; }
+    .arg-card-pro { background:rgba(34,197,94,0.07);border:1px solid rgba(34,197,94,0.2); }
+    .arg-card-con { background:rgba(239,68,68,0.07);border:1px solid rgba(239,68,68,0.2); }
+    .arg-label { font-size:0.65rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:12px; }
+    .arg-label-pro { color:#86efac; }
+    .arg-label-con { color:#fca5a5; }
+    .arg-point { display:flex;gap:8px;margin-bottom:8px;font-size:0.82rem;color:var(--gray-mid);line-height:1.5; }
+    .arg-bullet-pro { color:#86efac;flex-shrink:0; }
+    .arg-bullet-con { color:#fca5a5;flex-shrink:0; }
+    .skill-row { display:flex;gap:24px;align-items:flex-start;padding:24px 0;border-bottom:1px solid rgba(212,160,23,0.08); }
+    .skill-row:last-child { border-bottom:none; }
+    .skill-num { flex-shrink:0;width:48px;height:48px;border-radius:8px;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);display:flex;align-items:center;justify-content:center;font-size:1.2rem; }
+    .skill-title { font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;color:var(--white);margin-bottom:5px; }
+    .skill-desc { font-size:0.83rem;color:var(--gray-mid);line-height:1.7; }
+    .skill-tip { margin-top:10px;padding:10px 14px;background:rgba(212,160,23,0.07);border-radius:4px;font-size:0.78rem;color:var(--gold-pale);font-style:italic; }
+    .template-card { background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;display:flex;align-items:center;gap:20px;transition:border-color 0.25s,transform 0.25s; }
+    .template-card:hover { border-color:rgba(212,160,23,0.45);transform:translateX(4px); }
+    .template-icon { font-size:2rem;flex-shrink:0; }
+    .template-name { font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.04em;color:var(--white);margin-bottom:4px; }
+    .template-desc { font-size:0.78rem;color:var(--gray-mid); }
+    .template-download { margin-left:auto;flex-shrink:0; }
+    .three-col { display:grid;grid-template-columns:repeat(3,1fr);gap:20px; }
+    .two-col { display:grid;grid-template-columns:1fr 1fr;gap:48px; }
+    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} .pro-con-grid{grid-template-columns:1fr;} }
+    @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
+  </style>
+</head>
+<body>
+
+<!-- SITE BADGE — home link, top left -->
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+  <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+
+<!-- MEMBER TOPBAR — role, email, sign out (top right, shown after auth) -->
+<div class="member-topbar" id="member-topbar">
+  <div class="puc-info">
+    <span class="member-badge" id="mp-role-badge">✓ Team Member</span>
+    <span class="puc-email" id="mp-user-email"></span>
+  </div>
+  <button class="signout-btn" onclick="mpSignOut()">
+    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
+  </button>
+</div>
+
+<script>window.__NAV_PAGE = "resources";</script>
+<div id="dome-nav-root"></div>
+
+<!-- ── STATE: loading ──────────────────────────────────── -->
+<div id="mp-loading" class="auth-wrap">
+  <div class="auth-box">
+    <div class="spinner"></div>
+    <h1 class="auth-title">Loading…</h1>
+    <p class="auth-sub">Checking your session.</p>
+  </div>
+</div>
+
+<!-- ── STATE: content (shown after auth) ───────────────── -->
+<div id="mp-content" style="display:none;">
+
+<div class="page-header">
+  <div class="page-header-content">
+    <p class="page-header-label">Debate Preparation Center</p>
+    <h1 class="page-title">Resources</h1>
+    <p class="page-subtitle">PF topic research, skills training, and debate templates</p>
+  </div>
+</div>
+
+<!-- PF TOPIC CENTER -->
+<section class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">Current Resolution</p>
+    <h2 class="section-title" style="margin-bottom:32px;">PF Topic Center</h2>
+    <div class="topic-box">
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Sept/Oct 2026</p>
+      <div class="topic-resolution">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+      <div class="pro-con-grid">
+        <div class="arg-card arg-card-pro">
+          <div class="arg-label arg-label-pro">✓ Pro Arguments</div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>AI dramatically improves threat detection and prevention capabilities</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Reduces human risk in intelligence operations</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Counter-terrorism benefits outweigh marginal privacy costs</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Allied nations coordinate more effectively through AI-shared intelligence</span></div>
+        </div>
+        <div class="arg-card arg-card-con">
+          <div class="arg-label arg-label-con">✗ Con Arguments</div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Mass surveillance creates chilling effects on civil liberties</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Algorithmic bias leads to discriminatory enforcement</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>AI systems are vulnerable to adversarial manipulation</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Autonomous weapons systems escalate risk of accidental conflict</span></div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">Key Research Sources</h3>
+    <div class="three-col">
+      <div class="resource-card fade-up"><div class="resource-icon">🔍</div><div class="resource-title">NSDA Topic Guide</div><p class="resource-desc">The official NSDA Public Forum topic analysis including definitions, background, and key stakeholders for the current resolution.</p><a href="https://www.speechanddebate.org" target="_blank" rel="noopener" class="resource-link">Visit NSDA →</a></div>
+      <div class="resource-card fade-up"><div class="resource-icon">📰</div><div class="resource-title">Government Sources</div><p class="resource-desc">CISA, DNI, DOD, and Congressional Research Service reports on AI in national security — the gold standard for pro evidence.</p><a href="https://crsreports.congress.gov" target="_blank" rel="noopener" class="resource-link">CRS Reports →</a></div>
+      <div class="resource-card fade-up"><div class="resource-icon">🎓</div><div class="resource-title">Academic Journals</div><p class="resource-desc">Peer-reviewed research on AI ethics, surveillance, civil liberties, and international security from major universities.</p><a href="https://scholar.google.com" target="_blank" rel="noopener" class="resource-link">Google Scholar →</a></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEBATE SKILLS -->
+<section id="skills" class="section" style="background:var(--navy-mid);">
+  <div class="section-wrap">
+    <div class="two-col">
+      <div>
+        <p class="section-label">Build Your Toolkit</p>
+        <h2 class="section-title" style="margin-bottom:32px;">Debate Skills</h2>
+        <div class="skill-row fade-up"><div class="skill-num">✍️</div><div><div class="skill-title">Case Writing</div><p class="skill-desc">A strong 4-minute constructive has 2–3 contentions, each with a clear claim, warrant, and impact. Lead with your strongest argument and pre-empt top counterarguments.</p><div class="skill-tip">"Make your tag line a thesis statement, not a label."</div></div></div>
+        <div class="skill-row fade-up"><div class="skill-num">💬</div><div><div class="skill-title">Crossfire</div><p class="skill-desc">Use crossfire strategically: ask short, closed questions to expose contradictions. Never answer a question you haven't thought through. Control pace — don't let your opponent run the clock.</p><div class="skill-tip">"Ask questions, don't make speeches."</div></div></div>
+        <div class="skill-row fade-up"><div class="skill-num">🎯</div><div><div class="skill-title">Summary &amp; Final Focus</div><p class="skill-desc">In summary, extend 2–3 key issues with offense. Respond to the most damaging attacks. In Final Focus, crystalize 1–2 voting issues and explain why you win them.</p><div class="skill-tip">"Tell the judge what to weigh and why your evidence is better."</div></div></div>
+        <div class="skill-row fade-up"><div class="skill-num">📊</div><div><div class="skill-title">Impact Calculus</div><p class="skill-desc">Compare arguments using magnitude (how big), probability (how likely), and timeframe (how soon). A clear calculus framing wins close rounds.</p><div class="skill-tip">"Don't just win an argument — tell the judge why it matters MORE than theirs."</div></div></div>
+        <div class="skill-row fade-up"><div class="skill-num">🗣️</div><div><div class="skill-title">Delivery</div><p class="skill-desc">Speak conversationally in PF — judges want to understand you, not be impressed by speed. Eye contact, vocal variation, and clear signposting make you a more persuasive speaker.</p><div class="skill-tip">"If the judge can't follow you, you're losing."</div></div></div>
+      </div>
+      <div>
+        <p class="section-label">Practice Methods</p>
+        <h2 class="section-title" style="margin-bottom:24px;">How We Train</h2>
+        <div style="display:flex;flex-direction:column;gap:16px;">
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">⏱️</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Timed Practice Rounds</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We run full practice rounds weekly to build comfort with PF timing. Timers always running — no exceptions.</p></div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">📝</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Flow Practice</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">Flowing is a critical skill. We practice flowing pre-written speeches until every debater can flow at full speaking speed.</p></div>
+          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up"><div style="font-size:1.5rem;margin-bottom:8px;">🎤</div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Video Review</div><p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We record and review practice rounds to identify speech habits, argument gaps, and crossfire patterns to improve.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMPLATES -->
+<section id="templates" class="section" style="background:var(--navy-dark);">
+  <div class="section-wrap">
+    <p class="section-label">Downloadable Resources</p>
+    <h2 class="section-title" style="margin-bottom:32px;">Templates &amp; Flows</h2>
+    <div style="display:flex;flex-direction:column;gap:12px;max-width:800px;">
+      <div class="template-card fade-up"><div class="template-icon">📋</div><div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">📊</div><div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">📝</div><div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">🔍</div><div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">⚖️</div><div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /mp-content -->
+
+<!-- Firebase SDKs (auth only) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+
+<script src="data/approved-members.js?v=2"></script>
+<script src="data/admins.js"></script>
+
+<script>
+const _MP_CONFIG = {
+  apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+  authDomain:        "cooper-debate-team.firebaseapp.com",
+  projectId:         "cooper-debate-team",
+  storageBucket:     "cooper-debate-team.firebasestorage.app",
+  messagingSenderId: "112813790184",
+  appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
+};
+if (!firebase.apps.length) firebase.initializeApp(_MP_CONFIG);
+const _mpAuth = firebase.auth();
+_mpAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+
+function mpSignOut() {
+  _mpAuth.signOut().then(() => window.location.href = 'index.html');
+}
+
+_mpAuth.onAuthStateChanged(function(user) {
+  if (user && typeof isApprovedMember === 'function' && isApprovedMember(user.email)) {
+    const role = typeof getAdminRole === 'function' ? getAdminRole(user.email) : 'member';
+    const badge = document.getElementById('mp-role-badge');
+    const email = document.getElementById('mp-user-email');
+    if (badge) badge.textContent = role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
+    if (email) email.textContent = user.email;
+    document.getElementById('member-topbar').classList.add('visible');
+    document.getElementById('mp-loading').style.display  = 'none';
+    document.getElementById('mp-content').style.display  = 'block';
+  } else if (user) {
+    _mpAuth.signOut();
+    window.location.href = 'members.html';
+  } else {
+    window.location.href = 'members.html';
+  }
+});
+</script>
+
+<script src="js/members-nav.js?v=4"></script>
+<script src="js/dome-nav.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
