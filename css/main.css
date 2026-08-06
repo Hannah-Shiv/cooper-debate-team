@@ -1726,3 +1726,26 @@ footer {
   object-fit: contain;
   display: block;
 }
+
+/* ── Portal user chip — role badge + email, top-right on all member pages ── */
+.portal-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.puc-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+.puc-email {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 0.63rem;
+  color: rgba(255,255,255,0.48);
+  letter-spacing: 0.02em;
+  max-width: 210px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
