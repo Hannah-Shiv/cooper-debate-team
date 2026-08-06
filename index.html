@@ -475,5 +475,51 @@
     }
   }
 </script>
+
+<!-- ── Member Portal smart routing ──────────────────────────
+     Checks Firebase Auth on page load. If the user is already
+     signed in, Member Portal links skip signon and go straight
+     to members-resources.html.                               -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script>
+(function () {
+  var PORTAL_AUTH  = 'members-resources.html';
+  var PORTAL_GUEST = 'members-signon.html';
+  var dest = PORTAL_GUEST;
+
+  try {
+    var app = firebase.apps.length
+      ? firebase.app()
+      : firebase.initializeApp({
+          apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+          authDomain:        "cooper-debate-team.firebaseapp.com",
+          projectId:         "cooper-debate-team",
+          storageBucket:     "cooper-debate-team.firebasestorage.app",
+          messagingSenderId: "112813790184",
+          appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
+        });
+
+    firebase.auth().onAuthStateChanged(function (user) {
+      dest = user ? PORTAL_AUTH : PORTAL_GUEST;
+    });
+  } catch (e) { /* Firebase unavailable — fall back to signon */ }
+
+  function goPortal(e) {
+    e.preventDefault();
+    window.location.href = dest;
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    var btn = document.getElementById('member-login-btn');
+    if (btn) btn.addEventListener('click', goPortal);
+
+    /* Nav link (inside mobile menu) */
+    document.querySelectorAll('a[href="members-signon.html"]').forEach(function (a) {
+      a.addEventListener('click', goPortal);
+    });
+  });
+})();
+</script>
 </body>
 </html>
