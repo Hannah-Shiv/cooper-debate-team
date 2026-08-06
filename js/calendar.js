@@ -421,20 +421,23 @@ function renderNextBanner() {
   fitBannerText(banner);
 }
 
-// Shrink banner font-size until all content fits on one line
+// Shrink banner font-size until all children fit within the container
 function fitBannerText(banner) {
   if (!banner) return;
-  // Defer so the browser has finished layout before we measure
   setTimeout(() => {
-    banner.style.fontSize = '1rem';
-    // Temporarily lift overflow:hidden so scrollWidth reflects true content width
-    banner.style.overflow = 'visible';
     let size = 1.0;
-    while (banner.scrollWidth > banner.offsetWidth && size > 0.4) {
-      size = Math.round((size - 0.02) * 100) / 100;
+    banner.style.fontSize = size + 'rem';
+
+    function childrenOverflow() {
+      const total = Array.from(banner.children)
+        .reduce((sum, el) => sum + el.getBoundingClientRect().width, 0);
+      return total > banner.getBoundingClientRect().width;
+    }
+
+    while (childrenOverflow() && size > 0.4) {
+      size = Math.round((size - 0.025) * 1000) / 1000;
       banner.style.fontSize = size + 'rem';
     }
-    banner.style.overflow = 'hidden';
   }, 0);
 }
 

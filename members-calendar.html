@@ -126,31 +126,32 @@
       display: flex; align-items: center; justify-content: center;
       flex: 1; min-width: 0;
     }
-    /* Base font-size on the banner; JS shrinks this one value to fit all content */
+    /* Base font-size on the banner; JS shrinks this one value to fit all content.
+       All padding in em so it scales proportionally with the font. */
     .next-tournament-banner { font-size: 1rem; }
     .next-trophy {
-      padding: 14px 0; font-size: 1.5em;
+      padding: 0.875em 0; font-size: 1.5em;
       background: none; border-right: 1px solid rgba(255,255,255,0.35);
-      flex: 0 0 60px; line-height: 1;
+      flex: 0 0 3.75em; line-height: 1;
     }
     .next-label {
       font-size: 0.95em; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase;
       color: #ffffff; border-right: 1px solid rgba(255,255,255,0.35);
-      white-space: nowrap; flex: 0 0 auto; padding: 14px 18px;
+      white-space: nowrap; flex: 0 0 auto; padding: 0.875em 1.125em;
     }
     .next-name {
       font-size: 1.15em; font-weight: 900; color: #ffffff; letter-spacing: 0.02em;
-      padding: 14px 20px; border-right: 1px solid rgba(255,255,255,0.35);
-      white-space: nowrap; overflow: hidden;
+      padding: 0.875em 1.25em; border-right: 1px solid rgba(255,255,255,0.35);
+      white-space: nowrap; overflow: hidden; flex: 0 0 auto;
     }
     .next-date {
       gap: 6px; font-size: 1.05em; color: #ffffff; font-weight: 700;
-      padding: 14px 20px; border-right: 1px solid rgba(255,255,255,0.35);
+      padding: 0.875em 1.25em; border-right: 1px solid rgba(255,255,255,0.35);
       white-space: nowrap; flex: 0 0 auto;
     }
     .next-countdown {
       gap: 6px; font-size: 1.05em; font-weight: 800; color: #ffffff;
-      padding: 14px 20px; margin: 0; flex: 0 0 auto;
+      padding: 0.875em 1.25em; margin: 0; flex: 0 0 auto;
       background: none; border: none; border-radius: 0;
     }
 
