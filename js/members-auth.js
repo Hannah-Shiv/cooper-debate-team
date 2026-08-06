@@ -114,7 +114,8 @@ function completeMagicLinkSignIn() {
 // ── Handle a verified, signed-in user ────────────────────────
 function handleAuthenticatedUser(email) {
   if (isApprovedMember(email)) {
-    showDashboard(email);
+    // members.html is the auth gateway — redirect to the main member landing page
+    window.location.href = 'members-resources.html';
   } else {
     auth.signOut();
     showState("denied");

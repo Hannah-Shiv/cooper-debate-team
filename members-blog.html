@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=11"/>
+  <link rel="stylesheet" href="css/main.css?v=12"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
     /* ── Auth states ─────────────────────────────────────────── */
@@ -47,9 +47,10 @@
 
 <!-- MEMBER USERBAR — fixed vertical column, top-right, shown after auth -->
 <div class="member-userbar" id="member-userbar">
-  <button class="signout-btn" onclick="mpSignOut()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
-  <span class="mub-email" id="mp-user-email"></span>
-  <span class="member-badge" id="mp-role-badge">✓ Team Member</span>
+  <button class="mub-signout" onclick="mpSignOut()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
+  <div class="mub-row"><span class="mub-email" id="mp-user-email"></span></div>
+  <div class="mub-row"><span class="mub-badge" id="mp-role-badge">✓ Team Member</span></div>
+  <div class="mub-row"><button class="mub-bell" onclick="mpToggleNotif()" title="Notifications">🔔</button></div>
 </div>
 
 <script>window.__NAV_PAGE = "blog";</script>
@@ -112,6 +113,14 @@ function isApprovedMember(email) {
 
 function mpSignOut() {
   _mpAuth.signOut().then(() => window.location.href = 'index.html');
+}
+
+function mpToggleNotif() {
+  if (!('Notification' in window)) return;
+  Notification.requestPermission().then(function(perm) {
+    var btn = document.querySelector('.mub-bell');
+    if (btn) btn.title = perm === 'granted' ? 'Notifications on' : 'Enable notifications';
+  });
 }
 
 _mpAuth.onAuthStateChanged(function(user) {
