@@ -418,6 +418,18 @@ function renderNextBanner() {
     <span class="next-date">📅 ${dateStr}</span>
     <span class="next-countdown">⏱ ${countdownText}</span>
   `;
+  fitBannerText(banner);
+}
+
+// Shrink banner font-size until all content fits on one line
+function fitBannerText(banner) {
+  if (!banner) return;
+  let size = 1.0;
+  banner.style.fontSize = size + 'rem';
+  while (banner.scrollWidth > banner.offsetWidth && size > 0.45) {
+    size = Math.round((size - 0.02) * 100) / 100;
+    banner.style.fontSize = size + 'rem';
+  }
 }
 
 // ── Event detail modal ────────────────────────────────────────
