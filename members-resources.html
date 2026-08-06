@@ -452,10 +452,24 @@
     }
     .ann-det-delete:hover { color: #fca5a5; background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.45); }
 
-    /* ── Floating Post Button (FAB) ──────────────────────── */
+    /* ── Announcements + FAB inline row ─────────────────── */
+    .ann-fab-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 0;
+    }
+    .ann-section {
+      flex: 1; min-width: 0;
+    }
+
+    /* ── Section divider ──────────────────────────────── */
+    .section-divider {
+      border: none; border-top: 1px solid rgba(212,160,23,0.3);
+      margin: 24px 0;
+      box-shadow: 0 1px 0 rgba(212,160,23,0.08);
+    }
+
+    /* ── Post Announcement FAB (inline, coach/captain only) ── */
     .post-fab {
-      position: fixed; right: 32px; top: 50%; transform: translateY(-50%); z-index: 999;
-      width: 110px; height: 110px;
+      width: 140px; height: 140px; flex-shrink: 0;
       background: none; border: none;
       cursor: pointer; padding: 0;
       display: none; align-items: center; justify-content: center;
@@ -463,7 +477,7 @@
       filter: drop-shadow(0 6px 18px rgba(179,0,0,0.55)) drop-shadow(0 2px 6px rgba(0,0,0,0.45));
     }
     .post-fab:hover {
-      transform: translateY(-50%) scale(1.09);
+      transform: scale(1.09);
       filter: drop-shadow(0 10px 28px rgba(179,0,0,0.75)) drop-shadow(0 3px 10px rgba(0,0,0,0.5));
     }
 
@@ -986,8 +1000,7 @@
       .dashboard-header { flex-direction: column; align-items: flex-start; }
       .portal-cards { grid-template-columns: 1fr; }
       .dashboard-header-left h1 { font-size: 2rem; }
-      .post-fab { right: 8px; left: auto; top: 50%; transform: translateY(-50%); width: 86px; height: 86px; }
-      .post-fab:hover { transform: translateY(-50%) scale(1.09); }
+      .post-fab { width: 86px; height: 86px; }
       .post-fab svg { width: 86px; height: 86px; }
       .modal-box { padding: 20px 18px 24px; }
     }
@@ -1037,16 +1050,52 @@
       <h1>Announcements &amp; Resources</h1>
     </div>
     <div class="dashboard-content">
-    <!-- Announcements Timeline -->
-    <div class="portal-section">
-      <div class="portal-section-title">
-        Team Announcements
-        <a class="ann-view-all-link" href="#" onclick="openAllModal();return false;">View all →</a>
+
+    <!-- Announcements + FAB row -->
+    <div class="ann-fab-row">
+      <div class="portal-section ann-section">
+        <div class="portal-section-title">
+          Team Announcements
+          <a class="ann-view-all-link" href="#" onclick="openAllModal();return false;">View all →</a>
+        </div>
+        <div id="ann-timeline">
+          <div class="ann-tl-empty">Loading…</div>
+        </div>
       </div>
-      <div id="ann-timeline">
-        <div class="ann-tl-empty">Loading…</div>
-      </div>
+
+      <!-- Post Announcement FAB (coach/captain only) -->
+      <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement" aria-label="Post Announcement">
+        <svg viewBox="0 0 110 110" width="140" height="140" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <path id="fab-top-arc" d="M 18,55 A 37,37 0 0,1 92,55"/>
+            <path id="fab-bot-arc" d="M 12,55 A 43,43 0 0,0 98,55"/>
+          </defs>
+          <circle cx="55" cy="55" r="54" fill="white"/>
+          <circle cx="55" cy="55" r="50" fill="none" stroke="#cc0000" stroke-width="3"/>
+          <text font-family="'Josefin Sans', sans-serif" font-size="13" font-weight="900"
+                letter-spacing="4" fill="#cc0000" text-anchor="middle">
+            <textPath href="#fab-top-arc" startOffset="50%">POST</textPath>
+          </text>
+          <circle cx="16" cy="55" r="3.5" fill="#cc0000"/>
+          <circle cx="94" cy="55" r="3.5" fill="#cc0000"/>
+          <g transform="translate(33,30) scale(2.1)" fill="#cc0000" stroke="none">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+          </g>
+          <g transform="translate(33,30) scale(2.1)" fill="none" stroke="#cc0000"
+             stroke-linecap="round" stroke-width="1.7">
+            <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+          </g>
+          <text font-family="'Josefin Sans', sans-serif" font-size="9.5" font-weight="900"
+                letter-spacing="1.5" fill="#cc0000" text-anchor="middle">
+            <textPath href="#fab-bot-arc" startOffset="50%">ANNOUNCEMENT</textPath>
+          </text>
+        </svg>
+      </button>
     </div>
+
+    <!-- Section divider -->
+    <hr class="section-divider">
 
     <!-- All 6 Drive resource cards — flat 2-column grid (3 even rows) -->
     <div class="portal-section">
@@ -1150,49 +1199,6 @@
     </div><!-- end .dashboard-content -->
   </div><!-- /dashboard-wrap -->
 
-  <!-- ── Floating Post Button (coach/captain only) ──────────── -->
-  <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Post Announcement" aria-label="Post Announcement">
-    <svg viewBox="0 0 110 110" width="110" height="110" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <!-- Top arc for "POST" -->
-        <path id="fab-top-arc" d="M 18,55 A 37,37 0 0,1 92,55"/>
-        <!-- Bottom arc for "ANNOUNCEMENT" -->
-        <path id="fab-bot-arc" d="M 12,55 A 43,43 0 0,0 98,55"/>
-      </defs>
-
-      <!-- White filled circle base -->
-      <circle cx="55" cy="55" r="54" fill="white"/>
-      <!-- Red ring -->
-      <circle cx="55" cy="55" r="50" fill="none" stroke="#cc0000" stroke-width="3"/>
-
-      <!-- "POST" arched along top -->
-      <text font-family="'Josefin Sans', sans-serif" font-size="13" font-weight="900"
-            letter-spacing="4" fill="#cc0000" text-anchor="middle">
-        <textPath href="#fab-top-arc" startOffset="50%">POST</textPath>
-      </text>
-
-      <!-- Left dot -->
-      <circle cx="16" cy="55" r="3.5" fill="#cc0000"/>
-      <!-- Right dot -->
-      <circle cx="94" cy="55" r="3.5" fill="#cc0000"/>
-
-      <!-- Megaphone icon centred — filled body + stroked sound waves -->
-      <g transform="translate(33,30) scale(2.1)" fill="#cc0000" stroke="none">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-      </g>
-      <g transform="translate(33,30) scale(2.1)" fill="none" stroke="#cc0000"
-         stroke-linecap="round" stroke-width="1.7">
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-      </g>
-
-      <!-- "ANNOUNCEMENT" arched along bottom -->
-      <text font-family="'Josefin Sans', sans-serif" font-size="9.5" font-weight="900"
-            letter-spacing="1.5" fill="#cc0000" text-anchor="middle">
-        <textPath href="#fab-bot-arc" startOffset="50%">ANNOUNCEMENT</textPath>
-      </text>
-    </svg>
-  </button>
 
   <!-- ── Pin File Modal (coach / captain only) ─────────────── -->
   <div class="modal-overlay" id="pin-modal" style="display:none" onclick="if(event.target===this)closePinModal()">

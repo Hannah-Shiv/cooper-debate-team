@@ -165,10 +165,15 @@ function showDashboard(email) {
     }
   }
 
-  // Show floating post button for coach + captain
+  // Show floating post button for coach + captain (fade in to avoid layout flash)
   const fab = document.getElementById("post-fab");
   if (fab && (currentUserRole === "coach" || currentUserRole === "captain")) {
+    fab.style.opacity = "0";
     fab.style.display = "flex";
+    requestAnimationFrame(() => {
+      fab.style.transition = "opacity 0.35s ease";
+      fab.style.opacity = "1";
+    });
   }
 
   // Show notification error log for coaches only
