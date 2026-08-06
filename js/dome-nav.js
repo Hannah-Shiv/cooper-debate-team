@@ -32,12 +32,7 @@ function buildIntelThreads(wrap) {
   svg.setAttribute('preserveAspectRatio', 'none');
   svg.setAttribute('aria-hidden', 'true');
 
-  /* Dark backdrop rect */
-  var bg = document.createElementNS(ns, 'rect');
-  bg.setAttribute('x', '0'); bg.setAttribute('y', '0');
-  bg.setAttribute('width', W); bg.setAttribute('height', H);
-  bg.setAttribute('fill', 'rgba(3,6,14,0.88)');
-  svg.appendChild(bg);
+  /* No dark backdrop — keep corners visible when dome is open */
 
   /* Glow filter */
   var defs = document.createElementNS(ns, 'defs');
@@ -76,18 +71,7 @@ function buildIntelThreads(wrap) {
     path.setAttribute('fill', 'none');
     svg.appendChild(path);
 
-    dotTs.forEach(function(td) {
-      var pt  = qb(td[0], ox,oy, cpx,cpy, ex,ey);
-      var dot = document.createElementNS(ns, 'circle');
-      dot.setAttribute('cx', pt.x.toFixed(1));
-      dot.setAttribute('cy', pt.y.toFixed(1));
-      dot.setAttribute('r',  '3.4');
-      dot.setAttribute('fill',   'rgba(255,225,80,1.0)');
-      dot.setAttribute('filter', 'url(#thr-glow)');
-      dot.classList.add('thr-dot');
-      dot.style.animationDelay = td[1].toFixed(2) + 's';
-      svg.appendChild(dot);
-    });
+    /* Stars/dots removed — arcs only */
   }
 
   var isMobile = W < 640;
