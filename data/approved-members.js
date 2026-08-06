@@ -26,10 +26,16 @@ const APPROVED_MEMBERS = [
 
 ];
 
-// ── Display initials for each member (First + Last initial) ──
+// ── Display names for each member ────────────────────────────
 // Add an entry here whenever you add a new member above.
 const MEMBER_INITIALS = {
   "hannahbshiv@gmail.com":      "HS",
   "cooperdebateteam@gmail.com": "CD",
   // "student1@fcpsschools.net": "AB",
+};
+
+const MEMBER_NAMES = {
+  "hannahbshiv@gmail.com":      "Hannah",
+  "cooperdebateteam@gmail.com": "Cooper",
+  // "student1@fcpsschools.net": "Alex",
 };

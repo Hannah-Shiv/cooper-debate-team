@@ -145,9 +145,9 @@ function showDashboard(email) {
   const emailEl = document.getElementById("member-email");
   if (emailEl) emailEl.textContent = email;
 
-  // Initials circle
-  const initialsEl = document.getElementById("member-initials");
-  if (initialsEl) initialsEl.textContent = (MEMBER_INITIALS[email.toLowerCase()] || email.slice(0,2).toUpperCase());
+  // First name
+  const nameEl = document.getElementById("member-name");
+  if (nameEl) nameEl.textContent = (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
 
   // Role badge
   const badgeEl = document.getElementById("member-role-badge");

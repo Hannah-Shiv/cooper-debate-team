@@ -1781,32 +1781,15 @@ footer {
   flex-shrink: 0;
 }
 
-/* Initials circle */
-.mub-initials {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #1b3d72;
-  color: #fff;
+/* First name */
+.mub-name {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-weight: 700;
+  color: #ffffff;
   letter-spacing: 0.04em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  white-space: nowrap;
   flex-shrink: 0;
-  margin-right: 10px;
-  text-transform: uppercase;
-  user-select: none;
-}
-
-/* Email + role column */
-.mub-info {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  margin-right: 0;
 }
 
 /* Email text */
