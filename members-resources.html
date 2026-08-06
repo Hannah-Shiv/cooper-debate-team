@@ -22,24 +22,7 @@
     .auth-title { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;margin-bottom:10px; }
     .auth-sub   { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.6; }
 
-    /* member-userbar comes from main.css */
-    .member-badge {
-      display:inline-flex;align-items:center;gap:6px;
-      padding:5px 13px;border-radius:50px;
-      background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);
-      font-size:0.62rem;font-weight:700;letter-spacing:0.1em;
-      text-transform:uppercase;color:#fff;white-space:nowrap;
-    }
-    .signout-btn {
-      display:inline-flex;align-items:center;gap:6px;
-      background:rgba(179,0,0,0.80);border:1.5px solid #cc0000;
-      color:#fff;font-family:'Josefin Sans',sans-serif;
-      font-size:0.70rem;font-weight:700;letter-spacing:0.08em;
-      text-transform:uppercase;padding:8px 16px;border-radius:50px;
-      cursor:pointer;transition:all 0.2s;white-space:nowrap;
-    }
-    .signout-btn:hover { background:#b30000;border-color:#e03030;box-shadow:0 0 14px rgba(179,0,0,0.45); }
-    .signout-btn svg { width:13px;height:13px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round; }
+    /* userbar styles live in main.css (.mub-*) */
 
     /* ── Resources content (same as resources.html) ──────────── */
     .resource-card { background:rgba(13,46,86,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:10px;padding:28px 24px;transition:border-color 0.25s,transform 0.25s,box-shadow 0.25s;display:flex;flex-direction:column; }
@@ -82,7 +65,7 @@
 <body>
 
 <!-- SITE BADGE — home link, top left -->
-<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+<a id="site-badge" href="members-resources.html" aria-label="Members Portal — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
 
@@ -184,11 +167,11 @@
     <p class="section-label">Downloadable Resources</p>
     <h2 class="section-title" style="margin-bottom:32px;">Templates &amp; Flows</h2>
     <div style="display:flex;flex-direction:column;gap:12px;max-width:800px;">
-      <div class="template-card fade-up"><div class="template-icon">📋</div><div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">📊</div><div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">📝</div><div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">🔍</div><div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
-      <div class="template-card fade-up"><div class="template-icon">⚖️</div><div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div><div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Download</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">📋</div><div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">📊</div><div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">📝</div><div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">🔍</div><div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
+      <div class="template-card fade-up"><div class="template-icon">⚖️</div><div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div><div class="template-download"><a href="#" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Coming Soon</a></div></div>
     </div>
   </div>
 </section>
@@ -220,7 +203,7 @@ function isApprovedMember(email) {
 }
 
 function mpSignOut() {
-  _mpAuth.signOut().then(() => window.location.href = 'index.html');
+  _mpAuth.signOut().then(() => window.location.href = 'members.html');
 }
 
 function mpToggleNotif() {

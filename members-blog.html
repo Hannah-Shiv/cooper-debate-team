@@ -22,11 +22,7 @@
     .auth-title { font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#fff;margin-bottom:10px; }
     .auth-sub   { font-size:0.85rem;color:rgba(255,255,255,0.55);line-height:1.6; }
 
-    /* member-userbar comes from main.css */
-    .member-badge { display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:50px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.2);font-size:0.62rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff;white-space:nowrap; }
-    .signout-btn { display:inline-flex;align-items:center;gap:6px;background:rgba(179,0,0,0.80);border:1.5px solid #cc0000;color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.70rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 16px;border-radius:50px;cursor:pointer;transition:all 0.2s;white-space:nowrap; }
-    .signout-btn:hover { background:#b30000;border-color:#e03030;box-shadow:0 0 14px rgba(179,0,0,0.45); }
-    .signout-btn svg { width:13px;height:13px;flex-shrink:0;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round; }
+    /* userbar styles live in main.css (.mub-*) */
 
     /* ── Blog cards ──────────────────────────────────────────── */
     .ann-card { background:rgba(13,46,86,0.45);border:1px solid rgba(212,160,23,0.15);border-radius:12px;overflow:hidden;margin-bottom:28px;transition:border-color 0.25s,box-shadow 0.25s; }
@@ -44,7 +40,7 @@
 <body>
 
 <!-- SITE BADGE — home link, top left -->
-<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+<a id="site-badge" href="members-resources.html" aria-label="Members Portal — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
 
@@ -115,7 +111,7 @@ function isApprovedMember(email) {
 }
 
 function mpSignOut() {
-  _mpAuth.signOut().then(() => window.location.href = 'index.html');
+  _mpAuth.signOut().then(() => window.location.href = 'members.html');
 }
 
 function mpToggleNotif() {
