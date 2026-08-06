@@ -1758,7 +1758,7 @@ footer {
   padding: 0;
 }
 .mub-bell:hover { background: rgba(255, 220, 0, 0.20); }
-.mub-bell svg { stroke: #FFD700; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mub-bell svg { stroke: #FFD700; fill: #FFD700; stroke-width: 0.5; stroke-linecap: round; stroke-linejoin: round; }
 
 /* Red notification dot on bell */
 .mub-dot {
@@ -1776,7 +1776,7 @@ footer {
 .mub-sep {
   width: 1px;
   height: 30px;
-  background: rgba(255, 255, 255, 0.13);
+  background: rgba(255, 255, 255, 0.70);
   margin: 0 10px;
   flex-shrink: 0;
 }
@@ -1806,7 +1806,7 @@ footer {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin-right: 14px;
+  margin-right: 0;
 }
 
 /* Email text */
@@ -1827,9 +1827,12 @@ footer {
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.67rem;
   font-weight: 700;
-  color: #d4a820;
+  color: #FFD700;
   letter-spacing: 0.04em;
   white-space: nowrap;
+  background: none;
+  border: none;
+  padding: 0;
 }
 
 /* Sign Out button */

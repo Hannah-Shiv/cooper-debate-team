@@ -161,6 +161,5 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Escape') wrap.classList.remove('open');
   });
 
-  /* Build the dynamic intel-thread arcs */
-  buildIntelThreads(wrap);
+  /* Intel-thread arcs disabled */
 });
