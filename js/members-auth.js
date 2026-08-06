@@ -172,6 +172,9 @@ function showDashboard(email) {
   // Start real-time announcements listener
   loadAnnouncements();
 
+  // Start listening for new calendar events — fires browser push when one is added
+  startEventsListener();
+
   // Load pinned files for resource cards (Phase D)
   loadResourcePins();
 
@@ -185,6 +188,73 @@ function showDashboard(email) {
 
   // Load Drive file data for resource cards (Phase C)
   if (typeof loadDriveData === 'function') loadDriveData();
+}
+
+// ── Email helper (writes to Firestore "mail" collection) ─────
+// The Firebase Trigger Email extension picks this up and sends via Gmail SMTP.
+function writeMailDoc(subject, htmlBody, textBody) {
+  const bcc = APPROVED_MEMBERS.map(e => e.toLowerCase()).join(",");
+  return db.collection("mail").add({
+    to:      "cooperdebateteam@gmail.com",
+    bcc,
+    message: { subject, html: htmlBody, text: textBody },
+  }).catch(err => console.warn("[Email] writeMailDoc failed:", err));
+}
+
+function announcementEmailHtml(title, category, details, driveLink) {
+  const detailsBlock = details
+    ? `<p style="color:#cbd5e0;font-size:15px;line-height:1.7;margin:16px 0 0;">${details.replace(/\n/g,"<br>")}</p>`
+    : "";
+  const driveBlock = driveLink
+    ? `<p style="margin:14px 0 0;"><a href="${driveLink}" style="color:#93c5fd;font-size:13px;">📎 View attached file →</a></p>`
+    : "";
+  return `
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;background:#0d1b3e;color:#fff;border-radius:8px;overflow:hidden;">
+  <div style="background:#091530;padding:20px 28px;border-bottom:3px solid #ffd700;">
+    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">🦅 Cooper Debate Team</span>
+  </div>
+  <div style="padding:28px;">
+    <p style="color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 10px;">Team Announcement</p>
+    <h2 style="color:#fff;font-size:19px;margin:0 0 10px;">${title}</h2>
+    <span style="background:#1e3a6e;color:#93c5fd;font-size:11px;padding:3px 10px;border-radius:12px;">${category || "General"}</span>
+    ${detailsBlock}${driveBlock}
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid #1e3a6e;">
+      <a href="https://cooperdebateteam.com/members.html" style="display:inline-block;background:#ffd700;color:#0d1b3e;font-weight:700;padding:10px 22px;border-radius:5px;text-decoration:none;font-size:14px;">View in Members Portal →</a>
+    </div>
+  </div>
+  <div style="background:#091530;padding:14px 28px;text-align:center;color:#4a5568;font-size:11px;">
+    Cooper High School Debate Team · You're receiving this as a registered team member.
+  </div>
+</div>`;
+}
+
+// ── New-event push notification (browser, members page) ───────
+function notifyNewEvent(data) {
+  if (!("Notification" in window) || Notification.permission !== "granted") return;
+  if (data.postedBy === currentUserEmail) return;
+  const typeLabel = data.type === "tournament" ? "🏆 Tournament"
+                  : data.type === "practice"   ? "🎯 Practice"
+                  : "📋 Meeting";
+  const body = data.location ? `${typeLabel} · ${data.location}` : typeLabel;
+  const n = new Notification("Cooper Debate — New Event Posted", {
+    body:  `${data.title}\n${body}`,
+    icon:  "/images/cooper-debate-badge.png",
+    badge: "/images/cooper-debate-badge.png",
+    tag:   "cooper-event-" + Date.now(),
+  });
+  n.onclick = () => { window.open("members-calendar.html", "_blank"); n.close(); };
+}
+
+// ── Listen for new calendar events posted after page load ─────
+function startEventsListener() {
+  const since = firebase.firestore.Timestamp.now();
+  db.collection("tournaments")
+    .where("createdAt", ">", since)
+    .onSnapshot(snap => {
+      snap.docChanges().forEach(change => {
+        if (change.type === "added") notifyNewEvent(change.doc.data());
+      });
+    }, err => console.warn("[Events listener]", err));
 }
 
 // ── Post announcement ─────────────────────────────────────────
@@ -218,6 +288,11 @@ function postAnnouncement() {
     btn.textContent = "Announce →";
     showAnnounceStatus("✓ Posted!", false);
     setTimeout(() => { hideAnnounceStatus(); closePostModal(); }, 1400);
+
+    // Send email to all members
+    const subject  = `[Cooper Debate] ${category ? "[" + category + "] " : ""}${title}`;
+    const textBody = `${title}\nCategory: ${category || "General"}\n\n${details || ""}\n\n${driveLink ? "File: " + driveLink + "\n\n" : ""}View in portal: https://cooperdebateteam.com/members.html`;
+    writeMailDoc(subject, announcementEmailHtml(title, category, details, driveLink), textBody);
   })
   .catch(err => {
     console.error("postAnnouncement error:", err);

@@ -600,6 +600,74 @@ function buildGcalLink(t, start, end) {
     `&location=${encodeURIComponent(t.location || "")}`;
 }
 
+// ── Email helper (mirrors members-auth.js writeMailDoc) ───────
+// Writes to Firestore "mail" collection; Firebase Trigger Email Extension sends it.
+function writeCalMailDoc(subject, htmlBody, textBody) {
+  const bcc = APPROVED_MEMBERS.map(e => e.toLowerCase()).join(",");
+  return calDb.collection("mail").add({
+    to:      "cooperdebateteam@gmail.com",
+    bcc,
+    message: { subject, html: htmlBody, text: textBody },
+  }).catch(err => console.warn("[Email] writeCalMailDoc failed:", err));
+}
+
+function eventEmailHtml(data) {
+  const typeLabel = data.type === "tournament" ? "🏆 Tournament"
+                  : data.type === "practice"   ? "🎯 Practice"
+                  : "📋 Meeting";
+  const typeColor = data.type === "tournament" ? "#991b1b"
+                  : data.type === "practice"   ? "#3f6212"
+                  : "#92400e";
+  const fmtDate = d => d.toLocaleDateString("en-US", {
+    timeZone: "America/New_York", weekday:"long", month:"long", day:"numeric", year:"numeric"
+  });
+  const fmt12 = s => {
+    if (!s) return "";
+    const [h, m] = s.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    return `${h % 12 || 12}:${String(m).padStart(2,"0")} ${ampm} EST`;
+  };
+
+  const startDate = data.start?.toDate ? data.start.toDate() : new Date(data.start);
+  const endDate   = data.end?.toDate   ? data.end.toDate()   : null;
+  const dateStr   = endDate && fmtDate(endDate) !== fmtDate(startDate)
+    ? `${fmtDate(startDate)} – ${fmtDate(endDate)}`
+    : fmtDate(startDate);
+  const timeStr   = data.startTime && data.endTime
+    ? `${fmt12(data.startTime)} – ${fmt12(data.endTime)}`
+    : "";
+  const locationBlock = data.location
+    ? `<p style="margin:6px 0 0;color:#cbd5e0;font-size:14px;">📍 ${data.location}</p>`
+    : "";
+  const notesBlock = data.notes
+    ? `<p style="margin:14px 0 0;color:#cbd5e0;font-size:14px;line-height:1.6;">${data.notes.replace(/\n/g,"<br>")}</p>`
+    : "";
+  const scheduleBlock = data.scheduleLink
+    ? `<p style="margin:10px 0 0;"><a href="${data.scheduleLink}" style="color:#93c5fd;font-size:13px;">📋 View Event Day Schedule →</a></p>`
+    : "";
+
+  return `
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;background:#0d1b3e;color:#fff;border-radius:8px;overflow:hidden;">
+  <div style="background:#091530;padding:20px 28px;border-bottom:3px solid #ffd700;">
+    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">🦅 Cooper Debate Team</span>
+  </div>
+  <div style="padding:28px;">
+    <p style="color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 10px;">New Event Posted</p>
+    <h2 style="color:#fff;font-size:19px;margin:0 0 12px;">${data.title}</h2>
+    <span style="background:${typeColor};color:#fff;font-size:11px;padding:3px 10px;border-radius:12px;">${typeLabel}</span>
+    <p style="margin:14px 0 0;color:#ffffff;font-size:14px;">📅 ${dateStr}</p>
+    ${timeStr ? `<p style="margin:4px 0 0;color:#cbd5e0;font-size:14px;">🕐 ${timeStr}</p>` : ""}
+    ${locationBlock}${notesBlock}${scheduleBlock}
+    <div style="margin-top:24px;padding-top:20px;border-top:1px solid #1e3a6e;">
+      <a href="https://cooperdebateteam.com/members-calendar.html" style="display:inline-block;background:#ffd700;color:#0d1b3e;font-weight:700;padding:10px 22px;border-radius:5px;text-decoration:none;font-size:14px;">View Calendar →</a>
+    </div>
+  </div>
+  <div style="background:#091530;padding:14px 28px;text-align:center;color:#4a5568;font-size:11px;">
+    Cooper High School Debate Team · You're receiving this as a registered team member.
+  </div>
+</div>`;
+}
+
 // ── Post / Edit event modal ───────────────────────────────────
 function openPostModal(editId) {
   // Strip __deadline suffix so we always look up the parent tournament
@@ -707,6 +775,10 @@ async function saveEvent() {
     } else {
       data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
       await calDb.collection("tournaments").add(data);
+      // Send email to all members for new events only (not edits)
+      const typeLabel = type === "tournament" ? "Tournament" : type === "practice" ? "Practice" : "Meeting";
+      const subject   = `[Cooper Debate] New ${typeLabel}: ${title}`;
+      writeCalMailDoc(subject, eventEmailHtml({ ...data, start: startDate, end: endDate, title, type, startTime, endTime, location, notes, scheduleLink }), `New event posted: ${title}\nDate: ${startStr}${endStr ? " – " + endStr : ""}\nView calendar: https://cooperdebateteam.com/members-calendar.html`);
     }
     closePostModal();
     closeEventDetail();
