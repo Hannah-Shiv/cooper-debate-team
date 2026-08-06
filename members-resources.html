@@ -151,6 +151,21 @@
     @keyframes spin { to { transform: rotate(360deg); } }
 
     /* ── Dashboard ──────────────────────────────────────── */
+    /* ── Portal main shell ──────────────────────────────── */
+    .portal-main {
+      min-height: 100vh;
+      padding: 120px 40px 80px;
+      position: relative;
+      transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.dome-open .portal-main {
+      padding-top: 240px;
+    }
+    @media(max-width:600px){
+      .portal-main { padding: 110px 16px 60px; }
+      body.dome-open .portal-main { padding-top: 210px; }
+    }
+
     .dashboard-wrap {
       position: relative; z-index: 1;
       max-width: 1280px; margin: 0 auto;
@@ -949,7 +964,7 @@
 </div>
 
 <div id="mp-content" style="display:none;">
-<main>
+<main class="portal-main">
   <div id="state-dashboard" class="dashboard-wrap">
     <div class="dashboard-content">
     <!-- Announcements Timeline -->

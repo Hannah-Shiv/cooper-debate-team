@@ -1360,8 +1360,9 @@ footer {
   background: linear-gradient(180deg, rgba(7,26,54,0.95) 0%, var(--navy-dark) 100%);
   position: relative;
   overflow: hidden;
-  transition: padding-top 0.35s ease;
+  transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
+body.dome-open .page-header { padding-top: 240px; }
 
 .page-header::before {
   content: '';

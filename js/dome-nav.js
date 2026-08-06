@@ -11,6 +11,7 @@ window.toggleMenu = function () {
   if (!wrap) return;
   var opening = !wrap.classList.contains('open');
   wrap.classList.toggle('open', opening);
+  document.body.classList.toggle('dome-open', opening);
   if (btn) btn.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
 };
 

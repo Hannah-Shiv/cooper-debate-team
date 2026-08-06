@@ -21,9 +21,14 @@
       background-image:
         radial-gradient(ellipse 80% 40% at 50% 0%, rgba(20,40,100,0.22) 0%, transparent 70%),
         radial-gradient(ellipse 60% 30% at 80% 80%, rgba(15,30,80,0.12) 0%, transparent 60%);
-      padding: 100px 40px 80px;
+      padding: 120px 40px 80px;
       position: relative;
       overflow: hidden;
+      transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.dome-open .portal-page { padding-top: 240px; }
+    @media(max-width:600px){
+      body.dome-open .portal-page { padding-top: 210px; }
     }
     .portal-page::before {
       content: '';

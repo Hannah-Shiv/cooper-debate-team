@@ -244,8 +244,8 @@
 }
 
 /* === HERO / PAGE HEADER PUSH === */
-#circ-wrap.open ~ .home-hero .hero-content { padding-top: 250px; }
-#circ-wrap.open ~ .page-header { padding-top: 240px; }
+body.dome-open .home-hero .hero-content { padding-top: 250px; }
+body.dome-open .page-header { padding-top: 240px; }
 
 /* === MEMBER PORTAL NAV — font-size overrides ===
    Long labels (Resources, Calendar, Directory) need smaller text.
@@ -280,7 +280,7 @@
   .dn-p5 { left:   79px; top:  54px; transform-origin: -53px -28px; }
   .dn-p6 { left:  100px; top:  -4px; transform-origin: -74px  30px; }
 
-  #circ-wrap.open ~ .home-hero .hero-content { padding-top: 210px; }
-  #circ-wrap.open ~ .page-header { padding-top: 200px; }
+  body.dome-open .home-hero .hero-content { padding-top: 210px; }
+  body.dome-open .page-header { padding-top: 200px; }
   #member-login-btn { display: none; }
 }

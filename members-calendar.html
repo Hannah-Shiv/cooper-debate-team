@@ -34,7 +34,12 @@
       background-image:
         radial-gradient(ellipse 90% 50% at 50% -5%, rgba(20,40,100,0.25) 0%, transparent 65%),
         radial-gradient(ellipse 50% 30% at 85% 90%, rgba(15,30,80,0.15) 0%, transparent 60%);
-      padding: 96px 32px 80px;
+      padding: 120px 32px 80px;
+      transition: padding-top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    body.dome-open .portal-page { padding-top: 240px; }
+    @media(max-width:600px){
+      body.dome-open .portal-page { padding-top: 210px; }
     }
 
     /* ── Auth / loading states ───────────────────────────── */
@@ -586,7 +591,8 @@
 
     /* ── Responsive ──────────────────────────────────────── */
     @media (max-width: 768px) {
-      .portal-page { padding: 90px 16px 60px; }
+      .portal-page { padding: 110px 16px 60px; }
+      body.dome-open .portal-page { padding-top: 210px; }
       .cal-header { flex-direction: column; }
       .cal-header-left h1 { font-size: 2rem; }
       .form-row,
