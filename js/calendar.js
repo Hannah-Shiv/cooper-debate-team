@@ -156,7 +156,7 @@ function evtDefaultTimes(type) {
 
 // ── Color every day cell in a date range (month view) ─────────
 // allDay events: FC end is exclusive. Timed events: end day is inclusive.
-function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast) {
+function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast, textColor) {
   const cur = new Date(evStart);
   cur.setHours(0, 0, 0, 0);
 
@@ -176,6 +176,11 @@ function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast) {
     if (cell) {
       cell.style.setProperty("background", color, "important");
       if (isPast) cell.style.setProperty("opacity", "0.6", "important");
+      // Apply text colour to the date number so it stays legible on bright cells
+      if (textColor) {
+        const dateNum = cell.querySelector(".fc-daygrid-day-number");
+        if (dateNum) dateNum.style.setProperty("color", textColor, "important");
+      }
     }
     cur.setDate(cur.getDate() + 1);
   }
@@ -374,7 +379,8 @@ function initFullCalendar() {
           info.event.end,
           info.event.allDay,
           colors.bg,
-          isPast
+          isPast,
+          colors.text
         );
         info.el.style.setProperty("background", "transparent", "important");
         info.el.style.setProperty("border",     "none",        "important");
