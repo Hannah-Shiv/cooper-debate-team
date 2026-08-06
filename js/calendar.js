@@ -141,7 +141,7 @@ function loadTournaments() {
 // ── Event colour/time defaults by type ───────────────────────
 function evtColors(type) {
   switch (type) {
-    case "practice": return { bg: "#65a30d", text: "#ffffff" };
+    case "practice": return { bg: "#22c55e", text: "#ffffff" };
     case "meeting":  return { bg: "#ffd700", text: "#000000" };
     default:         return { bg: "#991b1b", text: "#ffffff" }; // tournament
   }
@@ -581,7 +581,7 @@ function openEventDetail(fcEvent) {
     : t.type === "meeting"      ? "📋 Meeting"
     : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
   const accentColor = isDeadline ? "#b45309"
-    : t.type === "practice"     ? "#65a30d"
+    : t.type === "practice"     ? "#22c55e"
     : t.type === "meeting"      ? "#b45309"
     : "#cc0000";
 
@@ -649,7 +649,7 @@ function eventEmailHtml(data) {
                   : data.type === "practice"   ? "🎯 Practice"
                   : "📋 Meeting";
   const typeColor = data.type === "tournament" ? "#991b1b"
-                  : data.type === "practice"   ? "#3f6212"
+                  : data.type === "practice"   ? "#16a34a"
                   : "#92400e";
   const fmtDate = d => d.toLocaleDateString("en-US", {
     timeZone: "America/New_York", weekday:"long", month:"long", day:"numeric", year:"numeric"
