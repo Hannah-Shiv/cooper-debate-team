@@ -342,11 +342,17 @@ function initFullCalendar() {
       const isPast     = info.event.start < new Date();
 
       if (viewType === "dayGridMonth") {
-        // Hide "Today" watermark if an event falls on today's cell
+        // Hide "Today" watermark ONLY if this specific event covers today's cell
         const todayCell = document.querySelector("td.fc-daygrid-day.fc-day-today");
         if (todayCell) {
-          const wm = todayCell.querySelector(".cal-today-watermark");
-          if (wm) wm.style.display = "none";
+          const todayStr  = todayCell.getAttribute("data-date"); // "YYYY-MM-DD"
+          const evStart   = toESTDateStr(info.event.start);
+          const evEndRaw  = info.event.end ? new Date(info.event.end.getTime() - 1) : info.event.start;
+          const evEnd     = toESTDateStr(evEndRaw);
+          if (todayStr >= evStart && todayStr <= evEnd) {
+            const wm = todayCell.querySelector(".cal-today-watermark");
+            if (wm) wm.style.display = "none";
+          }
         }
         // Color every day in the range (handles multi-day tournaments)
         const container = document.getElementById("cal-container");
