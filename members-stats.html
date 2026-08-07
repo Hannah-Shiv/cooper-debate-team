@@ -2616,8 +2616,10 @@ function parseTournDate(str) {
   // ISO path: appending T12:00:00 forces local noon and avoids UTC midnight off-by-one.
   let d = new Date(str + 'T12:00:00');
   if (!isNaN(d)) return d;
-  // Verbose path: strip leading weekday + comma ("Saturday, ") then let the engine parse.
-  const cleaned = str.replace(/^[A-Za-z]+,\s*/, '');
+  // Strip ordinal suffixes (1st, 2nd, 3rd, 4th … 31st) so "Nov 8th 2025" → "Nov 8 2025"
+  let cleaned = str.replace(/(\d+)(st|nd|rd|th)\b/gi, '$1');
+  // Strip leading weekday + optional comma ("Saturday, " or "Sunday ")
+  cleaned = cleaned.replace(/^[A-Za-z]+[,]?\s*/, '');
   d = new Date(cleaned);
   if (!isNaN(d)) return d;
   return new Date(NaN);
@@ -3351,8 +3353,10 @@ function computePairProgression(pairName) {
       const matchParts = nameParts.slice().sort();
       if (JSON.stringify(debNames) === JSON.stringify(matchParts)) {
         const d = parseTournDate(t.meta.date);
+        const dateLabel = isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         results.push({
           label: t.meta.name,
+          dateLabel,
           dateNum: isNaN(d) ? 0 : d.getTime(),
           wins: e.wins,
           losses: e.losses,
@@ -3386,7 +3390,7 @@ function renderPairProgressionChart() {
   pairProgChart = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: data.map(d => d.label),
+      labels: data.map(d => d.dateLabel || d.label),
       datasets: [
         {
           type: 'bar', label: 'Wins', data: data.map(d => d.wins),
@@ -3411,7 +3415,14 @@ function renderPairProgressionChart() {
       responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { labels: { color: 'rgba(255,255,255,0.72)', font: { family: 'Josefin Sans', size: 12 } } },
-        tooltip: { callbacks: { label: c => c.dataset.label === 'Win Rate %' ? `${c.parsed.y}% win rate` : `${c.dataset.label}: ${c.parsed.y}` } }
+        tooltip: { callbacks: {
+          title: items => {
+            const i = items[0].dataIndex;
+            const d = data[i];
+            return d.label + (d.dateLabel ? '  ·  ' + d.dateLabel : '');
+          },
+          label: c => c.dataset.label === 'Win Rate %' ? `${c.parsed.y}% win rate` : `${c.dataset.label}: ${c.parsed.y}`
+        } }
       },
       scales: {
         x: { ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Josefin Sans', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
