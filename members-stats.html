@@ -314,11 +314,11 @@
     .main-paste-row { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
     .main-paste-btns { display:flex; gap:10px; flex-wrap:wrap; }
     .main-textarea {
-      flex:1; background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
+      width:100%; background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
       border-radius:8px; padding:11px 14px; color:#fff;
       font-family:'Josefin Sans',sans-serif; font-size:0.95rem;
-      outline:none; transition:border-color 0.2s; resize:both;
-      min-height:110px; box-sizing:border-box; line-height:1.5; width:100%;
+      outline:none; transition:border-color 0.2s; resize:vertical;
+      min-height:110px; box-sizing:border-box; line-height:1.5; overflow:auto;
     }
     .main-textarea:focus { border-color:rgba(212,160,23,0.6); }
     .main-textarea::placeholder { color:rgba(255,255,255,0.2); }
