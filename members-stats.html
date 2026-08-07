@@ -923,24 +923,33 @@
     .import-modal-box {
       background:rgba(5,18,65,0.98); border:1px solid rgba(212,160,23,0.3);
       border-radius:16px; width:min(880px,95vw);
-      max-height:92vh; overflow-y:auto; padding:32px;
+      max-height:92vh; display:flex; flex-direction:column; overflow:hidden;
     }
     .import-modal-header {
       display:flex; justify-content:space-between; align-items:flex-start;
-      gap:16px; padding-bottom:18px; margin-bottom:4px;
+      gap:16px; padding:32px 32px 18px; flex-shrink:0;
       border-bottom:1px solid rgba(255,255,255,0.08);
     }
+    .import-modal-scroll { overflow-y:auto; flex:1; padding:0 32px 32px; }
 
     /* ── Drill data modal ───────────────────────────────────── */
     .drill-modal-box {
       background:#0d1d3d; border:1px solid rgba(212,160,23,0.35);
       border-radius:16px; width:min(980px,95vw);
-      max-height:88vh; overflow-y:auto; padding:28px 32px;
+      max-height:88vh; display:flex; flex-direction:column; overflow:hidden;
     }
     .drill-modal-header {
       display:flex; justify-content:space-between; align-items:center;
-      margin-bottom:20px; padding-bottom:16px;
+      padding:28px 32px 16px; flex-shrink:0;
       border-bottom:1px solid rgba(255,255,255,0.09);
+    }
+    #drill-modal-body { overflow-y:auto; flex:1; padding:20px 32px 28px; }
+    #drill-modal-body .lb-table { width:100%; table-layout:auto; }
+    #drill-modal-body .lb-table th { white-space:normal; min-width:60px; }
+    #drill-modal-body thead th,
+    .deb-modal-box thead th,
+    .import-modal-scroll thead th {
+      position:sticky; top:0; z-index:2; background:#0d1d3d;
     }
     .drill-modal-title {
       font-family:'Cormorant Garamond',serif; font-size:1.7rem;
@@ -1285,6 +1294,7 @@
       <div class="import-panel-title" style="margin:0">Import Tournament Results</div>
       <button class="modal-close-btn" onclick="toggleImportPanel()">✕</button>
     </div>
+    <div class="import-modal-scroll">
     <p class="import-panel-sub" style="margin-top:14px">
           Paste the <strong style="color:rgba(255,255,255,0.7)">Main</strong> text from the Tabroom tournament page,
           then click <strong style="color:rgba(255,255,255,0.7)">Parse</strong> to auto-fill tournament details.
@@ -1421,6 +1431,7 @@
           <button class="btn btn-gold" onclick="runImport()">Import &amp; Process Results →</button>
           <span class="import-status" id="import-status"></span>
         </div>
+    </div><!-- /import-modal-scroll -->
   </div>
 </div>
 
@@ -3242,41 +3253,53 @@ function renderCharts(lb, tourns) {
     }
   };
 
-  // Plugin B: callout lines + floating labels for each segment
+  // Plugin B: horizontal elbow callout lines + labels (left / right only)
   const calloutPlugin = {
     id: 'metroCallout',
     afterDatasetsDraw(chart) {
-      const { ctx } = chart;
+      const { ctx, width } = chart;
       const meta = chart.getDatasetMeta(0);
       meta.data.forEach((arc, i) => {
         const val = mSegCounts[i];
         if (!val) return;
         const pct = mTotal > 0 ? Math.round(val / mTotal * 100) : 0;
         const mid = (arc.startAngle + arc.endAngle) / 2;
-        const cx  = arc.x, cy = arc.y, r = arc.outerRadius;
-        // Line points
+        const cx = arc.x, cy = arc.y, r = arc.outerRadius;
+        const goRight = Math.cos(mid) >= 0;
+
+        // Leg 1: radially from arc edge to elbow
         const x1 = cx + r * 1.03 * Math.cos(mid);
         const y1 = cy + r * 1.03 * Math.sin(mid);
-        const x2 = cx + r * 1.28 * Math.cos(mid);
-        const y2 = cy + r * 1.28 * Math.sin(mid);
-        const tx = cx + r * 1.35 * Math.cos(mid);
-        const ty = cy + r * 1.35 * Math.sin(mid);
-        // Draw line
+        const ex  = cx + r * 1.22 * Math.cos(mid);
+        const ey  = cy + r * 1.22 * Math.sin(mid);
+        // Leg 2: horizontal from elbow to label column (near canvas edge)
+        const labelColX = goRight ? width - 14 : 14;
+
         ctx.save();
         ctx.strokeStyle = mSegBorders[i];
-        ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
-        // Draw labels
-        const right = Math.cos(mid) >= 0;
-        ctx.textAlign = right ? 'left' : 'right';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(ex, ey);       // radial leg
+        ctx.lineTo(labelColX, ey); // horizontal leg
+        ctx.stroke();
+
+        // Small dot at elbow end
+        ctx.beginPath();
+        ctx.arc(labelColX, ey, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = mSegColors[i];
+        ctx.fill();
+
+        // Labels: flush to the canvas edge
+        const lx = goRight ? labelColX - 8 : labelColX + 8;
+        ctx.textAlign = goRight ? 'right' : 'left';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = mSegColors[i];
         ctx.font = "700 1rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${mSegLabels[i]}  ${val}`, tx, ty - 11);
-        ctx.fillStyle = mSegColors[i];
+        ctx.fillText(`${mSegLabels[i]}  ${val}`, lx, ey - 11);
         ctx.globalAlpha = 0.75;
         ctx.font = "600 0.88rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${pct}%`, tx, ty + 10);
+        ctx.fillText(`${pct}%`, lx, ey + 10);
         ctx.globalAlpha = 1;
         ctx.restore();
       });
@@ -3302,7 +3325,7 @@ function renderCharts(lb, tourns) {
       options: {
         responsive: true, maintainAspectRatio: false,
         cutout: '58%',
-        layout: { padding: 90 },
+        layout: { padding: { top: 15, bottom: 15, left: 90, right: 90 } },
         onClick: (evt, els) => { if (els.length) showMetroDrill(els[0].index); },
         plugins: {
           legend: { display: false },
@@ -3659,8 +3682,8 @@ function showWinDistDrill(winCount, label, tourns) {
   if (!rows.length) return;
   rows.sort((a,b) => a.tournament.localeCompare(b.tournament));
 
-  const bodyHtml = `<div style="overflow-x:auto">
-    <table class="lb-table" style="min-width:420px">
+  const bodyHtml = `
+    <table class="lb-table">
       <thead><tr>
         <th>Tournament</th><th>Date</th><th>Debaters</th><th class="num">W</th><th class="num">L</th>
       </tr></thead>
@@ -3673,8 +3696,7 @@ function showWinDistDrill(winCount, label, tourns) {
           <td class="num" style="color:rgba(239,68,68,0.8)">${r.losses}</td>
         </tr>`).join('')}
       </tbody>
-    </table>
-  </div>`;
+    </table>`;
   openDrillModal(`${label} — ${rows.length} result${rows.length === 1 ? '' : 's'}`, bodyHtml);
 }
 
@@ -3722,14 +3744,14 @@ function showMetroDrill(segIndex) {
     openDrillModal(labels[segIndex], '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.4);padding:20px 0">No pairs in this category.</p>');
     return;
   }
-  const bodyHtml = `<div style="overflow-x:auto">
+  const bodyHtml = `
     <p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.42);margin:0 0 16px">${descs[segIndex]}</p>
-    <table class="lb-table" style="min-width:700px;white-space:nowrap">
+    <table class="lb-table">
       <thead><tr>
         <th>Pair</th>
-        <th class="num">Qualifying Finishes</th>
-        <th class="num">4–0 Finishes</th>
-        <th class="num">Best Finish</th>
+        <th class="num">Qualifying<br>Finishes</th>
+        <th class="num">4–0<br>Finishes</th>
+        <th class="num">Best<br>Finish</th>
         <th class="num">Tournaments</th>
         <th>Path to Eligibility</th>
       </tr></thead>
@@ -3750,8 +3772,7 @@ function showMetroDrill(segIndex) {
           </tr>`;
         }).join('')}
       </tbody>
-    </table>
-  </div>`;
+    </table>`;
   openDrillModal(`${labels[segIndex]} — ${pairs.length} pair${pairs.length !== 1 ? 's' : ''}`, bodyHtml);
 }
 
@@ -3768,8 +3789,8 @@ function showRoundDrill(roundNum, wins, losses) {
   });
   if (!rows.length) return;
 
-  const bodyHtml = `<div style="overflow-x:auto">
-    <table class="lb-table" style="min-width:360px">
+  const bodyHtml = `
+    <table class="lb-table">
       <thead><tr>
         <th>Tournament</th><th>Debaters</th><th class="num">Result</th><th>Side</th>
       </tr></thead>
@@ -3782,8 +3803,7 @@ function showRoundDrill(roundNum, wins, losses) {
             <td style="font-size:0.75rem;color:rgba(255,255,255,0.45)">${r.side}</td>
           </tr>`).join('')}
       </tbody>
-    </table>
-  </div>`;
+    </table>`;
   openDrillModal(`Round ${roundNum} — ${wins}W · ${losses}L`, bodyHtml);
 }
 
