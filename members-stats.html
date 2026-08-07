@@ -255,7 +255,40 @@
       font-family:'Cormorant Garamond',serif; font-size:1.8rem;
       font-weight:700; line-height:1; flex-shrink:0;
     }
-    .round-bar-record {
+    /* ── Round summary chips ───────────────────────────────── */
+    .round-summary-chip {
+      display:flex; flex-direction:column; gap:5px; padding:16px 20px;
+      background:rgba(255,255,255,0.04); border-radius:12px;
+      border:1px solid rgba(255,255,255,0.08); flex:1; min-width:140px;
+    }
+    .rsc-label { font-family:'Josefin Sans',sans-serif; font-size:0.65rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.38); }
+    .rsc-val { font-family:'Cormorant Garamond',serif; font-size:2rem; font-weight:700; line-height:1; }
+    .rsc-sub { font-family:'Josefin Sans',sans-serif; font-size:0.75rem; color:rgba(255,255,255,0.48); }
+    /* ── Round heatmap table ────────────────────────────────── */
+    .round-heatmap-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
+    .round-heatmap-table th {
+      padding:12px 16px; font-size:0.72rem; font-weight:700; letter-spacing:0.1em;
+      text-transform:uppercase; color:rgba(212,160,23,0.85); text-align:center;
+      border-bottom:1px solid rgba(255,255,255,0.09);
+    }
+    .round-heatmap-table th.lft { text-align:left; }
+    .round-heatmap-table td {
+      padding:12px 16px; font-size:0.92rem; text-align:center;
+      border-top:1px solid rgba(255,255,255,0.04);
+    }
+    .rh-cell {
+      border-radius:8px; padding:7px 12px; display:inline-block;
+      min-width:64px; font-weight:700; font-size:0.88rem; text-align:center;
+    }
+    .rh-cell.high { background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid rgba(34,197,94,0.28); }
+    .rh-cell.mid  { background:rgba(212,160,23,0.12); color:#FFD700; border:1px solid rgba(212,160,23,0.28); }
+    .rh-cell.low  { background:rgba(239,68,68,0.12); color:#e03535; border:1px solid rgba(239,68,68,0.22); }
+    .rh-wl { font-size:0.62rem; font-weight:400; opacity:0.7; margin-top:2px; }
+    .round-heatmap-table tbody tr:hover { background:rgba(255,255,255,0.03); }
+    /* ── Round bar trend indicator ──────────────────────────── */
+    .round-bar-trend { font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700; flex-shrink:0; }
+        .round-bar-record {
       font-family:'Josefin Sans',sans-serif; font-size:0.62rem;
       color:rgba(255,255,255,0.38); flex-shrink:0; letter-spacing:0.05em;
     }
@@ -1567,19 +1600,33 @@
 
       <div class="stat-section">
         <div class="stat-section-title">Round Win Rate</div>
+
+        <!-- Summary chips -->
+        <div id="round-summary-strip" style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:20px"></div>
+
+        <!-- Round bars card -->
         <div class="chart-card">
-          <div class="chart-card-title">How Cooper Performs by Round</div>
+          <div class="chart-card-title">Overall Win % by Round</div>
           <div style="padding:8px 0 0">
             <div class="round-bars" id="round-bars"></div>
             <p style="font-family:'Josefin Sans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.45);text-align:center;margin:14px 0 0">
-              Win % per prelim round across all tournaments · click a bar to see individual results
+              Cumulative win % per prelim round · click a bar to see individual results · ↑↓ shows change vs first tournament
             </p>
           </div>
-          <div style="margin-top:28px">
-            <div style="font-family:'Josefin Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:12px">Tournament-by-Tournament Round Performance</div>
-            <div class="chart-canvas-wrap" style="height:220px"><canvas id="chart-round-progress"></canvas></div>
-          </div>
         </div>
+
+        <!-- Trend line card -->
+        <div class="chart-card" style="margin-top:20px">
+          <div class="chart-card-title">Round Trends Over Tournaments — Is Cooper Improving?</div>
+          <div class="chart-canvas-wrap" style="height:300px"><canvas id="chart-round-progress"></canvas></div>
+        </div>
+
+        <!-- Heatmap card -->
+        <div class="chart-card" style="margin-top:20px">
+          <div class="chart-card-title">Tournament × Round Breakdown</div>
+          <div id="round-heatmap" style="overflow-x:auto;margin-top:4px"></div>
+        </div>
+
         <div id="round-drill-panel" style="display:none"></div>
       </div>
 
@@ -3143,13 +3190,78 @@ let roundProgressChart = null;
 
 function renderRoundBars(roundStats) {
   const container = document.getElementById('round-bars');
+  const summaryEl  = document.getElementById('round-summary-strip');
+  const heatmapEl  = document.getElementById('round-heatmap');
+
   if (!roundStats.length) {
-    container.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.3);font-size:0.8rem">Not enough data</p>';
+    container.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.3);font-size:0.8rem">Not enough data yet</p>';
+    if (summaryEl) summaryEl.innerHTML = '';
+    if (heatmapEl) heatmapEl.innerHTML = '';
     return;
   }
-  container.innerHTML = roundStats.map(r => {
-    const pct = (r.winPct * 100).toFixed(0);
+
+  // ── Per-round, per-tournament win rates ──────────────────────────────────
+  const src    = filteredTourns.length ? filteredTourns : allTournaments;
+  const sorted = [...src].sort((a,b) => parseTournDate(a.meta.date) - parseTournDate(b.meta.date));
+  const roundNums = roundStats.map(r => r.round);
+
+  const roundTournData = roundNums.map(rn =>
+    sorted.map(t => {
+      let w = 0, l = 0;
+      t.entries.forEach(e => e.rounds.forEach(r => {
+        if (+r.round === +rn && r.result !== 'BYE' && !r.isBye)
+          r.result === 'W' ? w++ : l++;
+      }));
+      return { w, l, pct: w + l > 0 ? (w / (w + l) * 100) : null };
+    })
+  );
+
+  // Per-round trend: last tourn vs first tourn (pp change)
+  const trends = roundNums.map((_, i) => {
+    const pts = roundTournData[i].filter(d => d.pct !== null);
+    return pts.length >= 2 ? pts[pts.length - 1].pct - pts[0].pct : null;
+  });
+
+  // ── Summary chips ─────────────────────────────────────────────────────────
+  if (summaryEl) {
+    const best  = roundStats.reduce((a,b) => a.winPct > b.winPct ? a : b);
+    const worst = roundStats.reduce((a,b) => a.winPct < b.winPct ? a : b);
+    const rising  = roundNums.filter((_,i) => trends[i] !== null && trends[i] >  2);
+    const falling = roundNums.filter((_,i) => trends[i] !== null && trends[i] < -2);
+
+    summaryEl.innerHTML = `
+      <div class="round-summary-chip">
+        <div class="rsc-label">💪 Strongest Round</div>
+        <div class="rsc-val" style="color:#22c55e">R${best.round}</div>
+        <div class="rsc-sub">${(best.winPct*100).toFixed(0)}% win rate · ${best.wins}W ${best.losses}L</div>
+      </div>
+      <div class="round-summary-chip">
+        <div class="rsc-label">⚠ Toughest Round</div>
+        <div class="rsc-val" style="color:#e03535">R${worst.round}</div>
+        <div class="rsc-sub">${(worst.winPct*100).toFixed(0)}% win rate · ${worst.wins}W ${worst.losses}L</div>
+      </div>
+      ${rising.length ? `<div class="round-summary-chip">
+        <div class="rsc-label">↑ Trending Up</div>
+        <div class="rsc-val" style="color:#4ade80">${rising.map(r=>'R'+r).join(', ')}</div>
+        <div class="rsc-sub">improving across recent tournaments</div>
+      </div>` : ''}
+      ${falling.length ? `<div class="round-summary-chip">
+        <div class="rsc-label">↓ Needs Focus</div>
+        <div class="rsc-val" style="color:#fb923c">${falling.map(r=>'R'+r).join(', ')}</div>
+        <div class="rsc-sub">declining across recent tournaments</div>
+      </div>` : ''}
+    `;
+  }
+
+  // ── Round bars with trend indicators ─────────────────────────────────────
+  container.innerHTML = roundStats.map((r, idx) => {
+    const pct   = (r.winPct * 100).toFixed(0);
     const color = r.winPct >= 0.7 ? '#22c55e' : r.winPct >= 0.45 ? '#FFD700' : '#e03535';
+    const t = trends[idx];
+    const trendHtml = t === null ? ''
+      : t >  2 ? `<div class="round-bar-trend" style="color:#4ade80">↑ +${Math.abs(t).toFixed(0)}pp</div>`
+      : t < -2 ? `<div class="round-bar-trend" style="color:#fb923c">↓ ${t.toFixed(0)}pp</div>`
+      : `<div class="round-bar-trend" style="color:rgba(255,255,255,0.3)">→ stable</div>`;
     return `<div class="round-bar-col" title="Click to see Round ${r.round} records" onclick="showRoundDrill(${r.round},${r.wins},${r.losses})">
       <div class="round-bar-pct" style="color:${color}">${pct}%</div>
       <div class="round-bar-track">
@@ -3157,57 +3269,89 @@ function renderRoundBars(roundStats) {
       </div>
       <div class="round-bar-label">R${r.round}</div>
       <div class="round-bar-record">${r.wins}W · ${r.losses}L</div>
+      ${trendHtml}
     </div>`;
   }).join('');
 
-  // Tournament-by-tournament round performance line chart
-  const src = filteredTourns.length ? filteredTourns : allTournaments;
-  const sorted = [...src].sort((a,b) => parseTournDate(a.meta.date) - parseTournDate(b.meta.date));
-  const roundNums = roundStats.map(r => r.round);
-  const colors = ['#FFD700','#22c55e','#60a5fa','#f472b6','#fb923c'];
-  const datasets = roundNums.map((rn, i) => {
-    const data = sorted.map(t => {
-      let w = 0, l = 0;
-      t.entries.forEach(e => e.rounds.forEach(r => {
-        if (+r.round === +rn && r.result !== 'BYE' && !r.isBye) {
-          r.result === 'W' ? w++ : l++;
-        }
-      }));
-      return w + l > 0 ? +((w / (w + l)) * 100).toFixed(1) : null;
-    });
-    return {
-      label: `R${rn}`,
-      data,
-      borderColor: colors[i % colors.length],
-      backgroundColor: colors[i % colors.length] + '18',
-      pointBackgroundColor: colors[i % colors.length],
-      pointBorderColor: '#1c2030',
-      pointRadius: 4, pointHoverRadius: 6,
-      tension: 0.3, borderWidth: 2, fill: false,
-      spanGaps: true,
-    };
+  // ── Trend line chart ──────────────────────────────────────────────────────
+  const COLORS = ['#FFD700','#22c55e','#60a5fa','#f472b6','#fb923c'];
+  const datasets = roundNums.map((rn, i) => ({
+    label: `R${rn}`,
+    data: roundTournData[i].map(d => d.pct !== null ? +d.pct.toFixed(1) : null),
+    borderColor: COLORS[i % COLORS.length],
+    backgroundColor: COLORS[i % COLORS.length] + '18',
+    pointBackgroundColor: COLORS[i % COLORS.length],
+    pointBorderColor: '#1c2030',
+    pointRadius: 6, pointHoverRadius: 9,
+    tension: 0.3, borderWidth: 2.5, fill: false, spanGaps: true,
+  }));
+  // 50% benchmark dashed line
+  datasets.push({
+    label: '50% Mark',
+    data: sorted.map(() => 50),
+    borderColor: 'rgba(255,255,255,0.18)',
+    borderDash: [7, 5], borderWidth: 1.5,
+    pointRadius: 0, fill: false,
   });
-  const labels = sorted.map(t => {
+
+  const xLabels = sorted.map(t => {
     const d = parseTournDate(t.meta.date);
-    return isNaN(d) ? t.meta.name.slice(0,12) : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    return isNaN(d) ? t.meta.name.slice(0,14) : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   });
   const ctx = document.getElementById('chart-round-progress');
   if (!ctx) return;
   if (roundProgressChart) roundProgressChart.destroy();
   roundProgressChart = new Chart(ctx, {
     type: 'line',
-    data: { labels, datasets },
+    data: { labels: xLabels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { display: true, labels: { color:'rgba(255,255,255,0.65)', font:{ family:'Josefin Sans',size:11 }, boxWidth:16, padding:14 } },
+        legend: { display: true, labels: {
+          color:'rgba(255,255,255,0.8)', font:{ family:'Josefin Sans', size:13 },
+          boxWidth:20, padding:18,
+          filter: item => item.text !== '50% Mark',
+        }},
+        tooltip: { callbacks: {
+          afterTitle: items => sorted[items[0].dataIndex]?.meta?.name || '',
+        }},
       },
       scales: {
-        x: { ticks: { color:'rgba(255,255,255,0.55)', font:{family:'Josefin Sans',size:11} }, grid:{color:'rgba(255,255,255,0.05)'} },
-        y: { min:0, max:100, ticks: { color:'rgba(255,255,255,0.55)', font:{family:'Josefin Sans',size:11}, callback: v => v+'%' }, grid:{color:'rgba(255,255,255,0.05)'} },
+        x: { ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14} }, grid:{color:'rgba(255,255,255,0.05)'} },
+        y: { min:0, max:100, ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14}, callback: v => v+'%' }, grid:{color:'rgba(255,255,255,0.06)'} },
       },
     },
   });
+
+  // ── Heatmap table ──────────────────────────────────────────────────────────
+  if (!heatmapEl || !sorted.length) return;
+  const roundCols = roundNums.map(rn => `<th>R${rn}</th>`).join('');
+  const hRows = sorted.map((t, tIdx) => {
+    const dateLbl = (() => {
+      const d = parseTournDate(t.meta.date);
+      return isNaN(d) ? '' : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+    })();
+    const cells = roundNums.map((_,rnIdx) => {
+      const cell = roundTournData[rnIdx][tIdx];
+      if (cell.pct === null) return '<td><span style="color:rgba(255,255,255,0.18)">—</span></td>';
+      const cls = cell.pct >= 65 ? 'high' : cell.pct >= 45 ? 'mid' : 'low';
+      return `<td><span class="rh-cell ${cls}">${cell.pct.toFixed(0)}%<div class="rh-wl">${cell.w}W ${cell.l}L</div></span></td>`;
+    }).join('');
+    return `<tr>
+      <td style="font-size:0.92rem;color:#fff;font-weight:600;min-width:200px">${t.meta.name}</td>
+      <td style="font-size:0.8rem;color:rgba(255,255,255,0.45);white-space:nowrap;padding-right:20px">${dateLbl}</td>
+      ${cells}
+    </tr>`;
+  }).join('');
+
+  heatmapEl.innerHTML = `
+    <table class="round-heatmap-table">
+      <thead><tr>
+        <th class="lft">Tournament</th><th class="lft" style="padding-right:20px">Date</th>${roundCols}
+      </tr></thead>
+      <tbody>${hRows}</tbody>
+    </table>
+  `;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3425,9 +3569,9 @@ function renderPairProgressionChart() {
         } }
       },
       scales: {
-        x: { ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Josefin Sans', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
-        y: { position: 'left', ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Josefin Sans', size: 12 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true, title: { display: true, text: 'Rounds', color: 'rgba(255,255,255,0.4)', font: { family: 'Josefin Sans', size: 11 } } },
-        y2: { position: 'right', min: 0, max: 100, ticks: { color: '#FFD700', font: { family: 'Josefin Sans', size: 12 }, callback: v => v + '%' }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Win Rate', color: '#FFD700', font: { family: 'Josefin Sans', size: 11 } } }
+        x: { ticks: { color: 'rgba(255,255,255,0.75)', font: { family: 'Josefin Sans', size: 15 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { position: 'left', ticks: { color: 'rgba(255,255,255,0.75)', font: { family: 'Josefin Sans', size: 15 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true, title: { display: true, text: 'Rounds', color: 'rgba(255,255,255,0.5)', font: { family: 'Josefin Sans', size: 13 } } },
+        y2: { position: 'right', min: 0, max: 100, ticks: { color: '#FFD700', font: { family: 'Josefin Sans', size: 15 }, callback: v => v + '%' }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Win Rate', color: '#FFD700', font: { family: 'Josefin Sans', size: 13 } } }
       }
     }
   });
