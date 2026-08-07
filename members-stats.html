@@ -575,11 +575,11 @@
       font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
       letter-spacing:0.12em; text-transform:uppercase;
       padding:7px 14px; border-radius:6px; cursor:pointer;
-      border:1px solid rgba(255,255,255,0.1); background:transparent;
-      color:rgba(255,255,255,0.4); transition:all 0.18s;
+      border:1px solid rgba(255,255,255,0.22); background:rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.72); transition:all 0.18s;
     }
-    .tf-btn:hover { color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.2); }
-    .tf-btn.active { color:#e8c84a; background:rgba(212,160,23,0.1); border-color:rgba(212,160,23,0.3); }
+    .tf-btn:hover { color:#fff; border-color:rgba(255,255,255,0.4); background:rgba(255,255,255,0.1); }
+    .tf-btn.active { color:#e8c84a; background:rgba(212,160,23,0.12); border-color:rgba(212,160,23,0.5); }
     .tf-select {
       font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
       letter-spacing:0.1em; text-transform:uppercase;
@@ -1014,12 +1014,17 @@
 
     /* ── Collapsible sections ──────────────────────────────── */
     .section-collapse-btn {
-      cursor:pointer; background:none; border:none;
-      color:rgba(255,255,255,0.45); font-size:0.72rem;
-      padding:2px 6px; border-radius:4px; transition:color 0.15s;
-      flex-shrink:0; letter-spacing:0;
+      cursor:pointer;
+      background:rgba(212,160,23,0.1);
+      border:1px solid rgba(212,160,23,0.3);
+      color:rgba(212,160,23,0.8); font-size:0.68rem;
+      padding:3px 9px; border-radius:4px;
+      transition:all 0.15s; flex-shrink:0; letter-spacing:0;
     }
-    .section-collapse-btn:hover { color:#FFD700; }
+    .section-collapse-btn:hover {
+      color:#FFD700; background:rgba(212,160,23,0.2);
+      border-color:rgba(212,160,23,0.6);
+    }
     .stat-section.collapsed > *:not(.stat-section-title) { display:none; }
     .stat-section.collapsed > .stat-section-title { margin-bottom:0; }
 
@@ -2996,7 +3001,7 @@ function _paintMetroTable(metro) {
     const names = p.pair.split(' & ');
     const clickablePair = names.map(n =>
       `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
-    ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
+    ).join(' <span style="color:#e8c84a;font-weight:700">&amp;</span> ');
     return `<tr>
       <td>${clickablePair}</td>
       <td class="num">${p.tourns}</td>
@@ -3464,8 +3469,8 @@ function _paintPairings(data) {
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
     const names = p.pair.split(' & ');
     const clickableNames = names.map(n =>
-      `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`
-    ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
+      `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
+    ).join(' <span style="color:#e8c84a;font-weight:700">&amp;</span> ');
     return `<tr>
       <td>${clickableNames}</td>
       <td class="num">${p.wins}</td>
@@ -4084,7 +4089,7 @@ function _paintDrillEntries(data) {
       ? e.debaters.map(d => {
           const n = `${d.first} ${d.last}`;
           return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
-        }).join('<span style="color:rgba(255,255,255,0.2)"> &amp; </span>')
+        }).join('<span style="color:#e8c84a;font-weight:700"> &amp; </span>')
       : (e.debNames || '—');
     return `<tr>
       <td><div class="entry-team">${e.teamName}</div></td>
