@@ -461,6 +461,15 @@
     }
     .import-input:focus { border-color:rgba(212,160,23,0.6); }
     .import-input::placeholder { color:rgba(255,255,255,0.22); }
+    .date-pick-wrap { display:flex; gap:8px; align-items:center; position:relative; }
+    .date-pick-wrap .import-input { width:auto; }
+    .date-pick-btn {
+      flex-shrink:0; display:flex; align-items:center; justify-content:center;
+      width:42px; height:42px; border-radius:8px; border:1.5px solid rgba(212,160,23,0.35);
+      background:rgba(212,160,23,0.08); color:#e8c84a; cursor:pointer;
+      transition:background 0.15s, border-color 0.15s;
+    }
+    .date-pick-btn:hover { background:rgba(212,160,23,0.2); border-color:rgba(212,160,23,0.65); }
     .import-file-row {
       display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:24px;
     }
@@ -1290,7 +1299,15 @@
           </div>
           <div class="import-field">
             <label class="import-label" for="imp-date">Date *</label>
-            <input class="import-input" id="imp-date" type="text" placeholder="e.g. Saturday, October 11, 2025"/>
+            <div class="date-pick-wrap">
+              <input class="import-input" id="imp-date" type="text" placeholder="Pick a date or type e.g. Saturday Oct 11 2025" style="flex:1"/>
+              <input type="date" id="imp-date-picker" style="position:absolute;opacity:0;pointer-events:none;width:0;height:0" onchange="onDatePick(this.value)"/>
+              <button type="button" class="date-pick-btn" title="Open calendar" onclick="document.getElementById('imp-date-picker').showPicker()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                </svg>
+              </button>
+            </div>
           </div>
           <div class="import-field">
             <label class="import-label" for="imp-school">Host School</label>
@@ -2149,41 +2166,75 @@ function toggleImportPanel() {
 
 /* ── Parse Tabroom "Main" text → auto-fill fields ───────────── */
 function parseMainText() {
-  // Strip any leading "Main" label that Tabroom includes on the copy
   const raw = document.getElementById('imp-main').value;
   const text = raw.replace(/^\s*Main\s*/i, '').trim();
-  if (!text) return;
+  if (!text) {
+    setStatus('error', '⚠ Paste the Tabroom "Main" text first, then click Auto-Fill.');
+    return;
+  }
 
-  // 1. Tournament name: everything before " tournament on "
-  //    Works even if it's not at the very start of the string
-  const nameMatch = text.match(/(.+?)\s+tournament\s+on\s+/i);
-  if (nameMatch) document.getElementById('imp-name').value = nameMatch[1].trim();
+  let filled = 0;
+  const set = (id, val) => { if (val) { document.getElementById(id).value = val; filled++; } };
 
-  // 2. Date: "on Saturday, October 11, 2025"
-  const dateMatch = text.match(/\bon\s+((Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+\w+\s+\d{1,2},\s+\d{4})/i);
-  if (dateMatch) document.getElementById('imp-date').value = dateMatch[1].trim();
+  // 1. Tournament name — "[Name] tournament on" OR first meaningful line
+  const nameA = text.match(/(.+?)\s+tournament\s+on\s+/i);
+  const nameB = text.split('\n').map(l => l.trim()).find(l => l.length > 4 && !/^\d{4}/.test(l) && !/^(main|results)/i.test(l));
+  set('imp-name', nameA ? nameA[1].trim() : (nameB || ''));
 
-  // 3. Host school: "held at X in Y"
-  const schoolMatch = text.match(/held\s+at\s+(.+?)\s+in\s+/i);
-  if (schoolMatch) document.getElementById('imp-school').value = schoolMatch[1].trim();
+  // 2. Date — "on Saturday, October 11, 2025" OR bare day-of-week date
+  const dateMatch = text.match(/(?:\bon\s+)?((Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[,.]?\s+\w+\s+\d{1,2}[,.]?\s+\d{4})/i);
+  set('imp-date', dateMatch ? dateMatch[1].trim() : '');
 
-  // 4. City, State: "in Chantilly, Virginia."
-  const cityMatch = text.match(/held\s+at\s+.+?\s+in\s+([A-Z][^.]+?)\./i);
-  if (cityMatch) document.getElementById('imp-location').value = cityMatch[1].trim();
+  // 3. Host school — "held at X in" OR middle-dot format "· School ·"
+  const schoolA = text.match(/held\s+at\s+(.+?)\s+in\s+/i);
+  const schoolB = text.match(/[·•]\s*([^·•\n]+?)\s*[·•]/);
+  set('imp-school', schoolA ? schoolA[1].trim() : (schoolB ? schoolB[1].trim() : ''));
 
-  // 5. Debate format: "Public Forum Topic—" → "Public Forum"
-  const fmtMatch = text.match(/([\w][\w\s\-]*?)\s+Topic\s*[—\-–]/i);
-  if (fmtMatch) document.getElementById('imp-topic-type').value = fmtMatch[1].trim();
+  // 4. City, State — "in City, State." OR last bullet segment
+  const locA = text.match(/held\s+at\s+.+?\s+in\s+([A-Z][^.\n]+?)\.?(?:\s*$|\n)/im);
+  const locB = text.match(/[·•]([^·•\n,]+(?:,\s*[^·•\n]+)?)\s*$/m);
+  set('imp-location', locA ? locA[1].trim() : (locB ? locB[1].trim() : ''));
 
-  // 6. Resolution: "Resolved: <topic>."
-  const topicMatch = text.match(/Resolved:\s*(.+?)\.(?:\s|$)/i);
-  if (topicMatch) document.getElementById('imp-topic').value = topicMatch[1].trim();
+  // 5. Debate format — "Public Forum Topic—" OR "2025Public Forum —"
+  const fmtA = text.match(/([\w][\w\s\-]*?)\s+Topic\s*[—\-–]/i);
+  const fmtB = text.match(/\d{4}([A-Za-z][A-Za-z\s]+?)\s*[—\-–]/);
+  set('imp-topic-type', fmtA ? fmtA[1].trim() : (fmtB ? fmtB[1].trim() : ''));
+
+  // 6. Resolution — "Resolved: X." OR text after the em-dash
+  const topicA = text.match(/Resolved:\s*(.+?)\.?(?:\s*$|\n)/im);
+  const topicB = text.match(/[—–]\s*(.+?)(\.\s*$|\s*$)/m);
+  set('imp-topic', topicA ? topicA[1].trim() : (topicB ? topicB[1].trim() : ''));
+
+  // Feedback
+  if (filled === 0) {
+    setStatus('error', '⚠ Could not parse any fields — paste the full Main text from the Tabroom Results page, then try again.');
+  } else {
+    setStatus('success', `✓ Auto-filled ${filled} field${filled > 1 ? 's' : ''} — review and adjust as needed.`);
+  }
+}
+
+/* ── Format a YYYY-MM-DD date string → "Sunday Nov 8th 2025" ── */
+function formatDateOrdinal(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const dt = new Date(y, m - 1, d);
+  const days   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dom = dt.getDate();
+  const sfx = (dom === 11 || dom === 12 || dom === 13) ? 'th'
+    : dom % 10 === 1 ? 'st' : dom % 10 === 2 ? 'nd' : dom % 10 === 3 ? 'rd' : 'th';
+  return `${days[dt.getDay()]} ${months[dt.getMonth()]} ${dom}${sfx} ${y}`;
+}
+
+function onDatePick(iso) {
+  if (!iso) return;
+  document.getElementById('imp-date').value = formatDateOrdinal(iso);
 }
 
 /* ── Clear all import form fields ───────────────────────────── */
 function clearImportForm() {
   ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic']
     .forEach(id => document.getElementById(id).value = '');
+  const dp = document.getElementById('imp-date-picker'); if (dp) dp.value = '';
   document.getElementById('imp-topic-type').value = 'Public Forum'; // restore default
   teamCsvText = speakCsvText = null;
   ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
