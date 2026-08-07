@@ -251,18 +251,64 @@
     .pair-table th.num { text-align:right; }
     .pair-table tbody tr { border-top:1px solid rgba(255,255,255,0.05); }
     .pair-table td { padding:13px 16px; font-size:0.92rem; color:#fff; }
-    /* ── Per-column filter inputs inside <th> ─── */
-    .th-filter-input, .th-filter-select {
-      display:block; width:100%; box-sizing:border-box; margin-top:6px;
-      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
-      border-radius:5px; padding:4px 8px; color:#fff;
-      font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
-      outline:none; transition:border-color 0.15s; font-weight:400; letter-spacing:0;
-      text-transform:none; cursor:text;
+    /* ── Excel-style XFilter dropdown ────────────────────── */
+    .xf-dropdown {
+      background:rgba(5,18,65,0.98); border:1px solid rgba(212,160,23,0.5);
+      border-radius:10px; box-shadow:0 8px 36px rgba(0,0,0,0.65);
+      width:220px; font-family:'Josefin Sans',sans-serif; overflow:hidden;
     }
-    .th-filter-select { background:rgba(3,12,48,0.98); cursor:pointer; }
-    .th-filter-input:focus, .th-filter-select:focus { border-color:rgba(212,160,23,0.6); background:rgba(255,255,255,0.1); }
-    .th-filter-input::placeholder { color:rgba(255,255,255,0.25); }
+    .xf-sort-row { display:flex; border-bottom:1px solid rgba(255,255,255,0.08); }
+    .xf-sort-btn {
+      flex:1; padding:10px 6px; background:transparent; border:none;
+      color:rgba(255,255,255,0.6); cursor:pointer;
+      font-family:'Josefin Sans',sans-serif; font-size:0.65rem; font-weight:700;
+      letter-spacing:0.07em; text-transform:uppercase; text-align:center;
+      transition:background 0.12s, color 0.12s;
+    }
+    .xf-sort-btn:hover { background:rgba(212,160,23,0.1); color:#FFD700; }
+    .xf-sort-btn.active { color:#FFD700; background:rgba(212,160,23,0.08); }
+    .xf-sort-btn:first-child { border-right:1px solid rgba(255,255,255,0.08); }
+    .xf-filter-head {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:7px 12px 5px; border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .xf-filter-label {
+      font-size:0.58rem; font-weight:700; letter-spacing:0.12em;
+      text-transform:uppercase; color:rgba(255,255,255,0.3);
+    }
+    .xf-head-btns { display:flex; gap:5px; }
+    .xf-sa, .xf-ca {
+      background:transparent; border:1px solid rgba(212,160,23,0.28);
+      border-radius:4px; color:rgba(212,160,23,0.7);
+      font-family:'Josefin Sans',sans-serif; font-size:0.58rem; font-weight:700;
+      letter-spacing:0.06em; text-transform:uppercase; padding:2px 7px;
+      cursor:pointer; transition:background 0.12s;
+    }
+    .xf-sa:hover,.xf-ca:hover { background:rgba(212,160,23,0.12); color:#FFD700; }
+    .xf-vals-list { max-height:210px; overflow-y:auto; padding:3px 0; }
+    .xf-vals-list::-webkit-scrollbar { width:5px; }
+    .xf-vals-list::-webkit-scrollbar-track { background:transparent; }
+    .xf-vals-list::-webkit-scrollbar-thumb { background:rgba(212,160,23,0.22); border-radius:3px; }
+    .xf-val-row {
+      display:flex; align-items:center; gap:9px; padding:5px 12px;
+      cursor:pointer; color:rgba(255,255,255,0.82); font-size:0.78rem;
+      transition:background 0.1s;
+    }
+    .xf-val-row:hover { background:rgba(212,160,23,0.08); }
+    .xf-val-row input[type="checkbox"] { width:13px; height:13px; accent-color:#FFD700; cursor:pointer; flex-shrink:0; }
+    .xf-foot { padding:8px 12px; border-top:1px solid rgba(255,255,255,0.07); }
+    .xf-apply-btn {
+      width:100%; background:rgba(212,160,23,0.15); border:1px solid rgba(212,160,23,0.45);
+      border-radius:6px; color:#FFD700; font-family:'Josefin Sans',sans-serif;
+      font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      padding:8px; cursor:pointer; transition:background 0.13s;
+    }
+    .xf-apply-btn:hover { background:rgba(212,160,23,0.28); }
+    .xf-icon {
+      display:inline-block; margin-left:5px; font-size:0.52rem; vertical-align:middle;
+      opacity:0.28; pointer-events:none; transition:opacity 0.13s, color 0.13s;
+    }
+    .xf-icon.active { opacity:1; color:#FFD700; }
     .pair-table td.num { text-align:right; }
 
     /* ── Empty state ───────────────────────────────────────── */
@@ -565,12 +611,8 @@
       flex-shrink:0;
     }
 
-    /* ── Sortable leaderboard ─────────────────────────────── */
-    .lb-table th { cursor:pointer; user-select:none; }
-    .lb-table th:first-child { cursor:default; }
-    .lb-table th .sort-arrow { opacity:0.3; font-size:0.6rem; margin-left:3px; }
-    .lb-table th.sort-asc .sort-arrow,
-    .lb-table th.sort-desc .sort-arrow { opacity:1; color:#FFD700; }
+    /* ── Table header interactions ────────────────────────── */
+    .lb-table th:first-child { cursor:default !important; }
     .lb-name-link { cursor:pointer; color:#fff; }
     .lb-name-link:hover { color:#FFD700; text-decoration:underline; }
     .deb-link { cursor:pointer; }
@@ -886,9 +928,6 @@
     }
     .entry-table th:hover { color:#FFD700; }
     .entry-table th.num { text-align:right; }
-    .entry-table th .sort-arrow { opacity:0.3; font-size:0.6rem; margin-left:3px; }
-    .entry-table th.sort-asc .sort-arrow,
-    .entry-table th.sort-desc .sort-arrow { opacity:1; color:#FFD700; }
     .entry-table tbody tr {
       border-top:1px solid rgba(255,255,255,0.05);
       transition:background 0.13s;
@@ -1079,24 +1118,13 @@
             <thead>
               <tr>
                 <th style="cursor:default">#</th>
-                <th onclick="lbSort('name')">Debater <span class="sort-arrow" id="lbs-name">↕</span>
-                  <input class="th-filter-input" id="lbf-name" placeholder="Name…" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th class="num" onclick="lbSort('wins')">W <span class="sort-arrow" id="lbs-wins">↕</span>
-                  <input class="th-filter-input" id="lbf-wins" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th class="num" onclick="lbSort('losses')">L <span class="sort-arrow" id="lbs-losses">↕</span>
-                  <input class="th-filter-input" id="lbf-losses" placeholder="≤" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th class="num" onclick="lbSort('winRate')">Win % <span class="sort-arrow" id="lbs-winRate">↓</span>
-                  <input class="th-filter-input" id="lbf-winRate" placeholder="≥%" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th class="num" onclick="lbSort('avgSpeak')">Avg Speak <span class="sort-arrow" id="lbs-avgSpeak">↕</span>
-                  <input class="th-filter-input" id="lbf-avgSpeak" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th class="num" onclick="lbSort('tournaments')">Tournaments <span class="sort-arrow" id="lbs-tournaments">↕</span>
-                  <input class="th-filter-input" id="lbf-tournaments" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
-                <th onclick="lbSort('metroEligible')">Metro <span class="sort-arrow" id="lbs-metroEligible">↕</span>
-                  <select class="th-filter-select" id="lbf-metro" onclick="event.stopPropagation()" onchange="applyLbFilters()">
-                    <option value="">All</option>
-                    <option value="yes">Eligible</option>
-                    <option value="no">Not Yet</option>
-                  </select></th>
+                <th>Debater</th>
+                <th class="num">W</th>
+                <th class="num">L</th>
+                <th class="num">Win %</th>
+                <th class="num">Avg Speak</th>
+                <th class="num">Tournaments</th>
+                <th>Metro</th>
               </tr>
             </thead>
             <tbody id="lb-tbody"></tbody>
@@ -1113,18 +1141,12 @@
           <table class="pair-table" id="pair-table">
             <thead>
               <tr>
-                <th onclick="pairSort('pair')">Partnership <span class="sort-arrow" id="prs-pair">↕</span>
-                  <input class="th-filter-input" id="prf-pair" placeholder="Name…" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
-                <th class="num" onclick="pairSort('wins')">W <span class="sort-arrow" id="prs-wins">↕</span>
-                  <input class="th-filter-input" id="prf-wins" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
-                <th class="num" onclick="pairSort('losses')">L <span class="sort-arrow" id="prs-losses">↕</span>
-                  <input class="th-filter-input" id="prf-losses" placeholder="≤" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
-                <th class="num" onclick="pairSort('winRate')">Win % <span class="sort-arrow" id="prs-winRate">↓</span>
-                  <input class="th-filter-input" id="prf-winRate" placeholder="≥%" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
-                <th class="num" onclick="pairSort('avgTeamSpeak')">Avg Team Speak <span class="sort-arrow" id="prs-avgTeamSpeak">↕</span>
-                  <input class="th-filter-input" id="prf-avgTeamSpeak" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
-                <th class="num" onclick="pairSort('tourns')">Tournaments <span class="sort-arrow" id="prs-tourns">↕</span>
-                  <input class="th-filter-input" id="prf-tourns" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th>Partnership</th>
+                <th class="num">W</th>
+                <th class="num">L</th>
+                <th class="num">Win %</th>
+                <th class="num">Avg Team Speak</th>
+                <th class="num">Tournaments</th>
               </tr>
             </thead>
             <tbody id="pair-tbody"></tbody>
@@ -1485,25 +1507,282 @@ let currentDebater  = null;
 let activeTimeMode  = 'all';  // 'all' | 'season' | 'month'
 let activeTab       = 'overview';
 
-// Leaderboard sort state
-let lbSortCol = 'winRate';
-let lbSortDir = -1;
-let allPairings   = [];
-let pairSortCol   = 'winRate';
-let pairSortDir   = -1;
+let allPairings     = [];
+let allMetro        = [];
+let allDrillEntries = [];
+let allDrillSpeaks  = [];
+let xfLb = null, xfPair = null, xfMetro = null;
+let xfDrillEntry = null, xfDrillSpeak = null;
 
 // Profile chart
 let profileSpeakChart = null;
 
 // Drill-down state
-let openTournId      = null;
-let drillQuery       = '';
-let drillMetroFilter = 'all';  // 'all' | 'yes' | 'no'
-let drillSortCol     = 'wins';
-let drillSortDir     = -1;     // -1 = desc, 1 = asc
+let openTournId = null;
+
+/* ═══════════════════════════════════════════════════════════════
+   X-FILTER  —  Excel-style per-column sort + filter for any table
+   Click a column header → dropdown with Sort ↑↓ + unique-value
+   checkboxes (like Excel). Works on any table; just pass columns[],
+   getData(), and a render() callback.
+═══════════════════════════════════════════════════════════════ */
+class XFilter {
+  constructor({ tableId, columns, getData, render, sortCol = null, sortDir = -1 }) {
+    this.tableId  = tableId;
+    this.columns  = columns;  // [{key, type:'text'|'num', getValue(r), skip:false}]
+    this.getData  = getData;  // () => full source array
+    this.render   = render;   // (sortedFilteredData) => void
+    this.sortCol  = sortCol;
+    this.sortDir  = sortDir;
+    this.filters  = {};       // colKey → Set<string>
+    this._drop    = null;
+    this._dropCol = null;
+    this._bound   = null;
+  }
+
+  attachTo(tableEl) {
+    if (!tableEl) return;
+    [...tableEl.querySelectorAll('thead th')].forEach((origTh, i) => {
+      const col = this.columns[i];
+      if (!col || col.skip) { origTh.style.cursor = 'default'; return; }
+      origTh.style.cursor = 'pointer';
+      origTh.style.userSelect = 'none';
+      if (!origTh.querySelector('.xf-icon')) {
+        const icon = document.createElement('span');
+        icon.className = 'xf-icon';
+        icon.dataset.col = col.key;
+        icon.textContent = '▼';
+        origTh.appendChild(icon);
+      }
+      // Clone to wipe old listeners, then re-add
+      const th = origTh.cloneNode(true);
+      origTh.parentNode.replaceChild(th, origTh);
+      th.addEventListener('click', e => {
+        e.stopPropagation();
+        this._dropCol === col.key ? this._close() : this._open(col, th);
+      });
+    });
+    this._updateIcons(tableEl);
+  }
+
+  apply() {
+    let data = [...this.getData()];
+    for (const [key, sel] of Object.entries(this.filters)) {
+      if (!sel || !sel.size) continue;
+      const col = this.columns.find(c => c.key === key);
+      if (col) data = data.filter(r => sel.has(String(col.getValue(r))));
+    }
+    if (this.sortCol) {
+      const col = this.columns.find(c => c.key === this.sortCol);
+      if (col) data.sort((a, b) => {
+        let va = col.getValue(a), vb = col.getValue(b);
+        if (va == null) va = ''; if (vb == null) vb = '';
+        if (typeof va === 'number' && typeof vb === 'number') return this.sortDir * (va - vb);
+        const na = parseFloat(va), nb = parseFloat(vb);
+        if (!isNaN(na) && !isNaN(nb)) return this.sortDir * (na - nb);
+        return this.sortDir * String(va).localeCompare(String(vb));
+      });
+    }
+    const tbl = document.getElementById(this.tableId);
+    if (tbl) this._updateIcons(tbl);
+    this.render(data);
+  }
+
+  reset() { this.filters = {}; this.apply(); }
+
+  _open(col, th) {
+    this._close();
+    this._dropCol = col.key;
+    const rect = th.getBoundingClientRect();
+    const data = this.getData();
+    const vals = [...new Set(data.map(r => String(col.getValue(r))))].sort((a, b) => {
+      const na = parseFloat(a), nb = parseFloat(b);
+      return (!isNaN(na) && !isNaN(nb)) ? na - nb : a.localeCompare(b);
+    });
+    const sel  = this.filters[col.key];
+    const selS = sel ? new Set([...sel]) : new Set(vals);
+    const isA  = this.sortCol === col.key && this.sortDir ===  1;
+    const isD  = this.sortCol === col.key && this.sortDir === -1;
+    const [lA, lD] = col.type === 'num'
+      ? ['↑ Low → High', '↓ High → Low']
+      : ['↑ A → Z',      '↓ Z → A'];
+
+    const div = document.createElement('div');
+    div.className = 'xf-dropdown';
+    div.innerHTML = `
+      <div class="xf-sort-row">
+        <button class="xf-sort-btn${isA?' active':''}" data-dir="1">${lA}</button>
+        <button class="xf-sort-btn${isD?' active':''}" data-dir="-1">${lD}</button>
+      </div>
+      <div class="xf-filter-head">
+        <span class="xf-filter-label">Filter values</span>
+        <span class="xf-head-btns">
+          <button class="xf-sa">All</button>
+          <button class="xf-ca">Clear</button>
+        </span>
+      </div>
+      <div class="xf-vals-list">
+        ${vals.map(v=>`<label class="xf-val-row">
+          <input type="checkbox" data-v="${v.replace(/"/g,'&quot;')}"${selS.has(v)?' checked':''}>
+          <span>${v||'<em style="opacity:.4">(blank)</em>'}</span>
+        </label>`).join('')}
+      </div>
+      <div class="xf-foot"><button class="xf-apply-btn">Apply</button></div>`;
+    const left = Math.min(rect.left, window.innerWidth - 232);
+    const top  = Math.min(rect.bottom + 3, window.innerHeight - 340);
+    div.style.cssText = `position:fixed;top:${top}px;left:${left}px;z-index:99999`;
+    document.body.appendChild(div);
+    this._drop = div;
+
+    div.querySelectorAll('.xf-sort-btn').forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
+      this.sortCol = col.key; this.sortDir = parseInt(btn.dataset.dir, 10);
+      this.apply(); this._close();
+    }));
+    div.querySelector('.xf-sa').addEventListener('click', e => {
+      e.stopPropagation();
+      div.querySelectorAll('.xf-vals-list input').forEach(cb => cb.checked = true);
+    });
+    div.querySelector('.xf-ca').addEventListener('click', e => {
+      e.stopPropagation();
+      div.querySelectorAll('.xf-vals-list input').forEach(cb => cb.checked = false);
+    });
+    div.querySelector('.xf-apply-btn').addEventListener('click', e => {
+      e.stopPropagation();
+      const checked = [...div.querySelectorAll('.xf-vals-list input:checked')].map(cb => cb.dataset.v);
+      const total   = div.querySelectorAll('.xf-vals-list input').length;
+      if (!checked.length || checked.length === total) delete this.filters[col.key];
+      else this.filters[col.key] = new Set(checked);
+      this.apply(); this._close();
+    });
+    this._bound = e => { if (!div.contains(e.target)) this._close(); };
+    setTimeout(() => document.addEventListener('click', this._bound, { once: true }), 0);
+  }
+
+  _close() {
+    if (this._drop)  { this._drop.remove();  this._drop  = null; }
+    if (this._bound) { document.removeEventListener('click', this._bound); this._bound = null; }
+    this._dropCol = null;
+  }
+
+  _updateIcons(tableEl) {
+    tableEl.querySelectorAll('.xf-icon').forEach(icon => {
+      const key = icon.dataset.col;
+      const hf  = !!(this.filters[key]?.size);
+      const srt = this.sortCol === key;
+      icon.classList.toggle('active', hf || srt);
+      if (srt && hf)  icon.textContent = this.sortDir === 1 ? '↑●' : '↓●';
+      else if (srt)   icon.textContent = this.sortDir === 1 ? '↑'  : '↓';
+      else if (hf)    icon.textContent = '●';
+      else            icon.textContent = '▼';
+    });
+  }
+}
+
+/* ── Wire XFilter to the three permanent tables ─────────────── */
+function initXFilters() {
+  xfLb = new XFilter({
+    tableId: 'lb-table',
+    columns: [
+      { key: '_rank',       skip: true },
+      { key: 'name',        type: 'text', getValue: r => r.name },
+      { key: 'wins',        type: 'num',  getValue: r => r.wins },
+      { key: 'losses',      type: 'num',  getValue: r => r.losses },
+      { key: 'winRate',     type: 'num',  getValue: r => +(r.winRate * 100).toFixed(1) },
+      { key: 'avgSpeak',    type: 'num',  getValue: r => +r.avgSpeak.toFixed(2) },
+      { key: 'tournaments', type: 'num',  getValue: r => r.tournaments },
+      { key: 'metro',       type: 'text', getValue: r => r.metroEligible ? 'Eligible' : 'Not Yet' },
+    ],
+    getData: () => leaderboard,
+    render:  _paintLeaderboard,
+    sortCol: 'winRate', sortDir: -1,
+  });
+  xfLb.attachTo(document.getElementById('lb-table'));
+
+  xfPair = new XFilter({
+    tableId: 'pair-table',
+    columns: [
+      { key: 'pair',         type: 'text', getValue: r => r.pair },
+      { key: 'wins',         type: 'num',  getValue: r => r.wins },
+      { key: 'losses',       type: 'num',  getValue: r => r.losses },
+      { key: 'winRate',      type: 'num',  getValue: r => +r.winRate },
+      { key: 'avgTeamSpeak', type: 'num',  getValue: r => +r.avgTeamSpeak },
+      { key: 'tourns',       type: 'num',  getValue: r => r.tourns },
+    ],
+    getData: () => allPairings,
+    render:  _paintPairings,
+    sortCol: 'winRate', sortDir: -1,
+  });
+  xfPair.attachTo(document.getElementById('pair-table'));
+
+  xfMetro = new XFilter({
+    tableId: 'metro-table',
+    columns: [
+      { key: 'pair',       type: 'text', getValue: r => r.pair },
+      { key: 'tourns',     type: 'num',  getValue: r => r.tourns },
+      { key: 'bestFinish', type: 'text', getValue: r => r.bestFinish },
+      { key: 'count40',    type: 'num',  getValue: r => r.count40 },
+      { key: 'count31',    type: 'num',  getValue: r => r.count31 },
+      { key: 'eligible',   type: 'text', getValue: r => r.eligible ? 'Eligible' : 'Not Yet' },
+      { key: 'distance',   type: 'text', getValue: r => r.distance },
+    ],
+    getData: () => allMetro,
+    render:  _paintMetroTable,
+  });
+  xfMetro.attachTo(document.getElementById('metro-table'));
+}
+
+/* ── Wire XFilter to drill-down entry table (recreated each open) */
+function initDrillEntryXFilter() {
+  xfDrillEntry = new XFilter({
+    tableId: 'drill-entry-table',
+    columns: [
+      { key: 'teamName',     type: 'text', getValue: r => r.teamName },
+      { key: 'debNames',     type: 'text', getValue: r => r.debNames },
+      { key: 'wins',         type: 'num',  getValue: r => r.wins },
+      { key: 'losses',       type: 'num',  getValue: r => r.losses },
+      { key: 'winpct',       type: 'num',  getValue: r => +(r.winpct * 100).toFixed(1) },
+      { key: 'totalPts',     type: 'num',  getValue: r => +r.totalPts.toFixed(1) },
+      { key: 'avgTeamSpeak', type: 'num',  getValue: r => +r.avgTeamSpeak.toFixed(2) },
+      { key: 'eligible',     type: 'text', getValue: r => r.metro.eligible ? 'Eligible' : 'Not Yet' },
+      { key: 'distance',     type: 'text', getValue: r => r.metro.distance },
+    ],
+    getData: () => {
+      const q = (document.getElementById('drill-search')?.value || '').trim().toLowerCase();
+      if (!q) return allDrillEntries;
+      return allDrillEntries.filter(e =>
+        e.teamName.toLowerCase().includes(q) || e.debNames.toLowerCase().includes(q)
+      );
+    },
+    render:  _paintDrillEntries,
+    sortCol: 'wins', sortDir: -1,
+  });
+  xfDrillEntry.attachTo(document.getElementById('drill-entry-table'));
+}
+
+/* ── Wire XFilter to drill-down speaker table (recreated each open) */
+function initDrillSpeakXFilter() {
+  xfDrillSpeak = new XFilter({
+    tableId: 'drill-speak-table',
+    columns: [
+      { key: 'fullName',    type: 'text', getValue: r => `${r.first} ${r.last}` },
+      { key: 'teamName',    type: 'text', getValue: r => r.teamName },
+      { key: 'wins',        type: 'num',  getValue: r => r.wins },
+      { key: 'losses',      type: 'num',  getValue: r => r.losses },
+      { key: 'totalSpeaks', type: 'num',  getValue: r => +r.totalSpeaks.toFixed(1) },
+      { key: 'avgSpeak',    type: 'num',  getValue: r => +r.avgSpeak.toFixed(2) },
+      { key: '_rounds',     skip: true },
+    ],
+    getData: () => allDrillSpeaks,
+    render:  _paintDrillSpeaks,
+    sortCol: 'avgSpeak', sortDir: -1,
+  });
+  xfDrillSpeak.attachTo(document.getElementById('drill-speak-table'));
+}
 
 /* ── Init ───────────────────────────────────────────────────── */
 async function initStats() {
+  initXFilters();
   if (typeof currentUserRole !== 'undefined' && currentUserRole === 'coach') {
     document.getElementById('import-toggle-wrap').style.display = 'block';
   }
@@ -2009,7 +2288,7 @@ function renderFiltered() {
   updateSeasonBadges();
   renderSeasonStrip(season);
   renderMetroTable(metro);
-  renderLeaderboard(leaderboard);
+  if (xfLb) xfLb.apply(); else _paintLeaderboard(leaderboard);
   renderTournaments(tourns);
   renderCharts(leaderboard, tourns);
   renderRoundBars(roundStats);
@@ -2116,6 +2395,11 @@ function renderSeasonStrip(season) {
 }
 
 function renderMetroTable(metro) {
+  allMetro = metro;
+  if (xfMetro) xfMetro.apply(); else _paintMetroTable(metro);
+}
+
+function _paintMetroTable(metro) {
   const tbody = document.getElementById('metro-tbody');
   if (!metro.length) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px">No pair data yet</td></tr>';
@@ -2127,7 +2411,6 @@ function renderMetroTable(metro) {
       : `<span class="metro-eligible no">✗ No</span>`;
     const distCls = p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : '';
     const bestCls = p.bestWins >= 4 ? 'perfect' : '';
-    // Make pair name clickable — each debater opens their modal
     const names = p.pair.split(' & ');
     const clickablePair = names.map(n =>
       `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
@@ -2144,91 +2427,8 @@ function renderMetroTable(metro) {
   }).join('');
 }
 
-function lbSort(col) {
-  if (lbSortCol === col) { lbSortDir *= -1; }
-  else { lbSortCol = col; lbSortDir = col === 'name' ? 1 : -1; }
-  applyLbFilters();
-}
 
-function applyLbFilters() {
-  const name    = (document.getElementById('lbf-name')?.value || '').toLowerCase();
-  const minW    = parseFloat(document.getElementById('lbf-wins')?.value);
-  const maxL    = parseFloat(document.getElementById('lbf-losses')?.value);
-  const minWR   = parseFloat(document.getElementById('lbf-winRate')?.value);
-  const minSpk  = parseFloat(document.getElementById('lbf-avgSpeak')?.value);
-  const minT    = parseFloat(document.getElementById('lbf-tournaments')?.value);
-  const metro   = document.getElementById('lbf-metro')?.value || '';
-  let data = leaderboard.filter(d => {
-    if (name   && !d.name.toLowerCase().includes(name)) return false;
-    if (!isNaN(minW)  && d.wins < minW)                 return false;
-    if (!isNaN(maxL)  && d.losses > maxL)               return false;
-    if (!isNaN(minWR) && d.winRate * 100 < minWR)       return false;
-    if (!isNaN(minSpk)&& d.avgSpeak < minSpk)           return false;
-    if (!isNaN(minT)  && d.tournaments < minT)          return false;
-    if (metro === 'yes' && !d.metroEligible)             return false;
-    if (metro === 'no'  &&  d.metroEligible)             return false;
-    return true;
-  });
-  renderLeaderboard(data);
-}
-
-function pairSort(col) {
-  if (pairSortCol === col) { pairSortDir *= -1; }
-  else { pairSortCol = col; pairSortDir = col === 'pair' ? 1 : -1; }
-  applyPairFilters();
-}
-
-function applyPairFilters() {
-  const name   = (document.getElementById('prf-pair')?.value || '').toLowerCase();
-  const minW   = parseFloat(document.getElementById('prf-wins')?.value);
-  const maxL   = parseFloat(document.getElementById('prf-losses')?.value);
-  const minWR  = parseFloat(document.getElementById('prf-winRate')?.value);
-  const minSpk = parseFloat(document.getElementById('prf-avgTeamSpeak')?.value);
-  const minT   = parseFloat(document.getElementById('prf-tourns')?.value);
-  let data = allPairings.filter(p => {
-    if (name   && !p.pair.toLowerCase().includes(name))  return false;
-    if (!isNaN(minW)  && p.wins < minW)                  return false;
-    if (!isNaN(maxL)  && p.losses > maxL)                return false;
-    if (!isNaN(minWR) && +p.winRate < minWR)             return false;
-    if (!isNaN(minSpk)&& +p.avgTeamSpeak < minSpk)       return false;
-    if (!isNaN(minT)  && p.tourns < minT)                return false;
-    return true;
-  });
-  renderPairings(data);
-}
-
-function renderLeaderboard(lb) {
-  // Sort the leaderboard data
-  let data = [...lb];
-  data.sort((a, b) => {
-    let va, vb;
-    switch (lbSortCol) {
-      case 'name':          va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
-      case 'wins':          va = a.wins;            vb = b.wins;            break;
-      case 'losses':        va = a.losses;          vb = b.losses;          break;
-      case 'winRate':       va = a.winRate;         vb = b.winRate;         break;
-      case 'avgSpeak':      va = a.avgSpeak;        vb = b.avgSpeak;        break;
-      case 'tournaments':   va = a.tournaments;     vb = b.tournaments;     break;
-      case 'metroEligible': va = a.metroEligible?1:0; vb = b.metroEligible?1:0; break;
-      default:              va = a.winRate;         vb = b.winRate;
-    }
-    if (typeof va === 'string') return lbSortDir * va.localeCompare(vb);
-    return lbSortDir * (va - vb);
-  });
-
-  // Update sort arrow indicators
-  ['name','wins','losses','winRate','avgSpeak','tournaments','metroEligible'].forEach(col => {
-    const el = document.getElementById('lbs-' + col);
-    if (!el) return;
-    if (col === lbSortCol) {
-      el.textContent = lbSortDir === -1 ? '↓' : '↑';
-      el.style.opacity = '1'; el.style.color = '#FFD700';
-    } else {
-      el.textContent = '↕';
-      el.style.opacity = '0.3'; el.style.color = '';
-    }
-  });
-
+function _paintLeaderboard(data) {
   const tbody = document.getElementById('lb-tbody');
   if (!data.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.35);padding:24px">No data</td></tr>'; return; }
   tbody.innerHTML = data.map((d, i) => {
@@ -2437,39 +2637,16 @@ function renderRoundBars(roundStats) {
 }
 
 function renderPairings(pairings) {
-  allPairings = pairings;   // always store the full dataset
-  _paintPairings(pairings); // then apply sort + render
+  allPairings = pairings;
+  if (xfPair) xfPair.apply(); else _paintPairings(pairings);
 }
 
 function _paintPairings(data) {
-  // Sort
-  const sorted = [...data].sort((a, b) => {
-    let va, vb;
-    switch (pairSortCol) {
-      case 'pair':          va = a.pair.toLowerCase();  vb = b.pair.toLowerCase(); break;
-      case 'wins':          va = a.wins;               vb = b.wins;              break;
-      case 'losses':        va = a.losses;             vb = b.losses;            break;
-      case 'winRate':       va = +a.winRate;           vb = +b.winRate;          break;
-      case 'avgTeamSpeak':  va = +a.avgTeamSpeak;      vb = +b.avgTeamSpeak;     break;
-      case 'tourns':        va = a.tourns;             vb = b.tourns;            break;
-      default:              va = +a.winRate;           vb = +b.winRate;
-    }
-    if (typeof va === 'string') return pairSortDir * va.localeCompare(vb);
-    return pairSortDir * (va - vb);
-  });
-  // Update sort arrows
-  ['pair','wins','losses','winRate','avgTeamSpeak','tourns'].forEach(col => {
-    const el = document.getElementById('prs-' + col);
-    if (!el) return;
-    if (col === pairSortCol) { el.textContent = pairSortDir === -1 ? '↓' : '↑'; el.style.opacity='1'; el.style.color='#FFD700'; }
-    else { el.textContent = '↕'; el.style.opacity='0.3'; el.style.color=''; }
-  });
   const tbody = document.getElementById('pair-tbody');
-  if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">No data</td></tr>'; return; }
-  tbody.innerHTML = sorted.map(p => {
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">No data</td></tr>'; return; }
+  tbody.innerHTML = data.map(p => {
     const pct = +p.winRate;
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
-    // Make each debater name clickable
     const names = p.pair.split(' & ');
     const clickableNames = names.map(n =>
       `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
@@ -2873,10 +3050,6 @@ function toggleTournDetail(id) {
   }
 
   openTournId = id;
-  drillQuery = '';
-  drillMetroFilter = 'all';
-  drillSortCol = 'wins';
-  drillSortDir = -1;
 
   const card = document.getElementById('tourn-card-' + id);
   if (card) {
@@ -2951,24 +3124,21 @@ function renderTournamentDetail(t, metroMap) {
 
     <div class="drill-section-label">Entry Results</div>
     <div class="drill-controls">
-      <input class="drill-search" id="drill-search" type="text" placeholder="Search by name…"
-        oninput="drillQuery=this.value; refreshDrillTable()" value="">
-      <button class="drill-filter-btn active" id="df-all" onclick="setDrillMetroFilter('all')">All</button>
-      <button class="drill-filter-btn"         id="df-yes" onclick="setDrillMetroFilter('yes')">Metro Eligible</button>
-      <button class="drill-filter-btn"         id="df-no"  onclick="setDrillMetroFilter('no')">Not Eligible</button>
+      <input class="drill-search" id="drill-search" type="text" placeholder="Search by name or team…"
+        oninput="if(xfDrillEntry) xfDrillEntry.apply()" value="">
     </div>
     <div class="entry-table-wrap">
       <table class="entry-table" id="drill-entry-table">
         <thead>
           <tr>
-            <th onclick="drillSort('team')">Team <span class="sort-arrow">↕</span></th>
+            <th>Team</th>
             <th>Debaters</th>
-            <th class="num" onclick="drillSort('wins')">Wins <span class="sort-arrow">↕</span></th>
-            <th class="num" onclick="drillSort('losses')">Losses <span class="sort-arrow">↕</span></th>
-            <th class="num" onclick="drillSort('winpct')">W/L% <span class="sort-arrow">↕</span></th>
-            <th class="num" onclick="drillSort('speak')">Speaker Pts <span class="sort-arrow">↕</span></th>
-            <th class="num" onclick="drillSort('avgspeak')">Avg Speak <span class="sort-arrow">↕</span></th>
-            <th onclick="drillSort('metro')">Metro Eligible <span class="sort-arrow">↕</span></th>
+            <th class="num">Wins</th>
+            <th class="num">Losses</th>
+            <th class="num">W/L%</th>
+            <th class="num">Speaker Pts</th>
+            <th class="num">Avg Speak</th>
+            <th>Metro Eligible</th>
             <th>Distance from Finals</th>
           </tr>
         </thead>
@@ -2999,36 +3169,18 @@ function renderTournamentDetail(t, metroMap) {
   window._drillTourn = t;
   window._drillMetroMap = metroMap;
 
+  initDrillEntryXFilter();
+  initDrillSpeakXFilter();
   refreshDrillTable();
   renderDrillSpeakerTable(t);
 }
 
-function setDrillMetroFilter(val) {
-  drillMetroFilter = val;
-  ['all','yes','no'].forEach(v => {
-    const btn = document.getElementById('df-' + v);
-    if (btn) btn.classList.toggle('active', v === val);
-  });
-  refreshDrillTable();
-}
-
-function drillSort(col) {
-  if (drillSortCol === col) {
-    drillSortDir *= -1;
-  } else {
-    drillSortCol = col;
-    drillSortDir = col === 'team' ? 1 : -1;
-  }
-  refreshDrillTable();
-}
 
 function refreshDrillTable() {
   const t = window._drillTourn;
   const metroMap = window._drillMetroMap;
   if (!t) return;
-
-  const q = drillQuery.toLowerCase().trim();
-  let entries = t.entries.map(e => {
+  allDrillEntries = t.entries.map(e => {
     const pairKey = entryPairKey(e);
     const metro = pairKey && metroMap[pairKey] ? metroMap[pairKey] : { eligible: false, distance: 'Need a 4-0 or two 3-1+' };
     const debNames = e.debaters.map(d => `${d.first} ${d.last}`).join(' & ');
@@ -3036,62 +3188,17 @@ function refreshDrillTable() {
     const winpct = total > 0 ? e.wins / total : 0;
     return { ...e, pairKey, metro, debNames, winpct };
   });
+  if (xfDrillEntry) xfDrillEntry.apply(); else _paintDrillEntries(allDrillEntries);
+}
 
-  // Filter by search
-  if (q) {
-    entries = entries.filter(e =>
-      e.teamName.toLowerCase().includes(q) ||
-      e.debNames.toLowerCase().includes(q)
-    );
-  }
-
-  // Filter by metro
-  if (drillMetroFilter === 'yes') entries = entries.filter(e => e.metro.eligible);
-  if (drillMetroFilter === 'no')  entries = entries.filter(e => !e.metro.eligible);
-
-  // Sort
-  entries.sort((a, b) => {
-    let va, vb;
-    switch (drillSortCol) {
-      case 'team':     va = a.teamName.toLowerCase(); vb = b.teamName.toLowerCase(); break;
-      case 'wins':     va = a.wins;     vb = b.wins;     break;
-      case 'losses':   va = a.losses;   vb = b.losses;   break;
-      case 'winpct':   va = a.winpct;   vb = b.winpct;   break;
-      case 'speak':    va = a.totalPts; vb = b.totalPts; break;
-      case 'avgspeak': va = a.avgTeamSpeak; vb = b.avgTeamSpeak; break;
-      case 'metro':    va = a.metro.eligible ? 1 : 0; vb = b.metro.eligible ? 1 : 0; break;
-      default:         va = a.wins; vb = b.wins;
-    }
-    if (typeof va === 'string') return drillSortDir * va.localeCompare(vb);
-    return drillSortDir * (va - vb);
-  });
-
-  // Update sort arrow classes
-  document.querySelectorAll('#drill-entry-table th').forEach(th => {
-    th.classList.remove('sort-asc', 'sort-desc');
-    const arrow = th.querySelector('.sort-arrow');
-    if (arrow) arrow.textContent = '↕';
-  });
-  const colMap = { team: 0, wins: 2, losses: 3, winpct: 4, speak: 5, avgspeak: 6, metro: 7 };
-  const colIdx = colMap[drillSortCol];
-  if (colIdx !== undefined) {
-    const ths = document.querySelectorAll('#drill-entry-table th');
-    if (ths[colIdx]) {
-      const cls = drillSortDir === -1 ? 'sort-desc' : 'sort-asc';
-      ths[colIdx].classList.add(cls);
-      const arrow = ths[colIdx].querySelector('.sort-arrow');
-      if (arrow) arrow.textContent = drillSortDir === -1 ? '↓' : '↑';
-    }
-  }
-
+function _paintDrillEntries(data) {
   const tbody = document.getElementById('drill-entry-tbody');
   if (!tbody) return;
-  if (!entries.length) {
+  if (!data.length) {
     tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px;font-family:Josefin Sans,sans-serif;font-size:0.85rem">No matching entries</td></tr>';
     return;
   }
-
-  tbody.innerHTML = entries.map(e => {
+  tbody.innerHTML = data.map(e => {
     const total = e.wins + e.losses;
     const pct = total > 0 ? (e.wins / total * 100).toFixed(1) : '—';
     const pillCls = e.winpct >= 0.7 ? 'high' : e.winpct >= 0.45 ? 'mid' : 'low';
@@ -3099,7 +3206,6 @@ function refreshDrillTable() {
       ? `<span class="metro-eligible yes">✓ Yes</span>`
       : `<span class="metro-eligible no">✗ No</span>`;
     const distCls = e.metro.eligible ? 'eligible' : e.metro.distance.includes('1 more') ? 'close' : '';
-    // Make each debater name individually clickable
     const clickableDebs = e.debaters && e.debaters.length
       ? e.debaters.map(d => {
           const n = `${d.first} ${d.last}`;
@@ -3121,25 +3227,20 @@ function refreshDrillTable() {
 }
 
 function renderDrillSpeakerTable(t) {
+  const rows = [];
+  t.entries.forEach(e => e.debaters.forEach(d => rows.push({ ...d, teamName: e.teamName })));
+  allDrillSpeaks = rows;
+  if (xfDrillSpeak) xfDrillSpeak.apply(); else _paintDrillSpeaks(rows);
+}
+
+function _paintDrillSpeaks(data) {
   const tbody = document.getElementById('drill-speak-tbody');
   if (!tbody) return;
-
-  // Flatten all debaters, attaching team name
-  const rows = [];
-  t.entries.forEach(e => {
-    e.debaters.forEach(d => {
-      rows.push({ ...d, teamName: e.teamName });
-    });
-  });
-
-  rows.sort((a, b) => b.avgSpeak - a.avgSpeak || b.totalSpeaks - a.totalSpeaks);
-
-  if (!rows.length) {
+  if (!data.length) {
     tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No speaker data</td></tr>';
     return;
   }
-
-  tbody.innerHTML = rows.map(d => {
+  tbody.innerHTML = data.map(d => {
     const realRounds = d.rounds.filter(r => r.result !== 'BYE');
     const roundBadges = realRounds.map(r => {
       const cls = r.result === 'W' ? 'color:#4ade80' : 'color:#e03535';
@@ -3150,9 +3251,7 @@ function renderDrillSpeakerTable(t) {
     }).join('<span style="color:rgba(255,255,255,0.15);margin:0 4px">·</span>');
     const fullName = `${d.first} ${d.last}`;
     return `<tr>
-      <td>
-        <span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${fullName.replace(/'/g,"\\'")}')">${fullName}</span>
-      </td>
+      <td><span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${fullName.replace(/'/g,"\\'")}')">${fullName}</span></td>
       <td style="color:rgba(255,255,255,0.5);font-size:0.82rem">${d.teamName}</td>
       <td class="num">${d.wins}</td>
       <td class="num">${d.losses}</td>
