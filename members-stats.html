@@ -1844,6 +1844,7 @@ let winDistChart    = null;
 let timelineChart   = null;
 let metroChart      = null;
 let metroSummaryChart = null;
+let _metroDrillData   = [];
 let teamCsvText     = null;
 let speakCsvText    = null;
 let currentDebater  = null;
@@ -3210,13 +3211,19 @@ function renderCharts(lb, tourns) {
   });
 
   /* ── Metro Eligibility summary doughnut ── */
-  const metroAll = computeMetroEligibility(tourns);
-  const mEligible    = metroAll.filter(p => p.eligible).length;
-  const mHalfElig    = metroAll.filter(p => !p.eligible && p.count31 >= 1).length;
-  const mInProgress  = metroAll.filter(p => !p.eligible && p.count31 === 0).length;
-  const mTotal       = metroAll.length;
+  const metroAll    = computeMetroEligibility(tourns);
+  _metroDrillData   = metroAll;
+  const mSegLabels  = ['Eligible', 'Half-Eligible', 'In Progress'];
+  const mSegCounts  = [
+    metroAll.filter(p => p.eligible).length,
+    metroAll.filter(p => !p.eligible && p.count31 >= 1).length,
+    metroAll.filter(p => !p.eligible && p.count31 === 0).length,
+  ];
+  const mTotal      = metroAll.length;
+  const mSegColors  = ['rgba(34,197,94,0.8)', 'rgba(212,160,23,0.8)', 'rgba(96,165,250,0.55)'];
+  const mSegBorders = ['rgba(34,197,94,1)',   'rgba(212,160,23,1)',   'rgba(96,165,250,0.85)'];
 
-  // Center-label plugin — draws total pairs in middle of doughnut
+  // Plugin A: center label
   const centerLabelPlugin = {
     id: 'metroCenterLabel',
     afterDraw(chart) {
@@ -3224,8 +3231,7 @@ function renderCharts(lb, tourns) {
       const cx = (chartArea.left + chartArea.right) / 2;
       const cy = (chartArea.top  + chartArea.bottom) / 2;
       ctx.save();
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
       ctx.font = "700 2rem 'Cormorant Garamond', serif";
       ctx.fillText(mTotal, cx, cy - 10);
@@ -3236,62 +3242,91 @@ function renderCharts(lb, tourns) {
     }
   };
 
+  // Plugin B: callout lines + floating labels for each segment
+  const calloutPlugin = {
+    id: 'metroCallout',
+    afterDatasetsDraw(chart) {
+      const { ctx } = chart;
+      const meta = chart.getDatasetMeta(0);
+      meta.data.forEach((arc, i) => {
+        const val = mSegCounts[i];
+        if (!val) return;
+        const pct = mTotal > 0 ? Math.round(val / mTotal * 100) : 0;
+        const mid = (arc.startAngle + arc.endAngle) / 2;
+        const cx  = arc.x, cy = arc.y, r = arc.outerRadius;
+        // Line points
+        const x1 = cx + r * 1.03 * Math.cos(mid);
+        const y1 = cy + r * 1.03 * Math.sin(mid);
+        const x2 = cx + r * 1.22 * Math.cos(mid);
+        const y2 = cy + r * 1.22 * Math.sin(mid);
+        const tx = cx + r * 1.28 * Math.cos(mid);
+        const ty = cy + r * 1.28 * Math.sin(mid);
+        // Draw line
+        ctx.save();
+        ctx.strokeStyle = mSegBorders[i];
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+        // Draw labels
+        const right = Math.cos(mid) >= 0;
+        ctx.textAlign = right ? 'left' : 'right';
+        ctx.textBaseline = 'middle';
+        ctx.fillStyle = mSegColors[i];
+        ctx.font = "700 0.82rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${mSegLabels[i]}  ${val}`, tx, ty - 9);
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.font = "400 0.72rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${pct}%`, tx, ty + 8);
+        ctx.restore();
+      });
+    }
+  };
+
   if (metroSummaryChart) metroSummaryChart.destroy();
   const ctxMS = document.getElementById('chart-metro-summary');
   if (ctxMS) {
     metroSummaryChart = new Chart(ctxMS, {
       type: 'doughnut',
-      plugins: [centerLabelPlugin],
+      plugins: [centerLabelPlugin, calloutPlugin],
       data: {
-        labels: ['Eligible', 'Half-Eligible', 'In Progress'],
+        labels: mSegLabels,
         datasets: [{
-          data: [mEligible, mHalfElig, mInProgress],
-          backgroundColor: [
-            'rgba(34,197,94,0.75)',
-            'rgba(212,160,23,0.75)',
-            'rgba(96,165,250,0.45)',
-          ],
-          borderColor: [
-            'rgba(34,197,94,0.95)',
-            'rgba(212,160,23,0.95)',
-            'rgba(96,165,250,0.7)',
-          ],
+          data: mSegCounts,
+          backgroundColor: mSegColors,
+          borderColor: mSegBorders,
           borderWidth: 2,
-          hoverOffset: 8,
+          hoverOffset: 10,
         }]
       },
       options: {
         responsive: true, maintainAspectRatio: false,
-        cutout: '62%',
+        cutout: '58%',
+        layout: { padding: 70 },
+        onClick: (evt, els) => { if (els.length) showMetroDrill(els[0].index); },
         plugins: {
           legend: {
             position: 'bottom',
             labels: {
-              color: 'rgba(255,255,255,0.72)',
+              color: 'rgba(255,255,255,0.82)',
               font: { family: 'Josefin Sans', size: 13 },
-              padding: 18, boxWidth: 14, boxHeight: 14,
-              generateLabels: chart => {
-                const ds = chart.data.datasets[0];
-                return chart.data.labels.map((lbl, i) => ({
-                  text: `${lbl}  (${ds.data[i]})`,
-                  fillStyle: ds.backgroundColor[i],
-                  strokeStyle: ds.borderColor[i],
-                  lineWidth: 2,
-                  index: i,
-                }));
-              },
+              padding: 20, boxWidth: 14, boxHeight: 14,
+              generateLabels: () => mSegLabels.map((lbl, i) => ({
+                text: `${lbl}  ·  ${mSegCounts[i]} pair${mSegCounts[i] !== 1 ? 's' : ''}`,
+                fillStyle: mSegColors[i],
+                strokeStyle: mSegBorders[i],
+                lineWidth: 1.5,
+                hidden: false,
+                index: i,
+              })),
             }
           },
           tooltip: { callbacks: {
+            title: items => mSegLabels[items[0].dataIndex],
             label: c => {
-              const val = c.parsed;
-              const pct = mTotal > 0 ? ((val / mTotal) * 100).toFixed(0) : 0;
-              const descs = [
-                'Met eligibility threshold (4–0, or 2× 3–1+)',
-                'Need 1 more qualifying finish (3–1 or better)',
-                'No qualifying finish yet',
-              ];
-              return [`${val} pair${val !== 1 ? 's' : ''} · ${pct}%`, descs[c.dataIndex]];
+              const val = c.parsed, pct = mTotal > 0 ? ((val/mTotal)*100).toFixed(0) : 0;
+              return [`${val} pair${val!==1?'s':''}  ·  ${pct}%`,
+                ['Met threshold — 4–0 or two 3–1+ finishes',
+                 'One qualifying finish — need one more 3–1+ or a 4–0',
+                 'No qualifying finish yet'][c.dataIndex]];
             },
           }},
         },
@@ -3680,6 +3715,57 @@ function exportDrillCSV() {
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `${tournName}-entries.csv`;
   a.click();
+}
+
+function showMetroDrill(segIndex) {
+  const labels  = ['Eligible', 'Half-Eligible', 'In Progress'];
+  const descs   = [
+    'Met eligibility threshold — 4–0, or two 3–1+ finishes',
+    'One qualifying finish so far — need one more 3–1+ or a 4–0',
+    'No qualifying finish yet',
+  ];
+  const filters = [
+    p => p.eligible,
+    p => !p.eligible && p.count31 >= 1,
+    p => !p.eligible && p.count31 === 0,
+  ];
+  const pairs = (_metroDrillData || []).filter(filters[segIndex]);
+
+  if (!pairs.length) {
+    openDrillModal(labels[segIndex], '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.4);padding:20px 0">No pairs in this category.</p>');
+    return;
+  }
+  const bodyHtml = `<div style="overflow-x:auto">
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.42);margin:0 0 16px">${descs[segIndex]}</p>
+    <table class="lb-table" style="min-width:520px">
+      <thead><tr>
+        <th>Pair</th>
+        <th class="num">Qualifying Finishes</th>
+        <th class="num">4–0 Finishes</th>
+        <th class="num">Best Finish</th>
+        <th class="num">Tournaments</th>
+        <th>Path to Eligibility</th>
+      </tr></thead>
+      <tbody>
+        ${pairs.map(p => {
+          const names = p.pair.split(' & ');
+          const clickable = names.map(n =>
+            `<span class="deb-link" onclick="closeDrillModal();setTimeout(()=>openDebModalByName('${n.replace(/'/g,"\'")}'),120)">${n}</span>`
+          ).join('<span style="color:rgba(255,255,255,0.3);margin:0 5px">●──●</span>');
+          const statusColor = p.eligible ? '#4ade80' : p.count31 >= 1 ? '#FFD700' : 'rgba(255,255,255,0.4)';
+          return `<tr>
+            <td style="font-size:0.97rem;color:#fff;font-weight:700">${clickable}</td>
+            <td class="num">${p.count31}</td>
+            <td class="num">${p.count40}</td>
+            <td class="num">${p.bestFinish}</td>
+            <td class="num">${p.tourns}</td>
+            <td style="font-size:0.82rem;color:${statusColor}">${p.distance}</td>
+          </tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+  </div>`;
+  openDrillModal(`${labels[segIndex]} — ${pairs.length} pair${pairs.length !== 1 ? 's' : ''}`, bodyHtml);
 }
 
 function showRoundDrill(roundNum, wins, losses) {
