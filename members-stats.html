@@ -587,6 +587,148 @@
       font-size:0.78rem; font-weight:700;
       background:rgba(212,160,23,0.12); color:#e8b84b;
     }
+
+    /* ── Tournament card click state ───────────────────────── */
+    .tourn-card { cursor:pointer; }
+    .tourn-card.selected {
+      border-color:rgba(212,160,23,0.65);
+      background:rgba(13,46,100,0.65);
+      box-shadow:0 0 0 2px rgba(212,160,23,0.18), 0 8px 32px rgba(0,0,0,0.38);
+    }
+    .tourn-card-open-hint {
+      font-family:'Josefin Sans',sans-serif; font-size:0.7rem;
+      letter-spacing:0.12em; text-transform:uppercase;
+      color:rgba(212,160,23,0.55); margin-top:10px;
+      display:flex; align-items:center; gap:5px;
+    }
+    .tourn-card.selected .tourn-card-open-hint { color:rgba(212,160,23,0.85); }
+
+    /* ── Tournament detail panel ───────────────────────────── */
+    .tourn-detail-panel {
+      display:none; margin-top:20px;
+      background:rgba(7,20,50,0.75); border:1px solid rgba(212,160,23,0.25);
+      border-radius:16px; padding:32px;
+      animation:panelIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .tourn-detail-panel.open { display:block; }
+    @keyframes panelIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+    .drill-header {
+      display:flex; flex-wrap:wrap; justify-content:space-between;
+      align-items:flex-start; gap:16px; margin-bottom:24px;
+    }
+    .drill-header-left { flex:1; min-width:200px; }
+    .drill-title {
+      font-family:'Cormorant Garamond',serif; font-size:2rem;
+      font-weight:700; color:#fff; margin:0 0 6px;
+    }
+    .drill-meta {
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
+      letter-spacing:0.1em; color:rgba(255,255,255,0.45);
+      text-transform:uppercase;
+    }
+    .drill-resolution {
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+      color:rgba(255,255,255,0.5); margin-top:6px;
+      font-style:italic;
+    }
+    .drill-close-btn {
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      border-radius:8px; padding:8px 14px; cursor:pointer;
+      color:rgba(255,255,255,0.55); font-family:'Josefin Sans',sans-serif;
+      font-size:0.75rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      transition:background 0.15s; flex-shrink:0;
+    }
+    .drill-close-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
+    /* Win distribution strip */
+    .win-dist-strip {
+      display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px;
+    }
+    .win-dist-chip {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:7px 16px; border-radius:50px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      font-weight:700; letter-spacing:0.06em;
+    }
+    .win-dist-chip.w40 { background:rgba(34,197,94,0.14);  color:#4ade80; border:1px solid rgba(34,197,94,0.35); }
+    .win-dist-chip.w31 { background:rgba(134,239,172,0.1); color:#86efac; border:1px solid rgba(134,239,172,0.3); }
+    .win-dist-chip.w22 { background:rgba(212,160,23,0.12); color:#facc15; border:1px solid rgba(212,160,23,0.3); }
+    .win-dist-chip.w13 { background:rgba(251,146,60,0.1);  color:#fb923c; border:1px solid rgba(251,146,60,0.25); }
+    .win-dist-chip.w04 { background:rgba(239,68,68,0.1);   color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+    .win-dist-count {
+      font-family:'Cormorant Garamond',serif; font-size:1.25rem;
+      font-weight:700; line-height:1;
+    }
+
+    /* Drill controls */
+    .drill-controls {
+      display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px;
+      align-items:center;
+    }
+    .drill-search {
+      flex:1; min-width:180px;
+      background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
+      border-radius:8px; padding:9px 14px; color:#fff;
+      font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
+      outline:none; transition:border-color 0.2s;
+    }
+    .drill-search:focus { border-color:rgba(212,160,23,0.6); }
+    .drill-search::placeholder { color:rgba(255,255,255,0.25); }
+    .drill-filter-btn {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      padding:8px 16px; border-radius:6px; cursor:pointer;
+      border:1px solid rgba(255,255,255,0.12); background:transparent;
+      color:rgba(255,255,255,0.45); transition:all 0.18s; white-space:nowrap;
+    }
+    .drill-filter-btn:hover { color:rgba(255,255,255,0.75); border-color:rgba(255,255,255,0.22); }
+    .drill-filter-btn.active { color:#e8c84a; background:rgba(212,160,23,0.1); border-color:rgba(212,160,23,0.3); }
+
+    /* Entry table */
+    .entry-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(212,160,23,0.14); margin-bottom:32px; }
+    .entry-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
+    .entry-table thead tr { background:rgba(20,50,120,0.65); }
+    .entry-table th {
+      padding:13px 14px; font-size:0.67rem; font-weight:700;
+      letter-spacing:0.13em; text-transform:uppercase;
+      color:rgba(232,184,75,0.85); text-align:left; white-space:nowrap;
+      cursor:pointer; user-select:none; transition:color 0.15s;
+    }
+    .entry-table th:hover { color:#FFD700; }
+    .entry-table th.num { text-align:right; }
+    .entry-table th .sort-arrow { opacity:0.3; font-size:0.6rem; margin-left:3px; }
+    .entry-table th.sort-asc .sort-arrow,
+    .entry-table th.sort-desc .sort-arrow { opacity:1; color:#FFD700; }
+    .entry-table tbody tr {
+      border-top:1px solid rgba(255,255,255,0.05);
+      transition:background 0.13s;
+    }
+    .entry-table tbody tr:hover { background:rgba(212,160,23,0.06); }
+    .entry-table td { padding:13px 14px; font-size:0.88rem; color:rgba(255,255,255,0.88); vertical-align:middle; }
+    .entry-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+    .entry-team { font-weight:700; color:#fff; }
+    .entry-deb-names { font-size:0.75rem; color:rgba(255,255,255,0.45); margin-top:2px; }
+
+    /* Speaker breakdown table */
+    .drill-section-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:rgba(232,184,75,0.75); margin-bottom:16px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .drill-section-label::after { content:''; flex:1; height:1px; background:rgba(212,160,23,0.12); }
+    .speak-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(212,160,23,0.12); }
+    .speak-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
+    .speak-table thead tr { background:rgba(20,50,120,0.55); }
+    .speak-table th {
+      padding:11px 14px; font-size:0.66rem; font-weight:700;
+      letter-spacing:0.13em; text-transform:uppercase; color:rgba(232,184,75,0.75); text-align:left;
+    }
+    .speak-table th.num { text-align:right; }
+    .speak-table tbody tr { border-top:1px solid rgba(255,255,255,0.04); }
+    .speak-table td { padding:11px 14px; font-size:0.86rem; color:rgba(255,255,255,0.82); }
+    .speak-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
   </style>
 </head>
 <body>
@@ -729,6 +871,8 @@
       <div class="stat-section">
         <div class="stat-section-title">Tournament History</div>
         <div class="tourn-grid" id="tourn-grid"></div>
+        <!-- Detail panel (shown below cards when one is selected) -->
+        <div class="tourn-detail-panel" id="tourn-detail-panel"></div>
       </div>
     </div>
 
@@ -1039,6 +1183,13 @@ let speakCsvText    = null;
 let currentDebater  = null;
 let activeTimeMode  = 'all';  // 'all' | 'year' | 'month'
 let activeTab       = 'overview';
+
+// Drill-down state
+let openTournId      = null;
+let drillQuery       = '';
+let drillMetroFilter = 'all';  // 'all' | 'yes' | 'no'
+let drillSortCol     = 'wins';
+let drillSortDir     = -1;     // -1 = desc, 1 = asc
 
 /* ── Init ───────────────────────────────────────────────────── */
 async function initStats() {
@@ -1604,6 +1755,12 @@ function renderTournaments(tourns) {
   const grid = document.getElementById('tourn-grid');
   const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
   const list = tourns || allTournaments;
+
+  // Close any open detail panel when re-rendering
+  openTournId = null;
+  const panel = document.getElementById('tourn-detail-panel');
+  if (panel) { panel.innerHTML = ''; panel.classList.remove('open'); }
+
   if (!list.length) { grid.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.35);padding:24px">No tournaments in this range.</p>'; return; }
   grid.innerHTML = list.map(t => {
     const totalW = t.entries.reduce((s,e) => s+e.wins, 0);
@@ -1614,8 +1771,8 @@ function renderTournaments(tourns) {
     const topicLine = t.meta.topic
       ? `<div class="tourn-top-row" style="margin-top:6px;opacity:0.6;font-style:italic">${t.meta.topicType ? t.meta.topicType + ' — ' : ''}${t.meta.topic}</div>` : '';
     const coachActions = isCoach
-      ? `<div class="tourn-coach-actions"><button class="tourn-del-btn" onclick="confirmDelete('${t.id}')">🗑 Delete</button></div>` : '';
-    return `<div class="tourn-card">
+      ? `<div class="tourn-coach-actions"><button class="tourn-del-btn" onclick="event.stopPropagation();confirmDelete('${t.id}')">🗑 Delete</button></div>` : '';
+    return `<div class="tourn-card" id="tourn-card-${t.id}" onclick="toggleTournDetail('${t.id}')">
       <div class="tourn-card-name">${t.meta.name}</div>
       <div class="tourn-card-date">${subtitle}</div>
       <div class="tourn-stats-row">
@@ -1625,6 +1782,7 @@ function renderTournaments(tourns) {
       </div>
       ${topEntry ? `<div class="tourn-top-row">🏅 <strong>${topEntry.teamName}</strong> went ${topEntry.wins}–${topEntry.losses}</div>` : ''}
       ${topicLine}${coachActions}
+      <div class="tourn-card-open-hint">▼ Click to view details</div>
     </div>`;
   }).join('');
 }
@@ -1838,6 +1996,341 @@ function openDebModal(idx) {
 function closeDebModal() {
   document.getElementById('deb-modal').style.display = 'none';
   document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOURNAMENT  DRILL-DOWN
+═══════════════════════════════════════════════════════════════ */
+
+// Build pair → metro eligibility map from a set of tournaments
+function buildMetroMap(tournaments) {
+  const map = {};
+  tournaments.forEach(t => {
+    t.entries.forEach(e => {
+      if (e.debaters.length < 2) return;
+      const names = e.debaters.map(d => `${d.first} ${d.last}`).sort();
+      const key = names.join(' & ');
+      if (!map[key]) map[key] = { pair: key, finishes: [] };
+      map[key].finishes.push(e.wins);
+    });
+  });
+  const result = {};
+  Object.values(map).forEach(p => {
+    const count40 = p.finishes.filter(w => w >= 4).length;
+    const count31 = p.finishes.filter(w => w >= 3).length;
+    const eligible = count40 >= 1 || count31 >= 2;
+    let distance;
+    if (count40 >= 1 || count31 >= 2) {
+      distance = count40 >= 1 ? '✓ Eligible (4-0)' : '✓ Eligible (2× 3-1+)';
+    } else if (count31 === 1) {
+      distance = 'Need 1 more 3-1+';
+    } else {
+      distance = 'Need a 4-0 or two 3-1+';
+    }
+    result[p.pair] = { eligible, distance };
+  });
+  return result;
+}
+
+// Get the normalized pair key for an entry (same logic as computeMetroEligibility)
+function entryPairKey(entry) {
+  if (!entry.debaters || entry.debaters.length < 2) return null;
+  return entry.debaters.map(d => `${d.first} ${d.last}`).sort().join(' & ');
+}
+
+function toggleTournDetail(id) {
+  const panel = document.getElementById('tourn-detail-panel');
+
+  // Deselect all cards
+  document.querySelectorAll('.tourn-card').forEach(c => c.classList.remove('selected'));
+
+  if (openTournId === id) {
+    // Collapse
+    openTournId = null;
+    panel.innerHTML = '';
+    panel.classList.remove('open');
+    return;
+  }
+
+  openTournId = id;
+  drillQuery = '';
+  drillMetroFilter = 'all';
+  drillSortCol = 'wins';
+  drillSortDir = -1;
+
+  const card = document.getElementById('tourn-card-' + id);
+  if (card) {
+    card.classList.add('selected');
+    // Update hint text
+    const hint = card.querySelector('.tourn-card-open-hint');
+    if (hint) hint.textContent = '▲ Click to collapse';
+  }
+
+  const t = (filteredTourns.length ? filteredTourns : allTournaments).find(x => x.id === id);
+  if (!t) return;
+
+  const metroMap = buildMetroMap(filteredTourns.length ? filteredTourns : allTournaments);
+  panel.classList.add('open');
+  renderTournamentDetail(t, metroMap);
+
+  // Scroll panel into view smoothly
+  setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+}
+
+function closeTournDetail() {
+  openTournId = null;
+  const panel = document.getElementById('tourn-detail-panel');
+  panel.innerHTML = '';
+  panel.classList.remove('open');
+  document.querySelectorAll('.tourn-card').forEach(c => {
+    c.classList.remove('selected');
+    const hint = c.querySelector('.tourn-card-open-hint');
+    if (hint) hint.textContent = '▼ Click to view details';
+  });
+}
+
+function renderTournamentDetail(t, metroMap) {
+  const panel = document.getElementById('tourn-detail-panel');
+
+  // Build header meta
+  const metaParts = [t.meta.date, t.meta.school, t.meta.location].filter(Boolean);
+  const resLine = t.meta.topic
+    ? `<div class="drill-resolution">${t.meta.topicType ? `<em>${t.meta.topicType}</em> — ` : ''}${t.meta.topic}</div>`
+    : '';
+
+  // Win distribution
+  const dist = { 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 };
+  t.entries.forEach(e => {
+    const w = Math.min(Math.max(e.wins, 0), 4);
+    if (dist[w] !== undefined) dist[w]++;
+  });
+  const distChips = [
+    { label: '4-0', w: 4, cls: 'w40' },
+    { label: '3-1', w: 3, cls: 'w31' },
+    { label: '2-2', w: 2, cls: 'w22' },
+    { label: '1-3', w: 1, cls: 'w13' },
+    { label: '0-4', w: 0, cls: 'w04' },
+  ].filter(d => dist[d.w] > 0).map(d =>
+    `<div class="win-dist-chip ${d.cls}">
+      <span class="win-dist-count">${dist[d.w]}</span>
+      ${d.label} ${dist[d.w] === 1 ? 'pair' : 'pairs'}
+    </div>`
+  ).join('');
+
+  panel.innerHTML = `
+    <div class="drill-header">
+      <div class="drill-header-left">
+        <div class="drill-title">${t.meta.name}</div>
+        <div class="drill-meta">${metaParts.join(' · ')}</div>
+        ${resLine}
+      </div>
+      <button class="drill-close-btn" onclick="closeTournDetail()">✕ Close</button>
+    </div>
+
+    <div class="win-dist-strip">${distChips || '<span style="font-family:Josefin Sans,sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.3)">No entries</span>'}</div>
+
+    <div class="drill-section-label">Entry Results</div>
+    <div class="drill-controls">
+      <input class="drill-search" id="drill-search" type="text" placeholder="Search by name…"
+        oninput="drillQuery=this.value; refreshDrillTable()" value="">
+      <button class="drill-filter-btn active" id="df-all" onclick="setDrillMetroFilter('all')">All</button>
+      <button class="drill-filter-btn"         id="df-yes" onclick="setDrillMetroFilter('yes')">Metro Eligible</button>
+      <button class="drill-filter-btn"         id="df-no"  onclick="setDrillMetroFilter('no')">Not Eligible</button>
+    </div>
+    <div class="entry-table-wrap">
+      <table class="entry-table" id="drill-entry-table">
+        <thead>
+          <tr>
+            <th onclick="drillSort('team')">Team <span class="sort-arrow">↕</span></th>
+            <th>Debaters</th>
+            <th class="num" onclick="drillSort('wins')">Wins <span class="sort-arrow">↕</span></th>
+            <th class="num" onclick="drillSort('losses')">Losses <span class="sort-arrow">↕</span></th>
+            <th class="num" onclick="drillSort('winpct')">W/L% <span class="sort-arrow">↕</span></th>
+            <th class="num" onclick="drillSort('speak')">Speaker Pts <span class="sort-arrow">↕</span></th>
+            <th class="num" onclick="drillSort('avgspeak')">Avg Speak <span class="sort-arrow">↕</span></th>
+            <th onclick="drillSort('metro')">Metro Eligible <span class="sort-arrow">↕</span></th>
+            <th>Distance from Finals</th>
+          </tr>
+        </thead>
+        <tbody id="drill-entry-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="drill-section-label" style="margin-top:32px">Individual Speaker Breakdown</div>
+    <div class="speak-table-wrap">
+      <table class="speak-table" id="drill-speak-table">
+        <thead>
+          <tr>
+            <th>Debater</th>
+            <th>Team</th>
+            <th class="num">Wins</th>
+            <th class="num">Losses</th>
+            <th class="num">Total Speaks</th>
+            <th class="num">Avg Speak</th>
+            <th>Round-by-Round</th>
+          </tr>
+        </thead>
+        <tbody id="drill-speak-tbody"></tbody>
+      </table>
+    </div>
+  `;
+
+  // Store tournament and metro map on window for refresh
+  window._drillTourn = t;
+  window._drillMetroMap = metroMap;
+
+  refreshDrillTable();
+  renderDrillSpeakerTable(t);
+}
+
+function setDrillMetroFilter(val) {
+  drillMetroFilter = val;
+  ['all','yes','no'].forEach(v => {
+    const btn = document.getElementById('df-' + v);
+    if (btn) btn.classList.toggle('active', v === val);
+  });
+  refreshDrillTable();
+}
+
+function drillSort(col) {
+  if (drillSortCol === col) {
+    drillSortDir *= -1;
+  } else {
+    drillSortCol = col;
+    drillSortDir = col === 'team' ? 1 : -1;
+  }
+  refreshDrillTable();
+}
+
+function refreshDrillTable() {
+  const t = window._drillTourn;
+  const metroMap = window._drillMetroMap;
+  if (!t) return;
+
+  const q = drillQuery.toLowerCase().trim();
+  let entries = t.entries.map(e => {
+    const pairKey = entryPairKey(e);
+    const metro = pairKey && metroMap[pairKey] ? metroMap[pairKey] : { eligible: false, distance: 'Need a 4-0 or two 3-1+' };
+    const debNames = e.debaters.map(d => `${d.first} ${d.last}`).join(' & ');
+    const total = e.wins + e.losses;
+    const winpct = total > 0 ? e.wins / total : 0;
+    return { ...e, pairKey, metro, debNames, winpct };
+  });
+
+  // Filter by search
+  if (q) {
+    entries = entries.filter(e =>
+      e.teamName.toLowerCase().includes(q) ||
+      e.debNames.toLowerCase().includes(q)
+    );
+  }
+
+  // Filter by metro
+  if (drillMetroFilter === 'yes') entries = entries.filter(e => e.metro.eligible);
+  if (drillMetroFilter === 'no')  entries = entries.filter(e => !e.metro.eligible);
+
+  // Sort
+  entries.sort((a, b) => {
+    let va, vb;
+    switch (drillSortCol) {
+      case 'team':     va = a.teamName.toLowerCase(); vb = b.teamName.toLowerCase(); break;
+      case 'wins':     va = a.wins;     vb = b.wins;     break;
+      case 'losses':   va = a.losses;   vb = b.losses;   break;
+      case 'winpct':   va = a.winpct;   vb = b.winpct;   break;
+      case 'speak':    va = a.totalPts; vb = b.totalPts; break;
+      case 'avgspeak': va = a.avgTeamSpeak; vb = b.avgTeamSpeak; break;
+      case 'metro':    va = a.metro.eligible ? 1 : 0; vb = b.metro.eligible ? 1 : 0; break;
+      default:         va = a.wins; vb = b.wins;
+    }
+    if (typeof va === 'string') return drillSortDir * va.localeCompare(vb);
+    return drillSortDir * (va - vb);
+  });
+
+  // Update sort arrow classes
+  document.querySelectorAll('#drill-entry-table th').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    const arrow = th.querySelector('.sort-arrow');
+    if (arrow) arrow.textContent = '↕';
+  });
+  const colMap = { team: 0, wins: 2, losses: 3, winpct: 4, speak: 5, avgspeak: 6, metro: 7 };
+  const colIdx = colMap[drillSortCol];
+  if (colIdx !== undefined) {
+    const ths = document.querySelectorAll('#drill-entry-table th');
+    if (ths[colIdx]) {
+      const cls = drillSortDir === -1 ? 'sort-desc' : 'sort-asc';
+      ths[colIdx].classList.add(cls);
+      const arrow = ths[colIdx].querySelector('.sort-arrow');
+      if (arrow) arrow.textContent = drillSortDir === -1 ? '↓' : '↑';
+    }
+  }
+
+  const tbody = document.getElementById('drill-entry-tbody');
+  if (!tbody) return;
+  if (!entries.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px;font-family:Josefin Sans,sans-serif;font-size:0.85rem">No matching entries</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = entries.map(e => {
+    const total = e.wins + e.losses;
+    const pct = total > 0 ? (e.wins / total * 100).toFixed(1) : '—';
+    const pillCls = e.winpct >= 0.7 ? 'high' : e.winpct >= 0.45 ? 'mid' : 'low';
+    const eligHtml = e.metro.eligible
+      ? `<span class="metro-eligible yes">✓ Yes</span>`
+      : `<span class="metro-eligible no">✗ No</span>`;
+    const distCls = e.metro.eligible ? 'eligible' : e.metro.distance.includes('1 more') ? 'close' : '';
+    return `<tr>
+      <td><div class="entry-team">${e.teamName}</div></td>
+      <td><div class="entry-deb-names">${e.debNames || '—'}</div></td>
+      <td class="num">${e.wins}</td>
+      <td class="num">${e.losses}</td>
+      <td class="num">${pct !== '—' ? `<span class="win-pill ${pillCls}">${pct}%</span>` : '—'}</td>
+      <td class="num">${e.totalPts.toFixed(1)}</td>
+      <td class="num">${e.avgTeamSpeak.toFixed(2)}</td>
+      <td>${eligHtml}</td>
+      <td><span class="metro-distance ${distCls}">${e.metro.distance}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderDrillSpeakerTable(t) {
+  const tbody = document.getElementById('drill-speak-tbody');
+  if (!tbody) return;
+
+  // Flatten all debaters, attaching team name
+  const rows = [];
+  t.entries.forEach(e => {
+    e.debaters.forEach(d => {
+      rows.push({ ...d, teamName: e.teamName });
+    });
+  });
+
+  rows.sort((a, b) => b.avgSpeak - a.avgSpeak || b.totalSpeaks - a.totalSpeaks);
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No speaker data</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(d => {
+    const realRounds = d.rounds.filter(r => r.result !== 'BYE');
+    const roundBadges = realRounds.map(r => {
+      const cls = r.result === 'W' ? 'color:#4ade80' : 'color:#f87171';
+      return `<span style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;white-space:nowrap">
+        R${r.round} <span style="${cls};font-weight:700">${r.result}</span>
+        <span class="speak-badge" style="margin-left:2px">${r.speak.toFixed(1)}</span>
+      </span>`;
+    }).join('<span style="color:rgba(255,255,255,0.15);margin:0 4px">·</span>');
+    return `<tr>
+      <td style="font-weight:700">${d.first} ${d.last}</td>
+      <td style="color:rgba(255,255,255,0.5);font-size:0.82rem">${d.teamName}</td>
+      <td class="num">${d.wins}</td>
+      <td class="num">${d.losses}</td>
+      <td class="num">${d.totalSpeaks.toFixed(1)}</td>
+      <td class="num"><span class="speak-badge">${d.avgSpeak.toFixed(2)}</span></td>
+      <td style="font-size:0.82rem">${roundBadges || '—'}</td>
+    </tr>`;
+  }).join('');
 }
 
 /* ═══════════════════════════════════════════════════════════════
