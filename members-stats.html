@@ -393,6 +393,16 @@
       color:rgba(255,255,255,0.35);
     }
     .file-drop input[type=file] { display:none; }
+    .file-drop-clear {
+      display:none; margin-left:auto; flex-shrink:0;
+      background:rgba(239,68,68,0.12); border:1.5px solid rgba(239,68,68,0.35);
+      color:#f87171; border-radius:7px; width:32px; height:32px;
+      cursor:pointer; font-size:1.1rem; line-height:1;
+      align-items:center; justify-content:center;
+      transition:background 0.18s, border-color 0.18s, transform 0.1s;
+    }
+    .file-drop.has-file .file-drop-clear { display:flex; }
+    .file-drop-clear:hover { background:rgba(239,68,68,0.28); border-color:rgba(239,68,68,0.7); transform:scale(1.08); }
     .import-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
     .import-status {
       font-family:'Josefin Sans',sans-serif; font-size:0.92rem;
@@ -747,6 +757,7 @@
             <div class="file-drop-label">Final Places CSV</div>
             <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
           </div>
+          <button class="file-drop-clear" title="Remove file" onclick="clearFile(event,'team')">✕</button>
         </div>
         <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
           <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
@@ -781,6 +792,7 @@
             <div class="file-drop-label">Speaker Awards CSV</div>
             <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
           </div>
+          <button class="file-drop-clear" title="Remove file" onclick="clearFile(event,'speak')">✕</button>
         </div>
       </div>
 
@@ -1418,6 +1430,21 @@ function closeDebModal() {
 /* ═══════════════════════════════════════════════════════════════
    IMPORT  FLOW
 ═══════════════════════════════════════════════════════════════ */
+function clearFile(e, type) {
+  e.stopPropagation();
+  if (type === 'team') {
+    teamCsvText = '';
+    document.getElementById('file-team').value = '';
+    document.getElementById('hint-team').textContent = 'Team W/L, speaker totals, round-by-round';
+    document.getElementById('drop-team').classList.remove('has-file');
+  } else {
+    speakCsvText = '';
+    document.getElementById('file-speak').value = '';
+    document.getElementById('hint-speak').textContent = 'Individual speaker points per round';
+    document.getElementById('drop-speak').classList.remove('has-file');
+  }
+}
+
 function onFileSelect(type, input) {
   const file = input.files[0];
   if (!file) return;
