@@ -302,11 +302,11 @@
       font-weight:700; color:#FFD700; margin-bottom:6px;
     }
     .import-panel-sub {
-      font-family:'Josefin Sans',sans-serif; font-size:0.95rem;
+      font-family:'Josefin Sans',sans-serif; font-size:1.05rem;
       color:rgba(255,255,255,0.6); margin-bottom:24px; line-height:1.7;
     }
     .import-section-label {
-      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
       font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
       color:#e8c84a; margin-bottom:12px; margin-top:32px;
       border-bottom:1px solid rgba(212,160,23,0.25); padding-bottom:8px;
@@ -316,16 +316,16 @@
     .main-textarea {
       flex:1; background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
       border-radius:8px; padding:11px 14px; color:#fff;
-      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
-      outline:none; transition:border-color 0.2s; resize:vertical;
-      min-height:110px; box-sizing:border-box; line-height:1.5;
+      font-family:'Josefin Sans',sans-serif; font-size:0.95rem;
+      outline:none; transition:border-color 0.2s; resize:both;
+      min-height:110px; box-sizing:border-box; line-height:1.5; width:100%;
     }
     .main-textarea:focus { border-color:rgba(212,160,23,0.6); }
     .main-textarea::placeholder { color:rgba(255,255,255,0.2); }
     .parse-btn {
       white-space:nowrap; border-radius:10px;
       padding:13px 22px; cursor:pointer;
-      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.92rem;
       font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
       transition:background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s; flex-shrink:0;
       display:inline-flex; align-items:center; gap:8px;
@@ -356,14 +356,14 @@
     }
     .import-field { display:flex; flex-direction:column; gap:7px; }
     .import-label {
-      font-family:'Josefin Sans',sans-serif; font-size:0.62rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
       font-weight:700; letter-spacing:0.13em; text-transform:uppercase;
       color:var(--gold);
     }
     .import-input {
       background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
       border-radius:8px; padding:11px 14px; color:#fff;
-      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.95rem;
       outline:none; transition:border-color 0.2s;
       box-sizing:border-box; width:100%;
     }
@@ -375,27 +375,27 @@
     @media(max-width:600px){ .import-file-row { grid-template-columns:1fr; } }
     .file-drop {
       border:2px dashed rgba(212,160,23,0.25); border-radius:10px;
-      padding:14px 18px; cursor:pointer;
+      padding:22px 24px; cursor:pointer;
       transition:border-color 0.2s, background 0.2s;
-      display:flex; align-items:center; gap:14px;
+      display:flex; align-items:center; gap:18px;
     }
     .file-drop:hover, .file-drop.has-file { border-color:rgba(212,160,23,0.55); background:rgba(212,160,23,0.04); }
     .file-drop-icon { flex-shrink:0; display:flex; align-items:center; }
-    .file-drop-icon svg { width:44px; height:44px; }
-    .file-drop-text { display:flex; flex-direction:column; gap:3px; }
+    .file-drop-icon svg { width:62px; height:62px; }
+    .file-drop-text { display:flex; flex-direction:column; gap:5px; }
     .file-drop-label {
-      font-family:'Josefin Sans',sans-serif; font-size:0.7rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
       font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
       color:rgba(255,255,255,0.6);
     }
     .file-drop-hint {
-      font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
       color:rgba(255,255,255,0.35);
     }
     .file-drop input[type=file] { display:none; }
     .import-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
     .import-status {
-      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.92rem;
       color:rgba(255,255,255,0.5);
     }
     .import-status.success { color:#4ade80; }
