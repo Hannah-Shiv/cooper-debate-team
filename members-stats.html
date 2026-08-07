@@ -214,11 +214,11 @@
       border-radius:14px; padding:24px;
     }
     .chart-card-title {
-      font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
       letter-spacing:0.15em; text-transform:uppercase;
-      color:rgba(255,255,255,0.6); margin-bottom:20px;
+      color:rgba(255,255,255,0.82); margin-bottom:20px;
     }
-    .chart-canvas-wrap { position:relative; height:260px; }
+    .chart-canvas-wrap { position:relative; height:380px; }
 
     /* ── Round analysis ────────────────────────────────────── */
     .round-bars { display:flex; gap:12px; align-items:flex-end; height:120px; }
@@ -760,11 +760,53 @@
     .ss-sub {
       font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.72);
     }
+    .ss-card { cursor:pointer; }
+    .ss-card:hover { border-color:rgba(212,160,23,0.45); box-shadow:0 6px 24px rgba(0,0,0,0.3); }
+
+    /* ── Overview summary widgets ──────────────────────────── */
+    .ov-widgets-grid {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:16px; margin-bottom:48px;
+    }
+    .ov-widget {
+      background:rgba(5,18,65,0.88); border:1px solid rgba(212,160,23,0.18);
+      border-radius:14px; padding:22px 24px;
+      display:flex; flex-direction:column; gap:14px;
+    }
+    .ov-widget-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase; color:rgba(255,255,255,0.72);
+    }
+    .ov-widget-rows { display:flex; flex-direction:column; gap:8px; }
+    .ov-widget-row {
+      display:flex; justify-content:space-between; align-items:center;
+      font-family:'Josefin Sans',sans-serif; font-size:0.88rem; color:#fff;
+      padding:6px 0; border-bottom:1px solid rgba(255,255,255,0.05);
+    }
+    .ov-widget-row:last-child { border-bottom:none; }
+    .ov-widget-badge {
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+      color:#FFD700;
+    }
+    .ov-widget-link {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:rgba(212,160,23,0.85); cursor:pointer; background:none; border:none;
+      padding:0; transition:color 0.15s; align-self:flex-start;
+    }
+    .ov-widget-link:hover { color:#FFD700; }
+    .ov-widget-headline {
+      font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-weight:700;
+      color:#FFD700; line-height:1;
+    }
+    .ov-widget-sub {
+      font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.65);
+    }
 
     /* ── Three-chart grid ──────────────────────────────────── */
     .charts-grid-3 {
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
-      gap:20px;
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(520px,1fr));
+      gap:24px;
     }
     @media(max-width:700px){ .charts-grid-3 { grid-template-columns:1fr; } }
 
@@ -1205,12 +1247,39 @@
     <!-- ══ OVERVIEW TAB ══ -->
     <div class="tab-pane active" id="tab-overview">
 
-      <!-- Season stat strip -->
+      <!-- Season stat strip (click any card → Tournaments tab) -->
       <div class="season-strip" id="season-strip">
-        <div class="ss-card"><div class="ss-label">Tournaments</div><div class="ss-value" id="ss-tourns">—</div><div class="ss-sub">competed</div></div>
-        <div class="ss-card"><div class="ss-label">Total Rounds</div><div class="ss-value" id="ss-rounds">—</div><div class="ss-sub">prelim rounds played</div></div>
-        <div class="ss-card"><div class="ss-label">Overall W / L</div><div class="ss-value" id="ss-record">—</div><div class="ss-sub" id="ss-winrate">—</div></div>
-        <div class="ss-card"><div class="ss-label">Avg Speaker Pts</div><div class="ss-value" id="ss-speak">—</div><div class="ss-sub">per round</div></div>
+        <div class="ss-card" onclick="switchTab('tournaments')" title="Go to Tournaments"><div class="ss-label">Tournaments</div><div class="ss-value" id="ss-tourns">—</div><div class="ss-sub">competed</div></div>
+        <div class="ss-card" onclick="switchTab('tournaments')" title="Go to Tournaments"><div class="ss-label">Total Rounds</div><div class="ss-value" id="ss-rounds">—</div><div class="ss-sub">prelim rounds played</div></div>
+        <div class="ss-card" onclick="switchTab('tournaments')" title="Go to Tournaments"><div class="ss-label">Overall W / L</div><div class="ss-value" id="ss-record">—</div><div class="ss-sub" id="ss-winrate">—</div></div>
+        <div class="ss-card" onclick="switchTab('pairs')" title="Go to Debaters &amp; Pairs"><div class="ss-label">Avg Speaker Pts</div><div class="ss-value" id="ss-speak">—</div><div class="ss-sub">per round</div></div>
+      </div>
+
+      <!-- Quick-look summary widgets -->
+      <div class="ov-widgets-grid" id="ov-widgets-grid">
+        <!-- Leaderboard widget -->
+        <div class="ov-widget">
+          <div class="ov-widget-title">Top Debaters</div>
+          <div class="ov-widget-rows" id="ov-lb-rows">
+            <div class="ov-widget-row" style="color:rgba(255,255,255,0.4)">Loading…</div>
+          </div>
+          <button class="ov-widget-link" onclick="switchTab('pairs')">See full leaderboard →</button>
+        </div>
+        <!-- Metro eligibility widget -->
+        <div class="ov-widget">
+          <div class="ov-widget-title">Metro Eligibility</div>
+          <div class="ov-widget-rows" id="ov-metro-rows">
+            <div class="ov-widget-row" style="color:rgba(255,255,255,0.4)">Loading…</div>
+          </div>
+          <button class="ov-widget-link" onclick="document.getElementById('metro-table').scrollIntoView({behavior:'smooth',block:'start'})">See full tracker ↓</button>
+        </div>
+        <!-- Analytics widget -->
+        <div class="ov-widget">
+          <div class="ov-widget-title">Team Analytics</div>
+          <div class="ov-widget-headline" id="ov-analytics-rate">—</div>
+          <div class="ov-widget-sub" id="ov-analytics-sub">overall win rate</div>
+          <button class="ov-widget-link" onclick="switchTab('analytics')">Go to Analytics →</button>
+        </div>
       </div>
 
       <!-- Metro Finals tracker -->
@@ -1322,10 +1391,10 @@
 
       <div class="stat-section">
         <div class="stat-section-title">Round Win Rate</div>
-        <div class="chart-card" style="max-width:600px">
+        <div class="chart-card">
           <div class="chart-card-title">How Cooper Performs by Round</div>
-          <div class="chart-canvas-wrap" style="height:220px">
-            <div class="round-bars" id="round-bars" style="height:160px; margin-bottom:12px"></div>
+          <div class="chart-canvas-wrap" style="height:320px">
+            <div class="round-bars" id="round-bars" style="height:240px; margin-bottom:14px"></div>
             <p style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.55);text-align:center;margin:0">
               Win % for Cooper in each prelim round across all tournaments
             </p>
@@ -2515,6 +2584,7 @@ function renderFiltered() {
 
   updateSeasonBadges();
   renderSeasonStrip(season);
+  renderOverviewSummary(leaderboard, metro, season);
   renderMetroTable(metro);
   if (xfLb) xfLb.apply(); else _paintLeaderboard(leaderboard);
   renderTournaments(tourns);
@@ -2612,6 +2682,45 @@ function renderAll() {
   }
 
   renderFiltered();
+}
+
+/* ── Overview summary widgets ───────────────────────────────── */
+function renderOverviewSummary(lb, metro, season) {
+  // Leaderboard top-3 by win rate (min 1 tournament)
+  const top3 = lb
+    .filter(d => d.tournaments >= 1)
+    .sort((a, b) => parseFloat(b.winRate) - parseFloat(a.winRate))
+    .slice(0, 3);
+  const lbRows = document.getElementById('ov-lb-rows');
+  if (lbRows) {
+    lbRows.innerHTML = top3.length
+      ? top3.map((d, i) => `
+          <div class="ov-widget-row">
+            <span>${['🥇','🥈','🥉'][i]} ${d.name}</span>
+            <span class="ov-widget-badge">${d.winRate}%</span>
+          </div>`).join('')
+      : '<div class="ov-widget-row" style="color:rgba(255,255,255,0.4)">No data yet</div>';
+  }
+
+  // Metro eligibility summary
+  const eligible = metro.filter(p => p.eligible).length;
+  const atRisk = metro.filter(p => !p.eligible)
+    .sort((a, b) => (b.count31 + b.count40 * 2) - (a.count31 + a.count40 * 2))
+    .slice(0, 3);
+  const metroRows = document.getElementById('ov-metro-rows');
+  if (metroRows) {
+    const header = `<div class="ov-widget-row"><span>Eligible pairs</span><span class="ov-widget-badge">${eligible} / ${metro.length}</span></div>`;
+    const risk = atRisk.length
+      ? atRisk.map(p => `<div class="ov-widget-row"><span style="font-size:0.82rem">${p.pair}</span><span style="font-size:0.78rem;color:rgba(255,255,255,0.55)">${p.distanceLabel||'Needs more'}</span></div>`).join('')
+      : '';
+    metroRows.innerHTML = header + risk || '<div class="ov-widget-row" style="color:rgba(255,255,255,0.4)">No data yet</div>';
+  }
+
+  // Analytics headline — overall win rate
+  const rateEl = document.getElementById('ov-analytics-rate');
+  const subEl  = document.getElementById('ov-analytics-sub');
+  if (rateEl) rateEl.textContent = season.winRate !== '—' ? season.winRate + '%' : '—';
+  if (subEl)  subEl.textContent  = season.winRate !== '—' ? `win rate · ${season.totalW}W ${season.totalL}L` : 'No data yet';
 }
 
 function renderSeasonStrip(season) {
@@ -2720,8 +2829,8 @@ function renderTournaments(tourns) {
 
 function renderCharts(lb, tourns) {
   const chartAxisOpts = {
-    ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } },
-    grid: { color: 'rgba(255,255,255,0.05)' }
+    ticks: { color: 'rgba(255,255,255,0.72)', font: { family: 'Josefin Sans', size: 13 } },
+    grid: { color: 'rgba(255,255,255,0.06)' }
   };
 
   /* ── Top Speakers bar ── */
