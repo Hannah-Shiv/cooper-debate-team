@@ -934,7 +934,7 @@
     /* ── Drill data modal ───────────────────────────────────── */
     .drill-modal-box {
       background:#0d1d3d; border:1px solid rgba(212,160,23,0.35);
-      border-radius:16px; width:min(720px,95vw);
+      border-radius:16px; width:min(980px,95vw);
       max-height:88vh; overflow-y:auto; padding:28px 32px;
     }
     .drill-modal-header {
@@ -1600,8 +1600,8 @@
             <div class="chart-canvas-wrap"><canvas id="chart-metro-summary"></canvas></div>
           </div>
         </div>
-        <!-- Metro Eligibility chart — full width below the 3-chart grid -->
-        <div class="chart-card" style="margin-top:20px">
+        <!-- Metro Eligibility chart — hidden per coach request -->
+        <div class="chart-card" style="margin-top:20px;display:none">
           <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px">
             <div class="chart-card-title" style="margin:0">Metro Finals Eligibility Progress</div>
             <div id="metro-chart-legend" style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;display:flex;gap:14px;flex-wrap:wrap;color:rgba(255,255,255,0.55)">
@@ -3233,11 +3233,11 @@ function renderCharts(lb, tourns) {
       ctx.save();
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = 'rgba(255,255,255,0.9)';
-      ctx.font = "700 2rem 'Cormorant Garamond', serif";
-      ctx.fillText(mTotal, cx, cy - 10);
-      ctx.font = "600 0.7rem 'Josefin Sans', sans-serif";
-      ctx.fillStyle = 'rgba(255,255,255,0.4)';
-      ctx.fillText('PAIRS', cx, cy + 14);
+      ctx.font = "700 3rem 'Cormorant Garamond', serif";
+      ctx.fillText(mTotal, cx, cy - 14);
+      ctx.font = "700 0.8rem 'Josefin Sans', sans-serif";
+      ctx.fillStyle = 'rgba(255,255,255,0.45)';
+      ctx.fillText('PAIRS', cx, cy + 20);
       ctx.restore();
     }
   };
@@ -3257,25 +3257,27 @@ function renderCharts(lb, tourns) {
         // Line points
         const x1 = cx + r * 1.03 * Math.cos(mid);
         const y1 = cy + r * 1.03 * Math.sin(mid);
-        const x2 = cx + r * 1.22 * Math.cos(mid);
-        const y2 = cy + r * 1.22 * Math.sin(mid);
-        const tx = cx + r * 1.28 * Math.cos(mid);
-        const ty = cy + r * 1.28 * Math.sin(mid);
+        const x2 = cx + r * 1.28 * Math.cos(mid);
+        const y2 = cy + r * 1.28 * Math.sin(mid);
+        const tx = cx + r * 1.35 * Math.cos(mid);
+        const ty = cy + r * 1.35 * Math.sin(mid);
         // Draw line
         ctx.save();
         ctx.strokeStyle = mSegBorders[i];
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
         // Draw labels
         const right = Math.cos(mid) >= 0;
         ctx.textAlign = right ? 'left' : 'right';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = mSegColors[i];
-        ctx.font = "700 0.82rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${mSegLabels[i]}  ${val}`, tx, ty - 9);
-        ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.font = "400 0.72rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${pct}%`, tx, ty + 8);
+        ctx.font = "700 1rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${mSegLabels[i]}  ${val}`, tx, ty - 11);
+        ctx.fillStyle = mSegColors[i];
+        ctx.globalAlpha = 0.75;
+        ctx.font = "600 0.88rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${pct}%`, tx, ty + 10);
+        ctx.globalAlpha = 1;
         ctx.restore();
       });
     }
@@ -3300,25 +3302,10 @@ function renderCharts(lb, tourns) {
       options: {
         responsive: true, maintainAspectRatio: false,
         cutout: '58%',
-        layout: { padding: 70 },
+        layout: { padding: 90 },
         onClick: (evt, els) => { if (els.length) showMetroDrill(els[0].index); },
         plugins: {
-          legend: {
-            position: 'bottom',
-            labels: {
-              color: 'rgba(255,255,255,0.82)',
-              font: { family: 'Josefin Sans', size: 13 },
-              padding: 20, boxWidth: 14, boxHeight: 14,
-              generateLabels: () => mSegLabels.map((lbl, i) => ({
-                text: `${lbl}  ·  ${mSegCounts[i]} pair${mSegCounts[i] !== 1 ? 's' : ''}`,
-                fillStyle: mSegColors[i],
-                strokeStyle: mSegBorders[i],
-                lineWidth: 1.5,
-                hidden: false,
-                index: i,
-              })),
-            }
-          },
+          legend: { display: false },
           tooltip: { callbacks: {
             title: items => mSegLabels[items[0].dataIndex],
             label: c => {
@@ -3737,7 +3724,7 @@ function showMetroDrill(segIndex) {
   }
   const bodyHtml = `<div style="overflow-x:auto">
     <p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.42);margin:0 0 16px">${descs[segIndex]}</p>
-    <table class="lb-table" style="min-width:520px">
+    <table class="lb-table" style="min-width:700px;white-space:nowrap">
       <thead><tr>
         <th>Pair</th>
         <th class="num">Qualifying Finishes</th>
