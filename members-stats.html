@@ -1122,7 +1122,7 @@
     .entry-table td { padding:13px 14px; font-size:0.88rem; color:rgba(255,255,255,0.88); vertical-align:middle; }
     .entry-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
     .entry-team { font-weight:700; color:#fff; }
-    .entry-deb-names { font-size:0.75rem; color:rgba(255,255,255,0.45); margin-top:2px; }
+    .entry-deb-names { font-size:1rem; color:#fff; font-weight:700; }
 
     /* Speaker breakdown table */
     .drill-section-label {
@@ -3339,7 +3339,7 @@ function showWinDistDrill(winCount, label, tourns) {
           <td style="font-size:0.85rem">${r.tournament}</td>
           <td style="font-size:0.78rem;color:rgba(255,255,255,0.5)">${r.date}</td>
           <td style="font-size:0.85rem">${r.team}</td>
-          <td style="font-size:0.82rem;color:rgba(255,255,255,0.7)">${r.debaters}</td>
+          <td style="font-size:1rem;color:#fff;font-weight:700">${r.debaters}</td>
           <td class="num" style="color:#22c55e">${r.wins}</td>
           <td class="num" style="color:rgba(239,68,68,0.8)">${r.losses}</td>
         </tr>`).join('')}
@@ -3397,7 +3397,7 @@ function showRoundDrill(roundNum, wins, losses) {
         ${rows.sort((a,b) => (a.result === 'W' ? -1 : 1) || a.tournament.localeCompare(b.tournament))
           .map(r => `<tr>
             <td style="font-size:0.82rem">${r.tournament}</td>
-            <td style="font-size:0.82rem;color:rgba(255,255,255,0.75)">${r.debaters}</td>
+            <td style="font-size:1rem;color:#fff;font-weight:700">${r.debaters}</td>
             <td class="num" style="font-weight:700;color:${r.result==='W'?'#22c55e':'#e03535'}">${r.result}</td>
             <td style="font-size:0.75rem;color:rgba(255,255,255,0.45)">${r.side}</td>
           </tr>`).join('')}
