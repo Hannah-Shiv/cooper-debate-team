@@ -946,7 +946,7 @@
     /* #drill-modal-body: flex column, NOT the scroll container */
     #drill-modal-body { display:flex; flex-direction:column; flex:1; overflow:visible; padding:16px 32px 0; }
     /* Table scroll wrapper — THIS is the scroll container; thead sticks inside it */
-    .drill-table-scroll { overflow-y:auto; flex:1; padding-bottom:28px; }
+    .drill-table-scroll { overflow-y:auto; flex:1; padding-bottom:28px; overscroll-behavior:contain; }
     .drill-table-scroll .lb-table { width:100%; table-layout:auto; }
     .drill-table-scroll .lb-table th { white-space:normal; min-width:60px; }
     .drill-table-scroll thead th,
