@@ -56,21 +56,21 @@
     .portal-page-title { margin-bottom:36px; }
     .portal-page-title h1 {
       font-family:'Cormorant Garamond',serif;
-      font-size:clamp(2rem,4vw,3rem); font-weight:700;
+      font-size:clamp(2.6rem,5vw,3.8rem); font-weight:700;
       color:#FFD700; letter-spacing:0.02em; line-height:1.1; margin:0;
       text-shadow:0 0 40px rgba(255,215,0,0.25);
     }
     .portal-page-title p {
-      margin:8px 0 0; font-family:'Josefin Sans',sans-serif;
-      font-size:0.85rem; color:rgba(255,255,255,0.5); letter-spacing:0.04em;
+      margin:10px 0 0; font-family:'Josefin Sans',sans-serif;
+      font-size:1rem; color:rgba(255,255,255,0.55); letter-spacing:0.06em;
     }
 
     /* ── Section headings ──────────────────────────────────── */
-    .stat-section { margin-bottom:52px; }
+    .stat-section { margin-bottom:56px; }
     .stat-section-title {
-      font-family:'Josefin Sans',sans-serif; font-size:0.7rem;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
       font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
-      color:rgba(232,184,75,0.8); margin-bottom:18px;
+      color:rgba(232,184,75,0.85); margin-bottom:22px;
       display:flex; align-items:center; gap:10px;
     }
     .stat-section-title::after {
@@ -91,16 +91,16 @@
     }
     .ov-card:hover { border-color:rgba(212,160,23,0.4); box-shadow:0 8px 28px rgba(0,0,0,0.3); }
     .ov-label {
-      font-family:'Josefin Sans',sans-serif; font-size:0.6rem; font-weight:700;
-      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.45);
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.5);
     }
     .ov-value {
-      font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-weight:700;
+      font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:700;
       color:#FFD700; line-height:1;
     }
     .ov-sub {
-      font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
-      color:rgba(255,255,255,0.5);
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
+      color:rgba(255,255,255,0.55);
     }
     .ov-card.accent { border-color:rgba(212,160,23,0.4); background:rgba(212,160,23,0.07); }
     .ov-card.accent .ov-value { color:#fff; }
@@ -119,9 +119,9 @@
     }
     .lb-table thead tr { background:rgba(20,50,120,0.6); }
     .lb-table th {
-      padding:13px 16px; font-size:0.6rem; font-weight:700;
+      padding:14px 18px; font-size:0.68rem; font-weight:700;
       letter-spacing:0.14em; text-transform:uppercase;
-      color:rgba(232,184,75,0.75); text-align:left; white-space:nowrap;
+      color:rgba(232,184,75,0.8); text-align:left; white-space:nowrap;
     }
     .lb-table th.num { text-align:right; }
     .lb-table tbody tr {
@@ -130,7 +130,7 @@
     }
     .lb-table tbody tr:hover { background:rgba(212,160,23,0.06); }
     .lb-table td {
-      padding:14px 16px; font-size:0.85rem; color:rgba(255,255,255,0.88);
+      padding:15px 18px; font-size:0.92rem; color:rgba(255,255,255,0.9);
     }
     .lb-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
     .lb-rank {
@@ -450,27 +450,34 @@
 
 <!-- ── Fixed top bar ─────────────────────────────────────────── -->
 <div class="mp-topbar"></div>
-<div class="mub-bar" id="mub-bar">
-  <span class="mub-name"  id="member-name"></span>
+<a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+  <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+
+<div class="member-userbar" id="member-userbar">
+  <div class="mub-sep"></div>
+  <span class="mub-name" id="member-name"></span>
   <div class="mub-sep"></div>
   <span class="mub-email" id="member-email"></span>
   <div class="mub-sep"></div>
   <span class="mub-badge" id="member-role-badge">✓ Team Member</span>
   <div class="mub-sep"></div>
   <button class="mub-signout" onclick="handleSignOut()">
-    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
     Sign Out
   </button>
 </div>
 
 <!-- ── Dome nav ──────────────────────────────────────────────── -->
+<script>window.__NAV_PAGE = 'stats';</script>
 <div id="dome-nav-root"></div>
 
 <!-- ── Loading state ─────────────────────────────────────────── -->
 <div id="mp-loading" class="auth-wrap">
-  <div style="text-align:center">
+  <div class="auth-box">
     <div class="spinner"></div>
-    <p class="auth-sub">Loading statistics…</p>
+    <h1 class="auth-title">Loading…</h1>
+    <p class="auth-sub">Checking your session.</p>
   </div>
 </div>
 
@@ -610,7 +617,10 @@
       <div class="main-paste-row">
         <textarea class="main-textarea" id="imp-main"
           placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
-        <button class="parse-btn" onclick="parseMainText()">Parse →</button>
+        <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+          <button class="parse-btn" onclick="parseMainText()">Parse →</button>
+          <button class="parse-btn" onclick="clearImportForm()" style="background:rgba(239,68,68,0.1);border-color:rgba(239,68,68,0.3);color:#f87171;">Clear ✕</button>
+        </div>
       </div>
 
       <!-- Step 2: Parsed / editable fields -->
@@ -756,11 +766,14 @@ function toggleImportPanel() {
 
 /* ── Parse Tabroom "Main" text → auto-fill fields ───────────── */
 function parseMainText() {
-  const text = document.getElementById('imp-main').value.trim();
+  // Strip any leading "Main" label that Tabroom includes on the copy
+  const raw = document.getElementById('imp-main').value;
+  const text = raw.replace(/^\s*Main\s*/i, '').trim();
   if (!text) return;
 
   // 1. Tournament name: everything before " tournament on "
-  const nameMatch = text.match(/^(.+?)\s+tournament\s+on\s+/i);
+  //    Works even if it's not at the very start of the string
+  const nameMatch = text.match(/(.+?)\s+tournament\s+on\s+/i);
   if (nameMatch) document.getElementById('imp-name').value = nameMatch[1].trim();
 
   // 2. Date: "on Saturday, October 11, 2025"
@@ -771,17 +784,29 @@ function parseMainText() {
   const schoolMatch = text.match(/held\s+at\s+(.+?)\s+in\s+/i);
   if (schoolMatch) document.getElementById('imp-school').value = schoolMatch[1].trim();
 
-  // 4. City, State: text between "in " and the period after the school
+  // 4. City, State: "in Chantilly, Virginia."
   const cityMatch = text.match(/held\s+at\s+.+?\s+in\s+([A-Z][^.]+?)\./i);
   if (cityMatch) document.getElementById('imp-location').value = cityMatch[1].trim();
 
   // 5. Debate format: "Public Forum Topic—" → "Public Forum"
-  const fmtMatch = text.match(/([\w][\w\s\-]*?)\s+Topic\s*[—\-]/i);
+  const fmtMatch = text.match(/([\w][\w\s\-]*?)\s+Topic\s*[—\-–]/i);
   if (fmtMatch) document.getElementById('imp-topic-type').value = fmtMatch[1].trim();
 
   // 6. Resolution: "Resolved: <topic>."
   const topicMatch = text.match(/Resolved:\s*(.+?)\.(?:\s|$)/i);
   if (topicMatch) document.getElementById('imp-topic').value = topicMatch[1].trim();
+}
+
+/* ── Clear all import form fields ───────────────────────────── */
+function clearImportForm() {
+  ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic-type','imp-topic']
+    .forEach(id => document.getElementById(id).value = '');
+  teamCsvText = speakCsvText = null;
+  ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('hint-team').textContent = 'Team W/L, speaker totals, round-by-round';
+  document.getElementById('hint-speak').textContent = 'Individual speaker points per round';
+  ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
+  setStatus('', '');
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1370,7 +1395,6 @@ function confirmDelete(id) {
 }
 </script>
 
-<script>window.__NAV_PAGE = 'stats';</script>
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
