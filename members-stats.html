@@ -3332,13 +3332,12 @@ function showWinDistDrill(winCount, label, tourns) {
   const bodyHtml = `<div style="overflow-x:auto">
     <table class="lb-table" style="min-width:420px">
       <thead><tr>
-        <th>Tournament</th><th>Date</th><th>Team</th><th>Debaters</th><th class="num">W</th><th class="num">L</th>
+        <th>Tournament</th><th>Date</th><th>Debaters</th><th class="num">W</th><th class="num">L</th>
       </tr></thead>
       <tbody>
         ${rows.map(r => `<tr>
           <td style="font-size:0.85rem">${r.tournament}</td>
           <td style="font-size:0.78rem;color:rgba(255,255,255,0.5)">${r.date}</td>
-          <td style="font-size:0.85rem">${r.team}</td>
           <td style="font-size:1rem;color:#fff;font-weight:700">${r.debaters}</td>
           <td class="num" style="color:#22c55e">${r.wins}</td>
           <td class="num" style="color:rgba(239,68,68,0.8)">${r.losses}</td>
@@ -4073,7 +4072,6 @@ function renderTournamentDetail(t, metroMap) {
       <table class="entry-table" id="drill-entry-table">
         <thead>
           <tr>
-            <th>Team</th>
             <th>Debaters</th>
             <th class="num">Wins</th>
             <th class="num">Losses</th>
@@ -4160,7 +4158,6 @@ function _paintDrillEntries(data) {
         }).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>')
       : (e.debNames || '—');
     return `<tr>
-      <td><div class="entry-team">${e.teamName}</div></td>
       <td>${clickableDebs}</td>
       <td class="num">${e.wins}</td>
       <td class="num">${e.losses}</td>
