@@ -923,7 +923,7 @@
     .import-modal-box {
       background:rgba(5,18,65,0.98); border:1px solid rgba(212,160,23,0.3);
       border-radius:16px; width:min(880px,95vw);
-      max-height:92vh; display:flex; flex-direction:column; overflow:hidden;
+      max-height:92vh; display:flex; flex-direction:column; overflow:clip;
     }
     .import-modal-header {
       display:flex; justify-content:space-between; align-items:flex-start;
@@ -936,7 +936,7 @@
     .drill-modal-box {
       background:#0d1d3d; border:1px solid rgba(212,160,23,0.35);
       border-radius:16px; width:min(980px,95vw);
-      max-height:88vh; display:flex; flex-direction:column; overflow:hidden;
+      max-height:88vh; display:flex; flex-direction:column; overflow:clip;
     }
     .drill-modal-header {
       display:flex; justify-content:space-between; align-items:center;
@@ -3271,7 +3271,9 @@ function renderCharts(lb, tourns) {
         const x1 = cx + r * 1.03 * Math.cos(mid);
         const y1 = cy + r * 1.03 * Math.sin(mid);
         const ex  = cx + r * 1.22 * Math.cos(mid);
-        const ey  = cy + r * 1.22 * Math.sin(mid);
+        // Clamp ey so labels always stay inside the canvas (16px margin top/bottom)
+        const eyRaw = cy + r * 1.22 * Math.sin(mid);
+        const ey = Math.max(28, Math.min(chart.height - 28, eyRaw));
         // Leg 2: horizontal from elbow to label column (near canvas edge)
         const labelColX = goRight ? width - 14 : 14;
 
@@ -3280,7 +3282,7 @@ function renderCharts(lb, tourns) {
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(x1, y1);
-        ctx.lineTo(ex, ey);       // radial leg
+        ctx.lineTo(ex, ey);       // radial leg (may have a slight vertical shift when clamped)
         ctx.lineTo(labelColX, ey); // horizontal leg
         ctx.stroke();
 
@@ -3290,16 +3292,16 @@ function renderCharts(lb, tourns) {
         ctx.fillStyle = mSegColors[i];
         ctx.fill();
 
-        // Labels: flush to the canvas edge
+        // Labels: flush to the canvas edge (+1 font size bump)
         const lx = goRight ? labelColX - 8 : labelColX + 8;
         ctx.textAlign = goRight ? 'right' : 'left';
         ctx.textBaseline = 'middle';
         ctx.fillStyle = mSegColors[i];
-        ctx.font = "700 1rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${mSegLabels[i]}  ${val}`, lx, ey - 11);
+        ctx.font = "700 1.1rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${mSegLabels[i]}  ${val}`, lx, ey - 13);
         ctx.globalAlpha = 0.75;
-        ctx.font = "600 0.88rem 'Josefin Sans', sans-serif";
-        ctx.fillText(`${pct}%`, lx, ey + 10);
+        ctx.font = "600 1rem 'Josefin Sans', sans-serif";
+        ctx.fillText(`${pct}%`, lx, ey + 12);
         ctx.globalAlpha = 1;
         ctx.restore();
       });
