@@ -4217,10 +4217,19 @@ async function runImport() {
   const topicType = document.getElementById('imp-topic-type').value.trim();
   const topic     = document.getElementById('imp-topic').value.trim();
 
-  if (!name) { setStatus('error', 'Tournament name is required — run Parse first or fill it in manually.'); return; }
-  if (!date) { setStatus('error', 'Date is required — run Parse first or fill it in manually.'); return; }
-  if (!teamCsvText)  { setStatus('error', 'Upload the Entry Results CSV (Step 3).'); return; }
-  if (!speakCsvText) { setStatus('error', 'Upload the Speaker Awards CSV (Step 3).'); return; }
+  const missing = [];
+  if (!name)      missing.push('Tournament Name');
+  if (!date)      missing.push('Date');
+  if (!school)    missing.push('Host School');
+  if (!location)  missing.push('City, State');
+  if (!topicType) missing.push('Debate Format');
+  if (!topic)     missing.push('Resolution');
+  if (!teamCsvText)  missing.push('Entry Results CSV');
+  if (!speakCsvText) missing.push('Speaker Awards CSV');
+  if (missing.length) {
+    setStatus('error', `Missing required fields: ${missing.join(' · ')}`);
+    return;
+  }
 
   setStatus('', 'Parsing CSVs…');
 
