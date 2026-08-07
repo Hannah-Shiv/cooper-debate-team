@@ -900,13 +900,43 @@
 
     /* ── Tournament detail panel ───────────────────────────── */
     .tourn-detail-panel {
-      display:none; margin-top:20px;
-      background:rgba(7,20,50,0.75); border:1px solid rgba(212,160,23,0.25);
-      border-radius:16px; padding:32px;
+      display:none; margin-top:24px;
+      background:rgba(5,18,65,0.92); border:1.5px solid rgba(212,160,23,0.35);
+      border-radius:18px; padding:36px;
       animation:panelIn 0.22s cubic-bezier(0.34,1.56,0.64,1);
     }
     .tourn-detail-panel.open { display:block; }
     @keyframes panelIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+    .drill-footer {
+      display:flex; justify-content:flex-end; padding-top:24px;
+      margin-top:24px; border-top:1px solid rgba(255,255,255,0.07);
+    }
+
+    /* ── Tourn season filter bar ───────────────────────────── */
+    .tourn-season-bar {
+      display:flex; align-items:center; gap:10px; margin-bottom:20px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.75rem;
+      font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+      color:rgba(255,255,255,0.55);
+    }
+    .tourn-season-sel {
+      font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      padding:7px 14px; border-radius:8px; cursor:pointer;
+      border:1.5px solid rgba(212,160,23,0.45); background:rgba(5,18,65,0.88);
+      color:#e8c84a; outline:none;
+    }
+
+    /* ── Collapsible sections ──────────────────────────────── */
+    .section-collapse-btn {
+      cursor:pointer; background:none; border:none;
+      color:rgba(255,255,255,0.45); font-size:0.72rem;
+      padding:2px 6px; border-radius:4px; transition:color 0.15s;
+      flex-shrink:0; letter-spacing:0;
+    }
+    .section-collapse-btn:hover { color:#FFD700; }
+    .stat-section.collapsed > *:not(.stat-section-title) { display:none; }
+    .stat-section.collapsed > .stat-section-title { margin-bottom:0; }
 
     .drill-header {
       display:flex; flex-wrap:wrap; justify-content:space-between;
@@ -1284,7 +1314,7 @@
 
       <!-- Metro Finals tracker -->
       <div class="stat-section">
-        <div class="stat-section-title">Metro Finals Eligibility <span id="season-badge-metro" class="season-scope-badge" style="display:none"></span></div>
+        <div class="stat-section-title">Metro Finals Eligibility <span id="season-badge-metro" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
         <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.72);margin:-10px 0 18px;line-height:1.7">
           Eligible = 1× 4-0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3-1 or better)
         </p>
@@ -1311,7 +1341,16 @@
     <!-- ══ TOURNAMENTS TAB ══ -->
     <div class="tab-pane" id="tab-tournaments">
       <div class="stat-section">
-        <div class="stat-section-title">Tournament History</div>
+        <div class="stat-section-title">
+          Tournament History
+          <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button>
+        </div>
+        <div class="tourn-season-bar">
+          <span>Season</span>
+          <select class="tourn-season-sel" id="tourn-season-sel" onchange="applyTournSeasonFilter()">
+            <option value="all">All Seasons</option>
+          </select>
+        </div>
         <div class="tourn-grid" id="tourn-grid"></div>
         <!-- Detail panel (shown below cards when one is selected) -->
         <div class="tourn-detail-panel" id="tourn-detail-panel"></div>
@@ -1323,7 +1362,7 @@
 
       <!-- Individual Leaderboard -->
       <div class="stat-section">
-        <div class="stat-section-title">Individual Leaderboard</div>
+        <div class="stat-section-title">Individual Leaderboard <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
         <div class="lb-table-wrap">
           <table class="lb-table" id="lb-table">
             <thead>
@@ -1347,7 +1386,7 @@
 
       <!-- Partnership records -->
       <div class="stat-section">
-        <div class="stat-section-title">Partnership Records</div>
+        <div class="stat-section-title">Partnership Records <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
         <div class="pair-table-wrap">
           <table class="pair-table" id="pair-table">
             <thead>
@@ -2448,6 +2487,46 @@ function computeRoundStats(tournaments) {
 /* ═══════════════════════════════════════════════════════════════
    TAB  SWITCHING
 ═══════════════════════════════════════════════════════════════ */
+/* ── Collapsible sections ───────────────────────────────────── */
+function toggleSection(btn) {
+  const section = btn.closest('.stat-section');
+  const collapsed = section.classList.toggle('collapsed');
+  btn.textContent = collapsed ? '▶' : '▼';
+}
+
+/* ── Tournament tab season filter ───────────────────────────── */
+function populateTournSeasonSelect() {
+  const sel = document.getElementById('tourn-season-sel');
+  if (!sel || !allTournaments) return;
+  const seasons = new Set();
+  allTournaments.forEach(t => {
+    const d = parseTournDate(t.meta.date);
+    if (!isNaN(d)) seasons.add(dateToSeasonYear(d));
+  });
+  const existing = [...sel.options].map(o => o.value);
+  [...seasons].sort((a,b) => b-a).forEach(y => {
+    const label = `${y}–${String(y+1).slice(2)}`;
+    if (!existing.includes(String(y))) {
+      const opt = document.createElement('option');
+      opt.value = y; opt.textContent = label;
+      sel.appendChild(opt);
+    }
+  });
+  // Auto-select current season if available
+  const cur = dateToSeasonYear(new Date());
+  if ([...sel.options].some(o => o.value === String(cur))) sel.value = cur;
+}
+
+function applyTournSeasonFilter() {
+  const sel = document.getElementById('tourn-season-sel');
+  const val = sel ? sel.value : 'all';
+  const list = val === 'all' ? allTournaments : allTournaments.filter(t => {
+    const d = parseTournDate(t.meta.date);
+    return !isNaN(d) && dateToSeasonYear(d) === parseInt(val);
+  });
+  renderTournaments(list);
+}
+
 function switchTab(name) {
   activeTab = name;
   ['overview','tournaments','pairs','analytics'].forEach(t => {
@@ -2801,6 +2880,9 @@ function renderTournaments(tourns) {
   const panel = document.getElementById('tourn-detail-panel');
   if (panel) { panel.innerHTML = ''; panel.classList.remove('open'); }
 
+  // Populate season selector on first render
+  populateTournSeasonSelect();
+
   if (!list.length) { grid.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.35);padding:24px">No tournaments in this range.</p>'; return; }
   grid.innerHTML = list.map(t => {
     const totalW = t.entries.reduce((s,e) => s+e.wins, 0);
@@ -2810,8 +2892,6 @@ function renderTournaments(tourns) {
     const subtitle = [dateStr, t.meta.school, t.meta.location].filter(Boolean).join(' · ');
     const topicLine = t.meta.topic
       ? `<div class="tourn-top-row" style="margin-top:6px;opacity:0.6;font-style:italic">${t.meta.topicType ? t.meta.topicType + ' — ' : ''}${t.meta.topic}</div>` : '';
-    const coachActions = isCoach
-      ? `<div class="tourn-coach-actions"><button class="tourn-del-btn" onclick="event.stopPropagation();confirmDelete('${t.id}')">🗑 Delete</button></div>` : '';
     return `<div class="tourn-card" id="tourn-card-${t.id}" onclick="toggleTournDetail('${t.id}')">
       <div class="tourn-card-name">${t.meta.name}</div>
       <div class="tourn-card-date">${subtitle}</div>
@@ -2821,7 +2901,7 @@ function renderTournaments(tourns) {
         <div class="tourn-stat"><div class="tourn-stat-label">Teams</div><div class="tourn-stat-val">${t.entries.length}</div></div>
       </div>
       ${topEntry ? `<div class="tourn-top-row">🏅 <strong>${topEntry.teamName}</strong> went ${topEntry.wins}–${topEntry.losses}</div>` : ''}
-      ${topicLine}${coachActions}
+      ${topicLine}
       <div class="tourn-card-open-hint">▼ Click to view details</div>
     </div>`;
   }).join('');
@@ -3423,6 +3503,7 @@ function closeTournDetail() {
 
 function renderTournamentDetail(t, metroMap) {
   const panel = document.getElementById('tourn-detail-panel');
+  const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
 
   // Build header meta
   const metaParts = [t.meta.date, t.meta.school, t.meta.location].filter(Boolean);
@@ -3502,6 +3583,11 @@ function renderTournamentDetail(t, metroMap) {
         <tbody id="drill-speak-tbody"></tbody>
       </table>
     </div>
+
+    ${isCoach ? `
+    <div class="drill-footer">
+      <button class="tourn-del-btn" onclick="confirmDelete('${t.id}')">🗑 Delete This Tournament</button>
+    </div>` : ''}
   `;
 
   // Store tournament and metro map on window for refresh
