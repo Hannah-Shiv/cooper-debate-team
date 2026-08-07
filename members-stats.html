@@ -84,7 +84,7 @@
       gap:14px; margin-bottom:0;
     }
     .ov-card {
-      background:rgba(13,46,100,0.45); border:1px solid rgba(212,160,23,0.18);
+      background:rgba(5,18,65,0.92); border:1px solid rgba(212,160,23,0.22);
       border-radius:14px; padding:22px 20px;
       display:flex; flex-direction:column; gap:6px;
       transition:border-color 0.2s, box-shadow 0.2s;
@@ -92,7 +92,7 @@
     .ov-card:hover { border-color:rgba(212,160,23,0.4); box-shadow:0 8px 28px rgba(0,0,0,0.3); }
     .ov-label {
       font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
-      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.5);
+      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.82);
     }
     .ov-value {
       font-family:'Cormorant Garamond',serif; font-size:2.8rem; font-weight:700;
@@ -100,7 +100,7 @@
     }
     .ov-sub {
       font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
-      color:rgba(255,255,255,0.55);
+      color:rgba(255,255,255,0.82);
     }
     .ov-card.accent { border-color:rgba(212,160,23,0.4); background:rgba(212,160,23,0.07); }
     .ov-card.accent .ov-value { color:#fff; }
@@ -117,12 +117,13 @@
       width:100%; border-collapse:collapse;
       font-family:'Josefin Sans',sans-serif;
     }
-    .lb-table thead tr { background:rgba(20,50,120,0.6); }
+    .lb-table thead tr { background:rgba(3,12,48,0.98); }
     .lb-table th {
       padding:14px 18px; font-size:0.68rem; font-weight:700;
       letter-spacing:0.14em; text-transform:uppercase;
-      color:rgba(232,184,75,0.8); text-align:left; white-space:nowrap;
+      color:#FFD700; text-align:left; white-space:nowrap; cursor:pointer;
     }
+    .lb-table th[style*="cursor:default"] { cursor:default; }
     .lb-table th.num { text-align:right; }
     .lb-table tbody tr {
       border-top:1px solid rgba(255,255,255,0.05);
@@ -130,7 +131,7 @@
     }
     .lb-table tbody tr:hover { background:rgba(212,160,23,0.06); }
     .lb-table td {
-      padding:15px 18px; font-size:0.92rem; color:rgba(255,255,255,0.9);
+      padding:15px 18px; font-size:0.92rem; color:#fff;
     }
     .lb-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
     .lb-rank {
@@ -150,7 +151,7 @@
     }
     .win-pill.high { background:rgba(34,197,94,0.15); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
     .win-pill.mid  { background:rgba(234,179,8,0.15);  color:#facc15; border:1px solid rgba(234,179,8,0.3); }
-    .win-pill.low  { background:rgba(239,68,68,0.12);  color:#f87171; border:1px solid rgba(239,68,68,0.25); }
+    .win-pill.low  { background:rgba(179,0,0,0.12);  color:#e03535; border:1px solid rgba(179,0,0,0.28); }
 
     /* ── Tournament history cards ──────────────────────────── */
     .tourn-grid {
@@ -158,7 +159,7 @@
       gap:16px;
     }
     .tourn-card {
-      background:rgba(13,46,100,0.4); border:1px solid rgba(212,160,23,0.16);
+      background:rgba(5,18,65,0.88); border:1px solid rgba(212,160,23,0.22);
       border-radius:14px; padding:24px; transition:border-color 0.2s, box-shadow 0.2s;
     }
     .tourn-card:hover { border-color:rgba(212,160,23,0.38); box-shadow:0 8px 28px rgba(0,0,0,0.32); }
@@ -195,13 +196,13 @@
       display:flex; gap:8px; margin-top:14px; border-top:1px solid rgba(255,255,255,0.07); padding-top:14px;
     }
     .tourn-del-btn {
-      background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.25);
-      color:#f87171; border-radius:8px; padding:7px 14px; cursor:pointer;
+      background:rgba(179,0,0,0.1); border:1px solid rgba(179,0,0,0.28);
+      color:#e03535; border-radius:8px; padding:7px 14px; cursor:pointer;
       font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
       font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
       transition:background 0.15s;
     }
-    .tourn-del-btn:hover { background:rgba(239,68,68,0.22); }
+    .tourn-del-btn:hover { background:rgba(179,0,0,0.22); }
 
     /* ── Charts ────────────────────────────────────────────── */
     .charts-grid {
@@ -209,7 +210,7 @@
       gap:20px;
     }
     .chart-card {
-      background:rgba(13,46,100,0.4); border:1px solid rgba(212,160,23,0.14);
+      background:rgba(5,18,65,0.88); border:1px solid rgba(212,160,23,0.22);
       border-radius:14px; padding:24px;
     }
     .chart-card-title {
@@ -242,14 +243,26 @@
     /* ── Pairing table ─────────────────────────────────────── */
     .pair-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(212,160,23,0.14); }
     .pair-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
-    .pair-table thead tr { background:rgba(20,50,120,0.6); }
+    .pair-table thead tr { background:rgba(3,12,48,0.98); }
     .pair-table th {
       padding:13px 16px; font-size:0.7rem; font-weight:700;
-      letter-spacing:0.14em; text-transform:uppercase; color:rgba(232,184,75,0.8); text-align:left;
+      letter-spacing:0.14em; text-transform:uppercase; color:#FFD700; text-align:left; cursor:pointer;
     }
     .pair-table th.num { text-align:right; }
     .pair-table tbody tr { border-top:1px solid rgba(255,255,255,0.05); }
-    .pair-table td { padding:13px 16px; font-size:0.92rem; color:rgba(255,255,255,0.88); }
+    .pair-table td { padding:13px 16px; font-size:0.92rem; color:#fff; }
+    /* ── Per-column filter inputs inside <th> ─── */
+    .th-filter-input, .th-filter-select {
+      display:block; width:100%; box-sizing:border-box; margin-top:6px;
+      background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.13);
+      border-radius:5px; padding:4px 8px; color:#fff;
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
+      outline:none; transition:border-color 0.15s; font-weight:400; letter-spacing:0;
+      text-transform:none; cursor:text;
+    }
+    .th-filter-select { background:rgba(3,12,48,0.98); cursor:pointer; }
+    .th-filter-input:focus, .th-filter-select:focus { border-color:rgba(212,160,23,0.6); background:rgba(255,255,255,0.1); }
+    .th-filter-input::placeholder { color:rgba(255,255,255,0.25); }
     .pair-table td.num { text-align:right; }
 
     /* ── Empty state ───────────────────────────────────────── */
@@ -341,13 +354,13 @@
     }
     .parse-btn:active { transform:translateY(0); }
     .parse-btn.red {
-      background:linear-gradient(135deg,rgba(239,68,68,0.18) 0%,rgba(200,30,30,0.14) 100%);
-      border-color:rgba(239,68,68,0.5); color:#f87171;
-      box-shadow:0 2px 12px rgba(239,68,68,0.1);
+      background:linear-gradient(135deg,rgba(179,0,0,0.18) 0%,rgba(179,0,0,0.14) 100%);
+      border-color:rgba(179,0,0,0.55); color:#e03535;
+      box-shadow:0 2px 12px rgba(179,0,0,0.1);
     }
     .parse-btn.red:hover {
-      background:linear-gradient(135deg,rgba(239,68,68,0.32) 0%,rgba(200,30,30,0.25) 100%);
-      border-color:rgba(239,68,68,0.8); box-shadow:0 4px 20px rgba(239,68,68,0.22);
+      background:linear-gradient(135deg,rgba(179,0,0,0.36) 0%,rgba(179,0,0,0.28) 100%);
+      border-color:rgba(239,68,68,0.8); box-shadow:0 4px 20px rgba(179,0,0,0.22);
       transform:translateY(-1px);
     }
     .import-form-grid {
@@ -396,21 +409,21 @@
     .file-drop input[type=file] { display:none; }
     .file-drop-clear {
       display:none; margin-left:auto; flex-shrink:0;
-      background:rgba(239,68,68,0.12); border:1.5px solid rgba(239,68,68,0.35);
-      color:#f87171; border-radius:7px; width:32px; height:32px;
+      background:rgba(179,0,0,0.12); border:1.5px solid rgba(179,0,0,0.4);
+      color:#e03535; border-radius:7px; width:32px; height:32px;
       cursor:pointer; font-size:1.1rem; line-height:1;
       align-items:center; justify-content:center;
       transition:background 0.18s, border-color 0.18s, transform 0.1s;
     }
     .file-drop.has-file .file-drop-clear { display:flex; }
-    .file-drop-clear:hover { background:rgba(239,68,68,0.28); border-color:rgba(239,68,68,0.7); transform:scale(1.08); }
+    .file-drop-clear:hover { background:rgba(179,0,0,0.32); border-color:rgba(179,0,0,0.75); transform:scale(1.08); }
     .import-actions { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
     .import-status {
       font-family:'Josefin Sans',sans-serif; font-size:0.92rem;
       color:rgba(255,255,255,0.5);
     }
     .import-status.success { color:#4ade80; }
-    .import-status.error   { color:#f87171; }
+    .import-status.error   { color:#e03535; }
 
     /* ── Tab bar ───────────────────────────────────────────── */
     .stats-tab-bar {
@@ -474,7 +487,7 @@
       padding:4px 12px; border-radius:50px; font-size:0.72rem; font-weight:700; letter-spacing:0.06em;
     }
     .metro-eligible.yes  { background:rgba(34,197,94,0.14); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
-    .metro-eligible.no   { background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+    .metro-eligible.no   { background:rgba(179,0,0,0.1); color:#e03535; border:1px solid rgba(179,0,0,0.22); }
     .metro-distance {
       font-size:0.82rem; color:rgba(255,255,255,0.55); line-height:1.4;
     }
@@ -595,7 +608,7 @@
       margin-top:12px;
     }
     .profile-metro-badge.eligible { background:rgba(34,197,94,0.14); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
-    .profile-metro-badge.not-eligible { background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+    .profile-metro-badge.not-eligible { background:rgba(179,0,0,0.1); color:#e03535; border:1px solid rgba(179,0,0,0.22); }
 
     .profile-stat-strip {
       display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
@@ -757,7 +770,7 @@
       border-top:1px solid rgba(255,255,255,0.05);
     }
     .round-row-table td.result-w { color:#4ade80; font-weight:700; }
-    .round-row-table td.result-l { color:#f87171; font-weight:700; }
+    .round-row-table td.result-l { color:#e03535; font-weight:700; }
     .speak-badge {
       display:inline-block; padding:2px 8px; border-radius:4px;
       font-size:0.78rem; font-weight:700;
@@ -831,7 +844,7 @@
     .win-dist-chip.w31 { background:rgba(134,239,172,0.1); color:#86efac; border:1px solid rgba(134,239,172,0.3); }
     .win-dist-chip.w22 { background:rgba(212,160,23,0.12); color:#facc15; border:1px solid rgba(212,160,23,0.3); }
     .win-dist-chip.w13 { background:rgba(251,146,60,0.1);  color:#fb923c; border:1px solid rgba(251,146,60,0.25); }
-    .win-dist-chip.w04 { background:rgba(239,68,68,0.1);   color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+    .win-dist-chip.w04 { background:rgba(179,0,0,0.1);   color:#e03535; border:1px solid rgba(179,0,0,0.22); }
     .win-dist-count {
       font-family:'Cormorant Garamond',serif; font-size:1.25rem;
       font-weight:700; line-height:1;
@@ -1066,13 +1079,24 @@
             <thead>
               <tr>
                 <th style="cursor:default">#</th>
-                <th onclick="lbSort('name')">Debater <span class="sort-arrow" id="lbs-name">↕</span></th>
-                <th class="num" onclick="lbSort('wins')">W <span class="sort-arrow" id="lbs-wins">↕</span></th>
-                <th class="num" onclick="lbSort('losses')">L <span class="sort-arrow" id="lbs-losses">↕</span></th>
-                <th class="num" onclick="lbSort('winRate')">Win % <span class="sort-arrow" id="lbs-winRate">↓</span></th>
-                <th class="num" onclick="lbSort('avgSpeak')">Avg Speak <span class="sort-arrow" id="lbs-avgSpeak">↕</span></th>
-                <th class="num" onclick="lbSort('tournaments')">Tournaments <span class="sort-arrow" id="lbs-tournaments">↕</span></th>
-                <th onclick="lbSort('metroEligible')">Metro <span class="sort-arrow" id="lbs-metroEligible">↕</span></th>
+                <th onclick="lbSort('name')">Debater <span class="sort-arrow" id="lbs-name">↕</span>
+                  <input class="th-filter-input" id="lbf-name" placeholder="Name…" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th class="num" onclick="lbSort('wins')">W <span class="sort-arrow" id="lbs-wins">↕</span>
+                  <input class="th-filter-input" id="lbf-wins" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th class="num" onclick="lbSort('losses')">L <span class="sort-arrow" id="lbs-losses">↕</span>
+                  <input class="th-filter-input" id="lbf-losses" placeholder="≤" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th class="num" onclick="lbSort('winRate')">Win % <span class="sort-arrow" id="lbs-winRate">↓</span>
+                  <input class="th-filter-input" id="lbf-winRate" placeholder="≥%" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th class="num" onclick="lbSort('avgSpeak')">Avg Speak <span class="sort-arrow" id="lbs-avgSpeak">↕</span>
+                  <input class="th-filter-input" id="lbf-avgSpeak" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th class="num" onclick="lbSort('tournaments')">Tournaments <span class="sort-arrow" id="lbs-tournaments">↕</span>
+                  <input class="th-filter-input" id="lbf-tournaments" placeholder="≥" onclick="event.stopPropagation()" oninput="applyLbFilters()"></th>
+                <th onclick="lbSort('metroEligible')">Metro <span class="sort-arrow" id="lbs-metroEligible">↕</span>
+                  <select class="th-filter-select" id="lbf-metro" onclick="event.stopPropagation()" onchange="applyLbFilters()">
+                    <option value="">All</option>
+                    <option value="yes">Eligible</option>
+                    <option value="no">Not Yet</option>
+                  </select></th>
               </tr>
             </thead>
             <tbody id="lb-tbody"></tbody>
@@ -1089,12 +1113,18 @@
           <table class="pair-table" id="pair-table">
             <thead>
               <tr>
-                <th>Partnership</th>
-                <th class="num">W</th>
-                <th class="num">L</th>
-                <th class="num">Win %</th>
-                <th class="num">Avg Team Speak</th>
-                <th class="num">Tournaments</th>
+                <th onclick="pairSort('pair')">Partnership <span class="sort-arrow" id="prs-pair">↕</span>
+                  <input class="th-filter-input" id="prf-pair" placeholder="Name…" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th class="num" onclick="pairSort('wins')">W <span class="sort-arrow" id="prs-wins">↕</span>
+                  <input class="th-filter-input" id="prf-wins" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th class="num" onclick="pairSort('losses')">L <span class="sort-arrow" id="prs-losses">↕</span>
+                  <input class="th-filter-input" id="prf-losses" placeholder="≤" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th class="num" onclick="pairSort('winRate')">Win % <span class="sort-arrow" id="prs-winRate">↓</span>
+                  <input class="th-filter-input" id="prf-winRate" placeholder="≥%" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th class="num" onclick="pairSort('avgTeamSpeak')">Avg Team Speak <span class="sort-arrow" id="prs-avgTeamSpeak">↕</span>
+                  <input class="th-filter-input" id="prf-avgTeamSpeak" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
+                <th class="num" onclick="pairSort('tourns')">Tournaments <span class="sort-arrow" id="prs-tourns">↕</span>
+                  <input class="th-filter-input" id="prf-tourns" placeholder="≥" onclick="event.stopPropagation()" oninput="applyPairFilters()"></th>
               </tr>
             </thead>
             <tbody id="pair-tbody"></tbody>
@@ -1160,11 +1190,11 @@
           <button class="parse-btn red" onclick="clearImportForm()">
             <!-- Clear: trash can -->
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" flex-shrink="0">
-              <path d="M4 7h16" stroke="#f87171" stroke-width="1.7" stroke-linecap="round"/>
-              <path d="M10 7V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2" stroke="#f87171" stroke-width="1.5" stroke-linecap="round" fill="none"/>
-              <rect x="6" y="7" width="12" height="13" rx="2" fill="rgba(239,68,68,0.1)" stroke="#f87171" stroke-width="1.6"/>
-              <line x1="10" y1="11" x2="10" y2="17" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
-              <line x1="14" y1="11" x2="14" y2="17" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M4 7h16" stroke="#e03535" stroke-width="1.7" stroke-linecap="round"/>
+              <path d="M10 7V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2" stroke="#e03535" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+              <rect x="6" y="7" width="12" height="13" rx="2" fill="rgba(179,0,0,0.1)" stroke="#e03535" stroke-width="1.6"/>
+              <line x1="10" y1="11" x2="10" y2="17" stroke="#e03535" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="14" y1="11" x2="14" y2="17" stroke="#e03535" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
             <span>Reset Form</span>
           </button>
@@ -1458,6 +1488,9 @@ let activeTab       = 'overview';
 // Leaderboard sort state
 let lbSortCol = 'winRate';
 let lbSortDir = -1;
+let allPairings   = [];
+let pairSortCol   = 'winRate';
+let pairSortDir   = -1;
 
 // Profile chart
 let profileSpeakChart = null;
@@ -2114,7 +2147,54 @@ function renderMetroTable(metro) {
 function lbSort(col) {
   if (lbSortCol === col) { lbSortDir *= -1; }
   else { lbSortCol = col; lbSortDir = col === 'name' ? 1 : -1; }
-  renderLeaderboard(leaderboard);
+  applyLbFilters();
+}
+
+function applyLbFilters() {
+  const name    = (document.getElementById('lbf-name')?.value || '').toLowerCase();
+  const minW    = parseFloat(document.getElementById('lbf-wins')?.value);
+  const maxL    = parseFloat(document.getElementById('lbf-losses')?.value);
+  const minWR   = parseFloat(document.getElementById('lbf-winRate')?.value);
+  const minSpk  = parseFloat(document.getElementById('lbf-avgSpeak')?.value);
+  const minT    = parseFloat(document.getElementById('lbf-tournaments')?.value);
+  const metro   = document.getElementById('lbf-metro')?.value || '';
+  let data = leaderboard.filter(d => {
+    if (name   && !d.name.toLowerCase().includes(name)) return false;
+    if (!isNaN(minW)  && d.wins < minW)                 return false;
+    if (!isNaN(maxL)  && d.losses > maxL)               return false;
+    if (!isNaN(minWR) && d.winRate * 100 < minWR)       return false;
+    if (!isNaN(minSpk)&& d.avgSpeak < minSpk)           return false;
+    if (!isNaN(minT)  && d.tournaments < minT)          return false;
+    if (metro === 'yes' && !d.metroEligible)             return false;
+    if (metro === 'no'  &&  d.metroEligible)             return false;
+    return true;
+  });
+  renderLeaderboard(data);
+}
+
+function pairSort(col) {
+  if (pairSortCol === col) { pairSortDir *= -1; }
+  else { pairSortCol = col; pairSortDir = col === 'pair' ? 1 : -1; }
+  applyPairFilters();
+}
+
+function applyPairFilters() {
+  const name   = (document.getElementById('prf-pair')?.value || '').toLowerCase();
+  const minW   = parseFloat(document.getElementById('prf-wins')?.value);
+  const maxL   = parseFloat(document.getElementById('prf-losses')?.value);
+  const minWR  = parseFloat(document.getElementById('prf-winRate')?.value);
+  const minSpk = parseFloat(document.getElementById('prf-avgTeamSpeak')?.value);
+  const minT   = parseFloat(document.getElementById('prf-tourns')?.value);
+  let data = allPairings.filter(p => {
+    if (name   && !p.pair.toLowerCase().includes(name))  return false;
+    if (!isNaN(minW)  && p.wins < minW)                  return false;
+    if (!isNaN(maxL)  && p.losses > maxL)                return false;
+    if (!isNaN(minWR) && +p.winRate < minWR)             return false;
+    if (!isNaN(minSpk)&& +p.avgTeamSpeak < minSpk)       return false;
+    if (!isNaN(minT)  && p.tourns < minT)                return false;
+    return true;
+  });
+  renderPairings(data);
 }
 
 function renderLeaderboard(lb) {
@@ -2344,7 +2424,7 @@ function renderRoundBars(roundStats) {
   if (!roundStats.length) { container.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.3);font-size:0.8rem">Not enough data</p>'; return; }
   container.innerHTML = roundStats.map(r => {
     const pct = (r.winPct * 100).toFixed(0);
-    const color = r.winPct >= 0.7 ? '#22c55e' : r.winPct >= 0.45 ? '#FFD700' : '#f87171';
+    const color = r.winPct >= 0.7 ? '#22c55e' : r.winPct >= 0.45 ? '#FFD700' : '#e03535';
     return `<div class="round-bar-col">
       <div class="round-bar-pct">${pct}%</div>
       <div class="round-bar-track">
@@ -2357,9 +2437,36 @@ function renderRoundBars(roundStats) {
 }
 
 function renderPairings(pairings) {
+  allPairings = pairings;   // always store the full dataset
+  _paintPairings(pairings); // then apply sort + render
+}
+
+function _paintPairings(data) {
+  // Sort
+  const sorted = [...data].sort((a, b) => {
+    let va, vb;
+    switch (pairSortCol) {
+      case 'pair':          va = a.pair.toLowerCase();  vb = b.pair.toLowerCase(); break;
+      case 'wins':          va = a.wins;               vb = b.wins;              break;
+      case 'losses':        va = a.losses;             vb = b.losses;            break;
+      case 'winRate':       va = +a.winRate;           vb = +b.winRate;          break;
+      case 'avgTeamSpeak':  va = +a.avgTeamSpeak;      vb = +b.avgTeamSpeak;     break;
+      case 'tourns':        va = a.tourns;             vb = b.tourns;            break;
+      default:              va = +a.winRate;           vb = +b.winRate;
+    }
+    if (typeof va === 'string') return pairSortDir * va.localeCompare(vb);
+    return pairSortDir * (va - vb);
+  });
+  // Update sort arrows
+  ['pair','wins','losses','winRate','avgTeamSpeak','tourns'].forEach(col => {
+    const el = document.getElementById('prs-' + col);
+    if (!el) return;
+    if (col === pairSortCol) { el.textContent = pairSortDir === -1 ? '↓' : '↑'; el.style.opacity='1'; el.style.color='#FFD700'; }
+    else { el.textContent = '↕'; el.style.opacity='0.3'; el.style.color=''; }
+  });
   const tbody = document.getElementById('pair-tbody');
-  if (!pairings.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">No data</td></tr>'; return; }
-  tbody.innerHTML = pairings.map(p => {
+  if (!sorted.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px">No data</td></tr>'; return; }
+  tbody.innerHTML = sorted.map(p => {
     const pct = +p.winRate;
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
     // Make each debater name clickable
@@ -3035,7 +3142,7 @@ function renderDrillSpeakerTable(t) {
   tbody.innerHTML = rows.map(d => {
     const realRounds = d.rounds.filter(r => r.result !== 'BYE');
     const roundBadges = realRounds.map(r => {
-      const cls = r.result === 'W' ? 'color:#4ade80' : 'color:#f87171';
+      const cls = r.result === 'W' ? 'color:#4ade80' : 'color:#e03535';
       return `<span style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;white-space:nowrap">
         R${r.round} <span style="${cls};font-weight:700">${r.result}</span>
         <span class="speak-badge" style="margin-left:2px">${r.speak.toFixed(1)}</span>
