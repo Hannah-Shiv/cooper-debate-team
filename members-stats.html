@@ -302,8 +302,8 @@
       font-weight:700; color:#FFD700; margin-bottom:6px;
     }
     .import-panel-sub {
-      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
-      color:rgba(255,255,255,0.45); margin-bottom:24px; line-height:1.65;
+      font-family:'Josefin Sans',sans-serif; font-size:0.95rem;
+      color:rgba(255,255,255,0.6); margin-bottom:24px; line-height:1.7;
     }
     .import-section-label {
       font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
@@ -322,19 +322,33 @@
     .main-textarea:focus { border-color:rgba(212,160,23,0.6); }
     .main-textarea::placeholder { color:rgba(255,255,255,0.2); }
     .parse-btn {
-      white-space:nowrap; border-radius:8px;
-      padding:11px 20px; cursor:pointer;
-      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
-      font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
-      transition:background 0.2s, border-color 0.2s, box-shadow 0.2s; flex-shrink:0;
+      white-space:nowrap; border-radius:10px;
+      padding:13px 22px; cursor:pointer;
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+      transition:background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s; flex-shrink:0;
+      display:inline-flex; align-items:center; gap:8px;
       /* green default */
-      background:rgba(34,197,94,0.15); border:1.5px solid rgba(34,197,94,0.45); color:#4ade80;
+      background:linear-gradient(135deg,rgba(34,197,94,0.22) 0%,rgba(16,160,72,0.18) 100%);
+      border:1.5px solid rgba(34,197,94,0.5); color:#4ade80;
+      box-shadow:0 2px 12px rgba(34,197,94,0.1);
     }
-    .parse-btn:hover { background:rgba(34,197,94,0.28); border-color:rgba(34,197,94,0.7); box-shadow:0 0 12px rgba(34,197,94,0.15); }
+    .parse-btn:hover {
+      background:linear-gradient(135deg,rgba(34,197,94,0.35) 0%,rgba(16,160,72,0.28) 100%);
+      border-color:rgba(34,197,94,0.8); box-shadow:0 4px 20px rgba(34,197,94,0.22);
+      transform:translateY(-1px);
+    }
+    .parse-btn:active { transform:translateY(0); }
     .parse-btn.red {
-      background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.4); color:#f87171;
+      background:linear-gradient(135deg,rgba(239,68,68,0.18) 0%,rgba(200,30,30,0.14) 100%);
+      border-color:rgba(239,68,68,0.5); color:#f87171;
+      box-shadow:0 2px 12px rgba(239,68,68,0.1);
     }
-    .parse-btn.red:hover { background:rgba(239,68,68,0.25); border-color:rgba(239,68,68,0.7); box-shadow:0 0 12px rgba(239,68,68,0.15); }
+    .parse-btn.red:hover {
+      background:linear-gradient(135deg,rgba(239,68,68,0.32) 0%,rgba(200,30,30,0.25) 100%);
+      border-color:rgba(239,68,68,0.8); box-shadow:0 4px 20px rgba(239,68,68,0.22);
+      transform:translateY(-1px);
+    }
     .import-form-grid {
       display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
       gap:18px; margin-bottom:24px;
@@ -466,6 +480,10 @@
 </a>
 
 <div class="member-userbar" id="member-userbar">
+  <button class="mub-bell" id="notif-btn" onclick="toggleNotifications()" title="Notifications">
+    <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span class="mub-notif-state" id="notif-state"></span>
+  </button>
   <div class="mub-sep"></div>
   <span class="mub-name" id="member-name"></span>
   <div class="mub-sep"></div>
@@ -629,8 +647,14 @@
         <textarea class="main-textarea" id="imp-main"
           placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
         <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
-          <button class="parse-btn" onclick="parseMainText()">Parse →</button>
-          <button class="parse-btn red" onclick="clearImportForm()">Clear ✕</button>
+          <button class="parse-btn" onclick="parseMainText()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Parse
+          </button>
+          <button class="parse-btn red" onclick="clearImportForm()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            Clear
+          </button>
         </div>
       </div>
 
@@ -668,13 +692,30 @@
       <div class="import-file-row">
         <div class="file-drop" id="drop-team" onclick="document.getElementById('file-team').click()">
           <input type="file" id="file-team" accept=".csv" onchange="onFileSelect('team', this)"/>
-          <span class="file-drop-icon">📊</span>
+          <span class="file-drop-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="8" fill="rgba(99,102,241,0.18)"/>
+              <rect x="7" y="10" width="22" height="3" rx="1.5" fill="#818cf8"/>
+              <rect x="7" y="16" width="16" height="3" rx="1.5" fill="#6366f1"/>
+              <rect x="7" y="22" width="19" height="3" rx="1.5" fill="#818cf8"/>
+              <circle cx="27" cy="27" r="6" fill="#22c55e"/>
+              <path d="M24.5 27l1.8 1.8 3-3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
           <div class="file-drop-label">Final Places CSV</div>
           <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
         </div>
         <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
           <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
-          <span class="file-drop-icon">🎙️</span>
+          <span class="file-drop-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="36" height="36" rx="8" fill="rgba(245,158,11,0.15)"/>
+              <rect x="8" y="8" width="20" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.8"/>
+              <path d="M18 12v8M14.5 17l3.5 3.5 3.5-3.5" stroke="#fbbf24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="27" cy="27" r="6" fill="#f59e0b"/>
+              <path d="M25 27h4M27 25v4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </span>
           <div class="file-drop-label">Speaker Awards CSV</div>
           <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
         </div>
