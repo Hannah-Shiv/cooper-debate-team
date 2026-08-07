@@ -3013,7 +3013,7 @@ function _paintMetroTable(metro) {
     const names = p.pair.split(' & ');
     const clickablePair = names.map(n =>
       `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
-    ).join('<span style="color:rgba(255,255,255,0.28);margin:0 10px;font-size:1rem;font-weight:300">—</span>');
+    ).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>');
     return `<tr>
       <td>${clickablePair}</td>
       <td class="num">${p.tourns}</td>
@@ -3537,7 +3537,7 @@ function _paintPairings(data) {
     const names = p.pair.split(' & ');
     const clickableNames = names.map(n =>
       `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
-    ).join('<span style="color:rgba(255,255,255,0.28);margin:0 10px;font-size:1rem;font-weight:300">—</span>');
+    ).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>');
     return `<tr>
       <td>${clickableNames}</td>
       <td class="num">${p.wins}</td>
@@ -4157,7 +4157,7 @@ function _paintDrillEntries(data) {
       ? e.debaters.map(d => {
           const n = `${d.first} ${d.last}`;
           return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
-        }).join('<span style="color:rgba(255,255,255,0.28);margin:0 10px;font-size:1rem;font-weight:300">—</span>')
+        }).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>')
       : (e.debNames || '—');
     return `<tr>
       <td><div class="entry-team">${e.teamName}</div></td>
