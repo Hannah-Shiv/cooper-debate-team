@@ -648,12 +648,12 @@
           placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
         <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
           <button class="parse-btn" onclick="parseMainText()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-            Parse
+            <img src="images/icon-parse.png" alt="" style="width:28px;height:28px;object-fit:contain;border-radius:6px;flex-shrink:0"/>
+            <span>Parse</span>
           </button>
           <button class="parse-btn red" onclick="clearImportForm()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-            Clear
+            <img src="images/icon-clear.png" alt="" style="width:28px;height:28px;object-fit:contain;border-radius:6px;flex-shrink:0"/>
+            <span>Clear</span>
           </button>
         </div>
       </div>
@@ -693,14 +693,7 @@
         <div class="file-drop" id="drop-team" onclick="document.getElementById('file-team').click()">
           <input type="file" id="file-team" accept=".csv" onchange="onFileSelect('team', this)"/>
           <span class="file-drop-icon">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="36" height="36" rx="8" fill="rgba(99,102,241,0.18)"/>
-              <rect x="7" y="10" width="22" height="3" rx="1.5" fill="#818cf8"/>
-              <rect x="7" y="16" width="16" height="3" rx="1.5" fill="#6366f1"/>
-              <rect x="7" y="22" width="19" height="3" rx="1.5" fill="#818cf8"/>
-              <circle cx="27" cy="27" r="6" fill="#22c55e"/>
-              <path d="M24.5 27l1.8 1.8 3-3" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <img src="images/icon-final-places.png" alt="Final Places" style="width:88px;height:88px;object-fit:contain;border-radius:50%"/>
           </span>
           <div class="file-drop-label">Final Places CSV</div>
           <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
@@ -708,13 +701,7 @@
         <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
           <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
           <span class="file-drop-icon">
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="36" height="36" rx="8" fill="rgba(245,158,11,0.15)"/>
-              <rect x="8" y="8" width="20" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="1.8"/>
-              <path d="M18 12v8M14.5 17l3.5 3.5 3.5-3.5" stroke="#fbbf24" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-              <circle cx="27" cy="27" r="6" fill="#f59e0b"/>
-              <path d="M25 27h4M27 25v4" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
-            </svg>
+            <img src="images/icon-speaker-awards.png" alt="Speaker Awards" style="width:88px;height:88px;object-fit:contain;border-radius:50%"/>
           </span>
           <div class="file-drop-label">Speaker Awards CSV</div>
           <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
