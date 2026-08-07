@@ -486,6 +486,62 @@
     }
     .metro-finish-badge.perfect { background:rgba(34,197,94,0.18); color:#4ade80; }
 
+    /* ── Metro eligibility toast ──────────────────────────── */
+    #metro-toast-container {
+      position:fixed; top:80px; right:20px; z-index:99999;
+      display:flex; flex-direction:column; gap:12px;
+      pointer-events:none; max-width:400px;
+    }
+    .metro-toast {
+      pointer-events:all;
+      background:linear-gradient(135deg,rgba(10,40,20,0.97) 0%,rgba(5,30,15,0.99) 100%);
+      border:1.5px solid rgba(34,197,94,0.55);
+      border-radius:14px; padding:18px 20px;
+      box-shadow:0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px rgba(34,197,94,0.1), 0 0 40px rgba(34,197,94,0.12);
+      display:flex; gap:14px; align-items:flex-start;
+      animation:metroToastIn 0.4s cubic-bezier(0.22,1,0.36,1) both;
+      cursor:pointer;
+    }
+    .metro-toast.dismissing {
+      animation:metroToastOut 0.35s cubic-bezier(0.4,0,1,1) both;
+    }
+    @keyframes metroToastIn {
+      from { opacity:0; transform:translateX(60px) scale(0.92); }
+      to   { opacity:1; transform:translateX(0) scale(1); }
+    }
+    @keyframes metroToastOut {
+      from { opacity:1; transform:translateX(0) scale(1); max-height:200px; margin-bottom:0; }
+      to   { opacity:0; transform:translateX(60px) scale(0.92); max-height:0; margin-bottom:-12px; }
+    }
+    .metro-toast-emoji { font-size:1.9rem; line-height:1; flex-shrink:0; margin-top:1px; }
+    .metro-toast-body  { flex:1; min-width:0; }
+    .metro-toast-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase;
+      color:rgba(74,222,128,0.85); margin-bottom:4px;
+    }
+    .metro-toast-name  {
+      font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:700;
+      color:#fff; line-height:1.2; margin-bottom:5px;
+    }
+    .metro-toast-path  {
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      color:rgba(255,255,255,0.55); margin-bottom:8px; line-height:1.4;
+    }
+    .metro-toast-link  {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:#4ade80; text-decoration:none;
+      display:inline-flex; align-items:center; gap:4px;
+    }
+    .metro-toast-link:hover { text-decoration:underline; }
+    .metro-toast-close {
+      flex-shrink:0; background:none; border:none; cursor:pointer;
+      color:rgba(255,255,255,0.3); font-size:1.1rem; line-height:1;
+      padding:0; transition:color 0.15s; margin-top:1px;
+    }
+    .metro-toast-close:hover { color:rgba(255,255,255,0.7); }
+
     /* ── Sortable leaderboard ─────────────────────────────── */
     .lb-table th { cursor:pointer; user-select:none; }
     .lb-table th:first-child { cursor:default; }
@@ -842,6 +898,9 @@
   </style>
 </head>
 <body>
+
+<!-- ── Metro eligibility toast container ─────────────────────── -->
+<div id="metro-toast-container" aria-live="polite"></div>
 
 <!-- ── Fixed top bar ─────────────────────────────────────────── -->
 <div class="mp-topbar"></div>
@@ -2946,6 +3005,50 @@ function onFileSelect(type, input) {
   reader.readAsText(file);
 }
 
+/* ─── Metro eligibility toast notifications ──────────────────── */
+function showMetroEligibilityToasts(newlyEligible) {
+  if (!newlyEligible || !newlyEligible.length) return;
+  const container = document.getElementById('metro-toast-container');
+  if (!container) return;
+
+  newlyEligible.forEach((p, i) => {
+    const toast = document.createElement('div');
+    toast.className = 'metro-toast';
+    toast.setAttribute('role', 'alert');
+    toast.style.animationDelay = (i * 180) + 'ms';
+
+    const isPath40  = p.count40 >= 1;
+    const pathLabel = isPath40
+      ? 'Via a 4-0 finish — automatic qualifier!'
+      : 'Via two 3-1+ finishes — automatic qualifier!';
+    const pathIcon  = isPath40 ? '🏆' : '🌟';
+
+    toast.innerHTML = `
+      <div class="metro-toast-emoji">${pathIcon}</div>
+      <div class="metro-toast-body">
+        <div class="metro-toast-title">🎉 Metro Finals Eligible!</div>
+        <div class="metro-toast-name">${p.pair}</div>
+        <div class="metro-toast-path">${pathLabel}</div>
+        <a class="metro-toast-link" href="javascript:void(0)"
+           onclick="switchTab('overview'); setTimeout(()=>{ const el=document.getElementById('metro-table'); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }, 80); this.closest('.metro-toast').querySelector('.metro-toast-close').click();">
+          View Metro Tracker →
+        </a>
+      </div>
+      <button class="metro-toast-close" aria-label="Dismiss">&times;</button>`;
+
+    const closeBtn = toast.querySelector('.metro-toast-close');
+    const dismiss = () => {
+      toast.classList.add('dismissing');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+    closeBtn.addEventListener('click', dismiss);
+    // Auto-dismiss after 10 seconds (staggered per toast)
+    setTimeout(dismiss, 10000 + i * 180);
+
+    container.appendChild(toast);
+  });
+}
+
 async function runImport() {
   const name      = document.getElementById('imp-name').value.trim();
   const date      = document.getElementById('imp-date').value.trim();
@@ -2969,6 +3072,13 @@ async function runImport() {
     if (!merged.length) { setStatus('error', 'No Cooper entries found in the team CSV. Check the School column says "Cooper".'); return; }
 
     setStatus('', `Found ${merged.length} Cooper entries — saving…`);
+
+    // ── Snapshot eligibility BEFORE import ──────────────────────
+    const preEligible = new Set(
+      computeMetroEligibility(allTournaments)
+        .filter(p => p.eligible)
+        .map(p => p.pair)
+    );
 
     const doc = {
       meta: {
@@ -3003,6 +3113,12 @@ async function runImport() {
       .forEach(id => document.getElementById(id).value = '');
 
     await loadTournaments();
+
+    // ── Diff eligibility AFTER import and show toasts ────────────
+    const postMetro = computeMetroEligibility(allTournaments);
+    const newlyEligible = postMetro.filter(p => p.eligible && !preEligible.has(p.pair));
+    showMetroEligibilityToasts(newlyEligible);
+
   } catch (err) {
     console.error('Import error:', err);
     setStatus('error', 'Import failed: ' + err.message);
