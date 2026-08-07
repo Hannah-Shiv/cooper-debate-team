@@ -486,6 +486,116 @@
     }
     .metro-finish-badge.perfect { background:rgba(34,197,94,0.18); color:#4ade80; }
 
+    /* ── Sortable leaderboard ─────────────────────────────── */
+    .lb-table th { cursor:pointer; user-select:none; }
+    .lb-table th:first-child { cursor:default; }
+    .lb-table th .sort-arrow { opacity:0.3; font-size:0.6rem; margin-left:3px; }
+    .lb-table th.sort-asc .sort-arrow,
+    .lb-table th.sort-desc .sort-arrow { opacity:1; color:#FFD700; }
+    .lb-name-link { cursor:pointer; color:#fff; }
+    .lb-name-link:hover { color:#FFD700; text-decoration:underline; }
+    .deb-link { cursor:pointer; }
+    .deb-link:hover { color:#FFD700 !important; text-decoration:underline; }
+
+    /* ── Full debater profile section ──────────────────── */
+    #debater-profile-section .profile-back-btn {
+      display:inline-flex; align-items:center; gap:8px; margin-bottom:32px;
+      background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12);
+      border-radius:8px; padding:9px 18px; cursor:pointer;
+      color:rgba(255,255,255,0.6); font-family:'Josefin Sans',sans-serif;
+      font-size:0.78rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
+      transition:background 0.15s; text-decoration:none;
+    }
+    #debater-profile-section .profile-back-btn:hover { background:rgba(255,255,255,0.12); color:#fff; }
+
+    .profile-hero {
+      display:flex; align-items:flex-start; gap:24px; margin-bottom:40px;
+      flex-wrap:wrap;
+    }
+    .profile-hero-left { flex:1; min-width:200px; }
+    .profile-hero-name {
+      font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,5vw,3.4rem);
+      font-weight:700; color:#FFD700; line-height:1; margin:0 0 8px;
+      text-shadow:0 0 40px rgba(255,215,0,0.25);
+    }
+    .profile-hero-meta {
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+      color:rgba(255,255,255,0.45); letter-spacing:0.06em;
+    }
+    .profile-metro-badge {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:10px 20px; border-radius:50px; font-family:'Josefin Sans',sans-serif;
+      font-size:0.8rem; font-weight:700; letter-spacing:0.08em;
+      margin-top:12px;
+    }
+    .profile-metro-badge.eligible { background:rgba(34,197,94,0.14); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+    .profile-metro-badge.not-eligible { background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+
+    .profile-stat-strip {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+      gap:12px; margin-bottom:40px;
+    }
+    .profile-stat-card {
+      background:rgba(13,46,100,0.4); border:1px solid rgba(212,160,23,0.15);
+      border-radius:12px; padding:18px 16px; display:flex; flex-direction:column; gap:4px;
+    }
+    .profile-stat-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.65rem; font-weight:700;
+      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.45);
+    }
+    .profile-stat-value {
+      font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-weight:700;
+      color:#FFD700; line-height:1;
+    }
+    .profile-stat-sub {
+      font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.45);
+    }
+
+    .profile-section { margin-bottom:48px; }
+    .profile-section-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+      color:rgba(232,184,75,0.85); margin-bottom:22px;
+      display:flex; align-items:center; gap:10px;
+    }
+    .profile-section-title::after { content:''; flex:1; height:1px; background:rgba(212,160,23,0.15); }
+
+    .profile-chart-card {
+      background:rgba(13,46,100,0.4); border:1px solid rgba(212,160,23,0.14);
+      border-radius:14px; padding:24px;
+    }
+    .profile-chart-canvas-wrap { position:relative; height:280px; }
+
+    .profile-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(212,160,23,0.14); }
+    .profile-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
+    .profile-table thead tr { background:rgba(20,50,120,0.6); }
+    .profile-table th {
+      padding:13px 16px; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:rgba(232,184,75,0.8); text-align:left; white-space:nowrap;
+    }
+    .profile-table th.num { text-align:right; }
+    .profile-table tbody tr { border-top:1px solid rgba(255,255,255,0.05); transition:background 0.15s; }
+    .profile-table tbody tr:hover { background:rgba(212,160,23,0.06); }
+    .profile-table td { padding:13px 16px; font-size:0.88rem; color:rgba(255,255,255,0.88); }
+    .profile-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+
+    .metro-progress-wrap { margin-bottom:12px; }
+    .metro-progress-bar-track {
+      height:8px; border-radius:4px;
+      background:rgba(255,255,255,0.07); overflow:hidden; margin-top:6px;
+    }
+    .metro-progress-bar-fill {
+      height:100%; border-radius:4px;
+      background:linear-gradient(90deg,rgba(212,160,23,0.8),rgba(255,215,0,0.95));
+      transition:width 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .metro-progress-bar-fill.done { background:linear-gradient(90deg,rgba(34,197,94,0.75),rgba(74,222,128,0.9)); }
+    .metro-progress-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
+      color:rgba(255,255,255,0.55); margin-bottom:2px;
+    }
+    .metro-progress-label strong { color:rgba(255,255,255,0.88); }
+
     /* ── Season stat strip ─────────────────────────────────── */
     .season-strip {
       display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
@@ -886,13 +996,14 @@
           <table class="lb-table" id="lb-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Debater</th>
-                <th class="num">W</th>
-                <th class="num">L</th>
-                <th class="num">Win %</th>
-                <th class="num">Avg Speak</th>
-                <th class="num">Tournaments</th>
+                <th style="cursor:default">#</th>
+                <th onclick="lbSort('name')">Debater <span class="sort-arrow" id="lbs-name">↕</span></th>
+                <th class="num" onclick="lbSort('wins')">W <span class="sort-arrow" id="lbs-wins">↕</span></th>
+                <th class="num" onclick="lbSort('losses')">L <span class="sort-arrow" id="lbs-losses">↕</span></th>
+                <th class="num" onclick="lbSort('winRate')">Win % <span class="sort-arrow" id="lbs-winRate">↓</span></th>
+                <th class="num" onclick="lbSort('avgSpeak')">Avg Speak <span class="sort-arrow" id="lbs-avgSpeak">↕</span></th>
+                <th class="num" onclick="lbSort('tournaments')">Tournaments <span class="sort-arrow" id="lbs-tournaments">↕</span></th>
+                <th onclick="lbSort('metroEligible')">Metro <span class="sort-arrow" id="lbs-metroEligible">↕</span></th>
               </tr>
             </thead>
             <tbody id="lb-tbody"></tbody>
@@ -1111,6 +1222,82 @@
 </main>
 </div><!-- /mp-content -->
 
+<!-- ── Debater full profile section ──────────────────────────── -->
+<div id="debater-profile-section" style="display:none">
+<main class="portal-main">
+<div class="dashboard-wrap">
+  <a class="profile-back-btn" href="members-stats.html">← Back to Statistics</a>
+
+  <div class="profile-hero">
+    <div class="profile-hero-left">
+      <div class="profile-hero-name" id="prof-name">—</div>
+      <div class="profile-hero-meta" id="prof-meta">—</div>
+      <div id="prof-metro-badge"></div>
+    </div>
+  </div>
+
+  <div class="profile-stat-strip" id="prof-stat-strip"></div>
+
+  <!-- Speaks over time chart -->
+  <div class="profile-section">
+    <div class="profile-section-title">Career Arc — Speaker Points Over Time</div>
+    <div class="profile-chart-card">
+      <div class="profile-chart-canvas-wrap">
+        <canvas id="profile-speak-chart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tournament history -->
+  <div class="profile-section">
+    <div class="profile-section-title">Tournament History</div>
+    <div class="profile-table-wrap">
+      <table class="profile-table">
+        <thead>
+          <tr>
+            <th>Tournament</th>
+            <th>Date</th>
+            <th>Partner</th>
+            <th class="num">W</th>
+            <th class="num">L</th>
+            <th class="num">Avg Speak</th>
+            <th class="num">Total Speaks</th>
+          </tr>
+        </thead>
+        <tbody id="prof-tourn-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Partner history -->
+  <div class="profile-section">
+    <div class="profile-section-title">Partner History</div>
+    <div class="profile-table-wrap">
+      <table class="profile-table">
+        <thead>
+          <tr>
+            <th>Partner</th>
+            <th class="num">Tournaments</th>
+            <th class="num">W</th>
+            <th class="num">L</th>
+            <th class="num">Win %</th>
+          </tr>
+        </thead>
+        <tbody id="prof-partner-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Metro Finals progress -->
+  <div class="profile-section">
+    <div class="profile-section-title">Metro Finals Eligibility</div>
+    <div id="prof-metro-detail"></div>
+  </div>
+
+</div><!-- /dashboard-wrap -->
+</main>
+</div><!-- /debater-profile-section -->
+
 <!-- ── Debater detail modal ───────────────────────────────────── -->
 <div class="modal-overlay" id="deb-modal" style="display:none" onclick="if(event.target===this)closeDebModal()">
   <div class="deb-modal-box">
@@ -1123,6 +1310,21 @@
     </div>
     <div class="deb-modal-stats" id="deb-modal-stats"></div>
     <div class="deb-modal-body" id="deb-modal-body"></div>
+    <div style="padding:0 32px 24px;border-top:1px solid rgba(255,255,255,0.07);margin-top:8px;padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+      <div id="deb-modal-metro"></div>
+      <a id="deb-modal-profile-btn" href="#" style="
+        display:inline-flex;align-items:center;gap:8px;
+        background:linear-gradient(135deg,rgba(20,55,120,0.85),rgba(13,36,80,0.95));
+        border:1.5px solid rgba(212,160,23,0.55); border-radius:8px;
+        padding:10px 22px; cursor:pointer; text-decoration:none;
+        font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+        font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+        color:#e8c84a; transition:border-color 0.2s,color 0.2s;
+      " onmouseover="this.style.borderColor='rgba(212,160,23,0.9)';this.style.color='#FFD700'"
+         onmouseout="this.style.borderColor='rgba(212,160,23,0.55)';this.style.color='#e8c84a'">
+        Full Profile →
+      </a>
+    </div>
   </div>
 </div>
 
@@ -1184,6 +1386,13 @@ let currentDebater  = null;
 let activeTimeMode  = 'all';  // 'all' | 'year' | 'month'
 let activeTab       = 'overview';
 
+// Leaderboard sort state
+let lbSortCol = 'winRate';
+let lbSortDir = -1;
+
+// Profile chart
+let profileSpeakChart = null;
+
 // Drill-down state
 let openTournId      = null;
 let drillQuery       = '';
@@ -1197,6 +1406,14 @@ async function initStats() {
     document.getElementById('import-toggle-wrap').style.display = 'block';
   }
   await loadTournaments();
+
+  // Check for ?debater=first-last URL param → show full profile view
+  const params = new URLSearchParams(window.location.search);
+  const debSlug = params.get('debater');
+  if (debSlug) {
+    const name = debSlug.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+    showDebaterProfile(name);
+  }
 }
 
 /* ── Import panel slide toggle ──────────────────────────────── */
@@ -1484,12 +1701,26 @@ function computeLeaderboard(tournaments) {
     });
   });
 
-  return Object.values(map).map(d => ({
-    ...d,
-    avgSpeak: d.roundCount > 0 ? +(d.speakSum / d.roundCount).toFixed(2) : 0,
-    winRate:  d.wins + d.losses > 0 ? d.wins / (d.wins + d.losses) : 0,
-    partnerList: [...d.partners].join(', ')
-  })).sort((a, b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
+  // Compute per-pair metro eligibility to annotate each debater
+  const pairMetro = computeMetroEligibility(tournaments);
+  const pairMetroMap = {};
+  pairMetro.forEach(p => { pairMetroMap[p.pair] = p.eligible; });
+
+  return Object.values(map).map(d => {
+    // A debater is metro eligible if any pair they've been in is eligible
+    let metroEligible = false;
+    d.partners.forEach(partner => {
+      const pairKey = [d.name, partner].sort().join(' & ');
+      if (pairMetroMap[pairKey]) metroEligible = true;
+    });
+    return {
+      ...d,
+      avgSpeak: d.roundCount > 0 ? +(d.speakSum / d.roundCount).toFixed(2) : 0,
+      winRate:  d.wins + d.losses > 0 ? d.wins / (d.wins + d.losses) : 0,
+      partnerList: [...d.partners].join(', '),
+      metroEligible
+    };
+  }).sort((a, b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
 }
 
 function computePairings(tournaments) {
@@ -1717,8 +1948,13 @@ function renderMetroTable(metro) {
       : `<span class="metro-eligible no">✗ No</span>`;
     const distCls = p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : '';
     const bestCls = p.bestWins >= 4 ? 'perfect' : '';
+    // Make pair name clickable — each debater opens their modal
+    const names = p.pair.split(' & ');
+    const clickablePair = names.map(n =>
+      `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
+    ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
     return `<tr>
-      <td style="font-weight:700">${p.pair}</td>
+      <td>${clickablePair}</td>
       <td class="num">${p.tourns}</td>
       <td class="num"><span class="metro-finish-badge ${bestCls}">${p.bestFinish}</span></td>
       <td class="num">${p.count40}</td>
@@ -1729,17 +1965,57 @@ function renderMetroTable(metro) {
   }).join('');
 }
 
+function lbSort(col) {
+  if (lbSortCol === col) { lbSortDir *= -1; }
+  else { lbSortCol = col; lbSortDir = col === 'name' ? 1 : -1; }
+  renderLeaderboard(leaderboard);
+}
+
 function renderLeaderboard(lb) {
+  // Sort the leaderboard data
+  let data = [...lb];
+  data.sort((a, b) => {
+    let va, vb;
+    switch (lbSortCol) {
+      case 'name':          va = a.name.toLowerCase(); vb = b.name.toLowerCase(); break;
+      case 'wins':          va = a.wins;            vb = b.wins;            break;
+      case 'losses':        va = a.losses;          vb = b.losses;          break;
+      case 'winRate':       va = a.winRate;         vb = b.winRate;         break;
+      case 'avgSpeak':      va = a.avgSpeak;        vb = b.avgSpeak;        break;
+      case 'tournaments':   va = a.tournaments;     vb = b.tournaments;     break;
+      case 'metroEligible': va = a.metroEligible?1:0; vb = b.metroEligible?1:0; break;
+      default:              va = a.winRate;         vb = b.winRate;
+    }
+    if (typeof va === 'string') return lbSortDir * va.localeCompare(vb);
+    return lbSortDir * (va - vb);
+  });
+
+  // Update sort arrow indicators
+  ['name','wins','losses','winRate','avgSpeak','tournaments','metroEligible'].forEach(col => {
+    const el = document.getElementById('lbs-' + col);
+    if (!el) return;
+    if (col === lbSortCol) {
+      el.textContent = lbSortDir === -1 ? '↓' : '↑';
+      el.style.opacity = '1'; el.style.color = '#FFD700';
+    } else {
+      el.textContent = '↕';
+      el.style.opacity = '0.3'; el.style.color = '';
+    }
+  });
+
   const tbody = document.getElementById('lb-tbody');
-  if (!lb.length) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.35);padding:24px">No data</td></tr>'; return; }
-  tbody.innerHTML = lb.map((d, i) => {
+  if (!data.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:rgba(255,255,255,0.35);padding:24px">No data</td></tr>'; return; }
+  tbody.innerHTML = data.map((d, i) => {
     const rankCls = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
     const pct = d.winRate * 100;
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
-    return `<tr onclick="openDebModal(${i})">
+    const metroBadge = d.metroEligible
+      ? `<span class="metro-eligible yes" style="font-size:0.65rem">✓ Eligible</span>`
+      : `<span class="metro-eligible no" style="font-size:0.65rem">✗ No</span>`;
+    return `<tr>
       <td><span class="lb-rank ${rankCls}">${i+1}</span></td>
       <td>
-        <div class="lb-name">${d.name}</div>
+        <div class="lb-name lb-name-link" onclick="openDebModalByName('${d.name.replace(/'/g,"\\'")}')">${d.name}</div>
         <div class="lb-partner">${d.partnerList || '—'}</div>
       </td>
       <td class="num">${d.wins}</td>
@@ -1747,6 +2023,7 @@ function renderLeaderboard(lb) {
       <td class="num"><span class="win-pill ${pillCls}">${pct.toFixed(1)}%</span></td>
       <td class="num">${d.avgSpeak.toFixed(2)}</td>
       <td class="num">${d.tournaments}</td>
+      <td>${metroBadge}</td>
     </tr>`;
   }).join('');
 }
@@ -1939,8 +2216,13 @@ function renderPairings(pairings) {
   tbody.innerHTML = pairings.map(p => {
     const pct = +p.winRate;
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
+    // Make each debater name clickable
+    const names = p.pair.split(' & ');
+    const clickableNames = names.map(n =>
+      `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
+    ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
     return `<tr>
-      <td>${p.pair}</td>
+      <td>${clickableNames}</td>
       <td class="num">${p.wins}</td>
       <td class="num">${p.losses}</td>
       <td class="num"><span class="win-pill ${pillCls}">${p.winRate}%</span></td>
@@ -1953,9 +2235,21 @@ function renderPairings(pairings) {
 /* ═══════════════════════════════════════════════════════════════
    DEBATER  MODAL
 ═══════════════════════════════════════════════════════════════ */
+function debaterSlug(name) {
+  return name.toLowerCase().replace(/\s+/g, '-');
+}
+
+function openDebModalByName(name) {
+  const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (d) openDebModalData(d);
+}
+
 function openDebModal(idx) {
   const d = leaderboard[idx];
-  if (!d) return;
+  if (d) openDebModalData(d);
+}
+
+function openDebModalData(d) {
   currentDebater = d;
   document.getElementById('deb-modal-name').textContent = d.name;
   document.getElementById('deb-modal-meta').textContent = `Partner(s): ${d.partnerList || '—'}`;
@@ -1966,6 +2260,17 @@ function openDebModal(idx) {
     <div class="deb-modal-stat"><div class="deb-modal-stat-label">Avg Speak</div><div class="deb-modal-stat-val">${d.avgSpeak.toFixed(2)}</div></div>
     <div class="deb-modal-stat"><div class="deb-modal-stat-label">Tournaments</div><div class="deb-modal-stat-val">${d.tournaments}</div></div>
   `;
+
+  // Metro status in footer
+  const metroEl = document.getElementById('deb-modal-metro');
+  metroEl.innerHTML = d.metroEligible
+    ? `<span class="metro-eligible yes">✓ Metro Finals Eligible</span>`
+    : `<span class="metro-eligible no">✗ Not Yet Eligible</span>`;
+
+  // Full Profile button
+  const slug = debaterSlug(d.name);
+  const profileBtn = document.getElementById('deb-modal-profile-btn');
+  profileBtn.href = `members-stats.html?debater=${slug}`;
 
   const body = document.getElementById('deb-modal-body');
   body.innerHTML = d.tournDetails.map(t => {
@@ -1996,6 +2301,268 @@ function openDebModal(idx) {
 function closeDebModal() {
   document.getElementById('deb-modal').style.display = 'none';
   document.body.style.overflow = '';
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   FULL  DEBATER  PROFILE
+═══════════════════════════════════════════════════════════════ */
+function showDebaterProfile(name) {
+  // Find in leaderboard (all-time — ignore time filter for profiles)
+  const allLb = computeLeaderboard(allTournaments);
+  const d = allLb.find(x => x.name.toLowerCase() === name.toLowerCase());
+
+  // Hide main stats, show profile
+  document.getElementById('stats-empty').style.display = 'none';
+  document.getElementById('stats-dashboard').style.display = 'none';
+  document.querySelector('.portal-page-title').style.display = 'none';
+  const profileSec = document.getElementById('debater-profile-section');
+  profileSec.style.display = 'block';
+
+  if (!d) {
+    document.getElementById('prof-name').textContent = name;
+    document.getElementById('prof-meta').textContent = 'No data found for this debater.';
+    return;
+  }
+
+  renderFullDebaterProfile(d);
+}
+
+function renderFullDebaterProfile(d) {
+  // ── Header
+  document.getElementById('prof-name').textContent = d.name;
+  document.getElementById('prof-meta').textContent =
+    `Partner(s): ${d.partnerList || '—'}`;
+
+  const metroBadge = document.getElementById('prof-metro-badge');
+  metroBadge.innerHTML = d.metroEligible
+    ? `<span class="profile-metro-badge eligible">✓ Metro Finals Eligible</span>`
+    : `<span class="profile-metro-badge not-eligible">✗ Not Yet Metro Finals Eligible</span>`;
+
+  // ── Career stat strip
+  const pct = (d.winRate * 100).toFixed(1);
+  document.getElementById('prof-stat-strip').innerHTML = `
+    <div class="profile-stat-card">
+      <div class="profile-stat-label">Career Record</div>
+      <div class="profile-stat-value">${d.wins}–${d.losses}</div>
+      <div class="profile-stat-sub">${pct}% win rate</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-label">Avg Speaker Pts</div>
+      <div class="profile-stat-value">${d.avgSpeak.toFixed(2)}</div>
+      <div class="profile-stat-sub">per round</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-label">Tournaments</div>
+      <div class="profile-stat-value">${d.tournaments}</div>
+      <div class="profile-stat-sub">competed</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-label">Total Rounds</div>
+      <div class="profile-stat-value">${d.wins + d.losses}</div>
+      <div class="profile-stat-sub">prelim rounds</div>
+    </div>
+    <div class="profile-stat-card">
+      <div class="profile-stat-label">Partners</div>
+      <div class="profile-stat-value">${d.partners.size}</div>
+      <div class="profile-stat-sub">unique partner(s)</div>
+    </div>
+  `;
+
+  // ── Speaks over time chart (sorted by date)
+  const sortedDetails = [...d.tournDetails].sort((a, b) => {
+    const da = new Date((a.date||'') + 'T12:00:00');
+    const db = new Date((b.date||'') + 'T12:00:00');
+    return da - db;
+  });
+  const chartLabels = sortedDetails.map(t => {
+    const d = new Date((t.date||'') + 'T12:00:00');
+    return isNaN(d) ? t.name.slice(0,18) : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
+  });
+  const chartData = sortedDetails.map(t => t.avgSpeak);
+  const chartWinData = sortedDetails.map(t => t.wins + t.losses > 0 ? +((t.wins/(t.wins+t.losses))*100).toFixed(1) : null);
+
+  if (profileSpeakChart) profileSpeakChart.destroy();
+  const ctx = document.getElementById('profile-speak-chart').getContext('2d');
+  profileSpeakChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: chartLabels,
+      datasets: [
+        {
+          label: 'Avg Speaker Points',
+          data: chartData,
+          borderColor: 'rgba(212,160,23,0.9)',
+          backgroundColor: 'rgba(212,160,23,0.08)',
+          pointBackgroundColor: '#FFD700',
+          pointBorderColor: '#1c2030',
+          pointRadius: 6, pointHoverRadius: 8,
+          tension: 0.35, fill: true, borderWidth: 2,
+          yAxisID: 'y',
+        },
+        {
+          label: 'Win Rate %',
+          data: chartWinData,
+          borderColor: 'rgba(74,222,128,0.7)',
+          backgroundColor: 'transparent',
+          pointBackgroundColor: '#4ade80',
+          pointBorderColor: '#1c2030',
+          pointRadius: 4, pointHoverRadius: 6,
+          tension: 0.35, fill: false, borderWidth: 1.5,
+          borderDash: [4,3],
+          yAxisID: 'y2',
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+          labels: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 }, boxWidth: 14 }
+        },
+        tooltip: {
+          callbacks: {
+            label: c => c.datasetIndex === 0
+              ? `${c.parsed.y.toFixed(2)} avg speak`
+              : `${c.parsed.y}% win rate`
+          }
+        }
+      },
+      scales: {
+        x: {
+          ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.05)' }
+        },
+        y: {
+          position: 'left',
+          ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } },
+          grid: { color: 'rgba(255,255,255,0.05)' },
+          title: { display: true, text: 'Avg Speaks', color: 'rgba(212,160,23,0.7)', font: { family: 'Josefin Sans', size: 10 } }
+        },
+        y2: {
+          position: 'right',
+          min: 0, max: 100,
+          ticks: { color: 'rgba(74,222,128,0.55)', font: { family: 'Josefin Sans', size: 11 }, callback: v => v + '%' },
+          grid: { drawOnChartArea: false },
+          title: { display: true, text: 'Win Rate', color: 'rgba(74,222,128,0.55)', font: { family: 'Josefin Sans', size: 10 } }
+        }
+      }
+    }
+  });
+
+  // ── Tournament history table
+  const tournTbody = document.getElementById('prof-tourn-tbody');
+  if (!sortedDetails.length) {
+    tournTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No tournament history</td></tr>';
+  } else {
+    tournTbody.innerHTML = [...sortedDetails].reverse().map(t => {
+      const dateStr = t.date ? new Date(t.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+      const pct = t.wins + t.losses > 0 ? (t.wins/(t.wins+t.losses)*100).toFixed(0) : '—';
+      const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
+      // Find partner for this tournament — look in allTournaments
+      let partnerName = '—';
+      allTournaments.forEach(tourn => {
+        if (tourn.meta.name === t.name) {
+          tourn.entries.forEach(e => {
+            const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
+            if (deb) {
+              const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
+              if (partner) partnerName = `${partner.first} ${partner.last}`;
+            }
+          });
+        }
+      });
+      const resultCls = t.wins >= 4 ? 'color:#4ade80' : t.wins >= 3 ? 'color:#facc15' : 'color:rgba(255,255,255,0.88)';
+      return `<tr>
+        <td style="font-weight:600">${t.name}</td>
+        <td style="color:rgba(255,255,255,0.5)">${dateStr}</td>
+        <td style="color:rgba(255,255,255,0.7)">${partnerName}</td>
+        <td class="num" style="${resultCls};font-weight:700">${t.wins}</td>
+        <td class="num">${t.losses}</td>
+        <td class="num"><span class="speak-badge">${t.avgSpeak.toFixed(2)}</span></td>
+        <td class="num">${t.totalSpeaks.toFixed(1)}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Partner history
+  const partnerMap = {};
+  allTournaments.forEach(tourn => {
+    tourn.entries.forEach(e => {
+      const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
+      if (!deb) return;
+      const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
+      if (!partner) return;
+      const pn = `${partner.first} ${partner.last}`;
+      if (!partnerMap[pn]) partnerMap[pn] = { name: pn, tourns: 0, wins: 0, losses: 0 };
+      partnerMap[pn].tourns++;
+      partnerMap[pn].wins += e.wins;
+      partnerMap[pn].losses += e.losses;
+    });
+  });
+  const partners = Object.values(partnerMap).sort((a, b) => b.tourns - a.tourns);
+  const partnerTbody = document.getElementById('prof-partner-tbody');
+  if (!partners.length) {
+    partnerTbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No partner data</td></tr>';
+  } else {
+    partnerTbody.innerHTML = partners.map(p => {
+      const pct = p.wins + p.losses > 0 ? (p.wins/(p.wins+p.losses)*100).toFixed(1) : '—';
+      const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
+      return `<tr>
+        <td>
+          <span class="deb-link" onclick="openDebModalByName('${p.name.replace(/'/g,"\\'")}')">${p.name}</span>
+        </td>
+        <td class="num">${p.tourns}</td>
+        <td class="num">${p.wins}</td>
+        <td class="num">${p.losses}</td>
+        <td class="num"><span class="win-pill ${pillCls}">${pct}%</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  // ── Metro Finals progress
+  // Build per-pair metro data for this debater
+  const metroDetail = document.getElementById('prof-metro-detail');
+  const pairMetroAll = computeMetroEligibility(allTournaments);
+  const myPairs = pairMetroAll.filter(p => {
+    const names = p.pair.split(' & ');
+    return names.includes(d.name);
+  });
+  if (!myPairs.length) {
+    metroDetail.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.35)">No pair data available.</p>';
+    return;
+  }
+  metroDetail.innerHTML = `
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 20px;line-height:1.7">
+      Eligible = 1× 4-0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3-1 or better)
+    </p>
+    ${myPairs.map(p => {
+      const pct40 = Math.min(p.count40 / 1, 1);
+      const pct31 = Math.min(p.count31 / 2, 1);
+      const partner = p.pair.split(' & ').find(n => n !== d.name) || '—';
+      return `<div style="background:rgba(13,46,100,0.4);border:1px solid rgba(212,160,23,0.14);border-radius:12px;padding:20px 22px;margin-bottom:14px">
+        <div style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:16px">
+          With <span style="color:#fff">${partner}</span>
+          ${p.eligible ? '<span class="metro-eligible yes" style="margin-left:12px;font-size:0.7rem">✓ Eligible</span>' : '<span class="metro-eligible no" style="margin-left:12px;font-size:0.7rem">✗ Not Yet</span>'}
+        </div>
+        <div class="metro-progress-wrap">
+          <div class="metro-progress-label">4-0 Finishes: <strong>${p.count40} / 1 needed</strong></div>
+          <div class="metro-progress-bar-track">
+            <div class="metro-progress-bar-fill ${p.count40 >= 1 ? 'done' : ''}" style="width:${Math.min(pct40*100,100)}%"></div>
+          </div>
+        </div>
+        <div class="metro-progress-wrap" style="margin-top:12px">
+          <div class="metro-progress-label">3-1+ Finishes: <strong>${p.count31} / 2 needed</strong></div>
+          <div class="metro-progress-bar-track">
+            <div class="metro-progress-bar-fill ${p.count31 >= 2 ? 'done' : ''}" style="width:${Math.min(pct31*100,100)}%"></div>
+          </div>
+        </div>
+        <div style="margin-top:12px;font-family:'Josefin Sans',sans-serif;font-size:0.8rem">
+          <span class="metro-distance ${p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : ''}">${p.distance}</span>
+        </div>
+      </div>`;
+    }).join('')}
+  `;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -2279,9 +2846,16 @@ function refreshDrillTable() {
       ? `<span class="metro-eligible yes">✓ Yes</span>`
       : `<span class="metro-eligible no">✗ No</span>`;
     const distCls = e.metro.eligible ? 'eligible' : e.metro.distance.includes('1 more') ? 'close' : '';
+    // Make each debater name individually clickable
+    const clickableDebs = e.debaters && e.debaters.length
+      ? e.debaters.map(d => {
+          const n = `${d.first} ${d.last}`;
+          return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
+        }).join('<span style="color:rgba(255,255,255,0.2)"> &amp; </span>')
+      : (e.debNames || '—');
     return `<tr>
       <td><div class="entry-team">${e.teamName}</div></td>
-      <td><div class="entry-deb-names">${e.debNames || '—'}</div></td>
+      <td>${clickableDebs}</td>
       <td class="num">${e.wins}</td>
       <td class="num">${e.losses}</td>
       <td class="num">${pct !== '—' ? `<span class="win-pill ${pillCls}">${pct}%</span>` : '—'}</td>
@@ -2321,8 +2895,11 @@ function renderDrillSpeakerTable(t) {
         <span class="speak-badge" style="margin-left:2px">${r.speak.toFixed(1)}</span>
       </span>`;
     }).join('<span style="color:rgba(255,255,255,0.15);margin:0 4px">·</span>');
+    const fullName = `${d.first} ${d.last}`;
     return `<tr>
-      <td style="font-weight:700">${d.first} ${d.last}</td>
+      <td>
+        <span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${fullName.replace(/'/g,"\\'")}')">${fullName}</span>
+      </td>
       <td style="color:rgba(255,255,255,0.5);font-size:0.82rem">${d.teamName}</td>
       <td class="num">${d.wins}</td>
       <td class="num">${d.losses}</td>
