@@ -2045,7 +2045,32 @@ function renderAll() {
   if (!hasData) return;
 
   buildFilterSelects();
-  filteredTourns = [...allTournaments];
+
+  // Auto-default to the current academic season when it has at least one tournament.
+  // Season boundary: Aug–Jul (e.g. Aug 2025–Jul 2026 = "2025–26", start year 2025).
+  const currentSeasonYear = dateToSeasonYear(new Date());
+  const hasCurrentSeason  = allTournaments.some(t => {
+    const d = parseTournDate(t.meta.date);
+    return !isNaN(d) && dateToSeasonYear(d) === currentSeasonYear;
+  });
+
+  if (hasCurrentSeason) {
+    activeTimeMode = 'season';
+    ['all','season','month'].forEach(m => {
+      const btn = document.getElementById('tf-' + m);
+      if (btn) btn.classList.toggle('active', m === 'season');
+    });
+    document.getElementById('tf-season-sel').value        = String(currentSeasonYear);
+    document.getElementById('tf-season-sel').style.display = 'inline-block';
+    document.getElementById('tf-month-sel').style.display  = 'none';
+    filteredTourns = allTournaments.filter(t => {
+      const d = parseTournDate(t.meta.date);
+      return !isNaN(d) && dateToSeasonYear(d) === currentSeasonYear;
+    });
+  } else {
+    filteredTourns = [...allTournaments];
+  }
+
   renderFiltered();
 }
 
