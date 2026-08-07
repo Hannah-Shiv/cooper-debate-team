@@ -1373,7 +1373,7 @@
   <div class="profile-section">
     <div class="profile-section-title">Tournament History</div>
     <div class="profile-table-wrap">
-      <table class="profile-table">
+      <table class="profile-table" id="prof-tourn-table">
         <thead>
           <tr>
             <th>Tournament</th>
@@ -1513,6 +1513,8 @@ let allDrillEntries = [];
 let allDrillSpeaks  = [];
 let xfLb = null, xfPair = null, xfMetro = null;
 let xfDrillEntry = null, xfDrillSpeak = null;
+let xfProfileTourn = null;
+let _profileTournData = [];
 
 // Profile chart
 let profileSpeakChart = null;
@@ -1778,6 +1780,51 @@ function initDrillSpeakXFilter() {
     sortCol: 'avgSpeak', sortDir: -1,
   });
   xfDrillSpeak.attachTo(document.getElementById('drill-speak-table'));
+}
+
+/* ── Wire XFilter to debater profile tournament history table ── */
+function _paintProfileTournaments(data) {
+  const tbody = document.getElementById('prof-tourn-tbody');
+  if (!tbody) return;
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No tournament history</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(t => {
+    const resultCls = t.wins >= 4 ? 'color:#4ade80' : t.wins >= 3 ? 'color:#facc15' : 'color:rgba(255,255,255,0.88)';
+    return `<tr>
+      <td style="font-weight:600">${t.name}</td>
+      <td style="color:rgba(255,255,255,0.5)">${t.dateStr}</td>
+      <td style="color:rgba(255,255,255,0.7)">${t.partnerName}</td>
+      <td class="num" style="${resultCls};font-weight:700">${t.wins}</td>
+      <td class="num">${t.losses}</td>
+      <td class="num"><span class="speak-badge">${t.avgSpeak.toFixed(2)}</span></td>
+      <td class="num">${t.totalSpeaks.toFixed(1)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function initDebaterProfileXFilter() {
+  if (xfProfileTourn) { xfProfileTourn._close(); xfProfileTourn = null; }
+  // dateNum (YYYYMMDD integer, e.g. 20250315) is used for the Date column so that
+  // XFilter's numeric comparator sorts correctly across months/days; dateStr is display-only.
+  xfProfileTourn = new XFilter({
+    tableId: 'prof-tourn-table',
+    columns: [
+      { key: 'name',        type: 'text', getValue: r => r.name },
+      { key: 'dateNum',     type: 'num',  getValue: r => r.dateNum },
+      { key: 'partnerName', type: 'text', getValue: r => r.partnerName },
+      { key: 'wins',        type: 'num',  getValue: r => r.wins },
+      { key: 'losses',      type: 'num',  getValue: r => r.losses },
+      { key: 'avgSpeak',    type: 'num',  getValue: r => +r.avgSpeak.toFixed(2) },
+      { key: 'totalSpeaks', type: 'num',  getValue: r => +r.totalSpeaks.toFixed(1) },
+    ],
+    getData: () => _profileTournData,
+    render:  _paintProfileTournaments,
+    sortCol: 'dateNum',
+    sortDir: -1,
+  });
+  xfProfileTourn.attachTo(document.getElementById('prof-tourn-table'));
 }
 
 /* ── Init ───────────────────────────────────────────────────── */
@@ -2880,40 +2927,42 @@ function renderFullDebaterProfile(d) {
     }
   });
 
-  // ── Tournament history table
-  const tournTbody = document.getElementById('prof-tourn-tbody');
-  if (!sortedDetails.length) {
-    tournTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No tournament history</td></tr>';
-  } else {
-    tournTbody.innerHTML = [...sortedDetails].reverse().map(t => {
-      const dateStr = t.date ? parseTournDate(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
-      const pct = t.wins + t.losses > 0 ? (t.wins/(t.wins+t.losses)*100).toFixed(0) : '—';
-      const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
-      // Find partner for this tournament — look in allTournaments
-      let partnerName = '—';
-      allTournaments.forEach(tourn => {
-        if (tourn.meta.name === t.name) {
-          tourn.entries.forEach(e => {
-            const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
-            if (deb) {
-              const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
-              if (partner) partnerName = `${partner.first} ${partner.last}`;
-            }
-          });
-        }
-      });
-      const resultCls = t.wins >= 4 ? 'color:#4ade80' : t.wins >= 3 ? 'color:#facc15' : 'color:rgba(255,255,255,0.88)';
-      return `<tr>
-        <td style="font-weight:600">${t.name}</td>
-        <td style="color:rgba(255,255,255,0.5)">${dateStr}</td>
-        <td style="color:rgba(255,255,255,0.7)">${partnerName}</td>
-        <td class="num" style="${resultCls};font-weight:700">${t.wins}</td>
-        <td class="num">${t.losses}</td>
-        <td class="num"><span class="speak-badge">${t.avgSpeak.toFixed(2)}</span></td>
-        <td class="num">${t.totalSpeaks.toFixed(1)}</td>
-      </tr>`;
-    }).join('');
-  }
+  // ── Tournament history table — build enriched data for XFilter
+  _profileTournData = sortedDetails.map(t => {
+    const parsedDate = t.date ? parseTournDate(t.date) : null;
+    const dateStr = parsedDate && !isNaN(parsedDate)
+      ? parsedDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      : '—';
+    // Numeric YYYYMMDD (e.g. 20250315) for strictly-numeric date sort via XFilter type:'num'
+    const dateNum = parsedDate && !isNaN(parsedDate)
+      ? parsedDate.getFullYear() * 10000 + (parsedDate.getMonth() + 1) * 100 + parsedDate.getDate()
+      : 0;
+    // Find partner for this tournament
+    let partnerName = '—';
+    allTournaments.forEach(tourn => {
+      if (tourn.meta.name === t.name) {
+        tourn.entries.forEach(e => {
+          const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
+          if (deb) {
+            const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
+            if (partner) partnerName = `${partner.first} ${partner.last}`;
+          }
+        });
+      }
+    });
+    return {
+      name: t.name,
+      dateNum,
+      dateStr,
+      partnerName,
+      wins: t.wins,
+      losses: t.losses,
+      avgSpeak: t.avgSpeak,
+      totalSpeaks: t.totalSpeaks,
+    };
+  });
+  initDebaterProfileXFilter();
+  xfProfileTourn.apply();
 
   // ── Partner history
   const partnerMap = {};
