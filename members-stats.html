@@ -943,10 +943,13 @@
       padding:28px 32px 16px; flex-shrink:0;
       border-bottom:1px solid rgba(255,255,255,0.09);
     }
-    #drill-modal-body { overflow-y:auto; flex:1; padding:20px 32px 28px; }
-    #drill-modal-body .lb-table { width:100%; table-layout:auto; }
-    #drill-modal-body .lb-table th { white-space:normal; min-width:60px; }
-    #drill-modal-body thead th,
+    /* #drill-modal-body: flex column, NOT the scroll container */
+    #drill-modal-body { display:flex; flex-direction:column; flex:1; overflow:visible; padding:16px 32px 0; }
+    /* Table scroll wrapper — THIS is the scroll container; thead sticks inside it */
+    .drill-table-scroll { overflow-y:auto; flex:1; padding-bottom:28px; }
+    .drill-table-scroll .lb-table { width:100%; table-layout:auto; }
+    .drill-table-scroll .lb-table th { white-space:normal; min-width:60px; }
+    .drill-table-scroll thead th,
     .deb-modal-box thead th,
     .import-modal-scroll thead th {
       position:sticky; top:0; z-index:2; background:#0d1d3d;
@@ -3267,13 +3270,17 @@ function renderCharts(lb, tourns) {
         const cx = arc.x, cy = arc.y, r = arc.outerRadius;
         const goRight = Math.cos(mid) >= 0;
 
-        // Leg 1: radially from arc edge to elbow
-        const x1 = cx + r * 1.03 * Math.cos(mid);
-        const y1 = cy + r * 1.03 * Math.sin(mid);
-        const ex  = cx + r * 1.22 * Math.cos(mid);
-        // Clamp ey so labels always stay inside the canvas (16px margin top/bottom)
+        // Leg 1: starts exactly on the arc outer edge
+        const x1 = cx + r * Math.cos(mid);
+        const y1 = cy + r * Math.sin(mid);
+        // Elbow: follow the ray outward; clamp ey to canvas; recalculate ex along the same ray
         const eyRaw = cy + r * 1.22 * Math.sin(mid);
         const ey = Math.max(28, Math.min(chart.height - 28, eyRaw));
+        // When clamped, find x where the ray at angle `mid` intersects with y = ey
+        const ex = eyRaw === ey
+          ? cx + r * 1.22 * Math.cos(mid)
+          : Math.abs(Math.sin(mid)) < 0.01 ? cx + r * 1.22 * Math.cos(mid)
+            : cx + (ey - cy) * Math.cos(mid) / Math.sin(mid);
         // Leg 2: horizontal from elbow to label column (near canvas edge)
         const labelColX = goRight ? width - 14 : 14;
 
@@ -3684,7 +3691,7 @@ function showWinDistDrill(winCount, label, tourns) {
   if (!rows.length) return;
   rows.sort((a,b) => a.tournament.localeCompare(b.tournament));
 
-  const bodyHtml = `
+  const bodyHtml = `<div class="drill-table-scroll">
     <table class="lb-table">
       <thead><tr>
         <th>Tournament</th><th>Date</th><th>Debaters</th><th class="num">W</th><th class="num">L</th>
@@ -3698,7 +3705,8 @@ function showWinDistDrill(winCount, label, tourns) {
           <td class="num" style="color:rgba(239,68,68,0.8)">${r.losses}</td>
         </tr>`).join('')}
       </tbody>
-    </table>`;
+    </table>
+  </div>`;
   openDrillModal(`${label} — ${rows.length} result${rows.length === 1 ? '' : 's'}`, bodyHtml);
 }
 
@@ -3747,7 +3755,8 @@ function showMetroDrill(segIndex) {
     return;
   }
   const bodyHtml = `
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.42);margin:0 0 16px">${descs[segIndex]}</p>
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.42);margin:0 0 12px">${descs[segIndex]}</p>
+    <div class="drill-table-scroll">
     <table class="lb-table">
       <thead><tr>
         <th>Pair</th>
@@ -3774,7 +3783,8 @@ function showMetroDrill(segIndex) {
           </tr>`;
         }).join('')}
       </tbody>
-    </table>`;
+    </table>
+    </div>`;
   openDrillModal(`${labels[segIndex]} — ${pairs.length} pair${pairs.length !== 1 ? 's' : ''}`, bodyHtml);
 }
 
@@ -3791,7 +3801,7 @@ function showRoundDrill(roundNum, wins, losses) {
   });
   if (!rows.length) return;
 
-  const bodyHtml = `
+  const bodyHtml = `<div class="drill-table-scroll">
     <table class="lb-table">
       <thead><tr>
         <th>Tournament</th><th>Debaters</th><th class="num">Result</th><th>Side</th>
@@ -3805,7 +3815,8 @@ function showRoundDrill(roundNum, wins, losses) {
             <td style="font-size:0.75rem;color:rgba(255,255,255,0.45)">${r.side}</td>
           </tr>`).join('')}
       </tbody>
-    </table>`;
+    </table>
+  </div>`;
   openDrillModal(`Round ${roundNum} — ${wins}W · ${losses}L`, bodyHtml);
 }
 
