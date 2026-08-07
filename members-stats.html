@@ -971,10 +971,10 @@
         <button class="stats-tab"        id="tab-btn-pairs"       onclick="switchTab('pairs')">Debaters &amp; Pairs</button>
       </div>
       <div class="stats-time-filter" id="time-filter-bar">
-        <button class="tf-btn active" id="tf-all"   onclick="setTimeFilter('all')">All Time</button>
-        <button class="tf-btn"        id="tf-year"  onclick="setTimeFilter('year')">By Year</button>
-        <select class="tf-select"     id="tf-year-sel" onchange="applyYearFilter(this.value)" style="display:none"></select>
-        <button class="tf-btn"        id="tf-month" onclick="setTimeFilter('month')">By Month</button>
+        <button class="tf-btn active" id="tf-all"    onclick="setTimeFilter('all')">All Time</button>
+        <button class="tf-btn"        id="tf-season" onclick="setTimeFilter('season')">By Season</button>
+        <select class="tf-select"     id="tf-season-sel" onchange="applySeasonFilter(this.value)" style="display:none"></select>
+        <button class="tf-btn"        id="tf-month"  onclick="setTimeFilter('month')">By Month</button>
         <select class="tf-select"     id="tf-month-sel" onchange="applyMonthFilter(this.value)" style="display:none"></select>
       </div>
     </div>
@@ -1442,7 +1442,7 @@ let timelineChart   = null;
 let teamCsvText     = null;
 let speakCsvText    = null;
 let currentDebater  = null;
-let activeTimeMode  = 'all';  // 'all' | 'year' | 'month'
+let activeTimeMode  = 'all';  // 'all' | 'season' | 'month'
 let activeTab       = 'overview';
 
 // Leaderboard sort state
@@ -1841,22 +1841,42 @@ function switchTab(name) {
 /* ═══════════════════════════════════════════════════════════════
    TIME  FILTER
 ═══════════════════════════════════════════════════════════════ */
+// Parse a tournament date string that may be ISO ("2025-10-11") or the verbose
+// Tabroom format ("Saturday, October 11, 2025"). Returns a valid Date or NaN-Date.
+function parseTournDate(str) {
+  if (!str) return new Date(NaN);
+  // ISO path: appending T12:00:00 forces local noon and avoids UTC midnight off-by-one.
+  let d = new Date(str + 'T12:00:00');
+  if (!isNaN(d)) return d;
+  // Verbose path: strip leading weekday + comma ("Saturday, ") then let the engine parse.
+  const cleaned = str.replace(/^[A-Za-z]+,\s*/, '');
+  d = new Date(cleaned);
+  if (!isNaN(d)) return d;
+  return new Date(NaN);
+}
+
+// Given a JS Date, return the season start year.
+// Season runs Aug–Jul: Aug 2024–Jul 2025 is the "2024–25" season (start year 2024).
+function dateToSeasonYear(d) {
+  return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
+}
+
 function buildFilterSelects() {
-  const years  = new Set();
-  const months = new Set(); // "YYYY-MM"
+  const seasons = new Set();
+  const months  = new Set(); // "YYYY-MM"
   allTournaments.forEach(t => {
-    const d = t.meta.date; // e.g. "Saturday, October 11, 2025" or "2025-10-11"
-    if (!d) return;
-    const parsed = new Date(d + 'T12:00:00');
+    const parsed = parseTournDate(t.meta.date);
     if (isNaN(parsed)) return;
-    years.add(parsed.getFullYear());
+    seasons.add(dateToSeasonYear(parsed));
     const m = String(parsed.getMonth()+1).padStart(2,'0');
     months.add(`${parsed.getFullYear()}-${m}`);
   });
 
-  const ySel = document.getElementById('tf-year-sel');
-  ySel.innerHTML = '<option value="">— Year —</option>' +
-    [...years].sort((a,b)=>b-a).map(y=>`<option value="${y}">${y}</option>`).join('');
+  const sSel = document.getElementById('tf-season-sel');
+  sSel.innerHTML = '<option value="">— Season —</option>' +
+    [...seasons].sort((a,b)=>b-a).map(y =>
+      `<option value="${y}">${y}–${String(y+1).slice(-2)} Season</option>`
+    ).join('');
 
   const mSel = document.getElementById('tf-month-sel');
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -1870,26 +1890,27 @@ function buildFilterSelects() {
 function setTimeFilter(mode) {
   activeTimeMode = mode;
   // Reset button states
-  ['all','year','month'].forEach(m => {
+  ['all','season','month'].forEach(m => {
     const btn = document.getElementById('tf-' + m);
     if (btn) btn.classList.toggle('active', m === mode);
   });
   // Show/hide selects
-  document.getElementById('tf-year-sel').style.display  = mode === 'year'  ? 'inline-block' : 'none';
-  document.getElementById('tf-month-sel').style.display = mode === 'month' ? 'inline-block' : 'none';
+  document.getElementById('tf-season-sel').style.display = mode === 'season' ? 'inline-block' : 'none';
+  document.getElementById('tf-month-sel').style.display  = mode === 'month'  ? 'inline-block' : 'none';
 
   if (mode === 'all') {
     filteredTourns = [...allTournaments];
     renderFiltered();
   }
-  // For year/month, wait for user to pick from the select
+  // For season/month, wait for user to pick from the select
 }
 
-function applyYearFilter(val) {
+function applySeasonFilter(val) {
   if (!val) return;
+  const startYear = +val;
   filteredTourns = allTournaments.filter(t => {
-    const d = new Date((t.meta.date||'') + 'T12:00:00');
-    return !isNaN(d) && d.getFullYear() === +val;
+    const d = parseTournDate(t.meta.date);
+    return !isNaN(d) && dateToSeasonYear(d) === startYear;
   });
   renderFiltered();
 }
@@ -1898,7 +1919,7 @@ function applyMonthFilter(val) {
   if (!val) return;
   const [yr, mo] = val.split('-').map(Number);
   filteredTourns = allTournaments.filter(t => {
-    const d = new Date((t.meta.date||'') + 'T12:00:00');
+    const d = parseTournDate(t.meta.date);
     return !isNaN(d) && d.getFullYear() === yr && d.getMonth()+1 === mo;
   });
   renderFiltered();
@@ -2207,12 +2228,12 @@ function renderCharts(lb, tourns) {
   /* ── Performance Timeline line ── */
   // Per tournament (sorted by date): avg win rate across all Cooper entries
   const sorted = [...(tourns || [])].sort((a, b) => {
-    const da = new Date((a.meta.date||'') + 'T12:00:00');
-    const db = new Date((b.meta.date||'') + 'T12:00:00');
+    const da = parseTournDate(a.meta.date);
+    const db = parseTournDate(b.meta.date);
     return da - db;
   });
   const tlLabels = sorted.map(t => {
-    const d = new Date((t.meta.date||'') + 'T12:00:00');
+    const d = parseTournDate(t.meta.date);
     return isNaN(d) ? t.meta.name : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   });
   const tlData = sorted.map(t => {
@@ -2341,7 +2362,7 @@ function openDebModalData(d) {
       </tr>`
     ).join('');
     return `<div class="deb-tourn-section">
-      <div class="deb-tourn-section-name">${t.name} &nbsp;·&nbsp; ${t.date ? new Date(t.date+'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''}</div>
+      <div class="deb-tourn-section-name">${t.name} &nbsp;·&nbsp; ${t.date ? parseTournDate(t.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''}</div>
       <div style="display:flex;gap:20px;margin-bottom:12px;flex-wrap:wrap">
         <div><span style="font-family:'Josefin Sans',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4)">Record</span><br><span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#FFD700">${t.wins}–${t.losses}</span></div>
         <div><span style="font-family:'Josefin Sans',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4)">Avg Speak</span><br><span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#FFD700">${t.avgSpeak.toFixed(2)}</span></div>
@@ -2429,12 +2450,12 @@ function renderFullDebaterProfile(d) {
 
   // ── Speaks over time chart (sorted by date)
   const sortedDetails = [...d.tournDetails].sort((a, b) => {
-    const da = new Date((a.date||'') + 'T12:00:00');
-    const db = new Date((b.date||'') + 'T12:00:00');
+    const da = parseTournDate(a.date);
+    const db = parseTournDate(b.date);
     return da - db;
   });
   const chartLabels = sortedDetails.map(t => {
-    const d = new Date((t.date||'') + 'T12:00:00');
+    const d = parseTournDate(t.date);
     return isNaN(d) ? t.name.slice(0,18) : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
   });
   const chartData = sortedDetails.map(t => t.avgSpeak);
@@ -2515,7 +2536,7 @@ function renderFullDebaterProfile(d) {
     tournTbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No tournament history</td></tr>';
   } else {
     tournTbody.innerHTML = [...sortedDetails].reverse().map(t => {
-      const dateStr = t.date ? new Date(t.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+      const dateStr = t.date ? parseTournDate(t.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
       const pct = t.wins + t.losses > 0 ? (t.wins/(t.wins+t.losses)*100).toFixed(0) : '—';
       const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
       // Find partner for this tournament — look in allTournaments
