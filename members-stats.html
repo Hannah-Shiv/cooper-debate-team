@@ -1673,6 +1673,15 @@
     </div>
   </div>
 
+  <!-- Round-by-round win rate (#58) -->
+  <div class="profile-section" id="prof-round-rate-section" style="display:none">
+    <div class="profile-section-title">Career Round-by-Round Win Rate</div>
+    <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5);margin:-8px 0 18px;line-height:1.7">
+      Win % by round number across all tournaments. Spot where this debater tends to win or struggle.
+    </div>
+    <div id="prof-round-bars" style="display:flex;align-items:flex-end;gap:12px;height:160px;padding:0 4px"></div>
+  </div>
+
   <!-- Tournament history -->
   <div class="profile-section">
     <div class="profile-section-title">Tournament History</div>
@@ -2247,8 +2256,21 @@ async function saveTournament(data) {
 }
 
 async function deleteTournament(id) {
+  // #59 — record which pairs were eligible BEFORE deletion
+  const beforeEligible = new Set(
+    computeMetroEligibility(allTournaments).filter(p => p.eligible).map(p => p.pair)
+  );
+
   await statsDb.collection('stat_results').doc(id).delete();
   allTournaments = allTournaments.filter(t => t.id !== id);
+
+  // #59 — find pairs that dropped out of eligibility
+  const afterEligible = new Set(
+    computeMetroEligibility(allTournaments).filter(p => p.eligible).map(p => p.pair)
+  );
+  const dropped = [...beforeEligible].filter(p => !afterEligible.has(p));
+  if (dropped.length) showMetroDroppedToasts(dropped);
+
   renderAll();
 }
 
@@ -2696,6 +2718,7 @@ function updateSeasonBadges() {
 }
 
 function renderFiltered() {
+  const prevOpenId = openTournId;   // #55 — save before renderTournaments clears it
   const tourns = filteredTourns;
   leaderboard = computeLeaderboard(tourns);
   const season     = computeSeasonStats(tourns);
@@ -2709,6 +2732,12 @@ function renderFiltered() {
   renderMetroTable(metro);
   if (xfLb) xfLb.apply(); else _paintLeaderboard(leaderboard);
   renderTournaments(tourns);
+  // #55 — Restore tournament detail panel if its tournament is still in the filtered set
+  if (prevOpenId && tourns.some(t => t.id === prevOpenId)) {
+    setTimeout(() => {
+      if (document.getElementById('tourn-card-' + prevOpenId)) toggleTournDetail(prevOpenId);
+    }, 0);
+  }
   renderCharts(leaderboard, tourns);
   renderRoundBars(roundStats);
   renderPairings(pairings);
@@ -3444,6 +3473,42 @@ function showDebaterProfile(name) {
   renderFullDebaterProfile(d);
 }
 
+/* ─── Profile round-by-round win rate (#58) ──────────────────── */
+function renderProfileRoundBars(d) {
+  const section = document.getElementById('prof-round-rate-section');
+  const container = document.getElementById('prof-round-bars');
+  if (!section || !container) return;
+
+  // Aggregate wins/losses per round number across all this debater's rounds
+  const rounds = {};
+  d.tournDetails.forEach(t => {
+    (t.rounds || []).forEach(r => {
+      if (r.result === 'BYE' || r.isBye) return;
+      const rn = +r.round;
+      if (!rounds[rn]) rounds[rn] = { w: 0, l: 0 };
+      if (r.result === 'W') rounds[rn].w++; else rounds[rn].l++;
+    });
+  });
+
+  const sorted = Object.entries(rounds).sort(([a], [b]) => +a - +b);
+  if (!sorted.length) { section.style.display = 'none'; return; }
+
+  section.style.display = '';
+  container.innerHTML = sorted.map(([rn, s]) => {
+    const total = s.w + s.l;
+    const pct = total > 0 ? (s.w / total * 100).toFixed(0) : 0;
+    const color = +pct >= 70 ? '#22c55e' : +pct >= 45 ? '#FFD700' : '#e03535';
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;min-width:36px">
+      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.7rem;color:rgba(255,255,255,0.72);font-weight:700">${pct}%</div>
+      <div style="width:100%;background:rgba(255,255,255,0.07);border-radius:6px 6px 0 0;position:relative;height:110px;display:flex;align-items:flex-end">
+        <div style="width:100%;height:${pct}%;background:${color};opacity:0.75;border-radius:6px 6px 0 0;transition:height 0.4s ease"></div>
+      </div>
+      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.65rem;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em">R${rn}</div>
+      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.58rem;color:rgba(255,255,255,0.3)">${s.w}W ${s.l}L</div>
+    </div>`;
+  }).join('');
+}
+
 function renderFullDebaterProfile(d) {
   // ── Header
   document.getElementById('prof-name').textContent = d.name;
@@ -3638,6 +3703,9 @@ function renderFullDebaterProfile(d) {
       </tr>`;
     }).join('');
   }
+
+  // ── Round-by-round win rate (#58)
+  renderProfileRoundBars(d);
 
   // ── Metro Finals progress
   // Build per-pair metro data for this debater
@@ -4000,6 +4068,34 @@ function onFileSelect(type, input) {
   reader.readAsText(file);
 }
 
+/* ─── Metro eligibility lost toasts (#59) ────────────────────── */
+function showMetroDroppedToasts(droppedPairs) {
+  const container = document.getElementById('metro-toast-container');
+  if (!container) return;
+  droppedPairs.forEach((pair, i) => {
+    const toast = document.createElement('div');
+    toast.className = 'metro-toast';
+    toast.style.cssText = 'border-color:rgba(239,68,68,0.55);background:linear-gradient(135deg,rgba(40,10,10,0.97) 0%,rgba(30,5,5,0.99) 100%)';
+    toast.style.animationDelay = (i * 180) + 'ms';
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+      <div class="metro-toast-emoji">⚠️</div>
+      <div class="metro-toast-body">
+        <div class="metro-toast-title" style="color:rgba(239,68,68,0.85)">Metro Eligibility Lost</div>
+        <div class="metro-toast-name">${pair}</div>
+        <div class="metro-toast-path">This pair is no longer Metro Finals eligible after the tournament was deleted.</div>
+      </div>
+      <button class="metro-toast-close" aria-label="Dismiss">&times;</button>`;
+    const dismiss = () => {
+      toast.classList.add('dismissing');
+      toast.addEventListener('animationend', () => toast.remove(), { once: true });
+    };
+    toast.querySelector('.metro-toast-close').addEventListener('click', dismiss);
+    setTimeout(dismiss, 20000 + i * 180);
+    container.appendChild(toast);
+  });
+}
+
 /* ─── Metro eligibility toast notifications ──────────────────── */
 function showMetroEligibilityToasts(newlyEligible) {
   if (!newlyEligible || !newlyEligible.length) return;
@@ -4037,8 +4133,8 @@ function showMetroEligibilityToasts(newlyEligible) {
       toast.addEventListener('animationend', () => toast.remove(), { once: true });
     };
     closeBtn.addEventListener('click', dismiss);
-    // Auto-dismiss after 10 seconds (staggered per toast)
-    setTimeout(dismiss, 10000 + i * 180);
+    // Auto-dismiss after 30 seconds (#60 — keep visible long enough after panel closes)
+    setTimeout(dismiss, 30000 + i * 180);
 
     container.appendChild(toast);
   });
