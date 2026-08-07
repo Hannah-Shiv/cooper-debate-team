@@ -412,6 +412,109 @@
     .import-status.success { color:#4ade80; }
     .import-status.error   { color:#f87171; }
 
+    /* ── Tab bar ───────────────────────────────────────────── */
+    .stats-tab-bar {
+      display:flex; align-items:center; justify-content:space-between;
+      flex-wrap:wrap; gap:12px; margin-bottom:36px;
+      border-bottom:1px solid rgba(212,160,23,0.15); padding-bottom:16px;
+    }
+    .stats-tabs { display:flex; gap:4px; }
+    .stats-tab {
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase;
+      padding:10px 22px; border-radius:8px; cursor:pointer;
+      border:1px solid transparent; background:transparent;
+      color:rgba(255,255,255,0.45); transition:all 0.18s;
+    }
+    .stats-tab:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.05); }
+    .stats-tab.active {
+      color:#FFD700; background:rgba(212,160,23,0.1);
+      border-color:rgba(212,160,23,0.35);
+    }
+
+    /* ── Time filter ───────────────────────────────────────── */
+    .stats-time-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+    .tf-btn {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase;
+      padding:7px 14px; border-radius:6px; cursor:pointer;
+      border:1px solid rgba(255,255,255,0.1); background:transparent;
+      color:rgba(255,255,255,0.4); transition:all 0.18s;
+    }
+    .tf-btn:hover { color:rgba(255,255,255,0.7); border-color:rgba(255,255,255,0.2); }
+    .tf-btn.active { color:#e8c84a; background:rgba(212,160,23,0.1); border-color:rgba(212,160,23,0.3); }
+    .tf-select {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      padding:7px 12px; border-radius:6px; cursor:pointer;
+      border:1px solid rgba(212,160,23,0.3); background:rgba(13,36,80,0.7);
+      color:#e8c84a; outline:none;
+    }
+
+    /* ── Tab pane ──────────────────────────────────────────── */
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+
+    /* ── Metro Finals tracker ──────────────────────────────── */
+    .metro-table-wrap { overflow-x:auto; border-radius:12px; border:1px solid rgba(212,160,23,0.14); }
+    .metro-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; }
+    .metro-table thead tr { background:rgba(20,50,120,0.6); }
+    .metro-table th {
+      padding:13px 16px; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:rgba(232,184,75,0.8); text-align:left;
+      white-space:nowrap;
+    }
+    .metro-table th.num { text-align:right; }
+    .metro-table tbody tr { border-top:1px solid rgba(255,255,255,0.05); transition:background 0.15s; }
+    .metro-table tbody tr:hover { background:rgba(212,160,23,0.06); }
+    .metro-table td { padding:13px 16px; font-size:0.88rem; color:rgba(255,255,255,0.88); }
+    .metro-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+    .metro-eligible {
+      display:inline-flex; align-items:center; gap:6px;
+      padding:4px 12px; border-radius:50px; font-size:0.72rem; font-weight:700; letter-spacing:0.06em;
+    }
+    .metro-eligible.yes  { background:rgba(34,197,94,0.14); color:#4ade80; border:1px solid rgba(34,197,94,0.3); }
+    .metro-eligible.no   { background:rgba(239,68,68,0.1); color:#f87171; border:1px solid rgba(239,68,68,0.22); }
+    .metro-distance {
+      font-size:0.82rem; color:rgba(255,255,255,0.55); line-height:1.4;
+    }
+    .metro-distance.eligible { color:#4ade80; font-weight:700; }
+    .metro-distance.close    { color:#facc15; }
+    .metro-finish-badge {
+      display:inline-block; padding:2px 9px; border-radius:4px; font-size:0.75rem; font-weight:700;
+      background:rgba(212,160,23,0.15); color:#e8b84b;
+    }
+    .metro-finish-badge.perfect { background:rgba(34,197,94,0.18); color:#4ade80; }
+
+    /* ── Season stat strip ─────────────────────────────────── */
+    .season-strip {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:12px; margin-bottom:48px;
+    }
+    .ss-card {
+      background:rgba(13,46,100,0.4); border:1px solid rgba(212,160,23,0.15);
+      border-radius:12px; padding:18px 16px;
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .ss-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.65rem; font-weight:700;
+      letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.45);
+    }
+    .ss-value {
+      font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-weight:700;
+      color:#FFD700; line-height:1;
+    }
+    .ss-sub {
+      font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.45);
+    }
+
+    /* ── Three-chart grid ──────────────────────────────────── */
+    .charts-grid-3 {
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr));
+      gap:20px;
+    }
+    @media(max-width:700px){ .charts-grid-3 { grid-template-columns:1fr; } }
+
     /* ── Debater detail modal ──────────────────────────────── */
     .modal-overlay {
       position:fixed; inset:0; background:rgba(0,0,0,0.75);
@@ -549,93 +652,149 @@
   <!-- Main dashboard -->
   <div id="stats-dashboard" style="display:none">
 
-    <!-- Season Overview -->
-    <div class="stat-section">
-      <div class="stat-section-title">Season Overview</div>
-      <div class="overview-grid" id="overview-grid">
-        <div class="ov-card"><div class="ov-label">Season Record</div><div class="ov-value" id="ov-record">—</div><div class="ov-sub" id="ov-win-rate">—</div></div>
-        <div class="ov-card"><div class="ov-label">Avg Speaker</div><div class="ov-value" id="ov-avg-speak">—</div><div class="ov-sub">points per round</div></div>
-        <div class="ov-card"><div class="ov-label">Tournaments</div><div class="ov-value" id="ov-tournaments">—</div><div class="ov-sub">competed</div></div>
-        <div class="ov-card"><div class="ov-label">Top Speaker</div><div class="ov-value" id="ov-top-speak">—</div><div class="ov-sub" id="ov-top-name">—</div></div>
-        <div class="ov-card"><div class="ov-label">Best Record</div><div class="ov-value" id="ov-best-rec">—</div><div class="ov-sub" id="ov-best-name">—</div></div>
-        <div class="ov-card accent"><div class="ov-label">Entries Competed</div><div class="ov-value" id="ov-entries">—</div><div class="ov-sub">unique teams</div></div>
+    <!-- Tab bar + time filter -->
+    <div class="stats-tab-bar">
+      <div class="stats-tabs">
+        <button class="stats-tab active" id="tab-btn-overview"    onclick="switchTab('overview')">Overview</button>
+        <button class="stats-tab"        id="tab-btn-tournaments" onclick="switchTab('tournaments')">Tournaments</button>
+        <button class="stats-tab"        id="tab-btn-pairs"       onclick="switchTab('pairs')">Debaters &amp; Pairs</button>
+      </div>
+      <div class="stats-time-filter" id="time-filter-bar">
+        <button class="tf-btn active" id="tf-all"   onclick="setTimeFilter('all')">All Time</button>
+        <button class="tf-btn"        id="tf-year"  onclick="setTimeFilter('year')">By Year</button>
+        <select class="tf-select"     id="tf-year-sel" onchange="applyYearFilter(this.value)" style="display:none"></select>
+        <button class="tf-btn"        id="tf-month" onclick="setTimeFilter('month')">By Month</button>
+        <select class="tf-select"     id="tf-month-sel" onchange="applyMonthFilter(this.value)" style="display:none"></select>
       </div>
     </div>
 
-    <hr class="section-divider">
+    <!-- ══ OVERVIEW TAB ══ -->
+    <div class="tab-pane active" id="tab-overview">
 
-    <!-- Team Leaderboard -->
-    <div class="stat-section">
-      <div class="stat-section-title">Individual Leaderboard</div>
-      <div class="lb-table-wrap">
-        <table class="lb-table" id="lb-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Debater</th>
-              <th class="num">W</th>
-              <th class="num">L</th>
-              <th class="num">Win %</th>
-              <th class="num">Avg Speak</th>
-              <th class="num">Tournaments</th>
-            </tr>
-          </thead>
-          <tbody id="lb-tbody"></tbody>
-        </table>
+      <!-- Season stat strip -->
+      <div class="season-strip" id="season-strip">
+        <div class="ss-card"><div class="ss-label">Tournaments</div><div class="ss-value" id="ss-tourns">—</div><div class="ss-sub">competed</div></div>
+        <div class="ss-card"><div class="ss-label">Total Rounds</div><div class="ss-value" id="ss-rounds">—</div><div class="ss-sub">prelim rounds played</div></div>
+        <div class="ss-card"><div class="ss-label">Overall W / L</div><div class="ss-value" id="ss-record">—</div><div class="ss-sub" id="ss-winrate">—</div></div>
+        <div class="ss-card"><div class="ss-label">Avg Speaker Pts</div><div class="ss-value" id="ss-speak">—</div><div class="ss-sub">per round</div></div>
       </div>
-    </div>
 
-    <hr class="section-divider">
-
-    <!-- Charts row -->
-    <div class="stat-section">
-      <div class="stat-section-title">Analytics</div>
-      <div class="charts-grid">
-        <div class="chart-card">
-          <div class="chart-card-title">Top Speakers — Average Points</div>
-          <div class="chart-canvas-wrap"><canvas id="chart-speaks"></canvas></div>
+      <!-- Metro Finals tracker -->
+      <div class="stat-section">
+        <div class="stat-section-title">Metro Finals Eligibility</div>
+        <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:-10px 0 18px;line-height:1.7">
+          Eligible = 1× 4-0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3-1 or better)
+        </p>
+        <div class="metro-table-wrap">
+          <table class="metro-table" id="metro-table">
+            <thead>
+              <tr>
+                <th>Pair</th>
+                <th class="num">Tournaments</th>
+                <th class="num">Best Finish</th>
+                <th class="num">4-0 Count</th>
+                <th class="num">3-1+ Count</th>
+                <th>Metro Eligible?</th>
+                <th>Distance from Eligible</th>
+              </tr>
+            </thead>
+            <tbody id="metro-tbody"></tbody>
+          </table>
         </div>
-        <div class="chart-card">
-          <div class="chart-card-title">Round Win Rate — How Cooper Performs by Round</div>
-          <div class="chart-canvas-wrap" style="height:240px">
+      </div>
+
+      <!-- Charts row -->
+      <div class="stat-section">
+        <div class="stat-section-title">Analytics</div>
+        <div class="charts-grid-3">
+          <div class="chart-card">
+            <div class="chart-card-title">Win Distribution — Finish Counts</div>
+            <div class="chart-canvas-wrap"><canvas id="chart-win-dist"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Performance Timeline — Avg Win Rate per Tournament</div>
+            <div class="chart-canvas-wrap"><canvas id="chart-timeline"></canvas></div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card-title">Top Speakers — Average Points</div>
+            <div class="chart-canvas-wrap"><canvas id="chart-speaks"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /tab-overview -->
+
+    <!-- ══ TOURNAMENTS TAB ══ -->
+    <div class="tab-pane" id="tab-tournaments">
+      <div class="stat-section">
+        <div class="stat-section-title">Tournament History</div>
+        <div class="tourn-grid" id="tourn-grid"></div>
+      </div>
+    </div>
+
+    <!-- ══ DEBATERS & PAIRS TAB ══ -->
+    <div class="tab-pane" id="tab-pairs">
+
+      <!-- Individual Leaderboard -->
+      <div class="stat-section">
+        <div class="stat-section-title">Individual Leaderboard</div>
+        <div class="lb-table-wrap">
+          <table class="lb-table" id="lb-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Debater</th>
+                <th class="num">W</th>
+                <th class="num">L</th>
+                <th class="num">Win %</th>
+                <th class="num">Avg Speak</th>
+                <th class="num">Tournaments</th>
+              </tr>
+            </thead>
+            <tbody id="lb-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- Partnership records -->
+      <div class="stat-section">
+        <div class="stat-section-title">Partnership Records</div>
+        <div class="pair-table-wrap">
+          <table class="pair-table" id="pair-table">
+            <thead>
+              <tr>
+                <th>Partnership</th>
+                <th class="num">W</th>
+                <th class="num">L</th>
+                <th class="num">Win %</th>
+                <th class="num">Avg Team Speak</th>
+                <th class="num">Tournaments</th>
+              </tr>
+            </thead>
+            <tbody id="pair-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <hr class="section-divider">
+
+      <!-- Round Win Rate -->
+      <div class="stat-section">
+        <div class="stat-section-title">Round Win Rate</div>
+        <div class="chart-card" style="max-width:600px">
+          <div class="chart-card-title">How Cooper Performs by Round</div>
+          <div class="chart-canvas-wrap" style="height:220px">
             <div class="round-bars" id="round-bars" style="height:160px; margin-bottom:12px"></div>
-            <p style="font-family:'Josefin Sans',sans-serif; font-size:0.75rem; color:rgba(255,255,255,0.35); text-align:center; margin:0">
+            <p style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.35);text-align:center;margin:0">
               Win % for Cooper in each prelim round across all tournaments
             </p>
           </div>
         </div>
       </div>
-    </div>
 
-    <hr class="section-divider">
-
-    <!-- Partnership records -->
-    <div class="stat-section">
-      <div class="stat-section-title">Partnership Records</div>
-      <div class="pair-table-wrap">
-        <table class="pair-table" id="pair-table">
-          <thead>
-            <tr>
-              <th>Partnership</th>
-              <th class="num">W</th>
-              <th class="num">L</th>
-              <th class="num">Win %</th>
-              <th class="num">Avg Team Speak</th>
-              <th class="num">Tournaments</th>
-            </tr>
-          </thead>
-          <tbody id="pair-tbody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <hr class="section-divider">
-
-    <!-- Tournament History -->
-    <div class="stat-section">
-      <div class="stat-section-title">Tournament History</div>
-      <div class="tourn-grid" id="tourn-grid"></div>
-    </div>
+    </div><!-- /tab-pairs -->
 
   </div><!-- /stats-dashboard -->
 
@@ -869,12 +1028,17 @@ const sDb  = firebase.firestore(sApp.apps ? sApp : firebase.app());
 const statsDb = firebase.firestore();
 
 /* ── State ──────────────────────────────────────────────────── */
-let allTournaments = [];   // [{id, meta, entries}]
-let leaderboard    = [];
-let speakChart     = null;
-let teamCsvText    = null;
-let speakCsvText   = null;
-let currentDebater = null;
+let allTournaments  = [];   // [{id, meta, entries}]
+let filteredTourns  = [];   // tournaments after time-filter applied
+let leaderboard     = [];
+let speakChart      = null;
+let winDistChart    = null;
+let timelineChart   = null;
+let teamCsvText     = null;
+let speakCsvText    = null;
+let currentDebater  = null;
+let activeTimeMode  = 'all';  // 'all' | 'year' | 'month'
+let activeTab       = 'overview';
 
 /* ── Init ───────────────────────────────────────────────────── */
 async function initStats() {
@@ -1130,8 +1294,10 @@ function computeSeasonStats(tournaments) {
       });
     });
   });
+  // totalRounds = unique round count per entry (wins+losses per entry summed then halved since each round has 2 debaters)
+  const totalRounds = totalW + totalL;
   return {
-    totalW, totalL,
+    totalW, totalL, totalRounds,
     winRate: totalW + totalL > 0 ? (totalW / (totalW + totalL) * 100).toFixed(1) : '—',
     avgSpeak: speakCount > 0 ? (totalSpeak / speakCount).toFixed(2) : '—',
     tournaments: tournaments.length,
@@ -1220,6 +1386,153 @@ function computeRoundStats(tournaments) {
 }
 
 /* ═══════════════════════════════════════════════════════════════
+   TAB  SWITCHING
+═══════════════════════════════════════════════════════════════ */
+function switchTab(name) {
+  activeTab = name;
+  ['overview','tournaments','pairs'].forEach(t => {
+    document.getElementById('tab-' + t).classList.toggle('active', t === name);
+    const btn = document.getElementById('tab-btn-' + t);
+    if (btn) btn.classList.toggle('active', t === name);
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TIME  FILTER
+═══════════════════════════════════════════════════════════════ */
+function buildFilterSelects() {
+  const years  = new Set();
+  const months = new Set(); // "YYYY-MM"
+  allTournaments.forEach(t => {
+    const d = t.meta.date; // e.g. "Saturday, October 11, 2025" or "2025-10-11"
+    if (!d) return;
+    const parsed = new Date(d + 'T12:00:00');
+    if (isNaN(parsed)) return;
+    years.add(parsed.getFullYear());
+    const m = String(parsed.getMonth()+1).padStart(2,'0');
+    months.add(`${parsed.getFullYear()}-${m}`);
+  });
+
+  const ySel = document.getElementById('tf-year-sel');
+  ySel.innerHTML = '<option value="">— Year —</option>' +
+    [...years].sort((a,b)=>b-a).map(y=>`<option value="${y}">${y}</option>`).join('');
+
+  const mSel = document.getElementById('tf-month-sel');
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  mSel.innerHTML = '<option value="">— Month —</option>' +
+    [...months].sort((a,b)=>b.localeCompare(a)).map(m => {
+      const [yr, mo] = m.split('-');
+      return `<option value="${m}">${monthNames[+mo-1]} ${yr}</option>`;
+    }).join('');
+}
+
+function setTimeFilter(mode) {
+  activeTimeMode = mode;
+  // Reset button states
+  ['all','year','month'].forEach(m => {
+    const btn = document.getElementById('tf-' + m);
+    if (btn) btn.classList.toggle('active', m === mode);
+  });
+  // Show/hide selects
+  document.getElementById('tf-year-sel').style.display  = mode === 'year'  ? 'inline-block' : 'none';
+  document.getElementById('tf-month-sel').style.display = mode === 'month' ? 'inline-block' : 'none';
+
+  if (mode === 'all') {
+    filteredTourns = [...allTournaments];
+    renderFiltered();
+  }
+  // For year/month, wait for user to pick from the select
+}
+
+function applyYearFilter(val) {
+  if (!val) return;
+  filteredTourns = allTournaments.filter(t => {
+    const d = new Date((t.meta.date||'') + 'T12:00:00');
+    return !isNaN(d) && d.getFullYear() === +val;
+  });
+  renderFiltered();
+}
+
+function applyMonthFilter(val) {
+  if (!val) return;
+  const [yr, mo] = val.split('-').map(Number);
+  filteredTourns = allTournaments.filter(t => {
+    const d = new Date((t.meta.date||'') + 'T12:00:00');
+    return !isNaN(d) && d.getFullYear() === yr && d.getMonth()+1 === mo;
+  });
+  renderFiltered();
+}
+
+function renderFiltered() {
+  const tourns = filteredTourns;
+  leaderboard = computeLeaderboard(tourns);
+  const season     = computeSeasonStats(tourns);
+  const pairings   = computePairings(tourns);
+  const roundStats = computeRoundStats(tourns);
+  const metro      = computeMetroEligibility(tourns);
+
+  renderSeasonStrip(season);
+  renderMetroTable(metro);
+  renderLeaderboard(leaderboard);
+  renderTournaments(tourns);
+  renderCharts(leaderboard, tourns);
+  renderRoundBars(roundStats);
+  renderPairings(pairings);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   METRO  FINALS  ELIGIBILITY
+═══════════════════════════════════════════════════════════════ */
+function computeMetroEligibility(tournaments) {
+  // Per-pair, track finishes across tournaments
+  const map = {};
+  tournaments.forEach(t => {
+    t.entries.forEach(e => {
+      if (e.debaters.length < 2) return;
+      const names = e.debaters.map(d => `${d.first} ${d.last}`).sort();
+      const key = names.join(' & ');
+      if (!map[key]) map[key] = { pair: key, tourns: 0, finishes: [], bestWins: 0 };
+      const pm = map[key];
+      pm.tourns++;
+      pm.finishes.push(e.wins);
+      if (e.wins > pm.bestWins) pm.bestWins = e.wins;
+    });
+  });
+
+  return Object.values(map).map(p => {
+    const count40 = p.finishes.filter(w => w >= 4).length;  // 4-0
+    const count31 = p.finishes.filter(w => w >= 3).length;  // 3-1 or better
+    const eligible40 = count40 >= 1;
+    const eligible31 = count31 >= 2;
+    const eligible   = eligible40 || eligible31;
+
+    let bestFinish = p.bestWins === 4 ? '4-0' :
+                     p.bestWins === 3 ? '3-1' :
+                     p.bestWins === 2 ? '2-2' :
+                     p.bestWins === 1 ? '1-3' :
+                     p.bestWins === 0 ? '0-4' : '—';
+
+    let distance;
+    if (eligible40) {
+      distance = '✓ Eligible (4-0)';
+    } else if (eligible31) {
+      distance = '✓ Eligible (2× 3-1+)';
+    } else if (count31 === 1) {
+      distance = 'Need 1 more 3-1+ or a 4-0';
+    } else {
+      distance = 'Need a 4-0 or two 3-1+ finishes';
+    }
+
+    return { ...p, count40, count31, eligible, bestFinish, distance };
+  }).sort((a,b) => {
+    // Sort: eligible first, then by distance (count31 desc, count40 desc)
+    if (a.eligible !== b.eligible) return b.eligible - a.eligible;
+    if (b.count31 !== a.count31) return b.count31 - a.count31;
+    return b.bestWins - a.bestWins;
+  });
+}
+
+/* ═══════════════════════════════════════════════════════════════
    RENDERING
 ═══════════════════════════════════════════════════════════════ */
 function renderAll() {
@@ -1228,35 +1541,41 @@ function renderAll() {
   document.getElementById('stats-dashboard').style.display = hasData ? 'block' : 'none';
   if (!hasData) return;
 
-  leaderboard = computeLeaderboard(allTournaments);
-  const season   = computeSeasonStats(allTournaments);
-  const pairings = computePairings(allTournaments);
-  const roundStats = computeRoundStats(allTournaments);
-
-  renderOverview(season, leaderboard);
-  renderLeaderboard(leaderboard);
-  renderTournaments();
-  renderCharts(leaderboard);
-  renderRoundBars(roundStats);
-  renderPairings(pairings);
+  buildFilterSelects();
+  filteredTourns = [...allTournaments];
+  renderFiltered();
 }
 
-function renderOverview(season, lb) {
-  document.getElementById('ov-record').textContent   = `${season.totalW}–${season.totalL}`;
-  document.getElementById('ov-win-rate').textContent = season.winRate !== '—' ? `${season.winRate}% win rate` : '';
-  document.getElementById('ov-avg-speak').textContent = season.avgSpeak;
-  document.getElementById('ov-tournaments').textContent = season.tournaments;
-  document.getElementById('ov-entries').textContent   = season.entries;
+function renderSeasonStrip(season) {
+  document.getElementById('ss-tourns').textContent  = season.tournaments;
+  document.getElementById('ss-rounds').textContent  = season.totalRounds;
+  document.getElementById('ss-record').textContent  = `${season.totalW}–${season.totalL}`;
+  document.getElementById('ss-winrate').textContent = season.winRate !== '—' ? `${season.winRate}% win rate` : '';
+  document.getElementById('ss-speak').textContent   = season.avgSpeak;
+}
 
-  const topSpeak = lb.slice().sort((a,b) => b.avgSpeak - a.avgSpeak)[0];
-  document.getElementById('ov-top-speak').textContent = topSpeak ? topSpeak.avgSpeak.toFixed(1) : '—';
-  document.getElementById('ov-top-name').textContent  = topSpeak ? topSpeak.name : '';
-
-  const topWin = lb[0];
-  if (topWin) {
-    document.getElementById('ov-best-rec').textContent = `${topWin.wins}–${topWin.losses}`;
-    document.getElementById('ov-best-name').textContent = topWin.name;
+function renderMetroTable(metro) {
+  const tbody = document.getElementById('metro-tbody');
+  if (!metro.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:24px">No pair data yet</td></tr>';
+    return;
   }
+  tbody.innerHTML = metro.map(p => {
+    const eligHtml = p.eligible
+      ? `<span class="metro-eligible yes">✓ Yes</span>`
+      : `<span class="metro-eligible no">✗ No</span>`;
+    const distCls = p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : '';
+    const bestCls = p.bestWins >= 4 ? 'perfect' : '';
+    return `<tr>
+      <td style="font-weight:700">${p.pair}</td>
+      <td class="num">${p.tourns}</td>
+      <td class="num"><span class="metro-finish-badge ${bestCls}">${p.bestFinish}</span></td>
+      <td class="num">${p.count40}</td>
+      <td class="num">${p.count31}</td>
+      <td>${eligHtml}</td>
+      <td><span class="metro-distance ${distCls}">${p.distance}</span></td>
+    </tr>`;
+  }).join('');
 }
 
 function renderLeaderboard(lb) {
@@ -1281,10 +1600,12 @@ function renderLeaderboard(lb) {
   }).join('');
 }
 
-function renderTournaments() {
+function renderTournaments(tourns) {
   const grid = document.getElementById('tourn-grid');
   const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
-  grid.innerHTML = allTournaments.map(t => {
+  const list = tourns || allTournaments;
+  if (!list.length) { grid.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;color:rgba(255,255,255,0.35);padding:24px">No tournaments in this range.</p>'; return; }
+  grid.innerHTML = list.map(t => {
     const totalW = t.entries.reduce((s,e) => s+e.wins, 0);
     const totalL = t.entries.reduce((s,e) => s+e.losses, 0);
     const topEntry = [...t.entries].sort((a,b) => b.wins-a.wins || b.totalPts-a.totalPts)[0];
@@ -1308,11 +1629,17 @@ function renderTournaments() {
   }).join('');
 }
 
-function renderCharts(lb) {
+function renderCharts(lb, tourns) {
+  const chartAxisOpts = {
+    ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } },
+    grid: { color: 'rgba(255,255,255,0.05)' }
+  };
+
+  /* ── Top Speakers bar ── */
   const top = lb.slice().sort((a,b) => b.avgSpeak - a.avgSpeak).slice(0, 10);
   if (speakChart) speakChart.destroy();
-  const ctx = document.getElementById('chart-speaks').getContext('2d');
-  speakChart = new Chart(ctx, {
+  const ctxSpeak = document.getElementById('chart-speaks').getContext('2d');
+  speakChart = new Chart(ctxSpeak, {
     type: 'bar',
     data: {
       labels: top.map(d => d.first),
@@ -1320,27 +1647,112 @@ function renderCharts(lb) {
         label: 'Avg Speaker Points',
         data: top.map(d => d.avgSpeak),
         backgroundColor: top.map((_, i) =>
-          i === 0 ? 'rgba(255,215,0,0.7)' :
+          i === 0 ? 'rgba(255,215,0,0.75)' :
           i === 1 ? 'rgba(212,160,23,0.55)' :
           i === 2 ? 'rgba(212,160,23,0.45)' :
           'rgba(212,160,23,0.28)'),
-        borderColor: 'rgba(212,160,23,0.5)',
-        borderWidth: 1,
-        borderRadius: 6,
+        borderColor: 'rgba(212,160,23,0.4)',
+        borderWidth: 1, borderRadius: 6,
       }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: ctx => `${ctx.parsed.y.toFixed(2)} avg speak` }
+        callbacks: { label: c => `${c.parsed.y.toFixed(2)} avg speak` }
       }},
       scales: {
-        x: { ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } }, grid: { color: 'rgba(255,255,255,0.04)' } },
-        y: {
-          ticks: { color: 'rgba(255,255,255,0.55)', font: { family: 'Josefin Sans', size: 11 } },
-          grid: { color: 'rgba(255,255,255,0.06)' },
-          min: top.length ? Math.floor(Math.min(...top.map(d=>d.avgSpeak)) - 0.5) : 25
-        }
+        x: chartAxisOpts,
+        y: { ...chartAxisOpts,
+          min: top.length ? Math.floor(Math.min(...top.map(d=>d.avgSpeak)) - 0.5) : 25 }
+      }
+    }
+  });
+
+  /* ── Win Distribution bar ── */
+  // Count how many times Cooper entries finished with 4/3/2/1/0 wins
+  const dist = { 4: 0, 3: 0, 2: 0, 1: 0, 0: 0 };
+  (tourns || []).forEach(t => {
+    t.entries.forEach(e => {
+      const w = Math.min(Math.max(e.wins, 0), 4);
+      if (dist[w] !== undefined) dist[w]++;
+    });
+  });
+  const distLabels = ['4-0', '3-1', '2-2', '1-3', '0-4'];
+  const distValues = [dist[4], dist[3], dist[2], dist[1], dist[0]];
+  const distColors = [
+    'rgba(34,197,94,0.65)', 'rgba(134,239,172,0.5)',
+    'rgba(212,160,23,0.5)', 'rgba(251,146,60,0.5)',
+    'rgba(239,68,68,0.55)'
+  ];
+  if (winDistChart) winDistChart.destroy();
+  const ctxDist = document.getElementById('chart-win-dist').getContext('2d');
+  winDistChart = new Chart(ctxDist, {
+    type: 'bar',
+    data: {
+      labels: distLabels,
+      datasets: [{
+        label: 'Entries',
+        data: distValues,
+        backgroundColor: distColors,
+        borderColor: distColors.map(c => c.replace(/[\d.]+\)$/, '0.85)')),
+        borderWidth: 1, borderRadius: 8,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: c => `${c.parsed.y} entr${c.parsed.y === 1 ? 'y' : 'ies'}` }
+      }},
+      scales: {
+        x: chartAxisOpts,
+        y: { ...chartAxisOpts, ticks: { ...chartAxisOpts.ticks, stepSize: 1 }, beginAtZero: true }
+      }
+    }
+  });
+
+  /* ── Performance Timeline line ── */
+  // Per tournament (sorted by date): avg win rate across all Cooper entries
+  const sorted = [...(tourns || [])].sort((a, b) => {
+    const da = new Date((a.meta.date||'') + 'T12:00:00');
+    const db = new Date((b.meta.date||'') + 'T12:00:00');
+    return da - db;
+  });
+  const tlLabels = sorted.map(t => {
+    const d = new Date((t.meta.date||'') + 'T12:00:00');
+    return isNaN(d) ? t.meta.name : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  });
+  const tlData = sorted.map(t => {
+    let w = 0, l = 0;
+    t.entries.forEach(e => { w += e.wins; l += e.losses; });
+    return w + l > 0 ? +((w / (w + l)) * 100).toFixed(1) : null;
+  });
+  if (timelineChart) timelineChart.destroy();
+  const ctxTL = document.getElementById('chart-timeline').getContext('2d');
+  timelineChart = new Chart(ctxTL, {
+    type: 'line',
+    data: {
+      labels: tlLabels,
+      datasets: [{
+        label: 'Win Rate %',
+        data: tlData,
+        borderColor: 'rgba(212,160,23,0.85)',
+        backgroundColor: 'rgba(212,160,23,0.1)',
+        pointBackgroundColor: '#FFD700',
+        pointBorderColor: '#1c2030',
+        pointRadius: 5, pointHoverRadius: 7,
+        tension: 0.35, fill: true,
+        borderWidth: 2,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: {
+        callbacks: { label: c => `${c.parsed.y}% win rate` }
+      }},
+      scales: {
+        x: chartAxisOpts,
+        y: { ...chartAxisOpts, min: 0, max: 100,
+          ticks: { ...chartAxisOpts.ticks, callback: v => v + '%' } }
       }
     }
   });
