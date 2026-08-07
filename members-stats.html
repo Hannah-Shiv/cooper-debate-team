@@ -1342,7 +1342,7 @@
     <div class="tab-pane" id="tab-tournaments">
       <div class="stat-section">
         <div class="stat-section-title">
-          Tournament History
+          Tournament History <span id="season-badge-tourn" class="season-scope-badge" style="display:none"></span>
           <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button>
         </div>
         <div class="tourn-season-bar">
@@ -1362,7 +1362,7 @@
 
       <!-- Individual Leaderboard -->
       <div class="stat-section">
-        <div class="stat-section-title">Individual Leaderboard <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
+        <div class="stat-section-title">Individual Leaderboard <span id="season-badge-lb" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
         <div class="lb-table-wrap">
           <table class="lb-table" id="lb-table">
             <thead>
@@ -1386,7 +1386,7 @@
 
       <!-- Partnership records -->
       <div class="stat-section">
-        <div class="stat-section-title">Partnership Records <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
+        <div class="stat-section-title">Partnership Records <span id="season-badge-pair" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
         <div class="pair-table-wrap">
           <table class="pair-table" id="pair-table">
             <thead>
@@ -1406,12 +1406,32 @@
 
       <hr class="section-divider">
 
+      <!-- Pair Progression chart -->
+      <div class="stat-section">
+        <div class="stat-section-title">Pair Progression <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▼</button></div>
+        <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65);margin:-10px 0 18px;line-height:1.7">
+          Select a partnership to see their win rate tournament by tournament.
+        </p>
+        <div class="pair-prog-controls">
+          <select class="tourn-season-sel" id="pair-prog-sel" onchange="renderPairProgressionChart()" style="max-width:360px">
+            <option value="">— Select a pair —</option>
+          </select>
+        </div>
+        <div id="pair-prog-msg" style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:16px;display:none"></div>
+        <div class="chart-card" id="pair-prog-card" style="margin-top:20px;display:none">
+          <div class="chart-card-title" id="pair-prog-title"></div>
+          <div class="chart-canvas-wrap" style="height:320px">
+            <canvas id="pair-prog-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /tab-pairs -->
 
     <!-- ══ ANALYTICS TAB ══ -->
     <div class="tab-pane" id="tab-analytics">
       <div class="stat-section">
-        <div class="stat-section-title">Analytics</div>
+        <div class="stat-section-title">Analytics <span id="season-badge-analytics" class="season-scope-badge" style="display:none"></span></div>
         <div class="charts-grid-3">
           <div class="chart-card">
             <div class="chart-card-title">Win Distribution — Finish Counts</div>
@@ -2645,7 +2665,8 @@ function getActiveSeasonLabel() {
 
 function updateSeasonBadges() {
   const label = getActiveSeasonLabel();
-  ['season-badge-metro', 'season-badge-page'].forEach(id => {
+  ['season-badge-metro','season-badge-page','season-badge-lb',
+   'season-badge-pair','season-badge-tourn','season-badge-analytics'].forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
     el.textContent = label;
@@ -3056,6 +3077,110 @@ function renderRoundBars(roundStats) {
 function renderPairings(pairings) {
   allPairings = pairings;
   if (xfPair) xfPair.apply(); else _paintPairings(pairings);
+  populatePairProgressionSelect(pairings);
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PAIR  PROGRESSION  CHART  (#72)
+═══════════════════════════════════════════════════════════════ */
+let pairProgChart = null;
+
+function populatePairProgressionSelect(pairings) {
+  const sel = document.getElementById('pair-prog-sel');
+  if (!sel) return;
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">— Select a pair —</option>';
+  // Only show pairs with 2+ tournaments
+  pairings.filter(p => p.tourns >= 2)
+    .sort((a,b) => a.pair.localeCompare(b.pair))
+    .forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.pair; opt.textContent = p.pair;
+      sel.appendChild(opt);
+    });
+  if (prev) sel.value = prev;
+  if (sel.value) renderPairProgressionChart();
+}
+
+function computePairProgression(pairName) {
+  const results = [];
+  const nameParts = pairName.split(' & ').map(n => n.trim().toLowerCase());
+  allTournaments.forEach(t => {
+    t.entries.forEach(e => {
+      if (e.debaters.length < 2) return;
+      const debNames = e.debaters.map(d => `${d.first} ${d.last}`.toLowerCase()).sort();
+      const matchParts = nameParts.slice().sort();
+      if (JSON.stringify(debNames) === JSON.stringify(matchParts)) {
+        const d = parseTournDate(t.meta.date);
+        results.push({
+          label: t.meta.name,
+          dateNum: isNaN(d) ? 0 : d.getTime(),
+          wins: e.wins,
+          losses: e.losses,
+          winRate: e.wins + e.losses > 0 ? +(e.wins / (e.wins + e.losses) * 100).toFixed(1) : null
+        });
+      }
+    });
+  });
+  return results.sort((a,b) => a.dateNum - b.dateNum);
+}
+
+function renderPairProgressionChart() {
+  const sel = document.getElementById('pair-prog-sel');
+  const msg = document.getElementById('pair-prog-msg');
+  const card = document.getElementById('pair-prog-card');
+  const titleEl = document.getElementById('pair-prog-title');
+  if (!sel || !sel.value) { if(card) card.style.display='none'; return; }
+
+  const data = computePairProgression(sel.value);
+  if (data.length < 2) {
+    if (msg) { msg.textContent = 'Not enough tournament data for this pair.'; msg.style.display=''; }
+    if (card) card.style.display = 'none';
+    return;
+  }
+  if (msg) msg.style.display = 'none';
+  if (card) card.style.display = '';
+  if (titleEl) titleEl.textContent = sel.value + ' — Tournament by Tournament';
+
+  if (pairProgChart) { pairProgChart.destroy(); pairProgChart = null; }
+  const ctx = document.getElementById('pair-prog-chart').getContext('2d');
+  pairProgChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: data.map(d => d.label),
+      datasets: [
+        {
+          type: 'bar', label: 'Wins', data: data.map(d => d.wins),
+          backgroundColor: 'rgba(34,197,94,0.55)', borderColor: 'rgba(34,197,94,0.85)',
+          borderWidth: 1, borderRadius: 6, yAxisID: 'y',
+        },
+        {
+          type: 'bar', label: 'Losses', data: data.map(d => d.losses),
+          backgroundColor: 'rgba(239,68,68,0.45)', borderColor: 'rgba(239,68,68,0.75)',
+          borderWidth: 1, borderRadius: 6, yAxisID: 'y',
+        },
+        {
+          type: 'line', label: 'Win Rate %', data: data.map(d => d.winRate),
+          borderColor: '#FFD700', backgroundColor: 'rgba(212,160,23,0.12)',
+          pointBackgroundColor: '#FFD700', pointBorderColor: '#1c2030',
+          pointRadius: 5, pointHoverRadius: 7, tension: 0.3,
+          borderWidth: 2, fill: true, yAxisID: 'y2',
+        }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: 'rgba(255,255,255,0.72)', font: { family: 'Josefin Sans', size: 12 } } },
+        tooltip: { callbacks: { label: c => c.dataset.label === 'Win Rate %' ? `${c.parsed.y}% win rate` : `${c.dataset.label}: ${c.parsed.y}` } }
+      },
+      scales: {
+        x: { ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Josefin Sans', size: 12 } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+        y: { position: 'left', ticks: { color: 'rgba(255,255,255,0.65)', font: { family: 'Josefin Sans', size: 12 }, stepSize: 1 }, grid: { color: 'rgba(255,255,255,0.05)' }, beginAtZero: true, title: { display: true, text: 'Rounds', color: 'rgba(255,255,255,0.4)', font: { family: 'Josefin Sans', size: 11 } } },
+        y2: { position: 'right', min: 0, max: 100, ticks: { color: '#FFD700', font: { family: 'Josefin Sans', size: 12 }, callback: v => v + '%' }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Win Rate', color: '#FFD700', font: { family: 'Josefin Sans', size: 11 } } }
+      }
+    }
+  });
 }
 
 function _paintPairings(data) {
