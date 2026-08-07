@@ -1615,10 +1615,13 @@
           </div>
         </div>
 
-        <!-- Trend line card -->
+        <!-- Overall win% trend card -->
         <div class="chart-card" style="margin-top:20px">
-          <div class="chart-card-title">Round Trends Over Tournaments — Is Cooper Improving?</div>
-          <div class="chart-canvas-wrap" style="height:300px"><canvas id="chart-round-progress"></canvas></div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px">
+            <div class="chart-card-title" style="margin:0">Overall Win Rate — Season Trend</div>
+            <div id="overall-trend-badge" style="display:none"></div>
+          </div>
+          <div class="chart-canvas-wrap" style="height:300px"><canvas id="chart-overall-trend"></canvas></div>
         </div>
 
         <!-- Heatmap card -->
@@ -3186,7 +3189,7 @@ function renderCharts(lb, tourns) {
   });
 }
 
-let roundProgressChart = null;
+let overallTrendChart = null;
 
 function renderRoundBars(roundStats) {
   const container = document.getElementById('round-bars');
@@ -3273,52 +3276,95 @@ function renderRoundBars(roundStats) {
     </div>`;
   }).join('');
 
-  // ── Trend line chart ──────────────────────────────────────────────────────
-  const COLORS = ['#FFD700','#22c55e','#60a5fa','#f472b6','#fb923c'];
-  const datasets = roundNums.map((rn, i) => ({
-    label: `R${rn}`,
-    data: roundTournData[i].map(d => d.pct !== null ? +d.pct.toFixed(1) : null),
-    borderColor: COLORS[i % COLORS.length],
-    backgroundColor: COLORS[i % COLORS.length] + '18',
-    pointBackgroundColor: COLORS[i % COLORS.length],
-    pointBorderColor: '#1c2030',
-    pointRadius: 6, pointHoverRadius: 9,
-    tension: 0.3, borderWidth: 2.5, fill: false, spanGaps: true,
-  }));
-  // 50% benchmark dashed line
-  datasets.push({
-    label: '50% Mark',
-    data: sorted.map(() => 50),
-    borderColor: 'rgba(255,255,255,0.18)',
-    borderDash: [7, 5], borderWidth: 1.5,
-    pointRadius: 0, fill: false,
-  });
-
+  // ── Overall Win-Loss % trend chart ───────────────────────────────────────
   const xLabels = sorted.map(t => {
     const d = parseTournDate(t.meta.date);
     return isNaN(d) ? t.meta.name.slice(0,14) : d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
   });
-  const ctx = document.getElementById('chart-round-progress');
-  if (!ctx) return;
-  if (roundProgressChart) roundProgressChart.destroy();
-  roundProgressChart = new Chart(ctx, {
+  const overallPcts = sorted.map(t => {
+    let w = 0, l = 0;
+    t.entries.forEach(e => { w += e.wins; l += e.losses; });
+    return w + l > 0 ? +((w / (w + l)) * 100).toFixed(1) : null;
+  });
+
+  // Linear regression → slope in pp per tournament → trend direction
+  const validPts = overallPcts.map((y,i) => [i,y]).filter(([,y]) => y !== null);
+  let slope = 0;
+  if (validPts.length >= 2) {
+    const n = validPts.length;
+    const sx = validPts.reduce((s,[x])=>s+x,0), sy = validPts.reduce((s,[,y])=>s+y,0);
+    const sxy = validPts.reduce((s,[x,y])=>s+x*y,0), sxx = validPts.reduce((s,[x])=>s+x*x,0);
+    slope = (n*sxy - sx*sy) / (n*sxx - sx*sx);
+  }
+
+  // Render trend badge
+  const badgeEl = document.getElementById('overall-trend-badge');
+  if (badgeEl && validPts.length >= 2) {
+    const up = slope > 0.5;
+    const dn = slope < -0.5;
+    const label = up ? '↑ Trending Up' : dn ? '↓ Trending Down' : '→ Holding Steady';
+    const bg    = up ? 'rgba(34,197,94,0.15)' : dn ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)';
+    const color = up ? '#4ade80' : dn ? '#e03535' : 'rgba(255,255,255,0.55)';
+    const border= up ? 'rgba(34,197,94,0.35)' : dn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)';
+    badgeEl.style.cssText = `display:inline-block;padding:6px 14px;border-radius:20px;background:${bg};color:${color};border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.08em`;
+    badgeEl.textContent = label;
+  }
+
+  const ctxOT = document.getElementById('chart-overall-trend');
+  if (!ctxOT) return;
+  if (overallTrendChart) overallTrendChart.destroy();
+  overallTrendChart = new Chart(ctxOT, {
     type: 'line',
-    data: { labels: xLabels, datasets },
+    data: {
+      labels: xLabels,
+      datasets: [
+        {
+          label: 'Win Rate %',
+          data: overallPcts,
+          borderColor: '#FFD700',
+          backgroundColor: 'rgba(212,160,23,0.12)',
+          pointBackgroundColor: overallPcts.map((v,i) => {
+            if (v === null) return 'transparent';
+            return v >= 65 ? '#22c55e' : v >= 45 ? '#FFD700' : '#e03535';
+          }),
+          pointBorderColor: '#1c2030',
+          pointRadius: 8, pointHoverRadius: 11,
+          tension: 0.35, fill: true, borderWidth: 3, spanGaps: true,
+        },
+        {
+          label: '50%',
+          data: sorted.map(() => 50),
+          borderColor: 'rgba(255,255,255,0.2)',
+          borderDash: [7,5], borderWidth: 1.5,
+          pointRadius: 0, fill: false,
+        }
+      ]
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { display: true, labels: {
-          color:'rgba(255,255,255,0.8)', font:{ family:'Josefin Sans', size:13 },
-          boxWidth:20, padding:18,
-          filter: item => item.text !== '50% Mark',
-        }},
+        legend: { display: false },
         tooltip: { callbacks: {
-          afterTitle: items => sorted[items[0].dataIndex]?.meta?.name || '',
+          title: items => {
+            const i = items[0].dataIndex;
+            return sorted[i]?.meta?.name || xLabels[i];
+          },
+          label: c => c.dataset.label === '50%' ? null : `Overall win rate: ${c.parsed.y}%`,
+          afterLabel: c => {
+            if (c.dataset.label === '50%') return null;
+            const i = c.dataIndex;
+            let w = 0, l = 0;
+            sorted[i]?.entries.forEach(e => { w += e.wins; l += e.losses; });
+            return `${w}W – ${l}L across all rounds`;
+          },
         }},
       },
       scales: {
         x: { ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14} }, grid:{color:'rgba(255,255,255,0.05)'} },
-        y: { min:0, max:100, ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14}, callback: v => v+'%' }, grid:{color:'rgba(255,255,255,0.06)'} },
+        y: { min:0, max:100,
+          ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14}, callback: v => v+'%' },
+          grid:{color:'rgba(255,255,255,0.06)'}
+        },
       },
     },
   });
