@@ -542,6 +542,16 @@
     }
     .metro-toast-close:hover { color:rgba(255,255,255,0.7); }
 
+    /* ── Season scope badge ───────────────────────────────── */
+    .season-scope-badge {
+      display:inline-block; padding:2px 10px; border-radius:50px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      background:rgba(212,160,23,0.15); color:#e8c84a;
+      border:1px solid rgba(212,160,23,0.3); vertical-align:middle;
+      flex-shrink:0;
+    }
+
     /* ── Sortable leaderboard ─────────────────────────────── */
     .lb-table th { cursor:pointer; user-select:none; }
     .lb-table th:first-child { cursor:default; }
@@ -947,7 +957,7 @@
   <!-- Page title -->
   <div class="portal-page-title">
     <h1>Statistics</h1>
-    <p>Tournament performance · Season analytics · Team leaderboard</p>
+    <p>Tournament performance · Season analytics · Team leaderboard<span id="season-badge-page" class="season-scope-badge" style="display:none;margin-left:12px"></span></p>
   </div>
 
   <!-- Empty state (shown if no tournaments imported) -->
@@ -992,7 +1002,7 @@
 
       <!-- Metro Finals tracker -->
       <div class="stat-section">
-        <div class="stat-section-title">Metro Finals Eligibility</div>
+        <div class="stat-section-title">Metro Finals Eligibility <span id="season-badge-metro" class="season-scope-badge" style="display:none"></span></div>
         <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:-10px 0 18px;line-height:1.7">
           Eligible = 1× 4-0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3-1 or better)
         </p>
@@ -1925,6 +1935,36 @@ function applyMonthFilter(val) {
   renderFiltered();
 }
 
+function getActiveSeasonLabel() {
+  if (activeTimeMode === 'season') {
+    const sel = document.getElementById('tf-season-sel');
+    const val = sel ? sel.value : '';
+    if (val) {
+      const y = +val;
+      return `${y}\u2013${String(y+1).slice(-2)} Season`;
+    }
+  } else if (activeTimeMode === 'month') {
+    const sel = document.getElementById('tf-month-sel');
+    const val = sel ? sel.value : '';
+    if (val) {
+      const [yr, mo] = val.split('-');
+      const names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return `${names[+mo-1]} ${yr}`;
+    }
+  }
+  return '';
+}
+
+function updateSeasonBadges() {
+  const label = getActiveSeasonLabel();
+  ['season-badge-metro', 'season-badge-page'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = label;
+    el.style.display = label ? '' : 'none';
+  });
+}
+
 function renderFiltered() {
   const tourns = filteredTourns;
   leaderboard = computeLeaderboard(tourns);
@@ -1933,6 +1973,7 @@ function renderFiltered() {
   const roundStats = computeRoundStats(tourns);
   const metro      = computeMetroEligibility(tourns);
 
+  updateSeasonBadges();
   renderSeasonStrip(season);
   renderMetroTable(metro);
   renderLeaderboard(leaderboard);
