@@ -2829,7 +2829,7 @@ function _paintMetroTable(metro) {
     const bestCls = p.bestWins >= 4 ? 'perfect' : '';
     const names = p.pair.split(' & ');
     const clickablePair = names.map(n =>
-      `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
+      `<span class="deb-link" style="font-weight:700" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`
     ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
     return `<tr>
       <td>${clickablePair}</td>
@@ -2857,7 +2857,7 @@ function _paintLeaderboard(data) {
     return `<tr>
       <td><span class="lb-rank ${rankCls}">${i+1}</span></td>
       <td>
-        <div class="lb-name lb-name-link" onclick="openDebModalByName('${d.name.replace(/'/g,"\\'")}')">${d.name}</div>
+        <div class="lb-name lb-name-link" onclick="openDebaterNewTab('${d.name.replace(/'/g,"\\'")}')">${d.name}</div>
         <div class="lb-partner">${d.partnerList || '—'}</div>
       </td>
       <td class="num">${d.wins}</td>
@@ -3066,7 +3066,7 @@ function _paintPairings(data) {
     const pillCls = pct >= 70 ? 'high' : pct >= 45 ? 'mid' : 'low';
     const names = p.pair.split(' & ');
     const clickableNames = names.map(n =>
-      `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
+      `<span class="deb-link" style="color:rgba(255,255,255,0.88)" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`
     ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
     return `<tr>
       <td>${clickableNames}</td>
@@ -3089,6 +3089,11 @@ function debaterSlug(name) {
 function openDebModalByName(name) {
   const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
   if (d) openDebModalData(d);
+}
+
+/* ── Open full debater profile in a new browser tab ─────────── */
+function openDebaterNewTab(name) {
+  window.open('members-stats.html?debater=' + debaterSlug(name), '_blank');
 }
 
 function openDebModal(idx) {
@@ -3359,7 +3364,7 @@ function renderFullDebaterProfile(d) {
       const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
       return `<tr>
         <td>
-          <span class="deb-link" onclick="openDebModalByName('${p.name.replace(/'/g,"\\'")}')">${p.name}</span>
+          <span class="deb-link" onclick="openDebaterNewTab('${p.name.replace(/'/g,"\\'")}')">${p.name}</span>
         </td>
         <td class="num">${p.tourns}</td>
         <td class="num">${p.wins}</td>
@@ -3634,7 +3639,7 @@ function _paintDrillEntries(data) {
     const clickableDebs = e.debaters && e.debaters.length
       ? e.debaters.map(d => {
           const n = `${d.first} ${d.last}`;
-          return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
+          return `<span class="deb-link entry-deb-names" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`;
         }).join('<span style="color:rgba(255,255,255,0.2)"> &amp; </span>')
       : (e.debNames || '—');
     return `<tr>
@@ -3676,7 +3681,7 @@ function _paintDrillSpeaks(data) {
     }).join('<span style="color:rgba(255,255,255,0.15);margin:0 4px">·</span>');
     const fullName = `${d.first} ${d.last}`;
     return `<tr>
-      <td><span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${fullName.replace(/'/g,"\\'")}')">${fullName}</span></td>
+      <td><span class="deb-link" style="font-weight:700" onclick="openDebaterNewTab('${fullName.replace(/'/g,"\\'")}')">${fullName}</span></td>
       <td style="color:rgba(255,255,255,0.5);font-size:0.82rem">${d.teamName}</td>
       <td class="num">${d.wins}</td>
       <td class="num">${d.losses}</td>
