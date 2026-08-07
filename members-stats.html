@@ -311,6 +311,18 @@
     .xf-icon.active { opacity:1; color:#FFD700; }
     .pair-table td.num { text-align:right; }
 
+    /* ── Clear-filters badge ────────────────────────────────── */
+    .xf-clear-badge {
+      display:inline-flex; align-items:center; gap:6px;
+      background:rgba(212,160,23,0.12); border:1px solid rgba(212,160,23,0.45);
+      border-radius:20px; padding:5px 14px; margin-bottom:10px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
+      font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      color:#FFD700; cursor:pointer;
+      transition:background 0.15s, border-color 0.15s;
+    }
+    .xf-clear-badge:hover { background:rgba(212,160,23,0.26); border-color:rgba(212,160,23,0.75); }
+
     /* ── Empty state ───────────────────────────────────────── */
     .empty-state {
       text-align:center; padding:80px 20px;
@@ -1588,9 +1600,35 @@ class XFilter {
     const tbl = document.getElementById(this.tableId);
     if (tbl) this._updateIcons(tbl);
     this.render(data);
+    this._updateBadge();
   }
 
   reset() { this.filters = {}; this.apply(); }
+
+  _hasActiveFilters() {
+    return Object.values(this.filters).some(s => s && s.size);
+  }
+
+  _updateBadge() {
+    const tbl = document.getElementById(this.tableId);
+    if (!tbl) return;
+    const wrap = tbl.parentElement;
+    if (!wrap) return;
+    const active = this._hasActiveFilters();
+    let badge = wrap.parentNode.querySelector(`.xf-clear-badge[data-xf="${this.tableId}"]`);
+    if (active) {
+      if (!badge) {
+        badge = document.createElement('button');
+        badge.className = 'xf-clear-badge';
+        badge.dataset.xf = this.tableId;
+        badge.innerHTML = '&#10005; Clear Filters';
+        badge.addEventListener('click', e => { e.stopPropagation(); this.reset(); });
+        wrap.parentNode.insertBefore(badge, wrap);
+      }
+    } else {
+      if (badge) badge.remove();
+    }
+  }
 
   _open(col, th) {
     this._close();
