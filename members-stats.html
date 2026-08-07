@@ -1596,6 +1596,21 @@
             <div class="chart-canvas-wrap"><canvas id="chart-speaks"></canvas></div>
           </div>
         </div>
+        <!-- Metro Eligibility chart — full width below the 3-chart grid -->
+        <div class="chart-card" style="margin-top:20px">
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px">
+            <div class="chart-card-title" style="margin:0">Metro Finals Eligibility Progress</div>
+            <div id="metro-chart-legend" style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;display:flex;gap:14px;flex-wrap:wrap;color:rgba(255,255,255,0.55)">
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(34,197,94,0.75);margin-right:5px"></span>Eligible</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(212,160,23,0.75);margin-right:5px"></span>1 finish away</span>
+              <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:rgba(96,165,250,0.45);margin-right:5px"></span>In progress</span>
+              <span style="border-left:1px solid rgba(255,255,255,0.15);padding-left:14px">⸺ gold dashed line = eligibility threshold (2 qualifying finishes)</span>
+            </div>
+          </div>
+          <div id="metro-chart-wrap" style="height:auto">
+            <canvas id="chart-metro"></canvas>
+          </div>
+        </div>
       </div>
 
       <div class="stat-section">
@@ -1823,6 +1838,7 @@ let leaderboard     = [];
 let speakChart      = null;
 let winDistChart    = null;
 let timelineChart   = null;
+let metroChart      = null;
 let teamCsvText     = null;
 let speakCsvText    = null;
 let currentDebater  = null;
@@ -3186,6 +3202,116 @@ function renderCharts(lb, tourns) {
           ticks: { ...chartAxisOpts.ticks, callback: v => v + '%' } }
       }
     }
+  });
+
+  /* ── Metro Eligibility progress chart ── */
+  const metro = computeMetroEligibility(tourns);
+  // Sort: eligible first, then by count31 desc, then count40 desc
+  const metroSorted = [...metro].sort((a,b) => {
+    if (b.eligible !== a.eligible) return b.eligible - a.eligible;
+    if (b.count31 !== a.count31) return b.count31 - a.count31;
+    return b.count40 - a.count40;
+  });
+
+  const mLabels = metroSorted.map(p => p.pair);
+  const mData   = metroSorted.map(p => p.count31);
+  const mColors = metroSorted.map(p =>
+    p.eligible          ? 'rgba(34,197,94,0.75)'  :
+    p.count31 >= 1      ? 'rgba(212,160,23,0.75)' :
+                          'rgba(96,165,250,0.45)'
+  );
+  const mBorders = metroSorted.map(p =>
+    p.eligible          ? 'rgba(34,197,94,0.95)'  :
+    p.count31 >= 1      ? 'rgba(212,160,23,0.95)' :
+                          'rgba(96,165,250,0.7)'
+  );
+
+  // Resize canvas height dynamically so bars don't squash
+  const barH    = 38;
+  const padding = 60;
+  const mHeight = Math.max(200, metroSorted.length * barH + padding);
+  const mWrap   = document.getElementById('metro-chart-wrap');
+  if (mWrap) mWrap.style.height = mHeight + 'px';
+
+  // Custom plugin: draws dashed gold vertical line at x=2
+  const thresholdPlugin = {
+    id: 'metroThreshold',
+    afterDraw(chart) {
+      const { ctx, chartArea, scales } = chart;
+      if (!scales.x) return;
+      const x = scales.x.getPixelForValue(2);
+      if (x < chartArea.left || x > chartArea.right) return;
+      ctx.save();
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(255,215,0,0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([6, 4]);
+      ctx.moveTo(x, chartArea.top);
+      ctx.lineTo(x, chartArea.bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+  };
+
+  if (metroChart) metroChart.destroy();
+  const ctxM = document.getElementById('chart-metro');
+  if (!ctxM) return;
+  metroChart = new Chart(ctxM, {
+    type: 'bar',
+    plugins: [thresholdPlugin],
+    data: {
+      labels: mLabels,
+      datasets: [{
+        label: 'Qualifying Finishes',
+        data: mData,
+        backgroundColor: mColors,
+        borderColor: mBorders,
+        borderWidth: 1,
+        borderRadius: 6,
+        barThickness: barH - 10,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false,
+      onClick: (evt, els) => {
+        if (!els.length) return;
+        const pair = metroSorted[els[0].index];
+        const names = pair.pair.split(' & ');
+        if (names[0]) openDebModalByName(names[0].trim());
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title:  items => metroSorted[items[0].dataIndex].pair,
+          label:  c => {
+            const p = metroSorted[c.dataIndex];
+            const lines = [];
+            lines.push(p.eligible ? '✓ Metro Finals Eligible' : '✗ Not yet eligible');
+            lines.push(`Qualifying finishes (3–1 or better): ${p.count31}`);
+            if (p.count40) lines.push(`4–0 finishes: ${p.count40}`);
+            lines.push(`Best finish: ${p.bestFinish}`);
+            lines.push(`Tournaments entered: ${p.tourns}`);
+            lines.push('─────────────────────');
+            lines.push(p.distance);
+            return lines;
+          },
+          labelColor: c => ({
+            borderColor: 'transparent',
+            backgroundColor: mColors[c.dataIndex],
+          }),
+        }},
+      },
+      scales: {
+        x: {
+          ...chartAxisOpts,
+          beginAtZero: true,
+          ticks: { ...chartAxisOpts.ticks, stepSize: 1 },
+          title: { display: true, text: 'Qualifying Finishes (3–1 or better)', color: 'rgba(255,255,255,0.4)', font: { family: 'Josefin Sans', size: 12 } },
+        },
+        y: { ...chartAxisOpts, ticks: { ...chartAxisOpts.ticks, font: { family: 'Josefin Sans', size: 12 } } },
+      },
+    },
   });
 }
 
