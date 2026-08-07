@@ -227,12 +227,16 @@
     }
     .chart-card {
       background:rgba(5,18,65,0.88); border:1px solid rgba(212,160,23,0.22);
-      border-radius:14px; padding:24px;
+      border-radius:14px; padding:24px; overflow:hidden;
     }
     .chart-card-title {
-      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
-      letter-spacing:0.15em; text-transform:uppercase;
-      color:rgba(255,255,255,0.82); margin-bottom:20px;
+      font-family:'Josefin Sans',sans-serif; font-size:1.05rem; font-weight:700;
+      letter-spacing:0.1em; text-transform:uppercase;
+      color:#fff; padding:16px 24px; margin:-24px -24px 24px -24px;
+      background:linear-gradient(135deg,rgba(3,12,48,0.98) 0%,rgba(8,24,72,0.95) 100%);
+      border-bottom:2px solid rgba(212,160,23,0.35);
+      border-left:4px solid #e8c84a;
+      display:flex; align-items:center; gap:10px;
     }
     .chart-canvas-wrap { position:relative; height:380px; }
 
@@ -248,12 +252,12 @@
       border-radius:6px; transition:height 0.6s cubic-bezier(0.34,1.56,0.64,1);
     }
     .round-bar-label {
-      font-family:'Josefin Sans',sans-serif; font-size:0.75rem;
-      font-weight:700; color:rgba(255,255,255,0.6); letter-spacing:0.1em;
+      font-family:'Josefin Sans',sans-serif; font-size:1rem;
+      font-weight:700; color:rgba(255,255,255,0.75); letter-spacing:0.12em;
     }
     .round-bar-pct {
-      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
-      font-weight:700; color:#FFD700;
+      font-family:'Cormorant Garamond',serif; font-size:1.45rem;
+      font-weight:700; color:#FFD700; line-height:1;
     }
 
     /* ── Pairing table ─────────────────────────────────────── */
@@ -520,14 +524,26 @@
     }
     .stats-tab-bar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
     .import-header-btn {
-      font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
-      font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
-      padding:8px 18px; border-radius:8px; cursor:pointer;
-      border:1.5px solid rgba(212,160,23,0.55); background:rgba(5,18,65,0.88);
-      color:#e8c84a; transition:all 0.18s; white-space:nowrap;
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+      padding:13px 26px; border-radius:12px; cursor:pointer;
+      border:none;
+      background:linear-gradient(135deg, #b34500 0%, #e8621a 45%, #ff8c3a 100%);
+      color:#fff;
+      box-shadow:0 4px 22px rgba(232,98,26,0.55), 0 0 0 1.5px rgba(255,140,58,0.35);
+      transition:all 0.2s; white-space:nowrap;
+      text-shadow:0 1px 3px rgba(0,0,0,0.35);
     }
-    .import-header-btn:hover { border-color:rgba(212,160,23,0.85); color:#FFD700; background:rgba(5,18,65,0.95); }
-    .import-header-btn.open { background:rgba(212,160,23,0.12); border-color:rgba(212,160,23,0.75); }
+    .import-header-btn:hover {
+      background:linear-gradient(135deg, #cc5200 0%, #ff7a2e 45%, #ffaa65 100%);
+      box-shadow:0 6px 30px rgba(232,98,26,0.75), 0 0 0 2px rgba(255,140,58,0.55);
+      transform:translateY(-1px);
+    }
+    .import-header-btn.open {
+      background:linear-gradient(135deg, #7a3000 0%, #b34a10 100%);
+      box-shadow:0 2px 12px rgba(179,74,16,0.45);
+      transform:none;
+    }
 
     /* ── Time filter ───────────────────────────────────────── */
     .stats-time-filter { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
@@ -1151,7 +1167,7 @@
           <button class="tf-btn"        id="tf-month"  onclick="setTimeFilter('month')">By Month</button>
           <select class="tf-select"     id="tf-month-sel" onchange="applyMonthFilter(this.value)" style="display:none"></select>
         </div>
-        <button class="import-header-btn" id="import-toggle-btn" onclick="toggleImportPanel()" style="display:none">⬆ Import</button>
+        <button class="import-header-btn" id="import-toggle-btn" onclick="toggleImportPanel()" style="display:none">📥 Import Tabroom Data</button>
       </div>
     </div>
 
