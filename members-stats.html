@@ -505,44 +505,68 @@
 
     /* ── Tab bar ───────────────────────────────────────────── */
     .stats-tab-bar {
-      display:flex; align-items:center; justify-content:space-between;
-      flex-wrap:wrap; gap:12px; margin-bottom:36px;
-      border-bottom:1px solid rgba(212,160,23,0.15); padding-bottom:16px;
+      display:flex; align-items:flex-end; justify-content:space-between;
+      flex-wrap:wrap; gap:12px; margin-bottom:28px;
+      border-bottom:2px solid rgba(212,160,23,0.28);
     }
-    .stats-tabs { display:flex; gap:4px; }
+    .stats-tabs { display:flex; gap:2px; align-items:flex-end; }
     .stats-tab {
-      font-family:'Josefin Sans',sans-serif; font-size:0.8rem; font-weight:700;
-      letter-spacing:0.14em; text-transform:uppercase;
-      padding:10px 22px; border-radius:8px; cursor:pointer;
-      border:1px solid transparent; background:transparent;
-      color:rgba(255,255,255,0.45); transition:all 0.18s;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+      letter-spacing:0.13em; text-transform:uppercase;
+      padding:10px 20px 12px; cursor:pointer;
+      border:1px solid rgba(255,255,255,0.07);
+      border-bottom:none;
+      border-radius:6px 6px 0 0;
+      background:rgba(255,255,255,0.03);
+      color:rgba(255,255,255,0.38); transition:all 0.18s;
+      position:relative; bottom:-2px;
     }
-    .stats-tab:hover { color:rgba(255,255,255,0.8); background:rgba(255,255,255,0.05); }
+    .stats-tab:hover {
+      color:rgba(255,255,255,0.72);
+      background:rgba(255,255,255,0.07);
+      border-color:rgba(212,160,23,0.18);
+    }
     .stats-tab.active {
-      color:#FFD700; background:rgba(212,160,23,0.1);
-      border-color:rgba(212,160,23,0.35);
+      color:#FFD700;
+      background:#1c2030;
+      border-color:rgba(212,160,23,0.45);
+      border-top:2px solid #e8c84a;
+      border-bottom:2px solid #1c2030;
+      bottom:-2px;
     }
-    .stats-tab-bar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .stats-tab-bar-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding-bottom:6px; }
+    /* ── Import button ─────────────────────────────────────── */
     .import-header-btn {
-      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
-      font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
-      padding:13px 26px; border-radius:12px; cursor:pointer;
-      border:none;
-      background:linear-gradient(135deg, #b34500 0%, #e8621a 45%, #ff8c3a 100%);
-      color:#fff;
-      box-shadow:0 4px 22px rgba(232,98,26,0.55), 0 0 0 1.5px rgba(255,140,58,0.35);
-      transition:all 0.2s; white-space:nowrap;
-      text-shadow:0 1px 3px rgba(0,0,0,0.35);
+      display:flex; align-items:stretch;
+      padding:0; border:1px solid rgba(255,255,255,0.15);
+      border-radius:6px; cursor:pointer; overflow:hidden;
+      background:linear-gradient(160deg, #217a3c 0%, #155229 100%);
+      box-shadow:0 2px 14px rgba(30,120,57,0.45);
+      transition:all 0.18s; white-space:nowrap;
     }
     .import-header-btn:hover {
-      background:linear-gradient(135deg, #cc5200 0%, #ff7a2e 45%, #ffaa65 100%);
-      box-shadow:0 6px 30px rgba(232,98,26,0.75), 0 0 0 2px rgba(255,140,58,0.55);
+      background:linear-gradient(160deg, #27a049 0%, #1a6e38 100%);
+      box-shadow:0 4px 22px rgba(30,120,57,0.65);
       transform:translateY(-1px);
     }
     .import-header-btn.open {
-      background:linear-gradient(135deg, #7a3000 0%, #b34a10 100%);
-      box-shadow:0 2px 12px rgba(179,74,16,0.45);
+      background:linear-gradient(160deg, #155229 0%, #0d3a1d 100%);
+      box-shadow:0 2px 8px rgba(20,80,40,0.4);
       transform:none;
+    }
+    .import-btn-icon {
+      display:flex; align-items:center; justify-content:center;
+      padding:10px 14px; color:#fff;
+    }
+    .import-btn-divider {
+      width:1px; background:rgba(255,255,255,0.22); margin:7px 0; flex-shrink:0;
+    }
+    .import-btn-text {
+      display:flex; align-items:center;
+      padding:10px 18px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+      color:#fff;
     }
 
     /* ── Time filter ───────────────────────────────────────── */
@@ -1167,7 +1191,11 @@
           <button class="tf-btn"        id="tf-month"  onclick="setTimeFilter('month')">By Month</button>
           <select class="tf-select"     id="tf-month-sel" onchange="applyMonthFilter(this.value)" style="display:none"></select>
         </div>
-        <button class="import-header-btn" id="import-toggle-btn" onclick="toggleImportPanel()" style="display:none">📥 Import Tabroom Data</button>
+        <button class="import-header-btn" id="import-toggle-btn" onclick="toggleImportPanel()" style="display:none">
+          <span class="import-btn-icon"><svg width="17" height="17" viewBox="0 0 17 17" fill="none"><path d="M8.5 1v10M8.5 1L5 4.5M8.5 1L12 4.5" stroke="white" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12v1.5A1.5 1.5 0 0 0 3.5 15h10A1.5 1.5 0 0 0 15 13.5V12" stroke="white" stroke-width="1.9" stroke-linecap="round"/></svg></span>
+          <span class="import-btn-divider"></span>
+          <span class="import-btn-text">Import Tabroom Data</span>
+        </button>
       </div>
     </div>
 
@@ -1665,7 +1693,7 @@
 
 <!-- ── Debater full profile section ──────────────────────────── -->
 <div id="debater-profile-section" style="display:none">
-<main class="portal-main">
+<main class="portal-main" style="padding-top:44px">
 <div class="dashboard-wrap">
   <a class="profile-back-btn" href="members-stats.html">← Back to Statistics</a>
 
@@ -1762,7 +1790,7 @@
     <div class="deb-modal-body" id="deb-modal-body"></div>
     <div style="padding:0 32px 24px;border-top:1px solid rgba(255,255,255,0.07);margin-top:8px;padding-top:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
       <div id="deb-modal-metro"></div>
-      <a id="deb-modal-profile-btn" href="#" style="
+      <a id="deb-modal-profile-btn" href="#" target="_blank" style="
         display:inline-flex;align-items:center;gap:8px;
         background:linear-gradient(135deg,rgba(5,18,65,0.92),rgba(3,10,45,0.98));
         border:1.5px solid rgba(212,160,23,0.55); border-radius:8px;
@@ -2916,7 +2944,7 @@ function _paintMetroTable(metro) {
     const bestCls = p.bestWins >= 4 ? 'perfect' : '';
     const names = p.pair.split(' & ');
     const clickablePair = names.map(n =>
-      `<span class="deb-link" style="font-weight:700" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`
+      `<span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`
     ).join(' <span style="color:rgba(255,255,255,0.3)">&amp;</span> ');
     return `<tr>
       <td>${clickablePair}</td>
@@ -2944,7 +2972,7 @@ function _paintLeaderboard(data) {
     return `<tr>
       <td><span class="lb-rank ${rankCls}">${i+1}</span></td>
       <td>
-        <div class="lb-name lb-name-link" onclick="openDebaterNewTab('${d.name.replace(/'/g,"\\'")}')">${d.name}</div>
+        <div class="lb-name lb-name-link" onclick="openDebModalByName('${d.name.replace(/'/g,"\\'")}')">${d.name}</div>
         <div class="lb-partner">${d.partnerList || '—'}</div>
       </td>
       <td class="num">${d.wins}</td>
@@ -3710,7 +3738,7 @@ function renderFullDebaterProfile(d) {
       const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
       return `<tr>
         <td>
-          <span class="deb-link" onclick="openDebaterNewTab('${p.name.replace(/'/g,"\\'")}')">${p.name}</span>
+          <span class="deb-link" onclick="openDebModalByName('${p.name.replace(/'/g,"\\'")}')">${p.name}</span>
         </td>
         <td class="num">${p.tourns}</td>
         <td class="num">${p.wins}</td>
@@ -3995,7 +4023,7 @@ function _paintDrillEntries(data) {
     const clickableDebs = e.debaters && e.debaters.length
       ? e.debaters.map(d => {
           const n = `${d.first} ${d.last}`;
-          return `<span class="deb-link entry-deb-names" onclick="openDebaterNewTab('${n.replace(/'/g,"\\'")}')">${n}</span>`;
+          return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
         }).join('<span style="color:rgba(255,255,255,0.2)"> &amp; </span>')
       : (e.debNames || '—');
     return `<tr>
@@ -4037,7 +4065,7 @@ function _paintDrillSpeaks(data) {
     }).join('<span style="color:rgba(255,255,255,0.15);margin:0 4px">·</span>');
     const fullName = `${d.first} ${d.last}`;
     return `<tr>
-      <td><span class="deb-link" style="font-weight:700" onclick="openDebaterNewTab('${fullName.replace(/'/g,"\\'")}')">${fullName}</span></td>
+      <td><span class="deb-link" style="font-weight:700" onclick="openDebModalByName('${fullName.replace(/'/g,"\\'")}')">${fullName}</span></td>
       <td style="color:rgba(255,255,255,0.5);font-size:0.82rem">${d.teamName}</td>
       <td class="num">${d.wins}</td>
       <td class="num">${d.losses}</td>
