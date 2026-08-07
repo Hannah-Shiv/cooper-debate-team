@@ -311,7 +311,8 @@
       color:#e8c84a; margin-bottom:12px; margin-top:32px;
       border-bottom:1px solid rgba(212,160,23,0.25); padding-bottom:8px;
     }
-    .main-paste-row { display:flex; gap:14px; align-items:flex-start; margin-bottom:20px; }
+    .main-paste-row { display:flex; flex-direction:column; gap:10px; margin-bottom:20px; }
+    .main-paste-btns { display:flex; gap:10px; flex-wrap:wrap; }
     .main-textarea {
       flex:1; background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
       border-radius:8px; padding:11px 14px; color:#fff;
@@ -374,15 +375,18 @@
     @media(max-width:600px){ .import-file-row { grid-template-columns:1fr; } }
     .file-drop {
       border:2px dashed rgba(212,160,23,0.25); border-radius:10px;
-      padding:20px; text-align:center; cursor:pointer;
+      padding:14px 18px; cursor:pointer;
       transition:border-color 0.2s, background 0.2s;
+      display:flex; align-items:center; gap:14px;
     }
     .file-drop:hover, .file-drop.has-file { border-color:rgba(212,160,23,0.55); background:rgba(212,160,23,0.04); }
-    .file-drop-icon { font-size:1.8rem; display:block; margin-bottom:8px; }
+    .file-drop-icon { flex-shrink:0; display:flex; align-items:center; }
+    .file-drop-icon svg { width:44px; height:44px; }
+    .file-drop-text { display:flex; flex-direction:column; gap:3px; }
     .file-drop-label {
       font-family:'Josefin Sans',sans-serif; font-size:0.7rem;
       font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
-      color:rgba(255,255,255,0.6); margin-bottom:4px;
+      color:rgba(255,255,255,0.6);
     }
     .file-drop-hint {
       font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
@@ -644,9 +648,7 @@
       <!-- Step 1: Main text paste + parse -->
       <div class="import-section-label">Step 1 — Paste Tabroom "Main" Text</div>
       <div class="main-paste-row">
-        <textarea class="main-textarea" id="imp-main"
-          placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
-        <div style="display:flex;flex-direction:column;gap:8px;flex-shrink:0">
+        <div class="main-paste-btns">
           <button class="parse-btn" onclick="parseMainText()">
             <!-- Parse: document + magnifier + sparkle -->
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" flex-shrink="0">
@@ -659,7 +661,7 @@
               <line x1="20" y1="20" x2="22.5" y2="22.5" stroke="#4ade80" stroke-width="1.8" stroke-linecap="round"/>
               <path d="M20 5l.6 1.8L22.4 7l-1.8.6L20 9.4l-.6-1.8L17.6 7l1.8-.6z" fill="#4ade80"/>
             </svg>
-            <span>Parse</span>
+            <span>Auto-Fill Details</span>
           </button>
           <button class="parse-btn red" onclick="clearImportForm()">
             <!-- Clear: trash can -->
@@ -670,9 +672,11 @@
               <line x1="10" y1="11" x2="10" y2="17" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
               <line x1="14" y1="11" x2="14" y2="17" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
             </svg>
-            <span>Clear</span>
+            <span>Reset Form</span>
           </button>
         </div>
+        <textarea class="main-textarea" id="imp-main"
+          placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
       </div>
 
       <!-- Step 2: Parsed / editable fields -->
@@ -739,8 +743,10 @@
               <text x="62" y="69" text-anchor="middle" font-family="sans-serif" font-size="7" font-weight="800" fill="#cd7f32">3</text>
             </svg>
           </span>
-          <div class="file-drop-label">Final Places CSV</div>
-          <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
+          <div class="file-drop-text">
+            <div class="file-drop-label">Final Places CSV</div>
+            <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
+          </div>
         </div>
         <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
           <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
@@ -771,8 +777,10 @@
               <path d="M56 46l1.5 4.5H62l-3.8 2.7 1.4 4.5L56 55l-3.6 2.7 1.4-4.5L50 50.5h4.5z" fill="#FFD700" stroke="rgba(200,140,0,0.4)" stroke-width="0.6"/>
             </svg>
           </span>
-          <div class="file-drop-label">Speaker Awards CSV</div>
-          <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
+          <div class="file-drop-text">
+            <div class="file-drop-label">Speaker Awards CSV</div>
+            <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
+          </div>
         </div>
       </div>
 
