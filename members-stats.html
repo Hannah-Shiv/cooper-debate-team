@@ -190,14 +190,7 @@
       color:rgba(255,255,255,0.5);
     }
     .tourn-top-row strong { color:rgba(255,255,255,0.82); }
-    .tourn-bid-badge {
-      display:inline-block; margin-top:10px;
-      padding:3px 10px; border-radius:50px;
-      background:rgba(168,85,247,0.15); border:1px solid rgba(168,85,247,0.35);
-      font-family:'Josefin Sans',sans-serif; font-size:0.65rem;
-      font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
-      color:#c084fc;
-    }
+
     .tourn-coach-actions {
       display:flex; gap:8px; margin-top:14px; border-top:1px solid rgba(255,255,255,0.07); padding-top:14px;
     }
@@ -274,8 +267,27 @@
     }
 
     /* ── Import panel (coach only) ─────────────────────────── */
+    .import-toggle-wrap { margin-top:60px; text-align:center; }
+    .import-toggle-btn {
+      display:inline-flex; align-items:center; gap:10px;
+      background:rgba(13,46,100,0.45); border:1.5px solid rgba(212,160,23,0.3);
+      border-radius:40px; padding:12px 28px; cursor:pointer;
+      font-family:'Josefin Sans',sans-serif; font-size:0.75rem;
+      font-weight:700; letter-spacing:0.18em; text-transform:uppercase;
+      color:rgba(255,255,255,0.65); transition:border-color 0.2s, color 0.2s, background 0.2s;
+    }
+    .import-toggle-btn:hover { border-color:rgba(212,160,23,0.6); color:#FFD700; background:rgba(13,46,100,0.65); }
+    .import-toggle-btn .toggle-arrow { transition:transform 0.35s; display:inline-block; }
+    .import-toggle-btn.open .toggle-arrow { transform:rotate(180deg); }
+
+    .import-panel-wrap {
+      overflow:hidden; max-height:0;
+      transition:max-height 0.45s cubic-bezier(0.4,0,0.2,1);
+    }
+    .import-panel-wrap.open { max-height:1400px; }
+
     .import-panel {
-      margin-top:60px;
+      margin-top:18px;
       background:rgba(13,46,100,0.35); border:1px solid rgba(212,160,23,0.2);
       border-radius:16px; padding:32px;
     }
@@ -285,8 +297,33 @@
     }
     .import-panel-sub {
       font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
-      color:rgba(255,255,255,0.45); margin-bottom:28px; line-height:1.65;
+      color:rgba(255,255,255,0.45); margin-bottom:24px; line-height:1.65;
     }
+    .import-section-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.62rem;
+      font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+      color:rgba(212,160,23,0.7); margin-bottom:10px; margin-top:28px;
+      border-bottom:1px solid rgba(212,160,23,0.12); padding-bottom:6px;
+    }
+    .main-paste-row { display:flex; gap:14px; align-items:flex-start; margin-bottom:20px; }
+    .main-textarea {
+      flex:1; background:rgba(7,26,54,0.7); border:1.5px solid rgba(212,160,23,0.22);
+      border-radius:8px; padding:11px 14px; color:#fff;
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      outline:none; transition:border-color 0.2s; resize:vertical;
+      min-height:110px; box-sizing:border-box; line-height:1.5;
+    }
+    .main-textarea:focus { border-color:rgba(212,160,23,0.6); }
+    .main-textarea::placeholder { color:rgba(255,255,255,0.2); }
+    .parse-btn {
+      white-space:nowrap; background:rgba(212,160,23,0.15);
+      border:1.5px solid rgba(212,160,23,0.35); border-radius:8px;
+      padding:10px 18px; color:#FFD700; cursor:pointer;
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
+      font-weight:700; letter-spacing:0.14em; text-transform:uppercase;
+      transition:background 0.2s, border-color 0.2s; flex-shrink:0;
+    }
+    .parse-btn:hover { background:rgba(212,160,23,0.28); border-color:rgba(212,160,23,0.6); }
     .import-form-grid {
       display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
       gap:18px; margin-bottom:24px;
@@ -551,60 +588,81 @@
 
   </div><!-- /stats-dashboard -->
 
-  <!-- Import panel (coach only) -->
-  <div class="import-panel" id="import-panel" style="display:none">
-    <div class="import-panel-title">Import Tournament Results</div>
-    <p class="import-panel-sub">
-      After each tournament, export two files from Tabroom: <strong style="color:rgba(255,255,255,0.7)">Entry Results</strong>
-      (team W/L + speaker totals) and <strong style="color:rgba(255,255,255,0.7)">Speaker Awards</strong> (individual speaker points).
-      Upload both below along with tournament details.
-    </p>
+  <!-- Import panel (coach only, slide-in/out) -->
+  <div id="import-toggle-wrap" class="import-toggle-wrap" style="display:none">
+    <button class="import-toggle-btn" id="import-toggle-btn" onclick="toggleImportPanel()">
+      <span>Import Tournament Results</span>
+      <span class="toggle-arrow">▼</span>
+    </button>
+  </div>
 
-    <div class="import-form-grid">
-      <div class="import-field">
-        <label class="import-label" for="imp-name">Tournament Name *</label>
-        <input class="import-input" id="imp-name" type="text" placeholder="e.g. NSDA WACFL — Oakton High"/>
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-date">Date *</label>
-        <input class="import-input" id="imp-date" type="date"/>
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-location">Location</label>
-        <input class="import-input" id="imp-location" type="text" placeholder="e.g. Oakton High School"/>
-      </div>
-      <div class="import-field">
-        <label class="import-label" for="imp-bids">Bid Level</label>
-        <select class="import-input" id="imp-bids" style="cursor:pointer">
-          <option value="none">No bids offered</option>
-          <option value="partial">Partial bid</option>
-          <option value="full">Full bid</option>
-        </select>
-      </div>
-      <div class="import-field" style="grid-column:span 2">
-        <label class="import-label" for="imp-bid-winners">Bid Earners <span style="font-weight:400;opacity:0.5;">(if any — comma separated)</span></label>
-        <input class="import-input" id="imp-bid-winners" type="text" placeholder="e.g. Herr &amp; Song, Kremin &amp; Liu"/>
-      </div>
-    </div>
+  <div class="import-panel-wrap" id="import-panel-wrap">
+    <div class="import-panel">
+      <div class="import-panel-title">Import Tournament Results</div>
+      <p class="import-panel-sub">
+        Paste the <strong style="color:rgba(255,255,255,0.7)">Main</strong> text from the Tabroom tournament page,
+        then click <strong style="color:rgba(255,255,255,0.7)">Parse</strong> to auto-fill tournament details.
+        Upload both Tabroom CSVs, then click Import.
+      </p>
 
-    <div class="import-file-row">
-      <div class="file-drop" id="drop-team" onclick="document.getElementById('file-team').click()">
-        <input type="file" id="file-team" accept=".csv" onchange="onFileSelect('team', this)"/>
-        <span class="file-drop-icon">📊</span>
-        <div class="file-drop-label">Entry Results CSV</div>
-        <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
+      <!-- Step 1: Main text paste + parse -->
+      <div class="import-section-label">Step 1 — Paste Tabroom "Main" Text</div>
+      <div class="main-paste-row">
+        <textarea class="main-textarea" id="imp-main"
+          placeholder="Paste the full Main text from the Tabroom Results page here…"></textarea>
+        <button class="parse-btn" onclick="parseMainText()">Parse →</button>
       </div>
-      <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
-        <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
-        <span class="file-drop-icon">🎙️</span>
-        <div class="file-drop-label">Speaker Awards CSV</div>
-        <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
-      </div>
-    </div>
 
-    <div class="import-actions">
-      <button class="btn btn-gold" onclick="runImport()">Import Tournament →</button>
-      <span class="import-status" id="import-status"></span>
+      <!-- Step 2: Parsed / editable fields -->
+      <div class="import-section-label">Step 2 — Confirm Tournament Details</div>
+      <div class="import-form-grid">
+        <div class="import-field" style="grid-column:span 2">
+          <label class="import-label" for="imp-name">Tournament Name *</label>
+          <input class="import-input" id="imp-name" type="text" placeholder="Auto-filled from Main text"/>
+        </div>
+        <div class="import-field">
+          <label class="import-label" for="imp-date">Date *</label>
+          <input class="import-input" id="imp-date" type="text" placeholder="e.g. Saturday, October 11, 2025"/>
+        </div>
+        <div class="import-field">
+          <label class="import-label" for="imp-school">Host School</label>
+          <input class="import-input" id="imp-school" type="text" placeholder="e.g. Westfield High School"/>
+        </div>
+        <div class="import-field">
+          <label class="import-label" for="imp-location">City, State</label>
+          <input class="import-input" id="imp-location" type="text" placeholder="e.g. Chantilly, Virginia"/>
+        </div>
+        <div class="import-field">
+          <label class="import-label" for="imp-topic-type">Debate Format</label>
+          <input class="import-input" id="imp-topic-type" type="text" placeholder="e.g. Public Forum"/>
+        </div>
+        <div class="import-field" style="grid-column:span 2">
+          <label class="import-label" for="imp-topic">Resolution</label>
+          <input class="import-input" id="imp-topic" type="text" placeholder="e.g. The United Kingdom should rejoin the European Union"/>
+        </div>
+      </div>
+
+      <!-- Step 3: CSV uploads -->
+      <div class="import-section-label">Step 3 — Upload Tabroom CSVs</div>
+      <div class="import-file-row">
+        <div class="file-drop" id="drop-team" onclick="document.getElementById('file-team').click()">
+          <input type="file" id="file-team" accept=".csv" onchange="onFileSelect('team', this)"/>
+          <span class="file-drop-icon">📊</span>
+          <div class="file-drop-label">Entry Results CSV</div>
+          <div class="file-drop-hint" id="hint-team">Team W/L, speaker totals, round-by-round</div>
+        </div>
+        <div class="file-drop" id="drop-speak" onclick="document.getElementById('file-speak').click()">
+          <input type="file" id="file-speak" accept=".csv" onchange="onFileSelect('speak', this)"/>
+          <span class="file-drop-icon">🎙️</span>
+          <div class="file-drop-label">Speaker Awards CSV</div>
+          <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
+        </div>
+      </div>
+
+      <div class="import-actions">
+        <button class="btn btn-gold" onclick="runImport()">Import Tournament →</button>
+        <span class="import-status" id="import-status"></span>
+      </div>
     </div>
   </div>
 
@@ -682,11 +740,48 @@ let currentDebater = null;
 
 /* ── Init ───────────────────────────────────────────────────── */
 async function initStats() {
-  // Show import panel for coaches
   if (typeof currentUserRole !== 'undefined' && currentUserRole === 'coach') {
-    document.getElementById('import-panel').style.display = 'block';
+    document.getElementById('import-toggle-wrap').style.display = 'block';
   }
   await loadTournaments();
+}
+
+/* ── Import panel slide toggle ──────────────────────────────── */
+function toggleImportPanel() {
+  const btn  = document.getElementById('import-toggle-btn');
+  const wrap = document.getElementById('import-panel-wrap');
+  const open = wrap.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+/* ── Parse Tabroom "Main" text → auto-fill fields ───────────── */
+function parseMainText() {
+  const text = document.getElementById('imp-main').value.trim();
+  if (!text) return;
+
+  // 1. Tournament name: everything before " tournament on "
+  const nameMatch = text.match(/^(.+?)\s+tournament\s+on\s+/i);
+  if (nameMatch) document.getElementById('imp-name').value = nameMatch[1].trim();
+
+  // 2. Date: "on Saturday, October 11, 2025"
+  const dateMatch = text.match(/\bon\s+((Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday),\s+\w+\s+\d{1,2},\s+\d{4})/i);
+  if (dateMatch) document.getElementById('imp-date').value = dateMatch[1].trim();
+
+  // 3. Host school: "held at X in Y"
+  const schoolMatch = text.match(/held\s+at\s+(.+?)\s+in\s+/i);
+  if (schoolMatch) document.getElementById('imp-school').value = schoolMatch[1].trim();
+
+  // 4. City, State: text between "in " and the period after the school
+  const cityMatch = text.match(/held\s+at\s+.+?\s+in\s+([A-Z][^.]+?)\./i);
+  if (cityMatch) document.getElementById('imp-location').value = cityMatch[1].trim();
+
+  // 5. Debate format: "Public Forum Topic—" → "Public Forum"
+  const fmtMatch = text.match(/([\w][\w\s\-]*?)\s+Topic\s*[—\-]/i);
+  if (fmtMatch) document.getElementById('imp-topic-type').value = fmtMatch[1].trim();
+
+  // 6. Resolution: "Resolved: <topic>."
+  const topicMatch = text.match(/Resolved:\s*(.+?)\.(?:\s|$)/i);
+  if (topicMatch) document.getElementById('imp-topic').value = topicMatch[1].trim();
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -1039,23 +1134,22 @@ function renderTournaments() {
     const totalW = t.entries.reduce((s,e) => s+e.wins, 0);
     const totalL = t.entries.reduce((s,e) => s+e.losses, 0);
     const topEntry = [...t.entries].sort((a,b) => b.wins-a.wins || b.totalPts-a.totalPts)[0];
-    const dateStr = t.meta.date ? new Date(t.meta.date + 'T12:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-    const bidBadge = t.meta.bidLevel && t.meta.bidLevel !== 'none'
-      ? `<div class="tourn-bid-badge">🎫 ${t.meta.bidLevel === 'full' ? 'Full' : 'Partial'} Bid Tournament</div>` : '';
-    const bidWinners = t.meta.bidWinners && t.meta.bidWinners.length
-      ? `<div class="tourn-top-row" style="margin-top:8px">🎫 <strong>Bid Earners:</strong> ${t.meta.bidWinners}</div>` : '';
+    const dateStr = t.meta.date || '';
+    const subtitle = [dateStr, t.meta.school, t.meta.location].filter(Boolean).join(' · ');
+    const topicLine = t.meta.topic
+      ? `<div class="tourn-top-row" style="margin-top:6px;opacity:0.6;font-style:italic">${t.meta.topicType ? t.meta.topicType + ' — ' : ''}${t.meta.topic}</div>` : '';
     const coachActions = isCoach
       ? `<div class="tourn-coach-actions"><button class="tourn-del-btn" onclick="confirmDelete('${t.id}')">🗑 Delete</button></div>` : '';
     return `<div class="tourn-card">
       <div class="tourn-card-name">${t.meta.name}</div>
-      <div class="tourn-card-date">${dateStr}${t.meta.location ? ' · ' + t.meta.location : ''}</div>
+      <div class="tourn-card-date">${subtitle}</div>
       <div class="tourn-stats-row">
         <div class="tourn-stat"><div class="tourn-stat-label">Record</div><div class="tourn-stat-val">${totalW}–${totalL}</div></div>
         <div class="tourn-stat"><div class="tourn-stat-label">Win %</div><div class="tourn-stat-val">${totalW+totalL > 0 ? (totalW/(totalW+totalL)*100).toFixed(0)+'%' : '—'}</div></div>
         <div class="tourn-stat"><div class="tourn-stat-label">Teams</div><div class="tourn-stat-val">${t.entries.length}</div></div>
       </div>
       ${topEntry ? `<div class="tourn-top-row">🏅 <strong>${topEntry.teamName}</strong> went ${topEntry.wins}–${topEntry.losses}</div>` : ''}
-      ${bidBadge}${bidWinners}${coachActions}
+      ${topicLine}${coachActions}
     </div>`;
   }).join('');
 }
@@ -1202,16 +1296,17 @@ function onFileSelect(type, input) {
 }
 
 async function runImport() {
-  const name     = document.getElementById('imp-name').value.trim();
-  const date     = document.getElementById('imp-date').value;
-  const location = document.getElementById('imp-location').value.trim();
-  const bidLevel = document.getElementById('imp-bids').value;
-  const bidWinners = document.getElementById('imp-bid-winners').value.trim();
-  const status   = document.getElementById('import-status');
+  const name      = document.getElementById('imp-name').value.trim();
+  const date      = document.getElementById('imp-date').value.trim();
+  const school    = document.getElementById('imp-school').value.trim();
+  const location  = document.getElementById('imp-location').value.trim();
+  const topicType = document.getElementById('imp-topic-type').value.trim();
+  const topic     = document.getElementById('imp-topic').value.trim();
 
-  if (!name || !date) { setStatus('error', 'Please enter a tournament name and date.'); return; }
-  if (!teamCsvText)   { setStatus('error', 'Upload the Entry Results CSV.'); return; }
-  if (!speakCsvText)  { setStatus('error', 'Upload the Speaker Awards CSV.'); return; }
+  if (!name) { setStatus('error', 'Tournament name is required — run Parse first or fill it in manually.'); return; }
+  if (!date) { setStatus('error', 'Date is required — run Parse first or fill it in manually.'); return; }
+  if (!teamCsvText)  { setStatus('error', 'Upload the Entry Results CSV (Step 3).'); return; }
+  if (!speakCsvText) { setStatus('error', 'Upload the Speaker Awards CSV (Step 3).'); return; }
 
   setStatus('', 'Parsing CSVs…');
 
@@ -1225,7 +1320,11 @@ async function runImport() {
     setStatus('', `Found ${merged.length} Cooper entries — saving…`);
 
     const doc = {
-      meta: { name, date, location, bidLevel, bidWinners, importedAt: firebase.firestore.FieldValue.serverTimestamp(), importedBy: typeof currentUserEmail !== 'undefined' ? currentUserEmail : '' },
+      meta: {
+        name, date, school, location, topicType, topic,
+        importedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        importedBy: typeof currentUserEmail !== 'undefined' ? currentUserEmail : ''
+      },
       entries: merged.map(e => ({
         teamName: e.teamName,
         wins: e.wins, losses: e.losses,
@@ -1242,18 +1341,15 @@ async function runImport() {
     };
 
     await saveTournament(doc);
-    setStatus('success', `✓ Imported ${merged.length} Cooper entries from "${name}".`);
+    setStatus('success', `✓ Imported ${merged.length} Cooper entries from "${name}". You can close this panel.`);
 
     // Reset form
     teamCsvText = speakCsvText = null;
     ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
     ['hint-team','hint-speak'].forEach((id, i) => document.getElementById(id).textContent = i===0?'Team W/L, speaker totals, round-by-round':'Individual speaker points per round');
     ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
-    document.getElementById('imp-name').value = '';
-    document.getElementById('imp-date').value = '';
-    document.getElementById('imp-location').value = '';
-    document.getElementById('imp-bid-winners').value = '';
-    document.getElementById('imp-bids').value = 'none';
+    ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic-type','imp-topic']
+      .forEach(id => document.getElementById(id).value = '');
 
     await loadTournaments();
   } catch (err) {
