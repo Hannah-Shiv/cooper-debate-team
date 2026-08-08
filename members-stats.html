@@ -3114,9 +3114,9 @@ function drawTrendPill(chart, datasetIdx, text, bg) {
   const pt = meta.data[lastIdx];
   const { ctx, chartArea } = chart;
   ctx.save();
-  ctx.font = "700 12px 'Josefin Sans', sans-serif";
+  ctx.font = "700 14px 'Josefin Sans', sans-serif";
   const tw = ctx.measureText(text).width;
-  const pw = tw + 22, ph = 24, r = 12;
+  const pw = tw + 26, ph = 28, r = 14;
   let px = pt.x - pw / 2;
   let py = pt.y - ph - 12;
   px = Math.max(chartArea.left + 2, Math.min(chartArea.right - pw - 2, px));
@@ -3163,7 +3163,7 @@ function renderCharts(lb, tourns) {
   });
 
   const chartAxisOpts = {
-    ticks: { color: 'rgba(255,255,255,0.72)', font: { family: 'Josefin Sans', size: 13 } },
+    ticks: { color: 'rgba(255,255,255,0.82)', font: { family: 'Josefin Sans', size: 16 } },
     grid: { color: 'rgba(255,255,255,0.06)' }
   };
 
@@ -3306,7 +3306,7 @@ function renderCharts(lb, tourns) {
     const delta = tlValid[tlValid.length - 1] - tlValid[0];
     const up = delta > 0.5, dn = delta < -0.5;
     const absDelta = Math.abs(delta).toFixed(1);
-    tlPillLabel = up ? `↑ +${absDelta}pp` : dn ? `↓ −${absDelta}pp` : `→ ${delta >= 0 ? '+' : '−'}${absDelta}pp`;
+    tlPillLabel = up ? `↑ Trending Up · +${absDelta}pp` : dn ? `↓ Trending Down · −${absDelta}pp` : `→ Stable · ${delta >= 0 ? '+' : '−'}${absDelta}pp`;
     tlPillBg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(60,70,110,0.9)';
   }
   const tlTrendPlugin = { id: 'tlTrendPill', afterDraw(chart) { if (tlPillLabel) drawTrendPill(chart, 0, tlPillLabel, tlPillBg); } };
@@ -3830,9 +3830,9 @@ function renderRoundBars(roundStats) {
         }},
       },
       scales: {
-        x: { ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14} }, grid:{color:'rgba(255,255,255,0.05)'} },
+        x: { ticks:{ color:'rgba(255,255,255,0.82)', font:{family:'Josefin Sans',size:16} }, grid:{color:'rgba(255,255,255,0.05)'} },
         y: { min:0, max:100,
-          ticks:{ color:'rgba(255,255,255,0.75)', font:{family:'Josefin Sans',size:14}, callback: v => v+'%' },
+          ticks:{ color:'rgba(255,255,255,0.82)', font:{family:'Josefin Sans',size:16}, callback: v => v+'%' },
           grid:{color:'rgba(255,255,255,0.06)'}
         },
       },
