@@ -139,6 +139,28 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── Join pill ──────────────────────────────────────── */
+    .join-pill {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 50px;
+      border: 1.5px solid rgba(212,160,23,0.45);
+      background: rgba(212,160,23,0.08);
+      color: var(--gold-pale);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .join-pill:hover {
+      background: rgba(212,160,23,0.18);
+      border-color: rgba(212,160,23,0.8);
+      color: var(--gold);
+    }
+
     /* ── Responsive ─────────────────────────────────────── */
     @media(max-width:600px){
       .portal-page { padding: 90px 16px 60px; }
@@ -196,9 +218,10 @@
         <div class="login-error" id="login-error"></div>
       </div>
 
-      <p style="margin-top:24px;font-size:0.858rem;color:var(--gray-mid);">
-        Not a member yet? <a href="apply.html" style="color:var(--gold);text-decoration:underline;">Apply to join the team →</a>
-      </p>
+      <div style="margin-top:28px;text-align:center;">
+        <p style="font-size:0.82rem;color:var(--gray-mid);margin-bottom:14px;">Not a member yet?</p>
+        <a href="apply.html" class="join-pill">Apply to join the team →</a>
+      </div>
     </div>
   </div>
 
