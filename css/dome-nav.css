@@ -298,5 +298,22 @@ body.dome-open .page-header { padding-top: 240px; }
 
   body.dome-open .home-hero .hero-content { padding-top: 210px; }
   body.dome-open .page-header { padding-top: 200px; }
-  #member-login-btn { display: none; }
+  /* Compact icon-only circle on mobile */
+  #member-login-btn {
+    display: flex !important;
+    top: 10px;
+    right: 10px;
+    padding: 9px;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    gap: 0;
+    font-size: 0;          /* hides "Member Portal" text node */
+    overflow: hidden;
+    box-shadow: 0 0 0 1px rgba(212,160,23,0.2), 0 2px 12px rgba(0,0,0,0.4);
+  }
+  #member-login-btn svg { width: 18px; height: 18px; flex-shrink: 0; }
+  #member-login-btn .mp-arrow { display: none; }
+  #member-login-btn::after { display: none; }
 }

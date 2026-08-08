@@ -1582,10 +1582,24 @@ body.dome-open .page-header { padding-top: 240px; }
   .achievement-banner-inner { gap: 16px; }
   .achievement-divider { display: none; }
   .hero-buttons { flex-direction: column; align-items: center; }
-  #member-login-btn { display: none; }
   .footer-bottom { flex-direction: column; text-align: center; }
   .footer-credit { text-align: center; }
   #site-badge { width: 48px; top: 6px; left: 6px; }
+
+  /* Countdown widget */
+  .countdown-widget { padding: 24px 16px; }
+  .countdown-number { font-size: 2rem; }
+  .countdown-grid { gap: 10px; }
+  .countdown-colon { font-size: 1.6rem; }
+  .countdown-event-name { font-size: 1rem; margin-bottom: 20px; }
+
+  /* Events list */
+  .event-item { gap: 14px; }
+  .event-date-block { min-width: 48px; padding: 8px 12px; }
+
+  /* Page header inner pages */
+  .page-header { padding: 120px 20px 48px; }
+  .page-title { font-size: clamp(2rem, 10vw, 3rem); }
 }
 
 /* === RESOLUTION BANNER === */
