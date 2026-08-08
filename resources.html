@@ -11,81 +11,112 @@
   <link rel="stylesheet" href="css/main.css?v=14"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
+    /* +2px base across all rem values */
+    html { font-size: 19px !important; }
+    .page-header-label { font-size: 0.84rem; }
+    .page-subtitle     { font-size: 1.22rem; }
+
+    /* ── Resource cards ── */
     .resource-card {
-      background: rgba(13,46,86,0.5); border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 10px; padding: 28px 24px;
+      background: rgba(13,46,86,0.5); border: 1px solid rgba(212,160,23,0.2);
+      border-radius: 12px; padding: 32px 28px;
       transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
       display: flex; flex-direction: column;
     }
-    .resource-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-4px); box-shadow: 0 14px 32px rgba(0,0,0,0.35); }
-    .resource-icon { font-size: 2rem; margin-bottom: 14px; }
-    .resource-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
-    .resource-desc { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.7; flex: 1; margin-bottom: 18px; }
+    .resource-card:hover { border-color: rgba(212,160,23,0.55); transform: translateY(-5px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); }
+    .resource-icon  { font-size: 2.4rem; margin-bottom: 16px; }
+    .resource-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 1.0rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 10px; }
+    .resource-desc  { font-size: 0.94rem; color: var(--gray-mid); line-height: 1.75; flex: 1; margin-bottom: 22px; }
+    /* Link → pill button */
     .resource-link {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--gold); transition: gap 0.2s;
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 50px;
+      border: 1.5px solid rgba(212,160,23,0.45);
+      background: rgba(212,160,23,0.08);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--gold); text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, gap 0.2s;
+      align-self: flex-start;
     }
-    .resource-card:hover .resource-link { gap: 10px; }
+    .resource-link:hover { background: rgba(212,160,23,0.18); border-color: rgba(212,160,23,0.8); gap: 12px; }
 
+    /* ── Topic box ── */
     .topic-box {
       background: rgba(11,37,69,0.6); border: 1px solid rgba(212,160,23,0.25);
-      border-radius: 12px; padding: 36px; margin-bottom: 32px;
+      border-radius: 14px; padding: 40px; margin-bottom: 36px;
     }
     .topic-resolution {
       font-family: 'Cormorant Garamond', serif; font-style: italic;
-      font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: var(--white);
-      line-height: 1.6; margin-bottom: 24px;
-      padding: 20px 24px; border-left: 3px solid var(--gold);
-      background: rgba(212,160,23,0.05); border-radius: 0 8px 8px 0;
+      font-size: clamp(1.15rem, 2.5vw, 1.55rem); color: var(--white);
+      line-height: 1.65; margin-bottom: 28px;
+      padding: 22px 28px; border-left: 3px solid var(--gold);
+      background: rgba(212,160,23,0.06); border-radius: 0 10px 10px 0;
     }
 
-    .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-    .arg-card {
-      border-radius: 8px; padding: 20px;
-    }
+    .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+    .arg-card { border-radius: 10px; padding: 22px; }
     .arg-card-pro { background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.2); }
     .arg-card-con { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); }
-    .arg-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+    .arg-label     { font-size: 0.77rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
     .arg-label-pro { color: #86efac; }
     .arg-label-con { color: #fca5a5; }
-    .arg-point { display: flex; gap: 8px; margin-bottom: 8px; font-size: 0.82rem; color: var(--gray-mid); line-height: 1.5; }
+    .arg-point     { display: flex; gap: 10px; margin-bottom: 10px; font-size: 0.94rem; color: var(--gray-mid); line-height: 1.55; }
     .arg-bullet-pro { color: #86efac; flex-shrink: 0; }
     .arg-bullet-con { color: #fca5a5; flex-shrink: 0; }
 
+    /* ── Skills ── */
     .skill-row {
       display: flex; gap: 24px; align-items: flex-start;
-      padding: 24px 0; border-bottom: 1px solid rgba(212,160,23,0.08);
+      padding: 26px 0; border-bottom: 1px solid rgba(212,160,23,0.08);
     }
     .skill-row:last-child { border-bottom: none; }
     .skill-num {
-      flex-shrink: 0; width: 48px; height: 48px; border-radius: 8px;
+      flex-shrink: 0; width: 52px; height: 52px; border-radius: 10px;
       background: rgba(212,160,23,0.1); border: 1px solid rgba(212,160,23,0.25);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.2rem;
+      display: flex; align-items: center; justify-content: center; font-size: 1.4rem;
     }
-    .skill-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 5px; }
-    .skill-desc { font-size: 0.83rem; color: var(--gray-mid); line-height: 1.7; }
-    .skill-tip {
-      margin-top: 10px; padding: 10px 14px;
-      background: rgba(212,160,23,0.07); border-radius: 4px;
-      font-size: 0.78rem; color: var(--gold-pale); font-style: italic;
-    }
+    .skill-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 1.02rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 6px; }
+    .skill-desc  { font-size: 0.95rem; color: var(--gray-mid); line-height: 1.75; }
+    .skill-tip   { margin-top: 12px; padding: 11px 16px; background: rgba(212,160,23,0.07); border-radius: 6px; font-size: 0.90rem; color: var(--gold-pale); font-style: italic; }
 
+    /* ── Templates ── */
     .template-card {
-      background: rgba(11,37,69,0.5); border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 8px; padding: 24px;
-      display: flex; align-items: center; gap: 20px;
-      transition: border-color 0.25s, transform 0.25s;
+      background: rgba(11,37,69,0.5); border: 1px solid rgba(212,160,23,0.18);
+      border-radius: 10px; padding: 26px 28px;
+      display: flex; align-items: center; gap: 22px;
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
     }
-    .template-card:hover { border-color: rgba(212,160,23,0.45); transform: translateX(4px); }
-    .template-icon { font-size: 2rem; flex-shrink: 0; }
-    .template-name { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.88rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 4px; }
-    .template-desc { font-size: 0.78rem; color: var(--gray-mid); }
+    .template-card:hover { border-color: rgba(212,160,23,0.5); transform: translateX(5px); box-shadow: 0 8px 28px rgba(0,0,0,0.3); }
+    .template-icon { font-size: 2.2rem; flex-shrink: 0; }
+    .template-name { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 1.0rem; letter-spacing: 0.04em; color: var(--white); margin-bottom: 5px; }
+    .template-desc { font-size: 0.90rem; color: var(--gray-mid); line-height: 1.6; }
     .template-download { margin-left: auto; flex-shrink: 0; }
 
-    .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    /* Inline link → button */
+    .inline-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 20px; border-radius: 50px;
+      border: 1.5px solid rgba(212,160,23,0.4);
+      background: rgba(212,160,23,0.08);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      color: var(--gold-pale); text-decoration: none;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .inline-btn:hover { background: rgba(212,160,23,0.18); border-color: rgba(212,160,23,0.75); color: var(--gold); }
+
+    /* Training mini-cards */
+    .train-card {
+      background: rgba(11,37,69,0.5); border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 10px; padding: 26px;
+    }
+    .train-icon  { font-size: 1.7rem; margin-bottom: 10px; }
+    .train-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
+    .train-desc  { font-size: 0.92rem; color: var(--gray-mid); line-height: 1.75; }
+
+    .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+    .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
     @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} .pro-con-grid{grid-template-columns:1fr;} }
     @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
   </style>
@@ -159,11 +190,11 @@
         </div>
       </div>
 
-      <p style="font-size:0.78rem;color:var(--gray-mid);margin-top:8px;">💡 Full evidence files, briefs, and flows available in the <a href="members.html" style="color:var(--gold-pale);text-decoration:underline;">Members Portal</a></p>
+      <p style="font-size:0.9rem;color:var(--gray-mid);margin-top:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">💡 Full evidence files, briefs, and flows available in the Members Portal <a href="members.html" class="inline-btn">Members Portal →</a></p>
     </div>
 
     <!-- KEY EVIDENCE SOURCES -->
-    <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">Key Research Sources</h3>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.55rem;color:var(--white);margin-bottom:24px;">Key Research Sources</h3>
     <div class="three-col">
       <div class="resource-card fade-up">
         <div class="resource-icon">🔍</div>
@@ -241,20 +272,20 @@
         <p class="section-label">Practice Methods</p>
         <h2 class="section-title" style="margin-bottom:24px;">How We Train</h2>
         <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
-            <div style="font-size:1.5rem;margin-bottom:8px;">⏱️</div>
-            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Timed Practice Rounds</div>
-            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We run full practice rounds weekly to build comfort with PF timing. Timers always running — no exceptions.</p>
+          <div class="train-card fade-up">
+            <div class="train-icon">⏱️</div>
+            <div class="train-title">Timed Practice Rounds</div>
+            <p class="train-desc">We run full practice rounds weekly to build comfort with PF timing. Timers always running — no exceptions.</p>
           </div>
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
-            <div style="font-size:1.5rem;margin-bottom:8px;">📝</div>
-            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Flow Practice</div>
-            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">Flowing is a critical skill. We practice flowing pre-written speeches until every debater can flow at full speaking speed.</p>
+          <div class="train-card fade-up">
+            <div class="train-icon">📝</div>
+            <div class="train-title">Flow Practice</div>
+            <p class="train-desc">Flowing is a critical skill. We practice flowing pre-written speeches until every debater can flow at full speaking speed.</p>
           </div>
-          <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.15);border-radius:8px;padding:24px;" class="fade-up">
-            <div style="font-size:1.5rem;margin-bottom:8px;">🎤</div>
-            <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--white);margin-bottom:6px;">Video Review</div>
-            <p style="font-size:0.82rem;color:var(--gray-mid);line-height:1.7;">We record and review practice rounds to identify speech habits, argument gaps, and crossfire patterns to improve.</p>
+          <div class="train-card fade-up">
+            <div class="train-icon">🎤</div>
+            <div class="train-title">Video Review</div>
+            <p class="train-desc">We record and review practice rounds to identify speech habits, argument gaps, and crossfire patterns to improve.</p>
           </div>
         </div>
       </div>
@@ -271,30 +302,30 @@
       <div class="template-card fade-up">
         <div class="template-icon">📋</div>
         <div><div class="template-name">PF Case Template</div><div class="template-desc">Blank constructive template with contention headers, evidence blocks, and tag lines pre-formatted.</div></div>
-        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+        <div class="template-download"><a href="members.html" class="inline-btn">Members Only →</a></div>
       </div>
       <div class="template-card fade-up">
         <div class="template-icon">📊</div>
         <div><div class="template-name">Flow Sheet (PF Format)</div><div class="template-desc">4-column flow sheet formatted for PF: Constructive / Rebuttal / Summary / Final Focus.</div></div>
-        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+        <div class="template-download"><a href="members.html" class="inline-btn">Members Only →</a></div>
       </div>
       <div class="template-card fade-up">
         <div class="template-icon">📝</div>
         <div><div class="template-name">Evidence Card Template</div><div class="template-desc">Properly formatted evidence cards with source citation, date, tag line, and highlighted text fields.</div></div>
-        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+        <div class="template-download"><a href="members.html" class="inline-btn">Members Only →</a></div>
       </div>
       <div class="template-card fade-up">
         <div class="template-icon">🔍</div>
         <div><div class="template-name">Research Tracker</div><div class="template-desc">Spreadsheet for organizing sources by argument, side, and strength rating as you build your case.</div></div>
-        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+        <div class="template-download"><a href="members.html" class="inline-btn">Members Only →</a></div>
       </div>
       <div class="template-card fade-up">
         <div class="template-icon">⚖️</div>
         <div><div class="template-name">Impact Calculus Framework</div><div class="template-desc">A one-page guide for comparing impacts across magnitude, probability, timeframe, and reversibility.</div></div>
-        <div class="template-download"><a href="members.html" class="btn btn-outline" style="font-size:0.68rem;padding:8px 16px;">Members Only</a></div>
+        <div class="template-download"><a href="members.html" class="inline-btn">Members Only →</a></div>
       </div>
     </div>
-    <p style="margin-top:24px;font-size:0.82rem;color:var(--gray-mid);">Full template library available to members. <a href="members.html" style="color:var(--gold-pale);text-decoration:underline;">Log in to access →</a></p>
+    <p style="margin-top:28px;font-size:0.95rem;color:var(--gray-mid);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">Full template library available to members. <a href="members.html" class="inline-btn">Log In to Access →</a></p>
   </div>
 </section>
 
