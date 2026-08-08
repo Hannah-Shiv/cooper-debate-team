@@ -205,10 +205,13 @@
         <div class="login-field">
           <label class="login-label" for="email-input">Email Address</label>
           <input class="login-input" id="email-input" type="email"
-                 placeholder="my_personal_email@fcps.edu / @gmail / @yahoo"
+                 placeholder="my_email  @fcps.edu  @gmail  @yahoo"
                  autocomplete="email"
                  onkeydown="if(event.key==='Enter') sendSignInLink()"/>
-          <p class="login-hint"><strong style="color:rgba(255,255,255,0.7);">@fcpsschools.net will NOT work.</strong> <span style="color:rgba(255,255,255,0.72);">Use a school or personal email — @fcps.edu, @gmail.com, @yahoo.com, etc. — that can send and receive external emails.</span></p>
+          <ul class="login-hint" style="text-align:left;padding-left:1.2em;margin:0;list-style:disc;">
+  <li><strong style="color:rgba(255,255,255,0.7);">@fcpsschools.net will NOT work.</strong></li>
+  <li><span style="color:rgba(255,255,255,0.72);">Use a school or personal email — @fcps.edu, @gmail.com, @yahoo.com, etc. — that can send and receive external emails.</span></li>
+</ul>
         </div>
 
         <button class="btn btn-gold btn-send" id="send-link-btn" onclick="sendSignInLink()">
