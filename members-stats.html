@@ -1626,7 +1626,10 @@
             <div class="chart-canvas-wrap"><canvas id="chart-win-dist"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-card-title">Performance Timeline — Avg Win Rate per Tournament</div>
+            <div class="chart-card-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              Performance Timeline — Avg Win Rate per Tournament
+              <span id="chart-timeline-badge" style="display:none"></span>
+            </div>
             <div class="chart-canvas-wrap"><canvas id="chart-timeline"></canvas></div>
           </div>
           <div class="chart-card">
@@ -2994,9 +2997,9 @@ function renderOverviewSummary(lb, metro, season) {
   if (subEl)  subEl.innerHTML    = season.winRate !== '—'
     ? `<span style="font-size:0.75rem;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase">win rate</span>
        <span style="font-size:1.25rem;font-weight:700;color:rgba(255,255,255,0.92);font-family:'Josefin Sans',sans-serif">
-         <span style="color:rgba(34,197,94,0.9)">${season.totalW}W</span>
+         <span style="color:rgba(34,197,94,0.9)">${season.totalW} W</span>
          <span style="color:rgba(255,255,255,0.3);margin:0 4px">·</span>
-         <span style="color:rgba(239,100,80,0.9)">${season.totalL}L</span>
+         <span style="color:rgba(239,100,80,0.9)">${season.totalL} L</span>
        </span>`
     : 'No data yet';
 }
@@ -3150,8 +3153,13 @@ function renderCharts(lb, tourns) {
     },
     options: {
       responsive: true, maintainAspectRatio: false,
+      onClick: (evt, els) => {
+        if (!els.length) return;
+        const d = top[els[0].index];
+        if (d) openDebModalByName(`${d.first} ${d.last}`);
+      },
       plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: c => `${c.parsed.y.toFixed(2)} avg speak` }
+        callbacks: { label: c => `${c.parsed.y.toFixed(2)} avg speak — click to view profile` }
       }},
       scales: {
         x: chartAxisOpts,
@@ -3255,6 +3263,21 @@ function renderCharts(lb, tourns) {
     t.entries.forEach(e => { w += e.wins; l += e.losses; });
     return w + l > 0 ? +((w / (w + l)) * 100).toFixed(1) : null;
   });
+  // Performance Timeline trend badge
+  const tlValid = tlData.filter(v => v !== null);
+  const tlBadgeEl = document.getElementById('chart-timeline-badge');
+  if (tlBadgeEl && tlValid.length >= 2) {
+    const delta = tlValid[tlValid.length - 1] - tlValid[0];
+    const up = delta > 1, dn = delta < -1;
+    const sign = delta >= 0 ? '+' : '';
+    const label = up ? `↑ +${Math.abs(delta).toFixed(1)}pp` : dn ? `↓ −${Math.abs(delta).toFixed(1)}pp` : `→ stable`;
+    const bg    = up ? 'rgba(34,197,94,0.15)' : dn ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)';
+    const color = up ? '#4ade80' : dn ? '#e03535' : 'rgba(255,255,255,0.55)';
+    const border= up ? 'rgba(34,197,94,0.35)' : dn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)';
+    tlBadgeEl.style.cssText = `display:inline-block;padding:5px 13px;border-radius:20px;background:${bg};color:${color};border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.06em`;
+    tlBadgeEl.textContent = label;
+  } else if (tlBadgeEl) { tlBadgeEl.style.display = 'none'; }
+
   if (timelineChart) timelineChart.destroy();
   const ctxTL = document.getElementById('chart-timeline').getContext('2d');
   timelineChart = new Chart(ctxTL, {
@@ -3276,7 +3299,11 @@ function renderCharts(lb, tourns) {
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false }, tooltip: {
-        callbacks: { label: c => `${c.parsed.y}% win rate` }
+        callbacks: {
+          title: items => sorted[items[0].dataIndex]?.meta?.name || tlLabels[items[0].dataIndex],
+          label: c => `${c.parsed.y}% win rate`,
+          afterLabel: c => { let w=0,l=0; sorted[c.dataIndex]?.entries.forEach(e=>{w+=e.wins;l+=e.losses;}); return `${w}W – ${l}L`; }
+        }
       }},
       scales: {
         x: chartAxisOpts,
@@ -3713,7 +3740,8 @@ function renderRoundBars(roundStats) {
   if (badgeEl && validPts.length >= 2) {
     const up = slope > 0.5;
     const dn = slope < -0.5;
-    const label = up ? '↑ Trending Up' : dn ? '↓ Trending Down' : '→ Holding Steady';
+    const mag   = Math.abs(slope).toFixed(1);
+    const label = up ? `↑ Trending Up · +${mag}pp/tourn` : dn ? `↓ Trending Down · −${mag}pp/tourn` : '→ Holding Steady';
     const bg    = up ? 'rgba(34,197,94,0.15)' : dn ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)';
     const color = up ? '#4ade80' : dn ? '#e03535' : 'rgba(255,255,255,0.55)';
     const border= up ? 'rgba(34,197,94,0.35)' : dn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)';
