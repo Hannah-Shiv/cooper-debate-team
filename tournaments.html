@@ -274,20 +274,10 @@
     </div>
   </div>
 </footer>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ── Firebase (read-only, public tournaments) ─────────────── */
-const _FIREBASE_CONFIG = {
-  apiKey:         "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
-  authDomain:     "cooper-debate-team.firebaseapp.com",
-  projectId:      "cooper-debate-team",
-  storageBucket:  "cooper-debate-team.firebasestorage.app",
-  messagingSenderId: "112813790184",
-  appId:          "1:112813790184:web:ac559cb64747d7fd590a5d"
-};
-const _fbApp = firebase.initializeApp(_FIREBASE_CONFIG, 'public');
-const _db    = firebase.firestore(_fbApp);
+/* ── Firestore REST (no SDK, no auth required) ────────────── */
+const _FS_BASE = 'https://firestore.googleapis.com/v1/projects/cooper-debate-team/databases/(default)/documents';
+const _FS_KEY  = 'AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc';
 
 /* ── Season toggle ────────────────────────────────────────── */
 let _lastSeasonLoaded = false;
@@ -302,17 +292,41 @@ function showSeason(which) {
   if (!isThis && !_lastSeasonLoaded) loadLastSeason();
 }
 
-/* ── Fetch last season from Firestore ─────────────────────── */
+/* ── Parse Firestore REST typed value ─────────────────────── */
+function _fsVal(v) {
+  if (!v) return null;
+  if ('stringValue'  in v) return v.stringValue;
+  if ('integerValue' in v) return Number(v.integerValue);
+  if ('doubleValue'  in v) return v.doubleValue;
+  if ('booleanValue' in v) return v.booleanValue;
+  if ('timestampValue' in v) return v.timestampValue;
+  if ('mapValue'     in v) {
+    const out = {};
+    const fields = v.mapValue.fields || {};
+    Object.keys(fields).forEach(k => out[k] = _fsVal(fields[k]));
+    return out;
+  }
+  if ('arrayValue' in v) return (v.arrayValue.values || []).map(_fsVal);
+  return null;
+}
+
+function _fsDoc(doc) {
+  const out = { id: doc.name.split('/').pop() };
+  Object.keys(doc.fields || {}).forEach(k => out[k] = _fsVal(doc.fields[k]));
+  return out;
+}
+
+/* ── Fetch tournaments from Firestore REST API ────────────── */
 async function loadLastSeason() {
   _lastSeasonLoaded = true;
   try {
-    const snap = await _db.collection('stat_results').orderBy('meta.date', 'desc').get();
-    // Filter to 2025-2026 season: Aug 1 2025 – Jul 31 2026
-    const seasonStart = '2025-08-01';
-    const seasonEnd   = '2026-07-31';
-    const tourns = snap.docs
-      .map(d => ({ id: d.id, ...d.data() }))
-      .filter(t => t.meta && t.meta.date >= seasonStart && t.meta.date <= seasonEnd);
+    const url = `${_FS_BASE}/stat_results?key=${_FS_KEY}&pageSize=100&orderBy=meta.date+desc`;
+    const resp = await fetch(url);
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+    const json = await resp.json();
+
+    const docs   = json.documents || [];
+    const tourns = docs.map(_fsDoc).filter(t => t.meta && t.meta.name);
 
     document.getElementById('last-season-loading').style.display = 'none';
 
