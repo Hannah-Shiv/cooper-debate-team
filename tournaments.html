@@ -379,7 +379,11 @@ function _parseDateStr(str) {
 }
 
 function renderLastSeason(tourns) {
-  console.log('[Tournaments] meta samples:', JSON.stringify(tourns.slice(0,3).map(t => t.meta)));
+  console.log('[Tournaments v6] date parse test:',
+    JSON.stringify(_parseDateStr('Saturday, October 11, 2025')),
+    JSON.stringify(_parseDateStr('Saturday Nov 8th 2025'))
+  );
+  console.log('[Tournaments v6] meta samples:', JSON.stringify(tourns.slice(0,3).map(t => t.meta)));
   const grid = document.getElementById('last-season-calendar');
   grid.style.display = '';
 
