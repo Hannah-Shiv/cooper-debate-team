@@ -241,22 +241,22 @@
   right: 10px;
   width: 7px;
   height: 7px;
-  background: #D4A017;
+  background: #F0BC28;
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(212,160,23,1), 0 0 10px rgba(212,160,23,0.5);
 }
 #member-login-btn:hover {
   background: #0c1a42;
-  border-color: #D4A017;
+  border-color: #F0BC28;
   color: #FFD700;
   box-shadow: 0 0 0 1px rgba(212,160,23,0.3), 0 6px 32px rgba(212,160,23,0.22);
 }
 #member-login-btn svg {
   width: 16px; height: 16px;
-  stroke: #D4A017; fill: none; stroke-width: 1.8; flex-shrink: 0;
+  stroke: #F0BC28; fill: none; stroke-width: 1.8; flex-shrink: 0;
 }
 #member-login-btn .mp-arrow {
-  color: #D4A017; font-size: 0.94rem; line-height: 1; flex-shrink: 0;
+  color: #F0BC28; font-size: 0.94rem; line-height: 1; flex-shrink: 0;
 }
 
 /* === HERO / PAGE HEADER PUSH === */
