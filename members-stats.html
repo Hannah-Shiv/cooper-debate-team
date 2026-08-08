@@ -4360,6 +4360,12 @@ function renderFullDebaterProfile(d) {
   }
   const spkTrendPlugin = { id: 'spkTrendPill', afterDraw(chart) { if (spkPillLabel) drawTrendPill(chart, 0, spkPillLabel, spkPillBg); } };
 
+  // Custom positioner: tooltip anchors to top-left so it never overlaps the top-right trend pill
+  Chart.Tooltip.positioners.topLeft = function() {
+    const ca = this.chart.chartArea;
+    return { x: ca.left + 12, y: ca.top + 12 };
+  };
+
   if (profileSpeakChart) profileSpeakChart.destroy();
   const ctx = document.getElementById('profile-speak-chart').getContext('2d');
   profileSpeakChart = new Chart(ctx, {
@@ -4401,6 +4407,7 @@ function renderFullDebaterProfile(d) {
           labels: { color: 'rgba(255,255,255,0.9)', font: { family: 'Josefin Sans', size: 14 }, boxWidth: 18, padding: 20 }
         },
         tooltip: {
+          position: 'topLeft',
           callbacks: {
             label: c => c.datasetIndex === 0
               ? `${c.parsed.y.toFixed(2)} avg speak`
