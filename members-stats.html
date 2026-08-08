@@ -950,6 +950,8 @@
     .drill-table-scroll .lb-table { width:100%; table-layout:auto; }
     .drill-table-scroll .lb-table th { white-space:normal; min-width:60px; }
     .drill-table-scroll .lb-table td { white-space:nowrap; }
+    /* Last column (Path to Eligibility) is descriptive text — let it wrap */
+    .drill-table-scroll .lb-table td:last-child { white-space:normal; min-width:160px; }
     .drill-table-scroll thead th,
     .deb-modal-box thead th,
     .import-modal-scroll thead th {
@@ -3773,7 +3775,7 @@ function showMetroDrill(segIndex) {
           const clickable = names.map(n =>
             `<span class="deb-link" onclick="closeDrillModal();setTimeout(()=>openDebModalByName('${n.replace(/'/g,"\'")}'),120)">${n}</span>`
           ).join('<span style="color:rgba(255,255,255,0.3);margin:0 5px">●──●</span>');
-          const statusColor = p.eligible ? '#4ade80' : p.count31 >= 1 ? '#FFD700' : 'rgba(255,255,255,0.4)';
+          const statusColor = p.eligible ? '#4ade80' : p.count31 >= 1 ? '#FFD700' : '#ffffff';
           return `<tr>
             <td style="font-size:0.97rem;color:#fff;font-weight:700">${clickable}</td>
             <td class="num">${p.count31}</td>
