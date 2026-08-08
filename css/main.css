@@ -1495,11 +1495,11 @@ body.dome-open .page-header { padding-top: 240px; }
   position: absolute;
   top: -5px;
   right: 10px;
-  width: 10px;
-  height: 10px;
+  width: 7px;
+  height: 7px;
   background: #D4A017;
   border-radius: 50%;
-  box-shadow: 0 0 7px rgba(212,160,23,1), 0 0 14px rgba(212,160,23,0.5);
+  box-shadow: 0 0 6px rgba(212,160,23,1), 0 0 12px rgba(212,160,23,0.5);
 }
 
 #member-login-btn:hover {
