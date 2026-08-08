@@ -52,6 +52,7 @@
     }
     .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
     .cal-event.past { opacity:0.55; }
+    .cal-event.past:hover { transform:none; }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
@@ -356,7 +357,8 @@ function renderLastSeason(tourns) {
   // Group by month
   const byMonth = {};
   tourns.forEach(t => {
-    const d = t.meta.date ? new Date(t.meta.date + 'T12:00:00') : null;
+    const raw = t.meta.date ? new Date(t.meta.date + 'T12:00:00') : null;
+    const d   = raw && !isNaN(raw.getTime()) ? raw : null;
     const key = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'unknown';
     if (!byMonth[key]) byMonth[key] = { label: d ? MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear() : 'Unknown Date', tourns: [] };
     byMonth[key].tourns.push({ ...t, _date: d });
