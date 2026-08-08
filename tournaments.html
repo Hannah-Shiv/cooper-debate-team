@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="css/main.css?v=14"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
+    html { font-size:18px !important; }
+
     /* ── Season toggle ─────────────────────────────────────────── */
     .season-toggle {
       display:inline-flex; border:1px solid rgba(212,160,23,0.3); border-radius:8px;
@@ -71,7 +73,23 @@
     .sort-chevron { margin-left:4px; opacity:0.5; font-size:0.75em; }
     .sort-chevron.active { opacity:1; color:var(--gold); }
     .ls-count { font-family:'Josefin Sans',sans-serif; font-size:0.68rem; color:var(--gray-mid); margin-bottom:16px; }
-    @media(max-width:700px){ .ls-row { grid-template-columns:70px 1fr auto !important; } .ls-col-type,.ls-col-pairs,.ls-col-status { display:none; } }
+    @media(max-width:700px){
+      /* Table columns: date + name only */
+      .ls-row { grid-template-columns:80px 1fr !important; }
+      .ls-col-type,.ls-col-pairs,.ls-col-status { display:none !important; }
+      /* Stack filter controls vertically */
+      .ls-controls { flex-direction:column; align-items:flex-start; gap:8px; }
+      .ls-sort-info { font-size:0.72rem; }
+      /* Tighter row padding on mobile */
+      .result-row { padding:12px 14px; gap:8px; }
+      /* Season header: stack toggle below title */
+      .cal-section-header { flex-direction:column; align-items:flex-start !important; }
+      /* Hide the legend tags on mobile */
+      #cal-legend { display:none !important; }
+      /* Season toggle full-width */
+      .season-toggle { width:100%; }
+      .season-toggle-btn { flex:1; text-align:center; }
+    }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
@@ -196,7 +214,7 @@
 <!-- CALENDAR + LAST SEASON (tabbed) -->
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-    <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
+    <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
         <p class="section-label" id="cal-season-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
