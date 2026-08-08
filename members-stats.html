@@ -1626,10 +1626,7 @@
             <div class="chart-canvas-wrap"><canvas id="chart-win-dist"></canvas></div>
           </div>
           <div class="chart-card">
-            <div class="chart-card-title" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-              Performance Timeline — Avg Win Rate per Tournament
-              <span id="chart-timeline-badge" style="display:none"></span>
-            </div>
+            <div class="chart-card-title">Performance Timeline — Avg Win Rate per Tournament</div>
             <div class="chart-canvas-wrap"><canvas id="chart-timeline"></canvas></div>
           </div>
           <div class="chart-card">
@@ -1677,10 +1674,7 @@
 
         <!-- Overall win% trend card -->
         <div class="chart-card" style="margin-top:20px">
-          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:4px">
-            <div class="chart-card-title" style="margin:0">Overall Win Rate — Season Trend</div>
-            <div id="overall-trend-badge" style="display:none"></div>
-          </div>
+          <div class="chart-card-title">Overall Win Rate — Season Trend</div>
           <div class="chart-canvas-wrap" style="height:300px"><canvas id="chart-overall-trend"></canvas></div>
         </div>
 
@@ -3109,6 +3103,48 @@ function renderTournaments(tourns) {
   }).join('');
 }
 
+function drawTrendPill(chart, datasetIdx, text, bg) {
+  const meta = chart.getDatasetMeta(datasetIdx);
+  const data = chart.data.datasets[datasetIdx].data;
+  let lastIdx = -1;
+  for (let i = data.length - 1; i >= 0; i--) {
+    if (data[i] !== null && data[i] !== undefined) { lastIdx = i; break; }
+  }
+  if (lastIdx < 0 || !meta.data[lastIdx]) return;
+  const pt = meta.data[lastIdx];
+  const { ctx, chartArea } = chart;
+  ctx.save();
+  ctx.font = "700 12px 'Josefin Sans', sans-serif";
+  const tw = ctx.measureText(text).width;
+  const pw = tw + 22, ph = 24, r = 12;
+  let px = pt.x - pw / 2;
+  let py = pt.y - ph - 12;
+  px = Math.max(chartArea.left + 2, Math.min(chartArea.right - pw - 2, px));
+  if (py < chartArea.top + 2) py = pt.y + 12;
+  ctx.fillStyle = bg;
+  ctx.beginPath();
+  if (ctx.roundRect) {
+    ctx.roundRect(px, py, pw, ph, r);
+  } else {
+    ctx.moveTo(px + r, py);
+    ctx.lineTo(px + pw - r, py);
+    ctx.arcTo(px + pw, py, px + pw, py + r, r);
+    ctx.lineTo(px + pw, py + ph - r);
+    ctx.arcTo(px + pw, py + ph, px + pw - r, py + ph, r);
+    ctx.lineTo(px + r, py + ph);
+    ctx.arcTo(px, py + ph, px, py + ph - r, r);
+    ctx.lineTo(px, py + r);
+    ctx.arcTo(px, py, px + r, py, r);
+    ctx.closePath();
+  }
+  ctx.fill();
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, px + pw / 2, py + ph / 2);
+  ctx.restore();
+}
+
 function renderCharts(lb, tourns) {
   // Global tooltip style — larger, navy background, gold border
   Object.assign(Chart.defaults.plugins.tooltip, {
@@ -3263,25 +3299,23 @@ function renderCharts(lb, tourns) {
     t.entries.forEach(e => { w += e.wins; l += e.losses; });
     return w + l > 0 ? +((w / (w + l)) * 100).toFixed(1) : null;
   });
-  // Performance Timeline trend badge
+  // Performance Timeline trend — computed for canvas pill plugin
   const tlValid = tlData.filter(v => v !== null);
-  const tlBadgeEl = document.getElementById('chart-timeline-badge');
-  if (tlBadgeEl && tlValid.length >= 2) {
+  let tlPillLabel = null, tlPillBg = 'rgba(60,70,110,0.9)';
+  if (tlValid.length >= 2) {
     const delta = tlValid[tlValid.length - 1] - tlValid[0];
     const up = delta > 0.5, dn = delta < -0.5;
     const absDelta = Math.abs(delta).toFixed(1);
-    const label = up ? `↑ +${absDelta}pp` : dn ? `↓ −${absDelta}pp` : `→ ${delta >= 0 ? '+' : '−'}${absDelta}pp`;
-    const bg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(255,255,255,0.12)';
-    const color = '#fff';
-    const border= up ? '#166534' : dn ? '#991b1b' : 'rgba(255,255,255,0.2)';
-    tlBadgeEl.style.cssText = `display:inline-block;padding:5px 13px;border-radius:20px;background:${bg};color:${color};border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.06em`;
-    tlBadgeEl.textContent = label;
-  } else if (tlBadgeEl) { tlBadgeEl.style.display = 'none'; }
+    tlPillLabel = up ? `↑ +${absDelta}pp` : dn ? `↓ −${absDelta}pp` : `→ ${delta >= 0 ? '+' : '−'}${absDelta}pp`;
+    tlPillBg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(60,70,110,0.9)';
+  }
+  const tlTrendPlugin = { id: 'tlTrendPill', afterDraw(chart) { if (tlPillLabel) drawTrendPill(chart, 0, tlPillLabel, tlPillBg); } };
 
   if (timelineChart) timelineChart.destroy();
   const ctxTL = document.getElementById('chart-timeline').getContext('2d');
   timelineChart = new Chart(ctxTL, {
     type: 'line',
+    plugins: [tlTrendPlugin],
     data: {
       labels: tlLabels,
       datasets: [{
@@ -3735,24 +3769,22 @@ function renderRoundBars(roundStats) {
     slope = (n*sxy - sx*sy) / (n*sxx - sx*sx);
   }
 
-  // Render trend badge
-  const badgeEl = document.getElementById('overall-trend-badge');
-  if (badgeEl && validPts.length >= 2) {
-    const up = slope > 0.5;
-    const dn = slope < -0.5;
-    const mag   = Math.abs(slope).toFixed(1);
-    const label = up ? `↑ Trending Up · +${mag}pp/tourn` : dn ? `↓ Trending Down · −${mag}pp/tourn` : `→ Holding Steady · ${slope >= 0 ? '+' : '−'}${mag}pp/tourn`;
-    const bg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(255,255,255,0.12)';
-    const border= up ? '#166534' : dn ? '#991b1b' : 'rgba(255,255,255,0.2)';
-    badgeEl.style.cssText = `display:inline-block;padding:6px 14px;border-radius:20px;background:${bg};color:#fff;border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.08em`;
-    badgeEl.textContent = label;
+  // Overall trend — computed for canvas pill plugin
+  let otPillLabel = null, otPillBg = 'rgba(60,70,110,0.9)';
+  if (validPts.length >= 2) {
+    const up = slope > 0.5, dn = slope < -0.5;
+    const mag = Math.abs(slope).toFixed(1);
+    otPillLabel = up ? `↑ Trending Up · +${mag}pp/tourn` : dn ? `↓ Trending Down · −${mag}pp/tourn` : `→ Steady · ${slope >= 0 ? '+' : '−'}${mag}pp/tourn`;
+    otPillBg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(60,70,110,0.9)';
   }
+  const otTrendPlugin = { id: 'otTrendPill', afterDraw(chart) { if (otPillLabel) drawTrendPill(chart, 0, otPillLabel, otPillBg); } };
 
   const ctxOT = document.getElementById('chart-overall-trend');
   if (!ctxOT) return;
   if (overallTrendChart) overallTrendChart.destroy();
   overallTrendChart = new Chart(ctxOT, {
     type: 'line',
+    plugins: [otTrendPlugin],
     data: {
       labels: xLabels,
       datasets: [
