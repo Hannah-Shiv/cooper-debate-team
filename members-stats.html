@@ -3268,12 +3268,12 @@ function renderCharts(lb, tourns) {
   const tlBadgeEl = document.getElementById('chart-timeline-badge');
   if (tlBadgeEl && tlValid.length >= 2) {
     const delta = tlValid[tlValid.length - 1] - tlValid[0];
-    const up = delta > 1, dn = delta < -1;
-    const sign = delta >= 0 ? '+' : '';
-    const label = up ? `↑ +${Math.abs(delta).toFixed(1)}pp` : dn ? `↓ −${Math.abs(delta).toFixed(1)}pp` : `→ stable`;
-    const bg    = up ? 'rgba(34,197,94,0.15)' : dn ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)';
-    const color = up ? '#4ade80' : dn ? '#e03535' : 'rgba(255,255,255,0.55)';
-    const border= up ? 'rgba(34,197,94,0.35)' : dn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)';
+    const up = delta > 0.5, dn = delta < -0.5;
+    const absDelta = Math.abs(delta).toFixed(1);
+    const label = up ? `↑ +${absDelta}pp` : dn ? `↓ −${absDelta}pp` : `→ ${delta >= 0 ? '+' : '−'}${absDelta}pp`;
+    const bg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(255,255,255,0.12)';
+    const color = '#fff';
+    const border= up ? '#166534' : dn ? '#991b1b' : 'rgba(255,255,255,0.2)';
     tlBadgeEl.style.cssText = `display:inline-block;padding:5px 13px;border-radius:20px;background:${bg};color:${color};border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.06em`;
     tlBadgeEl.textContent = label;
   } else if (tlBadgeEl) { tlBadgeEl.style.display = 'none'; }
@@ -3741,11 +3741,10 @@ function renderRoundBars(roundStats) {
     const up = slope > 0.5;
     const dn = slope < -0.5;
     const mag   = Math.abs(slope).toFixed(1);
-    const label = up ? `↑ Trending Up · +${mag}pp/tourn` : dn ? `↓ Trending Down · −${mag}pp/tourn` : '→ Holding Steady';
-    const bg    = up ? 'rgba(34,197,94,0.15)' : dn ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.07)';
-    const color = up ? '#4ade80' : dn ? '#e03535' : 'rgba(255,255,255,0.55)';
-    const border= up ? 'rgba(34,197,94,0.35)' : dn ? 'rgba(239,68,68,0.3)' : 'rgba(255,255,255,0.15)';
-    badgeEl.style.cssText = `display:inline-block;padding:6px 14px;border-radius:20px;background:${bg};color:${color};border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.08em`;
+    const label = up ? `↑ Trending Up · +${mag}pp/tourn` : dn ? `↓ Trending Down · −${mag}pp/tourn` : `→ Holding Steady · ${slope >= 0 ? '+' : '−'}${mag}pp/tourn`;
+    const bg    = up ? '#15803d' : dn ? '#b91c1c' : 'rgba(255,255,255,0.12)';
+    const border= up ? '#166534' : dn ? '#991b1b' : 'rgba(255,255,255,0.2)';
+    badgeEl.style.cssText = `display:inline-block;padding:6px 14px;border-radius:20px;background:${bg};color:#fff;border:1px solid ${border};font-family:'Josefin Sans',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.08em`;
     badgeEl.textContent = label;
   }
 
