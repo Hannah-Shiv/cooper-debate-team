@@ -1479,6 +1479,18 @@
         </div>
       </div>
 
+      <!-- Overview charts: Win Dist + Metro Doughnut -->
+      <div class="charts-grid-3" style="margin-bottom:28px">
+        <div class="chart-card">
+          <div class="chart-card-title">Win Distribution — Finish Counts</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-win-dist-ov"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-card-title">Metro Finals Eligibility — Pair Status</div>
+          <div class="chart-canvas-wrap"><canvas id="chart-metro-summary-ov"></canvas></div>
+        </div>
+      </div>
+
       <!-- Metro Finals tracker -->
       <div class="stat-section collapsed">
         <div class="stat-section-title">Metro Finals Eligibility <span id="season-badge-metro" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▶</button></div>
@@ -1861,6 +1873,8 @@ let winDistChart    = null;
 let timelineChart   = null;
 let metroChart      = null;
 let metroSummaryChart = null;
+let winDistChartOv    = null;
+let metroSummaryChartOv = null;
 let _metroDrillData   = [];
 let teamCsvText     = null;
 let speakCsvText    = null;
@@ -3180,6 +3194,35 @@ function renderCharts(lb, tourns) {
     }
   });
 
+  /* ── Win Distribution — Overview mirror ── */
+  if (winDistChartOv) winDistChartOv.destroy();
+  const ctxDistOv = document.getElementById('chart-win-dist-ov');
+  if (ctxDistOv) {
+    winDistChartOv = new Chart(ctxDistOv, {
+      type: 'bar',
+      data: {
+        labels: distLabels,
+        datasets: [{ label: 'Entries', data: distValues, backgroundColor: distColors,
+          borderColor: distColors.map(c => c.replace(/[\d.]+\)$/, '0.85)')),
+          borderWidth: 1, borderRadius: 8 }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        onClick: (evt, els) => {
+          if (!els.length) return;
+          showWinDistDrill([4,3,2,1,0][els[0].index], distLabels[els[0].index], _winDistTourns);
+        },
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: c => `${c.parsed.y} entr${c.parsed.y===1?'y':'ies'} — click to see` }
+        }},
+        scales: {
+          x: { ...chartAxisOpts },
+          y: { ...chartAxisOpts, ticks: { ...chartAxisOpts.ticks, stepSize: 1 }, beginAtZero: true }
+        }
+      }
+    });
+  }
+
   /* ── Performance Timeline line ── */
   // Per tournament (sorted by date): avg win rate across all Cooper entries
   const sorted = [...(tourns || [])].sort((a, b) => {
@@ -3352,6 +3395,80 @@ function renderCharts(lb, tourns) {
             },
           }},
         },
+      },
+    });
+  }
+
+  /* ── Metro Eligibility doughnut — Overview mirror ── */
+  if (metroSummaryChartOv) metroSummaryChartOv.destroy();
+  const ctxMSOv = document.getElementById('chart-metro-summary-ov');
+  if (ctxMSOv) {
+    const centerLabelOv = {
+      id: 'metroCenterLabelOv',
+      afterDraw(chart) {
+        const { ctx, chartArea } = chart;
+        const cx = (chartArea.left + chartArea.right) / 2;
+        const cy = (chartArea.top  + chartArea.bottom) / 2;
+        ctx.save();
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
+        ctx.font = "700 3rem 'Cormorant Garamond', serif";
+        ctx.fillText(mTotal, cx, cy - 14);
+        ctx.font = "700 0.8rem 'Josefin Sans', sans-serif";
+        ctx.fillStyle = 'rgba(255,255,255,0.45)';
+        ctx.fillText('PAIRS', cx, cy + 20);
+        ctx.restore();
+      }
+    };
+    const calloutOv = {
+      id: 'metroCalloutOv',
+      afterDatasetsDraw(chart) {
+        const { ctx, width } = chart;
+        const meta = chart.getDatasetMeta(0);
+        meta.data.forEach((arc, i) => {
+          const val = mSegCounts[i];
+          if (!val) return;
+          const pct = mTotal > 0 ? Math.round(val / mTotal * 100) : 0;
+          const mid = (arc.startAngle + arc.endAngle) / 2;
+          const cx = arc.x, cy = arc.y, r = arc.outerRadius;
+          const goRight = Math.cos(mid) >= 0;
+          const x1 = cx + r * Math.cos(mid), y1 = cy + r * Math.sin(mid);
+          const eyRaw = cy + r * 1.22 * Math.sin(mid);
+          const ey = Math.max(28, Math.min(chart.height - 28, eyRaw));
+          const ex = eyRaw === ey ? cx + r * 1.22 * Math.cos(mid)
+            : Math.abs(Math.sin(mid)) < 0.01 ? cx + r * 1.22 * Math.cos(mid)
+            : cx + (ey - cy) * Math.cos(mid) / Math.sin(mid);
+          const labelColX = goRight ? width - 14 : 14;
+          ctx.save();
+          ctx.strokeStyle = mSegBorders[i]; ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(ex, ey); ctx.lineTo(labelColX, ey); ctx.stroke();
+          ctx.beginPath(); ctx.arc(labelColX, ey, 2.5, 0, Math.PI * 2);
+          ctx.fillStyle = mSegColors[i]; ctx.fill();
+          const lx = goRight ? labelColX - 8 : labelColX + 8;
+          ctx.textAlign = goRight ? 'right' : 'left'; ctx.textBaseline = 'middle';
+          ctx.fillStyle = mSegColors[i];
+          ctx.font = "700 1.1rem 'Josefin Sans', sans-serif";
+          ctx.fillText(`${mSegLabels[i]}  ${val}`, lx, ey - 13);
+          ctx.globalAlpha = 0.75; ctx.font = "600 1rem 'Josefin Sans', sans-serif";
+          ctx.fillText(`${pct}%`, lx, ey + 12); ctx.globalAlpha = 1;
+          ctx.restore();
+        });
+      }
+    };
+    metroSummaryChartOv = new Chart(ctxMSOv, {
+      type: 'doughnut',
+      plugins: [centerLabelOv, calloutOv],
+      data: { labels: mSegLabels, datasets: [{ data: mSegCounts, backgroundColor: mSegColors, borderColor: mSegBorders, borderWidth: 2, hoverOffset: 10 }] },
+      options: {
+        responsive: true, maintainAspectRatio: false, cutout: '58%',
+        layout: { padding: { top: 15, bottom: 15, left: 90, right: 90 } },
+        onClick: (evt, els) => { if (els.length) showMetroDrill(els[0].index); },
+        plugins: { legend: { display: false }, tooltip: { callbacks: {
+          title: items => mSegLabels[items[0].dataIndex],
+          label: c => { const val = c.parsed, pct = mTotal > 0 ? ((val/mTotal)*100).toFixed(0) : 0;
+            return [`${val} pair${val!==1?'s':''}  ·  ${pct}%`,
+              ['Met threshold — 4–0 or two 3–1+ finishes','One qualifying finish — need one more 3–1+ or a 4–0','No qualifying finish yet'][c.dataIndex]]; }
+        }}},
       },
     });
   }
