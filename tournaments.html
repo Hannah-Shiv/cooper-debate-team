@@ -52,8 +52,9 @@
     }
     .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
     .cal-event.past { opacity:0.55; }
-    .cal-event.past:hover { transform:none !important; border-color:rgba(212,160,23,0.12) !important; }
-    .cal-event.past { transition:none !important; cursor:default; }
+    /* Last-season pane: no hover movement at all — ID beats class specificity */
+    #pane-last-season .cal-event { transition:border-color 0.25s; cursor:default; }
+    #pane-last-season .cal-event:hover { transform:none; border-color:rgba(212,160,23,0.25); }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
