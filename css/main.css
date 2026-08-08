@@ -1468,39 +1468,62 @@ body.dome-open .page-header { padding-top: 240px; }
 /* === MEMBERS LOGIN BUTTON === */
 #member-login-btn {
   position: fixed;
-  top: 8px;
+  top: 12px;
   right: 16px;
   z-index: 9998;
-  background: transparent;
-  border: 1.5px solid rgba(212,160,23,0.5);
+  background: rgba(5, 15, 48, 0.88);
+  border: 1.5px solid rgba(212,160,23,0.75);
   border-radius: 50px;
-  padding: 8px 16px;
+  padding: 11px 28px 11px 16px;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 0.68rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
-  color: var(--gold-pale);
+  color: #ffffff;
   cursor: pointer;
-  transition: all 0.22s ease;
+  transition: all 0.25s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
-  backdrop-filter: blur(8px);
+  gap: 10px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 0 0 1px rgba(212,160,23,0.12), 0 4px 24px rgba(0,0,0,0.45);
+  text-decoration: none;
+}
+
+#member-login-btn::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  right: 10px;
+  width: 7px;
+  height: 7px;
+  background: #D4A017;
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(212,160,23,0.9);
 }
 
 #member-login-btn:hover {
-  background: rgba(212,160,23,0.15);
-  border-color: var(--gold);
-  color: var(--gold);
+  background: rgba(212,160,23,0.16);
+  border-color: #D4A017;
+  color: #FFD700;
+  box-shadow: 0 0 0 1px rgba(212,160,23,0.3), 0 6px 32px rgba(212,160,23,0.22);
 }
 
 #member-login-btn svg {
-  width: 12px;
-  height: 12px;
-  stroke: currentColor;
+  width: 18px;
+  height: 18px;
+  stroke: #D4A017;
   fill: none;
-  stroke-width: 2;
+  stroke-width: 1.8;
+  flex-shrink: 0;
+}
+
+#member-login-btn .mp-arrow {
+  color: #D4A017;
+  font-size: 1rem;
+  line-height: 1;
+  flex-shrink: 0;
 }
 
 /* === ANIMATIONS === */
