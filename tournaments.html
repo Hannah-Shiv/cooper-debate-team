@@ -66,8 +66,8 @@
 
     /* Last-season table overrides (5-col: date · name+location · type · pairs · status) */
     .ls-row { grid-template-columns:90px 1fr 110px 70px 90px !important; }
-    .result-row.header th { background:none; border:none; font:inherit; padding:0; text-align:left; cursor:pointer; user-select:none; }
-    .result-row.header th:hover { color:var(--white); }
+    .result-row.header .ls-th { background:none; border:none; font:inherit; padding:0; text-align:left; cursor:pointer; user-select:none; }
+    .result-row.header .ls-th:hover { color:var(--white); }
     .sort-chevron { margin-left:4px; opacity:0.5; font-size:0.75em; }
     .sort-chevron.active { opacity:1; color:var(--gold); }
     .ls-count { font-family:'Josefin Sans',sans-serif; font-size:0.68rem; color:var(--gray-mid); margin-bottom:16px; }
@@ -242,11 +242,11 @@
         <div class="ls-count" id="ls-count"></div>
         <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.12);border-radius:10px;overflow:hidden;">
           <div class="result-row header ls-row" style="display:grid;">
-            <th onclick="lsSort('date')">Date <span class="sort-chevron active" id="chev-date">↓</span></th>
-            <th onclick="lsSort('name')">Tournament <span class="sort-chevron" id="chev-name"></span></th>
-            <th class="ls-col-type" onclick="lsSort('type')">Type <span class="sort-chevron" id="chev-type"></span></th>
-            <th class="ls-col-pairs" style="text-align:right;">Pairs</th>
-            <th class="ls-col-status"></th>
+            <div class="ls-th" onclick="lsSort('date')">Date <span class="sort-chevron active" id="chev-date">↓</span></div>
+            <div class="ls-th" onclick="lsSort('name')">Tournament <span class="sort-chevron" id="chev-name"></span></div>
+            <div class="ls-th ls-col-type" onclick="lsSort('type')">Type <span class="sort-chevron" id="chev-type"></span></div>
+            <div class="ls-col-pairs" style="text-align:right;">Pairs</div>
+            <div class="ls-col-status"></div>
           </div>
           <div id="ls-tbody"></div>
         </div>
