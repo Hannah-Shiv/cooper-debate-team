@@ -52,7 +52,8 @@
     }
     .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
     .cal-event.past { opacity:0.55; }
-    .cal-event.past:hover { transform:none; }
+    .cal-event.past:hover { transform:none !important; border-color:rgba(212,160,23,0.12) !important; }
+    .cal-event.past { transition:none !important; cursor:default; }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
@@ -350,18 +351,30 @@ const MONTH_NAMES = ['January','February','March','April','May','June',
 const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun',
                      'Jul','Aug','Sep','Oct','Nov','Dec'];
 
+/* Parse a YYYY-MM-DD or MM/DD/YYYY date string without new Date() */
+function _parseDateStr(str) {
+  if (!str) return null;
+  // YYYY-MM-DD
+  let m = String(str).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (m) return { year: +m[1], month: +m[2] - 1, day: +m[3] }; // month 0-indexed
+  // MM/DD/YYYY
+  m = String(str).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return { year: +m[3], month: +m[1] - 1, day: +m[2] };
+  return null;
+}
+
 function renderLastSeason(tourns) {
+  console.log('[Tournaments] meta samples:', JSON.stringify(tourns.slice(0,3).map(t => t.meta)));
   const grid = document.getElementById('last-season-calendar');
   grid.style.display = '';
 
   // Group by month
   const byMonth = {};
   tourns.forEach(t => {
-    const raw = t.meta.date ? new Date(t.meta.date + 'T12:00:00') : null;
-    const d   = raw && !isNaN(raw.getTime()) ? raw : null;
-    const key = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'unknown';
-    if (!byMonth[key]) byMonth[key] = { label: d ? MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear() : 'Unknown Date', tourns: [] };
-    byMonth[key].tourns.push({ ...t, _date: d });
+    const pd  = _parseDateStr(t.meta && t.meta.date);
+    const key = pd ? `${pd.year}-${String(pd.month).padStart(2,'0')}` : 'unknown';
+    if (!byMonth[key]) byMonth[key] = { pd, label: pd ? MONTH_NAMES[pd.month] + ' ' + pd.year : 'Unknown Date', tourns: [] };
+    byMonth[key].tourns.push({ ...t, _pd: pd });
   });
 
   let html = '';
@@ -370,9 +383,9 @@ function renderLastSeason(tourns) {
     html += `<div class="cal-month">
       <div class="cal-month-title">${group.label}</div>`;
     group.tourns.forEach(t => {
-      const d    = t._date;
-      const mon  = d ? MONTH_SHORT[d.getMonth()] : '—';
-      const day  = d ? d.getDate() : '—';
+      const pd  = t._pd;
+      const mon = pd ? MONTH_SHORT[pd.month] : '—';
+      const day = pd ? pd.day : '—';
       const name = t.meta.name || 'Tournament';
       const school   = t.meta.school   || '';
       const location = t.meta.location || '';
