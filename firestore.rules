@@ -41,9 +41,9 @@ service cloud.firestore {
       allow write: if request.auth != null;
     }
 
-    // Tournament stat results — coaches import, all members read
+    // Tournament stat results — public read (shown on tournaments.html), coach write
     match /stat_results/{docId} {
-      allow read:   if request.auth != null;
+      allow read:   if true;
       allow write:  if isCoach();
     }
 
