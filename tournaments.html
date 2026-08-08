@@ -245,7 +245,7 @@
             <div class="ls-th" onclick="lsSort('date')">Date <span class="sort-chevron active" id="chev-date">↓</span></div>
             <div class="ls-th" onclick="lsSort('name')">Tournament <span class="sort-chevron" id="chev-name"></span></div>
             <div class="ls-th ls-col-type" onclick="lsSort('type')">Type <span class="sort-chevron" id="chev-type"></span></div>
-            <div class="ls-col-pairs" style="text-align:right;">Pairs</div>
+            <div class="ls-th ls-col-pairs" style="text-align:right;" onclick="lsSort('pairs')">Pairs <span class="sort-chevron" id="chev-pairs"></span></div>
             <div class="ls-col-status"></div>
           </div>
           <div id="ls-tbody"></div>
@@ -440,6 +440,7 @@ function _sortKey(t) {
   }
   if (_lsSort === 'name') return (t.meta.name || '').toLowerCase();
   if (_lsSort === 'type') return _tournType(t.meta.name || '');
+  if (_lsSort === 'pairs') return t.entries ? t.entries.length : 0;
   return 0;
 }
 
@@ -454,7 +455,7 @@ function lsSort(field) {
   if (_lsSort === field) { _lsDir = _lsDir === 'desc' ? 'asc' : 'desc'; }
   else { _lsSort = field; _lsDir = field === 'date' ? 'desc' : 'asc'; }
   // Update chevrons
-  ['date','name','type'].forEach(f => {
+  ['date','name','type','pairs'].forEach(f => {
     const el = document.getElementById('chev-' + f);
     if (!el) return;
     el.textContent = _lsSort === f ? (_lsDir === 'desc' ? '↓' : '↑') : '';
