@@ -858,7 +858,7 @@
       color:#FFD700; line-height:1;
     }
     .ss-sub {
-      font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.72);
+      font-family:'Josefin Sans',sans-serif; font-size:1rem; color:rgba(255,255,255,0.82);
     }
     .ss-card { cursor:pointer; }
     .ss-card:hover { border-color:rgba(212,160,23,0.45); box-shadow:0 6px 24px rgba(0,0,0,0.3); }
@@ -885,7 +885,7 @@
     }
     .ov-widget-row:last-child { border-bottom:none; }
     .ov-widget-badge {
-      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+      font-family:'Josefin Sans',sans-serif; font-size:1rem; font-weight:700;
       color:#FFD700;
     }
     .ov-widget-link {
@@ -900,7 +900,8 @@
       color:#FFD700; line-height:1;
     }
     .ov-widget-sub {
-      font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.65);
+      font-family:'Josefin Sans',sans-serif; font-size:0.95rem; color:rgba(255,255,255,0.75);
+      display:flex; flex-direction:column; gap:4px;
     }
 
     /* ── Three-chart grid ──────────────────────────────────── */
@@ -2990,7 +2991,14 @@ function renderOverviewSummary(lb, metro, season) {
   const rateEl = document.getElementById('ov-analytics-rate');
   const subEl  = document.getElementById('ov-analytics-sub');
   if (rateEl) rateEl.textContent = season.winRate !== '—' ? season.winRate + '%' : '—';
-  if (subEl)  subEl.textContent  = season.winRate !== '—' ? `win rate · ${season.totalW}W ${season.totalL}L` : 'No data yet';
+  if (subEl)  subEl.innerHTML    = season.winRate !== '—'
+    ? `<span style="font-size:0.75rem;color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase">win rate</span>
+       <span style="font-size:1.25rem;font-weight:700;color:rgba(255,255,255,0.92);font-family:'Josefin Sans',sans-serif">
+         <span style="color:rgba(34,197,94,0.9)">${season.totalW}W</span>
+         <span style="color:rgba(255,255,255,0.3);margin:0 4px">·</span>
+         <span style="color:rgba(239,100,80,0.9)">${season.totalL}L</span>
+       </span>`
+    : 'No data yet';
 }
 
 function renderSeasonStrip(season) {
