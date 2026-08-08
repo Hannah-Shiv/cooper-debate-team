@@ -11,6 +11,26 @@
   <link rel="stylesheet" href="css/main.css?v=14"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
+    /* ── Season toggle ─────────────────────────────────────────── */
+    .season-toggle {
+      display:inline-flex; border:1px solid rgba(212,160,23,0.3); border-radius:8px;
+      overflow:hidden; flex-shrink:0;
+    }
+    .season-toggle-btn {
+      padding:9px 20px; font-family:'Josefin Sans',sans-serif; font-weight:700;
+      font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
+      background:transparent; border:none; color:var(--gray-mid);
+      cursor:pointer; transition:background 0.2s, color 0.2s; white-space:nowrap;
+    }
+    .season-toggle-btn.active {
+      background:rgba(212,160,23,0.18); color:var(--gold);
+    }
+    .season-toggle-btn:first-child { border-right:1px solid rgba(212,160,23,0.3); }
+
+    /* ── Parent card font bump ─────────────────────────────────── */
+    .parent-card-title { font-size:1.0rem !important; }
+    .parent-card-text  { font-size:0.97rem !important; }
+
     .calendar-grid { display:flex; flex-direction:column; gap:0; }
     .cal-month { margin-bottom:40px; }
     .cal-month-title {
@@ -153,79 +173,45 @@
   </div>
 </section>
 
-<!-- CALENDAR -->
+<!-- CALENDAR + LAST SEASON (tabbed) -->
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
-        <p class="section-label">2026–2027 Season</p>
+        <p class="section-label" id="cal-season-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
       </div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <span class="cal-tag tag-wacfl" style="padding:5px 12px;">WACFL</span>
-        <span class="cal-tag tag-national" style="padding:5px 12px;">National</span>
-        <span class="cal-tag tag-practice" style="padding:5px 12px;">Practice</span>
-        <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+        <div class="season-toggle">
+          <button class="season-toggle-btn active" id="btn-this-season" onclick="showSeason('this')">This Season</button>
+          <button class="season-toggle-btn" id="btn-last-season" onclick="showSeason('last')">Last Season</button>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;" id="cal-legend">
+          <span class="cal-tag tag-wacfl" style="padding:5px 12px;">WACFL</span>
+          <span class="cal-tag tag-national" style="padding:5px 12px;">National</span>
+          <span class="cal-tag tag-practice" style="padding:5px 12px;">Practice</span>
+          <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
+        </div>
       </div>
     </div>
 
-    <div class="calendar-grid" id="tournament-calendar">
+    <!-- THIS SEASON -->
+    <div id="pane-this-season">
       <div style="text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
         <div style="font-size:2.4rem;margin-bottom:16px;">📅</div>
         <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Season Schedule Being Finalized</div>
         <p style="color:var(--gray-mid);font-size:0.88rem;line-height:1.7;max-width:420px;margin:0 auto;">Tournament dates for the 2026–27 season will be posted here as soon as they are confirmed by Coach Konde. Check back soon.</p>
       </div>
     </div>
-  </div>
-</section>
 
-<!-- PAST RESULTS -->
-<section id="results" class="section" style="background:var(--navy-mid);">
-  <div class="section-wrap">
-    <p class="section-label">2024–2025 Season</p>
-    <h2 class="section-title" style="margin-bottom:32px;">Past Results</h2>
-    <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.12);border-radius:10px;overflow:hidden;">
-      <div class="result-row header">
-        <div>Place</div>
-        <div>Tournament</div>
-        <div class="result-r-record">Record</div>
-        <div class="result-r-teams">Teams</div>
-        <div>Date</div>
-      </div>
-      <div class="result-row fade-up">
-        <div><span class="result-place-badge place-other">4th</span></div>
-        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">NSDA Nationals</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · National</div></div>
-        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–2</div>
-        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">128 teams</div>
-        <div style="font-size:0.78rem;color:var(--gray-mid);">Jun 2025</div>
-      </div>
-      <div class="result-row fade-up">
-        <div><span class="result-place-badge place-1">1st</span></div>
-        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">Metro Finals — WACFL Championship</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
-        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">6–0</div>
-        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">32 teams</div>
-        <div style="font-size:0.78rem;color:var(--gray-mid);">May 2025</div>
-      </div>
-      <div class="result-row fade-up">
-        <div><span class="result-place-badge place-2">2nd</span></div>
-        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">WACFL Regionals</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
-        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–1</div>
-        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">24 teams</div>
-        <div style="font-size:0.78rem;color:var(--gray-mid);">Apr 2025</div>
-      </div>
-      <div class="result-row fade-up">
-        <div><span class="result-place-badge place-1">1st</span></div>
-        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">Fall Invitational</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · Invitational</div></div>
-        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">5–0</div>
-        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">18 teams</div>
-        <div style="font-size:0.78rem;color:var(--gray-mid);">Oct 2024</div>
-      </div>
-      <div class="result-row fade-up">
-        <div><span class="result-place-badge place-3">3rd</span></div>
-        <div><div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">WACFL Tournament #3</div><div style="font-size:0.75rem;color:var(--gray-mid);">Public Forum · WACFL</div></div>
-        <div class="result-r-record" style="font-size:0.82rem;color:var(--gray-mid);">4–2</div>
-        <div class="result-r-teams" style="font-size:0.82rem;color:var(--gray-mid);">20 teams</div>
-        <div style="font-size:0.78rem;color:var(--gray-mid);">Jan 2025</div>
+    <!-- LAST SEASON (populated from Firestore) -->
+    <div id="pane-last-season" style="display:none;">
+      <div id="last-season-loading" style="text-align:center;padding:48px 24px;color:var(--gray-mid);font-size:0.85rem;">Loading last season's tournaments…</div>
+      <div class="calendar-grid" id="last-season-calendar" style="display:none;"></div>
+      <div id="last-season-empty" style="display:none;text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
+        <div style="font-size:2.4rem;margin-bottom:16px;">📋</div>
+        <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">No Tournament Data Yet</div>
+        <p style="color:var(--gray-mid);font-size:0.88rem;line-height:1.7;max-width:420px;margin:0 auto;">Last season's tournament results will appear here once they have been published by the coaching staff.</p>
       </div>
     </div>
   </div>
@@ -288,6 +274,133 @@
     </div>
   </div>
 </footer>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+/* ── Firebase (read-only, public tournaments) ─────────────── */
+const _FIREBASE_CONFIG = {
+  apiKey:         "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+  authDomain:     "cooper-debate-team.firebaseapp.com",
+  projectId:      "cooper-debate-team",
+  storageBucket:  "cooper-debate-team.firebasestorage.app",
+  messagingSenderId: "112813790184",
+  appId:          "1:112813790184:web:ac559cb64747d7fd590a5d"
+};
+const _fbApp = firebase.initializeApp(_FIREBASE_CONFIG, 'public');
+const _db    = firebase.firestore(_fbApp);
+
+/* ── Season toggle ────────────────────────────────────────── */
+let _lastSeasonLoaded = false;
+
+function showSeason(which) {
+  const isThis = (which === 'this');
+  document.getElementById('pane-this-season').style.display = isThis ? '' : 'none';
+  document.getElementById('pane-last-season').style.display = isThis ? 'none' : '';
+  document.getElementById('btn-this-season').classList.toggle('active', isThis);
+  document.getElementById('btn-last-season').classList.toggle('active', !isThis);
+  document.getElementById('cal-season-label').textContent = isThis ? '2026–2027 Season' : '2025–2026 Season';
+  if (!isThis && !_lastSeasonLoaded) loadLastSeason();
+}
+
+/* ── Fetch last season from Firestore ─────────────────────── */
+async function loadLastSeason() {
+  _lastSeasonLoaded = true;
+  try {
+    const snap = await _db.collection('stat_results').orderBy('meta.date', 'desc').get();
+    // Filter to 2025-2026 season: Aug 1 2025 – Jul 31 2026
+    const seasonStart = '2025-08-01';
+    const seasonEnd   = '2026-07-31';
+    const tourns = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(t => t.meta && t.meta.date >= seasonStart && t.meta.date <= seasonEnd);
+
+    document.getElementById('last-season-loading').style.display = 'none';
+
+    if (!tourns.length) {
+      document.getElementById('last-season-empty').style.display = '';
+      return;
+    }
+
+    renderLastSeason(tourns);
+  } catch (e) {
+    document.getElementById('last-season-loading').style.display = 'none';
+    document.getElementById('last-season-empty').style.display = '';
+    console.warn('Could not load tournament data:', e.message);
+  }
+}
+
+/* ── Render last season tournament cards ──────────────────── */
+const MONTH_NAMES = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+const MONTH_SHORT = ['Jan','Feb','Mar','Apr','May','Jun',
+                     'Jul','Aug','Sep','Oct','Nov','Dec'];
+
+function renderLastSeason(tourns) {
+  const grid = document.getElementById('last-season-calendar');
+  grid.style.display = '';
+
+  // Group by month
+  const byMonth = {};
+  tourns.forEach(t => {
+    const d = t.meta.date ? new Date(t.meta.date + 'T12:00:00') : null;
+    const key = d ? `${d.getFullYear()}-${String(d.getMonth()).padStart(2,'0')}` : 'unknown';
+    if (!byMonth[key]) byMonth[key] = { label: d ? MONTH_NAMES[d.getMonth()] + ' ' + d.getFullYear() : 'Unknown Date', tourns: [] };
+    byMonth[key].tourns.push({ ...t, _date: d });
+  });
+
+  let html = '';
+  Object.keys(byMonth).sort().reverse().forEach(key => {
+    const group = byMonth[key];
+    html += `<div class="cal-month">
+      <div class="cal-month-title">${group.label}</div>`;
+    group.tourns.forEach(t => {
+      const d    = t._date;
+      const mon  = d ? MONTH_SHORT[d.getMonth()] : '—';
+      const day  = d ? d.getDate() : '—';
+      const name = t.meta.name || 'Tournament';
+      const school   = t.meta.school   || '';
+      const location = t.meta.location || '';
+      const topicType = t.meta.topicType || 'Public Forum';
+      const subtitle = [school, location].filter(Boolean).join(' · ');
+
+      // Determine tag type
+      const nameLower = name.toLowerCase();
+      let tagHtml = '';
+      if (nameLower.includes('national') || nameLower.includes('nsda')) {
+        tagHtml = '<span class="cal-tag tag-national">National</span>';
+      } else if (nameLower.includes('metro') || nameLower.includes('championship') || nameLower.includes('wacfl')) {
+        tagHtml = '<span class="cal-tag tag-wacfl">WACFL</span>';
+      } else {
+        tagHtml = '<span class="cal-tag tag-tourn">Invitational</span>';
+      }
+      tagHtml += ` <span class="cal-tag tag-practice">${topicType}</span>`;
+
+      // Count Cooper entries
+      const entryCount = t.entries ? t.entries.filter(e => e.school === 'Cooper').length : 0;
+      const entryNote  = entryCount > 0 ? `${entryCount} Cooper pair${entryCount > 1 ? 's' : ''}` : '';
+
+      html += `<div class="cal-event past fade-up">
+        <div class="cal-date">
+          <div class="cal-month-sm">${mon}</div>
+          <div class="cal-day">${day}</div>
+        </div>
+        <div class="cal-info">
+          <div class="cal-name">${name}</div>
+          ${subtitle ? `<div class="cal-location">${subtitle}</div>` : ''}
+          <div class="cal-tags">${tagHtml}${entryNote ? ` <span class="cal-tag" style="background:rgba(255,255,255,0.06);color:var(--gray-mid);border:1px solid rgba(255,255,255,0.1);">${entryNote}</span>` : ''}</div>
+        </div>
+        <div class="cal-status">
+          <div class="status-result">✓</div>
+          <div class="status-upcoming">Completed</div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  });
+
+  grid.innerHTML = html;
+}
+</script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 </body>
