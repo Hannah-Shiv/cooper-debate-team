@@ -237,10 +237,10 @@
 #member-login-btn::after {
   content: '';
   position: absolute;
-  top: -3px;
+  top: -4px;
   right: 10px;
-  width: 5px;
-  height: 5px;
+  width: 7px;
+  height: 7px;
   background: #D4A017;
   border-radius: 50%;
   box-shadow: 0 0 5px rgba(212,160,23,1), 0 0 10px rgba(212,160,23,0.5);
