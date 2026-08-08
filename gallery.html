@@ -107,6 +107,29 @@
 
     @media(max-width:900px){ .masonry-grid{grid-template-columns:repeat(2,1fr);} .video-grid{grid-template-columns:1fr;} }
     @media(max-width:600px){ .masonry-grid{grid-template-columns:1fr;} }
+
+    /* Font overrides for this page */
+    .page-header-label { font-size: 0.84rem; }
+    .page-subtitle { font-size: 1.22rem; }
+
+    /* Coming soon panel */
+    .coming-soon-panel {
+      border: 1.5px dashed rgba(212,160,23,0.3);
+      border-radius: 16px;
+      padding: 72px 40px;
+      text-align: center;
+      background: rgba(13,46,86,0.25);
+    }
+    .coming-soon-icon { font-size: 3.2rem; display: block; margin-bottom: 20px; }
+    .coming-soon-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem; font-weight: 600;
+      color: var(--white); margin-bottom: 12px;
+    }
+    .coming-soon-text {
+      font-size: 1rem; color: var(--gray-mid);
+      line-height: 1.8; max-width: 480px; margin: 0 auto;
+    }
   </style>
 </head>
 <body>
@@ -160,26 +183,10 @@
         <h2 class="section-title">Photos</h2>
       </div>
     </div>
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterGallery('all',this)">All Photos</button>
-      <button class="filter-btn" onclick="filterGallery('tournament',this)">Tournaments</button>
-      <button class="filter-btn" onclick="filterGallery('awards',this)">Awards</button>
-      <button class="filter-btn" onclick="filterGallery('practice',this)">Practice</button>
-      <button class="filter-btn" onclick="filterGallery('events',this)">Team Events</button>
-    </div>
-    <div class="masonry-grid" id="photo-grid">
-      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g1"><span>🎙️</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Tournament Round</span></div><div class="photo-overlay"><div class="photo-caption">NSDA Nationals 2025 — Final Round</div><div class="photo-meta">June 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="awards"><div class="photo-placeholder g2"><span>🏆</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Award Ceremony</span></div><div class="photo-overlay"><div class="photo-caption">Metro Finals Championship Trophy</div><div class="photo-meta">May 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g3"><span>📋</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Prep Room</span></div><div class="photo-overlay"><div class="photo-caption">Prep Room — WACFL Regionals</div><div class="photo-meta">April 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="events"><div class="photo-placeholder g4"><span>👥</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Team Photo</span></div><div class="photo-overlay"><div class="photo-caption">End-of-Season Team Photo 2025</div><div class="photo-meta">June 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="awards"><div class="photo-placeholder g5"><span>🥇</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Top Speaker Award</span></div><div class="photo-overlay"><div class="photo-caption">Top Speaker — NSDA Nationals</div><div class="photo-meta">June 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="practice"><div class="photo-placeholder g6"><span>✏️</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Practice Session</span></div><div class="photo-overlay"><div class="photo-caption">Weekly Practice — Case Prep</div><div class="photo-meta">March 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="tournament"><div class="photo-placeholder g7"><span>🏫</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Tournament Site</span></div><div class="photo-overlay"><div class="photo-caption">George Mason — Fall Invitational</div><div class="photo-meta">October 2024</div></div></div>
-      <div class="photo-card fade-up" data-cat="events"><div class="photo-placeholder g8"><span>🎓</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Banquet</span></div><div class="photo-overlay"><div class="photo-caption">WACFL End-of-Season Banquet</div><div class="photo-meta">June 2025</div></div></div>
-      <div class="photo-card fade-up" data-cat="practice"><div class="photo-placeholder g9"><span>💬</span><span style="font-size:0.7rem;font-family:'Josefin Sans',sans-serif;color:rgba(255,255,255,0.4);">Crossfire Drill</span></div><div class="photo-overlay"><div class="photo-caption">Crossfire Practice Drill</div><div class="photo-meta">February 2025</div></div></div>
-    </div>
-    <div style="text-align:center;margin-top:36px;">
-      <p style="font-size:0.82rem;color:var(--gray-mid);margin-bottom:16px;">More photos will be added throughout the season. Check back after each tournament!</p>
+    <div class="coming-soon-panel fade-up">
+      <span class="coming-soon-icon">📸</span>
+      <div class="coming-soon-title">Photos Coming Soon</div>
+      <p class="coming-soon-text">Our gallery is just getting started. Tournament photos, team moments, and behind-the-scenes shots will be added here as the season unfolds — check back after our first tournament!</p>
     </div>
   </div>
 </section>
