@@ -3104,23 +3104,14 @@ function renderTournaments(tourns) {
 }
 
 function drawTrendPill(chart, datasetIdx, text, bg) {
-  const meta = chart.getDatasetMeta(datasetIdx);
-  const data = chart.data.datasets[datasetIdx].data;
-  let lastIdx = -1;
-  for (let i = data.length - 1; i >= 0; i--) {
-    if (data[i] !== null && data[i] !== undefined) { lastIdx = i; break; }
-  }
-  if (lastIdx < 0 || !meta.data[lastIdx]) return;
-  const pt = meta.data[lastIdx];
   const { ctx, chartArea } = chart;
   ctx.save();
   ctx.font = "700 14px 'Josefin Sans', sans-serif";
   const tw = ctx.measureText(text).width;
   const pw = tw + 26, ph = 28, r = 14;
-  let px = pt.x - pw / 2;
-  let py = pt.y - ph - 12;
-  px = Math.max(chartArea.left + 2, Math.min(chartArea.right - pw - 2, px));
-  if (py < chartArea.top + 2) py = pt.y + 12;
+  // Fixed top-right corner — never overlaps data points or hover tooltips
+  const px = chartArea.right - pw - 10;
+  const py = chartArea.top + 10;
   ctx.fillStyle = bg;
   ctx.beginPath();
   if (ctx.roundRect) {
