@@ -1468,7 +1468,15 @@
           <div class="ov-widget-rows" id="ov-metro-rows">
             <div class="ov-widget-row" style="color:rgba(255,255,255,0.4)">Loading…</div>
           </div>
-          <button class="ov-widget-link" onclick="document.getElementById('metro-table').scrollIntoView({behavior:'smooth',block:'start'})">See full tracker ↓</button>
+          <button class="ov-widget-link" onclick="
+            const sec = document.getElementById('metro-table').closest('.stat-section');
+            if (sec && sec.classList.contains('collapsed')) {
+              sec.classList.remove('collapsed');
+              const btn = sec.querySelector('.section-collapse-btn');
+              if (btn) btn.textContent = '▼';
+            }
+            setTimeout(() => document.getElementById('metro-table').scrollIntoView({behavior:'smooth',block:'start'}), 50);
+          ">See full tracker ↓</button>
         </div>
         <!-- Analytics widget -->
         <div class="ov-widget">
