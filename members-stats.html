@@ -3729,10 +3729,10 @@ function renderRoundBars(roundStats) {
       : t < -2 ? `<div class="round-bar-trend" style="color:#fb923c">↓ ${t.toFixed(0)}pp</div>`
       : `<div class="round-bar-trend" style="color:rgba(255,255,255,0.3)">→ stable</div>`;
     return `<div class="round-bar-col" title="Click to see Round ${r.round} records" onclick="showRoundDrill(${r.round},${r.wins},${r.losses})">
-      <div class="round-bar-pct" style="color:${color}">${pct}%</div>
       <div class="round-bar-track">
         <div class="round-bar-fill" style="height:${pct}%;background:${color};opacity:0.8"></div>
       </div>
+      <div class="round-bar-pct" style="color:${color}">${pct}%</div>
       <div class="round-bar-label">R${r.round}</div>
       <div class="round-bar-record">${r.wins}W · ${r.losses}L</div>
       ${trendHtml}
@@ -4284,10 +4284,10 @@ function renderProfileRoundBars(d) {
     const pct = total > 0 ? (s.w / total * 100).toFixed(0) : 0;
     const color = +pct >= 70 ? '#22c55e' : +pct >= 45 ? '#FFD700' : '#e03535';
     return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:48px">
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;line-height:1;color:${color}">${pct}%</div>
       <div style="width:100%;background:rgba(255,255,255,0.07);border-radius:6px 6px 0 0;position:relative;height:110px;display:flex;align-items:flex-end">
         <div style="width:100%;height:${pct}%;background:${color};opacity:0.8;border-radius:6px 6px 0 0;transition:height 0.4s ease"></div>
       </div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;line-height:1;color:${color}">${pct}%</div>
       <div style="font-family:'Josefin Sans',sans-serif;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.1em">R${rn}</div>
       <div style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65)">${s.w}W ${s.l}L</div>
     </div>`;
