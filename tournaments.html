@@ -52,9 +52,26 @@
     }
     .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
     .cal-event.past { opacity:0.55; }
-    /* Last-season pane: no hover movement at all — ID beats class specificity */
-    #pane-last-season .cal-event { transition:border-color 0.25s; cursor:default; }
-    #pane-last-season .cal-event:hover { transform:none; border-color:rgba(212,160,23,0.25); }
+    /* Last-season table controls */
+    .ls-controls { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
+    .ls-filters   { display:flex; gap:8px; flex-wrap:wrap; }
+    .ls-filter-btn {
+      padding:5px 14px; font-family:'Josefin Sans',sans-serif; font-weight:700;
+      font-size:0.68rem; letter-spacing:0.08em; text-transform:uppercase;
+      background:transparent; border:1px solid rgba(212,160,23,0.25); border-radius:4px;
+      color:var(--gray-mid); cursor:pointer; transition:background 0.18s, color 0.18s;
+    }
+    .ls-filter-btn.active, .ls-filter-btn:hover { background:rgba(212,160,23,0.18); color:var(--gold); border-color:rgba(212,160,23,0.5); }
+    .ls-sort-info { font-family:'Josefin Sans',sans-serif; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gray-mid); }
+
+    /* Last-season table overrides (5-col: date · name+location · type · pairs · status) */
+    .ls-row { grid-template-columns:90px 1fr 110px 70px 90px !important; }
+    .result-row.header th { background:none; border:none; font:inherit; padding:0; text-align:left; cursor:pointer; user-select:none; }
+    .result-row.header th:hover { color:var(--white); }
+    .sort-chevron { margin-left:4px; opacity:0.5; font-size:0.75em; }
+    .sort-chevron.active { opacity:1; color:var(--gold); }
+    .ls-count { font-family:'Josefin Sans',sans-serif; font-size:0.68rem; color:var(--gray-mid); margin-bottom:16px; }
+    @media(max-width:700px){ .ls-row { grid-template-columns:70px 1fr auto !important; } .ls-col-type,.ls-col-pairs,.ls-col-status { display:none; } }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
@@ -210,7 +227,31 @@
     <!-- LAST SEASON (populated from Firestore) -->
     <div id="pane-last-season" style="display:none;">
       <div id="last-season-loading" style="text-align:center;padding:48px 24px;color:var(--gray-mid);font-size:0.85rem;">Loading last season's tournaments…</div>
-      <div class="calendar-grid" id="last-season-calendar" style="display:none;"></div>
+
+      <!-- controls + table -->
+      <div id="last-season-table-wrap" style="display:none;">
+        <div class="ls-controls">
+          <div class="ls-filters">
+            <button class="ls-filter-btn active" onclick="lsFilter('all',this)">All</button>
+            <button class="ls-filter-btn" onclick="lsFilter('wacfl',this)">WACFL</button>
+            <button class="ls-filter-btn" onclick="lsFilter('national',this)">National</button>
+            <button class="ls-filter-btn" onclick="lsFilter('invitational',this)">Invitational</button>
+          </div>
+          <div class="ls-sort-info">Sorted by date ↓</div>
+        </div>
+        <div class="ls-count" id="ls-count"></div>
+        <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.12);border-radius:10px;overflow:hidden;">
+          <div class="result-row header ls-row" style="display:grid;">
+            <th onclick="lsSort('date')">Date <span class="sort-chevron active" id="chev-date">↓</span></th>
+            <th onclick="lsSort('name')">Tournament <span class="sort-chevron" id="chev-name"></span></th>
+            <th class="ls-col-type" onclick="lsSort('type')">Type <span class="sort-chevron" id="chev-type"></span></th>
+            <th class="ls-col-pairs" style="text-align:right;">Pairs</th>
+            <th class="ls-col-status"></th>
+          </div>
+          <div id="ls-tbody"></div>
+        </div>
+      </div>
+
       <div id="last-season-empty" style="display:none;text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
         <div style="font-size:2.4rem;margin-bottom:16px;">📋</div>
         <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">No Tournament Data Yet</div>
@@ -379,75 +420,110 @@ function _parseDateStr(str) {
   return null;
 }
 
+/* ── Last-season table state ──────────────────────────────── */
+let _lsTourns  = [];   // full dataset
+let _lsFilter  = 'all';
+let _lsSort    = 'date';
+let _lsDir     = 'desc';
+
+function _tournType(name) {
+  const n = name.toLowerCase();
+  if (n.includes('national') || n.includes('nsda')) return 'national';
+  if (n.includes('metro') || n.includes('championship') || n.includes('wacfl')) return 'wacfl';
+  return 'invitational';
+}
+
+function _sortKey(t) {
+  if (_lsSort === 'date') {
+    const pd = t._pd;
+    return pd ? pd.year * 10000 + pd.month * 100 + pd.day : 0;
+  }
+  if (_lsSort === 'name') return (t.meta.name || '').toLowerCase();
+  if (_lsSort === 'type') return _tournType(t.meta.name || '');
+  return 0;
+}
+
+function lsFilter(type, btn) {
+  _lsFilter = type;
+  document.querySelectorAll('.ls-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  lsRender();
+}
+
+function lsSort(field) {
+  if (_lsSort === field) { _lsDir = _lsDir === 'desc' ? 'asc' : 'desc'; }
+  else { _lsSort = field; _lsDir = field === 'date' ? 'desc' : 'asc'; }
+  // Update chevrons
+  ['date','name','type'].forEach(f => {
+    const el = document.getElementById('chev-' + f);
+    if (!el) return;
+    el.textContent = _lsSort === f ? (_lsDir === 'desc' ? '↓' : '↑') : '';
+    el.className = 'sort-chevron' + (_lsSort === f ? ' active' : '');
+  });
+  document.querySelector('.ls-sort-info').textContent =
+    `Sorted by ${_lsSort} ${_lsDir === 'desc' ? '↓' : '↑'}`;
+  lsRender();
+}
+
+function lsRender() {
+  let rows = _lsTourns.map(t => {
+    const pd = _parseDateStr(t.meta && t.meta.date);
+    return { ...t, _pd: pd, _type: _tournType(t.meta.name || '') };
+  });
+
+  // Filter
+  if (_lsFilter !== 'all') rows = rows.filter(t => t._type === _lsFilter);
+
+  // Sort
+  rows.sort((a, b) => {
+    const ka = _sortKey(a), kb = _sortKey(b);
+    const cmp = ka < kb ? -1 : ka > kb ? 1 : 0;
+    return _lsDir === 'desc' ? -cmp : cmp;
+  });
+
+  // Count
+  document.getElementById('ls-count').textContent =
+    `${rows.length} tournament${rows.length !== 1 ? 's' : ''}`;
+
+  // Build rows
+  const tbody = document.getElementById('ls-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<div style="padding:24px;text-align:center;color:rgba(255,255,255,0.3);font-family:Josefin Sans,sans-serif;font-size:0.82rem;letter-spacing:0.06em;">No tournaments match this filter</div>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(t => {
+    const pd       = t._pd;
+    const dateStr  = pd ? `${MONTH_SHORT[pd.month]} ${pd.day}, ${pd.year}` : '—';
+    const name     = t.meta.name     || 'Tournament';
+    const school   = t.meta.school   || '';
+    const location = t.meta.location || '';
+    const topicType = ((t.meta.topicType || 'Public Forum').replace(/^\d+\s*/,'').replace(/\s*\d+$/,'').trim()) || 'Public Forum';
+    const subtitle = [school, location].filter(Boolean).join(' · ');
+    const pairs    = t.entries ? t.entries.length : 0;
+
+    const typeTagClass = t._type === 'national' ? 'tag-national' : t._type === 'wacfl' ? 'tag-wacfl' : 'tag-tourn';
+    const typeLabel    = t._type === 'national' ? 'National' : t._type === 'wacfl' ? 'WACFL' : 'Invitational';
+
+    return `<div class="result-row ls-row" style="display:grid;">
+      <div style="font-size:0.82rem;color:var(--gray-mid);line-height:1.4;">${dateStr}</div>
+      <div>
+        <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;color:var(--white);">${name}</div>
+        ${subtitle ? `<div style="font-size:0.75rem;color:var(--gray-mid);margin-top:2px;">${subtitle}</div>` : ''}
+        <div style="margin-top:4px;"><span class="cal-tag tag-practice">${topicType}</span></div>
+      </div>
+      <div class="ls-col-type"><span class="cal-tag ${typeTagClass}">${typeLabel}</span></div>
+      <div class="ls-col-pairs" style="text-align:right;font-size:0.82rem;color:var(--gray-mid);">${pairs || '—'}</div>
+      <div class="ls-col-status" style="text-align:right;font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);">✓ Done</div>
+    </div>`;
+  }).join('');
+}
+
 function renderLastSeason(tourns) {
-  console.log('[Tournaments v6] date parse test:',
-    JSON.stringify(_parseDateStr('Saturday, October 11, 2025')),
-    JSON.stringify(_parseDateStr('Saturday Nov 8th 2025'))
-  );
-  console.log('[Tournaments v6] meta samples:', JSON.stringify(tourns.slice(0,3).map(t => t.meta)));
-  const grid = document.getElementById('last-season-calendar');
-  grid.style.display = '';
-
-  // Group by month
-  const byMonth = {};
-  tourns.forEach(t => {
-    const pd  = _parseDateStr(t.meta && t.meta.date);
-    const key = pd ? `${pd.year}-${String(pd.month).padStart(2,'0')}` : 'unknown';
-    if (!byMonth[key]) byMonth[key] = { pd, label: pd ? MONTH_NAMES[pd.month] + ' ' + pd.year : 'Unknown Date', tourns: [] };
-    byMonth[key].tourns.push({ ...t, _pd: pd });
-  });
-
-  let html = '';
-  Object.keys(byMonth).sort().reverse().forEach(key => {
-    const group = byMonth[key];
-    html += `<div class="cal-month">
-      <div class="cal-month-title">${group.label}</div>`;
-    group.tourns.forEach(t => {
-      const pd  = t._pd;
-      const mon = pd ? MONTH_SHORT[pd.month] : '—';
-      const day = pd ? pd.day : '—';
-      const name = t.meta.name || 'Tournament';
-      const school   = t.meta.school   || '';
-      const location = t.meta.location || '';
-      const topicType = ((t.meta.topicType || 'Public Forum').replace(/^\d+\s*/,'').replace(/\s*\d+$/,'').trim()) || 'Public Forum';
-      const subtitle = [school, location].filter(Boolean).join(' · ');
-
-      // Determine tag type
-      const nameLower = name.toLowerCase();
-      let tagHtml = '';
-      if (nameLower.includes('national') || nameLower.includes('nsda')) {
-        tagHtml = '<span class="cal-tag tag-national">National</span>';
-      } else if (nameLower.includes('metro') || nameLower.includes('championship') || nameLower.includes('wacfl')) {
-        tagHtml = '<span class="cal-tag tag-wacfl">WACFL</span>';
-      } else {
-        tagHtml = '<span class="cal-tag tag-tourn">Invitational</span>';
-      }
-      tagHtml += ` <span class="cal-tag tag-practice">${topicType}</span>`;
-
-      // Count Cooper entries
-      const entryCount = t.entries ? t.entries.filter(e => e.school === 'Cooper').length : 0;
-      const entryNote  = entryCount > 0 ? `${entryCount} Cooper pair${entryCount > 1 ? 's' : ''}` : '';
-
-      html += `<div class="cal-event past fade-up">
-        <div class="cal-date">
-          <div class="cal-month-sm">${mon}</div>
-          <div class="cal-day">${day}</div>
-        </div>
-        <div class="cal-info">
-          <div class="cal-name">${name}</div>
-          ${subtitle ? `<div class="cal-location">${subtitle}</div>` : ''}
-          <div class="cal-tags">${tagHtml}${entryNote ? ` <span class="cal-tag" style="background:rgba(255,255,255,0.06);color:var(--gray-mid);border:1px solid rgba(255,255,255,0.1);">${entryNote}</span>` : ''}</div>
-        </div>
-        <div class="cal-status">
-          <div class="status-result">✓</div>
-          <div class="status-upcoming">Completed</div>
-        </div>
-      </div>`;
-    });
-    html += '</div>';
-  });
-
-  grid.innerHTML = html;
+  _lsTourns = tourns;
+  document.getElementById('last-season-loading').style.display = 'none';
+  document.getElementById('last-season-table-wrap').style.display = '';
+  lsRender();
 }
 </script>
 <script src="js/dome-nav.js"></script>
