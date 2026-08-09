@@ -552,44 +552,6 @@ function computeWinDist(tourns) {
 let winDistChart = null, timelineChart = null, metroChart = null, roundChart = null;
 
 /* ── Render ── */
-/* ── Curved text helper: draws each character along a circle arc ── */
-function drawCurvedText(ctx, text, cx, cy, radius, startAngle, endAngle, fontSize, fontWeight, color) {
-  ctx.save();
-  ctx.font = `${fontWeight} ${fontSize}px 'Josefin Sans', sans-serif`;
-  ctx.fillStyle = color;
-  ctx.textBaseline = 'middle';
-  ctx.textAlign = 'center';
-
-  const arcMid = startAngle + (endAngle - startAngle) / 2;
-  const norm   = ((arcMid % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
-  /* flip only when the arc centre is in the bottom half (π/2 → 3π/2),
-     where clockwise rendering produces upside-down glyphs            */
-  const flip   = norm > Math.PI/2 && norm < 3*Math.PI/2;
-
-  const chars  = [...text];
-  const widths = chars.map(ch => ctx.measureText(ch).width);
-  const totalW = widths.reduce((s,w) => s+w, 0);
-  const aPerPx = 1 / radius;
-
-  const dc = flip ? [...chars].reverse()  : chars;
-  const dw = flip ? [...widths].reverse() : widths;
-
-  let angle = arcMid + (flip ? 1 : -1) * totalW * aPerPx / 2;
-  const dir = flip ? -1 : 1;
-
-  for (let k = 0; k < dc.length; k++) {
-    const hw = dw[k] / 2;
-    angle += dir * hw * aPerPx;
-    ctx.save();
-    ctx.translate(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
-    ctx.rotate(angle + (flip ? -Math.PI/2 : Math.PI/2));
-    ctx.fillText(dc[k], 0, 0);
-    ctx.restore();
-    angle += dir * hw * aPerPx;
-  }
-  ctx.restore();
-}
-
 function renderAwards(tourns) {
   const loading = document.getElementById('aw-loading');
   const future  = document.getElementById('aw-future');
@@ -792,9 +754,10 @@ function renderAwards(tourns) {
     }
   };
 
-  /* Custom plugin: icon+count at arc midpoint, category label curved along arc */
-  const metroArcLabelsPlugin = {
-    id: 'metroArcLabels',
+  /* ── Leader-line callout plugin ── */
+  const segColors = ['rgba(22,163,74,1)','rgba(161,110,14,1)','rgba(100,140,220,0.9)'];
+  const metroCalloutPlugin = {
+    id: 'metroCallout',
     afterDraw(chart) {
       const { ctx, chartArea } = chart;
       const cx   = chartArea.left + chartArea.width  / 2;
@@ -802,35 +765,66 @@ function renderAwards(tourns) {
       const meta = chart.getDatasetMeta(0);
       const vals = chart.data.datasets[0].data;
       const icons = ['🏆','⏳','📈'];
-      const cats  = ['METRO ELIGIBLE','1 MORE NEEDED','IN PROGRESS'];
+      const cats  = ['Metro Eligible','1 More Needed','In Progress'];
 
       meta.data.forEach((arc, i) => {
         if (!vals[i]) return;
         const { startAngle, endAngle, outerRadius, innerRadius } = arc;
         const midAngle = startAngle + (endAngle - startAngle) / 2;
         const thick    = outerRadius - innerRadius;
+        const cosM = Math.cos(midAngle), sinM = Math.sin(midAngle);
 
-        /* Icon + count: horizontal text positioned at arc midpoint */
-        const ptR  = innerRadius + thick * 0.54;
-        const ptX  = cx + ptR * Math.cos(midAngle);
-        const ptY  = cy + ptR * Math.sin(midAngle);
-        const cntSz = Math.round(thick * 0.36);
-        const icoSz = Math.round(thick * 0.26);
-
+        /* — Number + icon inside the arc — */
+        const ptR  = innerRadius + thick * 0.5;
+        const ptX  = cx + ptR * cosM;
+        const ptY  = cy + ptR * sinM;
+        const numSz = Math.round(thick * 0.38);
+        const icoSz = Math.round(thick * 0.27);
         ctx.save();
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = '#fff';
         ctx.font = `${icoSz}px serif`;
-        ctx.fillText(icons[i], ptX, ptY - cntSz * 0.72);
-        ctx.font = `bold ${cntSz}px 'Playfair Display', serif`;
-        ctx.fillText(String(vals[i]), ptX, ptY + icoSz * 0.18);
+        ctx.fillText(icons[i], ptX, ptY - numSz * 0.65);
+        ctx.font = `bold ${numSz}px 'Playfair Display', serif`;
+        ctx.fillText(String(vals[i]), ptX, ptY + icoSz * 0.15);
         ctx.restore();
 
-        /* Category label: curved along the inner band of the arc */
-        const txtR  = innerRadius + thick * 0.17;
-        const txtSz = Math.max(10, Math.round(thick * 0.16));
-        drawCurvedText(ctx, cats[i], cx, cy, txtR,
-                       startAngle, endAngle, txtSz, '700', 'rgba(255,255,255,0.88)');
+        /* — Leader line: outer edge → elbow → label — */
+        const gap   = 10;
+        const spoke = 22;
+        const elbow = 26;
+        const x1 = cx + (outerRadius + gap)         * cosM;
+        const y1 = cy + (outerRadius + gap)         * sinM;
+        const x2 = cx + (outerRadius + gap + spoke) * cosM;
+        const y2 = cy + (outerRadius + gap + spoke) * sinM;
+        const toRight = cosM >= 0;
+        const x3 = x2 + (toRight ? elbow : -elbow);
+        const y3 = y2;
+
+        ctx.save();
+        ctx.strokeStyle = segColors[i];
+        ctx.lineWidth = 1.5;
+        ctx.lineJoin = 'round';
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.lineTo(x3, y3);
+        ctx.stroke();
+
+        /* dot at elbow end */
+        ctx.fillStyle = segColors[i];
+        ctx.beginPath();
+        ctx.arc(x3, y3, 2.5, 0, 2*Math.PI);
+        ctx.fill();
+
+        /* label text */
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `700 12px 'Josefin Sans', sans-serif`;
+        ctx.letterSpacing = '0.5px';
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = toRight ? 'left' : 'right';
+        ctx.fillText(cats[i], x3 + (toRight ? 6 : -6), y3);
+        ctx.restore();
       });
     }
   };
@@ -839,7 +833,7 @@ function renderAwards(tourns) {
   metroChart = new Chart(
     document.getElementById('aw-metro-chart').getContext('2d'), {
     type:'doughnut',
-    plugins:[metroCenterPlugin, metroArcLabelsPlugin],
+    plugins:[metroCenterPlugin, metroCalloutPlugin],
     data:{
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
@@ -858,6 +852,7 @@ function renderAwards(tourns) {
     },
     options:{
       responsive:true, maintainAspectRatio:false, cutout:'52%',
+      layout:{ padding:{ top:10, right:110, bottom:10, left:110 } },
       plugins:{ legend:{ display:false }, datalabels:{ display:false } }
     }
   });
