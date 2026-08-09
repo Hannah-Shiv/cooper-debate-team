@@ -65,29 +65,31 @@
     .format-step-desc { font-size: 0.82rem; color: var(--gray-mid); }
 
     .coach-card {
-      background: rgba(17,40,112,0.42);
-      border: 1px solid rgba(212,160,23,0.18);
-      border-radius: 10px;
-      padding: 32px;
+      background: rgba(5,10,38,0.92);
+      border: 1.5px solid rgba(212,160,23,0.55);
+      border-radius: 18px;
+      padding: 44px 36px 38px;
       text-align: center;
-      transition: border-color 0.3s, transform 0.3s;
-    }
-    .coach-card:hover { border-color: rgba(212,160,23,0.45); transform: translateY(-4px); }
-    .coach-avatar {
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--navy-mid), var(--navy-dark));
-      border: 2px solid rgba(212,160,23,0.4);
-      margin: 0 auto 18px;
       display: flex;
+      flex-direction: column;
       align-items: center;
-      justify-content: center;
-      font-size: 2.2rem;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
     }
-    .coach-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--white); margin-bottom: 4px; }
-    .coach-role { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 12px; }
-    .coach-bio { font-size: 0.82rem; color: var(--gray-mid); line-height: 1.7; }
+    .coach-card:hover { border-color: rgba(212,160,23,0.85); transform: translateY(-5px); box-shadow: 0 12px 40px rgba(0,0,0,0.45); }
+    .coach-icon-ring {
+      width: 108px; height: 108px; border-radius: 50%;
+      background: rgba(6,14,55,0.95);
+      border: 2px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 26px;
+    }
+    .coach-name { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; font-weight: 600; color: #fff; margin-bottom: 6px; line-height: 1.1; }
+    .coach-role { font-family: 'Josefin Sans', sans-serif; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); }
+    .coach-divider { display:flex; align-items:center; gap:12px; width:100%; margin: 18px 0; }
+    .coach-divider-line { flex:1; height:1px; background:rgba(212,160,23,0.35); }
+    .coach-divider-sym { color:var(--gold); font-size:0.85rem; line-height:1; }
+    .coach-bio { font-size: 0.88rem; color: rgba(255,255,255,0.78); line-height: 1.80; margin: 0; }
+    .coach-quote { font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 1.0rem; color: var(--gold); line-height: 1.6; margin: 0; }
 
     .join-step {
       display: flex;
@@ -173,14 +175,18 @@
 </div>
 
 <!-- APPLICATION POLICY BANNER — appearance #4 of 5 -->
-<div style="background:linear-gradient(135deg,#7a1010,#a01515);border-bottom:1.5px solid rgba(255,150,150,0.25);padding:16px 24px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;">
-  <span style="font-size:1.1rem;">⚠</span>
-  <span style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
-  <span style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.92);line-height:1.5;">
-    <strong style="color:#fff;">All students must apply — including returning members.</strong>
-    Only Metro Finals qualifiers (March 2026) are automatically on the team.
-  </span>
-  <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;border-radius:4px;text-decoration:none;white-space:nowrap;">Apply Now →</a>
+<div style="background:var(--navy-dark);padding:28px 0 0;">
+  <div class="section-wrap" style="max-width:900px;">
+    <div style="background:linear-gradient(135deg,#7a1010,#a01515);border:1px solid rgba(255,130,130,0.25);border-radius:12px;padding:20px 28px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;box-shadow:0 4px 24px rgba(120,0,0,0.35);">
+      <span style="font-size:1.1rem;">⚠</span>
+      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
+      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.92);line-height:1.5;">
+        <strong style="color:#fff;">All students must apply — including returning members.</strong>
+        Only Metro Finals qualifiers (March 2026) are automatically on the team.
+      </span>
+      <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;border-radius:4px;text-decoration:none;white-space:nowrap;">Apply Now →</a>
+    </div>
+  </div>
 </div>
 
 <!-- MISSION & VISION -->
@@ -199,6 +205,7 @@
       <div>
         <p class="section-label">What We Stand For</p>
         <h2 class="section-title">Core Values</h2>
+        <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:24px;">The principles that shape every practice, every round, and every debater who wears the Cooper name.</p>
         <div style="display:flex;flex-direction:column;gap:16px;">
           <div class="value-card fade-up">
             <span class="value-icon">🎙️</span>
@@ -310,19 +317,43 @@
       <p class="section-label" style="justify-content:center;">The Team Behind the Team</p>
       <h2 class="section-title">Meet the Coaches</h2>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:28px;max-width:720px;margin:0 auto;">
+    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:32px;max-width:760px;margin:0 auto;">
+
+      <!-- Pamela Konde -->
       <div class="coach-card fade-up">
-        <div class="coach-avatar">👩‍🏫</div>
+        <div class="coach-icon-ring">
+          <svg width="54" height="54" viewBox="0 0 24 24" fill="none" stroke="#D4A017" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z" fill="rgba(212,160,23,0.15)"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </div>
         <div class="coach-name">Pamela Konde</div>
         <div class="coach-role">Head Coach</div>
-        <p class="coach-bio">Dedicated coach with a passion for empowering students to find their voice and argue with clarity, precision, and confidence at every level of competition.</p>
+        <div class="coach-divider"><span class="coach-divider-line"></span><span class="coach-divider-sym">★</span><span class="coach-divider-line"></span></div>
+        <p class="coach-bio">Dedicated to helping students find their voice, think critically, and compete with clarity, confidence, and integrity at every level of competition.</p>
+        <div class="coach-divider"><span class="coach-divider-line"></span><span class="coach-divider-sym" style="font-size:1.3rem;line-height:0.6;">"</span><span class="coach-divider-line"></span></div>
+        <p class="coach-quote">"Every voice deserves to be heard."</p>
       </div>
+
+      <!-- Inger Logan -->
       <div class="coach-card fade-up">
-        <div class="coach-avatar">🌟</div>
+        <div class="coach-icon-ring">
+          <svg width="54" height="54" viewBox="0 0 48 48" fill="none">
+            <path d="M24 5l2.8 8.5H36l-7.4 5.4 2.8 8.5L24 22.9l-7.4 4.5 2.8-8.5L12 13.5h9.2z" fill="rgba(212,160,23,0.2)" stroke="#D4A017" stroke-width="1.5" stroke-linejoin="round"/>
+            <path d="M6 38l7-7 6 2.5 5-2.5 5 2.5 6-2.5 7 7" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13 31l3.5 7 7.5-2 7.5 2 3.5-7" stroke="#D4A017" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
         <div class="coach-name">Inger Logan</div>
-        <div class="coach-role">Mentor Extraordinaire</div>
-        <p class="coach-bio">An invaluable presence who inspires every debater to reach beyond their potential — offering guidance, encouragement, and wisdom that extends well beyond the debate round.</p>
+        <div class="coach-role">Lead Mentor</div>
+        <div class="coach-divider"><span class="coach-divider-line"></span><span class="coach-divider-sym">★</span><span class="coach-divider-line"></span></div>
+        <p class="coach-bio">A trusted mentor who inspires every debater through guidance, encouragement, and unwavering support — both inside and outside the debate round.</p>
+        <div class="coach-divider"><span class="coach-divider-line"></span><span class="coach-divider-sym" style="font-size:1.3rem;line-height:0.6;">"</span><span class="coach-divider-line"></span></div>
+        <p class="coach-quote">"Every great debater starts with encouragement."</p>
       </div>
+
     </div>
   </div>
 </section>
