@@ -28,6 +28,25 @@
       #idx-stats-section  { padding: 32px 0 !important; }
     }
 
+    /* Record stat: scale with viewport so it never wraps in the 2-col box */
+    #idx-stat-record { font-size: clamp(1.1rem, 4.5vw, 2.2rem) !important; white-space: nowrap; }
+
+    /* Philosophy quote inside the index box:
+       strip the 2-col grid (quote-mark + text) — just stack everything */
+    #idx-phi-box .philosophy-quote-inner {
+      display: block !important;
+    }
+    #idx-phi-box .philosophy-quote-mark {
+      display: none !important;          /* remove the oversized " that causes the gap */
+    }
+    #idx-phi-box .philosophy-quote-text {
+      grid-column: unset !important;
+      margin-top: 0 !important;
+    }
+    #idx-phi-box .philosophy-quote-attr {
+      grid-column: unset !important;
+    }
+
     @media (max-width: 480px) {
       /* Stats: stay 2×2 on small phones (single col is too tall) */
       #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
