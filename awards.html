@@ -300,8 +300,8 @@
           <canvas id="aw-metro-chart" height="220"></canvas>
         </div>
         <div class="aw-chart-wrap">
-          <div class="aw-chart-title">Win Rate by Round</div>
-          <canvas id="aw-round-chart" height="220"></canvas>
+          <div class="aw-chart-title">Pairs Per Tournament</div>
+          <canvas id="aw-pairs-chart" height="220"></canvas>
         </div>
       </div>
 
@@ -669,7 +669,10 @@ function renderAwards(tourns) {
 
   /* 2. Season Win Rate Trend */
   const tlSorted = [...tourns].sort((a,b)=>parseTournDate(a.meta.date)-parseTournDate(b.meta.date));
-  const tlLabels  = tlSorted.map(t => t.meta.name ? t.meta.name.replace(/WACFL\s*/i,'').trim() : fmtDate(t.meta.date));
+  const tlLabels  = tlSorted.map((t,i) => {
+    let lbl = t.meta.name ? t.meta.name.replace(/WACFL\s*/i,'').replace(/Washington Area Speech and Debate League/i,'WASDL').trim() : fmtDate(t.meta.date);
+    return lbl.length > 14 ? lbl.slice(0,13).trimEnd() + '…' : lbl;
+  });
   const tlWinPcts = tlSorted.map(t => {
     const w = t.entries.reduce((s,e)=>s+e.wins,0);
     const l = t.entries.reduce((s,e)=>s+e.losses,0);
@@ -727,18 +730,23 @@ function renderAwards(tourns) {
     }
   });
 
-  /* 4. Win Rate by Round */
-  const roundStats = computeRoundStats(tourns);
+  /* 4. Pairs Per Tournament */
+  const pairsSorted = [...tourns].sort((a,b)=>parseTournDate(a.meta.date)-parseTournDate(b.meta.date));
+  const pairsLabels = pairsSorted.map((t,i) => {
+    let lbl = t.meta.name ? t.meta.name.replace(/WACFL\s*/i,'').replace(/Washington Area Speech and Debate League/i,'WASDL').trim() : fmtDate(t.meta.date);
+    return lbl.length > 14 ? lbl.slice(0,13).trimEnd() + '…' : lbl;
+  });
+  const pairsData = pairsSorted.map(t => t.entries.length);
   if (roundChart) roundChart.destroy();
   roundChart = new Chart(
-    document.getElementById('aw-round-chart').getContext('2d'), {
+    document.getElementById('aw-pairs-chart').getContext('2d'), {
     type:'bar', plugins:[ChartDataLabels],
     data:{
-      labels: roundStats.map(r=>`Round ${r.round}`),
+      labels: pairsLabels,
       datasets:[{
-        data: roundStats.map(r=>+(r.winPct*100).toFixed(1)),
-        backgroundColor: roundStats.map(r=>r.winPct>=0.5?'rgba(34,197,94,0.5)':'rgba(239,68,68,0.45)'),
-        borderColor:     roundStats.map(r=>r.winPct>=0.5?'rgba(34,197,94,0.9)':'rgba(239,68,68,0.8)'),
+        data: pairsData,
+        backgroundColor:'rgba(100,130,220,0.45)',
+        borderColor:'rgba(100,130,220,0.9)',
         borderWidth:1, borderRadius:4
       }]
     },
@@ -748,16 +756,11 @@ function renderAwards(tourns) {
         ...noLegend,
         datalabels:{
           display: (c)=>c.dataset.data[c.dataIndex]>0,
-          color:'#fff', font:{size:16,weight:'bold'},
-          anchor:'center', align:'center',
-          formatter: v => v+'%'
+          color:'#fff', font:{size:22,weight:'bold', family:"'Playfair Display',serif"},
+          anchor:'center', align:'center'
         }
       },
-      scales:{
-        x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
-        y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, callback:v=>v+'%'},
-            beginAtZero:true, max:100 }
-      }
+      scales: barScales(1)
     }
   });
 }
