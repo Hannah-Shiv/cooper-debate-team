@@ -11,6 +11,35 @@
   <link rel="stylesheet" href="css/main.css?v=14"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
+    /* Awards page font overrides */
+    .page-header-label { font-size: 0.89rem !important; }
+    .page-subtitle     { font-size: 1.21rem !important; }
+
+    /* Season dropdown */
+    .season-select-wrap {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .season-select-label {
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.72rem;
+      font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+      color: var(--gold); display: flex; align-items: center; gap: 8px;
+    }
+    .season-select-label::before {
+      content: ''; width: 24px; height: 1px; background: var(--gold); opacity: 0.5;
+    }
+    .season-dropdown {
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.75rem;
+      font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--gold); background: rgba(13,46,86,0.7);
+      border: 1px solid rgba(212,160,23,0.4); border-radius: 6px;
+      padding: 5px 10px; cursor: pointer; outline: none;
+      appearance: none; -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23D4A017'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 8px center;
+      padding-right: 26px;
+    }
+    .season-dropdown option { background: #071A36; color: #fff; }
+
     .trophy-card {
       background: rgba(13,46,86,0.5);
       border: 1px solid rgba(212,160,23,0.2);
@@ -113,8 +142,15 @@
 <!-- THIS SEASON -->
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-    <p class="section-label">2024–2025 Season</p>
-    <h2 class="section-title" style="margin-bottom:40px;">This Season's Results</h2>
+    <div class="season-select-wrap">
+      <span class="season-select-label">Season</span>
+      <select class="season-dropdown" id="season-dropdown" onchange="updateSeasonLabel()">
+        <option value="2024–2025">2024–2025</option>
+        <option value="2023–2024">2023–2024</option>
+        <option value="2022–2023">2022–2023</option>
+      </select>
+    </div>
+    <h2 class="section-title" style="margin-bottom:40px;">Season Results for <span id="season-label">2024–2025</span></h2>
     <div class="three-col stagger">
       <div class="trophy-card fade-up">
         <span class="trophy-icon">🏆</span>
@@ -159,11 +195,18 @@
         <span class="trophy-badge">Individual Excellence</span>
       </div>
     </div>
+
+    <!-- Metrics placeholder — to be wired to Member-Stats charts -->
+    <div style="margin-top:40px;padding:32px;background:rgba(13,46,86,0.4);border:1.5px dashed rgba(212,160,23,0.25);border-radius:16px;text-align:center;">
+      <div style="font-size:1.8rem;margin-bottom:10px;">📊</div>
+      <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Season Analytics</div>
+      <p style="font-size:0.88rem;color:var(--gray-mid);line-height:1.7;max-width:420px;margin:0 auto;">Detailed metrics and charts — win rates, speaker points, pair performance — are available in the <a href="members-stats.html" style="color:var(--gold-pale);text-decoration:underline;">Member Portal Stats page</a>.</p>
+    </div>
   </div>
 </section>
 
 <!-- SPEAKER AWARDS -->
-<section class="section" style="background:var(--navy-mid);">
+<section class="section" style="background:var(--navy-mid);display:none;">
   <div class="section-wrap">
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;">
       <div>
@@ -223,7 +266,7 @@
 </section>
 
 <!-- STATISTICS -->
-<section id="statistics" class="stats-section">
+<section id="statistics" class="stats-section" style="display:none;">
   <div class="section-wrap">
     <p class="section-label" style="justify-content:center;margin-bottom:8px;">By the Numbers</p>
     <h2 class="section-title" style="text-align:center;margin-bottom:40px;">Program Statistics</h2>
@@ -237,7 +280,7 @@
 </section>
 
 <!-- HALL OF FAME -->
-<section id="hall-of-fame" class="section" style="background:var(--navy-dark);">
+<section id="hall-of-fame" class="section" style="background:var(--navy-dark);display:none;">
   <div class="section-wrap">
     <div style="text-align:center;margin-bottom:48px;">
       <p class="section-label" style="justify-content:center;">Program History</p>
@@ -297,5 +340,11 @@
 </footer>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script>
+  function updateSeasonLabel() {
+    const val = document.getElementById('season-dropdown').value;
+    document.getElementById('season-label').textContent = val;
+  }
+</script>
 </body>
 </html>
