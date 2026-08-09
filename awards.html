@@ -184,6 +184,9 @@
     /* Two-panel below-the-strip layout */
     .aw-two { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:40px; }
 
+    /* 2×2 symmetric chart grid */
+    .aw-chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:40px; }
+
     /* Future season placeholder */
     .aw-future {
       text-align:center; padding:56px 32px;
@@ -198,6 +201,7 @@
       .aw-stat-strip { grid-template-columns:repeat(2,1fr); }
       .aw-tourn-grid { grid-template-columns:1fr; }
       .aw-two { grid-template-columns:1fr; }
+      .aw-chart-grid { grid-template-columns:1fr; }
     }
     @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
   </style>
@@ -277,17 +281,27 @@
       <!-- Achievement highlight cards -->
       <div id="aw-highlights" class="aw-stat-strip" style="margin-bottom:32px;"></div>
 
-      <!-- Tournament cards + win chart -->
-      <div class="aw-two">
-        <div>
-          <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
-          <div id="aw-tourn-grid" class="aw-tourn-grid" style="grid-template-columns:1fr;"></div>
+      <!-- Tournament cards — full width 2-col grid -->
+      <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
+      <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
+
+      <!-- 2×2 symmetric chart grid -->
+      <div class="aw-chart-grid">
+        <div class="aw-chart-wrap">
+          <div class="aw-chart-title">Win Distribution</div>
+          <canvas id="aw-windist-chart" height="220"></canvas>
         </div>
-        <div>
-          <div class="aw-chart-wrap">
-            <div class="aw-chart-title">Win Distribution</div>
-            <canvas id="aw-windist-chart" height="200"></canvas>
-          </div>
+        <div class="aw-chart-wrap">
+          <div class="aw-chart-title">Season Win Rate Trend</div>
+          <canvas id="aw-timeline-chart" height="220"></canvas>
+        </div>
+        <div class="aw-chart-wrap">
+          <div class="aw-chart-title">Metro Finals Progress</div>
+          <canvas id="aw-metro-chart" height="220"></canvas>
+        </div>
+        <div class="aw-chart-wrap">
+          <div class="aw-chart-title">Win Rate by Round</div>
+          <canvas id="aw-round-chart" height="220"></canvas>
         </div>
       </div>
 
@@ -527,7 +541,7 @@ function computeWinDist(tourns) {
 }
 
 /* ── Chart instance ── */
-let winDistChart = null;
+let winDistChart = null, timelineChart = null, metroChart = null, roundChart = null;
 
 /* ── Render ── */
 function renderAwards(tourns) {
@@ -621,43 +635,128 @@ function renderAwards(tourns) {
       </div>`;
   }).join('');
 
-  /* ── Win distribution chart ── */
+  /* ── Chart helpers ── */
+  const gridColor  = 'rgba(255,255,255,0.05)';
+  const tickColor  = 'rgba(255,255,255,0.6)';
+  const tickFont   = { size: 13 };
+  const noLegend   = { legend:{ display:false } };
+  const bigLabel   = { display: (c) => c.dataset.data[c.dataIndex] > 0,
+                       color:'#fff', font:{ size:22, weight:'bold', family:"'Playfair Display',serif" },
+                       anchor:'center', align:'center' };
+
+  function barScales(yStep) {
+    return {
+      x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
+      y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, stepSize:yStep||1}, beginAtZero:true }
+    };
+  }
+
+  /* 1. Win Distribution */
   const dist = computeWinDist(tourns);
-  const ctx  = document.getElementById('aw-windist-chart').getContext('2d');
   if (winDistChart) winDistChart.destroy();
-  winDistChart = new Chart(ctx, {
-    type: 'bar',
-    plugins: [ChartDataLabels],
-    data: {
-      labels: ['0 wins','1 win','2 wins','3 wins','4 wins'],
+  winDistChart = new Chart(
+    document.getElementById('aw-windist-chart').getContext('2d'), {
+    type:'bar', plugins:[ChartDataLabels],
+    data:{
+      labels:['0 wins','1 win','2 wins','3 wins','4 wins'],
+      datasets:[{ data:[dist[0],dist[1],dist[2],dist[3],dist[4]],
+        backgroundColor:['rgba(239,68,68,0.45)','rgba(251,146,60,0.45)','rgba(212,160,23,0.4)','rgba(34,197,94,0.45)','rgba(34,197,94,0.7)'],
+        borderColor:['rgba(239,68,68,0.8)','rgba(251,146,60,0.8)','rgba(212,160,23,0.9)','rgba(34,197,94,0.8)','rgba(34,197,94,1)'],
+        borderWidth:1, borderRadius:4 }]
+    },
+    options:{ responsive:true, plugins:{...noLegend, datalabels:bigLabel}, scales:barScales(1) }
+  });
+
+  /* 2. Season Win Rate Trend */
+  const tlSorted = [...tourns].sort((a,b)=>parseTournDate(a.meta.date)-parseTournDate(b.meta.date));
+  const tlLabels  = tlSorted.map(t => t.meta.name ? t.meta.name.replace(/WACFL\s*/i,'').trim() : fmtDate(t.meta.date));
+  const tlWinPcts = tlSorted.map(t => {
+    const w = t.entries.reduce((s,e)=>s+e.wins,0);
+    const l = t.entries.reduce((s,e)=>s+e.losses,0);
+    return w+l>0 ? +(w/(w+l)*100).toFixed(1) : 0;
+  });
+  if (timelineChart) timelineChart.destroy();
+  timelineChart = new Chart(
+    document.getElementById('aw-timeline-chart').getContext('2d'), {
+    type:'line',
+    data:{
+      labels: tlLabels,
       datasets:[{
-        data: [dist[0],dist[1],dist[2],dist[3],dist[4]],
-        backgroundColor: [
-          'rgba(239,68,68,0.45)','rgba(251,146,60,0.45)',
-          'rgba(212,160,23,0.4)','rgba(34,197,94,0.45)','rgba(34,197,94,0.7)'
-        ],
-        borderColor: [
-          'rgba(239,68,68,0.8)','rgba(251,146,60,0.8)',
-          'rgba(212,160,23,0.9)','rgba(34,197,94,0.8)','rgba(34,197,94,1)'
-        ],
-        borderWidth: 1, borderRadius: 4
+        data: tlWinPcts, fill:true,
+        borderColor:'rgba(212,160,23,0.9)', backgroundColor:'rgba(212,160,23,0.12)',
+        pointBackgroundColor:'rgba(212,160,23,1)', pointRadius:5, tension:0.35
+      },{
+        data: tlLabels.map(()=>50), fill:false,
+        borderColor:'rgba(255,255,255,0.15)', borderDash:[4,4], pointRadius:0, tension:0
       }]
     },
-    options: {
+    options:{
+      responsive:true,
+      plugins:{ ...noLegend, datalabels:{display:false},
+        tooltip:{ callbacks:{ label: ctx => `${ctx.parsed.y}% win rate` } } },
+      scales:{
+        x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
+        y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, callback:v=>v+'%'},
+            beginAtZero:true, max:100 }
+      }
+    }
+  });
+
+  /* 3. Metro Finals Progress doughnut */
+  const metroEligCount = metro.filter(p=>p.eligible).length;
+  const metroCloseCount= metro.filter(p=>!p.eligible && p.c31===1).length;
+  const metroEarlyCount= metro.filter(p=>!p.eligible && p.c31===0).length;
+  if (metroChart) metroChart.destroy();
+  metroChart = new Chart(
+    document.getElementById('aw-metro-chart').getContext('2d'), {
+    type:'doughnut',
+    data:{
+      labels:['Metro Eligible','1 More Needed','In Progress'],
+      datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
+        backgroundColor:['rgba(34,197,94,0.55)','rgba(212,160,23,0.55)','rgba(100,130,180,0.4)'],
+        borderColor:['rgba(34,197,94,0.9)','rgba(212,160,23,0.9)','rgba(100,130,180,0.7)'],
+        borderWidth:1 }]
+    },
+    options:{
+      responsive:true, cutout:'60%',
+      plugins:{
+        legend:{ display:true, position:'bottom',
+          labels:{ color:'rgba(255,255,255,0.7)', font:{size:13}, padding:16 } },
+        datalabels:{ ...bigLabel, font:{size:18,weight:'bold'} }
+      }
+    }
+  });
+
+  /* 4. Win Rate by Round */
+  const roundStats = computeRoundStats(tourns);
+  if (roundChart) roundChart.destroy();
+  roundChart = new Chart(
+    document.getElementById('aw-round-chart').getContext('2d'), {
+    type:'bar', plugins:[ChartDataLabels],
+    data:{
+      labels: roundStats.map(r=>`Round ${r.round}`),
+      datasets:[{
+        data: roundStats.map(r=>+(r.winPct*100).toFixed(1)),
+        backgroundColor: roundStats.map(r=>r.winPct>=0.5?'rgba(34,197,94,0.5)':'rgba(239,68,68,0.45)'),
+        borderColor:     roundStats.map(r=>r.winPct>=0.5?'rgba(34,197,94,0.9)':'rgba(239,68,68,0.8)'),
+        borderWidth:1, borderRadius:4
+      }]
+    },
+    options:{
       responsive:true,
       plugins:{
-        legend:{ display:false },
+        ...noLegend,
         datalabels:{
-          display: ctx => ctx.dataset.data[ctx.dataIndex] > 0,
-          color: '#ffffff',
-          font: { size: 22, weight: 'bold', family: "'Playfair Display', serif" },
-          anchor: 'center', align: 'center'
+          display: (c)=>c.dataset.data[c.dataIndex]>0,
+          color:'#fff', font:{size:16,weight:'bold'},
+          anchor:'center', align:'center',
+          formatter: v => v+'%'
         }
       },
       scales:{
-        x:{ grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'rgba(255,255,255,0.6)',font:{size:13}} },
-        y:{ grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'rgba(255,255,255,0.6)',font:{size:13},stepSize:1},
-            beginAtZero:true }
+        x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
+        y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, callback:v=>v+'%'},
+            beginAtZero:true, max:100 }
       }
     }
   });
