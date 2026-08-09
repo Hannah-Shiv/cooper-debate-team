@@ -99,7 +99,7 @@
 </div>
 
 <!-- CURRENT RESOLUTION BANNER -->
-<section class="resolution-banner">
+<section class="resolution-banner" style="background:var(--navy-dark);border-top:none;border-bottom:none;">
   <div class="section-wrap">
     <div class="resolution-card">
       <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
@@ -142,95 +142,37 @@
   </div>
 </div>
 
-<!-- STATISTICS SECTION -->
+<!-- STATISTICS SECTION — live from Firebase -->
 <section class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
     <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
-      <div class="stats-grid stagger" style="grid-template-columns:repeat(3,1fr);">
-
-        <div class="stat-card fade-up">
-          <span class="stat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4"/><path d="M7 4H4a1 1 0 00-1 1v2a4 4 0 004 4"/><path d="M17 4h3a1 1 0 011 1v2a4 4 0 01-4 4"/><path d="M7 4h10v7a5 5 0 01-10 0V4z"/></svg>
-          </span>
-          <span class="stat-number">1st</span>
-          <span class="stat-label">Metro Finals Champions</span>
+      <p class="section-label" style="justify-content:center;margin-bottom:6px;" id="idx-stats-season-label">2025–26 Season</p>
+      <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px;" id="idx-stats-grid">
+        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-tourneys">…</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Tournaments</div>
         </div>
-
-        <div class="stat-card fade-up">
-          <span class="stat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-          </span>
-          <span class="stat-number">4th</span>
-          <span class="stat-label">NSDA Nationals — Best in Program History</span>
+        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-record">…</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Team Record</div>
         </div>
-
-        <div class="stat-card fade-up">
-          <span class="stat-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="21" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
-          </span>
-          <span class="stat-number" data-target="31" data-suffix="+">0</span>
-          <span class="stat-label">Speaker Awards</span>
+        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-winrate">…</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Win Rate</div>
         </div>
-
+        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-metro">…</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Metro Qualified</div>
+        </div>
       </div>
-      <div style="text-align:center;margin-top:36px;">
+      <div style="text-align:center;">
         <a href="awards.html" class="btn btn-gold" style="font-size:0.9rem;padding:12px 32px;letter-spacing:0.08em;">View Full Awards →</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- HIGHLIGHTS STRIP — Latest Achievement · Current Resolution · Upcoming Tournament -->
-<section class="highlights-section" style="background:var(--navy-dark);border-bottom:none;">
-  <div class="section-wrap">
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:32px;">
-    <div class="highlights-grid">
-
-      <!-- Latest Achievement -->
-      <div class="highlight-card">
-        <div class="hl-label">Latest Achievement</div>
-        <div class="hl-icon">
-          <svg viewBox="0 0 24 24"><path d="M6 9V3h12v6c0 3.31-2.69 6-6 6S6 12.31 6 9z"/><path d="M6 5H3v2c0 2 1.2 3.5 3 4.3"/><path d="M18 5h3v2c0 2-1.2 3.5-3 4.3"/><line x1="12" y1="15" x2="12" y2="19"/><line x1="8" y1="19" x2="16" y2="19"/></svg>
-        </div>
-        <div class="hl-title">1st Place Overall</div>
-        <div class="hl-sub">WACFL District Championships</div>
-        <p class="hl-body">Outstanding performance at George Mason University. Team went 6–0 in preliminary rounds and swept the finals.</p>
-        <a href="awards.html" class="hl-link">View Results →</a>
-      </div>
-
-      <!-- Current PF Resolution -->
-      <div class="highlight-card highlight-card--featured">
-        <div class="hl-label">Current PF Resolution</div>
-        <div class="hl-title" style="font-size:1.1rem;margin-bottom:12px;">Resolved:</div>
-        <p class="hl-body is-quote">"The United States federal government's use of artificial intelligence for national security outweighs the harms."</p>
-        <a href="resources.html" class="hl-link">Explore Topic →</a>
-      </div>
-
-      <!-- Upcoming Tournament -->
-      <div class="highlight-card">
-        <div class="hl-label">Upcoming Tournament</div>
-        <div class="hl-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        </div>
-        <div class="hl-title">WACFL District #2</div>
-        <div class="hl-sub">Public Forum</div>
-        <div class="hl-meta">
-          <div class="hl-meta-row">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            September 14, 2025
-          </div>
-          <div class="hl-meta-row">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="10" r="3"/><path d="M12 2a8 8 0 018 8c0 5-8 13-8 13S4 15 4 10a8 8 0 018-8z"/></svg>
-            Northern Virginia — TBD
-          </div>
-        </div>
-        <a href="tournaments.html" class="hl-link">View Schedule →</a>
-      </div>
-
-    </div>
-    </div>
-  </div>
-</section>
 
 <!-- UPCOMING EVENTS -->
 <section class="events-section" style="display:none;">
@@ -400,14 +342,18 @@
 </div>
 
 <!-- JOIN CTA -->
-<section class="join-section">
-  <div class="join-content">
-    <span class="join-icon">🎙️</span>
-    <h2 class="join-title">Ready to Find Your Voice?</h2>
-    <p class="join-description">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
-    <div class="join-buttons">
-      <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
-      <a href="about.html" class="btn btn-outline">Learn More</a>
+<section class="join-section" style="background:var(--navy-dark);padding:56px 0;">
+  <div class="section-wrap">
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:56px 40px;text-align:center;">
+      <div class="join-content" style="padding:0;max-width:640px;">
+        <span class="join-icon">🎙️</span>
+        <h2 class="join-title">Ready to Find Your Voice?</h2>
+        <p class="join-description">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
+        <div class="join-buttons">
+          <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
+          <a href="about.html" class="btn btn-outline">Learn More</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -483,12 +429,110 @@
   }
 </script>
 
+<!-- ── Home page stats — live from Firebase ──────────────── -->
+<script>
+(function() {
+  const IDX_CONFIG = {
+    apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+    authDomain:        "cooper-debate-team.firebaseapp.com",
+    projectId:         "cooper-debate-team",
+    storageBucket:     "cooper-debate-team.firebasestorage.app",
+    messagingSenderId: "112813790184",
+    appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
+  };
+
+  function parseTournDate(str) {
+    if (!str) return new Date(NaN);
+    var d = new Date(str + 'T12:00:00');
+    if (!isNaN(d)) return d;
+    var c = str.replace(/(\d+)(st|nd|rd|th)\b/gi,'$1').replace(/^[A-Za-z]+[,]?\s*/,'');
+    return new Date(c);
+  }
+  function dateToSeasonYear(d) {
+    return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
+  }
+
+  function setEl(id, html) {
+    var el = document.getElementById(id);
+    if (el) el.innerHTML = html;
+  }
+
+  function loadHomeStats() {
+    try {
+      var idxApp = firebase.apps.find(function(a){ return a.name === 'idx-stats'; }) ||
+                   firebase.initializeApp(IDX_CONFIG, 'idx-stats');
+      var db = firebase.firestore(idxApp);
+
+      db.collection('stat_results').orderBy('meta.date','desc').get().then(function(snap) {
+        var all = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+
+        /* Determine which season year has data; prefer most recent */
+        var now = new Date();
+        var curYear = dateToSeasonYear(now);
+        var targetYear = curYear;
+
+        var tourns = all.filter(function(t) {
+          var d = parseTournDate(t.meta.date);
+          return !isNaN(d) && dateToSeasonYear(d) === targetYear;
+        });
+
+        /* Fall back to prior season if current has no data yet */
+        if (!tourns.length && targetYear > 2020) {
+          targetYear = targetYear - 1;
+          tourns = all.filter(function(t) {
+            var d = parseTournDate(t.meta.date);
+            return !isNaN(d) && dateToSeasonYear(d) === targetYear;
+          });
+        }
+
+        if (!tourns.length) return; /* keep "…" placeholders */
+
+        /* Update season label */
+        var labelEl = document.getElementById('idx-stats-season-label');
+        if (labelEl) labelEl.textContent = targetYear + '–' + String(targetYear+1).slice(2) + ' Season';
+
+        /* Compute stats */
+        var w = 0, l = 0;
+        var pairMap = {};
+        tourns.forEach(function(t) {
+          t.entries.forEach(function(e) {
+            w += e.wins; l += e.losses;
+            if (e.debaters.length >= 2) {
+              var k = e.debaters.map(function(d){ return d.first+' '+d.last; }).sort().join(' & ');
+              if (!pairMap[k]) pairMap[k] = { finishes: [] };
+              pairMap[k].finishes.push(e.wins);
+            }
+          });
+        });
+        var winRate = (w + l > 0) ? Math.round(w / (w + l) * 100) + '%' : '—';
+        var metroElig = Object.values(pairMap).filter(function(p) {
+          var c40 = p.finishes.filter(function(x){ return x >= 4; }).length;
+          var c31 = p.finishes.filter(function(x){ return x >= 3; }).length;
+          return c40 >= 1 || c31 >= 2;
+        }).length;
+
+        setEl('idx-stat-tourneys', String(tourns.length));
+        setEl('idx-stat-record',
+          '<span style="color:#4ade80;">' + w + 'W</span>' +
+          '<span style="color:rgba(255,255,255,0.35);font-size:0.65em;margin:0 3px;">–</span>' +
+          '<span style="color:#f87171;">' + l + 'L</span>');
+        setEl('idx-stat-winrate', winRate);
+        setEl('idx-stat-metro', String(metroElig) + (metroElig === 1 ? '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pair</span>' : '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pairs</span>'));
+      }).catch(function(e){ console.warn('Home stats load failed', e); });
+    } catch(e) { console.warn('Home stats init failed', e); }
+  }
+
+  document.addEventListener('DOMContentLoaded', loadHomeStats);
+})();
+</script>
+
 <!-- ── Member Portal smart routing ──────────────────────────
      Checks Firebase Auth on page load. If the user is already
      signed in, Member Portal links skip signon and go straight
      to members-resources.html.                               -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
 (function () {
   var PORTAL_AUTH  = 'members-resources.html';
