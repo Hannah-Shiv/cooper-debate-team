@@ -10,6 +10,46 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=15"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
+  <style>
+    /* ── Index page mobile overrides ── */
+
+    /* Stats section */
+    #idx-stats-outer  { padding: 48px 32px 40px; }
+    #idx-stats-grid   { grid-template-columns: repeat(4,1fr); }
+
+    /* Philosophy + Join grid */
+    #idx-phi-join-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    @media (max-width: 768px) {
+      /* Stats: 4-col → 2-col */
+      #idx-stats-grid { grid-template-columns: repeat(2,1fr); }
+
+      /* Stack philosophy quote above join CTA */
+      #idx-phi-join-grid { grid-template-columns: 1fr; }
+
+      /* Reduce section spacing */
+      #idx-bottom-section { padding: 32px 0 40px; }
+      #idx-stats-section  { padding: 32px 0 !important; }
+    }
+
+    @media (max-width: 480px) {
+      /* Tighten box padding on small phones */
+      #idx-stats-outer { padding: 24px 16px 20px; }
+      #idx-news-box    { padding: 20px 18px; }
+      #idx-phi-box     { padding: 28px 20px; }
+      #idx-join-box    { padding: 28px 20px; }
+
+      /* Stat number font size */
+      #idx-stats-grid > div > div:first-child { font-size: 1.7rem !important; }
+
+      /* Join buttons stack */
+      .join-buttons { flex-direction: column; align-items: center; }
+      .join-buttons .btn { width: 100%; max-width: 260px; text-align: center; }
+
+      /* Bottom section gap */
+      #idx-bottom-section .section-wrap { gap: 14px; }
+    }
+  </style>
 </head>
 <body>
 
@@ -143,12 +183,12 @@
 </div>
 
 <!-- STATISTICS SECTION — live from Firebase -->
-<section class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
+<section id="idx-stats-section" class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
+    <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
       <p class="section-label" style="justify-content:center;margin-bottom:6px;" id="idx-stats-season-label">2025–26 Season</p>
       <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:36px;" id="idx-stats-grid">
+      <div id="idx-stats-grid" style="display:grid;gap:16px;margin-bottom:36px;">
         <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
           <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-tourneys">…</div>
           <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Tournaments</div>
@@ -314,11 +354,11 @@
 </section>
 
 <!-- NEWS · PHILOSOPHY · JOIN — consolidated to eliminate dead air -->
-<section style="background:var(--navy-dark);padding:48px 0 56px;">
+<section id="idx-bottom-section" style="background:var(--navy-dark);padding:48px 0 56px;">
   <div class="section-wrap" style="display:flex;flex-direction:column;gap:20px;">
 
     <!-- Latest News -->
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:28px 32px;">
+    <div id="idx-news-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:28px 32px;">
       <div class="news-strip-header">
         <div class="news-strip-title">📢 Latest News & Announcements</div>
         <a href="blog.html" class="news-strip-all">View All →</a>
@@ -329,10 +369,10 @@
     </div>
 
     <!-- Philosophy quote + Join CTA side by side -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div id="idx-phi-join-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
 
       <!-- Philosophy quote -->
-      <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;align-items:center;">
+      <div id="idx-phi-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;align-items:center;">
         <div class="philosophy-quote-inner" style="width:100%;">
           <div class="philosophy-quote-mark">"</div>
           <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
@@ -341,7 +381,7 @@
       </div>
 
       <!-- Join CTA -->
-      <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+      <div id="idx-join-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
         <span class="join-icon" style="font-size:2.2rem;margin-bottom:16px;">🎙️</span>
         <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
         <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
