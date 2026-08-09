@@ -113,7 +113,7 @@
       border-radius:12px; padding:20px 16px; text-align:center;
     }
     .aw-stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold); line-height:1; }
-    .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.80rem; font-weight:700;
+    .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.92rem; font-weight:700;
       letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-mid); margin-top:6px; }
 
     /* Metro eligibility banner */
@@ -156,7 +156,7 @@
     .aw-tourn-sub  { font-size:0.86rem; color:var(--gray-mid); margin-top:4px; }
     .aw-tourn-highlight {
       margin-top:10px; padding:6px 10px; border-radius:6px;
-      background:rgba(212,160,23,0.1); font-size:0.72rem; color:var(--gold-pale);
+      background:rgba(212,160,23,0.1); font-size:0.84rem; color:var(--gold-pale);
     }
 
     /* Leaderboard */
@@ -595,8 +595,8 @@ function renderAwards(tourns) {
   document.getElementById('aw-highlights').innerHTML = highlights.length
     ? highlights.map(h => `
         <div class="aw-stat-box">
-          <div style="font-size:1.5rem;margin-bottom:6px;">${h.icon}</div>
-          <div class="aw-stat-num" style="font-size:1.6rem;">${h.num}</div>
+          <div style="font-size:1.7rem;margin-bottom:6px;">${h.icon}</div>
+          <div class="aw-stat-num" style="font-size:1.8rem;">${h.num}</div>
           <div class="aw-stat-lbl">${h.lbl}</div>
         </div>`).join('')
     : '';
