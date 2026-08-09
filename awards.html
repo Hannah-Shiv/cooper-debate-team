@@ -729,11 +729,12 @@ function renderAwards(tourns) {
     }
   };
 
+  const metroSliceLabels = ['Metro\nEligible','1 More\nNeeded','In\nProgress'];
   if (metroChart) metroChart.destroy();
   metroChart = new Chart(
     document.getElementById('aw-metro-chart').getContext('2d'), {
     type:'doughnut',
-    plugins:[metroCenterPlugin],
+    plugins:[ChartDataLabels, metroCenterPlugin],
     data:{
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
@@ -749,9 +750,12 @@ function renderAwards(tourns) {
         datalabels:{
           display: c => c.dataset.data[c.dataIndex] > 0,
           color:'#fff',
-          font:{ size:20, weight:'bold', family:"'Playfair Display',serif" },
           anchor:'center', align:'center',
-          formatter: v => v
+          textAlign:'center',
+          formatter: (v, c) => `${v}\n${metroSliceLabels[c.dataIndex]}`,
+          font: ctx => ctx.dataIndex === 0 || ctx.dataset.data[ctx.dataIndex] > 3
+            ? { size:15, weight:'bold', family:"'Josefin Sans',sans-serif" }
+            : { size:13, weight:'bold', family:"'Josefin Sans',sans-serif" }
         }
       }
     }
