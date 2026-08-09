@@ -754,7 +754,7 @@ function renderAwards(tourns) {
     }
   };
 
-  /* Draw count + label text horizontally at the centre of each arc */
+  /* Draw count + wrapped label lines horizontally at the centre of each arc */
   const metroLabelPlugin = {
     id: 'metroArcLabels',
     afterDraw(chart) {
@@ -764,12 +764,23 @@ function renderAwards(tourns) {
       const meta = chart.getDatasetMeta(0);
       const vals = chart.data.datasets[0].data;
       const cats = chart.data.labels;
-      /* scale font to arc thickness */
-      const arc0 = meta.data[0];
+
+      /* font sizes scale with arc thickness */
+      const arc0  = meta.data[0];
       const thick = arc0 ? arc0.outerRadius - arc0.innerRadius : 80;
-      const numSz  = Math.max(14, Math.round(thick * 0.34));
-      const lblSz  = Math.max(9,  Math.round(thick * 0.18));
-      const gap    = Math.round(thick * 0.06);   /* space between the two lines */
+      const numSz = Math.max(13, Math.round(thick * 0.30));
+      const lblSz = Math.max(9,  Math.round(thick * 0.17));
+      const lineH = Math.round(lblSz * 1.35);   /* line height for label rows */
+      const gap   = Math.round(thick * 0.05);   /* gap between count and first label row */
+
+      /* split label into at most 2 display lines */
+      function splitLabel(label) {
+        const w = label.split(' ');
+        if (w.length <= 1) return w;
+        if (w.length === 2) return w;                        // "Metro Eligible" → ["Metro","Eligible"]
+        /* 3 words: put first two together, last alone */
+        return [w[0] + ' ' + w[1], w[2]];                   // "1 More Needed" → ["1 More","Needed"]
+      }
 
       meta.data.forEach((arc, i) => {
         if (!vals[i]) return;
@@ -779,19 +790,28 @@ function renderAwards(tourns) {
         const px   = cx + r * Math.cos(mid);
         const py   = cy + r * Math.sin(mid);
 
+        const lines = splitLabel(cats[i]);
+        /* total block height = numSz + gap + lines * lineH; centre it on py */
+        const blockH = numSz + gap + lines.length * lineH;
+        let curY = py - blockH / 2 + numSz / 2;   /* centre of first (count) row */
+
         ctx.save();
         ctx.textAlign    = 'center';
-        ctx.textBaseline = 'alphabetic';
+        ctx.textBaseline = 'middle';
 
-        /* count — large bold */
+        /* count */
         ctx.font      = `bold ${numSz}px 'Playfair Display', serif`;
         ctx.fillStyle = '#ffffff';
-        ctx.fillText(String(vals[i]), px, py);
+        ctx.fillText(String(vals[i]), px, curY);
+        curY += numSz / 2 + gap + lineH / 2;
 
-        /* label — smaller, below */
+        /* label rows */
         ctx.font      = `700 ${lblSz}px 'Josefin Sans', sans-serif`;
-        ctx.fillStyle = 'rgba(255,255,255,0.88)';
-        ctx.fillText(cats[i], px, py + lblSz + gap);
+        ctx.fillStyle = 'rgba(255,255,255,0.90)';
+        lines.forEach(line => {
+          ctx.fillText(line, px, curY);
+          curY += lineH;
+        });
 
         ctx.restore();
       });
@@ -807,21 +827,21 @@ function renderAwards(tourns) {
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
         backgroundColor:[
-          'rgba(22,163,74,0.88)',
-          'rgba(161,110,14,0.88)',
-          'rgba(37,78,148,0.72)'
+          'rgba(22,163,74,0.95)',
+          'rgba(150,104,10,0.95)',
+          'rgba(30,56,120,0.92)'
         ],
         borderColor:[
           'rgba(22,163,74,1)',
-          'rgba(161,110,14,1)',
-          'rgba(37,78,148,0.9)'
+          'rgba(150,104,10,1)',
+          'rgba(30,56,120,1)'
         ],
-        borderWidth:2, hoverOffset:8
+        borderWidth:0, hoverOffset:6
       }]
     },
     options:{
-      responsive:true, maintainAspectRatio:false, cutout:'40%',
-      layout:{ padding:8 },
+      responsive:true, maintainAspectRatio:false, cutout:'47%',
+      layout:{ padding:4 },
       plugins:{
         legend:{ display:false },
         datalabels:{ display:false }
