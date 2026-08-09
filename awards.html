@@ -709,10 +709,31 @@ function renderAwards(tourns) {
   const metroEligCount = metro.filter(p=>p.eligible).length;
   const metroCloseCount= metro.filter(p=>!p.eligible && p.c31===1).length;
   const metroEarlyCount= metro.filter(p=>!p.eligible && p.c31===0).length;
+  const metroTotal = metroEligCount + metroCloseCount + metroEarlyCount;
+
+  const metroCenterPlugin = {
+    id:'metroCenterText',
+    beforeDraw(chart) {
+      const { ctx, chartArea:{left,top,width,height} } = chart;
+      const cx = left + width/2, cy = top + height/2;
+      ctx.save();
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#ffffff';
+      ctx.font = "bold 32px 'Playfair Display', serif";
+      ctx.fillText(metroTotal, cx, cy - 10);
+      ctx.font = "700 11px 'Josefin Sans', sans-serif";
+      ctx.fillStyle = 'rgba(255,255,255,0.5)';
+      ctx.letterSpacing = '1px';
+      ctx.fillText('TOTAL PAIRS', cx, cy + 14);
+      ctx.restore();
+    }
+  };
+
   if (metroChart) metroChart.destroy();
   metroChart = new Chart(
     document.getElementById('aw-metro-chart').getContext('2d'), {
     type:'doughnut',
+    plugins:[metroCenterPlugin],
     data:{
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
@@ -721,11 +742,17 @@ function renderAwards(tourns) {
         borderWidth:1 }]
     },
     options:{
-      responsive:true, cutout:'60%',
+      responsive:true, cutout:'62%',
       plugins:{
         legend:{ display:true, position:'bottom',
           labels:{ color:'rgba(255,255,255,0.7)', font:{size:13}, padding:16 } },
-        datalabels:{ ...bigLabel, font:{size:18,weight:'bold'} }
+        datalabels:{
+          display: c => c.dataset.data[c.dataIndex] > 0,
+          color:'#fff',
+          font:{ size:20, weight:'bold', family:"'Playfair Display',serif" },
+          anchor:'center', align:'center',
+          formatter: v => v
+        }
       }
     }
   });
