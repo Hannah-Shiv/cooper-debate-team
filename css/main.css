@@ -1259,6 +1259,8 @@ footer {
   font-size: 0.92rem;
   color: rgba(255,255,255,0.62);
   transition: color 0.2s ease;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .footer-links a:hover { color: var(--gold-pale); }
@@ -1294,6 +1296,8 @@ footer {
   letter-spacing: 0.04em;
   color: rgba(255,255,255,0.82);
   text-align: right;
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 .footer-credit span {
@@ -1566,7 +1570,7 @@ body.dome-open .page-header { padding-top: 240px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .results-grid { grid-template-columns: 1fr 1fr; }
   .events-layout { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 28px; }
   .gallery-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto;
@@ -1578,12 +1582,18 @@ body.dome-open .page-header { padding-top: 240px; }
   .section { padding: 56px 0; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
   .results-grid { grid-template-columns: 1fr; }
-  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  footer { padding: 44px 0 28px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+  .footer-brand-name { font-size: 1.35rem; }
+  .footer-links { gap: 14px; }
+  .footer-links a { font-size: 1.0rem; padding: 2px 0; display: inline-block; }
+  .footer-col-title { font-size: 0.82rem; margin-bottom: 12px; }
   .achievement-banner-inner { gap: 16px; }
   .achievement-divider { display: none; }
   .hero-buttons { flex-direction: column; align-items: center; }
-  .footer-bottom { flex-direction: column; text-align: center; }
-  .footer-credit { text-align: center; }
+  .footer-bottom { flex-direction: column; align-items: center; text-align: center; gap: 8px; }
+  .footer-credit { text-align: center; font-size: 0.78rem; letter-spacing: 0.02em; }
+  .footer-sig { font-size: 1.05rem; }
   #site-badge { width: 48px; top: 6px; left: 6px; }
 
   /* Countdown widget */
