@@ -552,6 +552,42 @@ function computeWinDist(tourns) {
 let winDistChart = null, timelineChart = null, metroChart = null, roundChart = null;
 
 /* ── Render ── */
+/* ── Curved text helper: draws each character along a circle arc ── */
+function drawCurvedText(ctx, text, cx, cy, radius, startAngle, endAngle, fontSize, fontWeight, color) {
+  ctx.save();
+  ctx.font = `${fontWeight} ${fontSize}px 'Josefin Sans', sans-serif`;
+  ctx.fillStyle = color;
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = 'center';
+
+  const arcMid = startAngle + (endAngle - startAngle) / 2;
+  const norm   = ((arcMid % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
+  const flip   = norm > Math.PI; /* arcs on left/bottom → reverse chars so text reads naturally */
+
+  const chars  = [...text];
+  const widths = chars.map(ch => ctx.measureText(ch).width);
+  const totalW = widths.reduce((s,w) => s+w, 0);
+  const aPerPx = 1 / radius;
+
+  const dc = flip ? [...chars].reverse()  : chars;
+  const dw = flip ? [...widths].reverse() : widths;
+
+  let angle = arcMid + (flip ? 1 : -1) * totalW * aPerPx / 2;
+  const dir = flip ? -1 : 1;
+
+  for (let k = 0; k < dc.length; k++) {
+    const hw = dw[k] / 2;
+    angle += dir * hw * aPerPx;
+    ctx.save();
+    ctx.translate(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
+    ctx.rotate(angle + (flip ? -Math.PI/2 : Math.PI/2));
+    ctx.fillText(dc[k], 0, 0);
+    ctx.restore();
+    angle += dir * hw * aPerPx;
+  }
+  ctx.restore();
+}
+
 function renderAwards(tourns) {
   const loading = document.getElementById('aw-loading');
   const future  = document.getElementById('aw-future');
@@ -754,46 +790,73 @@ function renderAwards(tourns) {
     }
   };
 
+  /* Custom plugin: icon+count at arc midpoint, category label curved along arc */
+  const metroArcLabelsPlugin = {
+    id: 'metroArcLabels',
+    afterDraw(chart) {
+      const { ctx, chartArea } = chart;
+      const cx   = chartArea.left + chartArea.width  / 2;
+      const cy   = chartArea.top  + chartArea.height / 2;
+      const meta = chart.getDatasetMeta(0);
+      const vals = chart.data.datasets[0].data;
+      const icons = ['🏆','⏳','📈'];
+      const cats  = ['METRO ELIGIBLE','1 MORE NEEDED','IN PROGRESS'];
+
+      meta.data.forEach((arc, i) => {
+        if (!vals[i]) return;
+        const { startAngle, endAngle, outerRadius, innerRadius } = arc;
+        const midAngle = startAngle + (endAngle - startAngle) / 2;
+        const thick    = outerRadius - innerRadius;
+
+        /* Icon + count: horizontal text positioned at arc midpoint */
+        const ptR  = innerRadius + thick * 0.54;
+        const ptX  = cx + ptR * Math.cos(midAngle);
+        const ptY  = cy + ptR * Math.sin(midAngle);
+        const cntSz = Math.round(thick * 0.36);
+        const icoSz = Math.round(thick * 0.26);
+
+        ctx.save();
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = '#ffffff';
+        ctx.font = `${icoSz}px serif`;
+        ctx.fillText(icons[i], ptX, ptY - cntSz * 0.72);
+        ctx.font = `bold ${cntSz}px 'Playfair Display', serif`;
+        ctx.fillText(String(vals[i]), ptX, ptY + icoSz * 0.18);
+        ctx.restore();
+
+        /* Category label: curved along the inner band of the arc */
+        const txtR  = innerRadius + thick * 0.17;
+        const txtSz = Math.max(10, Math.round(thick * 0.16));
+        drawCurvedText(ctx, cats[i], cx, cy, txtR,
+                       startAngle, endAngle, txtSz, '700', 'rgba(255,255,255,0.88)');
+      });
+    }
+  };
+
   if (metroChart) metroChart.destroy();
   metroChart = new Chart(
     document.getElementById('aw-metro-chart').getContext('2d'), {
     type:'doughnut',
-    plugins:[ChartDataLabels, metroCenterPlugin],
+    plugins:[metroCenterPlugin, metroArcLabelsPlugin],
     data:{
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
         backgroundColor:[
-          'rgba(22,163,74,0.88)',     /* vivid green */
-          'rgba(161,110,14,0.88)',    /* olive gold */
-          'rgba(37,78,148,0.72)'     /* mid navy — distinct from bg */
+          'rgba(22,163,74,0.88)',
+          'rgba(161,110,14,0.88)',
+          'rgba(37,78,148,0.72)'
         ],
         borderColor:[
           'rgba(22,163,74,1)',
           'rgba(161,110,14,1)',
           'rgba(37,78,148,0.9)'
         ],
-        borderWidth:2,
-        hoverOffset:8
+        borderWidth:2, hoverOffset:8
       }]
     },
     options:{
       responsive:true, maintainAspectRatio:false, cutout:'52%',
-      plugins:{
-        legend:{ display:false },
-        datalabels:{
-          display: c => c.dataset.data[c.dataIndex] > 0,
-          color:'#ffffff',
-          anchor:'center', align:'center',
-          textAlign:'center',
-          padding:6,
-          formatter: (v, c) => {
-            const icons  = ['🏆','⏳','📈'];
-            const labels = ['METRO\nELIGIBLE','1 MORE\nNEEDED','IN\nPROGRESS'];
-            return `${icons[c.dataIndex]}  ${v}\n${labels[c.dataIndex]}`;
-          },
-          font: { size:15, weight:'bold', family:"'Josefin Sans',sans-serif" }
-        }
-      }
+      plugins:{ legend:{ display:false }, datalabels:{ display:false } }
     }
   });
 
