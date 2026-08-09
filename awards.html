@@ -562,7 +562,9 @@ function drawCurvedText(ctx, text, cx, cy, radius, startAngle, endAngle, fontSiz
 
   const arcMid = startAngle + (endAngle - startAngle) / 2;
   const norm   = ((arcMid % (2*Math.PI)) + 2*Math.PI) % (2*Math.PI);
-  const flip   = norm > Math.PI; /* arcs on left/bottom → reverse chars so text reads naturally */
+  /* flip only when the arc centre is in the bottom half (π/2 → 3π/2),
+     where clockwise rendering produces upside-down glyphs            */
+  const flip   = norm > Math.PI/2 && norm < 3*Math.PI/2;
 
   const chars  = [...text];
   const widths = chars.map(ch => ctx.measureText(ch).width);
