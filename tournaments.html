@@ -99,6 +99,24 @@
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
 
+    /* ── Month calendar widget ── */
+    .cal-cell {
+      aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+      border-radius:6px; font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-weight:600; color:rgba(255,255,255,0.55); cursor:default;
+      transition:background 0.15s;
+    }
+    .cal-cell.other-month { color:rgba(255,255,255,0.18); }
+    .cal-cell.today {
+      background:var(--gold); color:#0a1428; font-weight:800;
+      box-shadow:0 0 12px rgba(212,160,23,0.45);
+    }
+    .cal-dow-hdr {
+      text-align:center; font-family:'Josefin Sans',sans-serif;
+      font-size:0.65rem; font-weight:700; letter-spacing:0.1em;
+      text-transform:uppercase; color:rgba(212,160,23,0.55); padding-bottom:4px;
+    }
+
     .cal-date { text-align:center; }
     .cal-month-sm { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
     .cal-day { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:var(--white); line-height:1; }
@@ -241,11 +259,24 @@
 
     <!-- THIS SEASON -->
     <div id="pane-this-season" style="display:none;">
-      <div style="text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
-        <div style="font-size:2.4rem;margin-bottom:16px;">📅</div>
+      <!-- Month calendar -->
+      <div style="background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.15);border-radius:14px;padding:28px 24px;max-width:560px;margin:0 auto 28px;">
+        <!-- Calendar header -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <button id="cal-prev" onclick="calNav(-1)" style="background:none;border:1px solid rgba(212,160,23,0.25);border-radius:6px;color:var(--gold);padding:6px 12px;cursor:pointer;font-size:1rem;line-height:1;">&#8249;</button>
+          <div id="cal-month-label" style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.0rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--white);"></div>
+          <button id="cal-next" onclick="calNav(1)" style="background:none;border:1px solid rgba(212,160,23,0.25);border-radius:6px;color:var(--gold);padding:6px 12px;cursor:pointer;font-size:1rem;line-height:1;">&#8250;</button>
+        </div>
+        <!-- Day-of-week headers -->
+        <div id="cal-dow" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;"></div>
+        <!-- Day cells -->
+        <div id="cal-days" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;"></div>
+      </div>
+      <!-- Placeholder message -->
+      <div style="text-align:center;padding:36px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
+        <div style="font-size:2rem;margin-bottom:12px;">📋</div>
         <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.0rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Season Schedule Being Finalized</div>
         <p style="color:var(--gray-mid);font-size:1.0rem;line-height:1.7;max-width:420px;margin:0 auto;">Tournament dates for the 2026–27 season will be posted here as soon as they are confirmed by Coach Konde. Check back soon.</p>
-        <div id="today-badge" style="display:inline-block;margin-top:28px;padding:8px 20px;border-radius:50px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.35);font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);"></div>
       </div>
     </div>
 
@@ -359,6 +390,54 @@ const _FS_KEY  = 'AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc';
 /* ── Season toggle ────────────────────────────────────────── */
 let _lastSeasonLoaded = false;
 
+/* ── Mini calendar state ── */
+const _CAL_MONTHS = ['January','February','March','April','May','June',
+                     'July','August','September','October','November','December'];
+const _CAL_DOW    = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+let _calYear, _calMonth;
+
+function renderCal(year, month) {
+  _calYear = year; _calMonth = month;
+  const today = new Date();
+  const tY = today.getFullYear(), tM = today.getMonth(), tD = today.getDate();
+
+  document.getElementById('cal-month-label').textContent =
+    _CAL_MONTHS[month] + ' ' + year;
+
+  // Day-of-week headers
+  document.getElementById('cal-dow').innerHTML =
+    _CAL_DOW.map(d => `<div class="cal-dow-hdr">${d}</div>`).join('');
+
+  // First day of month, total days
+  const firstDow = new Date(year, month, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const daysInPrev  = new Date(year, month, 0).getDate();
+
+  let cells = '';
+  // Leading cells from previous month
+  for (let i = firstDow - 1; i >= 0; i--)
+    cells += `<div class="cal-cell other-month">${daysInPrev - i}</div>`;
+  // Current month days
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = (year === tY && month === tM && d === tD);
+    cells += `<div class="cal-cell${isToday ? ' today' : ''}">${d}</div>`;
+  }
+  // Trailing cells
+  const total = firstDow + daysInMonth;
+  const trail = total % 7 === 0 ? 0 : 7 - (total % 7);
+  for (let d = 1; d <= trail; d++)
+    cells += `<div class="cal-cell other-month">${d}</div>`;
+
+  document.getElementById('cal-days').innerHTML = cells;
+}
+
+function calNav(dir) {
+  let m = _calMonth + dir, y = _calYear;
+  if (m > 11) { m = 0; y++; }
+  if (m < 0)  { m = 11; y--; }
+  renderCal(y, m);
+}
+
 function showSeason(which) {
   const isThis = (which === 'this');
   document.getElementById('pane-this-season').style.display = isThis ? '' : 'none';
@@ -369,10 +448,7 @@ function showSeason(which) {
   if (!isThis && !_lastSeasonLoaded) loadLastSeason();
   if (isThis) {
     const now = new Date();
-    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    document.getElementById('today-badge').textContent =
-      `Today · ${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+    renderCal(now.getFullYear(), now.getMonth());
   }
 }
 
