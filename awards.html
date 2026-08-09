@@ -319,16 +319,11 @@
       <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
       <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
 
-      <!-- 2×2 symmetric chart grid -->
+      <!-- Chart grid: Win Distribution + Metro Finals Progress -->
       <div class="aw-chart-grid">
         <div class="aw-chart-wrap">
           <div class="aw-chart-title">Win Distribution</div>
           <canvas id="aw-windist-chart" height="220"></canvas>
-        </div>
-        <div class="aw-chart-wrap">
-          <div class="aw-chart-title">Season Win Rate Trend</div>
-          <canvas id="aw-timeline-chart" height="220"></canvas>
-          <div id="aw-tl-legend" style="margin-top:14px;font-family:'Josefin Sans',sans-serif;font-size:0.72rem;color:rgba(255,255,255,0.55);line-height:1.8;"></div>
         </div>
         <div class="aw-chart-wrap">
           <div class="aw-chart-title">Metro Finals Progress</div>
@@ -336,7 +331,11 @@
             <canvas id="aw-metro-chart"></canvas>
           </div>
         </div>
-        <div></div>
+      </div>
+      <!-- Season Win Rate Trend hidden -->
+      <div style="display:none;">
+        <canvas id="aw-timeline-chart"></canvas>
+        <div id="aw-tl-legend"></div>
       </div>
 
     </div><!-- /aw-data -->
@@ -604,10 +603,12 @@ function renderAwards(tourns) {
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
     <div class="aw-stat-box">
+      <img src="images/icons/icon-tournament.png" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:8px;">
       <div class="aw-stat-num">${stats.tournaments}</div>
       <div class="aw-stat-lbl">Tournaments</div>
     </div>
     <div class="aw-stat-box">
+      <img src="images/icons/icon-record.png" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:8px;">
       <div class="aw-stat-num" style="font-size:clamp(1.1rem,3.8vw,1.8rem);white-space:nowrap;">
         <span style="color:#4ade80;">${stats.w} W</span>
         <span style="color:rgba(255,255,255,0.3);font-size:0.9em;margin:0 4px;">–</span>
@@ -616,10 +617,12 @@ function renderAwards(tourns) {
       <div class="aw-stat-lbl">Team Record</div>
     </div>
     <div class="aw-stat-box">
+      <img src="images/icons/icon-winrate.png" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:8px;">
       <div class="aw-stat-num">${stats.winRate}%</div>
       <div class="aw-stat-lbl">Win Rate</div>
     </div>
     <div class="aw-stat-box">
+      <img src="images/icons/icon-speaker.png" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:8px;">
       <div class="aw-stat-num">${stats.avgSpeak}</div>
       <div class="aw-stat-lbl">Avg Speaker Pts</div>
     </div>`;
@@ -628,26 +631,26 @@ function renderAwards(tourns) {
   const highlights = [];
 
   if (metroElig > 0)
-    highlights.push({ icon:'🏆', num: metroElig,
+    highlights.push({ icon:'images/icons/icon-metro-qualified.png', num: metroElig,
       lbl: `pair${metroElig!==1?'s':''} qualified for Metro Finals` });
 
   if (metroProgress > 0)
-    highlights.push({ icon:'📈', num: metroProgress,
+    highlights.push({ icon:'images/icons/icon-metro-progress.png', num: metroProgress,
       lbl: `pair${metroProgress!==1?'s':''} progressing toward Metro` });
 
   if (pairs40 > 0)
-    highlights.push({ icon:'⭐', num: pairs40,
+    highlights.push({ icon:'images/icons/icon-shield.png', num: pairs40,
       lbl: `pair${pairs40!==1?'s':''} went undefeated (4–0)` });
 
   const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
   if (pairs3plus > 0)
-    highlights.push({ icon:'🎯', num: pairs3plus,
+    highlights.push({ icon:'images/icons/icon-target.png', num: pairs3plus,
       lbl: `pair${pairs3plus!==1?'s':''} finished 3–1 or better` });
 
   document.getElementById('aw-highlights').innerHTML = highlights.length
     ? highlights.map(h => `
         <div class="aw-stat-box">
-          <div style="font-size:1.7rem;margin-bottom:6px;">${h.icon}</div>
+          <img src="${h.icon}" alt="" style="width:52px;height:52px;object-fit:contain;margin-bottom:8px;">
           <div class="aw-stat-num" style="font-size:1.8rem;">${h.num}</div>
           <div class="aw-stat-lbl">${h.lbl}</div>
         </div>`).join('')
