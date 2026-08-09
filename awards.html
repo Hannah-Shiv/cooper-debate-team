@@ -10,6 +10,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=14"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
+  <!-- Firebase compat -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     /* Awards page font overrides */
     .page-header-label { font-size: 0.89rem !important; }
@@ -95,6 +100,105 @@
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     @media(max-width:900px){.four-col{grid-template-columns:repeat(2,1fr);}.three-col{grid-template-columns:1fr 1fr;}.two-col{grid-template-columns:1fr;}}
     @media(max-width:600px){.four-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr;}}
+
+    /* ── Live stats components ── */
+    .aw-loading { text-align:center; padding:48px; color:var(--gray-mid); font-size:0.88rem; }
+    .aw-empty   { text-align:center; padding:48px; }
+
+    /* Stat strip */
+    .aw-stat-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+    .aw-stat-box {
+      background:rgba(13,46,86,0.55); border:1px solid rgba(212,160,23,0.18);
+      border-radius:12px; padding:20px 16px; text-align:center;
+    }
+    .aw-stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--gold); line-height:1; }
+    .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.12em; text-transform:uppercase; color:var(--gray-mid); margin-top:6px; }
+
+    /* Metro eligibility banner */
+    .metro-banner {
+      background:linear-gradient(135deg,rgba(30,72,140,0.5),rgba(13,46,86,0.6));
+      border:1px solid rgba(212,160,23,0.35); border-radius:14px;
+      padding:24px 28px; margin-bottom:32px;
+    }
+    .metro-banner-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.16em; text-transform:uppercase; color:var(--gold); margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .metro-pair-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+    .metro-pair-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.88rem; color:var(--white); }
+    .metro-badge-eligible {
+      padding:3px 10px; border-radius:50px; font-size:0.62rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      background:rgba(34,197,94,0.18); color:#86efac; border:1px solid rgba(34,197,94,0.35);
+    }
+    .metro-badge-progress {
+      padding:3px 10px; border-radius:50px; font-size:0.62rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      background:rgba(212,160,23,0.12); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.3);
+    }
+    .metro-pair-dist { font-size:0.75rem; color:var(--gray-mid); }
+
+    /* Tournament result cards */
+    .aw-tourn-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:20px; margin-bottom:40px; }
+    .aw-tourn-card {
+      background:rgba(13,46,86,0.45); border:1px solid rgba(212,160,23,0.15);
+      border-radius:12px; padding:22px 24px;
+      transition:border-color 0.25s, transform 0.25s;
+    }
+    .aw-tourn-card:hover { border-color:rgba(212,160,23,0.4); transform:translateY(-3px); }
+    .aw-tourn-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.88rem;
+      letter-spacing:0.04em; text-transform:uppercase; color:var(--white); margin-bottom:4px; }
+    .aw-tourn-date { font-size:0.75rem; color:var(--gray-mid); margin-bottom:14px; }
+    .aw-tourn-rec  { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:700; color:var(--gold); }
+    .aw-tourn-sub  { font-size:0.75rem; color:var(--gray-mid); margin-top:4px; }
+    .aw-tourn-highlight {
+      margin-top:10px; padding:6px 10px; border-radius:6px;
+      background:rgba(212,160,23,0.1); font-size:0.72rem; color:var(--gold-pale);
+    }
+
+    /* Leaderboard */
+    .aw-lb-row {
+      display:flex; align-items:center; gap:16px; padding:14px 18px;
+      background:rgba(11,37,69,0.5); border:1px solid rgba(212,160,23,0.12);
+      border-radius:8px; margin-bottom:10px;
+      transition:border-color 0.2s;
+    }
+    .aw-lb-row:hover { border-color:rgba(212,160,23,0.4); }
+    .aw-lb-rank { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700;
+      color:rgba(212,160,23,0.5); flex-shrink:0; width:28px; }
+    .aw-lb-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.88rem;
+      color:var(--white); flex:1; }
+    .aw-lb-stats { font-size:0.75rem; color:var(--gray-mid); text-align:right; }
+
+    /* Chart area */
+    .aw-chart-wrap {
+      background:rgba(13,46,86,0.4); border:1px solid rgba(212,160,23,0.15);
+      border-radius:14px; padding:28px 24px;
+    }
+    .aw-chart-title { font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:18px; }
+
+    /* Two-panel below-the-strip layout */
+    .aw-two { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:40px; }
+
+    /* Future season placeholder */
+    .aw-future {
+      text-align:center; padding:56px 32px;
+      border:1.5px dashed rgba(212,160,23,0.25); border-radius:16px;
+    }
+    .aw-future-icon { font-size:2.4rem; display:block; margin-bottom:14px; }
+    .aw-future-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600;
+      color:var(--white); margin-bottom:8px; }
+    .aw-future-sub { font-size:0.88rem; color:var(--gray-mid); line-height:1.7; }
+
+    @media(max-width:900px){
+      .aw-stat-strip { grid-template-columns:repeat(2,1fr); }
+      .aw-tourn-grid { grid-template-columns:1fr; }
+      .aw-two { grid-template-columns:1fr; }
+    }
+    @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
   </style>
 </head>
 <body>
@@ -142,66 +246,57 @@
 <!-- THIS SEASON -->
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
+
+    <!-- Season selector -->
     <div class="season-select-wrap">
       <span class="season-select-label">Season</span>
-      <select class="season-dropdown" id="season-dropdown" onchange="updateSeasonLabel()">
-        <option value="2024–2025">2024–2025</option>
-        <option value="2023–2024">2023–2024</option>
-        <option value="2022–2023">2022–2023</option>
+      <select class="season-dropdown" id="season-dropdown" onchange="onSeasonChange()">
+        <option value="2025" selected>2025–26</option>
+        <option value="2026">2026–27</option>
       </select>
     </div>
-    <h2 class="section-title" style="margin-bottom:40px;">Season Results for <span id="season-label">2024–2025</span></h2>
-    <div class="three-col stagger">
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">🏆</span>
-        <div class="trophy-place">1<sup style="font-size:0.5em;">st</sup></div>
-        <div class="trophy-event">Metro Finals Championship</div>
-        <div class="trophy-date">May 2025 · WACFL</div>
-        <span class="trophy-badge">Regional Champions</span>
-      </div>
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">🥇</span>
-        <div class="trophy-place">4<sup style="font-size:0.5em;">th</sup></div>
-        <div class="trophy-event">NSDA Nationals</div>
-        <div class="trophy-date">June 2025 · Public Forum</div>
-        <span class="trophy-badge">National Qualifier</span>
-      </div>
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">🥈</span>
-        <div class="trophy-place">2<sup style="font-size:0.5em;">nd</sup></div>
-        <div class="trophy-event">WACFL Regionals</div>
-        <div class="trophy-date">April 2025 · Public Forum</div>
-        <span class="trophy-badge">Runner-Up</span>
-      </div>
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">🏅</span>
-        <div class="trophy-place">1<sup style="font-size:0.5em;">st</sup></div>
-        <div class="trophy-event">Fall Invitational</div>
-        <div class="trophy-date">October 2024 · George Mason</div>
-        <span class="trophy-badge">Tournament Winner</span>
-      </div>
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">⭐</span>
-        <div class="trophy-place">3<sup style="font-size:0.5em;">rd</sup></div>
-        <div class="trophy-event">WACFL Tournament #3</div>
-        <div class="trophy-date">January 2025</div>
-        <span class="trophy-badge">Semifinalist</span>
-      </div>
-      <div class="trophy-card fade-up">
-        <span class="trophy-icon">🎙️</span>
-        <div class="trophy-place">5+</div>
-        <div class="trophy-event">Top Speaker Awards</div>
-        <div class="trophy-date">Across all tournaments</div>
-        <span class="trophy-badge">Individual Excellence</span>
-      </div>
+    <h2 class="section-title" style="margin-bottom:32px;">Season Results for <span id="season-label">2025–26</span></h2>
+
+    <!-- Loading -->
+    <div id="aw-loading" class="aw-loading">Loading season data…</div>
+
+    <!-- Future season placeholder -->
+    <div id="aw-future" class="aw-future" style="display:none;">
+      <span class="aw-future-icon">📅</span>
+      <div class="aw-future-title">Season Hasn't Started Yet</div>
+      <p class="aw-future-sub">The 2026–27 season begins in August 2026. Check back once tournaments get underway!</p>
     </div>
 
-    <!-- Metrics placeholder — to be wired to Member-Stats charts -->
-    <div style="margin-top:40px;padding:32px;background:rgba(13,46,86,0.4);border:1.5px dashed rgba(212,160,23,0.25);border-radius:16px;text-align:center;">
-      <div style="font-size:1.8rem;margin-bottom:10px;">📊</div>
-      <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.85rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;">Season Analytics</div>
-      <p style="font-size:0.88rem;color:var(--gray-mid);line-height:1.7;max-width:420px;margin:0 auto;">Detailed metrics and charts — win rates, speaker points, pair performance — are available in the <a href="members-stats.html" style="color:var(--gold-pale);text-decoration:underline;">Member Portal Stats page</a>.</p>
-    </div>
+    <!-- Live data panel -->
+    <div id="aw-data" style="display:none;">
+
+      <!-- Stat strip -->
+      <div class="aw-stat-strip" id="aw-stat-strip"></div>
+
+      <!-- Metro eligibility banner -->
+      <div class="metro-banner" id="aw-metro" style="display:none;">
+        <div class="metro-banner-title">🏆 Metro Finals Eligibility</div>
+        <div id="aw-metro-rows"></div>
+      </div>
+
+      <!-- Tournament cards + leaderboard side by side -->
+      <div class="aw-two">
+        <div>
+          <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
+          <div id="aw-tourn-grid" class="aw-tourn-grid" style="grid-template-columns:1fr;"></div>
+        </div>
+        <div>
+          <div class="aw-chart-title" style="margin-bottom:16px;">Top Debaters</div>
+          <div id="aw-leaderboard"></div>
+          <div class="aw-chart-wrap" style="margin-top:24px;">
+            <div class="aw-chart-title">Win Distribution</div>
+            <canvas id="aw-windist-chart" height="160"></canvas>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /aw-data -->
+
   </div>
 </section>
 
@@ -341,10 +436,271 @@
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 <script>
-  function updateSeasonLabel() {
-    const val = document.getElementById('season-dropdown').value;
-    document.getElementById('season-label').textContent = val;
+/* ── Firebase init ── */
+const AW_CONFIG = {
+  apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+  authDomain:        "cooper-debate-team.firebaseapp.com",
+  projectId:         "cooper-debate-team",
+  storageBucket:     "cooper-debate-team.firebasestorage.app",
+  messagingSenderId: "112813790184",
+  appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
+};
+const awApp = firebase.apps.find(a=>a.name==='aw') || firebase.initializeApp(AW_CONFIG,'aw');
+const awDb  = firebase.firestore(awApp);
+
+/* ── Helpers ── */
+function parseTournDate(str) {
+  if (!str) return new Date(NaN);
+  let d = new Date(str + 'T12:00:00');
+  if (!isNaN(d)) return d;
+  let c = str.replace(/(\d+)(st|nd|rd|th)\b/gi,'$1').replace(/^[A-Za-z]+[,]?\s*/,'');
+  return new Date(c);
+}
+function dateToSeasonYear(d) {
+  return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
+}
+function fmtDate(str) {
+  const d = parseTournDate(str);
+  if (isNaN(d)) return str || '';
+  return d.toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
+}
+
+/* ── Compute helpers ── */
+function computeSeasonStats(tourns) {
+  let w=0,l=0,speak=0,sc=0; const debaters=new Set();
+  tourns.forEach(t=>t.entries.forEach(e=>{
+    w+=e.wins; l+=e.losses;
+    e.debaters.forEach(d=>{
+      speak+=d.totalSpeaks;
+      sc+=d.rounds.filter(r=>r.result!=='BYE').length;
+      debaters.add(`${d.first} ${d.last}`);
+    });
+  }));
+  return { w, l, winRate: w+l>0?(w/(w+l)*100).toFixed(1):'—',
+           avgSpeak: sc>0?(speak/sc).toFixed(2):'—',
+           tournaments: tourns.length, debaters: debaters.size };
+}
+
+function computeLeaderboard(tourns) {
+  const map={};
+  tourns.forEach(t=>t.entries.forEach(e=>{
+    e.debaters.forEach(d=>{
+      const k=`${d.first} ${d.last}`;
+      if(!map[k]) map[k]={name:k,wins:0,losses:0,speak:0,sc:0};
+      map[k].wins+=d.wins; map[k].losses+=d.losses;
+      map[k].speak+=d.totalSpeaks;
+      map[k].sc+=d.rounds.filter(r=>r.result!=='BYE').length;
+    });
+  }));
+  return Object.values(map).map(d=>({
+    ...d,
+    winRate: d.wins+d.losses>0?d.wins/(d.wins+d.losses):0,
+    avgSpeak: d.sc>0?(d.speak/d.sc).toFixed(2):0
+  })).sort((a,b)=>b.winRate-a.winRate||b.avgSpeak-a.avgSpeak);
+}
+
+function computeMetroEligibility(tourns) {
+  const map={};
+  tourns.forEach(t=>t.entries.forEach(e=>{
+    if(e.debaters.length<2) return;
+    const names=e.debaters.map(d=>`${d.first} ${d.last}`).sort();
+    const k=names.join(' & ');
+    if(!map[k]) map[k]={pair:k,finishes:[],bestWins:0};
+    map[k].finishes.push(e.wins);
+    if(e.wins>map[k].bestWins) map[k].bestWins=e.wins;
+  }));
+  return Object.values(map).map(p=>{
+    const c40=p.finishes.filter(w=>w>=4).length;
+    const c31=p.finishes.filter(w=>w>=3).length;
+    const elig=c40>=1||c31>=2;
+    let dist = elig
+      ? (c40>=1 ? '✓ Eligible via 4–0' : '✓ Eligible via 2× 3–1+')
+      : c31===1 ? 'Need 1 more 3–1+ finish or a 4–0'
+      : 'Need a 4–0 or two 3–1+ finishes';
+    let best = p.bestWins===4?'4–0':p.bestWins===3?'3–1':p.bestWins===2?'2–2':p.bestWins===1?'1–3':'0–4';
+    return {...p, c40, c31, eligible:elig, distance:dist, bestFinish:best};
+  }).sort((a,b)=>b.eligible-a.eligible||b.c31-a.c31||b.bestWins-a.bestWins);
+}
+
+function computeWinDist(tourns) {
+  const counts={0:0,1:0,2:0,3:0,4:0};
+  tourns.forEach(t=>t.entries.forEach(e=>{
+    const w=Math.min(e.wins,4); counts[w]=(counts[w]||0)+1;
+  }));
+  return counts;
+}
+
+/* ── Chart instance ── */
+let winDistChart = null;
+
+/* ── Render ── */
+function renderAwards(tourns) {
+  const loading = document.getElementById('aw-loading');
+  const future  = document.getElementById('aw-future');
+  const data    = document.getElementById('aw-data');
+
+  if (tourns.length === 0) {
+    loading.style.display = 'none';
+    future.style.display  = 'block';
+    data.style.display    = 'none';
+    return;
   }
+
+  loading.style.display = 'none';
+  future.style.display  = 'none';
+  data.style.display    = 'block';
+
+  const stats = computeSeasonStats(tourns);
+
+  /* Stat strip */
+  document.getElementById('aw-stat-strip').innerHTML = `
+    <div class="aw-stat-box">
+      <div class="aw-stat-num">${stats.tournaments}</div>
+      <div class="aw-stat-lbl">Tournaments</div>
+    </div>
+    <div class="aw-stat-box">
+      <div class="aw-stat-num">${stats.w}–${stats.l}</div>
+      <div class="aw-stat-lbl">Team Record</div>
+    </div>
+    <div class="aw-stat-box">
+      <div class="aw-stat-num">${stats.winRate}%</div>
+      <div class="aw-stat-lbl">Win Rate</div>
+    </div>
+    <div class="aw-stat-box">
+      <div class="aw-stat-num">${stats.avgSpeak}</div>
+      <div class="aw-stat-lbl">Avg Speaker Pts</div>
+    </div>`;
+
+  /* Metro eligibility */
+  const metro = computeMetroEligibility(tourns);
+  if (metro.length > 0) {
+    document.getElementById('aw-metro').style.display = 'block';
+    document.getElementById('aw-metro-rows').innerHTML = metro.map(p => `
+      <div class="metro-pair-row">
+        <div class="metro-pair-name">${p.pair}</div>
+        <span class="${p.eligible ? 'metro-badge-eligible' : 'metro-badge-progress'}">
+          ${p.eligible ? '✓ Metro Eligible' : 'In Progress'}
+        </span>
+        <div class="metro-pair-dist">${p.distance} · Best finish: ${p.bestFinish}</div>
+      </div>`).join('');
+  }
+
+  /* Tournament cards */
+  const sorted = [...tourns].sort((a,b)=>{
+    const da=parseTournDate(a.meta.date), db=parseTournDate(b.meta.date);
+    return db-da;
+  });
+  document.getElementById('aw-tourn-grid').innerHTML = sorted.map(t => {
+    const totalW = t.entries.reduce((s,e)=>s+e.wins,0);
+    const totalL = t.entries.reduce((s,e)=>s+e.losses,0);
+    const bestEntry = [...t.entries].sort((a,b)=>b.wins-a.wins||a.losses-b.losses)[0];
+    const highlight = bestEntry && bestEntry.wins >= 3
+      ? `⭐ ${bestEntry.debaters.map(d=>d.first).join(' & ')} went ${bestEntry.wins}–${bestEntry.losses}`
+      : bestEntry && bestEntry.wins >= 2
+      ? `${bestEntry.debaters.map(d=>d.first).join(' & ')} went ${bestEntry.wins}–${bestEntry.losses}`
+      : '';
+    const metroNote = metro.filter(p=>p.eligible).length > 0
+      ? '' : '';
+    return `
+      <div class="aw-tourn-card">
+        <div class="aw-tourn-name">${t.meta.name||'Tournament'}</div>
+        <div class="aw-tourn-date">${fmtDate(t.meta.date)}${t.meta.location?' · '+t.meta.location:''}</div>
+        <div class="aw-tourn-rec">${totalW}–${totalL}</div>
+        <div class="aw-tourn-sub">${t.entries.length} pair${t.entries.length!==1?'s':''} · ${totalW+totalL} rounds</div>
+        ${highlight?`<div class="aw-tourn-highlight">${highlight}</div>`:''}
+      </div>`;
+  }).join('');
+
+  /* Leaderboard — top 6 */
+  const lb = computeLeaderboard(tourns).slice(0,6);
+  const rankIcons = ['🥇','🥈','🥉'];
+  document.getElementById('aw-leaderboard').innerHTML = lb.map((d,i) => `
+    <div class="aw-lb-row">
+      <div class="aw-lb-rank">${rankIcons[i]||i+1}</div>
+      <div class="aw-lb-name">${d.name}</div>
+      <div class="aw-lb-stats">${(d.winRate*100).toFixed(0)}% · ${d.avgSpeak} pts</div>
+    </div>`).join('');
+
+  /* Win distribution chart */
+  const dist = computeWinDist(tourns);
+  const ctx  = document.getElementById('aw-windist-chart').getContext('2d');
+  if (winDistChart) winDistChart.destroy();
+  winDistChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['0 wins','1 win','2 wins','3 wins','4 wins'],
+      datasets:[{
+        data: [dist[0],dist[1],dist[2],dist[3],dist[4]],
+        backgroundColor: [
+          'rgba(239,68,68,0.45)','rgba(251,146,60,0.45)',
+          'rgba(212,160,23,0.4)','rgba(34,197,94,0.45)','rgba(34,197,94,0.7)'
+        ],
+        borderColor: [
+          'rgba(239,68,68,0.8)','rgba(251,146,60,0.8)',
+          'rgba(212,160,23,0.9)','rgba(34,197,94,0.8)','rgba(34,197,94,1)'
+        ],
+        borderWidth: 1, borderRadius: 4
+      }]
+    },
+    options: {
+      responsive:true, plugins:{ legend:{display:false} },
+      scales:{
+        x:{ grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'rgba(255,255,255,0.5)',font:{size:11}} },
+        y:{ grid:{color:'rgba(255,255,255,0.05)'}, ticks:{color:'rgba(255,255,255,0.5)',font:{size:11},stepSize:1},
+            beginAtZero:true }
+      }
+    }
+  });
+}
+
+/* ── Data loading ── */
+let allTournaments = [];
+
+async function loadAwards() {
+  try {
+    const snap = await awDb.collection('stat_results').orderBy('meta.date','desc').get();
+    allTournaments = snap.docs.map(d=>({id:d.id,...d.data()}));
+  } catch(e) {
+    document.getElementById('aw-loading').textContent = 'Could not load data.';
+    return;
+  }
+  filterAndRender();
+}
+
+function filterAndRender() {
+  const yearStr = document.getElementById('season-dropdown').value;
+  const year    = parseInt(yearStr, 10);
+  const filtered = allTournaments.filter(t=>{
+    const d = parseTournDate(t.meta.date);
+    return !isNaN(d) && dateToSeasonYear(d) === year;
+  });
+  renderAwards(filtered);
+}
+
+function onSeasonChange() {
+  const sel   = document.getElementById('season-dropdown');
+  const year  = parseInt(sel.value, 10);
+  const label = sel.options[sel.selectedIndex].text;
+  document.getElementById('season-label').textContent = label;
+
+  /* Show loading state while re-rendering */
+  document.getElementById('aw-loading').style.display = 'block';
+  document.getElementById('aw-future').style.display  = 'none';
+  document.getElementById('aw-data').style.display    = 'none';
+
+  /* If future season (no data expected), short-circuit */
+  const now = new Date();
+  const currentSeasonYear = dateToSeasonYear(now);
+  if (year > currentSeasonYear) {
+    document.getElementById('aw-loading').style.display = 'none';
+    document.getElementById('aw-future').style.display  = 'block';
+    return;
+  }
+  filterAndRender();
+}
+
+/* ── Boot ── */
+loadAwards();
 </script>
 </body>
 </html>
