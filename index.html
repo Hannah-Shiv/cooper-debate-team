@@ -313,47 +313,44 @@
   </div>
 </section>
 
-<!-- LATEST NEWS STRIP -->
-<section class="news-strip" style="background:var(--navy-dark);padding:56px 0;">
-  <div class="section-wrap">
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:32px 36px;">
+<!-- NEWS · PHILOSOPHY · JOIN — consolidated to eliminate dead air -->
+<section style="background:var(--navy-dark);padding:48px 0 56px;">
+  <div class="section-wrap" style="display:flex;flex-direction:column;gap:20px;">
+
+    <!-- Latest News -->
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:28px 32px;">
       <div class="news-strip-header">
         <div class="news-strip-title">📢 Latest News & Announcements</div>
         <a href="blog.html" class="news-strip-all">View All →</a>
       </div>
-      <div class="news-cards" id="home-news-cards">
+      <div id="home-news-cards">
         <!-- Populated by announcements.js -->
       </div>
     </div>
-  </div>
-</section>
 
-<!-- PHILOSOPHY QUOTE -->
-<div class="philosophy-quote" style="background:var(--navy-dark);border-top:none;border-bottom:none;padding:56px 0;">
-  <div class="section-wrap">
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 40px;">
-      <div class="philosophy-quote-inner">
-        <div class="philosophy-quote-mark">"</div>
-        <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
-        <p class="philosophy-quote-attr">— Our Philosophy</p>
+    <!-- Philosophy quote + Join CTA side by side -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+      <!-- Philosophy quote -->
+      <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;align-items:center;">
+        <div class="philosophy-quote-inner" style="width:100%;">
+          <div class="philosophy-quote-mark">"</div>
+          <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
+          <p class="philosophy-quote-attr">— Our Philosophy</p>
+        </div>
       </div>
-    </div>
-  </div>
-</div>
 
-<!-- JOIN CTA -->
-<section class="join-section" style="background:var(--navy-dark);padding:56px 0;">
-  <div class="section-wrap">
-    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:56px 40px;text-align:center;">
-      <div class="join-content" style="padding:0;max-width:640px;">
-        <span class="join-icon">🎙️</span>
-        <h2 class="join-title">Ready to Find Your Voice?</h2>
-        <p class="join-description">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
+      <!-- Join CTA -->
+      <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <span class="join-icon" style="font-size:2.2rem;margin-bottom:16px;">🎙️</span>
+        <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
+        <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
         <div class="join-buttons">
           <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
           <a href="about.html" class="btn btn-outline">Learn More</a>
         </div>
       </div>
+
     </div>
   </div>
 </section>
@@ -415,6 +412,8 @@
   if (container && typeof ANNOUNCEMENTS !== 'undefined') {
     const items = ANNOUNCEMENTS.slice(0, 2);
     if (items.length) {
+      const cols = items.length === 1 ? '1fr' : '1fr 1fr';
+      container.style.cssText = 'display:grid;grid-template-columns:' + cols + ';gap:16px;margin-top:20px;';
       container.innerHTML = items.map(p => `
         <div class="news-card">
           <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
@@ -424,7 +423,7 @@
         </div>
       `).join('');
     } else {
-      container.innerHTML = '<p style="color:var(--gray-mid);font-size:0.85rem;">No announcements yet.</p>';
+      container.innerHTML = '<p style="color:var(--gray-mid);font-size:0.85rem;margin-top:16px;">No announcements yet.</p>';
     }
   }
 </script>
