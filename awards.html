@@ -199,10 +199,29 @@
       text-align:center; padding:56px 32px;
       border:1.5px dashed rgba(212,160,23,0.25); border-radius:16px;
     }
-    .aw-future-icon { font-size:2.4rem; display:block; margin-bottom:14px; }
+    .aw-future-icon { display:block; margin:0 auto 18px; }
     .aw-future-title { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:600;
       color:var(--white); margin-bottom:8px; }
     .aw-future-sub { font-size:1.0rem; color:var(--gray-mid); line-height:1.7; }
+    /* Mini calendar widget */
+    .aw-cal {
+      display:inline-block; width:72px; border-radius:10px;
+      overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.4);
+      font-family:'Josefin Sans',sans-serif;
+    }
+    .aw-cal-top {
+      background:var(--gold); padding:5px 0 4px;
+      font-size:0.62rem; font-weight:700; letter-spacing:0.12em;
+      color:#1a1200; text-transform:uppercase; text-align:center;
+    }
+    .aw-cal-body {
+      background:#ffffff; padding:4px 0 8px;
+      text-align:center;
+    }
+    .aw-cal-day {
+      font-size:2.0rem; font-weight:800; line-height:1;
+      color:#0f1e3a;
+    }
 
     @media(max-width:900px){
       .aw-stat-strip { grid-template-columns:repeat(2,1fr); }
@@ -275,9 +294,16 @@
 
     <!-- Future season placeholder -->
     <div id="aw-future" class="aw-future" style="display:none;">
-      <span class="aw-future-icon">📅</span>
+      <span class="aw-future-icon">
+        <div class="aw-cal">
+          <div class="aw-cal-top" id="aw-cal-month">AUG</div>
+          <div class="aw-cal-body">
+            <div class="aw-cal-day" id="aw-cal-day">9</div>
+          </div>
+        </div>
+      </span>
       <div class="aw-future-title">Season Hasn't Started Yet</div>
-      <p class="aw-future-sub">The 2026–27 season begins in August 2026. Check back once tournaments get underway!</p>
+      <p class="aw-future-sub">The 2026–27 season begins in October 2026. Check back once tournaments get underway!</p>
     </div>
 
     <!-- Live data panel -->
@@ -900,6 +926,14 @@ function onSeasonChange() {
 }
 
 /* ── Boot ── */
+/* Populate mini calendar with today's date */
+(function(){
+  const now = new Date();
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  document.getElementById('aw-cal-month').textContent = months[now.getMonth()];
+  document.getElementById('aw-cal-day').textContent   = now.getDate();
+})();
+
 loadAwards();
 </script>
 </body>
