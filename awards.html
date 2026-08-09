@@ -572,7 +572,11 @@ function renderAwards(tourns) {
       <div class="aw-stat-lbl">Tournaments</div>
     </div>
     <div class="aw-stat-box">
-      <div class="aw-stat-num">${stats.w}–${stats.l}</div>
+      <div class="aw-stat-num">
+        <span style="color:#4ade80;">${stats.w} W</span>
+        <span style="color:rgba(255,255,255,0.3);font-size:1.2rem;margin:0 4px;">–</span>
+        <span style="color:#f87171;">${stats.l} L</span>
+      </div>
       <div class="aw-stat-lbl">Team Record</div>
     </div>
     <div class="aw-stat-box">
