@@ -262,7 +262,8 @@
         <option value="2026">2026–27</option>
       </select>
     </div>
-    <h2 class="section-title" style="margin-bottom:32px;">Season Results for <span id="season-label">2025–26</span></h2>
+    <h2 class="section-title" style="margin-bottom:10px;">Season Results for <span id="season-label">2025–26</span></h2>
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:var(--gold);margin-bottom:28px;opacity:0.8;">(All data extracted from Tabroom.com)</p>
 
     <!-- Loading -->
     <div id="aw-loading" class="aw-loading">Loading season data…</div>
@@ -709,8 +710,7 @@ function renderAwards(tourns) {
 
   /* Tournament key legend below trend chart */
   document.getElementById('aw-tl-legend').innerHTML =
-    `<span style="letter-spacing:0.06em;color:rgba(255,255,255,0.35);">T = Tournament &nbsp;·&nbsp; </span>` +
-    tlSorted.map((t,i)=>`<span style="color:rgba(212,160,23,0.8);font-weight:700;">T${i+1}</span> ${tlFullNames[i]}`).join(' &nbsp;·&nbsp; ');
+    `<span style="letter-spacing:0.06em;color:rgba(255,255,255,0.35);">T = Tournament</span>`;
 
   /* 3. Metro Finals Progress doughnut */
   const metroEligCount = metro.filter(p=>p.eligible).length;
@@ -750,10 +750,10 @@ function renderAwards(tourns) {
         borderWidth:1 }]
     },
     options:{
-      responsive:true, cutout:'62%',
+      responsive:true, maintainAspectRatio:true, aspectRatio:1.4, cutout:'62%',
       plugins:{
         legend:{ display:true, position:'bottom',
-          labels:{ color:'rgba(255,255,255,0.7)', font:{size:13}, padding:16 } },
+          labels:{ color:'rgba(255,255,255,0.7)', font:{size:12}, padding:12 } },
         datalabels:{
           display: c => c.dataset.data[c.dataIndex] > 0,
           color:'#fff',
