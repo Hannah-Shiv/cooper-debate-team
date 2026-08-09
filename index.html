@@ -84,14 +84,18 @@
 </section>
 
 <!-- APPLICATION POLICY BANNER — appearance #3 of 5 -->
-<div style="background:linear-gradient(135deg,#7a1010,#a01515);border-bottom:1.5px solid rgba(255,150,150,0.25);padding:16px 24px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;">
-  <span style="font-size:1.1rem;">⚠</span>
-  <span style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
-  <span style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.92);line-height:1.5;">
-    <strong style="color:#fff;">All students must apply — including returning members.</strong>
-    Only Metro Finals qualifiers (March 2026) are automatically on the team.
-  </span>
-  <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;border-radius:4px;text-decoration:none;white-space:nowrap;transition:background 0.2s;">Apply Now →</a>
+<div style="background:var(--navy-dark);padding:28px 0 0;">
+  <div class="section-wrap">
+    <div style="background:linear-gradient(135deg,#7a1010,#a01515);border:1px solid rgba(255,130,130,0.22);border-radius:12px;padding:14px 32px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;box-shadow:0 4px 24px rgba(120,0,0,0.35);">
+      <span style="font-size:1.1rem;">⚠</span>
+      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.98rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
+      <span style="font-family:'Josefin Sans',sans-serif;font-size:1.03rem;color:rgba(255,255,255,0.92);line-height:1.5;">
+        <strong style="color:#fff;">All students must apply — including returning members.</strong>
+        Only Metro Finals qualifiers (March 2026) are automatically on the team.
+      </span>
+      <a href="apply.html" style="flex-shrink:0;background:var(--gold);border:none;color:#0d1a0a;font-family:'Josefin Sans',sans-serif;font-size:0.92rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:10px 26px;border-radius:5px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(212,160,23,0.4);">Apply Now →</a>
+    </div>
+  </div>
 </div>
 
 <!-- CURRENT RESOLUTION BANNER -->
@@ -114,7 +118,7 @@
 </section>
 
 <!-- ACHIEVEMENT BANNER -->
-<div class="achievement-banner">
+<div class="achievement-banner" style="display:none;">
   <div class="achievement-banner-inner">
     <div class="achievement-item">
       <span class="achievement-icon">🏆</span>
@@ -139,49 +143,47 @@
 </div>
 
 <!-- STATISTICS SECTION -->
-<section class="stats-section">
+<section class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
-    <div class="stats-grid stagger">
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
+      <div class="stats-grid stagger" style="grid-template-columns:repeat(3,1fr);">
 
-      <div class="stat-card fade-up">
-        <span class="stat-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.9 5.4.78-3.9 3.8.92 5.37L12 14.25l-4.82 2.6.92-5.37L4.2 7.68l5.4-.78z"/><path d="M12 17.77V22"/><line x1="9" y1="22" x2="15" y2="22"/></svg>
-        </span>
-        <span class="stat-number" data-target="47" data-suffix="+">0</span>
-        <span class="stat-label">Tournament Awards</span>
+        <div class="stat-card fade-up">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 21h8M12 17v4"/><path d="M7 4H4a1 1 0 00-1 1v2a4 4 0 004 4"/><path d="M17 4h3a1 1 0 011 1v2a4 4 0 01-4 4"/><path d="M7 4h10v7a5 5 0 01-10 0V4z"/></svg>
+          </span>
+          <span class="stat-number">1st</span>
+          <span class="stat-label">Metro Finals Champions</span>
+        </div>
+
+        <div class="stat-card fade-up">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          </span>
+          <span class="stat-number">4th</span>
+          <span class="stat-label">NSDA Nationals — Best in Program History</span>
+        </div>
+
+        <div class="stat-card fade-up">
+          <span class="stat-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="21" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+          </span>
+          <span class="stat-number" data-target="31" data-suffix="+">0</span>
+          <span class="stat-label">Speaker Awards</span>
+        </div>
+
       </div>
-
-      <div class="stat-card fade-up">
-        <span class="stat-icon">
-          <svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0014 0"/><line x1="12" y1="21" x2="12" y2="17"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
-        </span>
-        <span class="stat-number" data-target="31" data-suffix="">0</span>
-        <span class="stat-label">Speaker Awards</span>
+      <div style="text-align:center;margin-top:36px;">
+        <a href="awards.html" class="btn btn-gold" style="font-size:0.9rem;padding:12px 32px;letter-spacing:0.08em;">View Full Awards →</a>
       </div>
-
-      <div class="stat-card fade-up">
-        <span class="stat-icon">
-          <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0110 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 00-5-3.86"/></svg>
-        </span>
-        <span class="stat-number" data-target="28" data-suffix="">0</span>
-        <span class="stat-label">Active Members</span>
-      </div>
-
-      <div class="stat-card fade-up">
-        <span class="stat-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="8" y2="14"/><line x1="12" y1="14" x2="12" y2="14"/><line x1="16" y1="14" x2="16" y2="14"/></svg>
-        </span>
-        <span class="stat-number" data-target="12" data-suffix="">0</span>
-        <span class="stat-label">Tournaments This Season</span>
-      </div>
-
     </div>
   </div>
 </section>
 
 <!-- HIGHLIGHTS STRIP — Latest Achievement · Current Resolution · Upcoming Tournament -->
-<section class="highlights-section">
+<section class="highlights-section" style="background:var(--navy-dark);border-bottom:none;">
   <div class="section-wrap">
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:32px;">
     <div class="highlights-grid">
 
       <!-- Latest Achievement -->
@@ -226,11 +228,12 @@
       </div>
 
     </div>
+    </div>
   </div>
 </section>
 
 <!-- UPCOMING EVENTS -->
-<section class="events-section">
+<section class="events-section" style="display:none;">
   <div class="section-wrap">
     <div class="events-layout">
       <div>
@@ -329,7 +332,7 @@
 </section>
 
 <!-- GALLERY PREVIEW -->
-<section class="gallery-section">
+<section class="gallery-section" style="display:none;">
   <div class="section-wrap">
     <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0;flex-wrap:wrap;gap:16px;">
       <div>
@@ -369,25 +372,29 @@
 </section>
 
 <!-- LATEST NEWS STRIP -->
-<section class="news-strip">
+<section class="news-strip" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
-    <div class="news-strip-header">
-      <div class="news-strip-title">📢 Latest News & Announcements</div>
-      <a href="blog.html" class="news-strip-all">View All →</a>
-    </div>
-    <div class="news-cards" id="home-news-cards">
-      <!-- Populated by announcements.js -->
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:32px 36px;">
+      <div class="news-strip-header">
+        <div class="news-strip-title">📢 Latest News & Announcements</div>
+        <a href="blog.html" class="news-strip-all">View All →</a>
+      </div>
+      <div class="news-cards" id="home-news-cards">
+        <!-- Populated by announcements.js -->
+      </div>
     </div>
   </div>
 </section>
 
 <!-- PHILOSOPHY QUOTE -->
-<div class="philosophy-quote">
+<div class="philosophy-quote" style="background:var(--navy-dark);border-top:none;border-bottom:none;padding:56px 0;">
   <div class="section-wrap">
-    <div class="philosophy-quote-inner">
-      <div class="philosophy-quote-mark">"</div>
-      <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
-      <p class="philosophy-quote-attr">— Our Philosophy</p>
+    <div style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 40px;">
+      <div class="philosophy-quote-inner">
+        <div class="philosophy-quote-mark">"</div>
+        <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
+        <p class="philosophy-quote-attr">— Our Philosophy</p>
+      </div>
     </div>
   </div>
 </div>
