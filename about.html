@@ -15,13 +15,16 @@
       background: rgba(17,40,112,0.42);
       border: 1px solid rgba(212,160,23,0.18);
       border-radius: 10px;
-      padding: 20px 22px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
       transition: border-color 0.3s, transform 0.3s;
     }
-    .value-card:hover { border-color: rgba(212,160,23,0.5); transform: translateY(-4px); }
-    .value-icon { font-size: 2.2rem; margin-bottom: 14px; display: block; }
-    .value-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; margin-bottom: 10px; color: var(--white); }
-    .value-text { font-size: 0.88rem; color: var(--gray-mid); line-height: 1.7; }
+    .value-card:hover { border-color: rgba(212,160,23,0.5); transform: translateY(-3px); }
+    .value-icon { font-size: 1.7rem; flex-shrink: 0; margin-top: 2px; display: block; }
+    .value-title { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; margin-bottom: 5px; color: var(--white); }
+    .value-text { font-size: 0.85rem; color: var(--gray-mid); line-height: 1.65; margin: 0; }
 
     .benefit-item {
       display: flex;
@@ -176,17 +179,15 @@
 </div>
 
 <!-- APPLICATION POLICY BANNER — appearance #4 of 5 -->
-<div style="background:var(--navy-dark);padding:28px 0 0;">
-  <div class="section-wrap" style="max-width:900px;">
-    <div style="background:linear-gradient(135deg,#7a1010,#a01515);border:1px solid rgba(255,130,130,0.25);border-radius:12px;padding:20px 28px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;box-shadow:0 4px 24px rgba(120,0,0,0.35);">
-      <span style="font-size:1.1rem;">⚠</span>
-      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
-      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.92);line-height:1.5;">
-        <strong style="color:#fff;">All students must apply — including returning members.</strong>
-        Only Metro Finals qualifiers (March 2026) are automatically on the team.
-      </span>
-      <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 18px;border-radius:4px;text-decoration:none;white-space:nowrap;">Apply Now →</a>
-    </div>
+<div style="background:var(--navy-dark);padding:28px 0 0;display:flex;justify-content:center;">
+  <div style="width:min(640px,calc(100% - 48px));background:linear-gradient(135deg,#7a1010,#a01515);border:1px solid rgba(255,130,130,0.22);border-radius:12px;padding:18px 28px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;text-align:center;box-shadow:0 4px 24px rgba(120,0,0,0.35);">
+    <span style="font-size:1rem;">⚠</span>
+    <span style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
+    <span style="font-family:'Josefin Sans',sans-serif;font-size:0.83rem;color:rgba(255,255,255,0.92);line-height:1.5;">
+      <strong style="color:#fff;">All students must apply — including returning members.</strong>
+      Only Metro Finals qualifiers (March 2026) are automatically on the team.
+    </span>
+    <a href="apply.html" style="flex-shrink:0;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.4);color:#fff;font-family:'Josefin Sans',sans-serif;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:7px 16px;border-radius:4px;text-decoration:none;white-space:nowrap;">Apply Now →</a>
   </div>
 </div>
 
@@ -207,21 +208,18 @@
         <p class="section-label">What We Stand For</p>
         <h2 class="section-title">Core Values</h2>
         <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:24px;">The principles that shape every practice, every round, and every debater who wears the Cooper name.</p>
-        <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="value-card fade-up">
             <span class="value-icon">🎙️</span>
-            <div class="value-title">Speak with Clarity</div>
-            <p class="value-text">We develop voices that are articulate, persuasive, and grounded in evidence.</p>
+            <div><div class="value-title">Speak with Clarity</div><p class="value-text">We develop voices that are articulate, persuasive, and grounded in evidence.</p></div>
           </div>
           <div class="value-card fade-up">
             <span class="value-icon">🧠</span>
-            <div class="value-title">Reason with Rigor</div>
-            <p class="value-text">Critical thinking, research, and logical argumentation are the heart of what we do.</p>
+            <div><div class="value-title">Reason with Rigor</div><p class="value-text">Critical thinking, research, and logical argumentation are the heart of what we do.</p></div>
           </div>
           <div class="value-card fade-up">
             <span class="value-icon">🌟</span>
-            <div class="value-title">Lead with Integrity</div>
-            <p class="value-text">We compete fiercely and always with sportsmanship, respect, and honesty.</p>
+            <div><div class="value-title">Lead with Integrity</div><p class="value-text">We compete fiercely and always with sportsmanship, respect, and honesty.</p></div>
           </div>
         </div>
       </div>
@@ -384,18 +382,18 @@
           <div><div class="join-step-title">Start Competing</div><p class="join-step-desc">Once accepted, you'll begin practicing and compete in your first WACFL tournament!</p></div>
         </div>
       </div>
-      <div>
-        <div style="background:rgba(212,160,23,0.08);border:1px solid rgba(212,160,23,0.25);border-radius:12px;padding:36px;margin-bottom:24px;">
-          <h3 style="font-family:'Playfair Display',serif;font-size:1.3rem;color:var(--white);margin-bottom:20px;">What We Look For</h3>
-          <ul style="list-style:none;display:flex;flex-direction:column;gap:12px;">
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Curiosity about current events and policy issues</li>
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Commitment to practice and preparation</li>
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Willingness to argue both sides of any issue</li>
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Sportsmanship and respect for opponents</li>
-            <li style="display:flex;gap:12px;align-items:flex-start;font-size:0.88rem;color:var(--gray-mid);"><span style="color:var(--gold);font-size:1rem;flex-shrink:0;">✓</span> Cooper Middle School enrollment (any grade)</li>
+      <div style="display:flex;flex-direction:column;gap:20px;">
+        <div style="background:rgba(8,14,46,0.88);border:1px solid rgba(212,160,23,0.30);border-radius:12px;padding:32px;">
+          <h3 style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.0rem;letter-spacing:0.06em;color:var(--white);margin-bottom:20px;">What We Look For</h3>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;">
+            <li style="display:flex;gap:14px;align-items:flex-start;font-size:0.87rem;color:var(--gray-mid);line-height:1.5;"><span style="color:var(--gold);flex-shrink:0;margin-top:1px;">✓</span> Curiosity about current events and policy issues</li>
+            <li style="display:flex;gap:14px;align-items:flex-start;font-size:0.87rem;color:var(--gray-mid);line-height:1.5;"><span style="color:var(--gold);flex-shrink:0;margin-top:1px;">✓</span> Commitment to practice and preparation</li>
+            <li style="display:flex;gap:14px;align-items:flex-start;font-size:0.87rem;color:var(--gray-mid);line-height:1.5;"><span style="color:var(--gold);flex-shrink:0;margin-top:1px;">✓</span> Willingness to argue both sides of any issue</li>
+            <li style="display:flex;gap:14px;align-items:flex-start;font-size:0.87rem;color:var(--gray-mid);line-height:1.5;"><span style="color:var(--gold);flex-shrink:0;margin-top:1px;">✓</span> Sportsmanship and respect for opponents</li>
+            <li style="display:flex;gap:14px;align-items:flex-start;font-size:0.87rem;color:var(--gray-mid);line-height:1.5;"><span style="color:var(--gold);flex-shrink:0;margin-top:1px;">✓</span> Cooper Middle School enrollment (any grade)</li>
           </ul>
         </div>
-        <a href="apply.html" class="btn btn-gold" style="width:100%;justify-content:center;">Apply Now →</a>
+        <a href="apply.html" class="btn btn-gold" style="width:100%;justify-content:center;text-transform:uppercase;letter-spacing:0.12em;">Apply Now →</a>
       </div>
     </div>
   </div>
