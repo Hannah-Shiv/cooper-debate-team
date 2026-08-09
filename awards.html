@@ -735,18 +735,18 @@ function renderAwards(tourns) {
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       /* large total number */
       ctx.fillStyle = '#ffffff';
-      ctx.font = `bold ${Math.round(r*0.16)}px 'Playfair Display', serif`;
-      ctx.fillText(metroTotal, cx, cy - r*0.06);
+      ctx.font = `bold ${Math.round(r*0.11)}px 'Playfair Display', serif`;
+      ctx.fillText(metroTotal, cx, cy - r*0.04);
       /* gold rule line */
-      const lw = r * 0.18;
+      const lw = r * 0.13;
       ctx.strokeStyle = 'rgba(212,160,23,0.6)';
       ctx.lineWidth = 1.5;
       ctx.beginPath();
-      ctx.moveTo(cx - lw, cy + r*0.02);
-      ctx.lineTo(cx + lw, cy + r*0.02);
+      ctx.moveTo(cx - lw, cy + r*0.015);
+      ctx.lineTo(cx + lw, cy + r*0.015);
       ctx.stroke();
       /* "TOTAL PAIRS" subtitle */
-      ctx.font = `700 ${Math.round(r*0.055)}px 'Josefin Sans', sans-serif`;
+      ctx.font = `700 ${Math.round(r*0.040)}px 'Josefin Sans', sans-serif`;
       ctx.fillStyle = 'rgba(255,255,255,0.55)';
       ctx.letterSpacing = '2px';
       ctx.fillText('TOTAL PAIRS', cx, cy + r*0.11);
