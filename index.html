@@ -412,16 +412,27 @@
   if (container && typeof ANNOUNCEMENTS !== 'undefined') {
     const items = ANNOUNCEMENTS.slice(0, 2);
     if (items.length) {
-      const cols = items.length === 1 ? '1fr' : '1fr 1fr';
-      container.style.cssText = 'display:grid;grid-template-columns:' + cols + ';gap:16px;margin-top:20px;';
-      container.innerHTML = items.map(p => `
-        <div class="news-card">
-          <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
-          <div class="news-card-title">${p.emoji} ${p.title}</div>
-          <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
-          <div class="news-card-meta">${p.date}</div>
-        </div>
-      `).join('');
+      container.style.cssText = 'margin-top:20px;';
+      if (items.length === 1) {
+        container.innerHTML = items.map(p => `
+          <div class="news-card" style="width:100%;box-sizing:border-box;">
+            <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
+            <div class="news-card-title">${p.emoji} ${p.title}</div>
+            <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
+            <div class="news-card-meta">${p.date}</div>
+          </div>
+        `).join('');
+      } else {
+        container.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;';
+        container.innerHTML = items.map(p => `
+          <div class="news-card">
+            <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
+            <div class="news-card-title">${p.emoji} ${p.title}</div>
+            <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
+            <div class="news-card-meta">${p.date}</div>
+          </div>
+        `).join('');
+      }
     } else {
       container.innerHTML = '<p style="color:var(--gray-mid);font-size:0.85rem;margin-top:16px;">No announcements yet.</p>';
     }
@@ -512,9 +523,9 @@
 
         setEl('idx-stat-tourneys', String(tourns.length));
         setEl('idx-stat-record',
-          '<span style="color:#4ade80;">' + w + 'W</span>' +
-          '<span style="color:rgba(255,255,255,0.35);font-size:0.65em;margin:0 3px;">–</span>' +
-          '<span style="color:#f87171;">' + l + 'L</span>');
+          '<span style="color:#4ade80;">' + w + ' W</span>' +
+          '<span style="color:rgba(255,255,255,0.35);font-size:0.65em;margin:0 4px;">–</span>' +
+          '<span style="color:#f87171;">' + l + ' L</span>');
         setEl('idx-stat-winrate', winRate);
         setEl('idx-stat-metro', String(metroElig) + (metroElig === 1 ? '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pair</span>' : '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pairs</span>'));
       }).catch(function(e){ console.warn('Home stats load failed', e); });
