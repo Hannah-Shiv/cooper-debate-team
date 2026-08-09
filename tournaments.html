@@ -222,13 +222,13 @@
   <div class="section-wrap">
     <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
-        <p class="section-label" id="cal-season-label">2026–2027 Season</p>
+        <p class="section-label" id="cal-season-label">2025–2026 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
         <div class="season-toggle">
-          <button class="season-toggle-btn active" id="btn-this-season" onclick="showSeason('this')">This Season</button>
-          <button class="season-toggle-btn" id="btn-last-season" onclick="showSeason('last')">Last Season</button>
+          <button class="season-toggle-btn" id="btn-this-season" onclick="showSeason('this')">This Season</button>
+          <button class="season-toggle-btn active" id="btn-last-season" onclick="showSeason('last')">Last Season</button>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;" id="cal-legend">
           <span class="cal-tag tag-wacfl" style="padding:5px 12px;">WACFL</span>
@@ -240,16 +240,17 @@
     </div>
 
     <!-- THIS SEASON -->
-    <div id="pane-this-season">
+    <div id="pane-this-season" style="display:none;">
       <div style="text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
         <div style="font-size:2.4rem;margin-bottom:16px;">📅</div>
         <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.0rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Season Schedule Being Finalized</div>
         <p style="color:var(--gray-mid);font-size:1.0rem;line-height:1.7;max-width:420px;margin:0 auto;">Tournament dates for the 2026–27 season will be posted here as soon as they are confirmed by Coach Konde. Check back soon.</p>
+        <div id="today-badge" style="display:inline-block;margin-top:28px;padding:8px 20px;border-radius:50px;background:rgba(212,160,23,0.12);border:1px solid rgba(212,160,23,0.35);font-family:'Josefin Sans',sans-serif;font-size:0.82rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);"></div>
       </div>
     </div>
 
     <!-- LAST SEASON (populated from Firestore) -->
-    <div id="pane-last-season" style="display:none;">
+    <div id="pane-last-season">
       <div id="last-season-loading" style="text-align:center;padding:48px 24px;color:var(--gray-mid);font-size:0.85rem;">Loading last season's tournaments…</div>
 
       <!-- controls + table -->
@@ -366,6 +367,13 @@ function showSeason(which) {
   document.getElementById('btn-last-season').classList.toggle('active', !isThis);
   document.getElementById('cal-season-label').textContent = isThis ? '2026–2027 Season' : '2025–2026 Season';
   if (!isThis && !_lastSeasonLoaded) loadLastSeason();
+  if (isThis) {
+    const now = new Date();
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    document.getElementById('today-badge').textContent =
+      `Today · ${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  }
 }
 
 /* ── Parse Firestore REST typed value ─────────────────────── */
@@ -558,6 +566,11 @@ function renderLastSeason(tourns) {
   document.getElementById('last-season-table-wrap').style.display = '';
   lsRender();
 }
+
+/* ── Init: default to Last Season until this season has data ── */
+document.addEventListener('DOMContentLoaded', function() {
+  loadLastSeason();
+});
 </script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
