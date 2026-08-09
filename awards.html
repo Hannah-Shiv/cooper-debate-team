@@ -273,24 +273,19 @@
       <!-- Stat strip -->
       <div class="aw-stat-strip" id="aw-stat-strip"></div>
 
-      <!-- Metro eligibility banner -->
-      <div class="metro-banner" id="aw-metro" style="display:none;">
-        <div class="metro-banner-title">🏆 Metro Finals Eligibility</div>
-        <div id="aw-metro-rows"></div>
-      </div>
+      <!-- Achievement highlight cards -->
+      <div id="aw-highlights" class="aw-stat-strip" style="margin-bottom:32px;"></div>
 
-      <!-- Tournament cards + leaderboard side by side -->
+      <!-- Tournament cards + win chart -->
       <div class="aw-two">
         <div>
           <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
           <div id="aw-tourn-grid" class="aw-tourn-grid" style="grid-template-columns:1fr;"></div>
         </div>
         <div>
-          <div class="aw-chart-title" style="margin-bottom:16px;">Top Debaters</div>
-          <div id="aw-leaderboard"></div>
-          <div class="aw-chart-wrap" style="margin-top:24px;">
+          <div class="aw-chart-wrap">
             <div class="aw-chart-title">Win Distribution</div>
-            <canvas id="aw-windist-chart" height="160"></canvas>
+            <canvas id="aw-windist-chart" height="200"></canvas>
           </div>
         </div>
       </div>
@@ -551,8 +546,13 @@ function renderAwards(tourns) {
   data.style.display    = 'block';
 
   const stats = computeSeasonStats(tourns);
+  const metro = computeMetroEligibility(tourns);
+  const metroElig     = metro.filter(p => p.eligible).length;
+  const metroProgress = metro.filter(p => !p.eligible).length;
+  const pairs40 = metro.filter(p => p.c40 >= 1).length;
+  const pairs31 = metro.filter(p => p.c31 >= 1).length;
 
-  /* Stat strip */
+  /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
     <div class="aw-stat-box">
       <div class="aw-stat-num">${stats.tournaments}</div>
@@ -571,57 +571,56 @@ function renderAwards(tourns) {
       <div class="aw-stat-lbl">Avg Speaker Pts</div>
     </div>`;
 
-  /* Metro eligibility */
-  const metro = computeMetroEligibility(tourns);
-  if (metro.length > 0) {
-    document.getElementById('aw-metro').style.display = 'block';
-    document.getElementById('aw-metro-rows').innerHTML = metro.map(p => `
-      <div class="metro-pair-row">
-        <div class="metro-pair-name">${p.pair}</div>
-        <span class="${p.eligible ? 'metro-badge-eligible' : 'metro-badge-progress'}">
-          ${p.eligible ? '✓ Metro Eligible' : 'In Progress'}
-        </span>
-        <div class="metro-pair-dist">${p.distance} · Best finish: ${p.bestFinish}</div>
-      </div>`).join('');
-  }
+  /* ── Achievement highlights ── */
+  const highlights = [];
 
-  /* Tournament cards */
-  const sorted = [...tourns].sort((a,b)=>{
-    const da=parseTournDate(a.meta.date), db=parseTournDate(b.meta.date);
-    return db-da;
-  });
+  if (metroElig > 0)
+    highlights.push({ icon:'🏆', num: metroElig,
+      lbl: `pair${metroElig!==1?'s':''} qualified for Metro Finals` });
+
+  if (metroProgress > 0)
+    highlights.push({ icon:'📈', num: metroProgress,
+      lbl: `pair${metroProgress!==1?'s':''} progressing toward Metro` });
+
+  if (pairs40 > 0)
+    highlights.push({ icon:'⭐', num: pairs40,
+      lbl: `pair${pairs40!==1?'s':''} went undefeated (4–0)` });
+
+  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
+  if (pairs3plus > 0)
+    highlights.push({ icon:'🎯', num: pairs3plus,
+      lbl: `pair${pairs3plus!==1?'s':''} finished 3–1 or better` });
+
+  document.getElementById('aw-highlights').innerHTML = highlights.length
+    ? highlights.map(h => `
+        <div class="aw-stat-box">
+          <div style="font-size:1.5rem;margin-bottom:6px;">${h.icon}</div>
+          <div class="aw-stat-num" style="font-size:1.6rem;">${h.num}</div>
+          <div class="aw-stat-lbl">${h.lbl}</div>
+        </div>`).join('')
+    : '';
+
+  /* ── Tournament cards ── */
+  const sorted = [...tourns].sort((a,b)=>parseTournDate(b.meta.date)-parseTournDate(a.meta.date));
   document.getElementById('aw-tourn-grid').innerHTML = sorted.map(t => {
-    const totalW = t.entries.reduce((s,e)=>s+e.wins,0);
-    const totalL = t.entries.reduce((s,e)=>s+e.losses,0);
-    const bestEntry = [...t.entries].sort((a,b)=>b.wins-a.wins||a.losses-b.losses)[0];
-    const highlight = bestEntry && bestEntry.wins >= 3
-      ? `⭐ ${bestEntry.debaters.map(d=>d.first).join(' & ')} went ${bestEntry.wins}–${bestEntry.losses}`
-      : bestEntry && bestEntry.wins >= 2
-      ? `${bestEntry.debaters.map(d=>d.first).join(' & ')} went ${bestEntry.wins}–${bestEntry.losses}`
-      : '';
-    const metroNote = metro.filter(p=>p.eligible).length > 0
-      ? '' : '';
+    const totalW   = t.entries.reduce((s,e)=>s+e.wins,0);
+    const totalL   = t.entries.reduce((s,e)=>s+e.losses,0);
+    const pairs40T = t.entries.filter(e=>e.wins>=4).length;
+    const pairs31T = t.entries.filter(e=>e.wins>=3).length;
+    const notes = [];
+    if (pairs40T > 0) notes.push(`⭐ ${pairs40T} pair${pairs40T!==1?'s':''} went 4–0`);
+    else if (pairs31T > 0) notes.push(`🎯 ${pairs31T} pair${pairs31T!==1?'s':''} went 3–1 or better`);
     return `
       <div class="aw-tourn-card">
         <div class="aw-tourn-name">${t.meta.name||'Tournament'}</div>
         <div class="aw-tourn-date">${fmtDate(t.meta.date)}${t.meta.location?' · '+t.meta.location:''}</div>
         <div class="aw-tourn-rec">${totalW}–${totalL}</div>
         <div class="aw-tourn-sub">${t.entries.length} pair${t.entries.length!==1?'s':''} · ${totalW+totalL} rounds</div>
-        ${highlight?`<div class="aw-tourn-highlight">${highlight}</div>`:''}
+        ${notes.map(n=>`<div class="aw-tourn-highlight">${n}</div>`).join('')}
       </div>`;
   }).join('');
 
-  /* Leaderboard — top 6 */
-  const lb = computeLeaderboard(tourns).slice(0,6);
-  const rankIcons = ['🥇','🥈','🥉'];
-  document.getElementById('aw-leaderboard').innerHTML = lb.map((d,i) => `
-    <div class="aw-lb-row">
-      <div class="aw-lb-rank">${rankIcons[i]||i+1}</div>
-      <div class="aw-lb-name">${d.name}</div>
-      <div class="aw-lb-stats">${(d.winRate*100).toFixed(0)}% · ${d.avgSpeak} pts</div>
-    </div>`).join('');
-
-  /* Win distribution chart */
+  /* ── Win distribution chart ── */
   const dist = computeWinDist(tourns);
   const ctx  = document.getElementById('aw-windist-chart').getContext('2d');
   if (winDistChart) winDistChart.destroy();
