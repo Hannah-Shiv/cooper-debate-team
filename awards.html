@@ -189,6 +189,11 @@
     /* 2×2 symmetric chart grid */
     .aw-chart-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:40px; }
 
+    /* Metro doughnut — fixed-height container so chart fills it correctly */
+    .aw-metro-container { position:relative; height:340px; }
+    @media(max-width:900px){ .aw-metro-container { height:300px; } }
+    @media(max-width:600px){ .aw-metro-container { height:260px; } }
+
     /* Future season placeholder */
     .aw-future {
       text-align:center; padding:56px 32px;
@@ -263,7 +268,7 @@
       </select>
     </div>
     <h2 class="section-title" style="margin-bottom:10px;">Season Results for <span id="season-label">2025–26</span></h2>
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:var(--gold);margin-bottom:28px;opacity:0.8;">(All data extracted from Tabroom.com)</p>
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.06em;color:var(--gold);margin-bottom:28px;opacity:0.85;">(All data extracted from Tabroom.com)</p>
 
     <!-- Loading -->
     <div id="aw-loading" class="aw-loading">Loading season data…</div>
@@ -301,7 +306,9 @@
         </div>
         <div class="aw-chart-wrap">
           <div class="aw-chart-title">Metro Finals Progress</div>
-          <canvas id="aw-metro-chart" height="220"></canvas>
+          <div class="aw-metro-container">
+            <canvas id="aw-metro-chart"></canvas>
+          </div>
         </div>
         <div></div>
       </div>
@@ -723,15 +730,15 @@ function renderAwards(tourns) {
     beforeDraw(chart) {
       const { ctx, chartArea:{left,top,width,height} } = chart;
       const cx = left + width/2, cy = top + height/2;
+      const r = Math.min(width, height);
       ctx.save();
       ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
       ctx.fillStyle = '#ffffff';
-      ctx.font = "bold 42px 'Playfair Display', serif";
-      ctx.fillText(metroTotal, cx, cy - 12);
-      ctx.font = "700 13px 'Josefin Sans', sans-serif";
+      ctx.font = `bold ${Math.round(r*0.13)}px 'Playfair Display', serif`;
+      ctx.fillText(metroTotal, cx, cy - r*0.05);
+      ctx.font = `700 ${Math.round(r*0.045)}px 'Josefin Sans', sans-serif`;
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.letterSpacing = '1px';
-      ctx.fillText('TOTAL PAIRS', cx, cy + 18);
+      ctx.fillText('TOTAL PAIRS', cx, cy + r*0.08);
       ctx.restore();
     }
   };
@@ -750,17 +757,16 @@ function renderAwards(tourns) {
         borderWidth:1 }]
     },
     options:{
-      responsive:true, maintainAspectRatio:true, aspectRatio:1.4, cutout:'62%',
+      responsive:true, maintainAspectRatio:false, cutout:'55%',
       plugins:{
-        legend:{ display:true, position:'bottom',
-          labels:{ color:'rgba(255,255,255,0.7)', font:{size:12}, padding:12 } },
+        legend:{ display:false },
         datalabels:{
           display: c => c.dataset.data[c.dataIndex] > 0,
           color:'#fff',
           anchor:'center', align:'center',
           textAlign:'center',
           formatter: (v, c) => `${v}\n${metroSliceLabels[c.dataIndex]}`,
-          font: { size:18, weight:'bold', family:"'Josefin Sans',sans-serif" }
+          font: { size:20, weight:'bold', family:"'Josefin Sans',sans-serif" }
         }
       }
     }
