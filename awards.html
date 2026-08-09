@@ -603,12 +603,12 @@ function renderAwards(tourns) {
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
     <div class="aw-stat-box">
-      <img src="images/icons/icon-tournament.png" alt="" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;">
+      <img src="images/icons/icon-tournament.png" alt="" style="width:92px;height:92px;object-fit:contain;margin-bottom:10px;">
       <div class="aw-stat-num">${stats.tournaments}</div>
       <div class="aw-stat-lbl">Tournaments</div>
     </div>
     <div class="aw-stat-box">
-      <img src="images/icons/icon-record.png" alt="" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;">
+      <img src="images/icons/icon-record.png" alt="" style="width:92px;height:92px;object-fit:contain;margin-bottom:10px;">
       <div class="aw-stat-num" style="font-size:clamp(1.1rem,3.8vw,1.8rem);white-space:nowrap;">
         <span style="color:#4ade80;">${stats.w} W</span>
         <span style="color:rgba(255,255,255,0.3);font-size:0.9em;margin:0 4px;">–</span>
@@ -617,12 +617,12 @@ function renderAwards(tourns) {
       <div class="aw-stat-lbl">Team Record</div>
     </div>
     <div class="aw-stat-box">
-      <img src="images/icons/icon-winrate.png" alt="" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;">
+      <img src="images/icons/icon-winrate.png" alt="" style="width:92px;height:92px;object-fit:contain;margin-bottom:10px;">
       <div class="aw-stat-num">${stats.winRate}%</div>
       <div class="aw-stat-lbl">Win Rate</div>
     </div>
     <div class="aw-stat-box">
-      <img src="images/icons/icon-speaker.png" alt="" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;">
+      <img src="images/icons/icon-speaker.png" alt="" style="width:92px;height:92px;object-fit:contain;margin-bottom:10px;">
       <div class="aw-stat-num">${stats.avgSpeak}</div>
       <div class="aw-stat-lbl">Avg Speaker Pts</div>
     </div>`;
@@ -650,7 +650,7 @@ function renderAwards(tourns) {
   document.getElementById('aw-highlights').innerHTML = highlights.length
     ? highlights.map(h => `
         <div class="aw-stat-box">
-          <img src="${h.icon}" alt="" style="width:72px;height:72px;object-fit:contain;margin-bottom:10px;">
+          <img src="${h.icon}" alt="" style="width:92px;height:92px;object-fit:contain;margin-bottom:0;">
           <div class="aw-stat-num" style="font-size:1.8rem;">${h.num}</div>
           <div class="aw-stat-lbl">${h.lbl}</div>
         </div>`).join('')
