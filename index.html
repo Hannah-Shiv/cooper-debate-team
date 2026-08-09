@@ -13,41 +13,40 @@
   <style>
     /* ── Index page mobile overrides ── */
 
-    /* Stats section */
-    #idx-stats-outer  { padding: 48px 32px 40px; }
-    #idx-stats-grid   { grid-template-columns: repeat(4,1fr); }
-
-    /* Philosophy + Join grid */
-    #idx-phi-join-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    /* Base: stats 4-col grid (set here so media queries can override) */
+    #idx-stats-grid { grid-template-columns: repeat(4,1fr) !important; }
 
     @media (max-width: 768px) {
-      /* Stats: 4-col → 2-col */
-      #idx-stats-grid { grid-template-columns: repeat(2,1fr); }
+      /* Stats: 4-col → 2×2 */
+      #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
 
       /* Stack philosophy quote above join CTA */
-      #idx-phi-join-grid { grid-template-columns: 1fr; }
+      #idx-phi-join-grid { grid-template-columns: 1fr !important; }
 
-      /* Reduce section spacing */
-      #idx-bottom-section { padding: 32px 0 40px; }
+      /* Reduce outer section padding */
+      #idx-bottom-section { padding: 32px 0 40px !important; }
       #idx-stats-section  { padding: 32px 0 !important; }
     }
 
     @media (max-width: 480px) {
-      /* Tighten box padding on small phones */
-      #idx-stats-outer { padding: 24px 16px 20px; }
-      #idx-news-box    { padding: 20px 18px; }
-      #idx-phi-box     { padding: 28px 20px; }
-      #idx-join-box    { padding: 28px 20px; }
+      /* Stats: stay 2×2 on small phones (single col is too tall) */
+      #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
 
-      /* Stat number font size */
+      /* Tighten box padding */
+      #idx-stats-outer { padding: 20px 14px 18px !important; }
+      #idx-news-box    { padding: 18px 16px !important; }
+      #idx-phi-box     { padding: 24px 18px !important; }
+      #idx-join-box    { padding: 28px 18px !important; }
+
+      /* Stat numbers: slightly smaller */
       #idx-stats-grid > div > div:first-child { font-size: 1.7rem !important; }
 
-      /* Join buttons stack */
+      /* Join buttons stack vertically */
       .join-buttons { flex-direction: column; align-items: center; }
       .join-buttons .btn { width: 100%; max-width: 260px; text-align: center; }
 
-      /* Bottom section gap */
-      #idx-bottom-section .section-wrap { gap: 14px; }
+      /* Bottom section: tighter gap between boxes */
+      #idx-bottom-section .section-wrap { gap: 14px !important; }
     }
   </style>
 </head>
@@ -369,7 +368,7 @@
     </div>
 
     <!-- Philosophy quote + Join CTA side by side -->
-    <div id="idx-phi-join-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div id="idx-phi-join-grid" style="display:grid;gap:20px;">
 
       <!-- Philosophy quote -->
       <div id="idx-phi-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;align-items:center;">
