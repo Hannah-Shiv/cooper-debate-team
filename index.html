@@ -33,7 +33,7 @@
     }
 
     /* Record stat: scale with viewport so it never wraps in the 2-col box */
-    #idx-stat-record { font-size: clamp(1.1rem, 4.5vw, 2.2rem) !important; white-space: nowrap; }
+    #idx-stat-record { font-size: clamp(1.4rem, 4.5vw, 2.6rem) !important; white-space: nowrap; }
 
     /* Philosophy quote inside the index box:
        strip the 2-col grid (quote-mark + text) — just stack everything */
@@ -61,8 +61,8 @@
       #idx-phi-box     { padding: 24px 18px !important; }
       #idx-join-box    { padding: 28px 18px !important; }
 
-      /* Stat numbers: slightly smaller */
-      #idx-stats-grid > div > div:first-child { font-size: 1.7rem !important; }
+      /* Stat numbers: slightly smaller on tiny screens */
+      #idx-stat-tourneys, #idx-stat-winrate, #idx-stat-metro { font-size: 2.2rem !important; }
 
       /* Join buttons stack vertically */
       .join-buttons { flex-direction: column; align-items: center; }
@@ -210,22 +210,26 @@
     <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
       <p class="section-label" style="justify-content:center;margin-bottom:6px;" id="idx-stats-season-label">2025–26 Season</p>
       <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
-      <div id="idx-stats-grid" style="display:grid;gap:16px;margin-bottom:36px;">
-        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-tourneys">…</div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Tournaments</div>
+      <div id="idx-stats-grid" style="display:grid;gap:18px;margin-bottom:36px;">
+        <div style="background:rgba(10,32,74,0.72);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-tourneys">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Tournaments</div>
         </div>
-        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-record">…</div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Team Record</div>
+        <div style="background:rgba(10,32,74,0.72);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-record">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Team Record</div>
         </div>
-        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-winrate">…</div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Win Rate</div>
+        <div style="background:rgba(10,32,74,0.72);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-winrate">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Win Rate</div>
         </div>
-        <div style="background:rgba(13,46,86,0.55);border:1px solid rgba(212,160,23,0.18);border-radius:12px;padding:20px 16px;text-align:center;">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:var(--gold);line-height:1;margin-bottom:8px;" id="idx-stat-metro">…</div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.7);">Metro Qualified</div>
+        <div style="background:rgba(10,32,74,0.72);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-metro">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Metro Qualified</div>
         </div>
       </div>
       <div style="text-align:center;">
@@ -589,7 +593,7 @@
         setEl('idx-stat-record',
           '<span style="color:#4ade80;">' + w + ' W</span>' +
           '<span style="color:rgba(255,255,255,0.35);font-size:0.65em;margin:0 4px;">–</span>' +
-          '<span style="color:#f87171;">' + l + ' L</span>');
+          '<span style="color:#E03030;">' + l + ' L</span>');
         setEl('idx-stat-winrate', winRate);
         setEl('idx-stat-metro', String(metroElig) + (metroElig === 1 ? '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pair</span>' : '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pairs</span>'));
       }).catch(function(e){ console.warn('Home stats load failed', e); });
