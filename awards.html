@@ -107,17 +107,26 @@
     .aw-empty   { text-align:center; padding:48px; }
 
     /* Stat strip */
-    .aw-stat-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:40px; }
+    .aw-stat-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:40px; }
     .aw-stat-box {
-      background:rgba(13,46,86,0.55); border:1px solid rgba(212,160,23,0.18);
-      border-radius:12px; padding:20px 16px; text-align:center;
+      background:rgba(10,32,74,0.72);
+      border:1px solid rgba(212,160,23,0.45);
+      border-radius:14px; padding:32px 20px 24px; text-align:center;
       display:flex; flex-direction:column; align-items:center; justify-content:center;
+      box-shadow: 0 0 22px rgba(212,160,23,0.08), inset 0 1px 0 rgba(255,255,255,0.04);
+      transition: border-color 0.25s, box-shadow 0.25s;
     }
-    .aw-stat-num { font-family:'Playfair Display',serif; font-size:2rem; font-weight:300; color:var(--gold-pale); line-height:1;
+    .aw-stat-box:hover {
+      border-color: rgba(212,160,23,0.75);
+      box-shadow: 0 0 28px rgba(212,160,23,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .aw-stat-num { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:300; color:var(--gold-pale); line-height:1;
       flex:1; display:flex; align-items:center; justify-content:center;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(250,224,124,0.4); }
-    .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.92rem; font-weight:700;
-      letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-top:6px; }
+      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(250,224,124,0.4);
+      padding-bottom:14px; margin-bottom:12px;
+      border-bottom: 1px solid rgba(212,160,23,0.25); width:100%; }
+    .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.65); }
 
     /* Metro eligibility banner */
     .metro-banner {
