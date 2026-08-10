@@ -1732,7 +1732,7 @@ body.dome-open .page-header { padding-top: 240px; }
 .news-card:hover { border-color: rgba(212,160,23,0.4); transform: translateY(-3px); }
 .news-card-tag {
   display: inline-block; padding: 3px 9px; border-radius: 3px;
-  font-size: 1.4rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
   margin-bottom: 12px;
 }
 .tag-resolution { background: rgba(212,160,23,0.15); color: var(--gold-pale); border: 1px solid rgba(212,160,23,0.3); }
