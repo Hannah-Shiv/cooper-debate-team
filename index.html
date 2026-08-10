@@ -24,8 +24,14 @@
       #idx-phi-join-grid { grid-template-columns: 1fr !important; }
 
       /* Join box: stack icon above text on mobile */
-      #idx-join-box { flex-direction: column !important; text-align: center !important; }
-      #idx-join-box > div { text-align: center !important; }
+      #idx-join-box { flex-direction: column !important; align-items: center !important; }
+      #idx-join-box > div {
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
       #idx-join-box .join-buttons { justify-content: center !important; width: 100%; }
 
       /* Reduce outer section padding */
