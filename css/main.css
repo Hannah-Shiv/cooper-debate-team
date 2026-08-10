@@ -1695,6 +1695,23 @@ body.dome-open .page-header { padding-top: 240px; }
   transition: color 0.2s;
 }
 .news-strip-all:hover { color: var(--gold); }
+.btn-view-all {
+  display: inline-block;
+  padding: 7px 18px;
+  border: 1px solid rgba(212,160,23,0.45);
+  border-radius: 6px;
+  background: rgba(212,160,23,0.08);
+  color: var(--gold) !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.1em;
+  transition: background 0.2s, border-color 0.2s;
+  white-space: nowrap;
+}
+.btn-view-all:hover {
+  background: rgba(212,160,23,0.18);
+  border-color: rgba(212,160,23,0.75);
+  color: var(--gold) !important;
+}
 .news-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
 .news-card {
   background: rgba(13,46,86,0.45);
