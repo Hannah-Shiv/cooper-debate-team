@@ -1636,7 +1636,7 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .resolution-period {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 1.15rem;
+  font-size: 1.3rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -1645,7 +1645,7 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .resolution-label {
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 1.35rem;
+  font-size: 1.5rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -1654,7 +1654,7 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .resolution-text {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.65rem, 3.2vw, 2.2rem);
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
   font-style: italic;
   color: var(--white);
   line-height: 1.55;
@@ -1667,13 +1667,19 @@ body.dome-open .page-header { padding-top: 240px; }
   align-items: center;
   margin-bottom: 24px;
   font-family: 'Josefin Sans', sans-serif;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--gray-mid);
   letter-spacing: 0.04em;
 }
 .resolution-stats span { display: flex; align-items: center; gap: 5px; }
 .resolution-stats .dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(212,160,23,0.4); }
-@media(max-width:600px) { .resolution-card { padding: 24px 20px; } }
+@media(max-width:600px) {
+  .resolution-card { padding: 24px 20px; }
+  .resolution-period { font-size: 0.9rem; letter-spacing: 0.12em; }
+  .resolution-label  { font-size: 1.1rem; letter-spacing: 0.08em; }
+  .resolution-text   { font-size: clamp(1.3rem, 5.5vw, 1.65rem); }
+  .resolution-stats  { font-size: 0.82rem; gap: 10px; }
+}
 
 /* === NEWS STRIP (home page) === */
 .news-strip { padding: 56px 0; background: var(--navy-mid); }
