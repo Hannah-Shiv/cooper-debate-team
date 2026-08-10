@@ -120,11 +120,13 @@
       border-color: rgba(212,160,23,0.75);
       box-shadow: 0 0 28px rgba(212,160,23,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
     }
-    .aw-stat-num { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:300; color:var(--gold-pale); line-height:1;
+    .aw-stat-num { font-family:'Playfair Display',serif; font-size:2.4rem; font-weight:300; color:#F2D16B; line-height:1;
       flex:1; display:flex; align-items:center; justify-content:center;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(250,224,124,0.4);
-      padding-bottom:14px; margin-bottom:12px;
-      border-bottom: 1px solid rgba(212,160,23,0.25); width:100%; }
+      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(242,209,107,0.4);
+      padding-bottom:16px; }
+    .aw-stat-divider {
+      width: calc(100% + 40px); margin-inline: -20px; height:1px;
+      background: rgba(212,160,23,0.55); margin-bottom:14px; flex-shrink:0; }
     .aw-stat-lbl { font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
       letter-spacing:0.14em; text-transform:uppercase; color:rgba(255,255,255,0.65); }
 
@@ -615,23 +617,27 @@ function renderAwards(tourns) {
   document.getElementById('aw-stat-strip').innerHTML = `
     <div class="aw-stat-box">
       <div class="aw-stat-num">${stats.tournaments}</div>
-      <div class="aw-stat-lbl" style="margin-top:10px;">Tournaments</div>
+      <div class="aw-stat-divider"></div>
+      <div class="aw-stat-lbl">Tournaments</div>
     </div>
     <div class="aw-stat-box">
       <div class="aw-stat-num" style="font-size:clamp(1.1rem,3.8vw,1.8rem);white-space:nowrap;">
         <span style="color:#4ade80;">${stats.w} W</span>
         <span style="color:rgba(255,255,255,0.3);font-size:0.9em;margin:0 4px;">–</span>
-        <span style="color:#f87171;">${stats.l} L</span>
+        <span style="color:#E03030;">${stats.l} L</span>
       </div>
-      <div class="aw-stat-lbl" style="margin-top:10px;">Team Record</div>
+      <div class="aw-stat-divider"></div>
+      <div class="aw-stat-lbl">Team Record</div>
     </div>
     <div class="aw-stat-box">
       <div class="aw-stat-num">${stats.winRate}%</div>
-      <div class="aw-stat-lbl" style="margin-top:10px;">Win Rate</div>
+      <div class="aw-stat-divider"></div>
+      <div class="aw-stat-lbl">Win Rate</div>
     </div>
     <div class="aw-stat-box">
       <div class="aw-stat-num">${stats.avgSpeak}</div>
-      <div class="aw-stat-lbl" style="margin-top:10px;">Avg Speaker Pts</div>
+      <div class="aw-stat-divider"></div>
+      <div class="aw-stat-lbl">Avg Speaker Pts</div>
     </div>`;
 
   /* ── Achievement highlights ── */
@@ -658,7 +664,8 @@ function renderAwards(tourns) {
     ? highlights.map(h => `
         <div class="aw-stat-box">
           <div class="aw-stat-num" style="font-size:1.8rem;">${h.num}</div>
-          <div class="aw-stat-lbl" style="margin-top:10px;">${h.lbl}</div>
+          <div class="aw-stat-divider"></div>
+          <div class="aw-stat-lbl">${h.lbl}</div>
         </div>`).join('')
     : '';
 
