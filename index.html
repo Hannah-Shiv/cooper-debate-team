@@ -25,14 +25,14 @@
 
       /* Join box: stack icon above text on mobile */
       #idx-join-box { flex-direction: column !important; align-items: center !important; }
-      #idx-join-box > div {
-        text-align: center !important;
-        width: 100% !important;
+      #idx-join-text {
+        text-align: center;
+        width: 100%;
       }
-      #idx-join-box .join-buttons {
-        display: flex !important;
-        justify-content: center !important;
-        width: 100% !important;
+      #idx-join-text .join-buttons {
+        display: flex;
+        justify-content: center;
+        width: 100%;
       }
 
       /* Reduce outer section padding */
@@ -424,7 +424,7 @@
       <!-- Join CTA -->
       <div id="idx-join-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;flex-direction:row;align-items:center;gap:32px;">
         <img src="images/spotlight-mic-icon.png" alt="Spotlight microphone" style="width:120px;height:120px;object-fit:contain;flex-shrink:0;">
-        <div style="text-align:left;">
+        <div id="idx-join-text">
           <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
           <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
           <div class="join-buttons">
