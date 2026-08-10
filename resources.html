@@ -116,8 +116,37 @@
 
     .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
     .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
-    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;} .pro-con-grid{grid-template-columns:1fr;} }
+    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;gap:32px;} .pro-con-grid{grid-template-columns:1fr;} }
     @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
+
+    @media(max-width:640px){
+      html { font-size: 16px !important; }
+
+      /* Topic box */
+      .topic-box { padding: 20px 16px; }
+      .topic-resolution { padding: 14px 16px; font-size: 1.05rem; }
+
+      /* Key Research cards — single column already; reduce icon zone */
+      .resource-icon { height: 64px; }
+
+      /* Skills panel inner container */
+      .skills-panel { padding: 24px 18px !important; border-radius: 14px !important; }
+
+      /* Skill rows tighter */
+      .skill-row { gap: 14px; padding: 20px 0; }
+      .skill-num  { width: 44px; height: 44px; }
+
+      /* Train cards */
+      .train-card { padding: 20px 18px; }
+
+      /* Template cards: stack button below content */
+      .template-card { flex-wrap: wrap; padding: 18px 16px; gap: 14px; }
+      .template-download { margin-left: 0; width: 100%; }
+      .template-download .inline-btn { width: 100%; justify-content: center; box-sizing: border-box; }
+
+      /* Inline hint rows */
+      .topic-box p[style] { font-size: 0.85rem; }
+    }
   </style>
 </head>
 <body>
@@ -220,7 +249,7 @@
 <!-- DEBATE SKILLS -->
 <section id="skills" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-    <div style="background:var(--navy-mid);border-radius:20px;padding:40px 40px;">
+    <div class="skills-panel" style="background:var(--navy-mid);border-radius:20px;padding:40px 40px;">
     <div class="two-col">
       <div>
         <p class="section-label">Build Your Toolkit</p>
