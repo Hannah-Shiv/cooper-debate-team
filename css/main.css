@@ -1706,6 +1706,9 @@ body.dome-open .page-header { padding-top: 240px; }
   letter-spacing: 0.1em;
   transition: background 0.2s, border-color 0.2s;
   white-space: nowrap;
+  width: fit-content;
+  align-self: flex-start;
+  flex-shrink: 0;
 }
 .btn-view-all:hover {
   background: rgba(212,160,23,0.18);
