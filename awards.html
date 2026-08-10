@@ -663,7 +663,7 @@ function renderAwards(tourns) {
   document.getElementById('aw-highlights').innerHTML = highlights.length
     ? highlights.map(h => `
         <div class="aw-stat-box">
-          <div class="aw-stat-num" style="font-size:1.8rem;">${h.num}</div>
+          <div class="aw-stat-num">${h.num}</div>
           <div class="aw-stat-divider"></div>
           <div class="aw-stat-lbl">${h.lbl}</div>
         </div>`).join('')
