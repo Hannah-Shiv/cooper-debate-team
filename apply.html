@@ -74,23 +74,26 @@
       opacity: 0.8;
     }
 
-    /* ── Policy notice (single, top) ── */
+    /* ── Policy notice ── */
     .policy-notice {
       display: flex;
       gap: 18px;
       align-items: flex-start;
-      background: rgba(8,20,52,0.9);
-      border: 1px solid rgba(200,60,60,0.35);
-      border-left: 3px solid rgba(210,80,80,0.8);
+      background: linear-gradient(135deg, rgba(110,12,12,0.97) 0%, rgba(155,18,18,0.93) 100%);
+      border: 1px solid rgba(255,140,140,0.22);
       border-radius: 10px;
-      padding: 20px 24px;
+      padding: 22px 26px;
       margin-bottom: 44px;
+      box-shadow: 0 4px 24px rgba(180,0,0,0.25);
     }
     .policy-notice-icon {
       flex-shrink: 0;
-      font-size: 1.21rem;
-      margin-top: 1px;
-      opacity: 0.85;
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.05rem;
+      margin-top: 2px;
     }
     .policy-notice-title {
       font-family: 'Josefin Sans', sans-serif;
@@ -98,12 +101,12 @@
       font-weight: 700;
       letter-spacing: 0.14em;
       text-transform: uppercase;
-      color: rgba(255,180,180,0.95);
+      color: #ffcccc;
       margin-bottom: 6px;
     }
     .policy-notice-text {
       font-size: 1.01rem;
-      color: rgba(255,255,255,0.82);
+      color: rgba(255,255,255,0.88);
       line-height: 1.7;
     }
     .policy-notice-text strong { color: #fff; }
@@ -165,7 +168,7 @@
     }
     @media (max-width: 960px) { .apply-layout { grid-template-columns: 1fr; } }
 
-    /* ── Form cards — single unified style ── */
+    /* ── Form cards ── */
     .form-card {
       background: rgba(10,32,68,0.5);
       border: 1px solid rgba(242,209,107,0.13);
@@ -178,10 +181,35 @@
     .form-card:hover {
       border-color: rgba(242,209,107,0.28);
       border-top-color: rgba(242,209,107,0.7);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(242,209,107,0.06);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
     }
     .form-card:last-child { margin-bottom: 0; }
     @media (max-width: 640px) { .form-card { padding: 26px 20px; } }
+
+    /* Section color accents */
+    .card-blue  { border-top-color: rgba(126,184,232,0.5); }
+    .card-blue:hover  { border-top-color: rgba(126,184,232,0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 20px rgba(126,184,232,0.07); }
+    .card-blue  .card-num { background: rgba(126,184,232,0.12); border-color: rgba(126,184,232,0.4); color: #7EB8E8; }
+    .card-blue  .form-label { color: rgba(126,184,232,0.8); }
+
+    .card-teal  { border-top-color: rgba(109,216,184,0.5); }
+    .card-teal:hover  { border-top-color: rgba(109,216,184,0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 20px rgba(109,216,184,0.07); }
+    .card-teal  .card-num { background: rgba(109,216,184,0.12); border-color: rgba(109,216,184,0.4); color: #6DD8B8; }
+    .card-teal  .form-label { color: rgba(109,216,184,0.8); }
+    .card-teal  .check-item:hover { border-color: rgba(109,216,184,0.35); }
+    .card-teal  .schedule-note { border-color: rgba(109,216,184,0.2); background: rgba(109,216,184,0.05); }
+    .card-teal  .schedule-note strong { color: rgba(109,216,184,0.9); }
+
+    .card-purple { border-top-color: rgba(169,140,232,0.5); }
+    .card-purple:hover { border-top-color: rgba(169,140,232,0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 20px rgba(169,140,232,0.07); }
+    .card-purple .card-num { background: rgba(169,140,232,0.12); border-color: rgba(169,140,232,0.4); color: #A98CE8; }
+    .card-purple .form-label { color: rgba(169,140,232,0.8); }
+    .card-purple .form-card-rule { background: rgba(169,140,232,0.12); }
+
+    .card-amber  { border-top-color: rgba(232,196,124,0.5); }
+    .card-amber:hover  { border-top-color: rgba(232,196,124,0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 20px rgba(232,196,124,0.07); }
+    .card-amber  .card-num { background: rgba(232,196,124,0.12); border-color: rgba(232,196,124,0.4); color: #E8C47C; }
+    .card-amber  .form-label { color: rgba(232,196,124,0.8); }
 
     .form-card-title {
       font-family: 'Cormorant Garamond', serif;
@@ -479,7 +507,7 @@
     <div class="apply-header">
       <!-- Badge crest -->
       <img src="images/apply-logo.png" alt="Cooper Debate Team crest"
-           style="width:288px;height:auto;margin-bottom:22px;filter:drop-shadow(0 6px 28px rgba(242,209,107,0.4));"/>
+           style="width:346px;height:auto;margin-bottom:22px;filter:drop-shadow(0 6px 28px rgba(242,209,107,0.4));"/>
 
       <!-- Season eyebrow with flanking lines -->
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:18px;">
@@ -620,7 +648,7 @@
           </div>
 
           <!-- ── SECTION 2: Parent / Guardian Information ── -->
-          <div class="form-card">
+          <div class="form-card card-blue">
             <div class="form-card-title"><span class="card-num">2</span>Parent / Guardian Information</div>
             <div class="form-card-subtitle">The coach will use this contact information for all team communications.</div>
 
@@ -662,7 +690,7 @@
           </div>
 
           <!-- ── SECTION 3: Commitment Acknowledgments ── -->
-          <div class="form-card">
+          <div class="form-card card-teal">
             <div class="form-card-title"><span class="card-num">3</span>Commitment Acknowledgments</div>
             <div class="form-card-subtitle">This is a Cooper team, not a club. Please read each commitment carefully and check the box only if your student can genuinely fulfill it.</div>
 
@@ -743,7 +771,7 @@
           </div>
 
           <!-- ── SECTION 4: Short Answer Questions ── -->
-          <div class="form-card">
+          <div class="form-card card-purple">
             <div class="form-card-title"><span class="card-num">4</span>Short Answer Questions</div>
             <div class="form-card-subtitle">Answer honestly and in your own words. There are no right or wrong answers — the coach wants to hear your voice.</div>
 
@@ -783,7 +811,7 @@
           </div>
 
           <!-- ── SECTION 5: Parent Agreement & Submit ── -->
-          <div class="form-card">
+          <div class="form-card card-amber">
             <div class="form-card-title"><span class="card-num">5</span>Parent / Guardian Agreement</div>
             <div class="form-card-subtitle">
               By submitting this application, the parent or guardian listed above confirms they have
