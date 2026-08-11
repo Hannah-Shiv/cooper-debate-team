@@ -20,7 +20,9 @@
       min-height: 100vh;
       padding: 120px 0 100px;
       background: var(--bg-deep);
+      transition: padding-top 0.4s cubic-bezier(0.4,0,0.2,1);
     }
+    body.dome-open .apply-page { padding-top: 230px; }
 
     /* ── Page header ── */
     .apply-header {
@@ -477,7 +479,7 @@
     <div class="apply-header">
       <!-- Badge crest -->
       <img src="images/apply-logo.png" alt="Cooper Debate Team crest"
-           style="width:240px;height:auto;margin-bottom:22px;filter:drop-shadow(0 6px 28px rgba(242,209,107,0.4));"/>
+           style="width:288px;height:auto;margin-bottom:22px;filter:drop-shadow(0 6px 28px rgba(242,209,107,0.4));"/>
 
       <!-- Season eyebrow with flanking lines -->
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:18px;">
