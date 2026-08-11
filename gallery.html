@@ -130,6 +130,29 @@
       font-size: 0.88rem; color: var(--gray-mid);
       line-height: 1.7; max-width: 480px; margin: 0 auto;
     }
+    /* Photos panel — icon left, text right */
+    .photos-panel {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      text-align: left;
+    }
+    .photos-panel-icon {
+      width: 200px;
+      height: auto;
+      flex-shrink: 0;
+    }
+    @media (max-width: 600px) {
+      .photos-panel {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 20px;
+      }
+      .photos-panel-icon { width: 140px; }
+      .coming-soon-text { max-width: 100% !important; }
+    }
+
     /* Compact sections while content is empty */
     .section { padding: 48px 0; }
   </style>
@@ -185,8 +208,8 @@
         <h2 class="section-title">Photos</h2>
       </div>
     </div>
-    <div class="coming-soon-panel fade-up" style="display:flex;align-items:center;gap:36px;text-align:left;">
-      <img src="images/icon-photos.webp" alt="" style="width:200px;height:auto;flex-shrink:0;"/>
+    <div class="coming-soon-panel photos-panel fade-up">
+      <img src="images/icon-photos.webp" alt="" class="photos-panel-icon"/>
       <div>
         <div class="coming-soon-title">Photos Coming Soon</div>
         <p class="coming-soon-text" style="max-width:none;margin:0;">Our gallery is just getting started. Tournament photos, team moments, and behind-the-scenes shots will be added here as the season unfolds — check back after our first tournament!</p>
