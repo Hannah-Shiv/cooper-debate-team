@@ -167,9 +167,16 @@
     .form-card {
       background: rgba(10,32,68,0.5);
       border: 1px solid rgba(242,209,107,0.13);
+      border-top: 2px solid rgba(242,209,107,0.35);
       border-radius: 12px;
       padding: 36px 38px 32px;
       margin-bottom: 20px;
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .form-card:hover {
+      border-color: rgba(242,209,107,0.28);
+      border-top-color: rgba(242,209,107,0.7);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 0 1px rgba(242,209,107,0.06);
     }
     .form-card:last-child { margin-bottom: 0; }
     @media (max-width: 640px) { .form-card { padding: 26px 20px; } }
@@ -249,12 +256,18 @@
     }
     .form-input::placeholder,
     .form-textarea::placeholder { color: rgba(255,255,255,0.25); }
+    .form-input:hover,
+    .form-select:hover,
+    .form-textarea:hover {
+      border-color: rgba(242,209,107,0.4);
+      box-shadow: 0 0 10px rgba(242,209,107,0.1), 0 2px 8px rgba(0,0,0,0.2);
+    }
     .form-input:focus,
     .form-select:focus,
     .form-textarea:focus {
       outline: none;
-      border-color: rgba(242,209,107,0.5);
-      box-shadow: 0 0 0 3px rgba(242,209,107,0.07);
+      border-color: rgba(242,209,107,0.7);
+      box-shadow: 0 0 0 3px rgba(242,209,107,0.12), 0 0 16px rgba(242,209,107,0.15);
     }
     .form-select {
       appearance: none;
@@ -579,21 +592,18 @@
               </div>
             </div>
 
-            <div class="form-row full">
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="student-email">Student Email <span class="req">*</span></label>
                 <input class="form-input" type="email" id="student-email" name="Student Email" placeholder="student@fcpsschools.net" required autocomplete="email"/>
               </div>
-            </div>
-
-            <div class="form-row full">
               <div class="form-group">
                 <label class="form-label" for="homeroom">Homeroom Teacher</label>
                 <input class="form-input" type="text" id="homeroom" name="Homeroom Teacher" placeholder="Teacher's full name"/>
               </div>
             </div>
 
-            <div class="form-row full">
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="debate-exp">Prior Debate Experience</label>
                 <select class="form-select" id="debate-exp" name="Prior Debate Experience">
@@ -603,6 +613,7 @@
                   <option value="Other experience">Other experience</option>
                 </select>
               </div>
+              <div></div>
             </div>
           </div>
 
@@ -633,7 +644,7 @@
               </div>
             </div>
 
-            <div class="form-row full">
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label" for="parent-relation">Relationship to Student <span class="req">*</span></label>
                 <select class="form-select" id="parent-relation" name="Relationship to Student" required>
@@ -644,6 +655,7 @@
                   <option value="Other">Other</option>
                 </select>
               </div>
+              <div></div>
             </div>
           </div>
 
@@ -786,11 +798,12 @@
               </label>
             </div>
 
-            <div class="form-row full" style="margin-top:18px;">
+            <div class="form-row" style="margin-top:18px;">
               <div class="form-group">
                 <label class="form-label" for="parent-sig">Parent / Guardian Name (typed signature) <span class="req">*</span></label>
                 <input class="form-input" type="text" id="parent-sig" name="Parent/Guardian Name (typed signature)" placeholder="Type your full name as your signature" required/>
               </div>
+              <div></div>
             </div>
 
             <div class="form-submit-wrap">
