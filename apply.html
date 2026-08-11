@@ -132,11 +132,16 @@
     .form-step {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      opacity: 0.92;
+      transition: opacity 0.2s ease, transform 0.15s ease;
     }
+    .form-step:hover { opacity: 1; transform: translateY(-1px); }
     .form-step-num {
-      width: 28px;
-      height: 28px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: rgba(242,209,107,0.18);
       border: 1.5px solid rgba(242,209,107,0.75);
@@ -144,7 +149,7 @@
       align-items: center;
       justify-content: center;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.83rem;
+      font-size: 0.92rem;
       font-weight: 700;
       color: #F2D16B;
       text-shadow: 0 0 8px rgba(242,209,107,0.5);
@@ -152,7 +157,7 @@
     }
     .form-step-label {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.78rem;
+      font-size: 0.84rem;
       font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
@@ -571,30 +576,30 @@
 
     <!-- STEPS -->
     <div class="form-steps" aria-label="Application steps">
-      <div class="form-step">
+      <a class="form-step" href="#section-1">
         <div class="form-step-num" style="color:#F2D16B;border-color:rgba(242,209,107,0.75);background:rgba(242,209,107,0.18);">1</div>
         <span class="form-step-label" style="color:#F2D16B;">Student Info</span>
-      </div>
+      </a>
       <div class="form-step-connector"></div>
-      <div class="form-step">
+      <a class="form-step" href="#section-2">
         <div class="form-step-num" style="color:#7EB8E8;border-color:rgba(126,184,232,0.75);background:rgba(126,184,232,0.18);">2</div>
         <span class="form-step-label" style="color:#7EB8E8;">Parent Info</span>
-      </div>
+      </a>
       <div class="form-step-connector"></div>
-      <div class="form-step">
+      <a class="form-step" href="#section-3">
         <div class="form-step-num" style="color:#6DD8B8;border-color:rgba(109,216,184,0.75);background:rgba(109,216,184,0.18);">3</div>
         <span class="form-step-label" style="color:#6DD8B8;">Commitments</span>
-      </div>
+      </a>
       <div class="form-step-connector"></div>
-      <div class="form-step">
+      <a class="form-step" href="#section-4">
         <div class="form-step-num" style="color:#C4AAFF;border-color:rgba(196,168,255,0.75);background:rgba(196,168,255,0.18);">4</div>
         <span class="form-step-label" style="color:#C4AAFF;">Short Answers</span>
-      </div>
+      </a>
       <div class="form-step-connector"></div>
-      <div class="form-step">
+      <a class="form-step" href="#section-5">
         <div class="form-step-num" style="color:#E8C47C;border-color:rgba(232,196,124,0.75);background:rgba(232,196,124,0.18);">5</div>
         <span class="form-step-label" style="color:#E8C47C;">Submit</span>
-      </div>
+      </a>
     </div>
 
     <!-- TWO-COLUMN LAYOUT -->
@@ -616,7 +621,7 @@
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
           <!-- ── SECTION 1: Student Information ── -->
-          <div class="form-card card-gold">
+          <div id="section-1" class="form-card card-gold">
             <div class="form-card-title"><span class="card-num">1</span>Student Information</div>
             <div class="form-card-subtitle">Please use your official school name as it appears on your FCPS records.</div>
 
@@ -672,7 +677,7 @@
           </div>
 
           <!-- ── SECTION 2: Parent / Guardian Information ── -->
-          <div class="form-card card-blue">
+          <div id="section-2" class="form-card card-blue">
             <div class="form-card-title"><span class="card-num">2</span>Parent / Guardian Information</div>
             <div class="form-card-subtitle">The coach will use this contact information for all team communications.</div>
 
@@ -714,7 +719,7 @@
           </div>
 
           <!-- ── SECTION 3: Commitment Acknowledgments ── -->
-          <div class="form-card card-teal">
+          <div id="section-3" class="form-card card-teal">
             <div class="form-card-title"><span class="card-num">3</span>Commitment Acknowledgments</div>
             <div class="form-card-subtitle">This is a Cooper team, not a club. Please read each commitment carefully and check the box only if your student can genuinely fulfill it.</div>
 
@@ -795,7 +800,7 @@
           </div>
 
           <!-- ── SECTION 4: Short Answer Questions ── -->
-          <div class="form-card card-purple">
+          <div id="section-4" class="form-card card-purple">
             <div class="form-card-title"><span class="card-num">4</span>Short Answer Questions</div>
             <div class="form-card-subtitle">Answer honestly and in your own words. There are no right or wrong answers — the coach wants to hear your voice.</div>
 
@@ -835,7 +840,7 @@
           </div>
 
           <!-- ── SECTION 5: Parent Agreement & Submit ── -->
-          <div class="form-card card-amber">
+          <div id="section-5" class="form-card card-amber">
             <div class="form-card-title"><span class="card-num">5</span>Parent / Guardian Agreement</div>
             <div class="form-card-subtitle">
               By submitting this application, the parent or guardian listed above confirms they have
