@@ -11,65 +11,27 @@
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
-    /* ── Page layout ── */
+
+    /* ── Page ── */
     .apply-page {
       min-height: 100vh;
-      padding: 120px 0 80px;
+      padding: 120px 0 100px;
       background: var(--bg-deep);
     }
-
-    /* ── Policy alert banner ── */
-    .policy-alert {
-      background: linear-gradient(135deg, #7a1010 0%, #a01515 100%);
-      border: 1.5px solid rgba(255,180,180,0.35);
-      border-radius: 10px;
-      padding: 22px 28px;
-      margin-bottom: 40px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    .policy-alert-icon {
-      flex-shrink: 0;
-      width: 36px;
-      height: 36px;
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.1rem;
-      margin-top: 2px;
-    }
-    .policy-alert-title {
-      font-family: 'Josefin Sans', sans-serif;
-      font-weight: 700;
-      font-size: 0.82rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #ffcccc;
-      margin-bottom: 6px;
-    }
-    .policy-alert-text {
-      font-size: 0.9rem;
-      color: rgba(255,255,255,0.92);
-      line-height: 1.65;
-    }
-    .policy-alert-text strong { color: #fff; }
 
     /* ── Page header ── */
     .apply-header {
       text-align: center;
-      margin-bottom: 56px;
+      margin-bottom: 52px;
     }
     .apply-eyebrow {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.72rem;
       font-weight: 700;
-      letter-spacing: 0.18em;
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: var(--gold);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
     }
     .apply-title {
       font-family: 'Cormorant Garamond', serif;
@@ -82,334 +44,373 @@
     .apply-subtitle {
       font-size: 0.93rem;
       color: var(--gray-mid);
-      max-width: 560px;
+      max-width: 520px;
       margin: 0 auto;
+      line-height: 1.75;
+    }
+
+    /* ── Header divider ── */
+    .apply-header-rule {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 22px auto 0;
+      max-width: 320px;
+    }
+    .apply-header-rule-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to var(--dir), rgba(212,160,23,0.5), transparent);
+    }
+    .apply-header-rule-sym {
+      color: var(--gold);
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
+
+    /* ── Policy notice (single, top) ── */
+    .policy-notice {
+      display: flex;
+      gap: 18px;
+      align-items: flex-start;
+      background: rgba(8,20,52,0.9);
+      border: 1px solid rgba(200,60,60,0.35);
+      border-left: 3px solid rgba(210,80,80,0.8);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 44px;
+    }
+    .policy-notice-icon {
+      flex-shrink: 0;
+      font-size: 1.05rem;
+      margin-top: 1px;
+      opacity: 0.85;
+    }
+    .policy-notice-title {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,180,180,0.95);
+      margin-bottom: 6px;
+    }
+    .policy-notice-text {
+      font-size: 0.88rem;
+      color: rgba(255,255,255,0.82);
       line-height: 1.7;
     }
+    .policy-notice-text strong { color: #fff; }
 
     /* ── Steps indicator ── */
     .form-steps {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0;
       margin-bottom: 48px;
-      flex-wrap: wrap;
     }
     .form-step {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 9px;
     }
     .form-step-num {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
-      background: rgba(212,160,23,0.12);
-      border: 1.5px solid rgba(212,160,23,0.3);
+      background: rgba(212,160,23,0.1);
+      border: 1.5px solid rgba(212,160,23,0.35);
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--gold);
       flex-shrink: 0;
     }
-    .form-step-num.active {
-      background: var(--gold);
-      border-color: var(--gold);
-      color: var(--navy-dark);
-    }
     .form-step-label {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 600;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: var(--gray-mid);
+      color: rgba(212,160,23,0.65);
+      white-space: nowrap;
     }
-    .form-step-label.active { color: var(--gold); }
     .form-step-connector {
-      width: 32px;
+      width: 36px;
       height: 1px;
-      background: rgba(212,160,23,0.2);
-      margin: 0 4px;
+      background: rgba(212,160,23,0.18);
+      margin: 0 6px;
+      flex-shrink: 0;
     }
     @media (max-width: 600px) {
       .form-step-label { display: none; }
-      .form-step-connector { width: 20px; }
+      .form-step-connector { width: 18px; margin: 0 3px; }
     }
 
-    /* ── Form card ── */
-    .form-card {
-      background: rgba(11,37,69,0.55);
-      border: 1px solid rgba(212,160,23,0.14);
-      border-radius: 14px;
-      padding: 40px 40px 36px;
-      margin-bottom: 28px;
-      backdrop-filter: blur(6px);
+    /* ── Two-column layout ── */
+    .apply-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 36px;
+      align-items: start;
     }
-    @media (max-width: 640px) { .form-card { padding: 28px 20px; } }
+    @media (max-width: 960px) { .apply-layout { grid-template-columns: 1fr; } }
+
+    /* ── Form cards — single unified style ── */
+    .form-card {
+      background: rgba(10,32,68,0.5);
+      border: 1px solid rgba(212,160,23,0.13);
+      border-radius: 12px;
+      padding: 36px 38px 32px;
+      margin-bottom: 20px;
+    }
+    .form-card:last-child { margin-bottom: 0; }
+    @media (max-width: 640px) { .form-card { padding: 26px 20px; } }
 
     .form-card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.4rem;
+      font-size: 1.35rem;
       font-weight: 700;
       color: var(--white);
       margin-bottom: 4px;
     }
     .form-card-subtitle {
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       color: var(--gray-mid);
-      margin-bottom: 28px;
-      line-height: 1.6;
+      margin-bottom: 26px;
+      line-height: 1.65;
     }
-    .form-divider {
+    .form-card-rule {
       height: 1px;
+      background: rgba(212,160,23,0.1);
+      margin: 22px 0;
+    }
+
+    /* ── Section number badge ── */
+    .card-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
       background: rgba(212,160,23,0.12);
-      margin: 24px 0;
+      border: 1px solid rgba(212,160,23,0.3);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-right: 10px;
+      vertical-align: middle;
+      flex-shrink: 0;
     }
 
     /* ── Form fields ── */
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      margin-bottom: 18px;
+      gap: 16px;
+      margin-bottom: 16px;
     }
     .form-row.full { grid-template-columns: 1fr; }
     @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
-
     .form-group { display: flex; flex-direction: column; gap: 7px; }
 
     .form-label {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: var(--gold-pale);
+      color: rgba(212,160,23,0.75);
     }
-    .form-label .req { color: #e05555; margin-left: 3px; }
+    .form-label .req { color: #d96060; margin-left: 3px; }
 
     .form-input,
     .form-select,
     .form-textarea {
-      background: rgba(7,26,54,0.7);
-      border: 1.5px solid rgba(212,160,23,0.2);
-      border-radius: 8px;
-      padding: 12px 16px;
+      background: rgba(6,20,48,0.65);
+      border: 1px solid rgba(212,160,23,0.18);
+      border-radius: 7px;
+      padding: 11px 15px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--white);
-      transition: border-color 0.25s, box-shadow 0.25s;
+      transition: border-color 0.2s, box-shadow 0.2s;
       width: 100%;
       box-sizing: border-box;
     }
     .form-input::placeholder,
-    .form-textarea::placeholder { color: rgba(255,255,255,0.3); }
+    .form-textarea::placeholder { color: rgba(255,255,255,0.25); }
     .form-input:focus,
     .form-select:focus,
     .form-textarea:focus {
       outline: none;
-      border-color: rgba(212,160,23,0.6);
-      box-shadow: 0 0 0 3px rgba(212,160,23,0.08);
+      border-color: rgba(212,160,23,0.5);
+      box-shadow: 0 0 0 3px rgba(212,160,23,0.07);
     }
     .form-select {
       appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4A017' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
-      background-position: right 14px center;
-      background-size: 16px;
-      padding-right: 40px;
+      background-position: right 13px center;
+      background-size: 15px;
+      padding-right: 38px;
       cursor: pointer;
     }
     .form-select option { background: #0B2545; color: #fff; }
-    .form-textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+    .form-textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+
+    /* ── Commitment schedule note ── */
+    .schedule-note {
+      background: rgba(212,160,23,0.06);
+      border: 1px solid rgba(212,160,23,0.15);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: var(--gray-mid);
+      line-height: 1.7;
+    }
+    .schedule-note strong { color: rgba(212,160,23,0.85); }
 
     /* ── Checkboxes ── */
-    .check-group { display: flex; flex-direction: column; gap: 14px; }
+    .check-group { display: flex; flex-direction: column; gap: 10px; }
     .check-item {
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      padding: 16px 18px;
-      background: rgba(7,26,54,0.5);
-      border: 1.5px solid rgba(212,160,23,0.12);
+      padding: 14px 16px;
+      background: rgba(6,20,48,0.4);
+      border: 1px solid rgba(212,160,23,0.1);
       border-radius: 8px;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
     }
-    .check-item:hover { border-color: rgba(212,160,23,0.3); background: rgba(7,26,54,0.7); }
+    .check-item:hover { border-color: rgba(212,160,23,0.28); background: rgba(6,20,48,0.6); }
     .check-item input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
+      width: 17px;
+      height: 17px;
       flex-shrink: 0;
       margin-top: 2px;
       accent-color: var(--gold);
       cursor: pointer;
     }
     .check-item-label {
-      font-size: 0.87rem;
-      color: rgba(255,255,255,0.85);
-      line-height: 1.6;
-    }
-    .check-item-label strong { color: var(--white); }
-
-    /* ── Commitment warning card ── */
-    .commitment-note {
-      background: rgba(212,160,23,0.07);
-      border: 1px solid rgba(212,160,23,0.2);
-      border-radius: 8px;
-      padding: 16px 20px;
-      margin-bottom: 20px;
-      font-size: 0.85rem;
-      color: var(--gray-mid);
+      font-size: 0.86rem;
+      color: rgba(255,255,255,0.8);
       line-height: 1.65;
     }
-    .commitment-note strong { color: var(--gold-pale); }
+    .check-item-label strong { color: var(--white); display: block; margin-bottom: 1px; }
 
-    /* ── Submit button ── */
-    .form-submit-wrap { text-align: center; margin-top: 32px; }
+    /* ── Submit ── */
+    .form-submit-wrap { text-align: center; margin-top: 30px; }
     .btn-submit {
       background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
       color: var(--navy-dark);
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 16px 48px;
+      padding: 15px 52px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
       transition: opacity 0.2s, transform 0.2s;
     }
     .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
     .form-note {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: var(--gray-mid);
       margin-top: 14px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
     /* ── Success state ── */
-    .form-success {
-      display: none;
-      text-align: center;
-      padding: 60px 40px;
-    }
+    .form-success { display: none; text-align: center; padding: 60px 40px; }
     .form-success.visible { display: block; }
     .success-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background: rgba(40,160,80,0.15);
-      border: 2px solid rgba(40,160,80,0.4);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      font-size: 2rem;
+      width: 70px; height: 70px; border-radius: 50%;
+      background: rgba(40,160,80,0.13);
+      border: 2px solid rgba(40,160,80,0.35);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 1.8rem;
     }
-    .success-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      color: var(--white);
-      margin-bottom: 12px;
-    }
-    .success-text {
-      font-size: 0.92rem;
-      color: var(--gray-mid);
-      line-height: 1.7;
-      max-width: 480px;
-      margin: 0 auto 28px;
-    }
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: var(--white); margin-bottom: 12px; }
+    .success-text { font-size: 0.9rem; color: var(--gray-mid); line-height: 1.75; max-width: 460px; margin: 0 auto 28px; }
 
-    /* ── Sidebar info cards ── */
-    .apply-layout {
-      display: grid;
-      grid-template-columns: 1fr 320px;
-      gap: 32px;
-      align-items: start;
-    }
-    @media (max-width: 960px) { .apply-layout { grid-template-columns: 1fr; } }
-
-    .info-card {
-      background: rgba(11,37,69,0.55);
-      border: 1px solid rgba(212,160,23,0.14);
+    /* ── Sidebar cards ── */
+    .sidebar-card {
+      background: rgba(10,32,68,0.5);
+      border: 1px solid rgba(212,160,23,0.13);
       border-radius: 12px;
-      padding: 28px 24px;
-      margin-bottom: 20px;
-    }
-    .info-card-title {
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--gold);
+      padding: 24px 22px;
       margin-bottom: 16px;
     }
-    .info-item {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 14px;
-      font-size: 0.85rem;
-      color: var(--gray-mid);
-      line-height: 1.55;
-    }
-    .info-item:last-child { margin-bottom: 0; }
-    .info-dot {
-      flex-shrink: 0;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--gold);
-      margin-top: 6px;
-      opacity: 0.7;
-    }
-    .info-item strong { color: var(--white); display: block; margin-bottom: 2px; }
-
-    .deadline-card {
-      background: linear-gradient(135deg, rgba(11,37,69,0.8), rgba(20,55,100,0.6));
-      border: 1.5px solid rgba(212,160,23,0.35);
-      border-radius: 12px;
-      padding: 24px;
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .deadline-label {
+    .sidebar-card:last-child { margin-bottom: 0; }
+    .sidebar-card-title {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.15em;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(212,160,23,0.1);
+    }
+    .sidebar-item {
+      display: flex;
+      gap: 11px;
+      margin-bottom: 12px;
+      font-size: 0.83rem;
+      color: var(--gray-mid);
+      line-height: 1.55;
+    }
+    .sidebar-item:last-child { margin-bottom: 0; }
+    .sidebar-dot {
+      flex-shrink: 0;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--gold);
+      margin-top: 7px;
+      opacity: 0.55;
+    }
+    .sidebar-item strong { color: rgba(255,255,255,0.9); display: block; margin-bottom: 1px; }
+
+    /* ── Deadline card (sidebar) ── */
+    .deadline-card {
+      background: rgba(10,32,68,0.5);
+      border: 1px solid rgba(212,160,23,0.3);
+      border-radius: 12px;
+      padding: 22px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .deadline-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--gold);
       margin-bottom: 8px;
     }
     .deadline-date {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       font-weight: 700;
       color: var(--white);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .deadline-note { font-size: 0.78rem; color: var(--gray-mid); line-height: 1.55; }
 
-    /* ── Formspree notice (shown only in dev) ── */
-    .formspree-notice {
-      background: rgba(212,160,23,0.08);
-      border: 1px dashed rgba(212,160,23,0.4);
-      border-radius: 8px;
-      padding: 14px 18px;
-      font-size: 0.8rem;
-      color: var(--gold-pale);
-      margin-bottom: 24px;
-      line-height: 1.6;
-    }
   </style>
 </head>
 <body>
@@ -456,12 +457,24 @@
 <main class="apply-page">
   <div class="container">
 
-    <!-- POLICY ALERT — appearance #1 of 5 -->
-    <div class="policy-alert" role="alert">
-      <div class="policy-alert-icon">⚠</div>
+    <!-- PAGE HEADER -->
+    <div class="apply-header">
+      <div class="apply-eyebrow">2026–2027 Season</div>
+      <h1 class="apply-title">Apply to Join the<br/>Cooper Debate Team</h1>
+      <p class="apply-subtitle">Open to all 7th and 8th graders at Cooper Middle School. No prior debate experience required — just curiosity, commitment, and a willingness to work hard.</p>
+      <div class="apply-header-rule">
+        <div class="apply-header-rule-line" style="--dir:right;"></div>
+        <span class="apply-header-rule-sym">✦</span>
+        <div class="apply-header-rule-line" style="--dir:left;"></div>
+      </div>
+    </div>
+
+    <!-- POLICY NOTICE -->
+    <div class="policy-notice" role="alert">
+      <div class="policy-notice-icon">⚠️</div>
       <div>
-        <div class="policy-alert-title">Important — New Application Policy</div>
-        <div class="policy-alert-text">
+        <div class="policy-notice-title">Important — New Application Policy</div>
+        <div class="policy-notice-text">
           <strong>All interested students must apply before the deadline — including returning members.</strong>
           The only exception: students who qualified for Metro Finals in March 2026 are automatically
           on the team and do not need to reapply. Everyone else must submit an application.
@@ -470,41 +483,31 @@
       </div>
     </div>
 
-    <!-- PAGE HEADER -->
-    <div class="apply-header">
-      <div class="apply-eyebrow">2026–2027 Season</div>
-      <h1 class="apply-title">Apply to Join the<br/>Cooper Debate Team</h1>
-      <p class="apply-subtitle">
-        Open to all 7th and 8th graders at Cooper Middle School. No prior debate
-        experience required — just curiosity, commitment, and a willingness to work hard.
-      </p>
-    </div>
-
     <!-- STEPS -->
     <div class="form-steps" aria-label="Application steps">
       <div class="form-step">
-        <div class="form-step-num active">1</div>
-        <span class="form-step-label active">Student Info</span>
+        <div class="form-step-num">1</div>
+        <span class="form-step-label">Student Info</span>
       </div>
       <div class="form-step-connector"></div>
       <div class="form-step">
-        <div class="form-step-num active">2</div>
-        <span class="form-step-label active">Parent Info</span>
+        <div class="form-step-num">2</div>
+        <span class="form-step-label">Parent Info</span>
       </div>
       <div class="form-step-connector"></div>
       <div class="form-step">
-        <div class="form-step-num active">3</div>
-        <span class="form-step-label active">Commitments</span>
+        <div class="form-step-num">3</div>
+        <span class="form-step-label">Commitments</span>
       </div>
       <div class="form-step-connector"></div>
       <div class="form-step">
-        <div class="form-step-num active">4</div>
-        <span class="form-step-label active">Short Answers</span>
+        <div class="form-step-num">4</div>
+        <span class="form-step-label">Short Answers</span>
       </div>
       <div class="form-step-connector"></div>
       <div class="form-step">
-        <div class="form-step-num active">5</div>
-        <span class="form-step-label active">Submit</span>
+        <div class="form-step-num">5</div>
+        <span class="form-step-label">Submit</span>
       </div>
     </div>
 
@@ -513,23 +516,6 @@
 
       <!-- LEFT: THE FORM -->
       <div>
-
-        <!--
-          FORMSUBMIT ACTIVATION (one-time, no account needed):
-          1. The form is already wired to CooperDebateTeam@gmail.com via formsubmit.co
-          2. When the FIRST real application is submitted, formsubmit.co will send a
-             confirmation email to CooperDebateTeam@gmail.com — just click the link.
-          3. After that, every submission arrives directly in that inbox. Done.
-          4. Remove the .formspree-notice div below once the first submission confirms.
-        -->
-
-        <div class="formspree-notice">
-          <strong>One-time activation required:</strong> When the first application is submitted,
-          a confirmation email will be sent to <strong>CooperDebateTeam@gmail.com</strong>.
-          Click the confirmation link in that email — all future submissions will then arrive
-          directly in that inbox automatically. No account or signup needed.
-        </div>
-
         <form
           id="apply-form"
           action="https://formsubmit.co/7d88a7fecebda9f9a03f1a7677e2a4fc"
@@ -545,7 +531,7 @@
 
           <!-- ── SECTION 1: Student Information ── -->
           <div class="form-card">
-            <div class="form-card-title">Student Information</div>
+            <div class="form-card-title"><span class="card-num">1</span>Student Information</div>
             <div class="form-card-subtitle">Please use your official school name as it appears on your FCPS records.</div>
 
             <div class="form-row">
@@ -603,16 +589,16 @@
 
           <!-- ── SECTION 2: Parent / Guardian Information ── -->
           <div class="form-card">
-            <div class="form-card-title">Parent / Guardian Information</div>
+            <div class="form-card-title"><span class="card-num">2</span>Parent / Guardian Information</div>
             <div class="form-card-subtitle">The coach will use this contact information for all team communications.</div>
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="parent-first">Parent / Guardian First Name <span class="req">*</span></label>
+                <label class="form-label" for="parent-first">First Name <span class="req">*</span></label>
                 <input class="form-input" type="text" id="parent-first" name="Parent/Guardian First Name" placeholder="First name" required autocomplete="given-name"/>
               </div>
               <div class="form-group">
-                <label class="form-label" for="parent-last">Parent / Guardian Last Name <span class="req">*</span></label>
+                <label class="form-label" for="parent-last">Last Name <span class="req">*</span></label>
                 <input class="form-input" type="text" id="parent-last" name="Parent/Guardian Last Name" placeholder="Last name" required autocomplete="family-name"/>
               </div>
             </div>
@@ -644,87 +630,80 @@
 
           <!-- ── SECTION 3: Commitment Acknowledgments ── -->
           <div class="form-card">
-            <div class="form-card-title">Commitment Acknowledgments</div>
-            <div class="form-card-subtitle">
-              This is a Cooper team, not a club. Please read each commitment carefully
-              and check the box only if your student can genuinely fulfill it.
-            </div>
+            <div class="form-card-title"><span class="card-num">3</span>Commitment Acknowledgments</div>
+            <div class="form-card-subtitle">This is a Cooper team, not a club. Please read each commitment carefully and check the box only if your student can genuinely fulfill it.</div>
 
-            <div class="commitment-note">
+            <div class="schedule-note">
               <strong>Practice schedule:</strong> Tuesday sessions, 2:30–4:30 PM in the Lecture Hall.
-              September 2026 through March/April 2027. There are two session groups (A and B) —
-              your assignment will be communicated after acceptance.<br/><br/>
+              September 2026 through March/April 2027. Two session groups (A and B) —
+              assignment communicated after acceptance.<br/><br/>
               <strong>Tournaments:</strong> Saturday tournaments approximately once per month
-              (5 total in the preliminary season). Students must attend at least 3 of 5.
-              <strong>No FCPS transportation is provided</strong> — parents drive or carpool.
+              (5 total). Students must attend at least 3 of 5.
+              <strong>No FCPS transportation provided</strong> — parents drive or carpool.
             </div>
 
             <div class="check-group">
               <label class="check-item">
                 <input type="checkbox" name="Student commits to Tuesday practice sessions (2:30-4:30 PM)" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Tuesday Practices</strong> — I understand I must attend Tuesday practice
-                  sessions (2:30–4:30 PM) regularly throughout the season.
+                  <strong>Tuesday Practices</strong>
+                  I understand I must attend Tuesday practice sessions (2:30–4:30 PM) regularly throughout the season.
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Student commits to attending at least 3 of 5 Saturday tournaments" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Saturday Tournaments</strong> — I understand I must attend at least
-                  3 of 5 Saturday preliminary tournaments (approximately 1 per month).
+                  <strong>Saturday Tournaments</strong>
+                  I understand I must attend at least 3 of 5 Saturday preliminary tournaments (approximately 1 per month).
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Student commits to not dropping their debate partner" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Partner Commitment</strong> — I understand that dropping my debate partner
-                  at the last minute is not acceptable. It directly harms my partner and will not
-                  be tolerated.
+                  <strong>Partner Commitment</strong>
+                  I understand that dropping my debate partner at the last minute is not acceptable. It directly harms my partner and will not be tolerated.
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Student commits to independent research and speech prep" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Research &amp; Prep</strong> — I understand debate requires independent
-                  research, writing 4+ minute speeches, preparing Crossfire questions, and staying
-                  current as topics change every 1–2 months.
+                  <strong>Research &amp; Prep</strong>
+                  I understand debate requires independent research, writing 4+ minute speeches, preparing Crossfire questions, and staying current as topics change every 1–2 months.
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Parent is aware of the $15 per student team fee" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Parent: Team Fee</strong> — My parent/guardian is aware of the
-                  <strong>$15 per student per year</strong> team fee. (Fee waivers are available —
-                  please contact the coach directly.)
+                  <strong>Parent: Team Fee</strong>
+                  My parent/guardian is aware of the <strong>$15 per student per year</strong> team fee. (Fee waivers available — contact the coach directly.)
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Parent will volunteer as a tournament judge for at least 1 tournament" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Parent: Judge Volunteer</strong> — My parent/guardian understands they
-                  are expected to volunteer as a tournament judge for at least 1 tournament.
-                  WASDL judge training will be provided (online, October).
+                  <strong>Parent: Judge Volunteer</strong>
+                  My parent/guardian understands they are expected to volunteer as a tournament judge for at least 1 tournament. WASDL judge training will be provided (online, October).
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Parent will arrange driving or carpooling to tournaments" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Parent: Transportation</strong> — My parent/guardian understands there
-                  is no FCPS transportation to tournaments and will arrange driving or carpooling.
+                  <strong>Parent: Transportation</strong>
+                  My parent/guardian understands there is no FCPS transportation to tournaments and will arrange driving or carpooling.
                 </span>
               </label>
 
               <label class="check-item">
                 <input type="checkbox" name="Parent will attend the required team Google Meet sessions" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>Parent: Required Google Meets</strong> — My parent/guardian will attend
-                  the required 1-hour team Google Meet sessions (one per semester: October and January).
+                  <strong>Parent: Required Google Meets</strong>
+                  My parent/guardian will attend the required 1-hour team Google Meet sessions (one per semester: October and January).
                 </span>
               </label>
             </div>
@@ -732,11 +711,8 @@
 
           <!-- ── SECTION 4: Short Answer Questions ── -->
           <div class="form-card">
-            <div class="form-card-title">Short Answer Questions</div>
-            <div class="form-card-subtitle">
-              Answer honestly and in your own words. There are no right or wrong answers —
-              the coach wants to hear your voice.
-            </div>
+            <div class="form-card-title"><span class="card-num">4</span>Short Answer Questions</div>
+            <div class="form-card-subtitle">Answer honestly and in your own words. There are no right or wrong answers — the coach wants to hear your voice.</div>
 
             <div class="form-row full">
               <div class="form-group">
@@ -745,7 +721,7 @@
               </div>
             </div>
 
-            <div class="form-divider"></div>
+            <div class="form-card-rule"></div>
 
             <div class="form-row full">
               <div class="form-group">
@@ -754,7 +730,7 @@
               </div>
             </div>
 
-            <div class="form-divider"></div>
+            <div class="form-card-rule"></div>
 
             <div class="form-row full">
               <div class="form-group">
@@ -763,7 +739,7 @@
               </div>
             </div>
 
-            <div class="form-divider"></div>
+            <div class="form-card-rule"></div>
 
             <div class="form-row full">
               <div class="form-group">
@@ -775,7 +751,7 @@
 
           <!-- ── SECTION 5: Parent Agreement & Submit ── -->
           <div class="form-card">
-            <div class="form-card-title">Parent / Guardian Agreement</div>
+            <div class="form-card-title"><span class="card-num">5</span>Parent / Guardian Agreement</div>
             <div class="form-card-subtitle">
               By submitting this application, the parent or guardian listed above confirms they have
               read and agree to all commitments outlined in this form and on the
@@ -786,9 +762,7 @@
               <label class="check-item">
                 <input type="checkbox" name="Parent/Guardian has read and agrees to all commitments above" value="Yes" required/>
                 <span class="check-item-label">
-                  <strong>I, the parent/guardian, have read all student and parent commitments
-                  and agree to support my student's participation in the Cooper Debate Team
-                  for the 2026–2027 season.</strong>
+                  <strong>I, the parent/guardian, have read all student and parent commitments and agree to support my student's participation in the Cooper Debate Team for the 2026–2027 season.</strong>
                 </span>
               </label>
             </div>
@@ -813,34 +787,22 @@
 
         </form>
 
-        <!-- SUCCESS MESSAGE (shown after submission) -->
+        <!-- SUCCESS MESSAGE -->
         <div class="form-success form-card" id="form-success" role="alert">
           <div class="success-icon">✓</div>
           <div class="success-title">Application Received!</div>
           <p class="success-text">
-            Thank you for applying to the Cooper Debate Team. Your application has been
-            submitted successfully. Coach Konde will be in touch with next steps
-            after the application deadline. Keep an eye on your student and parent email.
+            Thank you for applying to the Cooper Debate Team. Your application has been submitted successfully.
+            Coach Konde will be in touch with next steps after the application deadline.
+            Keep an eye on your student and parent email.
           </p>
           <a href="index.html" class="btn btn-gold">Back to Home →</a>
         </div>
 
       </div>
 
-      <!-- RIGHT: SIDEBAR INFO -->
+      <!-- RIGHT: SIDEBAR -->
       <aside>
-
-        <!-- POLICY ALERT — appearance #2 of 5 -->
-        <div class="policy-alert" style="margin-bottom:20px;" role="alert">
-          <div class="policy-alert-icon" style="width:28px;height:28px;font-size:0.9rem;">⚠</div>
-          <div>
-            <div class="policy-alert-title">Must Apply</div>
-            <div class="policy-alert-text" style="font-size:0.82rem;">
-              Even if you debated last year, you must apply. Only Metro Finals qualifiers
-              (March 2026) are automatically on the team.
-            </div>
-          </div>
-        </div>
 
         <!-- KEY DATES -->
         <div class="deadline-card">
@@ -852,84 +814,39 @@
         </div>
 
         <!-- TIMELINE -->
-        <div class="info-card">
-          <div class="info-card-title">Selection Timeline</div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Late August</strong> Info Session for prospective members</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Early September</strong> Activity Fair at Cooper MS</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Early September</strong> Application deadline</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>September</strong> Two tryout dates (details sent to applicants)</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>September</strong> Acceptance notifications sent</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Sept 2026</strong> Season begins — first Tuesday session</div>
-          </div>
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Selection Timeline</div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Late August</strong>Info Session for prospective members</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Early September</strong>Activity Fair at Cooper MS</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Early September</strong>Application deadline</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>September</strong>Two tryout dates (details sent to applicants)</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>September</strong>Acceptance notifications sent</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Sept 2026</strong>Season begins — first Tuesday session</div></div>
         </div>
 
-        <!-- STUDENT COMMITMENT SUMMARY -->
-        <div class="info-card">
-          <div class="info-card-title">Student Commitment</div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Tuesday practices</strong> 2:30–4:30 PM, Lecture Hall, Sept–March/April</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>3 of 5 Saturday tournaments</strong> required (~1 per month)</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Research &amp; prep</strong> between meetings — topics change every 1–2 months</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Partner reliability</strong> — no last-minute drops; this affects real people</div>
-          </div>
+        <!-- STUDENT COMMITMENT -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Student Commitment</div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Tuesday practices</strong>2:30–4:30 PM, Lecture Hall, Sept–March/April</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>3 of 5 Saturday tournaments</strong>required (~1 per month)</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Research &amp; prep</strong>between meetings — topics change every 1–2 months</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Partner reliability</strong>no last-minute drops</div></div>
         </div>
 
-        <!-- PARENT COMMITMENT SUMMARY -->
-        <div class="info-card">
-          <div class="info-card-title">Parent Commitment</div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>$15/year</strong> team fee (waivers available)</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Judge at 1 tournament</strong> — free WASDL training provided in October</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Drive to tournaments</strong> — no FCPS bus service</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>2 required Google Meets</strong> — 1 hr each, October &amp; January</div>
-          </div>
-          <div class="info-item">
-            <div class="info-dot"></div>
-            <div><strong>Permission slips packet</strong> due by October 1st</div>
-          </div>
+        <!-- PARENT COMMITMENT -->
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Parent Commitment</div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>$15/year</strong>team fee (waivers available)</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Judge at 1 tournament</strong>free WASDL training in October</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Drive to tournaments</strong>no FCPS bus service</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>2 required Google Meets</strong>1 hr each, October &amp; January</div></div>
+          <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Permission slips</strong>due by October 1st</div></div>
         </div>
 
         <!-- QUESTIONS -->
-        <div class="info-card">
-          <div class="info-card-title">Questions?</div>
-          <p style="font-size:0.85rem;color:var(--gray-mid);line-height:1.65;margin:0;">
+        <div class="sidebar-card">
+          <div class="sidebar-card-title">Questions?</div>
+          <p style="font-size:0.83rem;color:var(--gray-mid);line-height:1.7;margin:0;">
             Email Coach Konde at
             <a href="mailto:CooperDebateTeam@gmail.com" style="color:var(--gold);text-decoration:none;">CooperDebateTeam@gmail.com</a>.
             Please allow 2–3 school days for a response during the summer.
@@ -996,10 +913,8 @@
   const successDiv = document.getElementById('form-success');
   const submitBtn = document.getElementById('submit-btn');
 
-  // Set absolute _next URL so FormSubmit redirects back to this page
   document.getElementById('next-url').value = window.location.origin + window.location.pathname + '?success=1';
 
-  // Show success message if redirected back after submission
   if (window.location.search.includes('success=1')) {
     form.style.display = 'none';
     successDiv.classList.add('visible');
@@ -1007,7 +922,6 @@
   }
 
   form.addEventListener('submit', function(e) {
-    // Client-side validation before allowing the POST through
     const required = form.querySelectorAll('[required]');
     let valid = true;
     required.forEach(el => {
@@ -1019,20 +933,16 @@
         valid = false;
       }
     });
-
     if (!valid) {
       e.preventDefault();
       const firstError = form.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
-    // Let the form POST through to FormSubmit normally
   });
 
-  // Reset red borders on input
   form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
     el.addEventListener('input', () => { el.style.borderColor = ''; });
   });
