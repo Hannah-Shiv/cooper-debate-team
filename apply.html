@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
 
+    /* ── Bright gold override for this page ── */
+    .apply-page, .apply-page * { --gold: #F2D16B; --gold-pale: #F8E49A; }
+
     /* ── Page ── */
     .apply-page {
       min-height: 100vh;
@@ -61,7 +64,7 @@
     .apply-header-rule-line {
       flex: 1;
       height: 1px;
-      background: linear-gradient(to var(--dir), rgba(212,160,23,0.5), transparent);
+      background: linear-gradient(to var(--dir), rgba(242,209,107,0.5), transparent);
     }
     .apply-header-rule-sym {
       color: var(--gold);
@@ -119,8 +122,8 @@
       width: 28px;
       height: 28px;
       border-radius: 50%;
-      background: rgba(212,160,23,0.1);
-      border: 1.5px solid rgba(212,160,23,0.35);
+      background: rgba(242,209,107,0.1);
+      border: 1.5px solid rgba(242,209,107,0.35);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -136,13 +139,13 @@
       font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: rgba(212,160,23,0.65);
+      color: rgba(242,209,107,0.65);
       white-space: nowrap;
     }
     .form-step-connector {
       width: 36px;
       height: 1px;
-      background: rgba(212,160,23,0.18);
+      background: rgba(242,209,107,0.18);
       margin: 0 6px;
       flex-shrink: 0;
     }
@@ -163,7 +166,7 @@
     /* ── Form cards — single unified style ── */
     .form-card {
       background: rgba(10,32,68,0.5);
-      border: 1px solid rgba(212,160,23,0.13);
+      border: 1px solid rgba(242,209,107,0.13);
       border-radius: 12px;
       padding: 36px 38px 32px;
       margin-bottom: 20px;
@@ -186,7 +189,7 @@
     }
     .form-card-rule {
       height: 1px;
-      background: rgba(212,160,23,0.1);
+      background: rgba(242,209,107,0.1);
       margin: 22px 0;
     }
 
@@ -198,8 +201,8 @@
       width: 22px;
       height: 22px;
       border-radius: 50%;
-      background: rgba(212,160,23,0.12);
-      border: 1px solid rgba(212,160,23,0.3);
+      background: rgba(242,209,107,0.12);
+      border: 1px solid rgba(242,209,107,0.3);
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.75rem;
       font-weight: 700;
@@ -226,7 +229,7 @@
       font-weight: 700;
       letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: rgba(212,160,23,0.75);
+      color: rgba(242,209,107,0.75);
     }
     .form-label .req { color: #d96060; margin-left: 3px; }
 
@@ -234,7 +237,7 @@
     .form-select,
     .form-textarea {
       background: rgba(6,20,48,0.65);
-      border: 1px solid rgba(212,160,23,0.18);
+      border: 1px solid rgba(242,209,107,0.18);
       border-radius: 7px;
       padding: 11px 15px;
       font-family: 'Josefin Sans', sans-serif;
@@ -250,12 +253,12 @@
     .form-select:focus,
     .form-textarea:focus {
       outline: none;
-      border-color: rgba(212,160,23,0.5);
-      box-shadow: 0 0 0 3px rgba(212,160,23,0.07);
+      border-color: rgba(242,209,107,0.5);
+      box-shadow: 0 0 0 3px rgba(242,209,107,0.07);
     }
     .form-select {
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4A017' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2D16B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 13px center;
       background-size: 15px;
@@ -267,8 +270,8 @@
 
     /* ── Commitment schedule note ── */
     .schedule-note {
-      background: rgba(212,160,23,0.06);
-      border: 1px solid rgba(212,160,23,0.15);
+      background: rgba(242,209,107,0.06);
+      border: 1px solid rgba(242,209,107,0.15);
       border-radius: 8px;
       padding: 16px 20px;
       margin-bottom: 20px;
@@ -276,7 +279,7 @@
       color: var(--gray-mid);
       line-height: 1.7;
     }
-    .schedule-note strong { color: rgba(212,160,23,0.85); }
+    .schedule-note strong { color: rgba(242,209,107,0.85); }
 
     /* ── Checkboxes ── */
     .check-group { display: flex; flex-direction: column; gap: 10px; }
@@ -286,12 +289,12 @@
       align-items: flex-start;
       padding: 14px 16px;
       background: rgba(6,20,48,0.4);
-      border: 1px solid rgba(212,160,23,0.1);
+      border: 1px solid rgba(242,209,107,0.1);
       border-radius: 8px;
       cursor: pointer;
       transition: border-color 0.2s, background 0.2s;
     }
-    .check-item:hover { border-color: rgba(212,160,23,0.28); background: rgba(6,20,48,0.6); }
+    .check-item:hover { border-color: rgba(242,209,107,0.28); background: rgba(6,20,48,0.6); }
     .check-item input[type="checkbox"] {
       width: 17px;
       height: 17px;
@@ -348,7 +351,7 @@
     /* ── Sidebar cards ── */
     .sidebar-card {
       background: rgba(10,32,68,0.5);
-      border: 1px solid rgba(212,160,23,0.13);
+      border: 1px solid rgba(242,209,107,0.13);
       border-radius: 12px;
       padding: 24px 22px;
       margin-bottom: 16px;
@@ -363,7 +366,7 @@
       color: var(--gold);
       margin-bottom: 16px;
       padding-bottom: 10px;
-      border-bottom: 1px solid rgba(212,160,23,0.1);
+      border-bottom: 1px solid rgba(242,209,107,0.1);
     }
     .sidebar-item {
       display: flex;
@@ -387,7 +390,7 @@
     /* ── Deadline card (sidebar) ── */
     .deadline-card {
       background: rgba(10,32,68,0.5);
-      border: 1px solid rgba(212,160,23,0.3);
+      border: 1px solid rgba(242,209,107,0.3);
       border-radius: 12px;
       padding: 22px;
       text-align: center;
@@ -428,12 +431,12 @@
 
 <!-- INTEL THREADS -->
 <svg id="intel-threads" aria-hidden="true" viewBox="0 0 1200 140" preserveAspectRatio="xMidYMid slice">
-  <line x1="600" y1="40" x2="80"  y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
-  <line x1="600" y1="40" x2="240" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.25"/>
-  <line x1="600" y1="40" x2="920" y2="130" stroke="#D4A017" stroke-width="1" opacity="0.3"/>
-  <line x1="600" y1="40" x2="1100" y2="110" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
-  <line x1="600" y1="40" x2="380" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
-  <line x1="600" y1="40" x2="760" y2="140" stroke="#D4A017" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="80"  y2="130" stroke="#F2D16B" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="240" y2="140" stroke="#F2D16B" stroke-width="1" opacity="0.25"/>
+  <line x1="600" y1="40" x2="920" y2="130" stroke="#F2D16B" stroke-width="1" opacity="0.3"/>
+  <line x1="600" y1="40" x2="1100" y2="110" stroke="#F2D16B" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="380" y2="140" stroke="#F2D16B" stroke-width="1" opacity="0.2"/>
+  <line x1="600" y1="40" x2="760" y2="140" stroke="#F2D16B" stroke-width="1" opacity="0.2"/>
 </svg>
 
 <!-- DOME NAV -->
@@ -461,22 +464,22 @@
     <div class="apply-header">
       <!-- Badge crest -->
       <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team crest"
-           style="width:130px;height:auto;margin-bottom:22px;filter:drop-shadow(0 4px 18px rgba(212,160,23,0.28));"/>
+           style="width:130px;height:auto;margin-bottom:22px;filter:drop-shadow(0 4px 18px rgba(242,209,107,0.28));"/>
 
       <!-- Season eyebrow with flanking lines -->
       <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:18px;">
-        <div style="width:60px;height:1px;background:linear-gradient(to left,rgba(212,160,23,0.7),transparent);"></div>
+        <div style="width:60px;height:1px;background:linear-gradient(to left,rgba(242,209,107,0.7),transparent);"></div>
         <div class="apply-eyebrow" style="margin-bottom:0;">2026–2027 Season</div>
-        <div style="width:60px;height:1px;background:linear-gradient(to right,rgba(212,160,23,0.7),transparent);"></div>
+        <div style="width:60px;height:1px;background:linear-gradient(to right,rgba(242,209,107,0.7),transparent);"></div>
       </div>
 
       <h1 class="apply-title">Apply to Join the Cooper Debate Team</h1>
 
       <!-- Diamond divider -->
       <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin:18px 0;">
-        <div style="width:48px;height:1px;background:linear-gradient(to left,rgba(212,160,23,0.55),transparent);"></div>
+        <div style="width:48px;height:1px;background:linear-gradient(to left,rgba(242,209,107,0.55),transparent);"></div>
         <span style="color:var(--gold);font-size:0.7rem;line-height:1;">◆</span>
-        <div style="width:48px;height:1px;background:linear-gradient(to right,rgba(212,160,23,0.55),transparent);"></div>
+        <div style="width:48px;height:1px;background:linear-gradient(to right,rgba(242,209,107,0.55),transparent);"></div>
       </div>
 
       <p class="apply-subtitle">Open to all 7th and 8th graders at Cooper Middle School. No prior debate experience required — just curiosity, commitment, and a willingness to work hard.</p>
