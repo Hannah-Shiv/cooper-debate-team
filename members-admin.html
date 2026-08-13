@@ -635,7 +635,7 @@
       return;
     }
     if (state === 'dashboard') {
-      var role = window.currentUserRole || '';
+      var role = (typeof currentUserRole !== 'undefined' ? currentUserRole : '') || '';
       if (role !== 'coach') {
         // Non-coaches see a brief "coach-only" message then redirect
         var loading = document.getElementById('mp-loading');
