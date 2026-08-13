@@ -666,9 +666,18 @@
           <!-- Skill Ratings (coaches/captains edit; all view) -->
           <div class="profile-section" id="prof-skills-section" style="display:none">
             <div class="profile-section-title">Skills Assessment <span style="font-size:0.78rem;color:rgba(255,255,255,0.28);font-weight:400;letter-spacing:0;text-transform:none">— Coach Assessment</span></div>
-            <div id="prof-skills-rows"></div>
-            <div id="prof-skills-clear-wrap" style="display:none">
-              <button class="skill-clear-btn" onclick="clearAllSkills()">↺ Reset All</button>
+            <div class="skill-card">
+              <div class="skill-card-body" id="prof-skills-rows"></div>
+              <div class="skill-card-footer" id="prof-skills-footer">
+                <div class="skill-tip">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                  Quickly assess each skill with one click.
+                </div>
+                <button class="skill-reset-btn" id="prof-skills-reset" onclick="clearAllSkills()" style="display:none">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                  Reset All
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1041,35 +1050,61 @@
 .about-attr-chip.selected { background:rgba(125,211,252,0.12); border-color:rgba(125,211,252,0.42); color:#7dd3fc; }
 
 /* ── Skill Ratings ────────────────────────────────────── */
-.skill-row { display:flex; align-items:center; gap:10px; margin-bottom:11px; flex-wrap:wrap; }
-.skill-row:last-child { margin-bottom:0; }
-.skill-name {
-  font-family:'Josefin Sans',sans-serif; font-size:0.81rem; font-weight:700;
-  letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.5);
-  width:120px; flex-shrink:0;
+.skill-card {
+  background:rgba(6,14,45,0.75); border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px; overflow:hidden;
 }
-.skill-pills { display:flex; gap:5px; flex-wrap:wrap; }
+.skill-card-body { padding:4px 0; }
+.skill-row {
+  display:flex; align-items:center; gap:14px; padding:13px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.05); flex-wrap:wrap;
+}
+.skill-row:last-child { border-bottom:none; }
+.skill-label-col {
+  display:flex; align-items:center; gap:10px; width:148px; flex-shrink:0;
+}
+.skill-icon { color:rgba(200,169,110,0.65); display:flex; align-items:center; flex-shrink:0; }
+.skill-name {
+  font-family:'Josefin Sans',sans-serif; font-size:0.8rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.6);
+  line-height:1.2;
+}
+.skill-pills { display:flex; gap:6px; flex-wrap:wrap; flex:1; }
 .skill-pill {
-  padding:5px 12px; border-radius:50px; border:1px solid rgba(255,255,255,0.1);
-  font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
-  letter-spacing:0.04em; color:rgba(255,255,255,0.28);
-  transition:all 0.15s; cursor:default; white-space:nowrap;
+  padding:7px 14px; border-radius:50px; border:1px solid rgba(255,255,255,0.1);
+  font-family:'Josefin Sans',sans-serif; font-size:0.79rem; font-weight:700;
+  letter-spacing:0.03em; color:rgba(255,255,255,0.3);
+  transition:all 0.15s; cursor:default; white-space:nowrap; user-select:none;
 }
 .skill-pill.editable { cursor:pointer; }
-.skill-pill.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.7); }
-.skill-pill.lvl-1 { background:rgba(239, 68, 68,0.14);  border-color:rgba(239, 68, 68,0.42);  color:#fca5a5; }
-.skill-pill.lvl-2 { background:rgba(251,113,133,0.14); border-color:rgba(251,113,133,0.42); color:#fda4af; }
-.skill-pill.lvl-3 { background:rgba(251,146,60,0.14);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
-.skill-pill.lvl-4 { background:rgba(250,204,21,0.14);  border-color:rgba(250,204,21,0.42);  color:#fde047; }
-.skill-pill.lvl-5 { background:rgba(74,222,128,0.14);  border-color:rgba(74,222,128,0.42);  color:#4ade80; }
-.skill-clear-btn {
-  margin-top:14px; padding:5px 14px; border-radius:50px;
-  border:1px solid rgba(255,255,255,0.12); background:transparent;
-  font-family:'Josefin Sans',sans-serif; font-size:0.76rem; font-weight:700;
-  letter-spacing:0.07em; text-transform:uppercase; color:rgba(255,255,255,0.3);
-  cursor:pointer; transition:all 0.15s;
+.skill-pill.editable:hover:not(.lvl-1):not(.lvl-2):not(.lvl-3):not(.lvl-4):not(.lvl-5) {
+  border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.7);
 }
-.skill-clear-btn:hover { border-color:rgba(251,113,133,0.4); color:#fda4af; }
+/* Active — solid fill + checkmark (text is set in JS) */
+.skill-pill.lvl-1 { background:rgba(239,68,68,0.25);   border-color:rgba(239,68,68,0.6);   color:#fca5a5; }
+.skill-pill.lvl-2 { background:rgba(236,72,153,0.25);  border-color:rgba(236,72,153,0.6);  color:#f9a8d4; }
+.skill-pill.lvl-3 { background:rgba(234,119,42,0.30);  border-color:rgba(234,119,42,0.65); color:#fdba74; }
+.skill-pill.lvl-4 { background:rgba(202,163,0,0.28);   border-color:rgba(234,179,8,0.6);   color:#fde047; }
+.skill-pill.lvl-5 { background:rgba(22,163,74,0.28);   border-color:rgba(34,197,94,0.6);   color:#4ade80; }
+/* Footer bar */
+.skill-card-footer {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:11px 20px; border-top:1px solid rgba(255,255,255,0.07);
+  background:rgba(4,10,30,0.4);
+}
+.skill-tip {
+  display:flex; align-items:center; gap:7px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+  color:rgba(255,255,255,0.28); letter-spacing:0.03em;
+}
+.skill-reset-btn {
+  padding:6px 16px; border-radius:50px;
+  border:1px solid rgba(200,169,110,0.55); background:rgba(200,169,110,0.12);
+  font-family:'Josefin Sans',sans-serif; font-size:0.76rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; color:#c8a96e;
+  cursor:pointer; transition:all 0.18s; display:flex; align-items:center; gap:6px;
+}
+.skill-reset-btn:hover { background:rgba(200,169,110,0.22); border-color:rgba(200,169,110,0.8); color:#e5c97e; }
 </style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
@@ -1409,13 +1444,13 @@ async function saveAbout() {
 
 /* ── Skill Ratings ────────────────────────────────────── */
 const SKILL_DEFS = [
-  { id:'rebuttal',  label:'Rebuttal' },
-  { id:'crossfire', label:'Crossfire' },
-  { id:'summary',   label:'Summary' },
-  { id:'final',     label:'Final Focus' },
-  { id:'delivery',  label:'Delivery' },
-  { id:'research',  label:'Research' },
-  { id:'impact',    label:'Impact Calculus' },
+  { id:'rebuttal',  label:'Rebuttal',       icon:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>' },
+  { id:'crossfire', label:'Crossfire',      icon:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>' },
+  { id:'summary',   label:'Summary',        icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>' },
+  { id:'final',     label:'Final Focus',    icon:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>' },
+  { id:'delivery',  label:'Delivery',       icon:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>' },
+  { id:'research',  label:'Research',       icon:'<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>' },
+  { id:'impact',    label:'Impact Calculus',icon:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>' },
 ];
 const SKILL_LEVELS = ['Needs Improvement','Developing','Good','Very Good','Excellent'];
 let _currentSkills = {};
@@ -1438,22 +1473,31 @@ async function renderSkillSection(name) {
 }
 
 function renderSkillRows(canEdit) {
-  const container  = document.getElementById('prof-skills-rows');
-  const clearWrap  = document.getElementById('prof-skills-clear-wrap');
-  const anyRated   = SKILL_DEFS.some(s => _currentSkills[s.id]);
-  if (clearWrap) clearWrap.style.display = (canEdit && anyRated) ? '' : 'none';
+  const container = document.getElementById('prof-skills-rows');
+  const resetBtn  = document.getElementById('prof-skills-reset');
+  const anyRated  = SKILL_DEFS.some(s => _currentSkills[s.id]);
+  if (resetBtn) resetBtn.style.display = (canEdit && anyRated) ? '' : 'none';
+
   container.innerHTML = SKILL_DEFS.map(skill => {
     const cur = _currentSkills[skill.id] || null;
     const pills = SKILL_LEVELS.map((lvl, i) => {
-      const lvlN = i + 1;
-      const active = cur === lvl ? ` lvl-${lvlN}` : '';
-      const editCls = canEdit ? ' editable' : '';
-      // clicking the active pill toggles it off (pass empty string to signal clear)
-      const click = canEdit
-        ? `onclick="setSkillRating('${skill.id}','${cur === lvl ? '' : escJs(lvl)}')"` : '';
-      return `<span class="skill-pill${editCls}${active}" ${click}>${escHtml(lvl)}</span>`;
+      const lvlN   = i + 1;
+      const isActive = cur === lvl;
+      const activeCls = isActive ? ` lvl-${lvlN}` : '';
+      const editCls   = canEdit ? ' editable' : '';
+      const label     = isActive ? `✓ ${escHtml(lvl)}` : escHtml(lvl);
+      const click     = canEdit
+        ? `onclick="setSkillRating('${skill.id}','${isActive ? '' : escJs(lvl)}')"` : '';
+      return `<span class="skill-pill${editCls}${activeCls}" ${click}>${label}</span>`;
     }).join('');
-    return `<div class="skill-row"><span class="skill-name">${escHtml(skill.label)}</span><div class="skill-pills">${pills}</div></div>`;
+    const iconSvg = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${skill.icon}</svg>`;
+    return `<div class="skill-row">
+      <div class="skill-label-col">
+        <span class="skill-icon">${iconSvg}</span>
+        <span class="skill-name">${escHtml(skill.label)}</span>
+      </div>
+      <div class="skill-pills">${pills}</div>
+    </div>`;
   }).join('');
 }
 
