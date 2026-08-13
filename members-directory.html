@@ -39,7 +39,7 @@
     }
 
     #mp-content { display: none; position: relative; z-index: 1; }
-    .dashboard-wrap { max-width: 1140px; margin: 0 auto; }
+    .dashboard-wrap { max-width: 1380px; margin: 0 auto; }
 
     /* ── Page header ─────────────────────────────────────────── */
     .hub-header {
@@ -712,9 +712,9 @@
               <div class="dsp2-grid">
 
                 <!-- 1 · This Is Me -->
-                <div class="dsp2-col">
+                <div class="dsp2-col" style="background:rgba(139,92,246,0.07);border:1px solid rgba(139,92,246,0.38)">
                   <div class="dsp2-col-head">
-                    <div class="dsp2-col-icon" style="background:rgba(139,92,246,0.18)">
+                    <div class="dsp2-col-icon" style="background:rgba(139,92,246,0.22)">
                       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
                     <div class="dsp2-col-meta">
@@ -730,9 +730,9 @@
                 </div>
 
                 <!-- 2 · I'm Growing -->
-                <div class="dsp2-col">
+                <div class="dsp2-col" style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.38)">
                   <div class="dsp2-col-head">
-                    <div class="dsp2-col-icon" style="background:rgba(59,130,246,0.18)">
+                    <div class="dsp2-col-icon" style="background:rgba(59,130,246,0.22)">
                       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                     </div>
                     <div class="dsp2-col-meta">
@@ -748,9 +748,9 @@
                 </div>
 
                 <!-- 3 · I Need Help -->
-                <div class="dsp2-col">
+                <div class="dsp2-col" style="background:rgba(16,185,129,0.07);border:1px solid rgba(16,185,129,0.38)">
                   <div class="dsp2-col-head">
-                    <div class="dsp2-col-icon" style="background:rgba(16,185,129,0.18)">
+                    <div class="dsp2-col-icon" style="background:rgba(16,185,129,0.22)">
                       <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     </div>
                     <div class="dsp2-col-meta">
@@ -770,11 +770,11 @@
               <!-- Section 4 — Coach note (full width) -->
               <div class="dsp2-note-wrap">
                 <div class="dsp2-col-head" style="margin-bottom:14px">
-                  <div class="dsp2-col-icon" style="background:rgba(196,181,253,0.15)">
-                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <div class="dsp2-col-icon" style="background:rgba(20,184,166,0.20)">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                   </div>
                   <div class="dsp2-col-meta">
-                    <div class="dsp2-col-num" style="color:#c4b5fd;display:flex;align-items:center;gap:10px">
+                    <div class="dsp2-col-num" style="color:#2dd4bf;display:flex;align-items:center;gap:10px">
                       4. ANYTHING YOU'D LIKE YOUR COACH TO KNOW?
                       <span class="dsp2-optional-badge">Optional</span>
                     </div>
@@ -1299,102 +1299,107 @@
   display:flex; align-items:center; gap:0; flex-shrink:0;
   padding-top:4px;
 }
-.dsp2-step { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.dsp2-step { display:flex; flex-direction:column; align-items:center; gap:7px; }
 .dsp2-step-circle {
-  width:38px; height:38px; border-radius:50%; border:2px solid;
+  width:46px; height:46px; border-radius:50%; border:2px solid;
   display:flex; align-items:center; justify-content:center;
-  font-family:'Josefin Sans',sans-serif; font-size:0.95rem; font-weight:700;
-  transition:background 0.2s;
+  font-family:'Josefin Sans',sans-serif; font-size:1.05rem; font-weight:700;
+  transition:background 0.2s, box-shadow 0.2s;
 }
-.dsp2-step.filled .dsp2-step-circle { background:currentColor; }
+.dsp2-step.filled .dsp2-step-circle { background:rgba(255,255,255,0.10); box-shadow:0 0 0 1px currentColor; }
 .dsp2-step-label {
-  font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
-  letter-spacing:0.06em; color:rgba(255,255,255,0.45); text-align:center;
-  white-space:nowrap;
+  font-family:'Josefin Sans',sans-serif; font-size:0.80rem; font-weight:700;
+  letter-spacing:0.05em; color:rgba(255,255,255,0.42); text-align:center;
+  white-space:nowrap; padding-bottom:3px;
 }
-.dsp2-step.filled .dsp2-step-label { color:rgba(255,255,255,0.7); }
-.dsp2-step-line { width:32px; height:2px; background:rgba(255,255,255,0.1); margin:0 2px; margin-bottom:22px; flex-shrink:0; }
+.dsp2-step.filled .dsp2-step-label { color:rgba(255,255,255,0.72); }
+/* Step 1 always shows active underline (current section indicator) */
+#dsp2-step-1 .dsp2-step-label {
+  color:rgba(255,255,255,0.72);
+  border-bottom:2px solid rgba(139,92,246,0.75);
+}
+.dsp2-step-line { width:36px; height:2px; background:rgba(255,255,255,0.10); margin:0 3px; margin-bottom:25px; flex-shrink:0; }
 /* 3-column chip grid */
 .dsp2-grid {
   display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:16px;
 }
+/* Each col gets colored border/bg via inline style; base keeps structure */
 .dsp2-col {
-  background:rgba(6,14,45,0.82); border:1px solid rgba(255,255,255,0.09);
-  border-radius:14px; padding:18px 16px 14px; display:flex; flex-direction:column; gap:12px;
+  border-radius:14px; padding:20px 18px 16px; display:flex; flex-direction:column; gap:12px;
 }
-.dsp2-col-head { display:flex; align-items:flex-start; gap:12px; }
+.dsp2-col-head { display:flex; align-items:flex-start; gap:13px; }
 .dsp2-col-icon {
-  width:44px; height:44px; border-radius:50%; flex-shrink:0;
+  width:48px; height:48px; border-radius:50%; flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
 }
-.dsp2-col-meta { flex:1; min-width:0; padding-top:2px; }
+.dsp2-col-meta { flex:1; min-width:0; padding-top:3px; }
 .dsp2-col-num {
-  font-family:'Josefin Sans',sans-serif; font-size:0.82rem; font-weight:700;
-  letter-spacing:0.1em; text-transform:uppercase; line-height:1.2; margin-bottom:4px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.90rem; font-weight:700;
+  letter-spacing:0.10em; text-transform:uppercase; line-height:1.2; margin-bottom:5px;
 }
 .dsp2-col-sub {
-  font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
-  color:rgba(255,255,255,0.48); line-height:1.45;
+  font-family:'Josefin Sans',sans-serif; font-size:0.85rem;
+  color:rgba(255,255,255,0.50); line-height:1.45;
 }
 /* Choose-N pill */
 .dsp2-pill {
   display:inline-flex; align-items:center;
-  padding:5px 12px; border-radius:50px; border:1px solid;
-  font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
-  letter-spacing:0.06em; width:fit-content;
+  padding:5px 14px; border-radius:50px; border:1px solid;
+  font-family:'Josefin Sans',sans-serif; font-size:0.85rem; font-weight:700;
+  letter-spacing:0.05em; width:fit-content;
 }
-.dsp2-pill-count { font-weight:700; opacity:0.7; }
+.dsp2-pill-count { font-weight:700; opacity:0.65; margin-left:4px; }
 /* 2-column chip grid */
 .dsp2-chips-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:7px; flex:1;
+  display:grid; grid-template-columns:1fr 1fr; gap:8px; flex:1;
 }
 /* Chips — rectangular cards */
 .dsp-chip {
-  padding:9px 11px; border-radius:8px; border:1px solid rgba(255,255,255,0.16);
+  padding:10px 12px; border-radius:8px; border:1px solid rgba(255,255,255,0.15);
   background:rgba(255,255,255,0.04);
-  font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
+  font-family:'Josefin Sans',sans-serif; font-size:0.90rem; font-weight:700;
   letter-spacing:0.02em; color:rgba(255,255,255,0.55);
   transition:all 0.15s; cursor:default; user-select:none;
   display:flex; align-items:center; justify-content:space-between; gap:6px;
   line-height:1.3;
 }
 .dsp-chip.editable { cursor:pointer; }
-.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.07); }
+.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.88); background:rgba(255,255,255,0.08); }
 /* Selected fills */
-.dsp-chip.sel-style     { background:rgba(109,40,217,0.55);  border-color:rgba(167,139,250,0.7); color:#e9d5ff; }
-.dsp-chip.sel-improving { background:rgba(29,78,216,0.55);   border-color:rgba(96,165,250,0.7);  color:#bfdbfe; }
-.dsp-chip.sel-help      { background:rgba(6,95,70,0.65);     border-color:rgba(52,211,153,0.65); color:#a7f3d0; }
-.dsp-chip-check { width:12px; height:12px; flex-shrink:0; opacity:0; transition:opacity 0.12s; }
+.dsp-chip.sel-style     { background:rgba(109,40,217,0.55);  border-color:rgba(167,139,250,0.75); color:#ede9fe; }
+.dsp-chip.sel-improving { background:rgba(29,78,216,0.55);   border-color:rgba(96,165,250,0.75);  color:#dbeafe; }
+.dsp-chip.sel-help      { background:rgba(6,95,70,0.65);     border-color:rgba(52,211,153,0.65);  color:#a7f3d0; }
+.dsp-chip-check { width:13px; height:13px; flex-shrink:0; opacity:0; transition:opacity 0.12s; }
 .dsp-chip.sel-style .dsp-chip-check,
 .dsp-chip.sel-improving .dsp-chip-check,
 .dsp-chip.sel-help .dsp-chip-check { opacity:1; }
 /* Validation hint */
 .dsp2-valid-msg {
-  font-family:'Josefin Sans',sans-serif; font-size:0.76rem;
+  font-family:'Josefin Sans',sans-serif; font-size:0.80rem;
   color:rgba(255,255,255,0.32); display:flex; align-items:center; gap:5px; margin-top:2px;
 }
-.dsp2-valid-msg::before { content:'ℹ'; font-size:0.78rem; }
-/* Section 4 — Coach note */
+.dsp2-valid-msg::before { content:'ℹ'; font-size:0.80rem; }
+/* Section 4 — Coach note (teal accent) */
 .dsp2-note-wrap {
-  background:rgba(6,14,45,0.82); border:1px solid rgba(255,255,255,0.09);
-  border-radius:14px; padding:18px 18px 14px; margin-bottom:16px;
+  background:rgba(20,184,166,0.05); border:1px solid rgba(20,184,166,0.28);
+  border-radius:14px; padding:20px 20px 14px; margin-bottom:16px;
 }
 .dsp2-optional-badge {
-  display:inline-flex; padding:3px 10px; border-radius:50px;
-  background:rgba(196,181,253,0.12); border:1px solid rgba(196,181,253,0.3);
+  display:inline-flex; padding:3px 11px; border-radius:50px;
+  background:rgba(20,184,166,0.14); border:1px solid rgba(20,184,166,0.4);
   font-family:'Josefin Sans',sans-serif; font-size:0.73rem; font-weight:700;
-  letter-spacing:0.07em; color:#c4b5fd; text-transform:uppercase;
+  letter-spacing:0.07em; color:#2dd4bf; text-transform:uppercase;
 }
 /* Note textarea */
 .dsp-note-input {
   width:100%; box-sizing:border-box; resize:none;
-  background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.1);
-  border-radius:9px; padding:11px 14px;
-  font-family:'Josefin Sans',sans-serif; font-size:0.96rem;
+  background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.10);
+  border-radius:9px; padding:12px 15px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.97rem;
   color:rgba(255,255,255,0.85); line-height:1.55; outline:none; transition:border-color 0.2s;
 }
 .dsp-note-input::placeholder { color:rgba(255,255,255,0.28); }
-.dsp-note-input:focus { border-color:rgba(196,181,253,0.4); }
+.dsp-note-input:focus { border-color:rgba(45,212,191,0.45); }
 .dsp-note-counter { text-align:right; margin-top:5px; font-family:'Josefin Sans',sans-serif; font-size:0.78rem; color:rgba(255,255,255,0.38); }
 /* Bottom nav */
 .dsp2-nav {
