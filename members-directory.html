@@ -1129,45 +1129,45 @@
 /* Sort box — violet theme */
 .dir-sort-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-  padding:9px 14px; border-radius:11px;
-  background:rgba(167,139,250,0.05); border:1px solid rgba(167,139,250,0.24);
+  padding:10px 16px; border-radius:11px;
+  background:rgba(4,8,28,0.88); border:1px solid rgba(167,139,250,0.65);
   position:relative;
 }
 .dir-sort-box::before {
-  content:'↕ SORT'; position:absolute; top:-9px; left:12px;
-  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.76rem; font-weight:700;
-  letter-spacing:0.16em; color:#c4b5fd; background:var(--bg-deep,#1c2030); line-height:1;
+  content:'↕ SORT'; position:absolute; top:-10px; left:12px;
+  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.95rem; font-weight:700;
+  letter-spacing:0.16em; color:#c4b5fd; background:#0f1221; line-height:1;
   pointer-events:none; user-select:none;
 }
-/* Filter box — rose theme */
+/* Filter box — amber/gold theme */
 .dir-filter-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-  padding:9px 14px; border-radius:11px;
-  background:rgba(251,113,133,0.05); border:1px solid rgba(251,113,133,0.24);
+  padding:10px 16px; border-radius:11px;
+  background:rgba(4,8,28,0.88); border:1px solid rgba(251,191,36,0.65);
   position:relative;
 }
 .dir-filter-box::before {
-  content:'⊟ FILTER'; position:absolute; top:-9px; left:12px;
-  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.76rem; font-weight:700;
-  letter-spacing:0.16em; color:#fda4af; background:var(--bg-deep,#1c2030); line-height:1;
+  content:'⊟ FILTER'; position:absolute; top:-10px; left:12px;
+  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.95rem; font-weight:700;
+  letter-spacing:0.16em; color:#fbbf24; background:#0f1221; line-height:1;
   pointer-events:none; user-select:none;
 }
 /* Shared pill button */
 .dir-ctl-btn {
-  padding:5px 13px; border-radius:50px; cursor:pointer; transition:all 0.18s;
-  font-family:'Josefin Sans',sans-serif; font-size:0.9rem; font-weight:700; letter-spacing:0.04em;
-  background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.38);
+  padding:6px 16px; border-radius:50px; cursor:pointer; transition:all 0.18s;
+  font-family:'Josefin Sans',sans-serif; font-size:1.13rem; font-weight:700; letter-spacing:0.04em;
+  background:rgba(4,8,28,0.75); border:1px solid rgba(255,255,255,0.16); color:rgba(255,255,255,0.45);
   white-space:nowrap;
 }
 /* Sort box active pill — violet */
-.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(167,139,250,0.45); color:rgba(196,181,253,0.9); }
+.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(167,139,250,0.55); color:rgba(196,181,253,0.9); background:rgba(167,139,250,0.10); }
 .dir-sort-box .dir-ctl-btn.active {
-  background:rgba(167,139,250,0.13); border-color:rgba(167,139,250,0.55); color:#c4b5fd;
+  background:rgba(167,139,250,0.18); border-color:rgba(167,139,250,0.75); color:#c4b5fd;
 }
-/* Filter box active pill — rose */
-.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(251,113,133,0.45); color:rgba(253,164,175,0.9); }
+/* Filter box active pill — amber */
+.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(251,191,36,0.55); color:rgba(253,211,77,0.9); background:rgba(251,191,36,0.10); }
 .dir-filter-box .dir-ctl-btn.active {
-  background:rgba(251,113,133,0.12); border-color:rgba(251,113,133,0.5); color:#fda4af;
+  background:rgba(251,191,36,0.15); border-color:rgba(251,191,36,0.75); color:#fbbf24;
 }
 
 /* ── Coach notes ─────────────────────────────────────── */
