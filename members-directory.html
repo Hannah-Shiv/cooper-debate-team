@@ -592,6 +592,19 @@
           <!-- Achievement badges — horizontal pill strip -->
           <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
+          <!-- About Me (all members, editable by self + coaches) -->
+          <div class="profile-section" id="prof-about-section" style="display:none">
+            <div class="profile-section-title">About</div>
+            <div class="about-bio-wrap">
+              <textarea class="about-bio-input" id="about-bio" maxlength="140" rows="2"
+                placeholder="1–2 sentences about you and your debate style…"
+                oninput="onAboutInput()" readonly></textarea>
+              <div class="about-bio-counter" id="about-bio-counter">0 / 140</div>
+            </div>
+            <div class="about-attr-row" id="about-attr-row"></div>
+            <div class="prof-notes-footer"><span class="prof-notes-status" id="about-status">Saved ✓</span></div>
+          </div>
+
           <!-- Season selector (hidden until 2+ seasons exist) -->
           <div class="prof-season-bar" id="prof-season-bar" style="display:none">
             <span class="prof-season-label">Season</span>
@@ -648,6 +661,12 @@
           <div class="profile-section">
             <div class="profile-section-title">Metro Finals Eligibility</div>
             <div id="prof-metro-detail"></div>
+          </div>
+
+          <!-- Skill Ratings (coaches/captains edit; all view) -->
+          <div class="profile-section" id="prof-skills-section" style="display:none">
+            <div class="profile-section-title">Skills Assessment <span style="font-size:0.78rem;color:rgba(255,255,255,0.28);font-weight:400;letter-spacing:0;text-transform:none">— Coach Assessment</span></div>
+            <div id="prof-skills-rows"></div>
           </div>
 
           <!-- Coach notes (coaches + captains only) -->
@@ -988,6 +1007,57 @@
 .prof-badge-veteran  { background:rgba(56,189,248,0.13);  border-color:rgba(56,189,248,0.42);  color:#7dd3fc; }
 .prof-badge-hotstart { background:rgba(251,146,60,0.13);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
 .prof-badge-season   { background:rgba(251,113,133,0.13); border-color:rgba(251,113,133,0.42); color:#fda4af; }
+
+/* ── About Me ─────────────────────────────────────────── */
+.about-bio-wrap { margin-bottom:12px; position:relative; }
+.about-bio-input {
+  width:100%; box-sizing:border-box; resize:none; rows:2;
+  background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.09);
+  border-radius:9px; padding:11px 14px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.97rem;
+  color:rgba(255,255,255,0.82); line-height:1.55; outline:none;
+  transition:border-color 0.2s;
+}
+.about-bio-input::placeholder { color:rgba(255,255,255,0.2); }
+.about-bio-input:focus { border-color:rgba(125,211,252,0.4); }
+.about-bio-counter {
+  text-align:right; margin-top:4px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.75rem;
+  color:rgba(255,255,255,0.25); letter-spacing:0.05em;
+}
+.about-bio-counter.near { color:rgba(251,146,60,0.7); }
+.about-attr-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:4px; }
+.about-attr-chip {
+  padding:5px 13px; border-radius:50px; border:1px solid rgba(255,255,255,0.12);
+  font-family:'Josefin Sans',sans-serif; font-size:0.8rem; font-weight:700;
+  letter-spacing:0.04em; color:rgba(255,255,255,0.35);
+  transition:all 0.15s; cursor:default;
+}
+.about-attr-chip.editable { cursor:pointer; }
+.about-attr-chip.editable:hover { border-color:rgba(125,211,252,0.4); color:rgba(125,211,252,0.8); }
+.about-attr-chip.selected { background:rgba(125,211,252,0.12); border-color:rgba(125,211,252,0.42); color:#7dd3fc; }
+
+/* ── Skill Ratings ────────────────────────────────────── */
+.skill-row { display:flex; align-items:center; gap:10px; margin-bottom:11px; flex-wrap:wrap; }
+.skill-row:last-child { margin-bottom:0; }
+.skill-name {
+  font-family:'Josefin Sans',sans-serif; font-size:0.81rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.5);
+  width:120px; flex-shrink:0;
+}
+.skill-pills { display:flex; gap:5px; flex-wrap:wrap; }
+.skill-pill {
+  padding:5px 12px; border-radius:50px; border:1px solid rgba(255,255,255,0.1);
+  font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
+  letter-spacing:0.04em; color:rgba(255,255,255,0.28);
+  transition:all 0.15s; cursor:default; white-space:nowrap;
+}
+.skill-pill.editable { cursor:pointer; }
+.skill-pill.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.7); }
+.skill-pill.lvl-1 { background:rgba(251,113,133,0.14); border-color:rgba(251,113,133,0.42); color:#fda4af; }
+.skill-pill.lvl-2 { background:rgba(251,146,60,0.14);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
+.skill-pill.lvl-3 { background:rgba(250,204,21,0.14);  border-color:rgba(250,204,21,0.42);  color:#fde047; }
+.skill-pill.lvl-4 { background:rgba(74,222,128,0.14);  border-color:rgba(74,222,128,0.42);  color:#4ade80; }
 </style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
@@ -1239,6 +1309,150 @@ function setFilter(filter) {
   renderDirectory();
 }
 
+/* ── About Me ─────────────────────────────────────────── */
+const STYLE_ATTRS = [
+  'Analytical','Research-Heavy','Strategic','Strong Crossfire',
+  'Calm Under Pressure','Aggressive','Evidence-Focused','Narrative Style',
+  'Fast Speaker','Structured','Adaptable','Passionate'
+];
+let _aboutDebounce  = null;
+let _aboutEditable  = false;
+let _aboutAttrs     = [];
+
+async function renderAboutSection(name, memberDoc) {
+  const section = document.getElementById('prof-about-section');
+  section.style.display = '';
+  const ta      = document.getElementById('about-bio');
+  const counter = document.getElementById('about-bio-counter');
+  const status  = document.getElementById('about-status');
+  ta.value = ''; counter.textContent = '0 / 140'; status.classList.remove('visible');
+  _aboutAttrs = [];
+
+  // Editable if viewer is the debater or a coach/captain
+  const isOwner = memberDoc && (memberDoc.email||'').toLowerCase() === currentUserEmail.toLowerCase();
+  _aboutEditable = isOwner || currentUserRole === 'coach' || currentUserRole === 'captain';
+  ta.readOnly = !_aboutEditable;
+  ta.style.cursor = _aboutEditable ? 'text' : 'default';
+
+  // Load existing data
+  try {
+    const snap = await dirDb.collection('debater_about').doc(notesDocId(name)).get();
+    if (snap.exists) {
+      ta.value = snap.data().bio || '';
+      _aboutAttrs = snap.data().attrs || [];
+    }
+  } catch(e) { console.warn('About load:', e); }
+  updateAboutCounter();
+  renderAboutAttrs();
+}
+
+function updateAboutCounter() {
+  const ta = document.getElementById('about-bio');
+  const counter = document.getElementById('about-bio-counter');
+  const len = ta.value.length;
+  counter.textContent = `${len} / 140`;
+  counter.classList.toggle('near', len >= 110);
+}
+
+function renderAboutAttrs() {
+  const row = document.getElementById('about-attr-row');
+  row.innerHTML = STYLE_ATTRS.map(a => {
+    const sel = _aboutAttrs.includes(a);
+    const editCls = _aboutEditable ? ' editable' : '';
+    return `<span class="about-attr-chip${editCls}${sel?' selected':''}"
+      onclick="${_aboutEditable ? `toggleAboutAttr('${escJs(a)}')` : ''}">${escHtml(a)}</span>`;
+  }).join('');
+}
+
+function toggleAboutAttr(attr) {
+  if (!_aboutEditable) return;
+  const i = _aboutAttrs.indexOf(attr);
+  if (i >= 0) _aboutAttrs.splice(i, 1); else _aboutAttrs.push(attr);
+  renderAboutAttrs();
+  clearTimeout(_aboutDebounce);
+  _aboutDebounce = setTimeout(saveAbout, 800);
+}
+
+function onAboutInput() {
+  updateAboutCounter();
+  document.getElementById('about-status').classList.remove('visible');
+  clearTimeout(_aboutDebounce);
+  _aboutDebounce = setTimeout(saveAbout, 1200);
+}
+
+async function saveAbout() {
+  if (!_aboutEditable) return;
+  const ta     = document.getElementById('about-bio');
+  const status = document.getElementById('about-status');
+  try {
+    await dirDb.collection('debater_about').doc(notesDocId(_profName)).set({
+      bio: ta.value, attrs: _aboutAttrs,
+      updatedBy: currentUserEmail,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    status.classList.add('visible');
+    setTimeout(() => status.classList.remove('visible'), 2000);
+  } catch(e) { console.warn('About save:', e); }
+}
+
+/* ── Skill Ratings ────────────────────────────────────── */
+const SKILL_DEFS = [
+  { id:'rebuttal',  label:'Rebuttal' },
+  { id:'crossfire', label:'Crossfire' },
+  { id:'summary',   label:'Summary' },
+  { id:'final',     label:'Final Focus' },
+  { id:'delivery',  label:'Delivery' },
+  { id:'research',  label:'Research' },
+  { id:'impact',    label:'Impact Calculus' },
+];
+const SKILL_LEVELS = ['Developing','Good','Very Good','Excellent'];
+let _currentSkills = {};
+
+async function renderSkillSection(name) {
+  const section = document.getElementById('prof-skills-section');
+  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  _currentSkills = {};
+
+  try {
+    const snap = await dirDb.collection('debater_skills').doc(notesDocId(name)).get();
+    if (snap.exists) _currentSkills = snap.data() || {};
+  } catch(e) { console.warn('Skills load:', e); }
+
+  // Show section if coach (always) or if any ratings exist
+  const hasData = Object.keys(_currentSkills).some(k => SKILL_DEFS.find(s => s.id === k));
+  if (!canEdit && !hasData) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  renderSkillRows(canEdit);
+}
+
+function renderSkillRows(canEdit) {
+  const container = document.getElementById('prof-skills-rows');
+  container.innerHTML = SKILL_DEFS.map(skill => {
+    const cur = _currentSkills[skill.id] || null;
+    const pills = SKILL_LEVELS.map((lvl, i) => {
+      const lvlN = i + 1;
+      const active = cur === lvl ? ` lvl-${lvlN}` : '';
+      const editCls = canEdit ? ' editable' : '';
+      const click = canEdit ? `onclick="setSkillRating('${skill.id}','${escJs(lvl)}')"` : '';
+      return `<span class="skill-pill${editCls}${active}" ${click}>${escHtml(lvl)}</span>`;
+    }).join('');
+    return `<div class="skill-row"><span class="skill-name">${escHtml(skill.label)}</span><div class="skill-pills">${pills}</div></div>`;
+  }).join('');
+}
+
+async function setSkillRating(skillId, level) {
+  _currentSkills[skillId] = level;
+  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  renderSkillRows(canEdit);
+  try {
+    await dirDb.collection('debater_skills').doc(notesDocId(_profName)).set(
+      { [skillId]: level, updatedBy: currentUserEmail,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+      { merge: true }
+    );
+  } catch(e) { console.warn('Skill save:', e); }
+}
+
 /* ── Coach notes ──────────────────────────────────────── */
 let _notesDebounce = null;
 
@@ -1418,7 +1632,10 @@ async function openProfile(name) {
   document.getElementById('prof-season-bar').style.display = 'none';
   document.getElementById('prof-notes-section').style.display = 'none';
   document.getElementById('prof-notes-textarea').value = '';
+  document.getElementById('prof-about-section').style.display = 'none';
+  document.getElementById('prof-skills-section').style.display = 'none';
   clearTimeout(_notesDebounce);
+  clearTimeout(_aboutDebounce);
   if (profileChart) { profileChart.destroy(); profileChart = null; }
 
   if (!d) { document.getElementById('prof-meta').textContent = 'No tournament data found.'; return; }
@@ -1493,6 +1710,12 @@ function renderProfile(d, memberDoc) {
 
   /* Season-filtered sections */
   applySeasonFilter(d);
+
+  /* About Me */
+  renderAboutSection(d.name, memberDoc);
+
+  /* Skill Ratings */
+  renderSkillSection(d.name);
 
   /* Coach notes */
   renderNotesSection(d.name);
