@@ -673,68 +673,136 @@
 
             <!-- Debate Style Profile -->
             <div class="profile-section" id="prof-style-section" style="display:none">
-              <div class="dsp-header">
-                <div class="dsp-title">
-                  <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  Debate Style Profile
+              <!-- DSP top bar: title left, steps right -->
+              <div class="dsp2-header">
+                <div class="dsp2-header-left">
+                  <div class="dsp2-main-icon">
+                    <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c8a96e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                  </div>
+                  <div class="dsp2-header-text">
+                    <div class="dsp2-title">Debate Style Profile</div>
+                    <div class="dsp2-subtitle">Tell us about the debater you are becoming.</div>
+                    <div class="dsp2-desc">There are no right or wrong answers. Your responses help your coaches understand how you see yourself and where you'd like to grow.</div>
+                  </div>
+                </div>
+                <div class="dsp2-steps">
+                  <div class="dsp2-step" id="dsp2-step-1">
+                    <div class="dsp2-step-circle" style="border-color:#8b5cf6;color:#c4b5fd">1</div>
+                    <div class="dsp2-step-label">This Is Me</div>
+                  </div>
+                  <div class="dsp2-step-line"></div>
+                  <div class="dsp2-step" id="dsp2-step-2">
+                    <div class="dsp2-step-circle" style="border-color:#3b82f6;color:#93c5fd">2</div>
+                    <div class="dsp2-step-label">I'm Growing</div>
+                  </div>
+                  <div class="dsp2-step-line"></div>
+                  <div class="dsp2-step" id="dsp2-step-3">
+                    <div class="dsp2-step-circle" style="border-color:#10b981;color:#6ee7b7">3</div>
+                    <div class="dsp2-step-label">I Need Help</div>
+                  </div>
+                  <div class="dsp2-step-line"></div>
+                  <div class="dsp2-step" id="dsp2-step-4">
+                    <div class="dsp2-step-circle" style="border-color:rgba(255,255,255,0.22);color:rgba(255,255,255,0.4)">4</div>
+                    <div class="dsp2-step-label">Review</div>
+                  </div>
                 </div>
               </div>
-              <div class="dsp-card">
-                <div class="dsp-panel" id="dsp-panel-style">
-                  <div class="dsp-sub">
-                    <div class="dsp-sub-top">
-                      <div class="dsp-sub-icon" style="background:rgba(125,211,252,0.12)">
-                        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#7dd3fc" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                      </div>
-                      <div class="dsp-sub-meta">
-                        <div class="dsp-sub-header"><span class="dsp-sub-title">1. My Debate Style</span><div class="dsp-sub-right"><span class="dsp-sub-desc">Choose up to 6 attributes that describe you.</span><span class="dsp-sub-count" id="dsp-style-count">0 / 6</span></div></div>
-                      </div>
+
+              <!-- 3-column chip sections -->
+              <div class="dsp2-grid">
+
+                <!-- 1 · This Is Me -->
+                <div class="dsp2-col">
+                  <div class="dsp2-col-head">
+                    <div class="dsp2-col-icon" style="background:rgba(139,92,246,0.18)">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </div>
-                    <div class="dsp-chips" id="dsp-style-chips"></div>
+                    <div class="dsp2-col-meta">
+                      <div class="dsp2-col-num" style="color:#a78bfa">1. THIS IS ME</div>
+                      <div class="dsp2-col-sub">How would you describe yourself as a debater?</div>
+                    </div>
                   </div>
-                  <div class="dsp-sub">
-                    <div class="dsp-sub-top">
-                      <div class="dsp-sub-icon" style="background:rgba(251,146,60,0.12)">
-                        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#fdba74" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                      </div>
-                      <div class="dsp-sub-meta">
-                        <div class="dsp-sub-header"><span class="dsp-sub-title">2. What I'm Working On</span><div class="dsp-sub-right"><span class="dsp-sub-desc">Choose up to 4 areas you'd like to improve.</span><span class="dsp-sub-count" id="dsp-improving-count">0 / 4</span></div></div>
-                      </div>
-                    </div>
-                    <div class="dsp-chips" id="dsp-improving-chips"></div>
+                  <div class="dsp2-pill" style="background:rgba(139,92,246,0.18);border-color:rgba(139,92,246,0.5);color:#c4b5fd">
+                    Choose up to 6 &nbsp;<span class="dsp2-pill-count" id="dsp-style-count">0 / 6</span>
                   </div>
-                  <div class="dsp-sub">
-                    <div class="dsp-sub-top">
-                      <div class="dsp-sub-icon" style="background:rgba(45,212,191,0.12)">
-                        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#5eead4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="4.93" y1="4.93" x2="9.17" y2="9.17"/><line x1="14.83" y1="14.83" x2="19.07" y2="19.07"/><line x1="14.83" y1="9.17" x2="19.07" y2="4.93"/><line x1="4.93" y1="19.07" x2="9.17" y2="14.83"/></svg>
-                      </div>
-                      <div class="dsp-sub-meta">
-                        <div class="dsp-sub-header"><span class="dsp-sub-title">3. Where I Need Help</span><div class="dsp-sub-right"><span class="dsp-sub-desc">Choose up to 3 areas where you'd like additional coaching.</span><span class="dsp-sub-count" id="dsp-help-count">0 / 3</span></div></div>
-                      </div>
+                  <div class="dsp2-chips-grid" id="dsp-style-chips"></div>
+                  <div class="dsp2-valid-msg">You can select 1 to 6 attributes.</div>
+                </div>
+
+                <!-- 2 · I'm Growing -->
+                <div class="dsp2-col">
+                  <div class="dsp2-col-head">
+                    <div class="dsp2-col-icon" style="background:rgba(59,130,246,0.18)">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#60a5fa" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
                     </div>
-                    <div class="dsp-chips" id="dsp-help-chips"></div>
+                    <div class="dsp2-col-meta">
+                      <div class="dsp2-col-num" style="color:#60a5fa">2. I'M GROWING</div>
+                      <div class="dsp2-col-sub">Where do you want to grow as a debater?</div>
+                    </div>
                   </div>
-                  <div class="dsp-sub" style="border-bottom:none">
-                    <div class="dsp-sub-top">
-                      <div class="dsp-sub-icon" style="background:rgba(196,181,253,0.12)">
-                        <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                      </div>
-                      <div class="dsp-sub-meta">
-                        <div class="dsp-sub-header"><span class="dsp-sub-title">4. Anything for Your Coach?</span><div class="dsp-sub-right"><span class="dsp-sub-desc">Share anything on your mind — worries, questions, or anything else.</span><span class="dsp-sub-count" style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0">optional</span></div></div>
-                      </div>
+                  <div class="dsp2-pill" style="background:rgba(59,130,246,0.18);border-color:rgba(59,130,246,0.5);color:#93c5fd">
+                    Choose up to 4 &nbsp;<span class="dsp2-pill-count" id="dsp-improving-count">0 / 4</span>
+                  </div>
+                  <div class="dsp2-chips-grid" id="dsp-improving-chips"></div>
+                  <div class="dsp2-valid-msg">You can select 1 to 4 areas.</div>
+                </div>
+
+                <!-- 3 · I Need Help -->
+                <div class="dsp2-col">
+                  <div class="dsp2-col-head">
+                    <div class="dsp2-col-icon" style="background:rgba(16,185,129,0.18)">
+                      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                     </div>
-                    <textarea class="dsp-note-input" id="dsp-coach-note" maxlength="300" rows="4"
-                      placeholder="Type your thoughts here…" oninput="onDspNoteInput()"></textarea>
-                    <div class="dsp-note-counter" id="dsp-note-counter">0 / 300</div>
+                    <div class="dsp2-col-meta">
+                      <div class="dsp2-col-num" style="color:#34d399">3. I NEED HELP WITH</div>
+                      <div class="dsp2-col-sub">What would you like your coach to help you with?</div>
+                    </div>
+                  </div>
+                  <div class="dsp2-pill" style="background:rgba(16,185,129,0.18);border-color:rgba(16,185,129,0.5);color:#6ee7b7">
+                    Choose up to 3 &nbsp;<span class="dsp2-pill-count" id="dsp-help-count">0 / 3</span>
+                  </div>
+                  <div class="dsp2-chips-grid" id="dsp-help-chips"></div>
+                  <div class="dsp2-valid-msg">You can select 1 to 3 areas.</div>
+                </div>
+
+              </div><!-- /dsp2-grid -->
+
+              <!-- Section 4 — Coach note (full width) -->
+              <div class="dsp2-note-wrap">
+                <div class="dsp2-col-head" style="margin-bottom:14px">
+                  <div class="dsp2-col-icon" style="background:rgba(196,181,253,0.15)">
+                    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  </div>
+                  <div class="dsp2-col-meta">
+                    <div class="dsp2-col-num" style="color:#c4b5fd;display:flex;align-items:center;gap:10px">
+                      4. ANYTHING YOU'D LIKE YOUR COACH TO KNOW?
+                      <span class="dsp2-optional-badge">Optional</span>
+                    </div>
+                    <div class="dsp2-col-sub">Tell your coach about a concern, question, goal, or anything else you'd like them to know.</div>
                   </div>
                 </div>
-                <div class="dsp-footer">
+                <textarea class="dsp-note-input" id="dsp-coach-note" maxlength="300" rows="3"
+                  placeholder="Type your thoughts here…" oninput="onDspNoteInput()"></textarea>
+                <div class="dsp-note-counter" id="dsp-note-counter">0 / 300</div>
+              </div>
+
+              <!-- Bottom nav -->
+              <div class="dsp2-nav">
+                <button class="dsp2-back-btn" onclick="switchProfTab('overview')">
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  Back
+                </button>
+                <div class="dsp2-nav-center">
                   <span class="dsp-save-status" id="dsp-save-status">Saved ✓</span>
-                  <button class="dsp-clear-btn" id="dsp-clear-btn" onclick="clearDsp()">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                  <button class="dsp2-clear-btn" id="dsp-clear-btn" onclick="clearDsp()">
+                    <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
                     Clear All
                   </button>
                 </div>
+                <button class="dsp2-review-btn" onclick="saveDsp()">
+                  Review My Answers
+                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                </button>
               </div>
             </div>
 
@@ -1202,85 +1270,168 @@
 .prof-badge-season   { background:rgba(251,113,133,0.13); border-color:rgba(251,113,133,0.42); color:#fda4af; }
 
 /* ── Debate Style Profile ──────────────────────────────── */
-.dsp-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
-.dsp-title {
-  font-family:'Josefin Sans',sans-serif; font-size:1.02rem; font-weight:700;
-  letter-spacing:0.14em; text-transform:uppercase; color:#c8a96e;
-  display:flex; align-items:center; gap:9px;
+/* Header row: title+subtitle left, step bar right */
+.dsp2-header {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:24px; margin-bottom:22px; flex-wrap:wrap;
 }
-.dsp-visibility {
-  display:flex; align-items:center; gap:7px; padding:6px 15px; border-radius:50px;
-  background:rgba(251,113,133,0.09); border:1px solid rgba(251,113,133,0.3);
-  font-family:'Josefin Sans',sans-serif; font-size:0.79rem; font-weight:700;
-  letter-spacing:0.07em; color:rgba(251,113,133,0.88);
+.dsp2-header-left { display:flex; align-items:flex-start; gap:14px; flex:1; min-width:200px; }
+.dsp2-main-icon {
+  width:46px; height:46px; border-radius:50%; flex-shrink:0;
+  background:rgba(200,169,110,0.12); border:1px solid rgba(200,169,110,0.25);
+  display:flex; align-items:center; justify-content:center; margin-top:2px;
 }
-/* Card & panels — each section gets its own box */
-.dsp-card { background:none; border:none; overflow:visible; display:flex; flex-direction:column; gap:14px; }
-.dsp-sub {
-  padding:20px 24px;
-  background:rgba(6,14,45,0.82); border:1px solid rgba(255,255,255,0.09); border-radius:12px;
+.dsp2-header-text { flex:1; }
+.dsp2-title {
+  font-family:'Josefin Sans',sans-serif; font-size:1.08rem; font-weight:700;
+  letter-spacing:0.16em; text-transform:uppercase; color:#c8a96e; margin-bottom:3px;
 }
-/* Icon + meta layout */
-.dsp-sub-top { display:flex; align-items:flex-start; gap:15px; margin-bottom:14px; }
-.dsp-sub-icon {
-  width:40px; height:40px; border-radius:50%;
-  display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;
+.dsp2-subtitle {
+  font-family:'Josefin Sans',sans-serif; font-size:0.91rem; font-weight:700;
+  color:rgba(255,255,255,0.82); letter-spacing:0.03em; margin-bottom:5px;
 }
-.dsp-sub-meta { flex:1; min-width:0; }
-.dsp-sub-header { display:flex; justify-content:space-between; align-items:center; }
-.dsp-sub-title {
-  font-family:'Josefin Sans',sans-serif; font-size:0.88rem; font-weight:700;
-  letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.92);
+.dsp2-desc {
+  font-family:'Josefin Sans',sans-serif; font-size:0.80rem;
+  color:rgba(255,255,255,0.42); line-height:1.55;
 }
-.dsp-sub-right { display:flex; align-items:center; gap:14px; flex-shrink:0; }
-.dsp-sub-count { font-family:'Josefin Sans',sans-serif; font-size:0.92rem; font-weight:700; color:rgba(255,255,255,0.55); flex-shrink:0; }
-.dsp-sub-desc { font-family:'Josefin Sans',sans-serif; font-size:0.82rem; color:rgba(255,255,255,0.42); margin:0; }
-/* Chips */
-.dsp-chips { display:flex; flex-wrap:wrap; gap:10px; }
-.dsp-chip {
-  padding:8px 16px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);
-  background:rgba(255,255,255,0.04);
+/* Step progress indicator */
+.dsp2-steps {
+  display:flex; align-items:center; gap:0; flex-shrink:0;
+  padding-top:4px;
+}
+.dsp2-step { display:flex; flex-direction:column; align-items:center; gap:6px; }
+.dsp2-step-circle {
+  width:38px; height:38px; border-radius:50%; border:2px solid;
+  display:flex; align-items:center; justify-content:center;
   font-family:'Josefin Sans',sans-serif; font-size:0.95rem; font-weight:700;
-  letter-spacing:0.04em; color:rgba(255,255,255,0.55);
+  transition:background 0.2s;
+}
+.dsp2-step.filled .dsp2-step-circle { background:currentColor; }
+.dsp2-step-label {
+  font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+  letter-spacing:0.06em; color:rgba(255,255,255,0.45); text-align:center;
+  white-space:nowrap;
+}
+.dsp2-step.filled .dsp2-step-label { color:rgba(255,255,255,0.7); }
+.dsp2-step-line { width:32px; height:2px; background:rgba(255,255,255,0.1); margin:0 2px; margin-bottom:22px; flex-shrink:0; }
+/* 3-column chip grid */
+.dsp2-grid {
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:16px;
+}
+.dsp2-col {
+  background:rgba(6,14,45,0.82); border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px; padding:18px 16px 14px; display:flex; flex-direction:column; gap:12px;
+}
+.dsp2-col-head { display:flex; align-items:flex-start; gap:12px; }
+.dsp2-col-icon {
+  width:44px; height:44px; border-radius:50%; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+}
+.dsp2-col-meta { flex:1; min-width:0; padding-top:2px; }
+.dsp2-col-num {
+  font-family:'Josefin Sans',sans-serif; font-size:0.82rem; font-weight:700;
+  letter-spacing:0.1em; text-transform:uppercase; line-height:1.2; margin-bottom:4px;
+}
+.dsp2-col-sub {
+  font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+  color:rgba(255,255,255,0.48); line-height:1.45;
+}
+/* Choose-N pill */
+.dsp2-pill {
+  display:inline-flex; align-items:center;
+  padding:5px 12px; border-radius:50px; border:1px solid;
+  font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+  letter-spacing:0.06em; width:fit-content;
+}
+.dsp2-pill-count { font-weight:700; opacity:0.7; }
+/* 2-column chip grid */
+.dsp2-chips-grid {
+  display:grid; grid-template-columns:1fr 1fr; gap:7px; flex:1;
+}
+/* Chips — rectangular cards */
+.dsp-chip {
+  padding:9px 11px; border-radius:8px; border:1px solid rgba(255,255,255,0.16);
+  background:rgba(255,255,255,0.04);
+  font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
+  letter-spacing:0.02em; color:rgba(255,255,255,0.55);
   transition:all 0.15s; cursor:default; user-select:none;
-  display:inline-flex; align-items:center; gap:6px;
+  display:flex; align-items:center; justify-content:space-between; gap:6px;
+  line-height:1.3;
 }
 .dsp-chip.editable { cursor:pointer; }
-.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.45); color:rgba(255,255,255,0.88); background:rgba(255,255,255,0.08); }
-/* Selected — vivid solid fills matching the section colour */
-.dsp-chip.sel-style    { background:rgba(37,99,235,0.80);  border-color:rgba(96,165,250,0.85);  color:#fff; }
-.dsp-chip.sel-improving{ background:rgba(194,65,12,0.80);  border-color:rgba(251,146,60,0.85);  color:#fff; }
-.dsp-chip.sel-help     { background:rgba(22,163,74,0.80);  border-color:rgba(74,222,128,0.85);  color:#fff; }
-.dsp-chip-check { width:11px; height:11px; flex-shrink:0; opacity:0; transition:opacity 0.12s; }
+.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.07); }
+/* Selected fills */
+.dsp-chip.sel-style     { background:rgba(109,40,217,0.55);  border-color:rgba(167,139,250,0.7); color:#e9d5ff; }
+.dsp-chip.sel-improving { background:rgba(29,78,216,0.55);   border-color:rgba(96,165,250,0.7);  color:#bfdbfe; }
+.dsp-chip.sel-help      { background:rgba(6,95,70,0.65);     border-color:rgba(52,211,153,0.65); color:#a7f3d0; }
+.dsp-chip-check { width:12px; height:12px; flex-shrink:0; opacity:0; transition:opacity 0.12s; }
 .dsp-chip.sel-style .dsp-chip-check,
 .dsp-chip.sel-improving .dsp-chip-check,
 .dsp-chip.sel-help .dsp-chip-check { opacity:1; }
+/* Validation hint */
+.dsp2-valid-msg {
+  font-family:'Josefin Sans',sans-serif; font-size:0.76rem;
+  color:rgba(255,255,255,0.32); display:flex; align-items:center; gap:5px; margin-top:2px;
+}
+.dsp2-valid-msg::before { content:'ℹ'; font-size:0.78rem; }
+/* Section 4 — Coach note */
+.dsp2-note-wrap {
+  background:rgba(6,14,45,0.82); border:1px solid rgba(255,255,255,0.09);
+  border-radius:14px; padding:18px 18px 14px; margin-bottom:16px;
+}
+.dsp2-optional-badge {
+  display:inline-flex; padding:3px 10px; border-radius:50px;
+  background:rgba(196,181,253,0.12); border:1px solid rgba(196,181,253,0.3);
+  font-family:'Josefin Sans',sans-serif; font-size:0.73rem; font-weight:700;
+  letter-spacing:0.07em; color:#c4b5fd; text-transform:uppercase;
+}
 /* Note textarea */
 .dsp-note-input {
   width:100%; box-sizing:border-box; resize:none;
   background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.1);
   border-radius:9px; padding:11px 14px;
-  font-family:'Josefin Sans',sans-serif; font-size:1.02rem;
+  font-family:'Josefin Sans',sans-serif; font-size:0.96rem;
   color:rgba(255,255,255,0.85); line-height:1.55; outline:none; transition:border-color 0.2s;
 }
 .dsp-note-input::placeholder { color:rgba(255,255,255,0.28); }
-.dsp-note-input:focus { border-color:rgba(125,211,252,0.35); }
-.dsp-note-counter { text-align:right; margin-top:5px; font-family:'Josefin Sans',sans-serif; font-size:0.81rem; color:rgba(255,255,255,0.45); }
-/* Footer */
-.dsp-footer {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:12px 22px; border-top:1px solid rgba(255,255,255,0.08); background:rgba(4,10,30,0.4);
+.dsp-note-input:focus { border-color:rgba(196,181,253,0.4); }
+.dsp-note-counter { text-align:right; margin-top:5px; font-family:'Josefin Sans',sans-serif; font-size:0.78rem; color:rgba(255,255,255,0.38); }
+/* Bottom nav */
+.dsp2-nav {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 0 4px; border-top:1px solid rgba(255,255,255,0.07);
 }
+.dsp2-nav-center { display:flex; align-items:center; gap:16px; }
 .dsp-save-status { font-family:'Josefin Sans',sans-serif; font-size:0.86rem; letter-spacing:0.08em; color:rgba(74,222,128,0.9); opacity:0; transition:opacity 0.35s; }
 .dsp-save-status.visible { opacity:1; }
-.dsp-clear-btn {
-  padding:7px 17px; border-radius:50px; border:1px solid rgba(255,255,255,0.15); background:transparent;
+.dsp2-back-btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:9px 20px; border-radius:8px;
+  border:1px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.04);
   font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.35);
-  cursor:pointer; transition:all 0.22s; display:flex; align-items:center; gap:7px;
+  letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.55);
+  cursor:pointer; transition:all 0.18s;
 }
-.dsp-clear-btn:hover { border-color:rgba(251,113,133,0.5); color:#fda4af; background:rgba(251,113,133,0.08); }
-.dsp-clear-btn.has-sel { border-color:rgba(251,113,133,0.48); color:#fda4af; background:rgba(251,113,133,0.08); }
+.dsp2-back-btn:hover { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.85); background:rgba(255,255,255,0.07); }
+.dsp2-clear-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:6px 14px; border-radius:50px;
+  border:1px solid rgba(255,255,255,0.12); background:transparent;
+  font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+  letter-spacing:0.07em; text-transform:uppercase; color:rgba(255,255,255,0.28);
+  cursor:pointer; transition:all 0.18s;
+}
+.dsp2-clear-btn:hover { border-color:rgba(251,113,133,0.45); color:#fda4af; background:rgba(251,113,133,0.07); }
+.dsp2-clear-btn.has-sel { border-color:rgba(251,113,133,0.42); color:#fda4af; background:rgba(251,113,133,0.07); }
+.dsp2-review-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:10px 22px; border-radius:8px;
+  background:linear-gradient(135deg,#c8a96e,#a07840); border:none;
+  font-family:'Josefin Sans',sans-serif; font-size:0.86rem; font-weight:700;
+  letter-spacing:0.09em; text-transform:uppercase; color:#0a0e1a;
+  cursor:pointer; transition:opacity 0.18s; box-shadow:0 2px 12px rgba(200,169,110,0.25);
+}
+.dsp2-review-btn:hover { opacity:0.88; }
 
 /* ── Skill Ratings ────────────────────────────────────── */
 .skill-card {
@@ -1667,6 +1818,19 @@ function updateClearBtn() {
   if (btn) btn.classList.toggle('has-sel', hasAny);
 }
 
+function updateDspSteps() {
+  const filled = [
+    _dspData.style.length > 0,
+    _dspData.improving.length > 0,
+    _dspData.helpNeeded.length > 0,
+    (_dspData.coachNote||'').trim().length > 0
+  ];
+  filled.forEach((f, i) => {
+    const el = document.getElementById(`dsp2-step-${i+1}`);
+    if (el) el.classList.toggle('filled', f);
+  });
+}
+
 function renderDsp() {
   Object.entries(DSP_META).forEach(([field, m]) => renderDspChips(field, m));
   const ta = document.getElementById('dsp-coach-note');
@@ -1674,6 +1838,7 @@ function renderDsp() {
   const cnt = document.getElementById('dsp-note-counter');
   if (cnt) cnt.textContent = `${(_dspData.coachNote||'').length} / 300`;
   updateClearBtn();
+  updateDspSteps();
 }
 
 function renderDspChips(field, m) {
@@ -1702,6 +1867,7 @@ function toggleDspChip(field, value) {
   else return;
   renderDspChips(field, m);
   updateClearBtn();
+  updateDspSteps();
   saveDsp();
 }
 
@@ -1711,6 +1877,7 @@ function onDspNoteInput() {
   if (ta)  _dspData.coachNote = ta.value;
   if (cnt) cnt.textContent = `${(ta?ta.value:'').length} / 300`;
   updateClearBtn();
+  updateDspSteps();
   clearTimeout(_dspDebounce);
   _dspDebounce = setTimeout(saveDsp, 1400);
 }
