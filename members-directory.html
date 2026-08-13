@@ -679,16 +679,6 @@
                   Debate Style Profile
                 </div>
               </div>
-              <div class="dsp-tabs">
-                <button class="dsp-tab active" id="dsp-tab-btn-style" onclick="switchDspTab('style')">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-                  My Style
-                </button>
-                <button class="dsp-tab" id="dsp-tab-btn-coach" onclick="switchDspTab('coach')">
-                  <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  For My Coach
-                </button>
-              </div>
               <div class="dsp-card">
                 <div class="dsp-panel" id="dsp-panel-style">
                   <div class="dsp-sub">
@@ -727,15 +717,13 @@
                     </div>
                     <div class="dsp-chips" id="dsp-help-chips"></div>
                   </div>
-                </div>
-                <div class="dsp-panel" id="dsp-panel-coach" style="display:none">
                   <div class="dsp-sub" style="border-bottom:none">
                     <div class="dsp-sub-top">
                       <div class="dsp-sub-icon" style="background:rgba(196,181,253,0.12)">
                         <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#c4b5fd" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                       </div>
                       <div class="dsp-sub-meta">
-                        <div class="dsp-sub-header"><span class="dsp-sub-title">Anything for your coach?</span><span class="dsp-sub-count" style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0">optional</span></div>
+                        <div class="dsp-sub-header"><span class="dsp-sub-title">4. Anything for Your Coach?</span><span class="dsp-sub-count" style="color:rgba(255,255,255,0.3);font-weight:400;text-transform:none;letter-spacing:0">optional</span></div>
                         <p class="dsp-sub-desc">Share anything on your mind — worries, questions, or anything else.</p>
                       </div>
                     </div>
@@ -1230,21 +1218,10 @@
   font-family:'Josefin Sans',sans-serif; font-size:0.79rem; font-weight:700;
   letter-spacing:0.07em; color:rgba(251,113,133,0.88);
 }
-/* Tabs */
-.dsp-tabs { display:flex; gap:7px; margin-bottom:13px; }
-.dsp-tab {
-  padding:7px 20px; border-radius:50px;
-  border:1px solid rgba(255,255,255,0.15); background:transparent;
-  font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
-  letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.45);
-  cursor:pointer; transition:all 0.18s; display:inline-flex; align-items:center; gap:7px;
-}
-.dsp-tab.active { background:rgba(200,169,110,0.15); border-color:rgba(200,169,110,0.5); color:#c8a96e; }
-.dsp-tab:not(.active):hover { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.72); }
 /* Card & panels */
 .dsp-card { background:rgba(6,14,45,0.75); border:1px solid rgba(255,255,255,0.09); border-radius:14px; overflow:hidden; }
 .dsp-panel > .dsp-sub:last-child { border-bottom:none; }
-.dsp-sub { padding:18px 22px; border-bottom:1px solid rgba(255,255,255,0.07); }
+.dsp-sub { padding:22px 26px; border-bottom:1px solid rgba(255,255,255,0.07); }
 /* Icon + meta layout */
 .dsp-sub-top { display:flex; align-items:flex-start; gap:15px; margin-bottom:12px; }
 .dsp-sub-icon {
@@ -1260,19 +1237,21 @@
 .dsp-sub-count { font-family:'Josefin Sans',sans-serif; font-size:0.80rem; font-weight:700; color:rgba(255,255,255,0.55); flex-shrink:0; }
 .dsp-sub-desc { font-family:'Josefin Sans',sans-serif; font-size:0.86rem; color:rgba(255,255,255,0.52); margin:0; }
 /* Chips */
-.dsp-chips { display:flex; flex-wrap:wrap; gap:7px; }
+.dsp-chips { display:flex; flex-wrap:wrap; gap:10px; }
 .dsp-chip {
-  padding:6px 13px; border-radius:50px; border:1px solid rgba(255,255,255,0.25);
+  padding:8px 16px; border-radius:50px; border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.04);
   font-family:'Josefin Sans',sans-serif; font-size:0.86rem; font-weight:700;
-  letter-spacing:0.04em; color:rgba(255,255,255,0.68);
+  letter-spacing:0.04em; color:rgba(255,255,255,0.55);
   transition:all 0.15s; cursor:default; user-select:none;
   display:inline-flex; align-items:center; gap:6px;
 }
 .dsp-chip.editable { cursor:pointer; }
-.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.5); color:rgba(255,255,255,0.92); background:rgba(255,255,255,0.05); }
-.dsp-chip.sel-style    { background:rgba(125,211,252,0.18); border-color:rgba(125,211,252,0.58); color:#7dd3fc; }
-.dsp-chip.sel-improving{ background:rgba(251,146,60,0.18);  border-color:rgba(251,146,60,0.58);  color:#fdba74; }
-.dsp-chip.sel-help     { background:rgba(45,212,191,0.15);  border-color:rgba(45,212,191,0.52);  color:#5eead4; }
+.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.45); color:rgba(255,255,255,0.88); background:rgba(255,255,255,0.08); }
+/* Selected — vivid solid fills matching the section colour */
+.dsp-chip.sel-style    { background:rgba(37,99,235,0.80);  border-color:rgba(96,165,250,0.85);  color:#fff; }
+.dsp-chip.sel-improving{ background:rgba(194,65,12,0.80);  border-color:rgba(251,146,60,0.85);  color:#fff; }
+.dsp-chip.sel-help     { background:rgba(22,163,74,0.80);  border-color:rgba(74,222,128,0.85);  color:#fff; }
 .dsp-chip-check { width:11px; height:11px; flex-shrink:0; opacity:0; transition:opacity 0.12s; }
 .dsp-chip.sel-style .dsp-chip-check,
 .dsp-chip.sel-improving .dsp-chip-check,
@@ -1682,13 +1661,6 @@ function switchProfTab(tab) {
   document.getElementById('prof-tab-btn-coaches').classList.toggle('active', !isOverview);
 }
 
-function switchDspTab(tab) {
-  _dspActiveTab = tab;
-  document.getElementById('dsp-panel-style').style.display = tab==='style' ? '' : 'none';
-  document.getElementById('dsp-panel-coach').style.display = tab==='coach' ? '' : 'none';
-  document.getElementById('dsp-tab-btn-style').classList.toggle('active', tab==='style');
-  document.getElementById('dsp-tab-btn-coach').classList.toggle('active', tab==='coach');
-}
 
 function updateClearBtn() {
   const hasAny = _dspData.style.length > 0 || _dspData.improving.length > 0
@@ -1765,7 +1737,6 @@ async function clearDsp() {
   if (!_dspEditable) return;
   _dspData = { style:[], improving:[], helpNeeded:[], coachNote:'' };
   renderDsp();
-  switchDspTab('style');
   try { await dirDb.collection('debater_about').doc(notesDocId(_profName)).delete(); }
   catch(e) { console.warn('DSP clear:', e); }
 }
