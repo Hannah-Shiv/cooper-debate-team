@@ -667,6 +667,9 @@
           <div class="profile-section" id="prof-skills-section" style="display:none">
             <div class="profile-section-title">Skills Assessment <span style="font-size:0.78rem;color:rgba(255,255,255,0.28);font-weight:400;letter-spacing:0;text-transform:none">— Coach Assessment</span></div>
             <div id="prof-skills-rows"></div>
+            <div id="prof-skills-clear-wrap" style="display:none">
+              <button class="skill-clear-btn" onclick="clearAllSkills()">↺ Reset All</button>
+            </div>
           </div>
 
           <!-- Coach notes (coaches + captains only) -->
@@ -1054,10 +1057,19 @@
 }
 .skill-pill.editable { cursor:pointer; }
 .skill-pill.editable:hover { border-color:rgba(255,255,255,0.35); color:rgba(255,255,255,0.7); }
-.skill-pill.lvl-1 { background:rgba(251,113,133,0.14); border-color:rgba(251,113,133,0.42); color:#fda4af; }
-.skill-pill.lvl-2 { background:rgba(251,146,60,0.14);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
-.skill-pill.lvl-3 { background:rgba(250,204,21,0.14);  border-color:rgba(250,204,21,0.42);  color:#fde047; }
-.skill-pill.lvl-4 { background:rgba(74,222,128,0.14);  border-color:rgba(74,222,128,0.42);  color:#4ade80; }
+.skill-pill.lvl-1 { background:rgba(239, 68, 68,0.14);  border-color:rgba(239, 68, 68,0.42);  color:#fca5a5; }
+.skill-pill.lvl-2 { background:rgba(251,113,133,0.14); border-color:rgba(251,113,133,0.42); color:#fda4af; }
+.skill-pill.lvl-3 { background:rgba(251,146,60,0.14);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
+.skill-pill.lvl-4 { background:rgba(250,204,21,0.14);  border-color:rgba(250,204,21,0.42);  color:#fde047; }
+.skill-pill.lvl-5 { background:rgba(74,222,128,0.14);  border-color:rgba(74,222,128,0.42);  color:#4ade80; }
+.skill-clear-btn {
+  margin-top:14px; padding:5px 14px; border-radius:50px;
+  border:1px solid rgba(255,255,255,0.12); background:transparent;
+  font-family:'Josefin Sans',sans-serif; font-size:0.76rem; font-weight:700;
+  letter-spacing:0.07em; text-transform:uppercase; color:rgba(255,255,255,0.3);
+  cursor:pointer; transition:all 0.15s;
+}
+.skill-clear-btn:hover { border-color:rgba(251,113,133,0.4); color:#fda4af; }
 </style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
@@ -1405,7 +1417,7 @@ const SKILL_DEFS = [
   { id:'research',  label:'Research' },
   { id:'impact',    label:'Impact Calculus' },
 ];
-const SKILL_LEVELS = ['Developing','Good','Very Good','Excellent'];
+const SKILL_LEVELS = ['Needs Improvement','Developing','Good','Very Good','Excellent'];
 let _currentSkills = {};
 
 async function renderSkillSection(name) {
@@ -1426,14 +1438,19 @@ async function renderSkillSection(name) {
 }
 
 function renderSkillRows(canEdit) {
-  const container = document.getElementById('prof-skills-rows');
+  const container  = document.getElementById('prof-skills-rows');
+  const clearWrap  = document.getElementById('prof-skills-clear-wrap');
+  const anyRated   = SKILL_DEFS.some(s => _currentSkills[s.id]);
+  if (clearWrap) clearWrap.style.display = (canEdit && anyRated) ? '' : 'none';
   container.innerHTML = SKILL_DEFS.map(skill => {
     const cur = _currentSkills[skill.id] || null;
     const pills = SKILL_LEVELS.map((lvl, i) => {
       const lvlN = i + 1;
       const active = cur === lvl ? ` lvl-${lvlN}` : '';
       const editCls = canEdit ? ' editable' : '';
-      const click = canEdit ? `onclick="setSkillRating('${skill.id}','${escJs(lvl)}')"` : '';
+      // clicking the active pill toggles it off (pass empty string to signal clear)
+      const click = canEdit
+        ? `onclick="setSkillRating('${skill.id}','${cur === lvl ? '' : escJs(lvl)}')"` : '';
       return `<span class="skill-pill${editCls}${active}" ${click}>${escHtml(lvl)}</span>`;
     }).join('');
     return `<div class="skill-row"><span class="skill-name">${escHtml(skill.label)}</span><div class="skill-pills">${pills}</div></div>`;
@@ -1441,16 +1458,33 @@ function renderSkillRows(canEdit) {
 }
 
 async function setSkillRating(skillId, level) {
-  _currentSkills[skillId] = level;
+  if (level) _currentSkills[skillId] = level;
+  else delete _currentSkills[skillId];
   const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
   renderSkillRows(canEdit);
   try {
-    await dirDb.collection('debater_skills').doc(notesDocId(_profName)).set(
-      { [skillId]: level, updatedBy: currentUserEmail,
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
-      { merge: true }
-    );
+    if (level) {
+      await dirDb.collection('debater_skills').doc(notesDocId(_profName)).set(
+        { [skillId]: level, updatedBy: currentUserEmail,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp() },
+        { merge: true }
+      );
+    } else {
+      await dirDb.collection('debater_skills').doc(notesDocId(_profName)).update(
+        { [skillId]: firebase.firestore.FieldValue.delete(),
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp() }
+      );
+    }
   } catch(e) { console.warn('Skill save:', e); }
+}
+
+async function clearAllSkills() {
+  _currentSkills = {};
+  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  renderSkillRows(canEdit);
+  try {
+    await dirDb.collection('debater_skills').doc(notesDocId(_profName)).delete();
+  } catch(e) { console.warn('Skills clear:', e); }
 }
 
 /* ── Coach notes ──────────────────────────────────────── */
