@@ -569,8 +569,7 @@
               <button class="dir-ctl-btn"         id="sort-tourns"  onclick="setSort('tourns')">Tournaments</button>
             </div>
             <div class="dir-filter-box">
-              <button class="dir-ctl-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
-              <button class="dir-ctl-btn"         id="filter-metro" onclick="setFilter('metro')">✓ Metro Eligible</button>
+              <button class="dir-ctl-btn" id="filter-metro" onclick="toggleMetroFilter()">✓ Metro Eligible</button>
             </div>
           </div>
           <div class="dir-grid" id="dir-grid"></div>
@@ -996,11 +995,19 @@
   display:inline-flex; align-items:center; gap:8px;
   position:relative; bottom:-2px; margin-right:2px;
 }
-.prof-tab.active {
-  background:rgba(12,22,58,0.98);
-  border-color:rgba(212,160,23,0.32) rgba(212,160,23,0.32) rgba(12,22,58,0.98);
-  border-top-width:2px; color:#c8a96e;
-  box-shadow:0 -2px 10px rgba(212,160,23,0.07);
+/* Overview tab active — sky blue */
+#prof-tab-btn-overview.active {
+  background:rgba(14,30,70,0.98);
+  border-color:rgba(56,189,248,0.45) rgba(56,189,248,0.45) rgba(14,30,70,0.98);
+  border-top-width:2px; color:#7dd3fc;
+  box-shadow:0 -2px 10px rgba(56,189,248,0.08);
+}
+/* Coaches Only tab active — purple */
+#prof-tab-btn-coaches.active {
+  background:rgba(18,14,60,0.98);
+  border-color:rgba(167,139,250,0.45) rgba(167,139,250,0.45) rgba(18,14,60,0.98);
+  border-top-width:2px; color:#c4b5fd;
+  box-shadow:0 -2px 10px rgba(167,139,250,0.08);
 }
 .prof-tab:not(.active):hover { color:rgba(255,255,255,0.65); background:rgba(255,255,255,0.06); }
 /* Avatar & hero layout */
@@ -1043,16 +1050,32 @@
 .prof-season-btn {
   padding:6px 16px; border-radius:50px; cursor:pointer; transition:all 0.18s;
   font-family:'Josefin Sans',sans-serif; font-size:0.86rem; font-weight:700; letter-spacing:0.07em;
-  background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.14);
-  color:rgba(255,255,255,0.55);
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.12);
+  color:rgba(255,255,255,0.45);
 }
-.prof-season-btn:hover {
-  background:rgba(255,215,0,0.07); border-color:rgba(255,215,0,0.35); color:rgba(255,215,0,0.8);
+/* "All Time" — slate blue tint */
+.prof-season-all {
+  background:rgba(56,189,248,0.06); border-color:rgba(56,189,248,0.22); color:rgba(125,211,252,0.65);
 }
-.prof-season-btn.active {
-  background:linear-gradient(135deg,rgba(255,215,0,0.18),rgba(212,160,23,0.1));
-  border-color:rgba(255,215,0,0.6); color:#FFD700;
-  box-shadow:0 0 12px rgba(255,215,0,0.12);
+.prof-season-all:hover {
+  background:rgba(56,189,248,0.12); border-color:rgba(56,189,248,0.45); color:#7dd3fc;
+}
+.prof-season-all.active {
+  background:linear-gradient(135deg,rgba(56,189,248,0.18),rgba(14,116,144,0.12));
+  border-color:rgba(56,189,248,0.6); color:#38bdf8;
+  box-shadow:0 0 12px rgba(56,189,248,0.14);
+}
+/* Year pills — gold/amber */
+.prof-season-year {
+  background:rgba(255,215,0,0.05); border-color:rgba(255,215,0,0.2); color:rgba(255,215,0,0.55);
+}
+.prof-season-year:hover {
+  background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:rgba(255,215,0,0.85);
+}
+.prof-season-year.active {
+  background:linear-gradient(135deg,rgba(255,215,0,0.2),rgba(212,160,23,0.1));
+  border-color:rgba(255,215,0,0.65); color:#FFD700;
+  box-shadow:0 0 12px rgba(255,215,0,0.14);
 }
 
 /* Sort / filter bar */
@@ -1176,6 +1199,7 @@
 .prof-badges {
   display:grid !important; grid-template-columns:1fr 1fr; gap:7px;
   align-self:center; flex-shrink:0; margin-bottom:0; min-width:0;
+  margin-left:32px;
 }
 .prof-badge {
   display:inline-flex; align-items:center; gap:7px;
@@ -1582,11 +1606,12 @@ function setSort(sort) {
 
 function setFilter(filter) {
   currentFilter = filter;
-  ['all','metro'].forEach(f => {
-    const el = document.getElementById('filter-' + f);
-    if (el) el.classList.toggle('active', f === filter);
-  });
+  const metroBtn = document.getElementById('filter-metro');
+  if (metroBtn) metroBtn.classList.toggle('active', filter === 'metro');
   renderDirectory();
+}
+function toggleMetroFilter() {
+  setFilter(currentFilter === 'metro' ? 'all' : 'metro');
 }
 
 /* ── About Me ─────────────────────────────────────────── */
@@ -1983,8 +2008,8 @@ function renderSeasonSelector(d) {
     currentSeason = seasons[seasons.length - 1];
   }
   bar.style.display = 'flex';
-  const allBtn = `<button class="prof-season-btn${currentSeason==='all'?' active':''}" onclick="selectSeason('all')">All Time</button>`;
-  const seasonBtns = seasons.map(s => `<button class="prof-season-btn${currentSeason===s?' active':''}" onclick="selectSeason('${escJs(s)}')">${escHtml(s)}</button>`);
+  const allBtn = `<button class="prof-season-btn prof-season-all${currentSeason==='all'?' active':''}" onclick="selectSeason('all')">All Time</button>`;
+  const seasonBtns = seasons.map(s => `<button class="prof-season-btn prof-season-year${currentSeason===s?' active':''}" onclick="selectSeason('${escJs(s)}')">${escHtml(s)}</button>`);
   document.getElementById('prof-season-pills').innerHTML = [allBtn, ...seasonBtns].join('');
 }
 
