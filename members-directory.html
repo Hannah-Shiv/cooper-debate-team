@@ -564,27 +564,22 @@
         <div id="profile-panel">
           <button class="profile-back-btn" onclick="backToDirectory()">← Directory</button>
 
-          <!-- Two-column: hero left, badges right -->
-          <div class="profile-top-grid">
-            <div class="profile-hero">
-              <div class="prof-hero-layout">
-                <div class="prof-avatar-wrap">
-                  <div class="prof-avatar" id="prof-avatar">—</div>
-                </div>
-                <div class="prof-hero-info">
-                  <div class="profile-hero-name" id="prof-name">—</div>
-                  <div class="profile-hero-meta" id="prof-meta">—</div>
-                  <div class="prof-identity-pills" id="prof-identity-pills"></div>
-                  <div id="prof-metro-badge"></div>
-                </div>
+          <div class="profile-hero">
+            <div class="prof-hero-layout">
+              <div class="prof-avatar-wrap">
+                <div class="prof-avatar" id="prof-avatar">—</div>
+              </div>
+              <div class="prof-hero-info">
+                <div class="profile-hero-name" id="prof-name">—</div>
+                <div class="profile-hero-meta" id="prof-meta">—</div>
+                <div class="prof-identity-pills" id="prof-identity-pills"></div>
+                <div id="prof-metro-badge"></div>
               </div>
             </div>
-            <!-- Achievements side panel -->
-            <div class="prof-badges-panel" id="prof-badges-panel" style="display:none">
-              <div class="prof-badges-panel-title">Achievements</div>
-              <div id="prof-badges"></div>
-            </div>
           </div>
+
+          <!-- Achievement badges — horizontal pill strip -->
+          <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
           <!-- Season selector (hidden until 2+ seasons exist) -->
           <div class="prof-season-bar" id="prof-season-bar" style="display:none">
@@ -925,35 +920,21 @@
   background:rgba(251,113,133,0.12); border-color:rgba(251,113,133,0.5); color:#fda4af;
 }
 
-/* Two-column profile top layout */
-.profile-top-grid {
-  display:grid; grid-template-columns:1fr 230px; gap:20px;
-  align-items:start; margin-bottom:32px;
-}
-.profile-top-grid .profile-hero { margin-bottom:0; }
-@media (max-width:700px) { .profile-top-grid { grid-template-columns:1fr; } }
-
-/* Achievements side panel */
-.prof-badges-panel {
-  background:rgba(8,18,55,0.92); border:1px solid rgba(212,160,23,0.14);
-  border-radius:14px; padding:18px 16px;
-}
-.prof-badges-panel-title {
-  font-family:'Josefin Sans',sans-serif; font-size:0.77rem; font-weight:700;
-  letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.28);
-  margin-bottom:12px;
-}
+/* Achievement badge strip — horizontal pills */
+.prof-badges { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:28px; }
 .prof-badge {
-  display:flex; align-items:center; gap:9px;
-  padding:9px 12px; border-radius:9px; cursor:default; margin-bottom:7px;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 18px; border-radius:50px; cursor:default; border:1px solid; white-space:nowrap;
   font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
-  letter-spacing:0.06em; text-transform:uppercase; width:100%; box-sizing:border-box;
-  background:rgba(212,160,23,0.08); border:1px solid rgba(212,160,23,0.22); color:#c8a96e;
+  letter-spacing:0.07em; text-transform:uppercase;
 }
-.prof-badge:last-child { margin-bottom:0; }
-.prof-badge-metro  { background:rgba(74,222,128,0.08);  border-color:rgba(74,222,128,0.22);  color:#4ade80; }
-.prof-badge-perf   { background:rgba(250,204,21,0.08);  border-color:rgba(250,204,21,0.22);  color:#facc15; }
-.prof-badge-speaks { background:rgba(139,92,246,0.08);  border-color:rgba(139,92,246,0.22);  color:#a78bfa; }
+/* Six distinct bright colours */
+.prof-badge-metro    { background:rgba(74,222,128,0.13);  border-color:rgba(74,222,128,0.42);  color:#4ade80; }
+.prof-badge-perf     { background:rgba(250,204,21,0.13);  border-color:rgba(250,204,21,0.42);  color:#facc15; }
+.prof-badge-speaks   { background:rgba(167,139,250,0.13); border-color:rgba(167,139,250,0.42); color:#c4b5fd; }
+.prof-badge-veteran  { background:rgba(56,189,248,0.13);  border-color:rgba(56,189,248,0.42);  color:#7dd3fc; }
+.prof-badge-hotstart { background:rgba(251,146,60,0.13);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
+.prof-badge-season   { background:rgba(251,113,133,0.13); border-color:rgba(251,113,133,0.42); color:#fda4af; }
 </style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
@@ -1232,23 +1213,22 @@ const BADGE_DEFS = [
   { id:'speaks',   cls:'prof-badge-speaks', label:'Elite Speaker',
     icon:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
     test: d => d.avgSpeak >= 28 },
-  { id:'veteran',  cls:'',                  label:'Tournament Veteran',
+  { id:'veteran',  cls:'prof-badge-veteran',  label:'Tournament Veteran',
     icon:'<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
     test: d => d.tournaments >= 5 },
-  { id:'hotstart', cls:'',                  label:'Hot Start',
+  { id:'hotstart', cls:'prof-badge-hotstart', label:'Hot Start',
     icon:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
     test: d => d.tournDetails.some(t => { const rs = (t.rounds||[]).filter(r=>r.result!=='BYE'&&!r.isBye).sort((a,b)=>+a.round-+b.round); return rs.length>=3&&rs[0].result==='W'&&rs[1].result==='W'&&rs[2].result==='W'; }) },
-  { id:'season5',  cls:'',                  label:'5+ Season Wins',
+  { id:'season5',  cls:'prof-badge-season',   label:'5+ Season Wins',
     icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
     test: d => { const sw={}; d.tournDetails.forEach(t=>{const s=getTournSeason(t.date);if(s)sw[s]=(sw[s]||0)+t.wins;}); return Object.values(sw).some(w=>w>=5); } }
 ];
 
 function renderBadges(d) {
-  const panel = document.getElementById('prof-badges-panel');
-  const el    = document.getElementById('prof-badges');
+  const el = document.getElementById('prof-badges');
   const earned = BADGE_DEFS.filter(b => b.test(d));
-  if (!earned.length) { panel.style.display = 'none'; return; }
-  panel.style.display = '';
+  if (!earned.length) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
   el.innerHTML = earned.map(b =>
     `<div class="prof-badge ${b.cls}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>${escHtml(b.label)}</div>`
   ).join('');
@@ -1337,7 +1317,7 @@ async function openProfile(name) {
   document.getElementById('prof-identity-pills').innerHTML = '';
   document.getElementById('prof-metro-badge').innerHTML = '';
   document.getElementById('prof-stat-strip').innerHTML = '';
-  document.getElementById('prof-badges-panel').style.display = 'none';
+  document.getElementById('prof-badges').style.display = 'none';
   document.getElementById('prof-season-bar').style.display = 'none';
   if (profileChart) { profileChart.destroy(); profileChart = null; }
 
