@@ -3,11 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
-  <meta http-equiv="Pragma" content="no-cache"/>
-  <meta http-equiv="Expires" content="0"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Cooper Debate Team — Member Directory"/>
-  <title>Directory — Cooper Debate Team</title>
+  <meta name="description" content="Cooper Debate Team — Member Hub"/>
+  <title>Member Hub — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
@@ -15,324 +13,484 @@
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
 
-    body { background: #1c2030; }
+    body { background: #0d1428; }
 
     /* ── Page shell ─────────────────────────────────────────── */
     .portal-page {
       min-height: 100vh;
-      background: #1c2030;
+      background: #0d1428;
       background-image:
-        radial-gradient(ellipse 80% 40% at 50% 0%, rgba(20,40,100,0.22) 0%, transparent 70%),
-        radial-gradient(ellipse 60% 30% at 80% 80%, rgba(15,30,80,0.12) 0%, transparent 60%);
-      padding: 100px 40px 80px;
+        radial-gradient(ellipse 90% 45% at 50% -5%, rgba(30,55,130,0.28) 0%, transparent 65%),
+        radial-gradient(ellipse 50% 35% at 90% 95%, rgba(10,25,70,0.15) 0%, transparent 55%);
+      padding: 95px 36px 80px;
       position: relative;
       overflow: hidden;
     }
-    .portal-page::before {
-      content: '';
-      position: absolute;
-      width: 900px; height: 900px;
-      border-radius: 50%;
-      border: 1px solid rgba(212,160,23,0.08);
-      top: 40%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-    .portal-page::after {
-      content: '';
-      position: absolute;
-      width: 1400px; height: 1400px;
-      border-radius: 50%;
-      border: 1px solid rgba(212,160,23,0.04);
-      top: 40%; left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
 
-    /* ── Auth states ─────────────────────────────────────────── */
-    .auth-wrap {
-      position: relative; z-index: 1;
-      display: flex; align-items: center; justify-content: center;
-      min-height: calc(100vh - 180px);
-    }
-
-    /* ── Loading skeleton ───────────────────────────────────── */
+    /* Loading */
     #mp-loading {
-      position: relative; z-index: 1;
+      position: fixed; inset: 0;
       display: flex; align-items: center; justify-content: center;
-      min-height: calc(100vh - 180px);
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase;
-      color: rgba(255,255,255,0.3);
+      background: #0d1428; z-index: 10;
+    }
+    #mp-loading p {
+      color: #2a4070; font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem; letter-spacing: 0.1em;
     }
 
-    /* ── Dashboard shell ─────────────────────────────────────── */
     #mp-content { display: none; position: relative; z-index: 1; }
+    .dashboard-wrap { max-width: 1140px; margin: 0 auto; }
 
-    .dashboard-wrap { max-width: 1100px; margin: 0 auto; }
-
-    .portal-page-title {
+    /* ── Page header ─────────────────────────────────────────── */
+    .hub-header {
+      margin-bottom: 32px;
+    }
+    .hub-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
       font-weight: 700; color: #FFD700;
-      text-shadow: 0 0 40px rgba(255,215,0,0.18);
-      margin: 0 0 6px;
+      text-shadow: 0 0 60px rgba(255,215,0,0.2);
+      margin: 0 0 6px; line-height: 1;
     }
-    .portal-page-sub {
+    .hub-sub {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.88rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(255,255,255,0.45); margin: 0 0 36px;
+      font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35); margin: 0;
     }
 
-    /* ── Search bar ──────────────────────────────────────────── */
-    .dir-search-wrap {
+    /* ── Tab bar ─────────────────────────────────────────────── */
+    .tab-bar {
+      display: flex; gap: 6px; margin-bottom: 28px;
+    }
+    .tab-btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      padding: 9px 22px;
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 50px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn svg { opacity: 0.5; transition: opacity 0.2s; }
+    .tab-btn:hover {
+      border-color: rgba(212,160,23,0.35);
+      color: rgba(255,255,255,0.75);
+    }
+    .tab-btn.active {
+      background: rgba(212,160,23,0.12);
+      border-color: rgba(212,160,23,0.5);
+      color: #FFD700;
+    }
+    .tab-btn.active svg { opacity: 1; }
+
+    /* ── Search row ──────────────────────────────────────────── */
+    .dir-search-row {
       display: flex; align-items: center; gap: 12px;
-      margin-bottom: 28px;
+      margin-bottom: 24px; flex-wrap: wrap;
+    }
+    .dir-search-box {
+      position: relative; flex: 1; max-width: 400px;
+    }
+    .dir-search-icon {
+      position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
+      color: rgba(255,255,255,0.25); pointer-events: none;
     }
     .dir-search-input {
-      flex: 1; max-width: 420px;
-      background: rgba(5,18,65,0.7); border: 1px solid rgba(212,160,23,0.25);
-      border-radius: 10px; padding: 11px 18px;
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.9rem;
+      width: 100%;
+      background: rgba(8,18,55,0.8);
+      border: 1px solid rgba(212,160,23,0.2);
+      border-radius: 10px; padding: 11px 16px 11px 38px;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
       color: #fff; outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
     }
-    .dir-search-input::placeholder { color: rgba(255,255,255,0.28); }
-    .dir-search-input:focus { border-color: rgba(212,160,23,0.65); box-shadow: 0 0 0 3px rgba(212,160,23,0.08); }
+    .dir-search-input::placeholder { color: rgba(255,255,255,0.22); }
+    .dir-search-input:focus {
+      border-color: rgba(212,160,23,0.55);
+      box-shadow: 0 0 0 3px rgba(212,160,23,0.07);
+    }
     .dir-count {
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.75rem;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.28);
     }
 
-    /* ── Debater cards grid ──────────────────────────────────── */
+    /* ── Card grid ───────────────────────────────────────────── */
     .dir-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+      gap: 14px;
     }
+
+    /* ── Debater card ────────────────────────────────────────── */
     .dir-card {
-      background: rgba(5,18,65,0.85);
-      border: 1px solid rgba(212,160,23,0.14);
-      border-radius: 14px; padding: 22px 22px 18px;
-      cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.15s;
+      background: linear-gradient(140deg, rgba(10,22,65,0.96) 0%, rgba(6,14,44,0.98) 100%);
+      border: 1px solid rgba(212,160,23,0.13);
+      border-radius: 16px; padding: 20px 20px 16px;
+      cursor: pointer;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.18s;
       position: relative; overflow: hidden;
     }
     .dir-card::before {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(212,160,23,0.04) 0%, transparent 60%);
-      pointer-events: none;
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(212,160,23,0.35), transparent);
+      opacity: 0; transition: opacity 0.22s;
     }
     .dir-card:hover {
-      border-color: rgba(212,160,23,0.5);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(212,160,23,0.18);
-      transform: translateY(-2px);
+      border-color: rgba(212,160,23,0.48);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(212,160,23,0.16), 0 0 30px rgba(212,160,23,0.06);
+      transform: translateY(-3px);
     }
+    .dir-card:hover::before { opacity: 1; }
+
+    /* Card rank badge */
+    .dir-card-rank {
+      position: absolute; top: 14px; right: 16px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.18);
+    }
+    .dir-card-rank.top3 { color: rgba(212,160,23,0.55); }
+
+    /* Avatar + name row */
+    .dir-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+    .dir-card-avatar {
+      width: 44px; height: 44px; border-radius: 50%;
+      border: 1.5px solid rgba(212,160,23,0.35);
+      background: rgba(212,160,23,0.08);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 700; color: rgba(212,160,23,0.85);
+      letter-spacing: 0.02em;
+    }
+    .dir-card-info { flex: 1; min-width: 0; }
     .dir-card-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem; font-weight: 700; color: #FFD700;
-      line-height: 1.1; margin-bottom: 6px;
+      font-size: 1.38rem; font-weight: 700; color: #FFD700;
+      line-height: 1.1; margin-bottom: 3px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .dir-card-partners {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.76rem; color: rgba(255,255,255,0.45);
-      letter-spacing: 0.06em; margin-bottom: 16px;
+      font-size: 0.73rem; color: rgba(255,255,255,0.38);
+      letter-spacing: 0.05em;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .dir-card-stats {
-      display: flex; gap: 18px;
-    }
-    .dir-card-stat { display: flex; flex-direction: column; gap: 2px; }
+
+    /* Stats row */
+    .dir-card-stats { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; }
+    .dir-card-stat { flex: 1; text-align: center; }
+    .dir-card-stat + .dir-card-stat { border-left: 1px solid rgba(255,255,255,0.05); }
     .dir-card-stat-val {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.55rem; font-weight: 700; color: #fff; line-height: 1;
+      font-size: 1.45rem; font-weight: 700; color: #fff; line-height: 1;
     }
     .dir-card-stat-lbl {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.13em; text-transform: uppercase;
+      color: rgba(255,255,255,0.32); margin-top: 3px;
     }
+
+    /* Metro badge */
     .dir-card-metro {
-      margin-top: 14px;
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase;
+      margin-top: 12px;
       display: inline-flex; align-items: center; gap: 5px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
       padding: 4px 10px; border-radius: 50px;
     }
-    .dir-card-metro.eligible { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.28); }
+    .dir-card-metro.eligible { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
     .dir-card-metro.not-eligible { display: none; }
-    .dir-card-arrow {
-      position: absolute; right: 18px; top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255,255,255,0.15); font-size: 1rem;
-      transition: color 0.2s, right 0.2s;
-    }
-    .dir-card:hover .dir-card-arrow { color: rgba(212,160,23,0.7); right: 14px; }
 
-    /* ── Empty / no-results state ───────────────────────────── */
+    /* Empty state */
     .dir-empty {
       grid-column: 1 / -1;
-      text-align: center; padding: 60px 20px;
+      text-align: center; padding: 70px 20px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.88rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(255,255,255,0.25);
+      font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.2);
     }
 
-    /* ═══════════════════════════════════════════════════════════
+    /* ══════════════════════════════════════════════════════════
        PROFILE PANEL
-    ═══════════════════════════════════════════════════════════ */
+    ══════════════════════════════════════════════════════════ */
     #profile-panel { display: none; }
 
     .profile-back-btn {
       display: inline-flex; align-items: center; gap: 8px; margin-bottom: 32px;
-      background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px; padding: 9px 18px; cursor: pointer;
-      color: rgba(255,255,255,0.6); font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
-      transition: background 0.15s; text-decoration: none;
+      color: rgba(255,255,255,0.55); font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+      transition: all 0.15s; text-decoration: none;
     }
-    .profile-back-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .profile-back-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-    .profile-hero {
-      display: flex; align-items: flex-start; gap: 24px; margin-bottom: 40px;
-      flex-wrap: wrap;
-    }
-    .profile-hero-left { flex: 1; min-width: 200px; }
+    .profile-hero { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 36px; flex-wrap: wrap; }
     .profile-hero-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.2rem,5vw,3.4rem);
-      font-weight: 700; color: #FFD700; line-height: 1; margin: 0 0 8px;
-      text-shadow: 0 0 40px rgba(255,215,0,0.25);
+      font-size: clamp(2.2rem,5vw,3.4rem); font-weight: 700;
+      color: #FFD700; line-height: 1; margin: 0 0 8px;
+      text-shadow: 0 0 40px rgba(255,215,0,0.2);
     }
     .profile-hero-meta {
-      font-family: 'Josefin Sans', sans-serif; font-size: 1rem;
-      color: rgba(255,255,255,0.7); letter-spacing: 0.06em;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.95rem;
+      color: rgba(255,255,255,0.65); letter-spacing: 0.05em;
     }
     .profile-metro-badge {
       display: inline-flex; align-items: center; gap: 8px;
-      padding: 10px 20px; border-radius: 50px;
+      padding: 9px 20px; border-radius: 50px; margin-top: 12px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.8rem; font-weight: 700; letter-spacing: 0.08em;
-      margin-top: 12px;
+      font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em;
     }
-    .profile-metro-badge.eligible { background: rgba(34,197,94,0.14); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-    .profile-metro-badge.not-eligible { background: #cc0000; color: #ffffff; border: 1px solid rgba(179,0,0,0.5); }
+    .profile-metro-badge.eligible  { background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.28); }
+    .profile-metro-badge.not-eligible { background: rgba(179,0,0,0.12); color: #e03535; border: 1px solid rgba(179,0,0,0.28); }
 
     .profile-stat-strip {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr));
-      gap: 12px; margin-bottom: 40px;
+      gap: 10px; margin-bottom: 40px;
     }
     .profile-stat-card {
-      background: rgba(5,18,65,0.88); border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 12px; padding: 18px 16px;
-      display: flex; flex-direction: column; gap: 4px;
+      background: rgba(8,18,55,0.9); border: 1px solid rgba(212,160,23,0.13);
+      border-radius: 12px; padding: 16px;
     }
     .profile-stat-label {
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem; font-weight: 700;
-      letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.9);
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.73rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.85);
     }
     .profile-stat-value {
-      font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 700;
-      color: #FFD700; line-height: 1;
+      font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 700;
+      color: #FFD700; line-height: 1.05;
     }
-    .profile-stat-sub {
-      font-family: 'Josefin Sans', sans-serif; font-size: 1rem; color: rgba(255,255,255,0.9);
-    }
+    .profile-stat-sub { font-family: 'Josefin Sans', sans-serif; font-size: 0.85rem; color: rgba(255,255,255,0.85); }
 
     .profile-section { margin-bottom: 48px; }
     .profile-section-title {
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.95rem;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
       font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(232,184,75,1); margin-bottom: 22px;
+      color: #e8b84b; margin-bottom: 20px;
       display: flex; align-items: center; gap: 10px;
     }
-    .profile-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(212,160,23,0.15); }
+    .profile-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(212,160,23,0.13); }
 
     .profile-chart-card {
-      background: rgba(5,18,65,0.88); border: 1px solid rgba(212,160,23,0.14);
-      border-radius: 14px; padding: 24px;
+      background: rgba(8,18,55,0.9); border: 1px solid rgba(212,160,23,0.13);
+      border-radius: 14px; padding: 22px;
     }
     .profile-chart-canvas-wrap { position: relative; height: 280px; }
 
-    .profile-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(212,160,23,0.14); }
+    .profile-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid rgba(212,160,23,0.12); }
     .profile-table { width: 100%; border-collapse: collapse; font-family: 'Josefin Sans', sans-serif; }
-    .profile-table thead tr { background: rgba(3,12,48,0.98); }
+    .profile-table thead tr { background: rgba(4,10,40,0.98); }
     .profile-table th {
-      padding: 13px 16px; font-size: 0.82rem; font-weight: 700;
-      letter-spacing: 0.14em; text-transform: uppercase; color: #FFD700;
+      padding: 12px 16px; font-size: 0.78rem; font-weight: 700;
+      letter-spacing: 0.13em; text-transform: uppercase; color: #FFD700;
       text-align: left; white-space: nowrap;
     }
     .profile-table th.num { text-align: right; }
-    .profile-table tbody tr { border-top: 1px solid rgba(255,255,255,0.05); transition: background 0.15s; }
-    .profile-table tbody tr:hover { background: rgba(212,160,23,0.06); }
-    .profile-table td { padding: 13px 16px; font-size: 1rem; color: #fff; }
+    .profile-table tbody tr { border-top: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+    .profile-table tbody tr:hover { background: rgba(212,160,23,0.05); }
+    .profile-table td { padding: 12px 16px; font-size: 0.95rem; color: #fff; }
     .profile-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
 
     .win-pill {
       display: inline-block; padding: 3px 10px; border-radius: 50px;
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.8rem; font-weight: 700;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem; font-weight: 700;
     }
-    .win-pill.high { background: rgba(34,197,94,0.15); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
-    .win-pill.mid  { background: rgba(234,179,8,0.15);  color: #facc15; border: 1px solid rgba(234,179,8,0.3); }
-    .win-pill.low  { background: rgba(179,0,0,0.12);    color: #e03535; border: 1px solid rgba(179,0,0,0.28); }
+    .win-pill.high { background: rgba(34,197,94,0.13); color: #4ade80; border: 1px solid rgba(34,197,94,0.28); }
+    .win-pill.mid  { background: rgba(234,179,8,0.13);  color: #facc15; border: 1px solid rgba(234,179,8,0.28); }
+    .win-pill.low  { background: rgba(179,0,0,0.1);     color: #e03535; border: 1px solid rgba(179,0,0,0.25); }
 
     .deb-link { cursor: pointer; }
     .deb-link:hover { color: #FFD700 !important; text-decoration: underline; }
 
     .metro-progress-wrap { margin-bottom: 12px; }
-    .metro-progress-bar-track {
-      height: 8px; border-radius: 4px;
-      background: rgba(255,255,255,0.07); overflow: hidden; margin-top: 6px;
-    }
-    .metro-progress-bar-fill {
-      height: 100%; border-radius: 4px;
-      background: linear-gradient(90deg,rgba(212,160,23,0.8),rgba(255,215,0,0.95));
-      transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1);
-    }
+    .metro-progress-bar-track { height: 7px; border-radius: 4px; background: rgba(255,255,255,0.07); overflow: hidden; margin-top: 5px; }
+    .metro-progress-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg,rgba(212,160,23,0.8),rgba(255,215,0,0.95)); transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
     .metro-progress-bar-fill.done { background: linear-gradient(90deg,rgba(34,197,94,0.75),rgba(74,222,128,0.9)); }
-    .metro-progress-label {
+    .metro-progress-label { font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem; color: rgba(255,255,255,0.5); margin-bottom: 2px; }
+    .metro-progress-label strong { color: rgba(255,255,255,0.85); }
+    .metro-eligible.yes { padding: 2px 9px; border-radius: 50px; background: rgba(34,197,94,0.12); color: #4ade80; border: 1px solid rgba(34,197,94,0.26); font-family:'Josefin Sans',sans-serif; font-weight:700; }
+    .metro-eligible.no  { padding: 2px 9px; border-radius: 50px; background: rgba(179,0,0,0.1); color: #e03535; border: 1px solid rgba(179,0,0,0.25); font-family:'Josefin Sans',sans-serif; font-weight:700; }
+
+    /* ══════════════════════════════════════════════════════════
+       ADMIN / ROSTER SECTION
+    ══════════════════════════════════════════════════════════ */
+    .admin-section-header { margin-bottom: 20px; }
+    .admin-section-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem; font-weight: 600; color: #c8a96e; margin: 0 0 4px;
+    }
+    .admin-section-header p { color: #5a7090; font-size: 0.83rem; font-family: 'Josefin Sans', sans-serif; margin: 0; }
+
+    .admin-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+    .admin-search {
+      flex: 1; min-width: 180px;
+      background: rgba(8,18,55,0.8); border: 1px solid #1e3060;
+      border-radius: 8px; color: #c8d8f0;
+      padding: 10px 14px; font-size: 0.88rem;
+      font-family: 'Josefin Sans', sans-serif; outline: none;
+      transition: border-color 0.2s;
+    }
+    .admin-search:focus { border-color: #c8a96e; }
+    .admin-search::placeholder { color: #2a4060; }
+    .btn-add {
+      background: #c8a96e; color: #0a1128; border: none;
+      border-radius: 8px; padding: 10px 20px;
       font-family: 'Josefin Sans', sans-serif; font-size: 0.8rem;
-      color: rgba(255,255,255,0.55); margin-bottom: 2px;
+      font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
     }
-    .metro-progress-label strong { color: rgba(255,255,255,0.88); }
-    .metro-eligible.yes {
-      padding: 2px 9px; border-radius: 50px; background: rgba(34,197,94,0.14);
-      color: #4ade80; border: 1px solid rgba(34,197,94,0.28);
-      font-family: 'Josefin Sans',sans-serif; font-weight: 700;
+    .btn-add:hover { opacity: 0.85; }
+    .admin-count { color: #3a5080; font-size: 0.78rem; font-family: 'Josefin Sans', sans-serif; margin-bottom: 14px; }
+
+    .admin-table-wrap {
+      background: #0a1433; border: 1px solid #1a2d58;
+      border-radius: 12px; overflow: hidden;
     }
-    .metro-eligible.no {
-      padding: 2px 9px; border-radius: 50px; background: rgba(179,0,0,0.12);
-      color: #e03535; border: 1px solid rgba(179,0,0,0.28);
-      font-family: 'Josefin Sans',sans-serif; font-weight: 700;
+    .admin-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+    .admin-table thead th {
+      background: rgba(4,10,35,0.98); color: #6a8ab0;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.7rem;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      padding: 12px 16px; text-align: left;
+      border-bottom: 1px solid #1a2d58;
     }
+    .admin-table tbody tr { border-bottom: 1px solid #142250; transition: background 0.15s; }
+    .admin-table tbody tr:last-child { border-bottom: none; }
+    .admin-table tbody tr:hover { background: rgba(20,40,90,0.5); }
+    .admin-table td { padding: 12px 16px; color: #c8d8f0; vertical-align: middle; }
+    .td-name { font-weight: 600; color: #e8f0ff; }
+    .td-email { color: #4a6890; font-size: 0.82rem; }
+    .td-actions { white-space: nowrap; text-align: right; }
+
+    .role-badge { display: inline-block; font-size: 0.68rem; font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
+    .role-badge.coach   { background: rgba(200,169,110,0.12); color: #c8a96e; border: 1px solid rgba(200,169,110,0.35); }
+    .role-badge.captain { background: rgba(112,144,224,0.12); color: #90aeff; border: 1px solid rgba(112,144,224,0.35); }
+    .role-badge.member  { background: rgba(42,58,85,0.3); color: #5a7490; border: 1px solid rgba(42,58,85,0.6); }
+
+    .status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 5px; vertical-align: middle; }
+    .status-dot.active   { background: #4ade80; }
+    .status-dot.inactive { background: #2a3545; }
+
+    .btn-edit, .btn-remove {
+      border: none; border-radius: 6px; padding: 5px 12px;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.72rem;
+      letter-spacing: 0.04em; font-weight: 700; cursor: pointer;
+      transition: opacity 0.2s; text-transform: uppercase;
+    }
+    .btn-edit   { background: #1a2d58; color: #8fa8d0; margin-right: 5px; }
+    .btn-remove { background: rgba(45,21,21,0.8); color: #f87171; }
+    .btn-edit:hover, .btn-remove:hover { opacity: 0.75; }
+
+    .admin-empty { text-align: center; padding: 55px 24px; color: #2a4060; }
+    .admin-empty .ei { font-size: 2rem; display: block; margin-bottom: 10px; }
+    .admin-empty p { font-size: 0.85rem; margin: 0; line-height: 1.6; font-family: 'Josefin Sans', sans-serif; }
+
+    /* ── Modals ────────────────────────────────────────────── */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(4,8,20,0.78); z-index: 500;
+      display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-box {
+      background: #0d1c3a; border: 1px solid #1e3060;
+      border-radius: 14px; width: 100%; max-width: 540px;
+      max-height: 90vh; overflow-y: auto; padding: 26px 28px 22px;
+      position: relative;
+    }
+    .modal-box::-webkit-scrollbar { width: 4px; }
+    .modal-box::-webkit-scrollbar-thumb { background: #1e3060; border-radius: 4px; }
+    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: #c8a96e; margin: 0 0 18px; font-weight: 600; }
+    .modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; color: #2a4060; font-size: 1.5rem; cursor: pointer; line-height: 1; padding: 4px 8px; border-radius: 6px; transition: color 0.15s; }
+    .modal-close:hover { color: #c8d8f0; }
+
+    .form-status { font-size: 0.82rem; font-family: 'Josefin Sans', sans-serif; padding: 9px 13px; border-radius: 7px; display: none; margin-bottom: 16px; }
+    .form-status.error   { background: rgba(45,21,21,0.8); color: #f87171; border: 1px solid rgba(127,29,29,0.6); }
+    .form-status.success { background: rgba(20,41,26,0.8); color: #86efac; border: 1px solid rgba(22,101,52,0.6); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px 15px; }
+    .form-field.full { grid-column: 1 / -1; }
+    .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.68rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
+    .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
+    .form-field input, .form-field select, .form-field textarea {
+      width: 100%; background: #08122e; border: 1px solid #1e3060;
+      border-radius: 8px; color: #c8d8f0; padding: 9px 12px;
+      font-size: 0.88rem; font-family: 'Josefin Sans', sans-serif;
+      outline: none; transition: border-color 0.2s; box-sizing: border-box;
+    }
+    .form-field input:focus, .form-field select:focus, .form-field textarea:focus { border-color: #c8a96e; }
+    .form-field select option { background: #08122e; }
+    .form-field textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: #1e3055; }
+
+    .events-row { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 4px; }
+    .ev-chip input[type="checkbox"] { display: none; }
+    .ev-chip label { display: inline-block; padding: 4px 12px; border: 1px solid #1e3060; border-radius: 20px; font-family: 'Josefin Sans', sans-serif; font-size: 0.72rem; letter-spacing: 0.06em; color: #3a5580; cursor: pointer; transition: all 0.15s; text-transform: uppercase; font-weight: 700; user-select: none; }
+    .ev-chip input:checked + label { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.5); color: #c8a96e; }
+
+    .toggle-row { display: flex; align-items: center; gap: 10px; }
+    .tog { position: relative; width: 40px; height: 22px; flex-shrink: 0; cursor: pointer; }
+    .tog input { display: none; }
+    .tog-slider { position: absolute; inset: 0; background: #1a2d58; border-radius: 22px; transition: background 0.2s; }
+    .tog-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #2a4070; border-radius: 50%; transition: all 0.2s; }
+    .tog input:checked ~ .tog-slider { background: rgba(20,66,42,0.8); }
+    .tog input:checked ~ .tog-slider::before { background: #4ade80; transform: translateX(18px); }
+    .toggle-lbl { font-family: 'Josefin Sans', sans-serif; font-size: 0.85rem; color: #7090b0; }
+
+    .form-divider { grid-column: 1 / -1; border: none; border-top: 1px solid #142250; margin: 2px 0; }
+
+    .form-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid #142250; }
+    .btn-save { background: #c8a96e; color: #0a1128; border: none; border-radius: 8px; padding: 10px 24px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+    .btn-save:hover { opacity: 0.85; }
+    .btn-save:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-cancel { background: #142250; color: #6a8ab0; border: none; border-radius: 8px; padding: 10px 18px; font-family: 'Josefin Sans', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+    .btn-cancel:hover { opacity: 0.75; }
+
+    .confirm-box { background: #0d1c3a; border: 1px solid rgba(61,21,21,0.7); border-radius: 14px; width: 100%; max-width: 400px; padding: 26px 28px; position: relative; }
+    .confirm-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: #f87171; margin: 0 0 10px; font-weight: 600; }
+    .confirm-body { color: #7090b0; font-size: 0.88rem; margin: 0 0 22px; line-height: 1.6; }
+    .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+    .btn-del { background: rgba(127,29,29,0.6); color: #f87171; border: 1px solid rgba(61,21,21,0.7); border-radius: 8px; padding: 9px 20px; font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
+    .btn-del:hover { opacity: 0.8; }
 
     /* ── Mobile ──────────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      .portal-page { padding: 90px 16px 60px; }
+    @media (max-width: 620px) {
+      .portal-page { padding: 88px 14px 60px; }
       .dir-grid { grid-template-columns: 1fr; }
-      .profile-stat-strip { grid-template-columns: repeat(2, 1fr); }
-      .dir-search-wrap { flex-wrap: wrap; }
+      .profile-stat-strip { grid-template-columns: repeat(2,1fr); }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-field.full { grid-column: 1; }
+      .admin-table thead th:nth-child(3),
+      .admin-table tbody td:nth-child(3),
+      .admin-table thead th:nth-child(4),
+      .admin-table tbody td:nth-child(4) { display: none; }
     }
 
   </style>
 </head>
 <body>
 
-<!-- ── Site badge (logo, top-left) ───────────────────────────── -->
+<!-- Site badge -->
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
 
-<!-- ── Fixed user bar ────────────────────────────────────────── -->
+<!-- User bar -->
 <div class="member-userbar" id="member-userbar">
   <button class="mub-bell" id="notif-btn" onclick="toggleNotifications()" title="Notifications">
     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     <span class="mub-notif-state" id="notif-state"></span>
   </button>
   <div class="mub-sep"></div>
-  <span class="mub-name" id="member-name"></span>
+  <span class="mub-name"  id="member-name"></span>
   <div class="mub-sep"></div>
   <span class="mub-email" id="member-email"></span>
   <div class="mub-sep"></div>
@@ -344,115 +502,149 @@
   </button>
 </div>
 
-<!-- ── Dome nav ───────────────────────────────────────────────── -->
+<!-- Dome nav -->
 <div id="dome-nav-root"></div>
 
-<!-- ── Page shell ─────────────────────────────────────────────── -->
+<!-- Page -->
 <div class="portal-page">
 
   <!-- Loading -->
-  <div id="mp-loading">Loading…</div>
+  <div id="mp-loading"><p>Checking session…</p></div>
 
-  <!-- Dashboard -->
+  <!-- Content -->
   <div id="mp-content">
     <div class="dashboard-wrap">
 
-      <!-- ── Directory view ────────────────────────────────── -->
-      <div id="dir-view">
-        <h1 class="portal-page-title">Member Directory</h1>
-        <p class="portal-page-sub">Cooper Debate Team · All Debaters</p>
-
-        <div class="dir-search-wrap">
-          <input class="dir-search-input" id="dir-search" type="search"
-            placeholder="Search by name or partner…"
-            oninput="filterDirectory(this.value)"/>
-          <span class="dir-count" id="dir-count"></span>
-        </div>
-
-        <div class="dir-grid" id="dir-grid"></div>
+      <!-- Header -->
+      <div class="hub-header">
+        <h1 class="hub-title">Member Hub</h1>
+        <p class="hub-sub">Cooper Debate Team · All Debaters</p>
       </div>
 
-      <!-- ── Profile view ───────────────────────────────────── -->
-      <div id="profile-panel">
+      <!-- Tab bar -->
+      <div class="tab-bar">
+        <button class="tab-btn active" id="tab-dir" onclick="switchTab('directory')">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/></svg>
+          Debater Directory
+        </button>
+        <button class="tab-btn" id="tab-roster" onclick="switchTab('roster')" style="display:none">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          Roster Manager
+        </button>
+      </div>
 
-        <button class="profile-back-btn" onclick="backToDirectory()">← Directory</button>
+      <!-- ── DIRECTORY SECTION ──────────────────────────────── -->
+      <div id="dir-section">
 
-        <div class="profile-hero">
-          <div class="profile-hero-left">
-            <div class="profile-hero-name" id="prof-name">—</div>
-            <div class="profile-hero-meta" id="prof-meta">—</div>
-            <div id="prof-metro-badge"></div>
+        <!-- Directory grid view -->
+        <div id="dir-view">
+          <div class="dir-search-row">
+            <div class="dir-search-box">
+              <svg class="dir-search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input class="dir-search-input" id="dir-search" type="search"
+                placeholder="Search by name or partner…"
+                oninput="filterDirectory(this.value)"/>
+            </div>
+            <span class="dir-count" id="dir-count"></span>
           </div>
+          <div class="dir-grid" id="dir-grid"></div>
         </div>
 
-        <div class="profile-stat-strip" id="prof-stat-strip"></div>
+        <!-- Profile view -->
+        <div id="profile-panel">
+          <button class="profile-back-btn" onclick="backToDirectory()">← Directory</button>
 
-        <!-- Speaks over time -->
-        <div class="profile-section">
-          <div class="profile-section-title">Career Arc — Speaker Points Over Time</div>
-          <div class="profile-chart-card">
-            <div class="profile-chart-canvas-wrap">
-              <canvas id="profile-speak-chart"></canvas>
+          <div class="profile-hero">
+            <div>
+              <div class="profile-hero-name" id="prof-name">—</div>
+              <div class="profile-hero-meta" id="prof-meta">—</div>
+              <div id="prof-metro-badge"></div>
             </div>
           </div>
-        </div>
 
-        <!-- Round-by-round win rate -->
-        <div class="profile-section" id="prof-round-rate-section" style="display:none">
-          <div class="profile-section-title">Career Round-by-Round Win Rate</div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5);margin:-8px 0 18px;line-height:1.7">
-            Win % by round number across all tournaments. Spot where this debater tends to win or struggle.
+          <div class="profile-stat-strip" id="prof-stat-strip"></div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Career Arc — Speaker Points Over Time</div>
+            <div class="profile-chart-card">
+              <div class="profile-chart-canvas-wrap">
+                <canvas id="profile-speak-chart"></canvas>
+              </div>
+            </div>
           </div>
-          <div id="prof-round-bars" style="display:flex;align-items:stretch;gap:12px;padding:0 4px"></div>
-        </div>
 
-        <!-- Tournament history -->
-        <div class="profile-section">
-          <div class="profile-section-title">Tournament History</div>
-          <div class="profile-table-wrap">
-            <table class="profile-table">
-              <thead>
-                <tr>
-                  <th>Tournament</th>
-                  <th>Date</th>
+          <div class="profile-section" id="prof-round-rate-section" style="display:none">
+            <div class="profile-section-title">Career Round-by-Round Win Rate</div>
+            <div style="font-family:'Josefin Sans',sans-serif;font-size:0.76rem;color:rgba(255,255,255,0.4);margin:-6px 0 16px;line-height:1.7">
+              Win % by round number across all tournaments. Spot where this debater tends to win or struggle.
+            </div>
+            <div id="prof-round-bars" style="display:flex;align-items:stretch;gap:10px;padding:0 2px"></div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Tournament History</div>
+            <div class="profile-table-wrap">
+              <table class="profile-table">
+                <thead><tr>
+                  <th>Tournament</th><th>Date</th><th>Partner</th>
+                  <th class="num">W</th><th class="num">L</th>
+                  <th class="num">Avg Spk</th><th class="num">Total Spk</th>
+                </tr></thead>
+                <tbody id="prof-tourn-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <div class="profile-section-title">Partner History</div>
+            <div class="profile-table-wrap">
+              <table class="profile-table">
+                <thead><tr>
                   <th>Partner</th>
-                  <th class="num">W</th>
-                  <th class="num">L</th>
-                  <th class="num">Avg Speak</th>
-                  <th class="num">Total Speaks</th>
-                </tr>
-              </thead>
-              <tbody id="prof-tourn-tbody"></tbody>
-            </table>
+                  <th class="num">Tournaments</th><th class="num">W</th>
+                  <th class="num">L</th><th class="num">Win %</th>
+                </tr></thead>
+                <tbody id="prof-partner-tbody"></tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        <!-- Partner history -->
-        <div class="profile-section">
-          <div class="profile-section-title">Partner History</div>
-          <div class="profile-table-wrap">
-            <table class="profile-table">
-              <thead>
-                <tr>
-                  <th>Partner</th>
-                  <th class="num">Tournaments</th>
-                  <th class="num">W</th>
-                  <th class="num">L</th>
-                  <th class="num">Win %</th>
-                </tr>
-              </thead>
-              <tbody id="prof-partner-tbody"></tbody>
-            </table>
+          <div class="profile-section">
+            <div class="profile-section-title">Metro Finals Eligibility</div>
+            <div id="prof-metro-detail"></div>
           </div>
+        </div><!-- /profile-panel -->
+
+      </div><!-- /dir-section -->
+
+      <!-- ── ROSTER SECTION (coaches only) ─────────────────── -->
+      <div id="admin-section" style="display:none">
+        <div class="admin-section-header">
+          <h2>Roster Manager</h2>
+          <p>Add, edit, or remove team members · Visible to coaches only</p>
         </div>
 
-        <!-- Metro eligibility -->
-        <div class="profile-section">
-          <div class="profile-section-title">Metro Finals Eligibility</div>
-          <div id="prof-metro-detail"></div>
+        <div class="admin-toolbar">
+          <input type="text" id="admin-search" class="admin-search"
+            placeholder="Search by name, email, role, or event…"
+            oninput="filterRoster(this.value)">
+          <button class="btn-add" onclick="openAddModal()">+ Add Member</button>
         </div>
+        <div class="admin-count" id="admin-count"></div>
 
-      </div><!-- /profile-panel -->
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead><tr>
+              <th>Name</th><th>Role</th><th>Email</th>
+              <th>Events</th><th>Status</th>
+              <th style="text-align:right">Actions</th>
+            </tr></thead>
+            <tbody id="admin-tbody">
+              <tr><td colspan="6" style="text-align:center;padding:36px;color:#2a4060;font-family:'Josefin Sans',sans-serif;font-size:.85rem">Loading roster…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div><!-- /admin-section -->
 
     </div><!-- /dashboard-wrap -->
   </div><!-- /mp-content -->
@@ -503,36 +695,126 @@
   </div>
 </footer>
 
-<!-- ── Firebase SDKs ──────────────────────────────────────────── -->
+<!-- ── Add / Edit Modal ──────────────────────────────────────── -->
+<div id="member-modal" class="modal-backdrop" style="display:none"
+     onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">×</button>
+    <h2 class="modal-title" id="modal-title">Add Member</h2>
+    <div class="form-status" id="form-status"></div>
+    <form id="member-form" onsubmit="saveMember(event)" novalidate>
+      <input type="hidden" id="form-doc-id">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="f-first">First Name <span style="color:#f87171">*</span></label>
+          <input type="text" id="f-first" required autocomplete="given-name" placeholder="Hannah">
+        </div>
+        <div class="form-field">
+          <label for="f-last">Last Name <span style="color:#f87171">*</span></label>
+          <input type="text" id="f-last" required autocomplete="family-name" placeholder="Smith">
+        </div>
+        <div class="form-field full">
+          <label for="f-email">Email <span style="color:#f87171">*</span></label>
+          <input type="email" id="f-email" required autocomplete="email" placeholder="hannah@cooperdebate.org">
+        </div>
+        <div class="form-field full">
+          <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+          <input type="tel" id="f-phone" autocomplete="tel" placeholder="(555) 123-4567">
+        </div>
+        <hr class="form-divider">
+        <div class="form-field">
+          <label for="f-role">Role <span style="color:#f87171">*</span></label>
+          <select id="f-role" required>
+            <option value="">Select…</option>
+            <option value="member">Member</option>
+            <option value="captain">Captain</option>
+            <option value="coach">Coach</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="f-grad">Grad Year <span class="opt">(optional)</span></label>
+          <input type="number" id="f-grad" min="2020" max="2040" step="1" placeholder="2026">
+        </div>
+        <div class="form-field full">
+          <label>Events <span class="opt">(select all that apply)</span></label>
+          <div class="events-row">
+            <span class="ev-chip"><input type="checkbox" id="ev-ld"    value="LD">    <label for="ev-ld">LD</label></span>
+            <span class="ev-chip"><input type="checkbox" id="ev-pf"    value="PF">    <label for="ev-pf">PF</label></span>
+            <span class="ev-chip"><input type="checkbox" id="ev-cx"    value="CX">    <label for="ev-cx">CX</label></span>
+            <span class="ev-chip"><input type="checkbox" id="ev-cong"  value="Congress"><label for="ev-cong">Congress</label></span>
+            <span class="ev-chip"><input type="checkbox" id="ev-parli" value="Parli"> <label for="ev-parli">Parli</label></span>
+          </div>
+        </div>
+        <hr class="form-divider">
+        <div class="form-field full">
+          <label for="f-notes">Coach Notes <span class="opt">(private)</span></label>
+          <textarea id="f-notes" placeholder="Strengths, goals, context…"></textarea>
+        </div>
+        <div class="form-field full">
+          <label>Status</label>
+          <div class="toggle-row">
+            <label class="tog">
+              <input type="checkbox" id="f-active" checked
+                     onchange="document.getElementById('active-lbl').textContent=this.checked?'Active member':'Inactive / Alumni'">
+              <span class="tog-slider"></span>
+            </label>
+            <span class="toggle-lbl" id="active-lbl">Active member</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn-save" id="btn-save">Add Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Delete Confirm Modal ──────────────────────────────────── -->
+<div id="delete-modal" class="modal-backdrop" style="display:none"
+     onclick="if(event.target===this)cancelDelete()">
+  <div class="confirm-box">
+    <h2 class="confirm-title">Remove Member?</h2>
+    <p class="confirm-body">
+      This removes <strong id="delete-name" style="color:#e8f0ff"></strong> from the roster.
+      Their tournament history is not affected.
+    </p>
+    <div class="confirm-actions">
+      <button class="btn-cancel" onclick="cancelDelete()">Cancel</button>
+      <button class="btn-del"    onclick="confirmDelete()">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Firebase ──────────────────────────────────────────────── -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
-
-<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
 
 <script>window.__NAV_PAGE = "directory";</script>
-
 <script src="js/members-auth.js?v=3"></script>
 
-<!-- ── Auth shim: must come AFTER members-auth.js so we wrap its showState ── -->
+<!-- Auth shim -->
 <script>
 (function () {
   var _orig = window.showState;
   window.showState = function (state) {
-    if (state === 'login' || state === 'denied' || state === 'completing') {
+    if (state === 'login' || state === 'denied') {
       window.location.href = 'members-signon.html';
       return;
     }
     if (state === 'dashboard') {
-      var loading = document.getElementById('mp-loading');
-      var content = document.getElementById('mp-content');
-      if (loading) loading.style.display = 'none';
-      if (content) content.style.display = 'block';
+      document.getElementById('mp-loading').style.display = 'none';
+      document.getElementById('mp-content').style.display = 'block';
+      // Show Roster tab for coaches
+      if (currentUserRole === 'coach') {
+        document.getElementById('tab-roster').style.display = 'inline-flex';
+      }
       onDashboardReady();
     }
     if (_orig) _orig(state);
@@ -540,16 +822,14 @@
 })();
 </script>
 
-<script src="js/members-nav.js?v=6"></script>
+<script src="js/members-nav.js?v=8"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 
-<!-- ── Directory logic ───────────────────────────────────────── -->
+<!-- ── Shared logic ──────────────────────────────────────────── -->
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   CONFIG & STATE
-═══════════════════════════════════════════════════════════════ */
-const DIR_CONFIG = {
+/* ── Firebase ─────────────────────────────────────────── */
+const FB_CFG = {
   apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
   authDomain:        "cooper-debate-team.firebaseapp.com",
   projectId:         "cooper-debate-team",
@@ -557,48 +837,49 @@ const DIR_CONFIG = {
   messagingSenderId: "112813790184",
   appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
-const dirApp = firebase.apps.length ? firebase.apps[0] : firebase.initializeApp(DIR_CONFIG);
-const dirDb  = firebase.firestore();
+const _app = firebase.apps.length ? firebase.apps[0] : firebase.initializeApp(FB_CFG);
+const db   = firebase.firestore();
 
-let allTournaments  = [];
-let leaderboard     = [];
-let currentQuery    = '';
-let profileChart    = null;
+/* ── Tab switching ────────────────────────────────────── */
+let currentTab = 'directory';
+function switchTab(tab) {
+  currentTab = tab;
+  document.getElementById('tab-dir').classList.toggle('active', tab === 'directory');
+  document.getElementById('tab-roster').classList.toggle('active', tab === 'roster');
+  document.getElementById('dir-section').style.display   = tab === 'directory' ? '' : 'none';
+  document.getElementById('admin-section').style.display = tab === 'roster'    ? '' : 'none';
+  if (tab === 'roster' && !rosterLoaded) loadRoster();
+}
 
-/* ═══════════════════════════════════════════════════════════════
-   BOOTSTRAP — called once auth confirms dashboard
-═══════════════════════════════════════════════════════════════ */
+/* ── Boot ─────────────────────────────────────────────── */
 async function onDashboardReady() {
   await loadTournaments();
   checkUrlProfile();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   FIRESTORE
-═══════════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════
+   DIRECTORY
+═══════════════════════════════════════════════════════ */
+let allTournaments = [];
+let leaderboard    = [];
+let currentQuery   = '';
+let profileChart   = null;
+
 async function loadTournaments() {
   try {
-    const snap = await dirDb.collection('stat_results').orderBy('meta.date', 'desc').get();
+    const snap = await db.collection('stat_results').orderBy('meta.date','desc').get();
     allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (e) {
-    console.error('loadTournaments:', e);
-  }
+  } catch (e) { console.error('loadTournaments:', e); }
   leaderboard = computeLeaderboard(allTournaments);
   renderDirectory();
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   COMPUTATION  (mirrors members-stats.html)
-═══════════════════════════════════════════════════════════════ */
 function parseTournDate(str) {
   if (!str) return new Date(NaN);
   let d = new Date(str + 'T12:00:00');
   if (!isNaN(d)) return d;
-  let cleaned = str.replace(/(\d+)(st|nd|rd|th)\b/gi, '$1');
-  cleaned = cleaned.replace(/^[A-Za-z]+[,]?\s*/, '');
-  d = new Date(cleaned);
-  if (!isNaN(d)) return d;
-  return new Date(NaN);
+  let c = str.replace(/(\d+)(st|nd|rd|th)\b/gi,'$1').replace(/^[A-Za-z]+[,]?\s*/,'');
+  return new Date(c);
 }
 
 function computeMetroEligibility(tournaments) {
@@ -615,15 +896,10 @@ function computeMetroEligibility(tournaments) {
   });
   return Object.values(map).map(p => {
     const eligible = p.count40 >= 1 || p.count31 >= 2;
-    let distance;
-    if (eligible) {
-      distance = p.count40 >= 1 ? '✓ Eligible (4–0)' : '✓ Eligible (2× 3–1+)';
-    } else if (p.count31 === 1) {
-      distance = 'Need 1 more 3–1+';
-    } else {
-      distance = 'Need a 4–0 or two 3–1+';
-    }
-    return { ...p, eligible, distance };
+    return { ...p, eligible,
+      distance: eligible
+        ? (p.count40 >= 1 ? '✓ Eligible (4–0)' : '✓ Eligible (2× 3–1+)')
+        : p.count31 === 1 ? 'Need 1 more 3–1+' : 'Need a 4–0 or two 3–1+' };
   });
 }
 
@@ -634,88 +910,56 @@ function computeLeaderboard(tournaments) {
       const partnerNames = e.debaters.map(d => `${d.first} ${d.last}`);
       e.debaters.forEach(d => {
         const key = `${d.first} ${d.last}`;
-        if (!map[key]) map[key] = {
-          name: key, first: d.first, last: d.last,
-          wins: 0, losses: 0, speakSum: 0, roundCount: 0,
-          tournaments: 0, partners: new Set(), tournDetails: []
-        };
+        if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournaments: 0, partners: new Set(), tournDetails: [] };
         const dm = map[key];
-        dm.wins      += d.wins;
-        dm.losses    += d.losses;
-        dm.speakSum  += d.totalSpeaks;
+        dm.wins += d.wins; dm.losses += d.losses;
+        dm.speakSum += d.totalSpeaks;
         dm.roundCount += d.rounds.filter(r => r.result !== 'BYE').length;
         dm.tournaments++;
         partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
-        dm.tournDetails.push({
-          name:        t.meta.name,
-          date:        t.meta.date,
-          wins:        d.wins,
-          losses:      d.losses,
-          totalSpeaks: d.totalSpeaks,
-          avgSpeak:    d.avgSpeak,
-          rounds:      d.rounds
-        });
+        dm.tournDetails.push({ name: t.meta.name, date: t.meta.date, wins: d.wins, losses: d.losses, totalSpeaks: d.totalSpeaks, avgSpeak: d.avgSpeak, rounds: d.rounds });
       });
     });
   });
-
-  const pairMetro = computeMetroEligibility(tournaments);
   const pairMetroMap = {};
-  pairMetro.forEach(p => { pairMetroMap[p.pair] = p.eligible; });
-
+  computeMetroEligibility(tournaments).forEach(p => { pairMetroMap[p.pair] = p.eligible; });
   return Object.values(map).map(d => {
     let metroEligible = false;
-    d.partners.forEach(partner => {
-      const key = [d.name, partner].sort().join(' & ');
-      if (pairMetroMap[key]) metroEligible = true;
-    });
-    return {
-      ...d,
-      avgSpeak:    d.roundCount > 0 ? +(d.speakSum / d.roundCount).toFixed(2) : 0,
-      winRate:     d.wins + d.losses > 0 ? d.wins / (d.wins + d.losses) : 0,
-      partnerList: [...d.partners].join(', '),
-      metroEligible
-    };
-  }).sort((a, b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
+    d.partners.forEach(partner => { const k = [d.name,partner].sort().join(' & '); if (pairMetroMap[k]) metroEligible = true; });
+    return { ...d, avgSpeak: d.roundCount > 0 ? +(d.speakSum/d.roundCount).toFixed(2) : 0, winRate: d.wins+d.losses > 0 ? d.wins/(d.wins+d.losses) : 0, partnerList: [...d.partners].join(', '), metroEligible };
+  }).sort((a,b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   DIRECTORY  RENDER
-═══════════════════════════════════════════════════════════════ */
-function renderDirectory() {
-  const q    = currentQuery.toLowerCase().trim();
-  const list = q
-    ? leaderboard.filter(d =>
-        d.name.toLowerCase().includes(q) ||
-        d.partnerList.toLowerCase().includes(q))
-    : leaderboard;
+/* ── Directory render ─────────────────────────────────── */
+function initials(name) {
+  return name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+}
 
+function renderDirectory() {
+  const q = currentQuery.toLowerCase().trim();
+  const list = q ? leaderboard.filter(d => d.name.toLowerCase().includes(q) || d.partnerList.toLowerCase().includes(q)) : leaderboard;
   const grid  = document.getElementById('dir-grid');
   const count = document.getElementById('dir-count');
-  count.textContent = list.length === leaderboard.length
-    ? `${list.length} debater${list.length !== 1 ? 's' : ''}`
-    : `${list.length} of ${leaderboard.length}`;
-
+  count.textContent = list.length === leaderboard.length ? `${list.length} debater${list.length !== 1 ? 's' : ''}` : `${list.length} of ${leaderboard.length}`;
   if (!list.length) {
-    grid.innerHTML = `<div class="dir-empty">${
-      allTournaments.length === 0
-        ? 'No tournament data imported yet.'
-        : 'No debaters match your search.'
-    }</div>`;
+    grid.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match your search.'}</div>`;
     return;
   }
-
-  grid.innerHTML = list.map(d => {
+  grid.innerHTML = list.map((d, i) => {
+    const rank = i + 1;
+    const rankCls = rank <= 3 ? 'top3' : '';
     const pct = (d.winRate * 100).toFixed(0);
-    const partnerSnip = d.partnerList
-      ? 'w/ ' + (d.partnerList.length > 36 ? d.partnerList.slice(0, 34) + '…' : d.partnerList)
-      : 'No partner data';
-    const metroHtml = d.metroEligible
-      ? `<div class="dir-card-metro eligible">✓ Metro Eligible</div>` : '';
-    const slug = nameToSlug(d.name);
-    return `<div class="dir-card" onclick="openProfile('${escJs(d.name)}')" data-slug="${slug}">
-      <div class="dir-card-name">${escHtml(d.name)}</div>
-      <div class="dir-card-partners">${escHtml(partnerSnip)}</div>
+    const partnerSnip = d.partnerList ? 'w/ ' + (d.partnerList.length > 34 ? d.partnerList.slice(0,32) + '…' : d.partnerList) : 'No partner data';
+    const av = initials(d.name);
+    return `<div class="dir-card" onclick="openProfile('${escJs(d.name)}')">
+      <div class="dir-card-rank ${rankCls}">#${rank}</div>
+      <div class="dir-card-top">
+        <div class="dir-card-avatar">${escHtml(av)}</div>
+        <div class="dir-card-info">
+          <div class="dir-card-name">${escHtml(d.name)}</div>
+          <div class="dir-card-partners">${escHtml(partnerSnip)}</div>
+        </div>
+      </div>
       <div class="dir-card-stats">
         <div class="dir-card-stat">
           <div class="dir-card-stat-val">${d.wins}–${d.losses}</div>
@@ -730,354 +974,277 @@ function renderDirectory() {
           <div class="dir-card-stat-lbl">Avg Spk</div>
         </div>
       </div>
-      ${metroHtml}
-      <div class="dir-card-arrow">›</div>
+      ${d.metroEligible ? '<div class="dir-card-metro eligible">✓ Metro Eligible</div>' : ''}
     </div>`;
   }).join('');
 }
 
-function filterDirectory(q) {
-  currentQuery = q;
-  renderDirectory();
-}
+function filterDirectory(q) { currentQuery = q; renderDirectory(); }
 
-/* ═══════════════════════════════════════════════════════════════
-   PROFILE  PANEL
-═══════════════════════════════════════════════════════════════ */
+/* ── Profile ──────────────────────────────────────────── */
 function openProfile(name) {
   const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
-
-  // Swap views
-  document.getElementById('dir-view').style.display    = 'none';
+  document.getElementById('dir-view').style.display     = 'none';
   document.getElementById('profile-panel').style.display = 'block';
-
-  // Update URL without reloading
-  const slug = nameToSlug(name);
-  history.pushState({ profile: name }, '', `?d=${slug}`);
-
-  if (!d) {
-    document.getElementById('prof-name').textContent = name;
-    document.getElementById('prof-meta').textContent = 'No tournament data found for this debater.';
-    return;
-  }
-
+  history.pushState({ profile: name }, '', `?d=${nameToSlug(name)}`);
+  if (!d) { document.getElementById('prof-name').textContent = name; document.getElementById('prof-meta').textContent = 'No tournament data found.'; return; }
   renderProfile(d);
 }
-
 function backToDirectory() {
   document.getElementById('profile-panel').style.display = 'none';
-  document.getElementById('dir-view').style.display      = 'block';
+  document.getElementById('dir-view').style.display      = '';
   history.pushState({}, '', window.location.pathname);
   if (profileChart) { profileChart.destroy(); profileChart = null; }
 }
-
-// Handle browser back/forward
-window.addEventListener('popstate', e => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('d')) {
-    const name = slugToName(params.get('d'));
-    openProfile(name);
-  } else {
-    document.getElementById('profile-panel').style.display = 'none';
-    document.getElementById('dir-view').style.display      = 'block';
-  }
+window.addEventListener('popstate', () => {
+  const p = new URLSearchParams(window.location.search).get('d');
+  if (p) openProfile(leaderboard.find(d => nameToSlug(d.name) === p)?.name || slugToName(p));
+  else { document.getElementById('profile-panel').style.display = 'none'; document.getElementById('dir-view').style.display = ''; }
 });
-
-// On load: check ?d= param and auto-open
 function checkUrlProfile() {
-  const params = new URLSearchParams(window.location.search);
-  const slug   = params.get('d');
+  const slug = new URLSearchParams(window.location.search).get('d');
   if (!slug) return;
-  // Try to match slug against leaderboard
   const name = leaderboard.find(d => nameToSlug(d.name) === slug)?.name || slugToName(slug);
   openProfile(name);
 }
 
 function renderProfile(d) {
-  // Header
   document.getElementById('prof-name').textContent = d.name;
-  document.getElementById('prof-meta').textContent =
-    d.partnerList ? `Partner(s): ${d.partnerList}` : 'No partner data';
-
-  const metroBadge = document.getElementById('prof-metro-badge');
-  metroBadge.innerHTML = d.metroEligible
-    ? `<span class="profile-metro-badge eligible">✓ Metro Finals Eligible</span>`
-    : `<span class="profile-metro-badge not-eligible">✗ Not Yet Metro Finals Eligible</span>`;
-
-  // Stat strip
+  document.getElementById('prof-meta').textContent = d.partnerList ? `Partner(s): ${d.partnerList}` : 'No partner data';
+  document.getElementById('prof-metro-badge').innerHTML = d.metroEligible
+    ? '<span class="profile-metro-badge eligible">✓ Metro Finals Eligible</span>'
+    : '<span class="profile-metro-badge not-eligible">✗ Not Yet Metro Finals Eligible</span>';
   const pct = (d.winRate * 100).toFixed(1);
   document.getElementById('prof-stat-strip').innerHTML = `
-    <div class="profile-stat-card">
-      <div class="profile-stat-label">Career Record</div>
-      <div class="profile-stat-value">${d.wins}–${d.losses}</div>
-      <div class="profile-stat-sub">${pct}% win rate</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-label">Avg Speaker Pts</div>
-      <div class="profile-stat-value">${d.avgSpeak.toFixed(2)}</div>
-      <div class="profile-stat-sub">per round</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-label">Tournaments</div>
-      <div class="profile-stat-value">${d.tournaments}</div>
-      <div class="profile-stat-sub">competed</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-label">Total Rounds</div>
-      <div class="profile-stat-value">${d.wins + d.losses}</div>
-      <div class="profile-stat-sub">prelim rounds</div>
-    </div>
-    <div class="profile-stat-card">
-      <div class="profile-stat-label">Partners</div>
-      <div class="profile-stat-value">${d.partners.size}</div>
-      <div class="profile-stat-sub">unique partner(s)</div>
-    </div>
-  `;
+    <div class="profile-stat-card"><div class="profile-stat-label">Career Record</div><div class="profile-stat-value">${d.wins}–${d.losses}</div><div class="profile-stat-sub">${pct}% win rate</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Avg Speaker Pts</div><div class="profile-stat-value">${d.avgSpeak.toFixed(2)}</div><div class="profile-stat-sub">per round</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Tournaments</div><div class="profile-stat-value">${d.tournaments}</div><div class="profile-stat-sub">competed</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Total Rounds</div><div class="profile-stat-value">${d.wins+d.losses}</div><div class="profile-stat-sub">prelim rounds</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Partners</div><div class="profile-stat-value">${d.partners.size}</div><div class="profile-stat-sub">unique</div></div>`;
 
-  // Chart — sorted by date
-  const sorted = [...d.tournDetails].sort((a, b) => parseTournDate(a.date) - parseTournDate(b.date));
-  const labels    = sorted.map(t => {
-    const dt = parseTournDate(t.date);
-    return isNaN(dt) ? t.name.slice(0, 16) : dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'2-digit' });
-  });
-  const speakData = sorted.map(t => t.avgSpeak);
-  const winData   = sorted.map(t => t.wins + t.losses > 0 ? +((t.wins / (t.wins + t.losses)) * 100).toFixed(1) : null);
-
+  const sorted = [...d.tournDetails].sort((a,b) => parseTournDate(a.date)-parseTournDate(b.date));
+  const labels = sorted.map(t => { const dt = parseTournDate(t.date); return isNaN(dt) ? t.name.slice(0,14) : dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}); });
   if (profileChart) profileChart.destroy();
   const ctx = document.getElementById('profile-speak-chart').getContext('2d');
   profileChart = new Chart(ctx, {
     type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'Avg Speaker Points',
-          data: speakData,
-          borderColor: 'rgba(212,160,23,0.95)',
-          backgroundColor: 'rgba(212,160,23,0.1)',
-          pointBackgroundColor: '#FFD700', pointBorderColor: '#1c2030',
-          pointRadius: 7, pointHoverRadius: 10,
-          tension: 0.35, fill: true, borderWidth: 3,
-          yAxisID: 'y'
-        },
-        {
-          label: 'Win Rate %',
-          data: winData,
-          borderColor: 'rgba(74,222,128,0.9)',
-          backgroundColor: 'transparent',
-          pointBackgroundColor: '#4ade80', pointBorderColor: '#1c2030',
-          pointRadius: 6, pointHoverRadius: 8,
-          tension: 0.35, fill: false, borderWidth: 2.5,
-          borderDash: [5,3],
-          yAxisID: 'y2'
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, labels: { color: 'rgba(255,255,255,0.9)', font: { family: 'Josefin Sans', size: 13 }, boxWidth: 16, padding: 18 } },
-        tooltip: {
-          backgroundColor: 'rgba(5,18,65,0.97)', borderColor: 'rgba(212,160,23,0.65)', borderWidth: 2,
-          titleColor: '#e8c84a', bodyColor: '#fff',
-          titleFont: { family: 'Josefin Sans', size: 15, weight: '700' },
-          bodyFont: { family: 'Josefin Sans', size: 13 }, padding: 16, cornerRadius: 10,
-          callbacks: {
-            label: c => c.datasetIndex === 0
-              ? `${c.parsed.y.toFixed(2)} avg speak`
-              : `${c.parsed.y}% win rate`
-          }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: 'rgba(255,255,255,0.75)', font: { family: 'Josefin Sans', size: 12 } },
-          grid: { color: 'rgba(255,255,255,0.05)' }
-        },
-        y: {
-          position: 'left',
-          ticks: { color: 'rgba(212,160,23,0.9)', font: { family: 'Josefin Sans', size: 12 } },
-          grid: { color: 'rgba(255,255,255,0.05)' },
-          title: { display: true, text: 'Avg Speaks', color: 'rgba(212,160,23,0.9)', font: { family: 'Josefin Sans', size: 12, weight: '700' } }
-        },
-        y2: {
-          position: 'right', min: 0, max: 100,
-          ticks: { color: 'rgba(74,222,128,0.9)', font: { family: 'Josefin Sans', size: 12 }, callback: v => v + '%' },
-          grid: { drawOnChartArea: false },
-          title: { display: true, text: 'Win Rate', color: 'rgba(74,222,128,0.9)', font: { family: 'Josefin Sans', size: 12, weight: '700' } }
-        }
-      }
-    }
+    data: { labels, datasets: [
+      { label:'Avg Speaker Points', data:sorted.map(t=>t.avgSpeak), borderColor:'rgba(212,160,23,0.95)', backgroundColor:'rgba(212,160,23,0.09)', pointBackgroundColor:'#FFD700', pointBorderColor:'#0d1428', pointRadius:7, pointHoverRadius:10, tension:0.35, fill:true, borderWidth:3, yAxisID:'y' },
+      { label:'Win Rate %', data:sorted.map(t=>t.wins+t.losses>0?+((t.wins/(t.wins+t.losses))*100).toFixed(1):null), borderColor:'rgba(74,222,128,0.9)', backgroundColor:'transparent', pointBackgroundColor:'#4ade80', pointBorderColor:'#0d1428', pointRadius:6, pointHoverRadius:8, tension:0.35, fill:false, borderWidth:2.5, borderDash:[5,3], yAxisID:'y2' }
+    ]},
+    options: { responsive:true, maintainAspectRatio:false, plugins: { legend:{ display:true, labels:{color:'rgba(255,255,255,0.85)', font:{family:'Josefin Sans',size:13}, boxWidth:16, padding:16} }, tooltip:{ backgroundColor:'rgba(5,15,50,0.97)', borderColor:'rgba(212,160,23,0.6)', borderWidth:2, titleColor:'#e8c84a', bodyColor:'#fff', titleFont:{family:'Josefin Sans',size:14,weight:'700'}, bodyFont:{family:'Josefin Sans',size:13}, padding:14, cornerRadius:10, callbacks:{ label:c=>c.datasetIndex===0?`${c.parsed.y.toFixed(2)} avg speak`:`${c.parsed.y}% win rate` } } } },
+    scales: { x:{ticks:{color:'rgba(255,255,255,0.7)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{position:'left',ticks:{color:'rgba(212,160,23,0.9)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'},title:{display:true,text:'Avg Speaks',color:'rgba(212,160,23,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}}, y2:{position:'right',min:0,max:100,ticks:{color:'rgba(74,222,128,0.9)',font:{family:'Josefin Sans',size:12},callback:v=>v+'%'},grid:{drawOnChartArea:false},title:{display:true,text:'Win Rate',color:'rgba(74,222,128,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}} }
   });
 
-  // Round-by-round bars
   renderRoundBars(d);
-
-  // Tournament history table
   renderTournamentTable(d);
-
-  // Partner history table
   renderPartnerTable(d);
-
-  // Metro detail
   renderMetroDetail(d);
 }
 
 function renderRoundBars(d) {
-  const section    = document.getElementById('prof-round-rate-section');
-  const container  = document.getElementById('prof-round-bars');
+  const section = document.getElementById('prof-round-rate-section');
+  const container = document.getElementById('prof-round-bars');
   const rounds = {};
-  d.tournDetails.forEach(t => {
-    (t.rounds || []).forEach(r => {
-      if (r.result === 'BYE' || r.isBye) return;
-      const rn = +r.round;
-      if (!rounds[rn]) rounds[rn] = { w: 0, l: 0 };
-      if (r.result === 'W') rounds[rn].w++; else rounds[rn].l++;
-    });
-  });
-  const sorted = Object.entries(rounds).sort(([a], [b]) => +a - +b);
-  if (!sorted.length) { section.style.display = 'none'; return; }
-  section.style.display = '';
-  container.innerHTML = sorted.map(([rn, s]) => {
-    const total = s.w + s.l;
-    const pct   = total > 0 ? (s.w / total * 100).toFixed(0) : 0;
-    const color = +pct >= 70 ? '#22c55e' : +pct >= 45 ? '#FFD700' : '#e03535';
-    return `<div style="display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;min-width:48px">
-      <div style="width:100%;background:rgba(255,255,255,0.07);border-radius:6px 6px 0 0;position:relative;height:110px;display:flex;align-items:flex-end">
+  d.tournDetails.forEach(t => { (t.rounds||[]).forEach(r => { if (r.result==='BYE'||r.isBye) return; const rn = +r.round; if (!rounds[rn]) rounds[rn]={w:0,l:0}; if (r.result==='W') rounds[rn].w++; else rounds[rn].l++; }); });
+  const sorted = Object.entries(rounds).sort(([a],[b])=>+a-+b);
+  if (!sorted.length) { section.style.display='none'; return; }
+  section.style.display='';
+  container.innerHTML = sorted.map(([rn,s]) => {
+    const total=s.w+s.l; const pct=total>0?(s.w/total*100).toFixed(0):0;
+    const color=+pct>=70?'#22c55e':+pct>=45?'#FFD700':'#e03535';
+    return `<div style="display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;min-width:44px">
+      <div style="width:100%;background:rgba(255,255,255,0.06);border-radius:6px 6px 0 0;height:100px;display:flex;align-items:flex-end">
         <div style="width:100%;height:${pct}%;background:${color};opacity:0.8;border-radius:6px 6px 0 0;transition:height 0.4s ease"></div>
       </div>
-      <div style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;line-height:1;color:${color}">${pct}%</div>
-      <div style="font-family:'Josefin Sans',sans-serif;font-size:1rem;font-weight:700;color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:0.1em">R${rn}</div>
-      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65)">${s.w}W ${s.l}L</div>
+      <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:${color};line-height:1">${pct}%</div>
+      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.95rem;font-weight:700;color:rgba(255,255,255,0.85);text-transform:uppercase;letter-spacing:0.1em">R${rn}</div>
+      <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5)">${s.w}W ${s.l}L</div>
     </div>`;
   }).join('');
 }
 
 function renderTournamentTable(d) {
   const tbody = document.getElementById('prof-tourn-tbody');
-  const sorted = [...d.tournDetails].sort((a, b) => parseTournDate(b.date) - parseTournDate(a.date));
-  if (!sorted.length) {
-    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No tournament data</td></tr>';
-    return;
-  }
+  const sorted = [...d.tournDetails].sort((a,b)=>parseTournDate(b.date)-parseTournDate(a.date));
+  if (!sorted.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.25);padding:20px;font-family:Josefin Sans,sans-serif">No data</td></tr>'; return; }
   tbody.innerHTML = sorted.map(t => {
-    const dt = parseTournDate(t.date);
-    const dateStr = isNaN(dt) ? '—' : dt.toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
-    // Find partner in this tournament
-    let partner = '—';
-    allTournaments.forEach(tourn => {
-      if (tourn.meta.name === t.name) {
-        tourn.entries.forEach(e => {
-          const me = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
-          if (me) {
-            const p = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
-            if (p) partner = `${p.first} ${p.last}`;
-          }
-        });
-      }
-    });
-    return `<tr>
-      <td>${escHtml(t.name)}</td>
-      <td>${dateStr}</td>
-      <td><span class="deb-link" onclick="openProfile('${escJs(partner)}')">${escHtml(partner)}</span></td>
-      <td class="num">${t.wins}</td>
-      <td class="num">${t.losses}</td>
-      <td class="num">${t.avgSpeak.toFixed(2)}</td>
-      <td class="num">${t.totalSpeaks.toFixed(1)}</td>
-    </tr>`;
+    const dt=parseTournDate(t.date); const dateStr=isNaN(dt)?'—':dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+    let partner='—';
+    allTournaments.forEach(tourn => { if (tourn.meta.name===t.name) tourn.entries.forEach(e => { const me=e.debaters.find(x=>`${x.first} ${x.last}`===d.name); if (me) { const p=e.debaters.find(x=>`${x.first} ${x.last}`!==d.name); if (p) partner=`${p.first} ${p.last}`; } }); });
+    return `<tr><td>${escHtml(t.name)}</td><td>${dateStr}</td><td><span class="deb-link" onclick="openProfile('${escJs(partner)}')">${escHtml(partner)}</span></td><td class="num">${t.wins}</td><td class="num">${t.losses}</td><td class="num">${t.avgSpeak.toFixed(2)}</td><td class="num">${t.totalSpeaks.toFixed(1)}</td></tr>`;
   }).join('');
 }
 
 function renderPartnerTable(d) {
   const tbody = document.getElementById('prof-partner-tbody');
-  const map   = {};
-  allTournaments.forEach(tourn => {
-    tourn.entries.forEach(e => {
-      const me = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
-      if (!me) return;
-      const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
-      if (!partner) return;
-      const pn = `${partner.first} ${partner.last}`;
-      if (!map[pn]) map[pn] = { name: pn, tourns: 0, wins: 0, losses: 0 };
-      map[pn].tourns++;
-      map[pn].wins   += e.wins;
-      map[pn].losses += e.losses;
+  const map = {};
+  allTournaments.forEach(tourn => { tourn.entries.forEach(e => { const me=e.debaters.find(x=>`${x.first} ${x.last}`===d.name); if (!me) return; const partner=e.debaters.find(x=>`${x.first} ${x.last}`!==d.name); if (!partner) return; const pn=`${partner.first} ${partner.last}`; if (!map[pn]) map[pn]={name:pn,tourns:0,wins:0,losses:0}; map[pn].tourns++; map[pn].wins+=e.wins; map[pn].losses+=e.losses; }); });
+  const partners = Object.values(map).sort((a,b)=>b.tourns-a.tourns);
+  if (!partners.length) { tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.25);padding:20px;font-family:Josefin Sans,sans-serif">No partner data</td></tr>'; return; }
+  tbody.innerHTML = partners.map(p => { const pct=p.wins+p.losses>0?(p.wins/(p.wins+p.losses)*100).toFixed(1):'—'; const pillCls=+pct>=70?'high':+pct>=45?'mid':'low'; return `<tr><td><span class="deb-link" onclick="openProfile('${escJs(p.name)}')">${escHtml(p.name)}</span></td><td class="num">${p.tourns}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num"><span class="win-pill ${pillCls}">${pct}%</span></td></tr>`; }).join('');
+}
+
+function renderMetroDetail(d) {
+  const el = document.getElementById('prof-metro-detail');
+  const pairs = computeMetroEligibility(allTournaments).filter(p=>p.pair.split(' & ').includes(d.name));
+  if (!pairs.length) { el.innerHTML='<p style="font-family:Josefin Sans,sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.3)">No pair data available.</p>'; return; }
+  el.innerHTML=`<p style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35);margin:0 0 18px;line-height:1.7">Eligible = 1× 4–0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins</p>${pairs.map(p=>{const partner=p.pair.split(' & ').find(n=>n!==d.name)||'—';const pct40=Math.min(p.count40/1,1);const pct31=Math.min(p.count31/2,1);return `<div style="background:rgba(8,18,55,0.9);border:1px solid rgba(212,160,23,0.12);border-radius:12px;padding:18px 20px;margin-bottom:12px"><div style="font-family:'Josefin Sans',sans-serif;font-size:0.83rem;font-weight:700;color:rgba(255,255,255,0.65);margin-bottom:14px">With <span style="color:#fff">${escHtml(partner)}</span>${p.eligible?'<span class="metro-eligible yes" style="margin-left:10px;font-size:0.68rem">✓ Eligible</span>':'<span class="metro-eligible no" style="margin-left:10px;font-size:0.68rem">✗ Not Yet</span>'}</div><div class="metro-progress-wrap"><div class="metro-progress-label">4–0 Finishes: <strong>${p.count40} / 1 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count40>=1?'done':''}" style="width:${Math.min(pct40*100,100)}%"></div></div></div><div class="metro-progress-wrap" style="margin-top:10px"><div class="metro-progress-label">3–1+ Finishes: <strong>${p.count31} / 2 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count31>=2?'done':''}" style="width:${Math.min(pct31*100,100)}%"></div></div></div><div style="margin-top:10px;font-family:'Josefin Sans',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.45)">${escHtml(p.distance)}</div></div>`;}).join('')}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   ROSTER MANAGER (coach only)
+═══════════════════════════════════════════════════════ */
+let allRoster       = [];
+let filteredRoster  = [];
+let rosterLoaded    = false;
+let pendingDeleteId = null;
+let rosterUnsub     = null;
+
+function loadRoster() {
+  rosterLoaded = true;
+  rosterUnsub = db.collection('members').orderBy('lastName')
+    .onSnapshot(snap => {
+      allRoster      = snap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
+      filteredRoster = applyRosterQuery(document.getElementById('admin-search').value, allRoster);
+      renderRoster(filteredRoster);
+    }, err => {
+      document.getElementById('admin-tbody').innerHTML =
+        '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f87171;font-family:\'Josefin Sans\',sans-serif;font-size:.82rem">Error: ' + esc(err.message) + '</td></tr>';
     });
-  });
-  const partners = Object.values(map).sort((a, b) => b.tourns - a.tourns);
-  if (!partners.length) {
-    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.3);padding:20px;font-family:Josefin Sans,sans-serif">No partner data</td></tr>';
+}
+
+function renderRoster(list) {
+  const tbody = document.getElementById('admin-tbody');
+  const count = document.getElementById('admin-count');
+  const total = allRoster.length;
+  count.textContent = list.length === total
+    ? total + ' member' + (total !== 1 ? 's' : '')
+    : list.length + ' of ' + total + ' shown';
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="admin-empty"><span class="ei">👥</span><p>' + (allRoster.length ? 'No members match your search.' : 'No members yet.<br>Click <strong>+ Add Member</strong> to build the roster.') + '</p></div></td></tr>';
     return;
   }
-  tbody.innerHTML = partners.map(p => {
-    const pct    = p.wins + p.losses > 0 ? (p.wins / (p.wins + p.losses) * 100).toFixed(1) : '—';
-    const pillCls = +pct >= 70 ? 'high' : +pct >= 45 ? 'mid' : 'low';
+  tbody.innerHTML = list.map(m => {
+    const name   = esc(((m.firstName||'') + ' ' + (m.lastName||'')).trim()) || '—';
+    const email  = esc(m.email || '—');
+    const role   = m.role || 'member';
+    const events = (m.events||[]).join(', ') || '—';
+    const active = m.active !== false;
+    const grad   = m.gradYear ? ` <span style="color:#2a4060;font-size:.76rem">'${String(m.gradYear).slice(-2)}</span>` : '';
     return `<tr>
-      <td><span class="deb-link" onclick="openProfile('${escJs(p.name)}')">${escHtml(p.name)}</span></td>
-      <td class="num">${p.tourns}</td>
-      <td class="num">${p.wins}</td>
-      <td class="num">${p.losses}</td>
-      <td class="num"><span class="win-pill ${pillCls}">${pct}%</span></td>
+      <td class="td-name">${name}${grad}</td>
+      <td><span class="role-badge ${esc(role)}">${esc(role)}</span></td>
+      <td class="td-email">${email}</td>
+      <td style="color:#3a5070;font-size:.8rem">${esc(events)}</td>
+      <td style="white-space:nowrap"><span class="status-dot ${active?'active':'inactive'}"></span><span style="font-size:.8rem;color:${active?'#4ade80':'#2a3545'}">${active?'Active':'Inactive'}</span></td>
+      <td class="td-actions">
+        <button class="btn-edit"   onclick="openEditModal('${esc(m.docId)}')">Edit</button>
+        <button class="btn-remove" onclick="openDeleteModal('${esc(m.docId)}','${name}')">Remove</button>
+      </td>
     </tr>`;
   }).join('');
 }
 
-function renderMetroDetail(d) {
-  const el    = document.getElementById('prof-metro-detail');
-  const pairs = computeMetroEligibility(allTournaments)
-    .filter(p => p.pair.split(' & ').includes(d.name));
-  if (!pairs.length) {
-    el.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.35)">No pair data available.</p>';
-    return;
-  }
-  el.innerHTML = `
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 20px;line-height:1.7">
-      Eligible = 1× 4–0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3–1 or better)
-    </p>
-    ${pairs.map(p => {
-      const partner = p.pair.split(' & ').find(n => n !== d.name) || '—';
-      const pct40   = Math.min(p.count40 / 1, 1);
-      const pct31   = Math.min(p.count31 / 2, 1);
-      return `<div style="background:rgba(5,18,65,0.88);border:1px solid rgba(212,160,23,0.14);border-radius:12px;padding:20px 22px;margin-bottom:14px">
-        <div style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:16px">
-          With <span style="color:#fff">${escHtml(partner)}</span>
-          ${p.eligible
-            ? '<span class="metro-eligible yes" style="margin-left:12px;font-size:0.7rem">✓ Eligible</span>'
-            : '<span class="metro-eligible no"  style="margin-left:12px;font-size:0.7rem">✗ Not Yet</span>'}
-        </div>
-        <div class="metro-progress-wrap">
-          <div class="metro-progress-label">4–0 Finishes: <strong>${p.count40} / 1 needed</strong></div>
-          <div class="metro-progress-bar-track">
-            <div class="metro-progress-bar-fill ${p.count40 >= 1 ? 'done' : ''}" style="width:${Math.min(pct40*100,100)}%"></div>
-          </div>
-        </div>
-        <div class="metro-progress-wrap" style="margin-top:12px">
-          <div class="metro-progress-label">3–1+ Finishes: <strong>${p.count31} / 2 needed</strong></div>
-          <div class="metro-progress-bar-track">
-            <div class="metro-progress-bar-fill ${p.count31 >= 2 ? 'done' : ''}" style="width:${Math.min(pct31*100,100)}%"></div>
-          </div>
-        </div>
-        <div style="margin-top:12px;font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.5)">${escHtml(p.distance)}</div>
-      </div>`;
-    }).join('')}
-  `;
+function applyRosterQuery(raw, list) {
+  const q = (raw||'').toLowerCase().trim();
+  if (!q) return list;
+  return list.filter(m => {
+    const full = ((m.firstName||'') + ' ' + (m.lastName||'')).toLowerCase();
+    return full.includes(q) || (m.email||'').toLowerCase().includes(q) || (m.role||'').toLowerCase().includes(q) || (m.events||[]).some(e=>e.toLowerCase().includes(q));
+  });
+}
+function filterRoster(val) { filteredRoster = applyRosterQuery(val, allRoster); renderRoster(filteredRoster); }
+
+/* ── Modal: Add ──────────────────────────────────────── */
+function openAddModal() {
+  document.getElementById('modal-title').textContent = 'Add Member';
+  document.getElementById('btn-save').textContent    = 'Add Member';
+  document.getElementById('form-doc-id').value = '';
+  document.getElementById('member-form').reset();
+  document.getElementById('f-active').checked = true;
+  document.getElementById('active-lbl').textContent = 'Active member';
+  clearFormStatus();
+  showModal('member-modal');
+  setTimeout(() => document.getElementById('f-first').focus(), 60);
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════════════ */
-function nameToSlug(name) {
-  return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+/* ── Modal: Edit ─────────────────────────────────────── */
+function openEditModal(docId) {
+  const m = allRoster.find(x => x.docId === docId);
+  if (!m) return;
+  document.getElementById('modal-title').textContent = 'Edit Member';
+  document.getElementById('btn-save').textContent    = 'Save Changes';
+  document.getElementById('form-doc-id').value = docId;
+  document.getElementById('f-first').value = m.firstName || '';
+  document.getElementById('f-last').value  = m.lastName  || '';
+  document.getElementById('f-email').value = m.email     || '';
+  document.getElementById('f-phone').value = m.phone     || '';
+  document.getElementById('f-role').value  = m.role      || 'member';
+  document.getElementById('f-grad').value  = m.gradYear  || '';
+  document.getElementById('f-notes').value = m.notes     || '';
+  const active = m.active !== false;
+  document.getElementById('f-active').checked = active;
+  document.getElementById('active-lbl').textContent = active ? 'Active member' : 'Inactive / Alumni';
+  ['ld','pf','cx','cong','parli'].forEach(id => { const el=document.getElementById('ev-'+id); if (el) el.checked=(m.events||[]).includes(el.value); });
+  clearFormStatus();
+  showModal('member-modal');
 }
-function slugToName(slug) {
-  return slug.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+
+function closeModal() { hideModal('member-modal'); }
+
+async function saveMember(e) {
+  e.preventDefault(); clearFormStatus();
+  const firstName = document.getElementById('f-first').value.trim();
+  const lastName  = document.getElementById('f-last').value.trim();
+  const email     = document.getElementById('f-email').value.trim().toLowerCase();
+  const phone     = document.getElementById('f-phone').value.trim();
+  const role      = document.getElementById('f-role').value;
+  const gradYear  = parseInt(document.getElementById('f-grad').value) || null;
+  const notes     = document.getElementById('f-notes').value.trim();
+  const active    = document.getElementById('f-active').checked;
+  const docId     = document.getElementById('form-doc-id').value;
+  const events    = ['ld','pf','cx','cong','parli'].map(id=>document.getElementById('ev-'+id)).filter(el=>el&&el.checked).map(el=>el.value);
+  if (!firstName) { showFormErr('First name is required.'); return; }
+  if (!lastName)  { showFormErr('Last name is required.'); return; }
+  if (!email || !email.includes('@')) { showFormErr('Enter a valid email.'); return; }
+  if (!role)      { showFormErr('Please select a role.'); return; }
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const data = { firstName, lastName, email, phone, role, gradYear: gradYear||null, events, active, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  try {
+    if (docId) { await db.collection('members').doc(docId).update(data); }
+    else { data.addedAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection('members').add(data); }
+    closeModal();
+  } catch (err) {
+    showFormErr('Save failed: ' + err.message);
+    btn.disabled = false; btn.textContent = docId ? 'Save Changes' : 'Add Member';
+  }
 }
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ── Delete ──────────────────────────────────────────── */
+function openDeleteModal(docId, name) { pendingDeleteId = docId; document.getElementById('delete-name').textContent = name; showModal('delete-modal'); }
+function cancelDelete() { pendingDeleteId = null; hideModal('delete-modal'); }
+async function confirmDelete() {
+  if (!pendingDeleteId) return;
+  const id = pendingDeleteId; cancelDelete();
+  try { await db.collection('members').doc(id).delete(); }
+  catch (err) { alert('Delete failed: ' + err.message); }
 }
-function escJs(s) {
-  return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");
-}
+
+/* ── Modal helpers ───────────────────────────────────── */
+function showModal(id) { document.getElementById(id).style.display = 'flex'; }
+function hideModal(id) { document.getElementById(id).style.display = 'none'; }
+function showFormErr(msg) { const el=document.getElementById('form-status'); el.textContent=msg; el.className='form-status error'; el.style.display='block'; el.scrollIntoView({behavior:'smooth',block:'nearest'}); }
+function clearFormStatus() { const el=document.getElementById('form-status'); el.style.display='none'; el.textContent=''; el.className='form-status'; }
+document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModal(); cancelDelete(); } });
+
+/* ── Shared helpers ──────────────────────────────────── */
+function nameToSlug(n) { return n.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+function slugToName(s) { return s.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escJs(s)   { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
+function esc(s)     { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
 </script>
 
 </body>

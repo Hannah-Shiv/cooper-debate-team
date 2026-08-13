@@ -1,12 +1,12 @@
 /* ============================================================
-   COOPER DEBATE TEAM — members-nav.js  v6
+   COOPER DEBATE TEAM — members-nav.js  v8
    Member-portal version of the dome navigation.
    Injects #circ-wrap into #dome-nav-root on all member pages.
    Set window.__NAV_PAGE before loading this script:
      "portal"    → members.html
      "calendar"  → members-calendar.html
-     "directory" → members-directory.html  (future)
-     "stats"     → members-stats.html      (future)
+     "directory" → members-directory.html
+     "stats"     → members-stats.html
    ============================================================ */
 
 (function () {
@@ -56,12 +56,6 @@
       active: PAGE === 'blog',
       /* document with lines */
       icon: '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>'
-    },
-    {
-      cls: 'dn-p6', href: 'members-admin.html', label: 'Admin',
-      active: PAGE === 'admin',
-      /* shield */
-      icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>'
     }
   ];
 
