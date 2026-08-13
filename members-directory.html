@@ -501,7 +501,9 @@
 
 <script>window.__NAV_PAGE = "directory";</script>
 
-<!-- ── Auth shim: redirect unauthenticated users ──────────────── -->
+<script src="js/members-auth.js?v=3"></script>
+
+<!-- ── Auth shim: must come AFTER members-auth.js so we wrap its showState ── -->
 <script>
 (function () {
   var _orig = window.showState;
@@ -522,7 +524,6 @@
 })();
 </script>
 
-<script src="js/members-auth.js?v=3"></script>
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
