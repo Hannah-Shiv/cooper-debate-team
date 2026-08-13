@@ -220,7 +220,7 @@
     #profile-panel { display: none; }
 
     .profile-back-btn {
-      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 32px;
+      display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px;
       background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
       border-radius: 8px; padding: 9px 18px; cursor: pointer;
       color: rgba(255,255,255,0.55); font-family: 'Josefin Sans', sans-serif;
@@ -229,11 +229,11 @@
     }
     .profile-back-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
 
-    .profile-hero { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 36px; flex-wrap: wrap; }
+    .profile-hero { display: flex; align-items: flex-start; gap: 24px; margin-bottom: 20px; flex-wrap: wrap; }
     .profile-hero-name {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.50rem,4.5vw,3.87rem); font-weight: 700;
-      color: #c8a96e; line-height: 1; margin: 0 0 8px;
+      color: #c8a96e; line-height: 1; margin: 0 0 4px;
       text-shadow: 0 0 40px rgba(201,169,110,0.2);
     }
     .profile-hero-meta {
@@ -584,17 +584,61 @@
           <!-- Achievement badges — horizontal pill strip -->
           <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
-          <!-- About Me (all members, editable by self + coaches) -->
-          <div class="profile-section" id="prof-about-section" style="display:none">
-            <div class="profile-section-title">About</div>
-            <div class="about-bio-wrap">
-              <textarea class="about-bio-input" id="about-bio" maxlength="140" rows="2"
-                placeholder="1–2 sentences about you and your debate style…"
-                oninput="onAboutInput()" readonly></textarea>
-              <div class="about-bio-counter" id="about-bio-counter">0 / 140</div>
+          <!-- Debate Style Profile (owner + coaches/captains) -->
+          <div class="profile-section" id="prof-style-section" style="display:none">
+            <div class="dsp-header">
+              <div class="dsp-title">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Debate Style Profile
+              </div>
+              <div class="dsp-visibility">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Coaches Only
+              </div>
             </div>
-            <div class="about-attr-row" id="about-attr-row"></div>
-            <div class="prof-notes-footer"><span class="prof-notes-status" id="about-status">Saved ✓</span></div>
+            <div class="dsp-card">
+              <div class="dsp-sub">
+                <div class="dsp-sub-header">
+                  <span class="dsp-sub-title">1. My Debate Style</span>
+                  <span class="dsp-sub-count" id="dsp-style-count">0 / 6</span>
+                </div>
+                <p class="dsp-sub-desc">Choose up to 6 attributes that describe you.</p>
+                <div class="dsp-chips" id="dsp-style-chips"></div>
+              </div>
+              <div class="dsp-sub">
+                <div class="dsp-sub-header">
+                  <span class="dsp-sub-title">2. What I'm Working On</span>
+                  <span class="dsp-sub-count" id="dsp-improving-count">0 / 4</span>
+                </div>
+                <p class="dsp-sub-desc">Choose up to 4 areas you'd like to improve.</p>
+                <div class="dsp-chips" id="dsp-improving-chips"></div>
+              </div>
+              <div class="dsp-sub">
+                <div class="dsp-sub-header">
+                  <span class="dsp-sub-title">3. Where I Need Help</span>
+                  <span class="dsp-sub-count" id="dsp-help-count">0 / 3</span>
+                </div>
+                <p class="dsp-sub-desc">Choose up to 3 areas where you'd like additional coaching.</p>
+                <div class="dsp-chips" id="dsp-help-chips"></div>
+              </div>
+              <div class="dsp-sub">
+                <div class="dsp-sub-header">
+                  <span class="dsp-sub-title">4. Anything for your coach?</span>
+                  <span class="dsp-sub-count" style="color:rgba(255,255,255,0.2)">optional</span>
+                </div>
+                <p class="dsp-sub-desc">Share anything on your mind — worries, questions, or anything else.</p>
+                <textarea class="dsp-note-input" id="dsp-coach-note" maxlength="300" rows="3"
+                  placeholder="Type your thoughts here…" oninput="onDspNoteInput()"></textarea>
+                <div class="dsp-note-counter" id="dsp-note-counter">0 / 300</div>
+              </div>
+              <div class="dsp-footer">
+                <span class="dsp-save-status" id="dsp-save-status">Saved ✓</span>
+                <button class="dsp-clear-btn" onclick="clearDsp()">
+                  <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.5"/></svg>
+                  Clear All
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Season selector (hidden until 2+ seasons exist) -->
@@ -1057,34 +1101,63 @@
 .prof-badge-hotstart { background:rgba(251,146,60,0.13);  border-color:rgba(251,146,60,0.42);  color:#fdba74; }
 .prof-badge-season   { background:rgba(251,113,133,0.13); border-color:rgba(251,113,133,0.42); color:#fda4af; }
 
-/* ── About Me ─────────────────────────────────────────── */
-.about-bio-wrap { margin-bottom:12px; position:relative; }
-.about-bio-input {
-  width:100%; box-sizing:border-box; resize:none; rows:2;
-  background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.09);
-  border-radius:9px; padding:11px 14px;
-  font-family:'Josefin Sans',sans-serif; font-size:0.97rem;
-  color:rgba(255,255,255,0.82); line-height:1.55; outline:none;
-  transition:border-color 0.2s;
+/* ── Debate Style Profile ──────────────────────────────── */
+.dsp-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+.dsp-title {
+  font-family:'Josefin Sans',sans-serif; font-size:0.93rem; font-weight:700;
+  letter-spacing:0.14em; text-transform:uppercase; color:#c8a96e;
+  display:flex; align-items:center; gap:9px;
 }
-.about-bio-input::placeholder { color:rgba(255,255,255,0.2); }
-.about-bio-input:focus { border-color:rgba(125,211,252,0.4); }
-.about-bio-counter {
-  text-align:right; margin-top:4px;
-  font-family:'Josefin Sans',sans-serif; font-size:0.75rem;
-  color:rgba(255,255,255,0.25); letter-spacing:0.05em;
+.dsp-visibility {
+  display:flex; align-items:center; gap:6px; padding:4px 12px; border-radius:50px;
+  background:rgba(251,113,133,0.08); border:1px solid rgba(251,113,133,0.25);
+  font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+  letter-spacing:0.07em; color:rgba(251,113,133,0.7);
 }
-.about-bio-counter.near { color:rgba(251,146,60,0.7); }
-.about-attr-row { display:flex; flex-wrap:wrap; gap:7px; margin-top:4px; }
-.about-attr-chip {
-  padding:5px 13px; border-radius:50px; border:1px solid rgba(255,255,255,0.12);
+.dsp-card { background:rgba(6,14,45,0.75); border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; }
+.dsp-sub { padding:16px 20px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.dsp-sub:last-of-type { border-bottom:none; }
+.dsp-sub-header { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px; }
+.dsp-sub-title {
   font-family:'Josefin Sans',sans-serif; font-size:0.8rem; font-weight:700;
-  letter-spacing:0.04em; color:rgba(255,255,255,0.35);
-  transition:all 0.15s; cursor:default;
+  letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.75);
 }
-.about-attr-chip.editable { cursor:pointer; }
-.about-attr-chip.editable:hover { border-color:rgba(125,211,252,0.4); color:rgba(125,211,252,0.8); }
-.about-attr-chip.selected { background:rgba(125,211,252,0.12); border-color:rgba(125,211,252,0.42); color:#7dd3fc; }
+.dsp-sub-count { font-family:'Josefin Sans',sans-serif; font-size:0.73rem; font-weight:700; color:rgba(255,255,255,0.3); }
+.dsp-sub-desc { font-family:'Josefin Sans',sans-serif; font-size:0.78rem; color:rgba(255,255,255,0.28); margin:0 0 10px; }
+.dsp-chips { display:flex; flex-wrap:wrap; gap:6px; }
+.dsp-chip {
+  padding:5px 12px; border-radius:50px; border:1px solid rgba(255,255,255,0.11);
+  font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+  letter-spacing:0.04em; color:rgba(255,255,255,0.3); transition:all 0.15s; cursor:default; user-select:none;
+}
+.dsp-chip.editable { cursor:pointer; }
+.dsp-chip.editable:hover { border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.65); }
+.dsp-chip.sel-style    { background:rgba(125,211,252,0.13); border-color:rgba(125,211,252,0.45); color:#7dd3fc; }
+.dsp-chip.sel-improving{ background:rgba(251,146,60,0.13);  border-color:rgba(251,146,60,0.45);  color:#fdba74; }
+.dsp-chip.sel-help     { background:rgba(251,113,133,0.13); border-color:rgba(251,113,133,0.45); color:#fda4af; }
+.dsp-note-input {
+  width:100%; box-sizing:border-box; resize:none;
+  background:rgba(4,10,35,0.7); border:1px solid rgba(255,255,255,0.08);
+  border-radius:9px; padding:10px 13px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.93rem;
+  color:rgba(255,255,255,0.82); line-height:1.55; outline:none; transition:border-color 0.2s;
+}
+.dsp-note-input::placeholder { color:rgba(255,255,255,0.2); }
+.dsp-note-input:focus { border-color:rgba(125,211,252,0.3); }
+.dsp-note-counter { text-align:right; margin-top:4px; font-family:'Josefin Sans',sans-serif; font-size:0.74rem; color:rgba(255,255,255,0.25); }
+.dsp-footer {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:11px 20px; border-top:1px solid rgba(255,255,255,0.07); background:rgba(4,10,30,0.4);
+}
+.dsp-save-status { font-family:'Josefin Sans',sans-serif; font-size:0.78rem; letter-spacing:0.08em; color:rgba(74,222,128,0.8); opacity:0; transition:opacity 0.35s; }
+.dsp-save-status.visible { opacity:1; }
+.dsp-clear-btn {
+  padding:5px 14px; border-radius:50px; border:1px solid rgba(255,255,255,0.12); background:transparent;
+  font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
+  letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.28);
+  cursor:pointer; transition:all 0.15s; display:flex; align-items:center; gap:6px;
+}
+.dsp-clear-btn:hover { border-color:rgba(251,113,133,0.4); color:#fda4af; }
 
 /* ── Skill Ratings ────────────────────────────────────── */
 .skill-card {
@@ -1398,89 +1471,125 @@ function setFilter(filter) {
 }
 
 /* ── About Me ─────────────────────────────────────────── */
-const STYLE_ATTRS = [
-  'Analytical','Research-Heavy','Strategic','Strong Crossfire',
-  'Calm Under Pressure','Aggressive','Evidence-Focused','Narrative Style',
-  'Fast Speaker','Structured','Adaptable','Passionate'
+/* ── Debate Style Profile ──────────────────────────────── */
+const DSP_STYLE = [
+  'Analytical','Strategic','Research-Heavy','Evidence-Focused','Calm Under Pressure',
+  'Adaptable','Logical','Creative','Detail-Oriented','Big-Picture Thinker',
+  'Strong Crossfire','Persuasive','Clear Speaker','Fast Speaker','Assertive',
+  'Conversational','Methodical','Curious','Data-Driven','Thorough','Flexible','Impact-Focused'
 ];
-let _aboutDebounce  = null;
-let _aboutEditable  = false;
-let _aboutAttrs     = [];
+const DSP_IMPROVING = [
+  'Crossfire','Rebuttal','Impact Calculus','Delivery','Research','Final Focus',
+  'Organization','Time Management','Confidence','Responding Under Pressure',
+  'Extending Arguments','Answering Questions Directly','Slowing Down'
+];
+const DSP_HELP = [
+  'Finding Strong Evidence','Answering Crossfire Questions','Speech Organization',
+  'Speaking Confidently','Speaking at Right Pace','Knowing What to Extend',
+  'Impact Calculus','Responding to Attacks','Tournament Preparation',
+  'Working with Partner','Understanding Arguments'
+];
+const DSP_META = {
+  style:     { list: null, chips:'dsp-style-chips',    count:'dsp-style-count',    max:6, cls:'sel-style' },
+  improving: { list: null, chips:'dsp-improving-chips', count:'dsp-improving-count', max:4, cls:'sel-improving' },
+  helpNeeded:{ list: null, chips:'dsp-help-chips',      count:'dsp-help-count',      max:3, cls:'sel-help' }
+};
+DSP_META.style.list = DSP_STYLE;
+DSP_META.improving.list = DSP_IMPROVING;
+DSP_META.helpNeeded.list = DSP_HELP;
 
-async function renderAboutSection(name, memberDoc) {
-  const section = document.getElementById('prof-about-section');
-  section.style.display = '';
-  const ta      = document.getElementById('about-bio');
-  const counter = document.getElementById('about-bio-counter');
-  const status  = document.getElementById('about-status');
-  ta.value = ''; counter.textContent = '0 / 140'; status.classList.remove('visible');
-  _aboutAttrs = [];
+let _dspData     = { style:[], improving:[], helpNeeded:[], coachNote:'' };
+let _dspEditable = false;
+let _dspDebounce = null;
 
-  // Editable if viewer is the debater or a coach/captain
+async function renderStyleSection(name, memberDoc) {
+  const section = document.getElementById('prof-style-section');
   const isOwner = memberDoc && (memberDoc.email||'').toLowerCase() === currentUserEmail.toLowerCase();
-  _aboutEditable = isOwner || currentUserRole === 'coach' || currentUserRole === 'captain';
-  ta.readOnly = !_aboutEditable;
-  ta.style.cursor = _aboutEditable ? 'text' : 'default';
-
-  // Load existing data
+  const canSee  = isOwner || currentUserRole==='coach' || currentUserRole==='captain';
+  if (!canSee) { section.style.display = 'none'; return; }
+  section.style.display = '';
+  _dspEditable = canSee;
+  _dspData = { style:[], improving:[], helpNeeded:[], coachNote:'' };
   try {
     const snap = await dirDb.collection('debater_about').doc(notesDocId(name)).get();
     if (snap.exists) {
-      ta.value = snap.data().bio || '';
-      _aboutAttrs = snap.data().attrs || [];
+      const d = snap.data();
+      _dspData.style      = d.style      || d.attrs || [];
+      _dspData.improving  = d.improving  || [];
+      _dspData.helpNeeded = d.helpNeeded || [];
+      _dspData.coachNote  = d.coachNote  || d.bio   || '';
     }
-  } catch(e) { console.warn('About load:', e); }
-  updateAboutCounter();
-  renderAboutAttrs();
+  } catch(e) { console.warn('DSP load:', e); }
+  renderDsp();
 }
 
-function updateAboutCounter() {
-  const ta = document.getElementById('about-bio');
-  const counter = document.getElementById('about-bio-counter');
-  const len = ta.value.length;
-  counter.textContent = `${len} / 140`;
-  counter.classList.toggle('near', len >= 110);
+function renderDsp() {
+  Object.entries(DSP_META).forEach(([field, m]) => renderDspChips(field, m));
+  const ta = document.getElementById('dsp-coach-note');
+  if (ta) { ta.value = _dspData.coachNote; ta.readOnly = !_dspEditable; }
+  const cnt = document.getElementById('dsp-note-counter');
+  if (cnt) cnt.textContent = `${(_dspData.coachNote||'').length} / 300`;
 }
 
-function renderAboutAttrs() {
-  const row = document.getElementById('about-attr-row');
-  row.innerHTML = STYLE_ATTRS.map(a => {
-    const sel = _aboutAttrs.includes(a);
-    const editCls = _aboutEditable ? ' editable' : '';
-    return `<span class="about-attr-chip${editCls}${sel?' selected':''}"
-      onclick="${_aboutEditable ? `toggleAboutAttr('${escJs(a)}')` : ''}">${escHtml(a)}</span>`;
+function renderDspChips(field, m) {
+  const cur = _dspData[field] || [];
+  const row = document.getElementById(m.chips);
+  if (!row) return;
+  row.innerHTML = m.list.map(a => {
+    const sel   = cur.includes(a);
+    const atMax = !sel && cur.length >= m.max;
+    const ec    = _dspEditable && !atMax ? ' editable' : (_dspEditable && sel ? ' editable' : '');
+    const click = _dspEditable && (!atMax || sel)
+      ? `onclick="toggleDspChip('${escJs(field)}','${escJs(a)}')"` : '';
+    return `<span class="dsp-chip${ec}${sel?' '+m.cls:''}" ${click}>${escHtml(a)}</span>`;
   }).join('');
+  const cnt = document.getElementById(m.count);
+  if (cnt) cnt.textContent = `${cur.length} / ${m.max}`;
 }
 
-function toggleAboutAttr(attr) {
-  if (!_aboutEditable) return;
-  const i = _aboutAttrs.indexOf(attr);
-  if (i >= 0) _aboutAttrs.splice(i, 1); else _aboutAttrs.push(attr);
-  renderAboutAttrs();
-  clearTimeout(_aboutDebounce);
-  _aboutDebounce = setTimeout(saveAbout, 800);
+function toggleDspChip(field, value) {
+  if (!_dspEditable) return;
+  const m   = DSP_META[field];
+  const arr = _dspData[field];
+  const i   = arr.indexOf(value);
+  if (i >= 0) arr.splice(i, 1);
+  else if (arr.length < m.max) arr.push(value);
+  else return;
+  renderDspChips(field, m);
+  saveDsp();
 }
 
-function onAboutInput() {
-  updateAboutCounter();
-  document.getElementById('about-status').classList.remove('visible');
-  clearTimeout(_aboutDebounce);
-  _aboutDebounce = setTimeout(saveAbout, 1200);
+function onDspNoteInput() {
+  const ta  = document.getElementById('dsp-coach-note');
+  const cnt = document.getElementById('dsp-note-counter');
+  if (ta)  _dspData.coachNote = ta.value;
+  if (cnt) cnt.textContent = `${(ta?ta.value:'').length} / 300`;
+  clearTimeout(_dspDebounce);
+  _dspDebounce = setTimeout(saveDsp, 1400);
 }
 
-async function saveAbout() {
-  if (!_aboutEditable) return;
-  const ta     = document.getElementById('about-bio');
-  const status = document.getElementById('about-status');
+async function saveDsp() {
+  if (!_dspEditable) return;
+  const ta = document.getElementById('dsp-coach-note');
+  if (ta) _dspData.coachNote = ta.value;
+  const status = document.getElementById('dsp-save-status');
   try {
     await dirDb.collection('debater_about').doc(notesDocId(_profName)).set({
-      bio: ta.value, attrs: _aboutAttrs,
+      style: _dspData.style, improving: _dspData.improving,
+      helpNeeded: _dspData.helpNeeded, coachNote: _dspData.coachNote,
       updatedBy: currentUserEmail,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    status.classList.add('visible');
-    setTimeout(() => status.classList.remove('visible'), 2000);
-  } catch(e) { console.warn('About save:', e); }
+    if (status) { status.classList.add('visible'); setTimeout(()=>status.classList.remove('visible'),2000); }
+  } catch(e) { console.warn('DSP save:', e); }
+}
+
+async function clearDsp() {
+  if (!_dspEditable) return;
+  _dspData = { style:[], improving:[], helpNeeded:[], coachNote:'' };
+  renderDsp();
+  try { await dirDb.collection('debater_about').doc(notesDocId(_profName)).delete(); }
+  catch(e) { console.warn('DSP clear:', e); }
 }
 
 /* ── Skill Ratings ────────────────────────────────────── */
@@ -1800,10 +1909,10 @@ async function openProfile(name) {
   document.getElementById('prof-season-bar').style.display = 'none';
   document.getElementById('prof-notes-section').style.display = 'none';
   document.getElementById('prof-notes-textarea').value = '';
-  document.getElementById('prof-about-section').style.display = 'none';
+  document.getElementById('prof-style-section').style.display = 'none';
   document.getElementById('prof-skills-section').style.display = 'none';
   clearTimeout(_notesDebounce);
-  clearTimeout(_aboutDebounce);
+  clearTimeout(_dspDebounce);
   if (profileChart) { profileChart.destroy(); profileChart = null; }
 
   if (!d) { document.getElementById('prof-meta').textContent = 'No tournament data found.'; return; }
@@ -1879,8 +1988,8 @@ function renderProfile(d, memberDoc) {
   /* Season-filtered sections */
   applySeasonFilter(d);
 
-  /* About Me */
-  renderAboutSection(d.name, memberDoc);
+  /* Debate Style Profile */
+  renderStyleSection(d.name, memberDoc);
 
   /* Skill Ratings */
   renderSkillSection(d.name);
