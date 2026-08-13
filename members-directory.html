@@ -1062,6 +1062,7 @@
 .skill-row:last-child { border-bottom:none; }
 .skill-label-col {
   display:flex; align-items:center; gap:10px; width:148px; flex-shrink:0;
+  border-right:1px solid rgba(255,255,255,0.12); padding-right:18px; margin-right:4px;
 }
 .skill-icon { color:rgba(200,169,110,0.65); display:flex; align-items:center; flex-shrink:0; }
 .skill-name {
@@ -1174,6 +1175,8 @@ function switchTab(tab) {
     document.getElementById('profile-panel').style.display = 'none';
     document.getElementById('dir-view').style.display = '';
     if (profileChart) { profileChart.destroy(); profileChart = null; }
+    // Clear the ?d= param from the URL if present
+    if (window.location.search) history.pushState({}, '', window.location.pathname);
   }
   if (tab === 'roster' && !rosterLoaded) loadRoster();
 }
