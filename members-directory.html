@@ -179,6 +179,14 @@
       letter-spacing: 0.05em;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
+    /* Clickable partner name inside a profile hero */
+    .prof-partner-link {
+      cursor: pointer;
+      color: rgba(255,255,255,0.72);
+      border-bottom: 1px dashed rgba(255,255,255,0.28);
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .prof-partner-link:hover { color: #FFD700; border-bottom-color: rgba(255,215,0,0.55); }
 
     /* Stats row */
     .dir-card-stats { display: flex; gap: 0; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 14px; }
@@ -1357,7 +1365,10 @@ function checkUrlProfile() {
 
 function renderProfile(d, memberDoc) {
   document.getElementById('prof-name').textContent = d.name;
-  document.getElementById('prof-meta').textContent = d.partnerList ? 'Partner(s): ' + d.partnerList : 'No partner data';
+  const partnerLinks = d.partners && d.partners.size
+    ? [...d.partners].map(p => `<span class="prof-partner-link" onclick="openProfile('${escJs(p)}')">${escHtml(p)}</span>`).join(', ')
+    : null;
+  document.getElementById('prof-meta').innerHTML = partnerLinks ? 'Partner(s): ' + partnerLinks : 'No partner data';
 
   /* Avatar */
   const avatarEl = document.getElementById('prof-avatar');
