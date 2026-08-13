@@ -1234,7 +1234,7 @@
   font-family:'Josefin Sans',sans-serif; font-size:0.88rem; font-weight:700;
   letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.92);
 }
-.dsp-sub-count { font-family:'Josefin Sans',sans-serif; font-size:0.80rem; font-weight:700; color:rgba(255,255,255,0.55); flex-shrink:0; }
+.dsp-sub-count { font-family:'Josefin Sans',sans-serif; font-size:0.92rem; font-weight:700; color:rgba(255,255,255,0.55); flex-shrink:0; }
 .dsp-sub-desc { font-family:'Josefin Sans',sans-serif; font-size:0.86rem; color:rgba(255,255,255,0.52); margin:0; }
 /* Chips */
 .dsp-chips { display:flex; flex-wrap:wrap; gap:10px; }
@@ -1649,7 +1649,6 @@ async function renderStyleSection(name, memberDoc) {
       _dspData.coachNote  = d.coachNote  || d.bio   || '';
     }
   } catch(e) { console.warn('DSP load:', e); }
-  switchDspTab('style');
   renderDsp();
 }
 
