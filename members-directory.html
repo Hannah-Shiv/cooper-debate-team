@@ -555,12 +555,27 @@
           <button class="profile-back-btn" onclick="backToDirectory()">← Directory</button>
 
           <div class="profile-hero">
-            <div>
-              <div class="profile-hero-name" id="prof-name">—</div>
-              <div class="profile-hero-meta" id="prof-meta">—</div>
-              <div id="prof-metro-badge"></div>
+            <div class="prof-hero-layout">
+              <div class="prof-avatar-wrap">
+                <div class="prof-avatar" id="prof-avatar">—</div>
+              </div>
+              <div class="prof-hero-info">
+                <div class="profile-hero-name" id="prof-name">—</div>
+                <div class="profile-hero-meta" id="prof-meta">—</div>
+                <div class="prof-identity-pills" id="prof-identity-pills"></div>
+                <div id="prof-metro-badge"></div>
+              </div>
             </div>
           </div>
+
+          <!-- Season selector (hidden until 2+ seasons exist) -->
+          <div class="prof-season-bar" id="prof-season-bar" style="display:none">
+            <span class="prof-season-label">Season</span>
+            <div class="prof-season-pills" id="prof-season-pills"></div>
+          </div>
+
+          <!-- Achievement badges -->
+          <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
           <div class="profile-stat-strip" id="prof-stat-strip"></div>
 
@@ -751,6 +766,20 @@
           <textarea id="f-notes" placeholder="Strengths, goals, context…"></textarea>
         </div>
         <div class="form-field full">
+          <label for="f-photo">Photo URL <span class="opt">(optional)</span></label>
+          <input type="url" id="f-photo" placeholder="https://…/photo.jpg">
+        </div>
+        <div class="form-field">
+          <label for="f-grade">Grade <span class="opt">(optional)</span></label>
+          <select id="f-grade">
+            <option value="">Select…</option>
+            <option value="6th Grade">6th Grade</option>
+            <option value="7th Grade">7th Grade</option>
+            <option value="8th Grade">8th Grade</option>
+            <option value="Alumni">Alumni</option>
+          </select>
+        </div>
+        <div class="form-field full">
           <label>Status</label>
           <div class="toggle-row">
             <label class="tog">
@@ -785,6 +814,67 @@
     </div>
   </div>
 </div>
+
+<!-- ── Extra styles ───────────────────────────────────────────── -->
+<style>
+/* Profile avatar & identity */
+.prof-hero-layout { display:flex; align-items:flex-start; gap:22px; flex-wrap:wrap; }
+.prof-avatar-wrap { flex-shrink:0; margin-top:4px; }
+.prof-avatar {
+  width:72px; height:72px; border-radius:50%;
+  border:2px solid rgba(212,160,23,0.35);
+  background:rgba(212,160,23,0.08);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.65rem; font-weight:700; color:rgba(212,160,23,0.85);
+  overflow:hidden;
+}
+.prof-avatar img { width:100%; height:100%; object-fit:cover; border-radius:50%; display:block; }
+.prof-hero-info { flex:1; min-width:0; }
+.prof-identity-pills { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 10px; }
+.prof-id-pill {
+  display:inline-flex; align-items:center; gap:5px;
+  padding:3px 11px; border-radius:50px;
+  font-family:'Josefin Sans',sans-serif;
+  font-size:0.7rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+  background:rgba(8,18,55,0.9); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.5);
+}
+.prof-id-pill.status-active   { border-color:rgba(74,222,128,0.28); color:#4ade80; }
+.prof-id-pill.status-alumni   { border-color:rgba(201,169,110,0.3); color:#c8a96e; }
+.prof-id-pill.status-inactive { border-color:rgba(255,255,255,0.1); color:rgba(255,255,255,0.28); }
+
+/* Season selector */
+.prof-season-bar {
+  display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+  margin:0 0 24px; padding:13px 18px;
+  background:rgba(8,18,55,0.7); border:1px solid rgba(212,160,23,0.12); border-radius:12px;
+}
+.prof-season-label {
+  font-family:'Josefin Sans',sans-serif; font-size:0.7rem; font-weight:700;
+  letter-spacing:0.13em; text-transform:uppercase; color:rgba(255,255,255,0.3); flex-shrink:0;
+}
+.prof-season-pills { display:flex; flex-wrap:wrap; gap:6px; }
+.prof-season-btn {
+  padding:5px 14px; border-radius:50px; cursor:pointer; transition:all 0.18s;
+  font-family:'Josefin Sans',sans-serif; font-size:0.73rem; font-weight:700; letter-spacing:0.06em;
+  background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.4);
+}
+.prof-season-btn:hover { border-color:rgba(255,215,0,0.3); color:rgba(255,215,0,0.7); }
+.prof-season-btn.active { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:#FFD700; }
+
+/* Achievement badges */
+.prof-badges { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
+.prof-badge {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:6px 14px; border-radius:50px; cursor:default;
+  font-family:'Josefin Sans',sans-serif; font-size:0.71rem; font-weight:700;
+  letter-spacing:0.07em; text-transform:uppercase;
+  background:rgba(212,160,23,0.09); border:1px solid rgba(212,160,23,0.28); color:#c8a96e;
+}
+.prof-badge-metro  { background:rgba(74,222,128,0.08);  border-color:rgba(74,222,128,0.28);  color:#4ade80; }
+.prof-badge-perf   { background:rgba(250,204,21,0.08);  border-color:rgba(250,204,21,0.28);  color:#facc15; }
+.prof-badge-speaks { background:rgba(139,92,246,0.08);  border-color:rgba(139,92,246,0.28);  color:#a78bfa; }
+</style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -864,6 +954,8 @@ let allTournaments = [];
 let leaderboard    = [];
 let currentQuery   = '';
 let profileChart   = null;
+let currentSeason  = 'all';
+let _profName      = '';
 
 async function loadTournaments() {
   try {
@@ -981,14 +1073,155 @@ function renderDirectory() {
 
 function filterDirectory(q) { currentQuery = q; renderDirectory(); }
 
+/* ── Season / badge utilities ─────────────────────────── */
+function getTournSeason(dateStr) {
+  const dt = parseTournDate(dateStr);
+  if (isNaN(dt)) return null;
+  const startYear = dt.getMonth() >= 7 ? dt.getFullYear() : dt.getFullYear() - 1;
+  return startYear + '\u2013' + String(startYear + 1).slice(-2);
+}
+function filterTournsBySeason(details, season) {
+  if (!season || season === 'all') return details;
+  return details.filter(t => getTournSeason(t.date) === season);
+}
+function getDebaterSeasons(d) {
+  const seen = new Set();
+  d.tournDetails.forEach(t => { const s = getTournSeason(t.date); if (s) seen.add(s); });
+  return [...seen].sort();
+}
+
+const BADGE_DEFS = [
+  { id:'metro',    cls:'prof-badge-metro',  label:'Metro Qualifier',
+    icon:'<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>',
+    test: d => d.metroEligible },
+  { id:'perfect',  cls:'prof-badge-perf',   label:'Perfect Prelims',
+    icon:'<circle cx="12" cy="12" r="10"/><polyline points="16 8 10 14 7 11"/>',
+    test: d => d.tournDetails.some(t => t.wins >= 4 && t.losses === 0) },
+  { id:'speaks',   cls:'prof-badge-speaks', label:'Elite Speaker',
+    icon:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
+    test: d => d.avgSpeak >= 28 },
+  { id:'veteran',  cls:'',                  label:'Tournament Veteran',
+    icon:'<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/>',
+    test: d => d.tournaments >= 5 },
+  { id:'hotstart', cls:'',                  label:'Hot Start',
+    icon:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+    test: d => d.tournDetails.some(t => { const rs = (t.rounds||[]).filter(r=>r.result!=='BYE'&&!r.isBye).sort((a,b)=>+a.round-+b.round); return rs.length>=3&&rs[0].result==='W'&&rs[1].result==='W'&&rs[2].result==='W'; }) },
+  { id:'season5',  cls:'',                  label:'5+ Season Wins',
+    icon:'<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
+    test: d => { const sw={}; d.tournDetails.forEach(t=>{const s=getTournSeason(t.date);if(s)sw[s]=(sw[s]||0)+t.wins;}); return Object.values(sw).some(w=>w>=5); } }
+];
+
+function renderBadges(d) {
+  const el = document.getElementById('prof-badges');
+  const earned = BADGE_DEFS.filter(b => b.test(d));
+  if (!earned.length) { el.style.display = 'none'; return; }
+  el.style.display = 'flex';
+  el.innerHTML = earned.map(b =>
+    `<div class="prof-badge ${b.cls}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>${escHtml(b.label)}</div>`
+  ).join('');
+}
+
+function renderSeasonSelector(d) {
+  _profName = d.name;
+  const seasons = getDebaterSeasons(d);
+  const bar = document.getElementById('prof-season-bar');
+  if (seasons.length < 2) { bar.style.display = 'none'; return; }
+  bar.style.display = 'flex';
+  const allBtn = `<button class="prof-season-btn${currentSeason==='all'?' active':''}" onclick="selectSeason('all')">All Time</button>`;
+  const seasonBtns = seasons.map(s => `<button class="prof-season-btn${currentSeason===s?' active':''}" onclick="selectSeason('${escJs(s)}')">${escHtml(s)}</button>`);
+  document.getElementById('prof-season-pills').innerHTML = [allBtn, ...seasonBtns].join('');
+}
+
+function selectSeason(season) {
+  currentSeason = season;
+  document.querySelectorAll('.prof-season-btn').forEach(btn => {
+    const lbl = btn.textContent.trim();
+    btn.classList.toggle('active', lbl === (season === 'all' ? 'All Time' : season));
+  });
+  const d = leaderboard.find(x => x.name.toLowerCase() === _profName.toLowerCase());
+  if (d) applySeasonFilter(d);
+}
+
+function applySeasonFilter(d) {
+  const filtered = filterTournsBySeason(d.tournDetails, currentSeason);
+
+  /* ── Stat strip ─── */
+  const wins      = filtered.reduce((s,t)=>s+t.wins, 0);
+  const losses    = filtered.reduce((s,t)=>s+t.losses, 0);
+  const speakSum  = filtered.reduce((s,t)=>s+t.totalSpeaks, 0);
+  const rndCount  = filtered.reduce((s,t)=>s+(t.rounds||[]).filter(r=>r.result!=='BYE'&&!r.isBye).length, 0);
+  const avgSpeak  = rndCount > 0 ? +(speakSum/rndCount).toFixed(2) : 0;
+  const winRate   = wins+losses > 0 ? wins/(wins+losses) : 0;
+  const pct       = (winRate*100).toFixed(1);
+  const partnerSet = new Set();
+  allTournaments.forEach(tourn => {
+    if (!filtered.some(ft=>ft.name===tourn.meta.name)) return;
+    tourn.entries.forEach(e => {
+      const me = e.debaters.find(x=>`${x.first} ${x.last}`===d.name);
+      if (!me) return;
+      e.debaters.filter(x=>`${x.first} ${x.last}`!==d.name).forEach(p=>partnerSet.add(`${p.first} ${p.last}`));
+    });
+  });
+  document.getElementById('prof-stat-strip').innerHTML = `
+    <div class="profile-stat-card"><div class="profile-stat-label">Record</div><div class="profile-stat-value">${wins}\u2013${losses}</div><div class="profile-stat-sub">${pct}% win rate</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Avg Speaker Pts</div><div class="profile-stat-value">${avgSpeak.toFixed(2)}</div><div class="profile-stat-sub">per round</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Tournaments</div><div class="profile-stat-value">${filtered.length}</div><div class="profile-stat-sub">competed</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Total Rounds</div><div class="profile-stat-value">${wins+losses}</div><div class="profile-stat-sub">prelim rounds</div></div>
+    <div class="profile-stat-card"><div class="profile-stat-label">Partners</div><div class="profile-stat-value">${partnerSet.size}</div><div class="profile-stat-sub">unique</div></div>`;
+
+  /* ── Chart ─── */
+  const sorted = [...filtered].sort((a,b) => parseTournDate(a.date)-parseTournDate(b.date));
+  const labels  = sorted.map(t => { const dt=parseTournDate(t.date); return isNaN(dt)?t.name.slice(0,14):dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}); });
+  if (profileChart) profileChart.destroy();
+  const ctx = document.getElementById('profile-speak-chart').getContext('2d');
+  profileChart = new Chart(ctx, {
+    type:'line',
+    data:{ labels, datasets:[
+      { label:'Avg Speaker Points', data:sorted.map(t=>t.avgSpeak), borderColor:'rgba(212,160,23,0.95)', backgroundColor:'rgba(212,160,23,0.09)', pointBackgroundColor:'#FFD700', pointBorderColor:'#0d1428', pointRadius:7, pointHoverRadius:10, tension:0.35, fill:true, borderWidth:3, yAxisID:'y' },
+      { label:'Win Rate %', data:sorted.map(t=>t.wins+t.losses>0?+((t.wins/(t.wins+t.losses))*100).toFixed(1):null), borderColor:'rgba(74,222,128,0.9)', backgroundColor:'transparent', pointBackgroundColor:'#4ade80', pointBorderColor:'#0d1428', pointRadius:6, pointHoverRadius:8, tension:0.35, fill:false, borderWidth:2.5, borderDash:[5,3], yAxisID:'y2' }
+    ]},
+    options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:true,labels:{color:'rgba(255,255,255,0.85)',font:{family:'Josefin Sans',size:13},boxWidth:16,padding:16}}, tooltip:{backgroundColor:'rgba(5,15,50,0.97)',borderColor:'rgba(212,160,23,0.6)',borderWidth:2,titleColor:'#e8c84a',bodyColor:'#fff',titleFont:{family:'Josefin Sans',size:14,weight:'700'},bodyFont:{family:'Josefin Sans',size:13},padding:14,cornerRadius:10,callbacks:{label:c=>c.datasetIndex===0?`${c.parsed.y.toFixed(2)} avg speak`:`${c.parsed.y}% win rate`}} }},
+    scales:{ x:{ticks:{color:'rgba(255,255,255,0.7)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{position:'left',ticks:{color:'rgba(212,160,23,0.9)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'},title:{display:true,text:'Avg Speaks',color:'rgba(212,160,23,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}}, y2:{position:'right',min:0,max:100,ticks:{color:'rgba(74,222,128,0.9)',font:{family:'Josefin Sans',size:12},callback:v=>v+'%'},grid:{drawOnChartArea:false},title:{display:true,text:'Win Rate',color:'rgba(74,222,128,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}} }
+  });
+
+  renderRoundBars(d, filtered);
+  renderTournamentTable(d, filtered);
+  renderPartnerTable(d, filtered);
+}
+
 /* ── Profile ──────────────────────────────────────────── */
-function openProfile(name) {
+async function openProfile(name) {
+  currentSeason = 'all';
   const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
-  document.getElementById('dir-view').style.display     = 'none';
+  document.getElementById('dir-view').style.display      = 'none';
   document.getElementById('profile-panel').style.display = 'block';
   history.pushState({ profile: name }, '', `?d=${nameToSlug(name)}`);
-  if (!d) { document.getElementById('prof-name').textContent = name; document.getElementById('prof-meta').textContent = 'No tournament data found.'; return; }
-  renderProfile(d);
+
+  /* show name & initials immediately while Firestore loads */
+  const displayName = d ? d.name : name;
+  document.getElementById('prof-name').textContent = displayName;
+  document.getElementById('prof-avatar').textContent = initials(displayName);
+  document.getElementById('prof-identity-pills').innerHTML = '';
+  document.getElementById('prof-metro-badge').innerHTML = '';
+  document.getElementById('prof-stat-strip').innerHTML = '';
+  document.getElementById('prof-badges').style.display = 'none';
+  document.getElementById('prof-season-bar').style.display = 'none';
+  if (profileChart) { profileChart.destroy(); profileChart = null; }
+
+  if (!d) { document.getElementById('prof-meta').textContent = 'No tournament data found.'; return; }
+
+  /* fetch member doc for identity info (non-fatal if missing) */
+  let memberDoc = null;
+  try {
+    const parts = d.name.split(' ');
+    const snap = await dirDb.collection('members')
+      .where('firstName','==',parts[0])
+      .where('lastName','==',parts.slice(1).join(' '))
+      .limit(1).get();
+    if (!snap.empty) memberDoc = snap.docs[0].data();
+  } catch(e) {}
+
+  renderProfile(d, memberDoc);
 }
 function backToDirectory() {
   document.getElementById('profile-panel').style.display = 'none';
@@ -1008,45 +1241,52 @@ function checkUrlProfile() {
   openProfile(name);
 }
 
-function renderProfile(d) {
+function renderProfile(d, memberDoc) {
   document.getElementById('prof-name').textContent = d.name;
-  document.getElementById('prof-meta').textContent = d.partnerList ? `Partner(s): ${d.partnerList}` : 'No partner data';
+  document.getElementById('prof-meta').textContent = d.partnerList ? 'Partner(s): ' + d.partnerList : 'No partner data';
+
+  /* Avatar */
+  const avatarEl = document.getElementById('prof-avatar');
+  if (memberDoc && memberDoc.photoUrl) {
+    avatarEl.innerHTML = `<img src="${escHtml(memberDoc.photoUrl)}" alt="${escHtml(d.name)}" onerror="this.parentElement.textContent='${escJs(initials(d.name))}'">`;
+  } else {
+    avatarEl.textContent = initials(d.name);
+  }
+
+  /* Identity pills */
+  const pills = [];
+  if (memberDoc) {
+    if (memberDoc.grade) pills.push({ label: memberDoc.grade, cls: '' });
+    if (memberDoc.events && memberDoc.events.length) pills.push({ label: memberDoc.events.join(' · '), cls: '' });
+    const isActive = memberDoc.active !== false;
+    pills.push({ label: isActive ? 'Active' : 'Alumni', cls: isActive ? 'status-active' : 'status-alumni' });
+  }
+  document.getElementById('prof-identity-pills').innerHTML = pills.map(p => `<span class="prof-id-pill ${escHtml(p.cls)}">${escHtml(p.label)}</span>`).join('');
+
+  /* Metro badge — always career */
   document.getElementById('prof-metro-badge').innerHTML = d.metroEligible
     ? '<span class="profile-metro-badge eligible">✓ Metro Finals Eligible</span>'
     : '<span class="profile-metro-badge not-eligible">✗ Not Yet Metro Finals Eligible</span>';
-  const pct = (d.winRate * 100).toFixed(1);
-  document.getElementById('prof-stat-strip').innerHTML = `
-    <div class="profile-stat-card"><div class="profile-stat-label">Career Record</div><div class="profile-stat-value">${d.wins}–${d.losses}</div><div class="profile-stat-sub">${pct}% win rate</div></div>
-    <div class="profile-stat-card"><div class="profile-stat-label">Avg Speaker Pts</div><div class="profile-stat-value">${d.avgSpeak.toFixed(2)}</div><div class="profile-stat-sub">per round</div></div>
-    <div class="profile-stat-card"><div class="profile-stat-label">Tournaments</div><div class="profile-stat-value">${d.tournaments}</div><div class="profile-stat-sub">competed</div></div>
-    <div class="profile-stat-card"><div class="profile-stat-label">Total Rounds</div><div class="profile-stat-value">${d.wins+d.losses}</div><div class="profile-stat-sub">prelim rounds</div></div>
-    <div class="profile-stat-card"><div class="profile-stat-label">Partners</div><div class="profile-stat-value">${d.partners.size}</div><div class="profile-stat-sub">unique</div></div>`;
 
-  const sorted = [...d.tournDetails].sort((a,b) => parseTournDate(a.date)-parseTournDate(b.date));
-  const labels = sorted.map(t => { const dt = parseTournDate(t.date); return isNaN(dt) ? t.name.slice(0,14) : dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'}); });
-  if (profileChart) profileChart.destroy();
-  const ctx = document.getElementById('profile-speak-chart').getContext('2d');
-  profileChart = new Chart(ctx, {
-    type: 'line',
-    data: { labels, datasets: [
-      { label:'Avg Speaker Points', data:sorted.map(t=>t.avgSpeak), borderColor:'rgba(212,160,23,0.95)', backgroundColor:'rgba(212,160,23,0.09)', pointBackgroundColor:'#FFD700', pointBorderColor:'#0d1428', pointRadius:7, pointHoverRadius:10, tension:0.35, fill:true, borderWidth:3, yAxisID:'y' },
-      { label:'Win Rate %', data:sorted.map(t=>t.wins+t.losses>0?+((t.wins/(t.wins+t.losses))*100).toFixed(1):null), borderColor:'rgba(74,222,128,0.9)', backgroundColor:'transparent', pointBackgroundColor:'#4ade80', pointBorderColor:'#0d1428', pointRadius:6, pointHoverRadius:8, tension:0.35, fill:false, borderWidth:2.5, borderDash:[5,3], yAxisID:'y2' }
-    ]},
-    options: { responsive:true, maintainAspectRatio:false, plugins: { legend:{ display:true, labels:{color:'rgba(255,255,255,0.85)', font:{family:'Josefin Sans',size:13}, boxWidth:16, padding:16} }, tooltip:{ backgroundColor:'rgba(5,15,50,0.97)', borderColor:'rgba(212,160,23,0.6)', borderWidth:2, titleColor:'#e8c84a', bodyColor:'#fff', titleFont:{family:'Josefin Sans',size:14,weight:'700'}, bodyFont:{family:'Josefin Sans',size:13}, padding:14, cornerRadius:10, callbacks:{ label:c=>c.datasetIndex===0?`${c.parsed.y.toFixed(2)} avg speak`:`${c.parsed.y}% win rate` } } } },
-    scales: { x:{ticks:{color:'rgba(255,255,255,0.7)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'}}, y:{position:'left',ticks:{color:'rgba(212,160,23,0.9)',font:{family:'Josefin Sans',size:12}},grid:{color:'rgba(255,255,255,0.04)'},title:{display:true,text:'Avg Speaks',color:'rgba(212,160,23,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}}, y2:{position:'right',min:0,max:100,ticks:{color:'rgba(74,222,128,0.9)',font:{family:'Josefin Sans',size:12},callback:v=>v+'%'},grid:{drawOnChartArea:false},title:{display:true,text:'Win Rate',color:'rgba(74,222,128,0.85)',font:{family:'Josefin Sans',size:12,weight:'700'}}} }
-  });
+  /* Badges — always career */
+  renderBadges(d);
 
-  renderRoundBars(d);
-  renderTournamentTable(d);
-  renderPartnerTable(d);
+  /* Season selector */
+  renderSeasonSelector(d);
+
+  /* Metro detail — always career */
   renderMetroDetail(d);
+
+  /* Season-filtered sections */
+  applySeasonFilter(d);
 }
 
-function renderRoundBars(d) {
+function renderRoundBars(d, filtered) {
+  filtered = filtered || d.tournDetails;
   const section = document.getElementById('prof-round-rate-section');
   const container = document.getElementById('prof-round-bars');
   const rounds = {};
-  d.tournDetails.forEach(t => { (t.rounds||[]).forEach(r => { if (r.result==='BYE'||r.isBye) return; const rn = +r.round; if (!rounds[rn]) rounds[rn]={w:0,l:0}; if (r.result==='W') rounds[rn].w++; else rounds[rn].l++; }); });
+  filtered.forEach(t => { (t.rounds||[]).forEach(r => { if (r.result==='BYE'||r.isBye) return; const rn = +r.round; if (!rounds[rn]) rounds[rn]={w:0,l:0}; if (r.result==='W') rounds[rn].w++; else rounds[rn].l++; }); });
   const sorted = Object.entries(rounds).sort(([a],[b])=>+a-+b);
   if (!sorted.length) { section.style.display='none'; return; }
   section.style.display='';
@@ -1064,9 +1304,10 @@ function renderRoundBars(d) {
   }).join('');
 }
 
-function renderTournamentTable(d) {
+function renderTournamentTable(d, filtered) {
+  filtered = filtered || d.tournDetails;
   const tbody = document.getElementById('prof-tourn-tbody');
-  const sorted = [...d.tournDetails].sort((a,b)=>parseTournDate(b.date)-parseTournDate(a.date));
+  const sorted = [...filtered].sort((a,b)=>parseTournDate(b.date)-parseTournDate(a.date));
   if (!sorted.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;color:rgba(255,255,255,0.25);padding:20px;font-family:Josefin Sans,sans-serif">No data</td></tr>'; return; }
   tbody.innerHTML = sorted.map(t => {
     const dt=parseTournDate(t.date); const dateStr=isNaN(dt)?'—':dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
@@ -1076,10 +1317,15 @@ function renderTournamentTable(d) {
   }).join('');
 }
 
-function renderPartnerTable(d) {
+function renderPartnerTable(d, filtered) {
+  filtered = filtered || d.tournDetails;
+  const filteredNames = new Set(filtered.map(t=>t.name));
   const tbody = document.getElementById('prof-partner-tbody');
   const map = {};
-  allTournaments.forEach(tourn => { tourn.entries.forEach(e => { const me=e.debaters.find(x=>`${x.first} ${x.last}`===d.name); if (!me) return; const partner=e.debaters.find(x=>`${x.first} ${x.last}`!==d.name); if (!partner) return; const pn=`${partner.first} ${partner.last}`; if (!map[pn]) map[pn]={name:pn,tourns:0,wins:0,losses:0}; map[pn].tourns++; map[pn].wins+=e.wins; map[pn].losses+=e.losses; }); });
+  allTournaments.forEach(tourn => {
+    if (!filteredNames.has(tourn.meta.name)) return;
+    tourn.entries.forEach(e => { const me=e.debaters.find(x=>`${x.first} ${x.last}`===d.name); if (!me) return; const partner=e.debaters.find(x=>`${x.first} ${x.last}`!==d.name); if (!partner) return; const pn=`${partner.first} ${partner.last}`; if (!map[pn]) map[pn]={name:pn,tourns:0,wins:0,losses:0}; map[pn].tourns++; map[pn].wins+=e.wins; map[pn].losses+=e.losses; });
+  });
   const partners = Object.values(map).sort((a,b)=>b.tourns-a.tourns);
   if (!partners.length) { tbody.innerHTML='<tr><td colspan="5" style="text-align:center;color:rgba(255,255,255,0.25);padding:20px;font-family:Josefin Sans,sans-serif">No partner data</td></tr>'; return; }
   tbody.innerHTML = partners.map(p => { const pct=p.wins+p.losses>0?(p.wins/(p.wins+p.losses)*100).toFixed(1):'—'; const pillCls=+pct>=70?'high':+pct>=45?'mid':'low'; return `<tr><td><span class="deb-link" onclick="openProfile('${escJs(p.name)}')">${escHtml(p.name)}</span></td><td class="num">${p.tourns}</td><td class="num">${p.wins}</td><td class="num">${p.losses}</td><td class="num"><span class="win-pill ${pillCls}">${pct}%</span></td></tr>`; }).join('');
@@ -1164,6 +1410,8 @@ function openAddModal() {
   document.getElementById('member-form').reset();
   document.getElementById('f-active').checked = true;
   document.getElementById('active-lbl').textContent = 'Active member';
+  document.getElementById('f-photo').value = '';
+  document.getElementById('f-grade').value = '';
   clearFormStatus();
   showModal('member-modal');
   setTimeout(() => document.getElementById('f-first').focus(), 60);
@@ -1186,6 +1434,8 @@ function openEditModal(docId) {
   const active = m.active !== false;
   document.getElementById('f-active').checked = active;
   document.getElementById('active-lbl').textContent = active ? 'Active member' : 'Inactive / Alumni';
+  document.getElementById('f-photo').value = m.photoUrl || '';
+  document.getElementById('f-grade').value = m.grade    || '';
   ['ld','pf','cx','cong','parli'].forEach(id => { const el=document.getElementById('ev-'+id); if (el) el.checked=(m.events||[]).includes(el.value); });
   clearFormStatus();
   showModal('member-modal');
@@ -1211,7 +1461,9 @@ async function saveMember(e) {
   if (!role)      { showFormErr('Please select a role.'); return; }
   const btn = document.getElementById('btn-save');
   btn.disabled = true; btn.textContent = 'Saving…';
-  const data = { firstName, lastName, email, phone, role, gradYear: gradYear||null, events, active, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  const photoUrl = document.getElementById('f-photo').value.trim();
+  const grade    = document.getElementById('f-grade').value;
+  const data = { firstName, lastName, email, phone, role, gradYear: gradYear||null, events, active, notes, photoUrl: photoUrl||null, grade: grade||null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
   try {
     if (docId) { await dirDb.collection('members').doc(docId).update(data); }
     else { data.addedAt = firebase.firestore.FieldValue.serverTimestamp(); await dirDb.collection('members').add(data); }
