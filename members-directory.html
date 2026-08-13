@@ -808,7 +808,6 @@
           <label for="f-grade">Grade <span class="opt">(optional)</span></label>
           <select id="f-grade">
             <option value="">Select…</option>
-            <option value="6th Grade">6th Grade</option>
             <option value="7th Grade">7th Grade</option>
             <option value="8th Grade">8th Grade</option>
             <option value="Alumni">Alumni</option>
@@ -1626,6 +1625,7 @@ function openAddModal() {
   document.getElementById('btn-save').textContent    = 'Add Member';
   document.getElementById('form-doc-id').value = '';
   document.getElementById('member-form').reset();
+  document.getElementById('ev-pf').checked = true;
   document.getElementById('f-active').checked = true;
   document.getElementById('active-lbl').textContent = 'Active member';
   document.getElementById('f-photo').value = '';
