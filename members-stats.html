@@ -449,11 +449,11 @@
     .main-textarea::placeholder { color:rgba(255,255,255,0.2); }
     .parse-btn {
       white-space:nowrap; border-radius:10px;
-      padding:13px 22px; cursor:pointer;
-      font-family:'Josefin Sans',sans-serif; font-size:0.92rem;
+      padding:9px 15px; cursor:pointer;
+      font-family:'Josefin Sans',sans-serif; font-size:0.8rem;
       font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
       transition:background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.1s; flex-shrink:0;
-      display:inline-flex; align-items:center; gap:8px;
+      display:inline-flex; align-items:center; gap:7px;
       /* green default */
       background:linear-gradient(135deg,rgba(34,197,94,0.22) 0%,rgba(16,160,72,0.18) 100%);
       border:1.5px solid rgba(34,197,94,0.5); color:#4ade80;
@@ -475,6 +475,32 @@
       border-color:rgba(239,68,68,0.8); box-shadow:0 4px 20px rgba(179,0,0,0.22);
       transform:translateY(-1px);
     }
+    /* ── Virtual checkbox ───────────────────────────────────── */
+    .virtual-check-label {
+      display:inline-flex; align-items:center; gap:10px;
+      cursor:pointer; user-select:none; padding:6px 0;
+    }
+    .virtual-check-label input[type="checkbox"] { position:absolute; opacity:0; width:0; height:0; }
+    .virtual-check-box {
+      width:18px; height:18px; border-radius:5px; flex-shrink:0;
+      border:1.5px solid rgba(212,160,23,0.45); background:rgba(255,255,255,0.04);
+      transition:background 0.18s, border-color 0.18s; position:relative;
+    }
+    .virtual-check-label input:checked ~ .virtual-check-box {
+      background:rgba(212,160,23,0.22); border-color:rgba(212,160,23,0.85);
+    }
+    .virtual-check-label input:checked ~ .virtual-check-box::after {
+      content:''; position:absolute; left:4px; top:1px;
+      width:7px; height:11px; border:2px solid #D4A017;
+      border-left:none; border-top:none; transform:rotate(45deg);
+    }
+    .virtual-check-text {
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-weight:600; letter-spacing:0.08em; text-transform:uppercase;
+      color:rgba(255,255,255,0.75);
+    }
+    .virtual-check-label:hover .virtual-check-box { border-color:rgba(212,160,23,0.75); }
+
     .import-form-grid {
       display:grid; grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
       gap:18px; margin-bottom:24px;
@@ -1359,11 +1385,19 @@
               </button>
             </div>
           </div>
-          <div class="import-field">
+          <!-- Virtual toggle -->
+          <div class="import-field" style="grid-column:span 2">
+            <label class="virtual-check-label">
+              <input type="checkbox" id="imp-virtual" onchange="onVirtualToggle(this.checked)"/>
+              <span class="virtual-check-box"></span>
+              <span class="virtual-check-text">Virtual tournament</span>
+            </label>
+          </div>
+          <div class="import-field" id="field-school">
             <label class="import-label" for="imp-school">Host School</label>
             <input class="import-input" id="imp-school" type="text" placeholder="e.g. Westfield High School"/>
           </div>
-          <div class="import-field">
+          <div class="import-field" id="field-location">
             <label class="import-label" for="imp-location">City, State</label>
             <input class="import-input" id="imp-location" type="text" placeholder="e.g. Chantilly, Virginia"/>
           </div>
@@ -2340,11 +2374,27 @@ function onDatePick(iso) {
 }
 
 /* ── Clear all import form fields ───────────────────────────── */
+function onVirtualToggle(isVirtual) {
+  const schoolField   = document.getElementById('field-school');
+  const locationField = document.getElementById('field-location');
+  if (isVirtual) {
+    schoolField.style.display   = 'none';
+    locationField.style.display = 'none';
+    document.getElementById('imp-school').value   = '';
+    document.getElementById('imp-location').value = '';
+  } else {
+    schoolField.style.display   = '';
+    locationField.style.display = '';
+  }
+}
+
 function clearImportForm() {
   ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic']
     .forEach(id => document.getElementById(id).value = '');
   const dp = document.getElementById('imp-date-picker'); if (dp) dp.value = '';
   document.getElementById('imp-topic-type').value = 'Public Forum'; // restore default
+  const virt = document.getElementById('imp-virtual');
+  if (virt) { virt.checked = false; onVirtualToggle(false); }
   teamCsvText = speakCsvText = null;
   ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('hint-team').textContent = 'Team W/L, speaker totals, round-by-round';
@@ -4939,16 +4989,17 @@ function showMetroEligibilityToasts(newlyEligible) {
 async function runImport() {
   const name      = document.getElementById('imp-name').value.trim();
   const date      = document.getElementById('imp-date').value.trim();
-  const school    = document.getElementById('imp-school').value.trim();
-  const location  = document.getElementById('imp-location').value.trim();
+  const isVirtual = document.getElementById('imp-virtual').checked;
+  const school    = isVirtual ? '' : document.getElementById('imp-school').value.trim();
+  const location  = isVirtual ? 'Virtual' : document.getElementById('imp-location').value.trim();
   const topicType = document.getElementById('imp-topic-type').value.trim();
   const topic     = document.getElementById('imp-topic').value.trim();
 
   const missing = [];
   if (!name)      missing.push('Tournament Name');
   if (!date)      missing.push('Date');
-  if (!school)    missing.push('Host School');
-  if (!location)  missing.push('City, State');
+  if (!isVirtual && !school)    missing.push('Host School');
+  if (!isVirtual && !location)  missing.push('City, State');
   if (!topicType) missing.push('Debate Format');
   if (!topic)     missing.push('Resolution');
   if (!teamCsvText)  missing.push('Entry Results CSV');
@@ -4979,6 +5030,7 @@ async function runImport() {
     const doc = {
       meta: {
         name, date, school, location, topicType, topic,
+        virtual: isVirtual,
         importedAt: firebase.firestore.FieldValue.serverTimestamp(),
         importedBy: typeof currentUserEmail !== 'undefined' ? currentUserEmail : ''
       },
@@ -5011,6 +5063,8 @@ async function runImport() {
     ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
     ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic-type','imp-topic']
       .forEach(id => document.getElementById(id).value = '');
+    const virtCb = document.getElementById('imp-virtual');
+    if (virtCb) { virtCb.checked = false; onVirtualToggle(false); }
 
     await loadTournaments();
 
