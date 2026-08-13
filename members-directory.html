@@ -44,14 +44,14 @@
     }
     .hub-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.50rem, 4.5vw, 3.87rem);
+      font-size: clamp(2.25rem, 4.05vw, 3.48rem);
       font-weight: 700; color: #FFD700;
       text-shadow: 0 0 60px rgba(255,215,0,0.2);
       margin: 0 0 6px; line-height: 1;
     }
     .hub-sub {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.91rem; letter-spacing: 0.14em; text-transform: uppercase;
+      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
       color: rgba(255,255,255,0.35); margin: 0;
     }
 
@@ -66,7 +66,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 50px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.89rem; font-weight: 700;
+      font-size: 0.80rem; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: rgba(255,215,0,0.45);
       cursor: pointer; transition: all 0.2s;
@@ -594,12 +594,11 @@
                   <div class="prof-identity-pills" id="prof-identity-pills"></div>
                   <div id="prof-metro-badge"></div>
                 </div>
+                <!-- Achievement badges — right column -->
+                <div class="prof-badges" id="prof-badges" style="display:none"></div>
               </div>
             </div>
           </div>
-
-          <!-- Achievement badges -->
-          <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
           <!-- Profile-level tab bar -->
           <div class="prof-tabs-bar">
@@ -1000,7 +999,7 @@
 .prof-tab:not(.active):hover { color:rgba(255,255,255,0.72); background:rgba(255,255,255,0.03); }
 /* Avatar & hero layout */
 .prof-hero-layout { display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
-.prof-avatar-wrap { flex-shrink:0; }
+.prof-avatar-wrap { flex-shrink:0; align-self:center; }
 .prof-avatar {
   width:84px; height:84px; border-radius:50%;
   border:2px solid rgba(212,160,23,0.35);
@@ -1160,12 +1159,15 @@
 }
 .photo-remove-btn:hover { background:rgba(251,113,133,0.12); }
 
-/* Achievement badge strip — horizontal pills */
-.prof-badges { display:flex; flex-wrap:wrap; gap:9px; margin-bottom:28px; }
+/* Achievement badge strip — vertical column on the right of hero card */
+.prof-badges {
+  flex-direction:column; gap:7px; align-self:center;
+  flex-shrink:0; max-width:220px; margin-bottom:0;
+}
 .prof-badge {
   display:inline-flex; align-items:center; gap:8px;
-  padding:8px 18px; border-radius:50px; cursor:default; border:1px solid; white-space:nowrap;
-  font-family:'Josefin Sans',sans-serif; font-size:0.91rem; font-weight:700;
+  padding:6px 14px; border-radius:50px; cursor:default; border:1px solid; white-space:nowrap;
+  font-family:'Josefin Sans',sans-serif; font-size:0.82rem; font-weight:700;
   letter-spacing:0.07em; text-transform:uppercase;
 }
 /* Six distinct bright colours */
@@ -1962,7 +1964,11 @@ function renderSeasonSelector(d) {
   _profName = d.name;
   const seasons = getDebaterSeasons(d);
   const bar = document.getElementById('prof-season-bar');
-  if (seasons.length < 2) { bar.style.display = 'none'; return; }
+  if (!seasons.length) { bar.style.display = 'none'; return; }
+  /* Default to most recent season on first open */
+  if (!currentSeason || currentSeason === 'all' || !seasons.includes(currentSeason)) {
+    currentSeason = seasons[seasons.length - 1];
+  }
   bar.style.display = 'flex';
   const allBtn = `<button class="prof-season-btn${currentSeason==='all'?' active':''}" onclick="selectSeason('all')">All Time</button>`;
   const seasonBtns = seasons.map(s => `<button class="prof-season-btn${currentSeason===s?' active':''}" onclick="selectSeason('${escJs(s)}')">${escHtml(s)}</button>`);
@@ -2028,7 +2034,7 @@ function applySeasonFilter(d) {
 
 /* ── Profile ──────────────────────────────────────────── */
 async function openProfile(name) {
-  currentSeason = 'all';
+  currentSeason = '';   /* renderSeasonSelector will pick latest season */
   const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
   document.getElementById('dir-view').style.display      = 'none';
   document.getElementById('profile-panel').style.display = 'block';
