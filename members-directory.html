@@ -548,19 +548,16 @@
             <span class="dir-count" id="dir-count"></span>
           </div>
           <!-- Sort & filter bar -->
-          <div class="dir-filter-row">
-            <div class="dir-sort-group">
-              <span class="dir-filter-label">Sort</span>
-              <button class="dir-sort-btn active" id="sort-name"    onclick="setSort('name')">Name A–Z</button>
-              <button class="dir-sort-btn"         id="sort-winrate" onclick="setSort('winrate')">Win Rate</button>
-              <button class="dir-sort-btn"         id="sort-speaks"  onclick="setSort('speaks')">Speaker Pts</button>
-              <button class="dir-sort-btn"         id="sort-tourns"  onclick="setSort('tourns')">Tournaments</button>
+          <div class="dir-controls-row">
+            <div class="dir-sort-box">
+              <button class="dir-ctl-btn active" id="sort-name"    onclick="setSort('name')">Name ↑</button>
+              <button class="dir-ctl-btn"         id="sort-winrate" onclick="setSort('winrate')">Win Rate</button>
+              <button class="dir-ctl-btn"         id="sort-speaks"  onclick="setSort('speaks')">Speaker Pts</button>
+              <button class="dir-ctl-btn"         id="sort-tourns"  onclick="setSort('tourns')">Tournaments</button>
             </div>
-            <div class="dir-filter-divider"></div>
-            <div class="dir-filter-group">
-              <span class="dir-filter-label">Filter</span>
-              <button class="dir-sort-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
-              <button class="dir-sort-btn"         id="filter-metro" onclick="setFilter('metro')">✓ Metro Eligible</button>
+            <div class="dir-filter-box">
+              <button class="dir-ctl-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
+              <button class="dir-ctl-btn"         id="filter-metro" onclick="setFilter('metro')">✓ Metro Eligible</button>
             </div>
           </div>
           <div class="dir-grid" id="dir-grid"></div>
@@ -884,24 +881,52 @@
 .prof-season-btn.active { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:#FFD700; }
 
 /* Sort / filter bar */
-.dir-filter-row {
-  display:flex; gap:18px; flex-wrap:wrap; align-items:center;
-  margin-bottom:18px; padding:11px 16px;
-  background:rgba(8,18,55,0.7); border:1px solid rgba(212,160,23,0.1); border-radius:12px;
+.dir-controls-row {
+  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:stretch;
 }
-.dir-filter-group, .dir-sort-group { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
-.dir-filter-label {
-  font-family:'Josefin Sans',sans-serif; font-size:0.67rem; font-weight:700;
-  letter-spacing:0.13em; text-transform:uppercase; color:rgba(255,255,255,0.28); flex-shrink:0;
+/* Sort box — gold theme */
+.dir-sort-box {
+  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  padding:9px 14px; border-radius:11px;
+  background:rgba(212,160,23,0.05); border:1px solid rgba(212,160,23,0.22);
+  position:relative;
 }
-.dir-sort-btn {
-  padding:4px 12px; border-radius:50px; cursor:pointer; transition:all 0.18s;
+.dir-sort-box::before {
+  content:'↕ SORT'; position:absolute; top:-9px; left:12px;
+  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.6rem; font-weight:700;
+  letter-spacing:0.16em; color:#c8a96e; background:var(--bg-deep,#05102a); line-height:1;
+  pointer-events:none; user-select:none;
+}
+/* Filter box — green/teal theme */
+.dir-filter-box {
+  display:flex; align-items:center; gap:6px; flex-wrap:wrap;
+  padding:9px 14px; border-radius:11px;
+  background:rgba(74,222,128,0.04); border:1px solid rgba(74,222,128,0.22);
+  position:relative;
+}
+.dir-filter-box::before {
+  content:'⊟ FILTER'; position:absolute; top:-9px; left:12px;
+  padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.6rem; font-weight:700;
+  letter-spacing:0.16em; color:#4ade80; background:var(--bg-deep,#05102a); line-height:1;
+  pointer-events:none; user-select:none;
+}
+/* Shared pill button */
+.dir-ctl-btn {
+  padding:5px 13px; border-radius:50px; cursor:pointer; transition:all 0.18s;
   font-family:'Josefin Sans',sans-serif; font-size:0.71rem; font-weight:700; letter-spacing:0.04em;
   background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.38);
+  white-space:nowrap;
 }
-.dir-sort-btn:hover { border-color:rgba(255,215,0,0.3); color:rgba(255,215,0,0.7); }
-.dir-sort-btn.active { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:#FFD700; }
-.dir-filter-divider { width:1px; height:20px; background:rgba(255,255,255,0.08); flex-shrink:0; }
+/* Sort box active pill — gold */
+.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(212,160,23,0.4); color:rgba(212,160,23,0.8); }
+.dir-sort-box .dir-ctl-btn.active {
+  background:rgba(212,160,23,0.12); border-color:rgba(212,160,23,0.5); color:#FFD700;
+}
+/* Filter box active pill — green */
+.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(74,222,128,0.4); color:rgba(74,222,128,0.8); }
+.dir-filter-box .dir-ctl-btn.active {
+  background:rgba(74,222,128,0.11); border-color:rgba(74,222,128,0.45); color:#4ade80;
+}
 
 /* Two-column profile top layout */
 .profile-top-grid {
@@ -1021,6 +1046,7 @@ let profileChart   = null;
 let currentSeason  = 'all';
 let _profName      = '';
 let currentSort    = 'name';
+let currentSortDir = 'asc';   // 'asc' | 'desc'
 let currentFilter  = 'all';
 
 async function loadTournaments() {
@@ -1029,6 +1055,7 @@ async function loadTournaments() {
     allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   } catch (e) { console.error('loadTournaments:', e); }
   leaderboard = computeLeaderboard(allTournaments);
+  updateSortButtons();
   renderDirectory();
 }
 
@@ -1101,10 +1128,16 @@ function renderDirectory() {
     if (currentFilter === 'metro' && !d.metroEligible) return false;
     return true;
   });
-  if (currentSort === 'name')    list = [...list].sort((a,b) => a.name.localeCompare(b.name));
-  else if (currentSort === 'speaks') list = [...list].sort((a,b) => b.avgSpeak - a.avgSpeak);
-  else if (currentSort === 'tourns') list = [...list].sort((a,b) => b.tournaments - a.tournaments);
-  // 'winrate' keeps leaderboard order (already win-rate sorted)
+  const asc = currentSortDir === 'asc';
+  if (currentSort === 'name')
+    list = [...list].sort((a,b) => asc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
+  else if (currentSort === 'speaks')
+    list = [...list].sort((a,b) => asc ? a.avgSpeak - b.avgSpeak : b.avgSpeak - a.avgSpeak);
+  else if (currentSort === 'tourns')
+    list = [...list].sort((a,b) => asc ? a.tournaments - b.tournaments : b.tournaments - a.tournaments);
+  else /* winrate */
+    list = [...list].sort((a,b) => asc ? a.winRate - b.winRate || a.avgSpeak - b.avgSpeak
+                                        : b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
 
   const grid  = document.getElementById('dir-grid');
   const count = document.getElementById('dir-count');
@@ -1139,14 +1172,33 @@ function renderDirectory() {
 }
 
 function filterDirectory(q) { currentQuery = q; renderDirectory(); }
-function setSort(sort) {
-  currentSort = sort;
-  ['name','winrate','speaks','tourns'].forEach(s => {
+
+const SORT_LABELS = { name:'Name', winrate:'Win Rate', speaks:'Speaker Pts', tourns:'Tournaments' };
+const SORT_DEFAULT_ASC = { name:true, winrate:false, speaks:false, tourns:false };
+
+function updateSortButtons() {
+  Object.keys(SORT_LABELS).forEach(s => {
     const el = document.getElementById('sort-' + s);
-    if (el) el.classList.toggle('active', s === sort);
+    if (!el) return;
+    const isActive = s === currentSort;
+    el.classList.toggle('active', isActive);
+    el.textContent = isActive
+      ? SORT_LABELS[s] + ' ' + (currentSortDir === 'asc' ? '↑' : '↓')
+      : SORT_LABELS[s];
   });
+}
+
+function setSort(sort) {
+  if (sort === currentSort) {
+    currentSortDir = currentSortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    currentSort    = sort;
+    currentSortDir = SORT_DEFAULT_ASC[sort] ? 'asc' : 'desc';
+  }
+  updateSortButtons();
   renderDirectory();
 }
+
 function setFilter(filter) {
   currentFilter = filter;
   ['all','metro'].forEach(f => {
