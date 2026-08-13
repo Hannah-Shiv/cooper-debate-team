@@ -547,6 +547,22 @@
             </div>
             <span class="dir-count" id="dir-count"></span>
           </div>
+          <!-- Sort & filter bar -->
+          <div class="dir-filter-row">
+            <div class="dir-sort-group">
+              <span class="dir-filter-label">Sort</span>
+              <button class="dir-sort-btn active" id="sort-name"    onclick="setSort('name')">Name A–Z</button>
+              <button class="dir-sort-btn"         id="sort-winrate" onclick="setSort('winrate')">Win Rate</button>
+              <button class="dir-sort-btn"         id="sort-speaks"  onclick="setSort('speaks')">Speaker Pts</button>
+              <button class="dir-sort-btn"         id="sort-tourns"  onclick="setSort('tourns')">Tournaments</button>
+            </div>
+            <div class="dir-filter-divider"></div>
+            <div class="dir-filter-group">
+              <span class="dir-filter-label">Filter</span>
+              <button class="dir-sort-btn active" id="filter-all"   onclick="setFilter('all')">All</button>
+              <button class="dir-sort-btn"         id="filter-metro" onclick="setFilter('metro')">✓ Metro Eligible</button>
+            </div>
+          </div>
           <div class="dir-grid" id="dir-grid"></div>
         </div>
 
@@ -554,17 +570,25 @@
         <div id="profile-panel">
           <button class="profile-back-btn" onclick="backToDirectory()">← Directory</button>
 
-          <div class="profile-hero">
-            <div class="prof-hero-layout">
-              <div class="prof-avatar-wrap">
-                <div class="prof-avatar" id="prof-avatar">—</div>
+          <!-- Two-column: hero left, badges right -->
+          <div class="profile-top-grid">
+            <div class="profile-hero">
+              <div class="prof-hero-layout">
+                <div class="prof-avatar-wrap">
+                  <div class="prof-avatar" id="prof-avatar">—</div>
+                </div>
+                <div class="prof-hero-info">
+                  <div class="profile-hero-name" id="prof-name">—</div>
+                  <div class="profile-hero-meta" id="prof-meta">—</div>
+                  <div class="prof-identity-pills" id="prof-identity-pills"></div>
+                  <div id="prof-metro-badge"></div>
+                </div>
               </div>
-              <div class="prof-hero-info">
-                <div class="profile-hero-name" id="prof-name">—</div>
-                <div class="profile-hero-meta" id="prof-meta">—</div>
-                <div class="prof-identity-pills" id="prof-identity-pills"></div>
-                <div id="prof-metro-badge"></div>
-              </div>
+            </div>
+            <!-- Achievements side panel -->
+            <div class="prof-badges-panel" id="prof-badges-panel" style="display:none">
+              <div class="prof-badges-panel-title">Achievements</div>
+              <div id="prof-badges"></div>
             </div>
           </div>
 
@@ -573,9 +597,6 @@
             <span class="prof-season-label">Season</span>
             <div class="prof-season-pills" id="prof-season-pills"></div>
           </div>
-
-          <!-- Achievement badges -->
-          <div class="prof-badges" id="prof-badges" style="display:none"></div>
 
           <div class="profile-stat-strip" id="prof-stat-strip"></div>
 
@@ -862,18 +883,55 @@
 .prof-season-btn:hover { border-color:rgba(255,215,0,0.3); color:rgba(255,215,0,0.7); }
 .prof-season-btn.active { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:#FFD700; }
 
-/* Achievement badges */
-.prof-badges { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:28px; }
-.prof-badge {
-  display:inline-flex; align-items:center; gap:7px;
-  padding:6px 14px; border-radius:50px; cursor:default;
-  font-family:'Josefin Sans',sans-serif; font-size:0.71rem; font-weight:700;
-  letter-spacing:0.07em; text-transform:uppercase;
-  background:rgba(212,160,23,0.09); border:1px solid rgba(212,160,23,0.28); color:#c8a96e;
+/* Sort / filter bar */
+.dir-filter-row {
+  display:flex; gap:18px; flex-wrap:wrap; align-items:center;
+  margin-bottom:18px; padding:11px 16px;
+  background:rgba(8,18,55,0.7); border:1px solid rgba(212,160,23,0.1); border-radius:12px;
 }
-.prof-badge-metro  { background:rgba(74,222,128,0.08);  border-color:rgba(74,222,128,0.28);  color:#4ade80; }
-.prof-badge-perf   { background:rgba(250,204,21,0.08);  border-color:rgba(250,204,21,0.28);  color:#facc15; }
-.prof-badge-speaks { background:rgba(139,92,246,0.08);  border-color:rgba(139,92,246,0.28);  color:#a78bfa; }
+.dir-filter-group, .dir-sort-group { display:flex; align-items:center; gap:7px; flex-wrap:wrap; }
+.dir-filter-label {
+  font-family:'Josefin Sans',sans-serif; font-size:0.67rem; font-weight:700;
+  letter-spacing:0.13em; text-transform:uppercase; color:rgba(255,255,255,0.28); flex-shrink:0;
+}
+.dir-sort-btn {
+  padding:4px 12px; border-radius:50px; cursor:pointer; transition:all 0.18s;
+  font-family:'Josefin Sans',sans-serif; font-size:0.71rem; font-weight:700; letter-spacing:0.04em;
+  background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.38);
+}
+.dir-sort-btn:hover { border-color:rgba(255,215,0,0.3); color:rgba(255,215,0,0.7); }
+.dir-sort-btn.active { background:rgba(255,215,0,0.1); border-color:rgba(255,215,0,0.45); color:#FFD700; }
+.dir-filter-divider { width:1px; height:20px; background:rgba(255,255,255,0.08); flex-shrink:0; }
+
+/* Two-column profile top layout */
+.profile-top-grid {
+  display:grid; grid-template-columns:1fr 230px; gap:20px;
+  align-items:start; margin-bottom:32px;
+}
+.profile-top-grid .profile-hero { margin-bottom:0; }
+@media (max-width:700px) { .profile-top-grid { grid-template-columns:1fr; } }
+
+/* Achievements side panel */
+.prof-badges-panel {
+  background:rgba(8,18,55,0.92); border:1px solid rgba(212,160,23,0.14);
+  border-radius:14px; padding:18px 16px;
+}
+.prof-badges-panel-title {
+  font-family:'Josefin Sans',sans-serif; font-size:0.67rem; font-weight:700;
+  letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.28);
+  margin-bottom:12px;
+}
+.prof-badge {
+  display:flex; align-items:center; gap:9px;
+  padding:9px 12px; border-radius:9px; cursor:default; margin-bottom:7px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.72rem; font-weight:700;
+  letter-spacing:0.06em; text-transform:uppercase; width:100%; box-sizing:border-box;
+  background:rgba(212,160,23,0.08); border:1px solid rgba(212,160,23,0.22); color:#c8a96e;
+}
+.prof-badge:last-child { margin-bottom:0; }
+.prof-badge-metro  { background:rgba(74,222,128,0.08);  border-color:rgba(74,222,128,0.22);  color:#4ade80; }
+.prof-badge-perf   { background:rgba(250,204,21,0.08);  border-color:rgba(250,204,21,0.22);  color:#facc15; }
+.prof-badge-speaks { background:rgba(139,92,246,0.08);  border-color:rgba(139,92,246,0.22);  color:#a78bfa; }
 </style>
 
 <!-- ── Firebase ──────────────────────────────────────────────── -->
@@ -938,6 +996,12 @@ function switchTab(tab) {
   document.getElementById('tab-roster').classList.toggle('active', tab === 'roster');
   document.getElementById('dir-section').style.display   = tab === 'directory' ? '' : 'none';
   document.getElementById('admin-section').style.display = tab === 'roster'    ? '' : 'none';
+  if (tab === 'directory') {
+    // Always return to the grid when clicking the Directory tab
+    document.getElementById('profile-panel').style.display = 'none';
+    document.getElementById('dir-view').style.display = '';
+    if (profileChart) { profileChart.destroy(); profileChart = null; }
+  }
   if (tab === 'roster' && !rosterLoaded) loadRoster();
 }
 
@@ -956,6 +1020,8 @@ let currentQuery   = '';
 let profileChart   = null;
 let currentSeason  = 'all';
 let _profName      = '';
+let currentSort    = 'name';
+let currentFilter  = 'all';
 
 async function loadTournaments() {
   try {
@@ -1019,7 +1085,8 @@ function computeLeaderboard(tournaments) {
     let metroEligible = false;
     d.partners.forEach(partner => { const k = [d.name,partner].sort().join(' & '); if (pairMetroMap[k]) metroEligible = true; });
     return { ...d, avgSpeak: d.roundCount > 0 ? +(d.speakSum/d.roundCount).toFixed(2) : 0, winRate: d.wins+d.losses > 0 ? d.wins/(d.wins+d.losses) : 0, partnerList: [...d.partners].join(', '), metroEligible };
-  }).sort((a,b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak);
+  }).sort((a,b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak)
+    .map((d, i) => ({ ...d, rank: i + 1 }));
 }
 
 /* ── Directory render ─────────────────────────────────── */
@@ -1029,42 +1096,42 @@ function initials(name) {
 
 function renderDirectory() {
   const q = currentQuery.toLowerCase().trim();
-  const list = q ? leaderboard.filter(d => d.name.toLowerCase().includes(q) || d.partnerList.toLowerCase().includes(q)) : leaderboard;
+  let list = leaderboard.filter(d => {
+    if (q && !d.name.toLowerCase().includes(q) && !d.partnerList.toLowerCase().includes(q)) return false;
+    if (currentFilter === 'metro' && !d.metroEligible) return false;
+    return true;
+  });
+  if (currentSort === 'name')    list = [...list].sort((a,b) => a.name.localeCompare(b.name));
+  else if (currentSort === 'speaks') list = [...list].sort((a,b) => b.avgSpeak - a.avgSpeak);
+  else if (currentSort === 'tourns') list = [...list].sort((a,b) => b.tournaments - a.tournaments);
+  // 'winrate' keeps leaderboard order (already win-rate sorted)
+
   const grid  = document.getElementById('dir-grid');
   const count = document.getElementById('dir-count');
-  count.textContent = list.length === leaderboard.length ? `${list.length} debater${list.length !== 1 ? 's' : ''}` : `${list.length} of ${leaderboard.length}`;
+  count.textContent = list.length === leaderboard.length
+    ? `${list.length} debater${list.length !== 1 ? 's' : ''}`
+    : `${list.length} of ${leaderboard.length}`;
   if (!list.length) {
-    grid.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match your search.'}</div>`;
+    grid.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match.'}</div>`;
     return;
   }
-  grid.innerHTML = list.map((d, i) => {
-    const rank = i + 1;
-    const rankCls = rank <= 3 ? 'top3' : '';
+  grid.innerHTML = list.map(d => {
+    const rankCls = d.rank <= 3 ? 'top3' : '';
     const pct = (d.winRate * 100).toFixed(0);
     const partnerSnip = d.partnerList ? 'w/ ' + (d.partnerList.length > 34 ? d.partnerList.slice(0,32) + '…' : d.partnerList) : 'No partner data';
-    const av = initials(d.name);
     return `<div class="dir-card" onclick="openProfile('${escJs(d.name)}')">
-      <div class="dir-card-rank ${rankCls}">#${rank}</div>
+      <div class="dir-card-rank ${rankCls}">#${d.rank}</div>
       <div class="dir-card-top">
-        <div class="dir-card-avatar">${escHtml(av)}</div>
+        <div class="dir-card-avatar">${escHtml(initials(d.name))}</div>
         <div class="dir-card-info">
           <div class="dir-card-name">${escHtml(d.name)}</div>
           <div class="dir-card-partners">${escHtml(partnerSnip)}</div>
         </div>
       </div>
       <div class="dir-card-stats">
-        <div class="dir-card-stat">
-          <div class="dir-card-stat-val">${d.wins}–${d.losses}</div>
-          <div class="dir-card-stat-lbl">Record</div>
-        </div>
-        <div class="dir-card-stat">
-          <div class="dir-card-stat-val">${pct}%</div>
-          <div class="dir-card-stat-lbl">Win Rate</div>
-        </div>
-        <div class="dir-card-stat">
-          <div class="dir-card-stat-val">${d.avgSpeak.toFixed(1)}</div>
-          <div class="dir-card-stat-lbl">Avg Spk</div>
-        </div>
+        <div class="dir-card-stat"><div class="dir-card-stat-val">${d.wins}–${d.losses}</div><div class="dir-card-stat-lbl">Record</div></div>
+        <div class="dir-card-stat"><div class="dir-card-stat-val">${pct}%</div><div class="dir-card-stat-lbl">Win Rate</div></div>
+        <div class="dir-card-stat"><div class="dir-card-stat-val">${d.avgSpeak.toFixed(1)}</div><div class="dir-card-stat-lbl">Avg Spk</div></div>
       </div>
       ${d.metroEligible ? '<div class="dir-card-metro eligible">✓ Metro Eligible</div>' : ''}
     </div>`;
@@ -1072,6 +1139,22 @@ function renderDirectory() {
 }
 
 function filterDirectory(q) { currentQuery = q; renderDirectory(); }
+function setSort(sort) {
+  currentSort = sort;
+  ['name','winrate','speaks','tourns'].forEach(s => {
+    const el = document.getElementById('sort-' + s);
+    if (el) el.classList.toggle('active', s === sort);
+  });
+  renderDirectory();
+}
+function setFilter(filter) {
+  currentFilter = filter;
+  ['all','metro'].forEach(f => {
+    const el = document.getElementById('filter-' + f);
+    if (el) el.classList.toggle('active', f === filter);
+  });
+  renderDirectory();
+}
 
 /* ── Season / badge utilities ─────────────────────────── */
 function getTournSeason(dateStr) {
@@ -1112,12 +1195,13 @@ const BADGE_DEFS = [
 ];
 
 function renderBadges(d) {
-  const el = document.getElementById('prof-badges');
+  const panel = document.getElementById('prof-badges-panel');
+  const el    = document.getElementById('prof-badges');
   const earned = BADGE_DEFS.filter(b => b.test(d));
-  if (!earned.length) { el.style.display = 'none'; return; }
-  el.style.display = 'flex';
+  if (!earned.length) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
   el.innerHTML = earned.map(b =>
-    `<div class="prof-badge ${b.cls}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>${escHtml(b.label)}</div>`
+    `<div class="prof-badge ${b.cls}"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${b.icon}</svg>${escHtml(b.label)}</div>`
   ).join('');
 }
 
@@ -1204,7 +1288,7 @@ async function openProfile(name) {
   document.getElementById('prof-identity-pills').innerHTML = '';
   document.getElementById('prof-metro-badge').innerHTML = '';
   document.getElementById('prof-stat-strip').innerHTML = '';
-  document.getElementById('prof-badges').style.display = 'none';
+  document.getElementById('prof-badges-panel').style.display = 'none';
   document.getElementById('prof-season-bar').style.display = 'none';
   if (profileChart) { profileChart.destroy(); profileChart = null; }
 
@@ -1224,10 +1308,8 @@ async function openProfile(name) {
   renderProfile(d, memberDoc);
 }
 function backToDirectory() {
-  document.getElementById('profile-panel').style.display = 'none';
-  document.getElementById('dir-view').style.display      = '';
   history.pushState({}, '', window.location.pathname);
-  if (profileChart) { profileChart.destroy(); profileChart = null; }
+  switchTab('directory');
 }
 window.addEventListener('popstate', () => {
   const p = new URLSearchParams(window.location.search).get('d');
