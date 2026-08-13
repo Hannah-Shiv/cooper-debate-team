@@ -119,7 +119,7 @@
     /* ── Card grid ───────────────────────────────────────────── */
     .dir-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(272px, 1fr));
+      grid-template-columns: repeat(5, 1fr);
       gap: 14px;
     }
 
@@ -149,33 +149,24 @@
     .dir-card-rank {
       position: absolute; top: 14px; right: 16px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.86rem; font-weight: 700; letter-spacing: 0.1em;
+      font-size: 0.77rem; font-weight: 700; letter-spacing: 0.1em;
       color: rgba(255,255,255,0.18);
     }
     .dir-card-rank.top3 { color: rgba(212,160,23,0.55); }
 
-    /* Avatar + name row */
-    .dir-card-top { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
-    .dir-card-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      border: 1.5px solid rgba(212,160,23,0.35);
-      background: rgba(212,160,23,0.08);
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 1.39rem; font-weight: 700; color: rgba(212,160,23,0.85);
-      letter-spacing: 0.02em;
-    }
+    /* Name row */
+    .dir-card-top { display: flex; align-items: flex-start; margin-bottom: 14px; }
+    .dir-card-avatar { display: none; }
     .dir-card-info { flex: 1; min-width: 0; }
     .dir-card-name {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.75rem; font-weight: 700; color: #c8a96e;
+      font-size: 1.58rem; font-weight: 700; color: #c8a96e;
       line-height: 1.1; margin-bottom: 3px;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .dir-card-partners {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.92rem; color: rgba(255,255,255,0.38);
+      font-size: 0.83rem; color: rgba(255,255,255,0.38);
       letter-spacing: 0.05em;
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
@@ -194,11 +185,11 @@
     .dir-card-stat + .dir-card-stat { border-left: 1px solid rgba(255,255,255,0.05); }
     .dir-card-stat-val {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.84rem; font-weight: 700; color: #fff; line-height: 1;
+      font-size: 1.66rem; font-weight: 700; color: #fff; line-height: 1;
     }
     .dir-card-stat-lbl {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.78rem; font-weight: 700;
+      font-size: 0.70rem; font-weight: 700;
       letter-spacing: 0.13em; text-transform: uppercase;
       color: rgba(255,255,255,0.32); margin-top: 3px;
     }
@@ -208,7 +199,7 @@
       margin-top: 12px;
       display: inline-flex; align-items: center; gap: 5px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.86rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+      font-size: 0.77rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
       padding: 4px 10px; border-radius: 50px;
     }
     .dir-card-metro.eligible { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.25); }
