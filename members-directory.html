@@ -837,8 +837,8 @@ const FB_CFG = {
   messagingSenderId: "112813790184",
   appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
-const _app = firebase.apps.length ? firebase.apps[0] : firebase.initializeApp(FB_CFG);
-const db   = firebase.firestore();
+if (!firebase.apps.length) firebase.initializeApp(FB_CFG);
+const dirDb = firebase.firestore();
 
 /* ── Tab switching ────────────────────────────────────── */
 let currentTab = 'directory';
@@ -867,7 +867,7 @@ let profileChart   = null;
 
 async function loadTournaments() {
   try {
-    const snap = await db.collection('stat_results').orderBy('meta.date','desc').get();
+    const snap = await dirDb.collection('stat_results').orderBy('meta.date','desc').get();
     allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   } catch (e) { console.error('loadTournaments:', e); }
   leaderboard = computeLeaderboard(allTournaments);
@@ -1103,7 +1103,7 @@ let rosterUnsub     = null;
 
 function loadRoster() {
   rosterLoaded = true;
-  rosterUnsub = db.collection('members').orderBy('lastName')
+  rosterUnsub = dirDb.collection('members').orderBy('lastName')
     .onSnapshot(snap => {
       allRoster      = snap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
       filteredRoster = applyRosterQuery(document.getElementById('admin-search').value, allRoster);
@@ -1213,8 +1213,8 @@ async function saveMember(e) {
   btn.disabled = true; btn.textContent = 'Saving…';
   const data = { firstName, lastName, email, phone, role, gradYear: gradYear||null, events, active, notes, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
   try {
-    if (docId) { await db.collection('members').doc(docId).update(data); }
-    else { data.addedAt = firebase.firestore.FieldValue.serverTimestamp(); await db.collection('members').add(data); }
+    if (docId) { await dirDb.collection('members').doc(docId).update(data); }
+    else { data.addedAt = firebase.firestore.FieldValue.serverTimestamp(); await dirDb.collection('members').add(data); }
     closeModal();
   } catch (err) {
     showFormErr('Save failed: ' + err.message);
@@ -1228,7 +1228,7 @@ function cancelDelete() { pendingDeleteId = null; hideModal('delete-modal'); }
 async function confirmDelete() {
   if (!pendingDeleteId) return;
   const id = pendingDeleteId; cancelDelete();
-  try { await db.collection('members').doc(id).delete(); }
+  try { await dirDb.collection('members').doc(id).delete(); }
   catch (err) { alert('Delete failed: ' + err.message); }
 }
 
