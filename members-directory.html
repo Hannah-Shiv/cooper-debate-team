@@ -86,13 +86,31 @@
     }
     .tab-btn.active svg { opacity: 1; }
 
-    /* ── Search row ──────────────────────────────────────────── */
-    .dir-search-row {
+    /* ── Top bar: search + sort + filter on one line ────────── */
+    .dir-top-bar {
       display: flex; align-items: center; gap: 12px;
-      margin-bottom: 24px; flex-wrap: wrap;
+      flex-wrap: wrap; padding-top: 14px; margin-bottom: 14px;
     }
+    /* ── Meta bar: count + view toggle ──────────────────────── */
+    .dir-meta-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px; flex-wrap: wrap; gap: 10px;
+    }
+    /* View toggle */
+    .dir-view-toggle {
+      display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; overflow: hidden;
+    }
+    .dir-view-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 16px; background: rgba(4,8,28,0.85); cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.35); border: none; transition: all 0.18s; white-space: nowrap;
+    }
+    .dir-view-btn + .dir-view-btn { border-left: 1px solid rgba(255,255,255,0.12); }
+    .dir-view-btn:hover { background: rgba(20,30,80,0.9); color: rgba(255,255,255,0.65); }
+    .dir-view-btn.active { background: rgba(139,92,246,0.14); color: #c4b5fd; }
     .dir-search-box {
-      position: relative; flex: 1; max-width: 400px;
+      position: relative; flex: 1; max-width: 380px; min-width: 180px;
     }
     .dir-search-icon {
       position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
@@ -551,17 +569,14 @@
 
         <!-- Directory grid view -->
         <div id="dir-view">
-          <div class="dir-search-row">
+          <!-- All controls on one bar: search + sort + filter -->
+          <div class="dir-top-bar">
             <div class="dir-search-box">
               <svg class="dir-search-icon" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input class="dir-search-input" id="dir-search" type="search"
                 placeholder="Search by name or partner…"
                 oninput="filterDirectory(this.value)"/>
             </div>
-            <span class="dir-count" id="dir-count"></span>
-          </div>
-          <!-- Sort & filter bar -->
-          <div class="dir-controls-row">
             <div class="dir-sort-box">
               <button class="dir-ctl-btn active" id="sort-name"    onclick="setSort('name')">Name ↑</button>
               <button class="dir-ctl-btn"         id="sort-winrate" onclick="setSort('winrate')">Win Rate</button>
@@ -572,7 +587,22 @@
               <button class="dir-ctl-btn" id="filter-metro" onclick="toggleMetroFilter()">✓ Metro Eligible</button>
             </div>
           </div>
+          <!-- Meta bar: count left, view toggle right -->
+          <div class="dir-meta-bar">
+            <span class="dir-count" id="dir-count"></span>
+            <div class="dir-view-toggle">
+              <button class="dir-view-btn active" id="view-btn-cards" onclick="setView('cards')">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                Cards View
+              </button>
+              <button class="dir-view-btn" id="view-btn-table" onclick="setView('table')">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                Table View
+              </button>
+            </div>
+          </div>
           <div class="dir-grid" id="dir-grid"></div>
+          <div id="dir-table-wrap" style="display:none"></div>
         </div>
 
         <!-- Profile view -->
@@ -1122,10 +1152,6 @@
   box-shadow:0 0 12px rgba(255,215,0,0.14);
 }
 
-/* Sort / filter bar */
-.dir-controls-row {
-  display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:stretch;
-}
 /* Sort box — violet theme */
 .dir-sort-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
@@ -1168,6 +1194,70 @@
 .dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(34,197,94,0.55); color:rgba(74,222,128,0.9); background:rgba(34,197,94,0.10); }
 .dir-filter-box .dir-ctl-btn.active {
   background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.75); color:#4ade80;
+}
+
+/* ── Table view ──────────────────────────────────────── */
+#dir-table-wrap { overflow-x: auto; }
+.dir-tbl {
+  width: 100%; border-collapse: collapse;
+  font-family: 'Josefin Sans', sans-serif;
+}
+.dir-tbl thead th {
+  padding: 11px 16px; text-align: left;
+  font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: rgba(255,255,255,0.32); border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap; user-select: none;
+}
+.dir-tbl thead th.sortable { cursor: pointer; }
+.dir-tbl thead th.sortable:hover { color: rgba(255,255,255,0.65); }
+.dir-tbl tbody tr {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer; transition: background 0.14s;
+}
+.dir-tbl tbody tr:hover { background: rgba(139,92,246,0.07); }
+.dir-tbl tbody td { padding: 13px 16px; font-size: 1.0rem; color: rgba(255,255,255,0.68); }
+.dir-tbl .td-rank {
+  font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem; font-weight: 700;
+  color: rgba(255,255,255,0.28); width: 52px;
+}
+.dir-tbl .td-rank.gold { color: #FFD700; font-size: 1.1rem; }
+.dir-tbl .td-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.22rem; font-weight: 700;
+  color: #c8a96e; white-space: nowrap;
+}
+.dir-tbl .td-partner { color: rgba(255,255,255,0.45); white-space: nowrap; }
+.dir-tbl .td-record { white-space: nowrap; }
+.dir-tbl .td-wr { font-weight: 700; white-space: nowrap; }
+.dir-tbl .td-metro { text-align: center; }
+.dir-tbl .td-action {
+  color: rgba(125,211,252,0.75); font-weight: 700; white-space: nowrap;
+  letter-spacing: 0.04em;
+}
+.dir-tbl tbody tr:hover .td-action { color: #7dd3fc; }
+/* Pagination */
+.dir-pagination {
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
+  margin-top: 20px; gap: 12px;
+}
+.dir-pg-info {
+  font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
+  color: rgba(255,255,255,0.3); letter-spacing: 0.06em;
+}
+.dir-pg-nav { display: flex; align-items: center; gap: 4px; }
+.dir-pg-btn {
+  min-width: 34px; height: 34px; border-radius: 7px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(4,8,28,0.8); border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem; font-weight: 700;
+  color: rgba(255,255,255,0.45); transition: all 0.15s; padding: 0 8px;
+}
+.dir-pg-btn:hover:not(:disabled) { border-color: rgba(139,92,246,0.5); color: #c4b5fd; }
+.dir-pg-btn.pg-active { background: rgba(139,92,246,0.18); border-color: rgba(139,92,246,0.65); color: #c4b5fd; }
+.dir-pg-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+.dir-pg-ellipsis {
+  min-width: 28px; text-align: center;
+  font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem;
+  color: rgba(255,255,255,0.25);
 }
 
 /* ── Coach notes ─────────────────────────────────────── */
@@ -1578,6 +1668,9 @@ let _profName      = '';
 let currentSort    = 'name';
 let currentSortDir = 'asc';   // 'asc' | 'desc'
 let currentFilter  = 'all';
+let currentView    = 'cards'; // 'cards' | 'table'
+let tablePage      = 1;
+const TABLE_PAGE_SIZE = 10;
 
 async function loadTournaments() {
   try {
@@ -1672,8 +1765,14 @@ function renderDirectory() {
   const grid  = document.getElementById('dir-grid');
   const count = document.getElementById('dir-count');
   count.textContent = list.length === leaderboard.length
-    ? `${list.length} debater${list.length !== 1 ? 's' : ''}`
-    : `${list.length} of ${leaderboard.length}`;
+    ? `Showing ${list.length} debater${list.length !== 1 ? 's' : ''}`
+    : `${list.length} of ${leaderboard.length} debaters`;
+
+  if (currentView === 'table') {
+    renderTableView(list);
+    return;
+  }
+
   if (!list.length) {
     grid.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match.'}</div>`;
     return;
@@ -1701,7 +1800,99 @@ function renderDirectory() {
   }).join('');
 }
 
-function filterDirectory(q) { currentQuery = q; renderDirectory(); }
+function filterDirectory(q) { currentQuery = q; tablePage = 1; renderDirectory(); }
+
+function setView(v) {
+  currentView = v;
+  tablePage = 1;
+  document.getElementById('view-btn-cards').classList.toggle('active', v === 'cards');
+  document.getElementById('view-btn-table').classList.toggle('active', v === 'table');
+  document.getElementById('dir-grid').style.display      = v === 'cards' ? '' : 'none';
+  document.getElementById('dir-table-wrap').style.display = v === 'table' ? '' : 'none';
+  renderDirectory();
+}
+
+function winRateColor(wr) {
+  if (wr >= 0.70) return '#4ade80';
+  if (wr >= 0.45) return '#fbbf24';
+  return '#f87171';
+}
+
+function renderTableView(list) {
+  const wrap = document.getElementById('dir-table-wrap');
+  if (!list.length) {
+    wrap.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match.'}</div>`;
+    return;
+  }
+  const total = list.length;
+  const totalPages = Math.ceil(total / TABLE_PAGE_SIZE);
+  tablePage = Math.max(1, Math.min(tablePage, totalPages));
+  const start = (tablePage - 1) * TABLE_PAGE_SIZE;
+  const page  = list.slice(start, start + TABLE_PAGE_SIZE);
+
+  const rows = page.map(d => {
+    const pct = (d.winRate * 100).toFixed(0);
+    const wrColor = winRateColor(d.winRate);
+    const rankCell = d.rank === 1
+      ? `<td class="td-rank gold">🏆 1</td>`
+      : `<td class="td-rank">${d.rank}</td>`;
+    const metroCell = d.metroEligible
+      ? `<td class="td-metro"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#4ade80" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/></svg></td>`
+      : `<td class="td-metro" style="color:rgba(255,255,255,0.2)">—</td>`;
+    const partner = d.partnerList ? escHtml(d.partnerList.split(',')[0].trim()) : '—';
+    return `<tr onclick="openProfile('${escJs(d.name)}')">
+      ${rankCell}
+      <td class="td-name">${escHtml(d.name)}</td>
+      <td class="td-partner">${partner}</td>
+      <td class="td-record">${d.wins}–${d.losses}</td>
+      <td class="td-wr" style="color:${wrColor}">${pct}%</td>
+      <td>${d.avgSpeak.toFixed(1)}</td>
+      <td>${d.tournaments}</td>
+      ${metroCell}
+      <td class="td-action">View Profile →</td>
+    </tr>`;
+  }).join('');
+
+  // Pagination buttons
+  function pgBtn(label, page, disabled, active) {
+    return `<button class="dir-pg-btn${active?' pg-active':''}${disabled?' ':''}" ${disabled?'disabled':''} onclick="tablePage=${page};renderDirectory()">${label}</button>`;
+  }
+  let pageNums = '';
+  const showPages = [];
+  showPages.push(1);
+  if (tablePage > 3) showPages.push('…');
+  for (let p = Math.max(2, tablePage - 1); p <= Math.min(totalPages - 1, tablePage + 1); p++) showPages.push(p);
+  if (tablePage < totalPages - 2) showPages.push('…');
+  if (totalPages > 1) showPages.push(totalPages);
+  pageNums = showPages.map(p => p === '…'
+    ? `<span class="dir-pg-ellipsis">…</span>`
+    : pgBtn(p, p, false, p === tablePage)
+  ).join('');
+
+  wrap.innerHTML = `
+    <table class="dir-tbl">
+      <thead><tr>
+        <th>Rank</th>
+        <th class="sortable" onclick="setSort('name')">Debater</th>
+        <th>Partner</th>
+        <th>Record</th>
+        <th class="sortable" onclick="setSort('winrate')">Win Rate</th>
+        <th class="sortable" onclick="setSort('speaks')">Avg Spk Pts</th>
+        <th class="sortable" onclick="setSort('tourns')">Tournaments</th>
+        <th style="text-align:center">Metro</th>
+        <th>Actions</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <div class="dir-pagination">
+      <div class="dir-pg-info">${start+1}–${Math.min(start+TABLE_PAGE_SIZE,total)} of ${total} debaters</div>
+      <div class="dir-pg-nav">
+        ${pgBtn('←', tablePage - 1, tablePage === 1, false)}
+        ${pageNums}
+        ${pgBtn('→', tablePage + 1, tablePage === totalPages, false)}
+      </div>
+    </div>`;
+}
 
 const SORT_LABELS = { name:'Name', winrate:'Win Rate', speaks:'Speaker Pts', tourns:'Tournaments' };
 const SORT_DEFAULT_ASC = { name:true, winrate:false, speaks:false, tourns:false };
