@@ -96,12 +96,12 @@
     }
     .dir-search-icon {
       position: absolute; left: 13px; top: 50%; transform: translateY(-50%);
-      color: rgba(255,255,255,0.25); pointer-events: none;
+      color: rgba(125,211,252,0.45); pointer-events: none;
     }
     .dir-search-input {
       width: 100%;
       background: rgba(8,18,55,0.8);
-      border: 1px solid rgba(212,160,23,0.2);
+      border: 1px solid rgba(125,211,252,0.22);
       border-radius: 10px; padding: 11px 16px 11px 38px;
       font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
       color: #fff; outline: none;
@@ -110,13 +110,13 @@
     }
     .dir-search-input::placeholder { color: rgba(255,255,255,0.22); }
     .dir-search-input:focus {
-      border-color: rgba(212,160,23,0.55);
-      box-shadow: 0 0 0 3px rgba(212,160,23,0.07);
+      border-color: rgba(125,211,252,0.55);
+      box-shadow: 0 0 0 3px rgba(125,211,252,0.07);
     }
     .dir-count {
       font-family: 'Josefin Sans', sans-serif; font-size: 0.75rem;
       letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(255,255,255,0.28);
+      color: rgba(125,211,252,0.85);
     }
 
     /* ── Card grid ───────────────────────────────────────────── */
@@ -884,30 +884,30 @@
 .dir-controls-row {
   display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px; align-items:stretch;
 }
-/* Sort box — gold theme */
+/* Sort box — violet theme */
 .dir-sort-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
   padding:9px 14px; border-radius:11px;
-  background:rgba(212,160,23,0.05); border:1px solid rgba(212,160,23,0.22);
+  background:rgba(167,139,250,0.05); border:1px solid rgba(167,139,250,0.24);
   position:relative;
 }
 .dir-sort-box::before {
   content:'↕ SORT'; position:absolute; top:-9px; left:12px;
   padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.6rem; font-weight:700;
-  letter-spacing:0.16em; color:#c8a96e; background:var(--bg-deep,#05102a); line-height:1;
+  letter-spacing:0.16em; color:#c4b5fd; background:var(--bg-deep,#05102a); line-height:1;
   pointer-events:none; user-select:none;
 }
-/* Filter box — green/teal theme */
+/* Filter box — rose theme */
 .dir-filter-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
   padding:9px 14px; border-radius:11px;
-  background:rgba(74,222,128,0.04); border:1px solid rgba(74,222,128,0.22);
+  background:rgba(251,113,133,0.05); border:1px solid rgba(251,113,133,0.24);
   position:relative;
 }
 .dir-filter-box::before {
   content:'⊟ FILTER'; position:absolute; top:-9px; left:12px;
   padding:0 6px; font-family:'Josefin Sans',sans-serif; font-size:0.6rem; font-weight:700;
-  letter-spacing:0.16em; color:#4ade80; background:var(--bg-deep,#05102a); line-height:1;
+  letter-spacing:0.16em; color:#fda4af; background:var(--bg-deep,#05102a); line-height:1;
   pointer-events:none; user-select:none;
 }
 /* Shared pill button */
@@ -917,15 +917,15 @@
   background:transparent; border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.38);
   white-space:nowrap;
 }
-/* Sort box active pill — gold */
-.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(212,160,23,0.4); color:rgba(212,160,23,0.8); }
+/* Sort box active pill — violet */
+.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(167,139,250,0.45); color:rgba(196,181,253,0.9); }
 .dir-sort-box .dir-ctl-btn.active {
-  background:rgba(212,160,23,0.12); border-color:rgba(212,160,23,0.5); color:#FFD700;
+  background:rgba(167,139,250,0.13); border-color:rgba(167,139,250,0.55); color:#c4b5fd;
 }
-/* Filter box active pill — green */
-.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(74,222,128,0.4); color:rgba(74,222,128,0.8); }
+/* Filter box active pill — rose */
+.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(251,113,133,0.45); color:rgba(253,164,175,0.9); }
 .dir-filter-box .dir-ctl-btn.active {
-  background:rgba(74,222,128,0.11); border-color:rgba(74,222,128,0.45); color:#4ade80;
+  background:rgba(251,113,133,0.12); border-color:rgba(251,113,133,0.5); color:#fda4af;
 }
 
 /* Two-column profile top layout */
