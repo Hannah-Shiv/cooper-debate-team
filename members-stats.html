@@ -572,6 +572,38 @@
     .import-status.success { color:#4ade80; }
     .import-status.error   { color:#e03535; }
 
+    /* ── Tournament type selector ─────────────────────────────── */
+    .tourn-type-row { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:4px; }
+    .tourn-type-opt { flex:1; min-width:160px; cursor:pointer; }
+    .tourn-type-opt input[type="radio"] { position:absolute; opacity:0; width:0; height:0; }
+    .tourn-type-box {
+      display:flex; flex-direction:column; gap:4px; padding:12px 16px;
+      border-radius:10px; border:1.5px solid rgba(212,160,23,0.22);
+      background:rgba(255,255,255,0.03); transition:border-color 0.2s, background 0.2s;
+    }
+    .tourn-type-opt input:checked ~ .tourn-type-box {
+      border-color:rgba(212,160,23,0.7); background:rgba(212,160,23,0.1);
+    }
+    .tourn-type-opt:hover .tourn-type-box {
+      border-color:rgba(212,160,23,0.45); background:rgba(212,160,23,0.06);
+    }
+    .tourn-type-label {
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem;
+      font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
+      color:rgba(255,255,255,0.85);
+    }
+    .tourn-type-opt input:checked ~ .tourn-type-box .tourn-type-label { color:#FFD700; }
+    .tourn-type-hint {
+      font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
+      color:rgba(255,255,255,0.4); line-height:1.4;
+    }
+    .speak-csv-note {
+      font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
+      color:rgba(255,255,255,0.5); line-height:1.6; padding:10px 16px;
+      border-radius:8px; background:rgba(212,160,23,0.06);
+      border:1px solid rgba(212,160,23,0.18); display:none;
+    }
+
     /* ── Import success screen ─────────────────────────────── */
     #import-success-screen {
       padding:44px 32px 40px; text-align:center;
@@ -1562,8 +1594,34 @@
           </div>
         </div>
 
+        <!-- Tournament type selector -->
+        <div class="import-section-label" style="margin-top:28px">Tournament Type</div>
+        <div class="tourn-type-row">
+          <label class="tourn-type-opt">
+            <input type="radio" name="tourn-type" value="regular" checked onchange="onTournTypeChange('regular')"/>
+            <span class="tourn-type-box">
+              <span class="tourn-type-label">Regular Season</span>
+              <span class="tourn-type-hint">Cooper-only stats · both CSVs</span>
+            </span>
+          </label>
+          <label class="tourn-type-opt">
+            <input type="radio" name="tourn-type" value="metro" onchange="onTournTypeChange('metro')"/>
+            <span class="tourn-type-box">
+              <span class="tourn-type-label">Metro Finals</span>
+              <span class="tourn-type-hint">Full field · speaks embedded</span>
+            </span>
+          </label>
+          <label class="tourn-type-opt">
+            <input type="radio" name="tourn-type" value="nationals" onchange="onTournTypeChange('nationals')"/>
+            <span class="tourn-type-box">
+              <span class="tourn-type-label">Nationals</span>
+              <span class="tourn-type-hint">Full field · placement stored · no speaks</span>
+            </span>
+          </label>
+        </div>
+
         <!-- Step 3: CSV uploads -->
-        <div class="import-section-label">Step 3 — Upload Tabroom CSVs</div>
+        <div class="import-section-label" style="margin-top:28px">Step 3 — Upload Tabroom CSVs</div>
         <div class="import-file-row">
           <div class="file-drop" id="drop-team" onclick="document.getElementById('file-team').click()">
             <input type="file" id="file-team" accept=".csv" onchange="onFileSelect('team', this)"/>
@@ -1618,6 +1676,8 @@
             <button class="file-drop-clear" title="Remove file" onclick="clearFile(event,'speak')">✕</button>
           </div>
         </div>
+
+        <p class="speak-csv-note" id="speak-csv-note"></p>
 
         <div class="import-actions">
           <button class="btn btn-gold" onclick="runImport()">Import &amp; Process Results →</button>
@@ -2153,6 +2213,7 @@ let metroSummaryChartOv = null;
 let _metroDrillData   = [];
 let teamCsvText     = null;
 let speakCsvText    = null;
+let currentTournType = 'regular'; // 'regular' | 'metro' | 'nationals'
 let currentDebater  = null;
 let activeTimeMode  = 'all';  // 'all' | 'season' | 'month'
 let activeTab       = 'overview';
@@ -2611,6 +2672,32 @@ function onDatePick(iso) {
 }
 
 /* ── Clear all import form fields ───────────────────────────── */
+function onTournTypeChange(val) {
+  currentTournType = val;
+  const speakDrop  = document.getElementById('drop-speak');
+  const speakNote  = document.getElementById('speak-csv-note');
+  if (val === 'regular') {
+    if (speakDrop) speakDrop.style.display = '';
+    if (speakNote) speakNote.style.display = 'none';
+  } else {
+    if (speakDrop) speakDrop.style.display = 'none';
+    if (speakNote) {
+      speakNote.style.display = '';
+      speakNote.textContent = val === 'metro'
+        ? '📊 Speaker points are embedded in the Final Places CSV — no separate upload needed.'
+        : '📋 Speaker points are not tracked for Nationals — just W/L and final placement are stored.';
+    }
+    // Clear any already-loaded speaker CSV
+    speakCsvText = null;
+    const speakFile = document.getElementById('file-speak');
+    if (speakFile) speakFile.value = '';
+    const speakHint = document.getElementById('hint-speak');
+    if (speakHint) speakHint.textContent = 'Individual speaker points per round';
+    const speakDropEl = document.getElementById('drop-speak');
+    if (speakDropEl) speakDropEl.classList.remove('has-file');
+  }
+}
+
 function onVirtualToggle(isVirtual) {
   const schoolField   = document.getElementById('field-school');
   const locationField = document.getElementById('field-location');
@@ -2637,6 +2724,10 @@ function clearImportForm() {
   document.getElementById('hint-team').textContent = 'Team W/L, speaker totals, round-by-round';
   document.getElementById('hint-speak').textContent = 'Individual speaker points per round';
   ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
+  // Reset tournament type to regular season
+  currentTournType = 'regular';
+  document.querySelectorAll('input[name="tourn-type"]').forEach(r => { r.checked = r.value === 'regular'; });
+  onTournTypeChange('regular');
   setStatus('', '');
 }
 
@@ -2848,6 +2939,79 @@ function matchTeamsWithDebaters(teams, debaters) {
 
     return { ...team, debaters: matched };
   });
+}
+
+// Parse Metro Finals CSV — all teams in field, same column layout as regular season
+function parseMetroFinalsCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  const entries = [];
+  for (let i = 1; i < lines.length; i++) {
+    const row = parseCSVLine(lines[i]);
+    if (row.length < 11) continue;
+    const [, entryName, school, , winsStr, totalPts, , , , , ballots] = row;
+    if (!entryName || !entryName.trim()) continue;
+    const schoolTrim = (school || '').trim();
+    const wins = parseInt(winsStr) || 0;
+    const rounds = parseTeamBallots(ballots);
+    const realRounds = rounds.filter(r => !r.isBye);
+    const losses = realRounds.filter(r => r.result === 'L').length;
+    const avgTeamSpeak = realRounds.length
+      ? realRounds.reduce((s, r) => s + r.teamSpeak, 0) / realRounds.length : 0;
+    entries.push({
+      teamName:     entryName.trim(),
+      school:       schoolTrim,
+      isCooper:     schoolTrim === 'Cooper',
+      wins, losses,
+      totalPts:     parseFloat(totalPts) || 0,
+      avgTeamSpeak: +avgTeamSpeak.toFixed(2),
+      rounds,
+      debaters:     []   // no speaker CSV; _teamNameToPair resolves names in stat functions
+    });
+  }
+  return entries;
+}
+
+// Parse nationals prelim rounds from the Ballots column
+// Prelim format:  R{n}(W|L){decimal},|   e.g. R1W29.4,|
+// Elim format:    R{n}(W|L)|W|W|(3-0)    (no decimal — not matched by prelim regex)
+function parseNationalsPrelimRounds(ballots) {
+  if (!ballots) return [];
+  const rounds = [];
+  const re = /R(\d+)(W|L)([\d.]+),/g;
+  let m;
+  while ((m = re.exec(ballots)) !== null) {
+    rounds.push({ round: parseInt(m[1]), result: m[2], speak: 0, teamSpeak: 0, isBye: false });
+  }
+  return rounds.sort((a, b) => a.round - b.round);
+}
+
+// Parse Nationals CSV — columns: Place,Entry,School,State,Round,Ballots
+// Stores final placement + prelim W/L only; speaks are not tracked.
+function parseNationalsCSV(text) {
+  const lines = text.trim().split('\n').filter(l => l.trim());
+  const entries = [];
+  for (let i = 1; i < lines.length; i++) {
+    const row = parseCSVLine(lines[i]);
+    if (row.length < 6) continue;
+    const [placeStr, entryName, school, , roundStr, ballots] = row;
+    if (!entryName || !entryName.trim()) continue;
+    const schoolTrim = (school || '').trim();
+    const rounds = parseNationalsPrelimRounds(ballots);
+    const wins   = rounds.filter(r => r.result === 'W').length;
+    const losses = rounds.filter(r => r.result === 'L').length;
+    entries.push({
+      teamName: entryName.trim(),
+      school:   schoolTrim,
+      isCooper: schoolTrim === 'Cooper',
+      place:    (placeStr  || '').trim(),  // 'Co-Champion' | 'Semis' | 'Quarters' | 'Octos'
+      round:    (roundStr  || '').trim(),  // 'Final' | 'Semis' | 'Quarters' | 'Octos'
+      wins, losses,
+      totalPts: 0, avgTeamSpeak: 0,
+      rounds,
+      debaters: []
+    });
+  }
+  return entries;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -5384,6 +5548,7 @@ function showMetroEligibilityToasts(newlyEligible) {
 }
 
 async function runImport() {
+  const tournType = currentTournType;
   const name      = document.getElementById('imp-name').value.trim();
   const date      = document.getElementById('imp-date').value.trim();
   const isVirtual = document.getElementById('imp-virtual').checked;
@@ -5395,12 +5560,12 @@ async function runImport() {
   const missing = [];
   if (!name)      missing.push('Tournament Name');
   if (!date)      missing.push('Date');
-  if (!isVirtual && !school)    missing.push('Host Institution');
-  if (!isVirtual && !location)  missing.push('City, State');
+  // School/location only required for regular season
+  if (tournType === 'regular' && !isVirtual && !school)   missing.push('Host Institution');
+  if (tournType === 'regular' && !isVirtual && !location)  missing.push('City, State');
   if (!topicType) missing.push('Debate Format');
   if (!topic)     missing.push('Resolution');
-  if (!teamCsvText)  missing.push('Entry Results CSV');
-  // Speaker Awards CSV is optional — no validation required
+  if (!teamCsvText) missing.push('Entry Results CSV');
   if (missing.length) {
     setStatus('error', `Missing required fields: ${missing.join(' · ')}`);
     return;
@@ -5409,73 +5574,124 @@ async function runImport() {
   setStatus('', 'Extracting CSV data…');
 
   try {
-    // ── Step 1: Extract ──────────────────────────────────────────
-    const teamEntries = parseTeamCSV(teamCsvText);
-    const debaters    = speakCsvText ? parseSpeakerCSV(speakCsvText) : [];
-    const totalRows   = teamEntries.length + debaters.length;
+    let entries, totalRows, entryCount, descStep1, descStep2;
 
-    // ── Step 2: Transform ────────────────────────────────────────
-    const merged = matchTeamsWithDebaters(teamEntries, debaters);
-    if (!merged.length) { setStatus('error', 'No Cooper entries found in the team CSV. Check the School column says "Cooper".'); return; }
-
-    setStatus('', `Found ${merged.length} Cooper entries — uploading…`);
-
-    // ── Snapshot eligibility BEFORE import ──────────────────────
-    const preEligible = new Set(
-      computeMetroEligibility(allTournaments)
-        .filter(p => p.eligible)
-        .map(p => p.pair)
-    );
-
-    const doc = {
-      meta: {
-        name, date, school, location, topicType, topic,
-        virtual: isVirtual,
-        importedAt: firebase.firestore.FieldValue.serverTimestamp(),
-        importedBy: typeof currentUserEmail !== 'undefined' ? currentUserEmail : ''
-      },
-      entries: merged.map(e => ({
-        teamName: e.teamName,
-        wins: e.wins, losses: e.losses,
-        totalPts: e.totalPts,
-        avgTeamSpeak: e.avgTeamSpeak,
-        rounds: e.rounds,
-        debaters: e.debaters.map(d => ({
+    if (tournType === 'regular') {
+      // ── Regular season ─────────────────────────────────────────
+      const teamEntries = parseTeamCSV(teamCsvText);
+      const debaters    = speakCsvText ? parseSpeakerCSV(speakCsvText) : [];
+      totalRows = teamEntries.length + debaters.length;
+      const merged = matchTeamsWithDebaters(teamEntries, debaters);
+      if (!merged.length) {
+        setStatus('error', 'No Cooper entries found in the team CSV. Check the School column says "Cooper".');
+        return;
+      }
+      entries = merged.map(e => ({
+        teamName:     e.teamName,
+        school:       'Cooper',
+        isCooper:     true,
+        wins:         e.wins,     losses:       e.losses,
+        totalPts:     e.totalPts, avgTeamSpeak: e.avgTeamSpeak,
+        rounds:       e.rounds,
+        debaters:     e.debaters.map(d => ({
           first: d.first, last: d.last, entryCode: d.entryCode,
           wins: d.wins, losses: d.losses,
           totalSpeaks: d.totalSpeaks, avgSpeak: d.avgSpeak,
           rounds: d.rounds
         }))
-      }))
+      }));
+      entryCount = entries.length;
+      descStep1  = `${totalRows} rows parsed · ${debaters.length} speaker records found`;
+      descStep2  = `${entryCount} Cooper entr${entryCount === 1 ? 'y' : 'ies'} matched and structured`;
+
+    } else if (tournType === 'metro') {
+      // ── Metro Finals ───────────────────────────────────────────
+      const all = parseMetroFinalsCSV(teamCsvText);
+      if (!all.length) { setStatus('error', 'No entries found in the Metro Finals CSV.'); return; }
+      totalRows = all.length;
+      entries = all.map(e => ({
+        teamName:     e.teamName,
+        school:       e.school,
+        isCooper:     e.isCooper,
+        wins:         e.wins,     losses:       e.losses,
+        totalPts:     e.totalPts, avgTeamSpeak: e.avgTeamSpeak,
+        rounds:       e.rounds,
+        debaters:     []
+      }));
+      const cooperCount = entries.filter(e => e.isCooper).length;
+      entryCount = entries.length;
+      descStep1  = `${totalRows} teams parsed from Metro Finals field`;
+      descStep2  = `${cooperCount} Cooper team${cooperCount !== 1 ? 's' : ''} of ${totalRows} total stored`;
+
+    } else {
+      // ── Nationals ──────────────────────────────────────────────
+      const all = parseNationalsCSV(teamCsvText);
+      if (!all.length) { setStatus('error', 'No entries found in the Nationals CSV.'); return; }
+      totalRows = all.length;
+      entries = all.map(e => ({
+        teamName:     e.teamName,
+        school:       e.school,
+        isCooper:     e.isCooper,
+        place:        e.place,
+        round:        e.round,
+        wins:         e.wins,     losses:       e.losses,
+        totalPts:     0,          avgTeamSpeak: 0,
+        rounds:       e.rounds,
+        debaters:     []
+      }));
+      const cooperCount = entries.filter(e => e.isCooper).length;
+      entryCount = entries.length;
+      descStep1  = `${totalRows} teams parsed from Nationals field`;
+      descStep2  = `${cooperCount} Cooper team${cooperCount !== 1 ? 's' : ''} with placements stored`;
+    }
+
+    setStatus('', `Parsed ${totalRows} entries — uploading…`);
+
+    // ── Snapshot eligibility BEFORE import (regular only) ────────
+    const preEligible = tournType === 'regular'
+      ? new Set(computeMetroEligibility(allTournaments).filter(p => p.eligible).map(p => p.pair))
+      : new Set();
+
+    const doc = {
+      meta: {
+        name, date, school, location, topicType, topic,
+        virtual: isVirtual,
+        tournType,                              // 'regular' | 'metro' | 'nationals'
+        importedAt: firebase.firestore.FieldValue.serverTimestamp(),
+        importedBy: typeof currentUserEmail !== 'undefined' ? currentUserEmail : ''
+      },
+      entries
     };
 
-    // ── Step 3: Upload ───────────────────────────────────────────
+    // ── Upload ────────────────────────────────────────────────────
     await saveTournament(doc);
 
-    // Reset form fields so it's clean on next open
+    // ── Reset form ────────────────────────────────────────────────
     teamCsvText = speakCsvText = null;
     ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
-    ['hint-team','hint-speak'].forEach((id, i) => document.getElementById(id).textContent = i===0?'Team W/L, speaker totals, round-by-round':'Individual speaker points per round');
+    ['hint-team','hint-speak'].forEach((id, i) => document.getElementById(id).textContent =
+      i === 0 ? 'Team W/L, speaker totals, round-by-round' : 'Individual speaker points per round');
     ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
     ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     const fmtEl = document.getElementById('imp-topic-type'); if (fmtEl) fmtEl.value = 'Public Forum';
     const virtCb = document.getElementById('imp-virtual');
     if (virtCb) { virtCb.checked = false; onVirtualToggle(false); }
+    // Reset type selector to regular
+    currentTournType = 'regular';
+    document.querySelectorAll('input[name="tourn-type"]').forEach(r => { r.checked = r.value === 'regular'; });
+    onTournTypeChange('regular');
 
-    // ── Step 4: Compute ──────────────────────────────────────────
+    // ── Reload & compute ─────────────────────────────────────────
     await loadTournaments();
-    const postMetro     = computeMetroEligibility(allTournaments);
-    const newlyEligible = postMetro.filter(p => p.eligible && !preEligible.has(p.pair));
+    let newlyEligible = [];
+    if (tournType === 'regular') {
+      const postMetro = computeMetroEligibility(allTournaments);
+      newlyEligible   = postMetro.filter(p => p.eligible && !preEligible.has(p.pair));
+    }
 
-    // ── Show completion screen ───────────────────────────────────
-    showImportSuccess({
-      tournName: name,
-      entryCount: merged.length,
-      rowCount: totalRows,
-      debaterCount: debaters.length,
-      newlyEligible
-    });
+    // ── Show completion screen ────────────────────────────────────
+    showImportSuccess({ tournName: name, entryCount, rowCount: totalRows, newlyEligible, descStep1, descStep2 });
 
   } catch (err) {
     console.error('Import error:', err);
@@ -5485,20 +5701,20 @@ async function runImport() {
 
 let _pendingMetroToasts = [];
 
-function showImportSuccess({ tournName, entryCount, rowCount, debaterCount, newlyEligible }) {
+function showImportSuccess({ tournName, entryCount, rowCount, newlyEligible, descStep1, descStep2 }) {
   _pendingMetroToasts = newlyEligible;
 
   // Populate step descriptions
   document.getElementById('imp-step-1-desc').textContent =
-    `${rowCount} rows parsed · ${debaterCount} speaker records found`;
+    descStep1 || `${rowCount} rows parsed`;
   document.getElementById('imp-step-2-desc').textContent =
-    `${entryCount} Cooper entr${entryCount === 1 ? 'y' : 'ies'} matched and structured`;
+    descStep2 || `${entryCount} entr${entryCount === 1 ? 'y' : 'ies'} structured`;
   document.getElementById('imp-step-3-desc').textContent =
     `"${tournName}" saved to Firestore`;
   document.getElementById('imp-step-4-desc').textContent =
     newlyEligible.length
       ? `Leaderboard updated · ${newlyEligible.length} pair${newlyEligible.length > 1 ? 's' : ''} newly Metro eligible`
-      : 'Leaderboard & Metro eligibility updated';
+      : 'Leaderboard & records updated';
   document.getElementById('imp-success-subtitle').textContent =
     `${entryCount} entr${entryCount === 1 ? 'y' : 'ies'} from "${tournName}" successfully processed`;
 
