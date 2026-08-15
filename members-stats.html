@@ -2467,7 +2467,8 @@ function _paintProfileTournaments(data) {
     return;
   }
   tbody.innerHTML = data.map(t => {
-    const resultCls = t.wins >= 4 ? 'color:#4ade80' : t.wins >= 3 ? 'color:#facc15' : 'color:rgba(255,255,255,0.88)';
+    const mx = t.maxRounds || 4;
+    const resultCls = t.wins >= mx ? 'color:#4ade80' : t.wins >= mx - 1 ? 'color:#facc15' : 'color:rgba(255,255,255,0.88)';
     return `<tr>
       <td style="font-weight:600">${t.name}</td>
       <td style="color:rgba(255,255,255,0.5)">${t.dateStr}</td>
@@ -2880,6 +2881,7 @@ function computeLeaderboard(tournaments) {
   const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
+    const tMaxRounds = t.entries.reduce((m, e) => Math.max(m, (e.wins||0) + (e.losses||0)), 0);
     t.entries.forEach(e => {
       if ((e.debaters || []).length >= 1) {
         // Normal path: debater objects exist (full or stub)
@@ -2901,6 +2903,7 @@ function computeLeaderboard(tournaments) {
           dm.tournDetails.push({
             name:        t.meta.name,
             date:        t.meta.date,
+            maxRounds:   tMaxRounds,
             wins:        d.wins        || 0,
             losses:      d.losses      || 0,
             totalSpeaks: d.totalSpeaks || 0,
@@ -2927,6 +2930,7 @@ function computeLeaderboard(tournaments) {
           dm.tournDetails.push({
             name:        t.meta.name,
             date:        t.meta.date,
+            maxRounds:   tMaxRounds,
             wins:        e.wins   || 0,
             losses:      e.losses || 0,
             totalSpeaks: 0,
@@ -4895,6 +4899,7 @@ function renderFullDebaterProfile(d) {
       partnerName,
       wins: t.wins,
       losses: t.losses,
+      maxRounds: t.maxRounds || 4,
       avgSpeak: t.avgSpeak,
       totalSpeaks: t.totalSpeaks,
     };
