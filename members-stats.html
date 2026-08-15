@@ -1365,6 +1365,27 @@
 <!-- ── Metro eligibility toast container ─────────────────────── -->
 <div id="metro-toast-container" aria-live="polite"></div>
 
+<!-- ── Delete confirmation modal ─────────────────────────────── -->
+<div id="del-confirm-overlay" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(5,8,20,0.82);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center">
+  <div id="del-confirm-box" style="background:linear-gradient(160deg,#0d1526 0%,#0a1020 100%);border:1px solid rgba(239,68,68,0.35);border-radius:16px;padding:36px 40px 32px;max-width:440px;width:90%;box-shadow:0 24px 64px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.04);position:relative">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px">
+      <div style="width:44px;height:44px;border-radius:50%;background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.3rem">🗑</div>
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:700;color:#fff;line-height:1.2">Delete Tournament</div>
+        <div id="del-confirm-name" style="font-family:'Josefin Sans',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.45);margin-top:3px;letter-spacing:0.04em;text-transform:uppercase"></div>
+      </div>
+    </div>
+    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.7;margin:0 0 28px">
+      This will permanently remove all results, speaker data, and entry records for this tournament. Metro eligibility will be recalculated.<br><br>
+      <strong style="color:rgba(239,68,68,0.85)">This cannot be undone.</strong>
+    </p>
+    <div style="display:flex;gap:12px;justify-content:flex-end">
+      <button onclick="closeDelConfirm()" style="font-family:'Josefin Sans',sans-serif;font-size:0.88rem;font-weight:600;letter-spacing:0.06em;padding:10px 22px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.7);cursor:pointer">Cancel</button>
+      <button id="del-confirm-btn" onclick="executeDelete()" style="font-family:'Josefin Sans',sans-serif;font-size:0.88rem;font-weight:700;letter-spacing:0.06em;padding:10px 24px;border-radius:8px;border:1px solid rgba(239,68,68,0.5);background:rgba(239,68,68,0.15);color:#f87171;cursor:pointer">Delete Tournament</button>
+    </div>
+  </div>
+</div>
+
 <!-- ── Fixed top bar ─────────────────────────────────────────── -->
 <div class="mp-topbar"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
@@ -5410,8 +5431,28 @@ function setStatus(type, msg) {
   el.textContent = msg;
 }
 
+let _pendingDeleteId = null;
+
 function confirmDelete(id) {
-  if (!confirm('Delete this tournament and all its results? This cannot be undone.')) return;
+  _pendingDeleteId = id;
+  // Find tournament name for display
+  const t = allTournaments.find(t => t.id === id);
+  const nameEl = document.getElementById('del-confirm-name');
+  if (nameEl) nameEl.textContent = t ? t.meta.name : '';
+  const overlay = document.getElementById('del-confirm-overlay');
+  if (overlay) { overlay.style.display = 'flex'; }
+}
+
+function closeDelConfirm() {
+  _pendingDeleteId = null;
+  const overlay = document.getElementById('del-confirm-overlay');
+  if (overlay) overlay.style.display = 'none';
+}
+
+function executeDelete() {
+  if (!_pendingDeleteId) return;
+  const id = _pendingDeleteId;
+  closeDelConfirm();
   deleteTournament(id);
 }
 </script>
