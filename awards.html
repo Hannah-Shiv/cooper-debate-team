@@ -521,16 +521,50 @@ function fmtDate(str) {
   return d.toLocaleDateString('en-US',{month:'short', day:'numeric', year:'numeric'});
 }
 
+/* ── Name-resolution helpers (mirrors members-stats.html logic) ── */
+function buildLastToFull(tourns) {
+  const m={};
+  tourns.forEach(t=>t.entries.forEach(e=>(e.debaters||[]).forEach(d=>{
+    const first=(d.first||'').trim(), last=(d.last||'').trim();
+    if(first&&last) m[last.toLowerCase()]=first+' '+last;
+  })));
+  return m;
+}
+function resolveDebName(d, ltf) {
+  const first=(d.first||'').trim(), last=(d.last||'').trim();
+  if(first) return first+' '+last;
+  return ltf[last.toLowerCase()]||last;
+}
+function teamNameToPair(teamName, ltf) {
+  if(!teamName) return null;
+  const parts=teamName.split('&').map(s=>s.trim()).filter(Boolean);
+  if(parts.length!==2) return null;
+  return parts.map(ln=>ltf[ln.toLowerCase()]||ln).sort();
+}
+function pairKey(e, ltf) {
+  const debs=e.debaters||[];
+  if(debs.length>=2) return debs.map(d=>resolveDebName(d,ltf)).sort().join(' & ');
+  const pr=teamNameToPair(e.teamName,ltf);
+  return pr?pr.join(' & '):null;
+}
+
 /* ── Compute helpers ── */
 function computeSeasonStats(tourns) {
+  const ltf=buildLastToFull(tourns);
   let w=0,l=0,speak=0,sc=0; const debaters=new Set();
   tourns.forEach(t=>t.entries.forEach(e=>{
-    w+=e.wins; l+=e.losses;
-    e.debaters.forEach(d=>{
-      speak+=d.totalSpeaks;
-      sc+=d.rounds.filter(r=>r.result!=='BYE').length;
-      debaters.add(`${d.first} ${d.last}`);
-    });
+    w+=(e.wins||0); l+=(e.losses||0);
+    const debs=e.debaters||[];
+    if(debs.length>=1) {
+      debs.forEach(d=>{
+        speak+=(d.totalSpeaks||0);
+        sc+=(d.rounds||[]).filter(r=>r.result!=='BYE').length;
+        debaters.add(resolveDebName(d,ltf));
+      });
+    } else {
+      const pr=teamNameToPair(e.teamName,ltf);
+      if(pr) pr.forEach(n=>debaters.add(n));
+    }
   }));
   return { w, l, winRate: w+l>0?(w/(w+l)*100).toFixed(1):'—',
            avgSpeak: sc>0?(speak/sc).toFixed(2):'—',
@@ -538,15 +572,26 @@ function computeSeasonStats(tourns) {
 }
 
 function computeLeaderboard(tourns) {
+  const ltf=buildLastToFull(tourns);
   const map={};
   tourns.forEach(t=>t.entries.forEach(e=>{
-    e.debaters.forEach(d=>{
-      const k=`${d.first} ${d.last}`;
-      if(!map[k]) map[k]={name:k,wins:0,losses:0,speak:0,sc:0};
-      map[k].wins+=d.wins; map[k].losses+=d.losses;
-      map[k].speak+=d.totalSpeaks;
-      map[k].sc+=d.rounds.filter(r=>r.result!=='BYE').length;
-    });
+    const debs=e.debaters||[];
+    if(debs.length>=1) {
+      debs.forEach(d=>{
+        const k=resolveDebName(d,ltf);
+        if(!map[k]) map[k]={name:k,wins:0,losses:0,speak:0,sc:0};
+        map[k].wins+=(d.wins||0); map[k].losses+=(d.losses||0);
+        map[k].speak+=(d.totalSpeaks||0);
+        map[k].sc+=(d.rounds||[]).filter(r=>r.result!=='BYE').length;
+      });
+    } else {
+      const pr=teamNameToPair(e.teamName,ltf);
+      if(!pr) return;
+      pr.forEach(k=>{
+        if(!map[k]) map[k]={name:k,wins:0,losses:0,speak:0,sc:0};
+        map[k].wins+=(e.wins||0); map[k].losses+=(e.losses||0);
+      });
+    }
   }));
   return Object.values(map).map(d=>({
     ...d,
@@ -556,25 +601,31 @@ function computeLeaderboard(tourns) {
 }
 
 function computeMetroEligibility(tourns) {
+  const ltf=buildLastToFull(tourns);
   const map={};
-  tourns.forEach(t=>t.entries.forEach(e=>{
-    if(e.debaters.length<2) return;
-    const names=e.debaters.map(d=>`${d.first} ${d.last}`).sort();
-    const k=names.join(' & ');
-    if(!map[k]) map[k]={pair:k,finishes:[],bestWins:0};
-    map[k].finishes.push(e.wins);
-    if(e.wins>map[k].bestWins) map[k].bestWins=e.wins;
-  }));
+  tourns.forEach(t=>{
+    const maxRounds=t.entries.reduce((m,e)=>Math.max(m,(e.wins||0)+(e.losses||0)),0);
+    t.entries.forEach(e=>{
+      const k=pairKey(e,ltf);
+      if(!k) return;
+      if(!map[k]) map[k]={pair:k,finishes:[],bestWins:0,bestMaxRounds:maxRounds};
+      map[k].finishes.push({wins:e.wins||0,maxRounds});
+      if((e.wins||0)>map[k].bestWins){map[k].bestWins=e.wins||0;map[k].bestMaxRounds=maxRounds;}
+    });
+  });
   return Object.values(map).map(p=>{
-    const c40=p.finishes.filter(w=>w>=4).length;
-    const c31=p.finishes.filter(w=>w>=3).length;
-    const elig=c40>=1||c31>=2;
-    let dist = elig
-      ? (c40>=1 ? '✓ Eligible via 4–0' : '✓ Eligible via 2× 3–1+')
-      : c31===1 ? 'Need 1 more 3–1+ finish or a 4–0'
-      : 'Need a 4–0 or two 3–1+ finishes';
-    let best = p.bestWins===4?'4–0':p.bestWins===3?'3–1':p.bestWins===2?'2–2':p.bestWins===1?'1–3':'0–4';
-    return {...p, c40, c31, eligible:elig, distance:dist, bestFinish:best};
+    const cUndef=p.finishes.filter(f=>f.maxRounds>0&&f.wins>=f.maxRounds).length;
+    const cQual =p.finishes.filter(f=>f.maxRounds>0&&f.wins>=f.maxRounds-1).length;
+    const elig=cUndef>=1||cQual>=2;
+    const mxR=p.bestMaxRounds||4;
+    const best=`${p.bestWins}–${mxR-p.bestWins}`;
+    const undefF=p.finishes.find(f=>f.maxRounds>0&&f.wins>=f.maxRounds);
+    const undefLbl=undefF?`${undefF.wins}–0`:'undefeated';
+    let dist=elig
+      ? (cUndef>=1?`✓ Eligible (${undefLbl})`:'✓ Eligible (2× qualifying+)')
+      : cQual===1?'Need 1 more qualifying finish'
+      :'Need an undefeated or two qualifying finishes';
+    return {...p, c40:cUndef, c31:cQual, eligible:elig, distance:dist, bestFinish:best};
   }).sort((a,b)=>b.eligible-a.eligible||b.c31-a.c31||b.bestWins-a.bestWins);
 }
 
