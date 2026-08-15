@@ -580,22 +580,52 @@
 
         /* Compute stats */
         var w = 0, l = 0;
-        var pairMap = {};
+
+        /* Build last-name → full-name map for stub resolution */
+        var lastToFull = {};
         tourns.forEach(function(t) {
           t.entries.forEach(function(e) {
-            w += e.wins; l += e.losses;
-            if (e.debaters.length >= 2) {
-              var k = e.debaters.map(function(d){ return d.first+' '+d.last; }).sort().join(' & ');
-              if (!pairMap[k]) pairMap[k] = { finishes: [] };
-              pairMap[k].finishes.push(e.wins);
+            (e.debaters || []).forEach(function(d) {
+              var first = (d.first || '').trim(), last = (d.last || '').trim();
+              if (first && last) lastToFull[last.toLowerCase()] = first + ' ' + last;
+            });
+          });
+        });
+        function resolveName(d) {
+          var first = (d.first || '').trim(), last = (d.last || '').trim();
+          if (first) return first + ' ' + last;
+          return lastToFull[last.toLowerCase()] || last;
+        }
+        function teamNamePair(teamName) {
+          if (!teamName) return null;
+          var parts = teamName.split('&').map(function(s){ return s.trim(); }).filter(Boolean);
+          if (parts.length !== 2) return null;
+          return parts.map(function(ln){ return lastToFull[ln.toLowerCase()] || ln; }).sort();
+        }
+
+        var pairMap = {};
+        tourns.forEach(function(t) {
+          /* maxRounds for this tournament — determines eligibility thresholds */
+          var maxRounds = t.entries.reduce(function(m, e){ return Math.max(m, (e.wins||0)+(e.losses||0)); }, 0);
+          t.entries.forEach(function(e) {
+            w += (e.wins||0); l += (e.losses||0);
+            var key = null;
+            if ((e.debaters || []).length >= 2) {
+              key = e.debaters.map(resolveName).sort().join(' & ');
+            } else {
+              var pr = teamNamePair(e.teamName);
+              if (pr) key = pr.join(' & ');
             }
+            if (!key) return;
+            if (!pairMap[key]) pairMap[key] = { finishes: [] };
+            pairMap[key].finishes.push({ wins: e.wins||0, maxRounds: maxRounds });
           });
         });
         var winRate = (w + l > 0) ? Math.round(w / (w + l) * 100) + '%' : '—';
         var metroElig = Object.values(pairMap).filter(function(p) {
-          var c40 = p.finishes.filter(function(x){ return x >= 4; }).length;
-          var c31 = p.finishes.filter(function(x){ return x >= 3; }).length;
-          return c40 >= 1 || c31 >= 2;
+          var cUndef = p.finishes.filter(function(f){ return f.maxRounds > 0 && f.wins >= f.maxRounds; }).length;
+          var cQual  = p.finishes.filter(function(f){ return f.maxRounds > 0 && f.wins >= f.maxRounds - 1; }).length;
+          return cUndef >= 1 || cQual >= 2;
         }).length;
 
         setEl('idx-stat-tourneys', String(tourns.length));
