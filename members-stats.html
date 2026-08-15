@@ -1394,7 +1394,7 @@
             </label>
           </div>
           <div class="import-field" id="field-school">
-            <label class="import-label" for="imp-school">Host School</label>
+            <label class="import-label" for="imp-school">Host Institution</label>
             <input class="import-input" id="imp-school" type="text" placeholder="e.g. Westfield High School"/>
           </div>
           <div class="import-field" id="field-location">
@@ -2328,7 +2328,7 @@ function parseMainText() {
   const dateMatch = text.match(/(?:\bon\s+)?((Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[,.]?\s+\w+\s+\d{1,2}[,.]?\s+\d{4})/i);
   set('imp-date', dateMatch ? dateMatch[1].trim() : '');
 
-  // 3. Host school — "held at X in" OR middle-dot format "· School ·"
+  // 3. Host institution — "held at X in" OR middle-dot format "· School ·"
   const schoolA = text.match(/held\s+at\s+(.+?)\s+in\s+/i);
   const schoolB = text.match(/[·•]\s*([^·•\n]+?)\s*[·•]/);
   set('imp-school', schoolA ? schoolA[1].trim() : (schoolB ? schoolB[1].trim() : ''));
@@ -4998,7 +4998,7 @@ async function runImport() {
   const missing = [];
   if (!name)      missing.push('Tournament Name');
   if (!date)      missing.push('Date');
-  if (!isVirtual && !school)    missing.push('Host School');
+  if (!isVirtual && !school)    missing.push('Host Institution');
   if (!isVirtual && !location)  missing.push('City, State');
   if (!topicType) missing.push('Debate Format');
   if (!topic)     missing.push('Resolution');
