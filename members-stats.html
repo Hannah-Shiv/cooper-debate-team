@@ -2877,30 +2877,64 @@ function computeSeasonStats(tournaments) {
 }
 
 function computeLeaderboard(tournaments) {
+  const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
     t.entries.forEach(e => {
-      const partnerNames = e.debaters.map(d => `${d.first} ${d.last}`);
-      e.debaters.forEach(d => {
-        const key = `${d.first} ${d.last}`.trim();
-        if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournSet: new Set(), partners: new Set(), tournDetails: [] };
-        const dm = map[key];
-        dm.wins   += d.wins;
-        dm.losses += d.losses;
-        dm.speakSum   += d.totalSpeaks;
-        dm.roundCount += d.rounds.filter(r => r.result !== 'BYE').length;
-        dm.tournSet.add(t.meta.name + '|||' + (t.meta.date || '') + '|||' + (t.id || ''));
-        partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
-        dm.tournDetails.push({
-          name:       t.meta.name,
-          date:       t.meta.date,
-          wins:       d.wins,
-          losses:     d.losses,
-          totalSpeaks:d.totalSpeaks,
-          avgSpeak:   d.avgSpeak,
-          rounds:     d.rounds
+      if ((e.debaters || []).length >= 1) {
+        // Normal path: debater objects exist (full or stub)
+        const partnerNames = e.debaters.map(d => _resolveDebName(d, lastToFull));
+        e.debaters.forEach(d => {
+          const key = _resolveDebName(d, lastToFull);
+          if (!key) return;
+          const parts = key.split(' ');
+          const first = parts[0] || d.first || '';
+          const last  = parts.slice(1).join(' ') || d.last || key;
+          if (!map[key]) map[key] = { name: key, first, last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournSet: new Set(), partners: new Set(), tournDetails: [] };
+          const dm = map[key];
+          dm.wins   += d.wins   || 0;
+          dm.losses += d.losses || 0;
+          dm.speakSum   += d.totalSpeaks || 0;
+          dm.roundCount += (d.rounds || []).filter(r => r.result !== 'BYE').length;
+          dm.tournSet.add(t.meta.name + '|||' + (t.meta.date || '') + '|||' + (t.id || ''));
+          partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
+          dm.tournDetails.push({
+            name:        t.meta.name,
+            date:        t.meta.date,
+            wins:        d.wins        || 0,
+            losses:      d.losses      || 0,
+            totalSpeaks: d.totalSpeaks || 0,
+            avgSpeak:    d.avgSpeak    || 0,
+            rounds:      d.rounds      || []
+          });
         });
-      });
+      } else {
+        // Fallback: debaters:[] — attribute team record via teamName resolution
+        const resolved = _teamNameToPair(e.teamName, lastToFull);
+        if (!resolved || resolved.length !== 2) return;
+        resolved.forEach(fullName => {
+          const parts = fullName.split(' ');
+          const first = parts[0] || '';
+          const last  = parts.slice(1).join(' ') || fullName;
+          if (!map[fullName]) map[fullName] = { name: fullName, first, last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournSet: new Set(), partners: new Set(), tournDetails: [] };
+          const dm = map[fullName];
+          dm.wins   += e.wins   || 0;
+          dm.losses += e.losses || 0;
+          // No individual speaks available for speaker-CSV-less imports
+          dm.tournSet.add(t.meta.name + '|||' + (t.meta.date || '') + '|||' + (t.id || ''));
+          const partner = resolved.find(n => n !== fullName);
+          if (partner) dm.partners.add(partner);
+          dm.tournDetails.push({
+            name:        t.meta.name,
+            date:        t.meta.date,
+            wins:        e.wins   || 0,
+            losses:      e.losses || 0,
+            totalSpeaks: 0,
+            avgSpeak:    0,
+            rounds:      []
+          });
+        });
+      }
     });
   });
 
@@ -2928,18 +2962,18 @@ function computeLeaderboard(tournaments) {
 }
 
 function computePairings(tournaments) {
+  const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
     t.entries.forEach(e => {
-      if (e.debaters.length < 2) return;
-      const names = e.debaters.map(d => `${d.first} ${d.last}`).sort();
-      const key = names.join(' & ');
+      const key = _pairKey(e, lastToFull);
+      if (!key) return;
       if (!map[key]) map[key] = { pair: key, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tourns: 0 };
-      map[key].wins     += e.wins;
-      map[key].losses   += e.losses;
+      map[key].wins     += e.wins   || 0;
+      map[key].losses   += e.losses || 0;
       map[key].tourns++;
-      const realRounds = e.rounds.filter(r => !r.isBye);
-      map[key].speakSum   += realRounds.reduce((s, r) => s + r.teamSpeak, 0);
+      const realRounds = (e.rounds || []).filter(r => !r.isBye);
+      map[key].speakSum   += realRounds.reduce((s, r) => s + (r.teamSpeak || 0), 0);
       map[key].roundCount += realRounds.length;
     });
   });
@@ -4831,14 +4865,16 @@ function renderFullDebaterProfile(d) {
       : 0;
     // Find partner for this tournament
     let partnerName = '—';
+    const _ltf = _buildLastToFull(allTournaments);
     allTournaments.forEach(tourn => {
       if (tourn.meta.name === t.name) {
         tourn.entries.forEach(e => {
-          const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
-          if (deb) {
-            const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
-            if (partner) partnerName = `${partner.first} ${partner.last}`;
-          }
+          const key = _pairKey(e, _ltf);
+          if (!key) return;
+          const names = key.split(' & ');
+          if (!names.includes(d.name)) return;
+          const partner = names.find(n => n !== d.name);
+          if (partner) partnerName = partner;
         });
       }
     });
@@ -4860,15 +4896,16 @@ function renderFullDebaterProfile(d) {
   const partnerMap = {};
   allTournaments.forEach(tourn => {
     tourn.entries.forEach(e => {
-      const deb = e.debaters.find(x => `${x.first} ${x.last}` === d.name);
-      if (!deb) return;
-      const partner = e.debaters.find(x => `${x.first} ${x.last}` !== d.name);
-      if (!partner) return;
-      const pn = `${partner.first} ${partner.last}`;
+      const key = _pairKey(e, _ltf);
+      if (!key) return;
+      const names = key.split(' & ');
+      if (!names.includes(d.name)) return;
+      const pn = names.find(n => n !== d.name);
+      if (!pn) return;
       if (!partnerMap[pn]) partnerMap[pn] = { name: pn, tourns: 0, wins: 0, losses: 0 };
       partnerMap[pn].tourns++;
-      partnerMap[pn].wins += e.wins;
-      partnerMap[pn].losses += e.losses;
+      partnerMap[pn].wins   += e.wins   || 0;
+      partnerMap[pn].losses += e.losses || 0;
     });
   });
   const partners = Object.values(partnerMap).sort((a, b) => b.tourns - a.tourns);
