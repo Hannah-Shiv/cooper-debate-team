@@ -572,6 +572,68 @@
     .import-status.success { color:#4ade80; }
     .import-status.error   { color:#e03535; }
 
+    /* ── Import success screen ─────────────────────────────── */
+    #import-success-screen {
+      padding:44px 32px 40px; text-align:center;
+      display:flex; flex-direction:column; align-items:center;
+    }
+    .imp-success-icon {
+      width:72px; height:72px; border-radius:50%;
+      background:rgba(34,197,94,0.12); border:2px solid rgba(34,197,94,0.55);
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.1rem; color:#4ade80; margin-bottom:22px;
+      box-shadow:0 0 36px rgba(34,197,94,0.16);
+      animation:successPop 0.45s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes successPop {
+      from { transform:scale(0.4); opacity:0; }
+      to   { transform:scale(1);   opacity:1; }
+    }
+    .imp-success-title {
+      font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:700;
+      color:#c8a96e; margin-bottom:6px;
+    }
+    .imp-success-subtitle {
+      font-family:'Josefin Sans',sans-serif; font-size:0.96rem;
+      color:rgba(255,255,255,0.42); letter-spacing:0.08em; margin-bottom:34px;
+    }
+    .imp-steps-list {
+      display:flex; flex-direction:column; gap:10px;
+      width:100%; max-width:480px; margin-bottom:36px; text-align:left;
+    }
+    .imp-step-row {
+      display:flex; align-items:flex-start; gap:14px;
+      padding:14px 18px; border-radius:12px;
+      background:rgba(4,8,28,0.78); border:1px solid rgba(255,255,255,0.07);
+      opacity:0; transform:translateY(10px);
+      transition:opacity 0.32s ease, transform 0.32s ease;
+    }
+    .imp-step-row.visible { opacity:1; transform:none; }
+    .imp-step-check {
+      width:30px; height:30px; flex-shrink:0; border-radius:50%;
+      background:rgba(34,197,94,0.16); border:1.5px solid rgba(34,197,94,0.55);
+      display:flex; align-items:center; justify-content:center;
+      color:#4ade80; font-size:1.05rem; font-weight:700; margin-top:1px;
+    }
+    .imp-step-text { flex:1; }
+    .imp-step-name {
+      font-family:'Josefin Sans',sans-serif; font-size:1.1rem; font-weight:700;
+      letter-spacing:0.05em; color:#fff; margin-bottom:3px;
+    }
+    .imp-step-desc {
+      font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
+      color:rgba(255,255,255,0.38); letter-spacing:0.03em;
+    }
+    .imp-success-close-btn {
+      font-family:'Josefin Sans',sans-serif; font-size:1.05rem; font-weight:700;
+      letter-spacing:0.08em; padding:13px 42px; border-radius:50px;
+      background:rgba(34,197,94,0.14); border:1.5px solid rgba(34,197,94,0.55);
+      color:#4ade80; cursor:pointer; transition:all 0.18s;
+    }
+    .imp-success-close-btn:hover {
+      background:rgba(34,197,94,0.26); border-color:rgba(34,197,94,0.85); color:#fff;
+    }
+
     /* ── Tab bar ───────────────────────────────────────────── */
     .stats-tab-bar {
       display:flex; align-items:flex-end; justify-content:space-between;
@@ -1473,6 +1535,44 @@
           <span class="import-status" id="import-status"></span>
         </div>
     </div><!-- /import-modal-scroll -->
+
+    <!-- ── Import success screen (replaces form after a successful save) ── -->
+    <div id="import-success-screen" style="display:none">
+      <div class="imp-success-icon">✓</div>
+      <div class="imp-success-title">Import Complete</div>
+      <div class="imp-success-subtitle" id="imp-success-subtitle"></div>
+      <div class="imp-steps-list">
+        <div class="imp-step-row" id="imp-step-1">
+          <div class="imp-step-check">✓</div>
+          <div class="imp-step-text">
+            <div class="imp-step-name">Extracted</div>
+            <div class="imp-step-desc" id="imp-step-1-desc"></div>
+          </div>
+        </div>
+        <div class="imp-step-row" id="imp-step-2">
+          <div class="imp-step-check">✓</div>
+          <div class="imp-step-text">
+            <div class="imp-step-name">Transformed</div>
+            <div class="imp-step-desc" id="imp-step-2-desc"></div>
+          </div>
+        </div>
+        <div class="imp-step-row" id="imp-step-3">
+          <div class="imp-step-check">✓</div>
+          <div class="imp-step-text">
+            <div class="imp-step-name">Uploaded</div>
+            <div class="imp-step-desc" id="imp-step-3-desc"></div>
+          </div>
+        </div>
+        <div class="imp-step-row" id="imp-step-4">
+          <div class="imp-step-check">✓</div>
+          <div class="imp-step-text">
+            <div class="imp-step-name">Computed</div>
+            <div class="imp-step-desc" id="imp-step-4-desc"></div>
+          </div>
+        </div>
+      </div>
+      <button class="imp-success-close-btn" onclick="closeImportSuccess()">✓ Done — Close Import</button>
+    </div>
   </div>
 </div>
 
@@ -5009,16 +5109,19 @@ async function runImport() {
     return;
   }
 
-  setStatus('', 'Parsing CSVs…');
+  setStatus('', 'Extracting CSV data…');
 
   try {
+    // ── Step 1: Extract ──────────────────────────────────────────
     const teamEntries = parseTeamCSV(teamCsvText);
     const debaters    = parseSpeakerCSV(speakCsvText);
-    const merged      = matchTeamsWithDebaters(teamEntries, debaters);
+    const totalRows   = teamEntries.length + debaters.length;
 
+    // ── Step 2: Transform ────────────────────────────────────────
+    const merged = matchTeamsWithDebaters(teamEntries, debaters);
     if (!merged.length) { setStatus('error', 'No Cooper entries found in the team CSV. Check the School column says "Cooper".'); return; }
 
-    setStatus('', `Found ${merged.length} Cooper entries — saving…`);
+    setStatus('', `Found ${merged.length} Cooper entries — uploading…`);
 
     // ── Snapshot eligibility BEFORE import ──────────────────────
     const preEligible = new Set(
@@ -5049,33 +5152,86 @@ async function runImport() {
       }))
     };
 
+    // ── Step 3: Upload ───────────────────────────────────────────
     await saveTournament(doc);
-    setStatus('success', `✓ Imported ${merged.length} entries from "${name}". Closing in 3 s…`);
-    setTimeout(() => {
-      const modal = document.getElementById('import-modal');
-      if (modal && modal.style.display !== 'none') toggleImportPanel();
-    }, 3000);
 
-    // Reset form
+    // Reset form fields so it's clean on next open
     teamCsvText = speakCsvText = null;
     ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
     ['hint-team','hint-speak'].forEach((id, i) => document.getElementById(id).textContent = i===0?'Team W/L, speaker totals, round-by-round':'Individual speaker points per round');
     ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
     ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic-type','imp-topic']
-      .forEach(id => document.getElementById(id).value = '');
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
     const virtCb = document.getElementById('imp-virtual');
     if (virtCb) { virtCb.checked = false; onVirtualToggle(false); }
 
+    // ── Step 4: Compute ──────────────────────────────────────────
     await loadTournaments();
-
-    // ── Diff eligibility AFTER import and show toasts ────────────
-    const postMetro = computeMetroEligibility(allTournaments);
+    const postMetro     = computeMetroEligibility(allTournaments);
     const newlyEligible = postMetro.filter(p => p.eligible && !preEligible.has(p.pair));
-    showMetroEligibilityToasts(newlyEligible);
+
+    // ── Show completion screen ───────────────────────────────────
+    showImportSuccess({
+      tournName: name,
+      entryCount: merged.length,
+      rowCount: totalRows,
+      debaterCount: debaters.length,
+      newlyEligible
+    });
 
   } catch (err) {
     console.error('Import error:', err);
     setStatus('error', 'Import failed: ' + err.message);
+  }
+}
+
+let _pendingMetroToasts = [];
+
+function showImportSuccess({ tournName, entryCount, rowCount, debaterCount, newlyEligible }) {
+  _pendingMetroToasts = newlyEligible;
+
+  // Populate step descriptions
+  document.getElementById('imp-step-1-desc').textContent =
+    `${rowCount} rows parsed · ${debaterCount} speaker records found`;
+  document.getElementById('imp-step-2-desc').textContent =
+    `${entryCount} Cooper entr${entryCount === 1 ? 'y' : 'ies'} matched and structured`;
+  document.getElementById('imp-step-3-desc').textContent =
+    `"${tournName}" saved to Firestore`;
+  document.getElementById('imp-step-4-desc').textContent =
+    newlyEligible.length
+      ? `Leaderboard updated · ${newlyEligible.length} pair${newlyEligible.length > 1 ? 's' : ''} newly Metro eligible`
+      : 'Leaderboard & Metro eligibility updated';
+  document.getElementById('imp-success-subtitle').textContent =
+    `${entryCount} entr${entryCount === 1 ? 'y' : 'ies'} from "${tournName}" successfully processed`;
+
+  // Swap form ↔ success screen
+  document.querySelector('.import-modal-scroll').style.display = 'none';
+  const screen = document.getElementById('import-success-screen');
+  screen.style.display = 'flex';
+
+  // Stagger step rows in
+  ['imp-step-1','imp-step-2','imp-step-3','imp-step-4'].forEach((id, i) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      if (el) el.classList.add('visible');
+    }, 180 + i * 160);
+  });
+}
+
+function closeImportSuccess() {
+  // Hide success screen, restore form, close modal
+  document.getElementById('import-success-screen').style.display = 'none';
+  document.querySelector('.import-modal-scroll').style.display = '';
+  // Reset step visibility for next open
+  ['imp-step-1','imp-step-2','imp-step-3','imp-step-4'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('visible');
+  });
+  toggleImportPanel();
+  // Show Metro toasts after modal is gone
+  if (_pendingMetroToasts.length) {
+    setTimeout(() => showMetroEligibilityToasts(_pendingMetroToasts), 200);
+    _pendingMetroToasts = [];
   }
 }
 
