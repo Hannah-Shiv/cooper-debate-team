@@ -5350,8 +5350,9 @@ async function runImport() {
     ['file-team','file-speak'].forEach(id => document.getElementById(id).value = '');
     ['hint-team','hint-speak'].forEach((id, i) => document.getElementById(id).textContent = i===0?'Team W/L, speaker totals, round-by-round':'Individual speaker points per round');
     ['drop-team','drop-speak'].forEach(id => document.getElementById(id).classList.remove('has-file'));
-    ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic-type','imp-topic']
+    ['imp-main','imp-name','imp-date','imp-school','imp-location','imp-topic']
       .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    const fmtEl = document.getElementById('imp-topic-type'); if (fmtEl) fmtEl.value = 'Public Forum';
     const virtCb = document.getElementById('imp-virtual');
     if (virtCb) { virtCb.checked = false; onVirtualToggle(false); }
 
