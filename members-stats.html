@@ -2404,6 +2404,7 @@ function toggleImportPanel() {
     modal.style.display = 'flex';
     btn.classList.add('open');
     document.body.style.overflow = 'hidden';
+    setStatus('', ''); // clear any leftover status message from the previous import
   }
 }
 
