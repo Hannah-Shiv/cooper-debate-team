@@ -2847,7 +2847,7 @@ function computeLeaderboard(tournaments) {
         dm.losses += d.losses;
         dm.speakSum   += d.totalSpeaks;
         dm.roundCount += d.rounds.filter(r => r.result !== 'BYE').length;
-        dm.tournSet.add(t.id);
+        dm.tournSet.add(t.meta.name + '|||' + (t.meta.date || '') + '|||' + (t.id || ''));
         partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
         dm.tournDetails.push({
           name:       t.meta.name,
