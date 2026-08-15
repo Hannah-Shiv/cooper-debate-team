@@ -1732,50 +1732,100 @@ function parseTournDate(str) {
   return new Date(c);
 }
 
+/* ── Name-resolution helpers (mirrors members-stats.html logic) ── */
+function _buildLastToFull(tourns) {
+  const m = {};
+  tourns.forEach(t => t.entries.forEach(e => (e.debaters || []).forEach(d => {
+    const first = (d.first || '').trim(), last = (d.last || '').trim();
+    if (first && last) m[last.toLowerCase()] = first + ' ' + last;
+  })));
+  return m;
+}
+function _resolveDebName(d, ltf) {
+  const first = (d.first || '').trim(), last = (d.last || '').trim();
+  if (first) return first + ' ' + last;
+  return ltf[last.toLowerCase()] || last;
+}
+function _teamNameToPair(teamName, ltf) {
+  if (!teamName) return null;
+  const parts = teamName.split('&').map(s => s.trim()).filter(Boolean);
+  if (parts.length !== 2) return null;
+  return parts.map(ln => ltf[ln.toLowerCase()] || ln).sort();
+}
+function _pairKey(e, ltf) {
+  const debs = e.debaters || [];
+  if (debs.length >= 2) return debs.map(d => _resolveDebName(d, ltf)).sort().join(' & ');
+  const pr = _teamNameToPair(e.teamName, ltf);
+  return pr ? pr.join(' & ') : null;
+}
+
 function computeMetroEligibility(tournaments) {
+  const ltf = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
+    const maxRounds = t.entries.reduce((m, e) => Math.max(m, (e.wins||0) + (e.losses||0)), 0);
     t.entries.forEach(e => {
-      if (e.debaters.length < 2) return;
-      const names = e.debaters.map(d => `${d.first} ${d.last}`).sort();
-      const key = names.join(' & ');
+      const key = _pairKey(e, ltf);
+      if (!key) return;
       if (!map[key]) map[key] = { pair: key, count40: 0, count31: 0 };
-      if (e.wins >= 4) map[key].count40++;
-      if (e.wins >= 3) map[key].count31++;
+      if (maxRounds > 0 && (e.wins||0) >= maxRounds)     map[key].count40++;
+      if (maxRounds > 0 && (e.wins||0) >= maxRounds - 1) map[key].count31++;
     });
   });
   return Object.values(map).map(p => {
     const eligible = p.count40 >= 1 || p.count31 >= 2;
     return { ...p, eligible,
       distance: eligible
-        ? (p.count40 >= 1 ? '✓ Eligible (4–0)' : '✓ Eligible (2× 3–1+)')
-        : p.count31 === 1 ? 'Need 1 more 3–1+' : 'Need a 4–0 or two 3–1+' };
+        ? (p.count40 >= 1 ? '✓ Eligible (undefeated)' : '✓ Eligible (2× qualifying+)')
+        : p.count31 === 1 ? 'Need 1 more qualifying finish' : 'Need an undefeated or two qualifying finishes' };
   });
 }
 
 function computeLeaderboard(tournaments) {
+  const ltf = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
+    const tMaxRounds = t.entries.reduce((m, e) => Math.max(m, (e.wins||0) + (e.losses||0)), 0);
     t.entries.forEach(e => {
-      const partnerNames = e.debaters.map(d => `${d.first} ${d.last}`);
-      e.debaters.forEach(d => {
-        const key = `${d.first} ${d.last}`;
-        if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournaments: 0, partners: new Set(), tournDetails: [] };
-        const dm = map[key];
-        dm.wins += d.wins; dm.losses += d.losses;
-        dm.speakSum += d.totalSpeaks;
-        dm.roundCount += d.rounds.filter(r => r.result !== 'BYE').length;
-        dm.tournaments++;
-        partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
-        dm.tournDetails.push({ name: t.meta.name, date: t.meta.date, wins: d.wins, losses: d.losses, totalSpeaks: d.totalSpeaks, avgSpeak: d.avgSpeak, rounds: d.rounds });
-      });
+      const debs = e.debaters || [];
+      if (debs.length >= 1) {
+        const partnerNames = debs.map(d => _resolveDebName(d, ltf));
+        debs.forEach(d => {
+          const key = _resolveDebName(d, ltf);
+          if (!key) return;
+          const parts = key.split(' ');
+          const first = parts[0] || d.first || '', last = parts.slice(1).join(' ') || d.last || key;
+          if (!map[key]) map[key] = { name: key, first, last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournaments: 0, partners: new Set(), tournDetails: [] };
+          const dm = map[key];
+          dm.wins += (d.wins||0); dm.losses += (d.losses||0);
+          dm.speakSum += (d.totalSpeaks||0);
+          dm.roundCount += (d.rounds||[]).filter(r => r.result !== 'BYE').length;
+          dm.tournaments++;
+          partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
+          dm.tournDetails.push({ name: t.meta.name, date: t.meta.date, maxRounds: tMaxRounds, wins: d.wins||0, losses: d.losses||0, totalSpeaks: d.totalSpeaks||0, avgSpeak: d.avgSpeak||0, rounds: d.rounds||[] });
+        });
+      } else {
+        const resolved = _teamNameToPair(e.teamName, ltf);
+        if (!resolved) return;
+        resolved.forEach(fullName => {
+          const parts = fullName.split(' ');
+          const first = parts[0] || '', last = parts.slice(1).join(' ') || fullName;
+          if (!map[fullName]) map[fullName] = { name: fullName, first, last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournaments: 0, partners: new Set(), tournDetails: [] };
+          const dm = map[fullName];
+          dm.wins += (e.wins||0); dm.losses += (e.losses||0);
+          dm.tournaments++;
+          const partner = resolved.find(n => n !== fullName);
+          if (partner) dm.partners.add(partner);
+          dm.tournDetails.push({ name: t.meta.name, date: t.meta.date, maxRounds: tMaxRounds, wins: e.wins||0, losses: e.losses||0, totalSpeaks: 0, avgSpeak: 0, rounds: [] });
+        });
+      }
     });
   });
   const pairMetroMap = {};
   computeMetroEligibility(tournaments).forEach(p => { pairMetroMap[p.pair] = p.eligible; });
   return Object.values(map).map(d => {
     let metroEligible = false;
-    d.partners.forEach(partner => { const k = [d.name,partner].sort().join(' & '); if (pairMetroMap[k]) metroEligible = true; });
+    d.partners.forEach(partner => { const k = [d.name, partner].sort().join(' & '); if (pairMetroMap[k]) metroEligible = true; });
     return { ...d, avgSpeak: d.roundCount > 0 ? +(d.speakSum/d.roundCount).toFixed(2) : 0, winRate: d.wins+d.losses > 0 ? d.wins/(d.wins+d.losses) : 0, partnerList: [...d.partners].join(', '), metroEligible };
   }).sort((a,b) => b.winRate - a.winRate || b.avgSpeak - a.avgSpeak)
     .map((d, i) => ({ ...d, rank: i + 1 }));
@@ -2338,7 +2388,7 @@ const BADGE_DEFS = [
     test: d => d.metroEligible },
   { id:'perfect',  cls:'prof-badge-perf',   label:'Perfect Prelims',
     icon:'<circle cx="12" cy="12" r="10"/><polyline points="16 8 10 14 7 11"/>',
-    test: d => d.tournDetails.some(t => t.wins >= 4 && t.losses === 0) },
+    test: d => d.tournDetails.some(t => t.wins >= (t.maxRounds || 4) && t.losses === 0) },
   { id:'speaks',   cls:'prof-badge-speaks', label:'Elite Speaker',
     icon:'<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>',
     test: d => d.avgSpeak >= 28 },
@@ -2607,7 +2657,7 @@ function renderMetroDetail(d) {
   const el = document.getElementById('prof-metro-detail');
   const pairs = computeMetroEligibility(allTournaments).filter(p=>p.pair.split(' & ').includes(d.name));
   if (!pairs.length) { el.innerHTML='<p style="font-family:Josefin Sans,sans-serif;font-size:1.11rem;color:rgba(255,255,255,0.3)">No pair data available.</p>'; return; }
-  el.innerHTML=`<p style="font-family:'Josefin Sans',sans-serif;font-size:1.01rem;color:rgba(255,255,255,0.35);margin:0 0 18px;line-height:1.7">Eligible = 1× 4–0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins</p>${pairs.map(p=>{const partner=p.pair.split(' & ').find(n=>n!==d.name)||'—';const pct40=Math.min(p.count40/1,1);const pct31=Math.min(p.count31/2,1);return `<div style="background:rgba(8,18,55,0.9);border:1px solid rgba(212,160,23,0.12);border-radius:12px;padding:18px 20px;margin-bottom:12px"><div style="font-family:'Josefin Sans',sans-serif;font-size:1.04rem;font-weight:700;color:rgba(255,255,255,0.65);margin-bottom:14px">With <span style="color:#fff">${escHtml(partner)}</span>${p.eligible?'<span class="metro-eligible yes" style="margin-left:10px;font-size:0.86rem">✓ Eligible</span>':'<span class="metro-eligible no" style="margin-left:10px;font-size:0.86rem">✗ Not Yet</span>'}</div><div class="metro-progress-wrap"><div class="metro-progress-label">4–0 Finishes: <strong>${p.count40} / 1 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count40>=1?'done':''}" style="width:${Math.min(pct40*100,100)}%"></div></div></div><div class="metro-progress-wrap" style="margin-top:10px"><div class="metro-progress-label">3–1+ Finishes: <strong>${p.count31} / 2 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count31>=2?'done':''}" style="width:${Math.min(pct31*100,100)}%"></div></div></div><div style="margin-top:10px;font-family:'Josefin Sans',sans-serif;font-size:0.99rem;color:rgba(255,255,255,0.45)">${escHtml(p.distance)}</div></div>`;}).join('')}`;
+  el.innerHTML=`<p style="font-family:'Josefin Sans',sans-serif;font-size:1.01rem;color:rgba(255,255,255,0.35);margin:0 0 18px;line-height:1.7">Eligible = 1× undefeated finish (4–0 or 3–0 in 3-round) &nbsp;OR&nbsp; 2× qualifying finishes (3–1+ in 4-round, 2–1+ in 3-round)</p>${pairs.map(p=>{const partner=p.pair.split(' & ').find(n=>n!==d.name)||'—';const pct40=Math.min(p.count40/1,1);const pct31=Math.min(p.count31/2,1);return `<div style="background:rgba(8,18,55,0.9);border:1px solid rgba(212,160,23,0.12);border-radius:12px;padding:18px 20px;margin-bottom:12px"><div style="font-family:'Josefin Sans',sans-serif;font-size:1.04rem;font-weight:700;color:rgba(255,255,255,0.65);margin-bottom:14px">With <span style="color:#fff">${escHtml(partner)}</span>${p.eligible?'<span class="metro-eligible yes" style="margin-left:10px;font-size:0.86rem">✓ Eligible</span>':'<span class="metro-eligible no" style="margin-left:10px;font-size:0.86rem">✗ Not Yet</span>'}</div><div class="metro-progress-wrap"><div class="metro-progress-label">Undefeated Finishes: <strong>${p.count40} / 1 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count40>=1?'done':''}" style="width:${Math.min(pct40*100,100)}%"></div></div></div><div class="metro-progress-wrap" style="margin-top:10px"><div class="metro-progress-label">Qualifying Finishes: <strong>${p.count31} / 2 needed</strong></div><div class="metro-progress-bar-track"><div class="metro-progress-bar-fill ${p.count31>=2?'done':''}" style="width:${Math.min(pct31*100,100)}%"></div></div></div><div style="margin-top:10px;font-family:'Josefin Sans',sans-serif;font-size:0.99rem;color:rgba(255,255,255,0.45)">${escHtml(p.distance)}</div></div>`;}).join('')}`;
 }
 
 /* ═══════════════════════════════════════════════════════
