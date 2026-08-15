@@ -4365,8 +4365,10 @@ function renderPairProgressionChart() {
   const data = computePairProgression(sel.value);
   if (data.length < 2) {
     const count = data.length;
-    const countStr = count === 0 ? 'no tournaments' : '1 tournament';
-    if (msg) { msg.textContent = `${sel.value} has competed in ${countStr} together — progression requires at least 2.`; msg.style.display=''; }
+    const names = sel.value.split(' & ');
+    const nameStr = names.length === 2 ? `${names[0]} and ${names[1]}` : sel.value;
+    const countStr = count === 0 ? 'have no tournaments' : 'have competed in only 1 tournament';
+    if (msg) { msg.textContent = `${nameStr} ${countStr} together. Pair progression requires at least 2 tournaments.`; msg.style.display=''; }
     if (card) card.style.display = 'none';
     return;
   }
