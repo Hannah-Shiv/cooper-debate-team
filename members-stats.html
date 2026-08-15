@@ -2803,7 +2803,28 @@ function matchTeamsWithDebaters(teams, debaters) {
       }
     }
 
-    return { ...team, debaters: matched || [] };
+    if (!matched) {
+      // No speaker CSV: build stubs from the team name (e.g. "Herr & Song" → two stubs)
+      matched = team.teamName.split('&').map(part => {
+        const words = part.trim().split(/\s+/);
+        const last  = words.pop() || part.trim();
+        const first = words.join(' ');
+        return {
+          first, last,
+          entryCode: team.teamName,
+          wins:        team.wins,
+          losses:      team.losses,
+          totalSpeaks: 0,
+          avgSpeak:    0,
+          _stubOnly:   true,   // flag: no individual speaks data
+          rounds: team.rounds.map(r => ({
+            round: r.round, result: r.result, speak: 0, isBye: r.isBye
+          }))
+        };
+      });
+    }
+
+    return { ...team, debaters: matched };
   });
 }
 
@@ -2840,7 +2861,7 @@ function computeLeaderboard(tournaments) {
     t.entries.forEach(e => {
       const partnerNames = e.debaters.map(d => `${d.first} ${d.last}`);
       e.debaters.forEach(d => {
-        const key = `${d.first} ${d.last}`;
+        const key = `${d.first} ${d.last}`.trim();
         if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournSet: new Set(), partners: new Set(), tournDetails: [] };
         const dm = map[key];
         dm.wins   += d.wins;
@@ -5073,7 +5094,7 @@ function _paintDrillEntries(data) {
     const distCls = e.metro.eligible ? 'eligible' : e.metro.distance.includes('1 more') ? 'close' : '';
     const clickableDebs = e.debaters && e.debaters.length
       ? e.debaters.map(d => {
-          const n = `${d.first} ${d.last}`;
+          const n = `${d.first} ${d.last}`.trim();
           return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
         }).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>')
       : `<span class="entry-deb-names" style="color:rgba(255,255,255,0.55)">${e.teamName || '—'}</span>`;
