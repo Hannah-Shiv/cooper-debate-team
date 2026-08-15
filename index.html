@@ -241,7 +241,12 @@
           <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Metro Qualified</div>
         </div>
       </div>
-      <div style="text-align:center;">
+      <!-- Championship results panel (hidden until JS populates it) -->
+      <div id="idx-champ-panel" style="display:none;margin-top:28px;padding:22px 28px;background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.3);border-radius:12px;">
+        <div id="idx-champ-content"></div>
+      </div>
+
+      <div style="text-align:center;margin-top:32px;">
         <a href="awards.html" class="btn btn-gold" style="font-size:0.9rem;padding:12px 32px;letter-spacing:0.08em;">View Full Awards →</a>
       </div>
     </div>
@@ -578,10 +583,18 @@
         var labelEl = document.getElementById('idx-stats-season-label');
         if (labelEl) labelEl.textContent = targetYear + '–' + String(targetYear+1).slice(2) + ' Season';
 
-        /* Compute stats */
+        /* Split into regular-season and championship tournaments */
+        var regularTourns = tourns.filter(function(t) {
+          return ((t.meta && t.meta.tournType) || 'regular') === 'regular';
+        });
+        var champTourns = tourns.filter(function(t) {
+          return t.meta && (t.meta.tournType === 'metro' || t.meta.tournType === 'nationals');
+        });
+
+        /* Compute stats — regular season only */
         var w = 0, l = 0;
 
-        /* Build last-name → full-name map for stub resolution */
+        /* Build last-name → full-name map for stub resolution (across all tourns for accuracy) */
         var lastToFull = {};
         tourns.forEach(function(t) {
           t.entries.forEach(function(e) {
@@ -604,7 +617,7 @@
         }
 
         var pairMap = {};
-        tourns.forEach(function(t) {
+        regularTourns.forEach(function(t) {
           /* maxRounds for this tournament — determines eligibility thresholds */
           var maxRounds = t.entries.reduce(function(m, e){ return Math.max(m, (e.wins||0)+(e.losses||0)); }, 0);
           t.entries.forEach(function(e) {
@@ -628,13 +641,59 @@
           return cUndef >= 1 || cQual >= 2;
         }).length;
 
-        setEl('idx-stat-tourneys', String(tourns.length));
+        setEl('idx-stat-tourneys', String(regularTourns.length));
         setEl('idx-stat-record',
           '<span style="color:#4ade80;">' + w + ' W</span>' +
           '<span style="color:rgba(255,255,255,0.35);font-size:0.65em;margin:0 4px;">–</span>' +
           '<span style="color:#E03030;">' + l + ' L</span>');
         setEl('idx-stat-winrate', winRate);
         setEl('idx-stat-metro', String(metroElig) + (metroElig === 1 ? '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pair</span>' : '<span style="font-size:0.55em;display:block;color:rgba(255,255,255,0.5);letter-spacing:0.05em;margin-top:2px;">pairs</span>'));
+
+        /* Championship panel */
+        if (champTourns.length) {
+          var champLines = [];
+          champTourns.forEach(function(t) {
+            var typ = t.meta.tournType;
+            var cooperEntries = (t.entries || []).filter(function(e) { return e.isCooper; });
+            if (!cooperEntries.length) return;
+            if (typ === 'metro') {
+              var allSorted = t.entries.slice().sort(function(a,b){ return (b.wins||0)-(a.wins||0); });
+              var bestRank = 999;
+              cooperEntries.forEach(function(e) {
+                var rank = allSorted.indexOf(e) + 1;
+                if (rank > 0 && rank < bestRank) bestRank = rank;
+              });
+              var sfx = bestRank === 1 ? 'st' : bestRank === 2 ? 'nd' : bestRank === 3 ? 'rd' : 'th';
+              champLines.push(
+                '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.85);margin-bottom:6px">' +
+                '<span style="color:#FFD700;font-weight:700">' + (t.meta.name || 'Metro Finals') + '</span>' +
+                ' — ' + cooperEntries.length + ' Cooper team' + (cooperEntries.length!==1?'s':'') +
+                (bestRank < 999 ? ' · Top finish: ' + bestRank + sfx + ' of ' + t.entries.length + ' teams' : '') +
+                '</div>'
+              );
+            } else {
+              cooperEntries.forEach(function(e) {
+                champLines.push(
+                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.85);margin-bottom:6px">' +
+                  '<span style="color:#c4b5fd;font-weight:700">' + (t.meta.name || 'Nationals') + '</span>' +
+                  (e.place ? ' — ' + e.place : '') +
+                  (e.teamName ? ' <span style="color:rgba(255,255,255,0.45)">(' + e.teamName + ')</span>' : '') +
+                  '</div>'
+                );
+              });
+            }
+          });
+          if (champLines.length) {
+            var panel   = document.getElementById('idx-champ-panel');
+            var content = document.getElementById('idx-champ-content');
+            if (panel && content) {
+              content.innerHTML =
+                '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:12px">🏆 Championship Results</div>' +
+                champLines.join('');
+              panel.style.display = '';
+            }
+          }
+        }
       }).catch(function(e){ console.warn('Home stats load failed', e); });
     } catch(e) { console.warn('Home stats init failed', e); }
   }

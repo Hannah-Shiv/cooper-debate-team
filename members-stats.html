@@ -2109,6 +2109,12 @@
     <div id="prof-metro-detail"></div>
   </div>
 
+  <!-- Championship History (shown only if debater has championship entries) -->
+  <div class="profile-section" id="prof-champ-section" style="display:none">
+    <div class="profile-section-title">Championship History</div>
+    <div id="prof-champ-detail"></div>
+  </div>
+
 </div><!-- /dashboard-wrap -->
 </main>
 </div><!-- /debater-profile-section -->
@@ -3018,6 +3024,7 @@ function parseNationalsCSV(text) {
    STATS  COMPUTATION
 ═══════════════════════════════════════════════════════════════ */
 function computeSeasonStats(tournaments) {
+  tournaments = tournaments.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   let totalW = 0, totalL = 0, totalSpeak = 0, speakCount = 0, entries = new Set();
   tournaments.forEach(t => {
     t.entries.forEach(e => {
@@ -3042,6 +3049,7 @@ function computeSeasonStats(tournaments) {
 }
 
 function computeLeaderboard(tournaments) {
+  tournaments = tournaments.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
@@ -3435,6 +3443,8 @@ function computeMetroEligibility(tournaments) {
   //   qualifying  = wins >= maxRounds-1 (2-1 ≡ 3-1)
   // Name resolution works without speaker CSV: stubs (first='') are matched to
   // full names via a last-name lookup built from other tournaments' full records.
+  // Championship tournaments (metro finals, nationals) are excluded from eligibility.
+  tournaments = tournaments.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
@@ -3489,6 +3499,60 @@ function computeMetroEligibility(tournaments) {
     if (b.countQualifying !== a.countQualifying) return b.countQualifying - a.countQualifying;
     return b.bestWins - a.bestWins;
   });
+}
+
+/* ── Championship helpers ─────────────────────────────────────── */
+function ordSuffix(n) {
+  const s = ['th','st','nd','rd'], v = n % 100;
+  return s[(v - 20) % 10] || s[v] || s[0];
+}
+
+/**
+ * Returns {metro: [...], nationals: [...]} for Cooper entries
+ * in championship-typed tournaments (not filtered to regular-only).
+ */
+function computeChampionshipResults(tournaments) {
+  const ltf = _buildLastToFull(tournaments);
+  const metro = [], nationals = [];
+  tournaments.forEach(t => {
+    const typ = (t.meta && t.meta.tournType) || 'regular';
+    if (typ !== 'metro' && typ !== 'nationals') return;
+    const allEntries  = t.entries || [];
+    const cooperEntries = allEntries.filter(e => e.isCooper);
+    if (!cooperEntries.length) return;
+    if (typ === 'metro') {
+      // Rank all entries by wins desc, teamSpeak desc
+      const allSorted = [...allEntries].sort((a, b) =>
+        (b.wins || 0) - (a.wins || 0) || ((b.teamSpeak || 0) - (a.teamSpeak || 0))
+      );
+      cooperEntries.forEach(e => {
+        const rank = allSorted.indexOf(e) + 1;
+        const pairK = _pairKey(e, ltf);
+        metro.push({
+          tournName: t.meta.name || 'Metro Finals',
+          date:      t.meta.date || '',
+          pair:      pairK || e.teamName || '—',
+          wins:      e.wins   || 0,
+          losses:    e.losses || 0,
+          rank:      rank || 1,
+          fieldSize: allEntries.length
+        });
+      });
+    } else {
+      cooperEntries.forEach(e => {
+        const pairK = _pairKey(e, ltf);
+        nationals.push({
+          tournName: t.meta.name || 'Nationals',
+          date:      t.meta.date || '',
+          pair:      pairK || e.teamName || '—',
+          place:     e.place || '',
+          wins:      e.wins   || 0,
+          losses:    e.losses || 0
+        });
+      });
+    }
+  });
+  return { metro, nationals };
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -5120,39 +5184,77 @@ function renderFullDebaterProfile(d) {
   });
   if (!myPairs.length) {
     metroDetail.innerHTML = '<p style="font-family:Josefin Sans,sans-serif;font-size:0.88rem;color:rgba(255,255,255,0.35)">No pair data available.</p>';
-    return;
+  } else {
+    metroDetail.innerHTML = `
+      <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 20px;line-height:1.7">
+        Eligible = 1× 4–0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3–1 or better)
+      </p>
+      ${myPairs.map(p => {
+        const pct40 = Math.min(p.count40 / 1, 1);
+        const pct31 = Math.min(p.count31 / 2, 1);
+        const partner = p.pair.split(' & ').find(n => n !== d.name) || '—';
+        return `<div style="background:rgba(5,18,65,0.88);border:1px solid rgba(212,160,23,0.14);border-radius:12px;padding:20px 22px;margin-bottom:14px">
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:16px">
+            With <span style="color:#fff">${partner}</span>
+            ${p.eligible ? '<span class="metro-eligible yes" style="margin-left:12px;font-size:0.7rem">✓ Eligible</span>' : '<span class="metro-eligible no" style="margin-left:12px;font-size:0.7rem">✗ Not Yet</span>'}
+          </div>
+          <div class="metro-progress-wrap">
+            <div class="metro-progress-label">4–0 Finishes: <strong>${p.count40} / 1 needed</strong></div>
+            <div class="metro-progress-bar-track">
+              <div class="metro-progress-bar-fill ${p.count40 >= 1 ? 'done' : ''}" style="width:${Math.min(pct40*100,100)}%"></div>
+            </div>
+          </div>
+          <div class="metro-progress-wrap" style="margin-top:12px">
+            <div class="metro-progress-label">3–1+ Finishes: <strong>${p.count31} / 2 needed</strong></div>
+            <div class="metro-progress-bar-track">
+              <div class="metro-progress-bar-fill ${p.count31 >= 2 ? 'done' : ''}" style="width:${Math.min(pct31*100,100)}%"></div>
+            </div>
+          </div>
+          <div style="margin-top:12px;font-family:'Josefin Sans',sans-serif;font-size:0.8rem">
+            <span class="metro-distance ${p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : ''}">${p.distance}</span>
+          </div>
+        </div>`;
+      }).join('')}
+    `;
   }
-  metroDetail.innerHTML = `
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.4);margin:0 0 20px;line-height:1.7">
-      Eligible = 1× 4–0 finish &nbsp;OR&nbsp; 2× tournaments with 3+ wins (3–1 or better)
-    </p>
-    ${myPairs.map(p => {
-      const pct40 = Math.min(p.count40 / 1, 1);
-      const pct31 = Math.min(p.count31 / 2, 1);
-      const partner = p.pair.split(' & ').find(n => n !== d.name) || '—';
-      return `<div style="background:rgba(5,18,65,0.88);border:1px solid rgba(212,160,23,0.14);border-radius:12px;padding:20px 22px;margin-bottom:14px">
-        <div style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:16px">
-          With <span style="color:#fff">${partner}</span>
-          ${p.eligible ? '<span class="metro-eligible yes" style="margin-left:12px;font-size:0.7rem">✓ Eligible</span>' : '<span class="metro-eligible no" style="margin-left:12px;font-size:0.7rem">✗ Not Yet</span>'}
-        </div>
-        <div class="metro-progress-wrap">
-          <div class="metro-progress-label">4–0 Finishes: <strong>${p.count40} / 1 needed</strong></div>
-          <div class="metro-progress-bar-track">
-            <div class="metro-progress-bar-fill ${p.count40 >= 1 ? 'done' : ''}" style="width:${Math.min(pct40*100,100)}%"></div>
+
+  // ── Championship History ────────────────────────────────────────────────────
+  const champSection = document.getElementById('prof-champ-section');
+  const champDetail  = document.getElementById('prof-champ-detail');
+  const champ = computeChampionshipResults(allTournaments);
+  const myMetro = champ.metro.filter(r => r.pair && r.pair.split(' & ').includes(d.name));
+  const myNat   = champ.nationals.filter(r => r.pair && r.pair.split(' & ').includes(d.name));
+  if (myMetro.length || myNat.length) {
+    champSection.style.display = '';
+    champDetail.innerHTML = [
+      ...myMetro.map(r => `
+        <div style="background:rgba(5,18,65,0.88);border:1px solid rgba(212,160,23,0.22);border-radius:12px;padding:20px 22px;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:1.05rem">🏆</span>
+            <span style="font-family:'Josefin Sans',sans-serif;font-weight:700;color:#FFD700;font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase">Metro Finals</span>
+            <span style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.38)">${r.tournName}${r.date ? ' · ' + r.date : ''}</span>
           </div>
-        </div>
-        <div class="metro-progress-wrap" style="margin-top:12px">
-          <div class="metro-progress-label">3–1+ Finishes: <strong>${p.count31} / 2 needed</strong></div>
-          <div class="metro-progress-bar-track">
-            <div class="metro-progress-bar-fill ${p.count31 >= 2 ? 'done' : ''}" style="width:${Math.min(pct31*100,100)}%"></div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:#FFD700;line-height:1">${r.wins}–${r.losses}</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.5);margin-top:5px">
+            Ranked ${r.rank}${ordSuffix(r.rank)} of ${r.fieldSize} teams in the field
           </div>
-        </div>
-        <div style="margin-top:12px;font-family:'Josefin Sans',sans-serif;font-size:0.8rem">
-          <span class="metro-distance ${p.eligible ? 'eligible' : p.count31 === 1 ? 'close' : ''}">${p.distance}</span>
-        </div>
-      </div>`;
-    }).join('')}
-  `;
+        </div>`),
+      ...myNat.map(r => `
+        <div style="background:rgba(5,18,65,0.88);border:1px solid rgba(139,92,246,0.28);border-radius:12px;padding:20px 22px;margin-bottom:12px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <span style="font-size:1.05rem">🌟</span>
+            <span style="font-family:'Josefin Sans',sans-serif;font-weight:700;color:#c4b5fd;font-size:0.78rem;letter-spacing:0.12em;text-transform:uppercase">Nationals</span>
+            <span style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.38)">${r.tournName}${r.date ? ' · ' + r.date : ''}</span>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:700;color:#c4b5fd;line-height:1">${r.place || (r.wins + '–' + r.losses)}</div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.5);margin-top:5px">
+            ${r.wins}–${r.losses} prelim record
+          </div>
+        </div>`)
+    ].join('');
+  } else {
+    champSection.style.display = 'none';
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════════

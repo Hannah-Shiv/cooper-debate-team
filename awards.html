@@ -329,8 +329,11 @@
       <div id="aw-highlights" class="aw-stat-strip" style="margin-bottom:32px;"></div>
 
       <!-- Tournament cards — full width 2-col grid -->
-      <div class="aw-chart-title" style="margin-bottom:16px;">Tournament Results</div>
+      <div class="aw-chart-title" style="margin-bottom:16px;">Regular Season Results</div>
       <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
+
+      <!-- Championship results (populated when championship data exists) -->
+      <div id="aw-champ-section" style="display:none;margin-bottom:40px;"></div>
 
       <!-- Chart grid: Win Distribution + Metro Finals Progress -->
       <div class="aw-chart-grid">
@@ -550,6 +553,7 @@ function pairKey(e, ltf) {
 
 /* ── Compute helpers ── */
 function computeSeasonStats(tourns) {
+  tourns = tourns.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const ltf=buildLastToFull(tourns);
   let w=0,l=0,speak=0,sc=0; const debaters=new Set();
   tourns.forEach(t=>t.entries.forEach(e=>{
@@ -572,6 +576,7 @@ function computeSeasonStats(tourns) {
 }
 
 function computeLeaderboard(tourns) {
+  tourns = tourns.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const ltf=buildLastToFull(tourns);
   const map={};
   tourns.forEach(t=>t.entries.forEach(e=>{
@@ -601,6 +606,7 @@ function computeLeaderboard(tourns) {
 }
 
 function computeMetroEligibility(tourns) {
+  tourns = tourns.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const ltf=buildLastToFull(tourns);
   const map={};
   tourns.forEach(t=>{
@@ -627,6 +633,39 @@ function computeMetroEligibility(tourns) {
       :'Need an undefeated or two qualifying finishes';
     return {...p, c40:cUndef, c31:cQual, eligible:elig, distance:dist, bestFinish:best};
   }).sort((a,b)=>b.eligible-a.eligible||b.c31-a.c31||b.bestWins-a.bestWins);
+}
+
+function ordSuffix(n) {
+  const s=['th','st','nd','rd'], v=n%100;
+  return s[(v-20)%10]||s[v]||s[0];
+}
+
+function computeChampionshipResults(tourns) {
+  const ltf=buildLastToFull(tourns);
+  const metro=[],nationals=[];
+  tourns.forEach(t=>{
+    const typ=(t.meta&&t.meta.tournType)||'regular';
+    if(typ!=='metro'&&typ!=='nationals') return;
+    const allE=t.entries||[];
+    const cooper=allE.filter(e=>e.isCooper);
+    if(!cooper.length) return;
+    if(typ==='metro'){
+      const sorted=[...allE].sort((a,b)=>(b.wins||0)-(a.wins||0)||((b.teamSpeak||0)-(a.teamSpeak||0)));
+      cooper.forEach(e=>{
+        const rank=sorted.indexOf(e)+1;
+        const pk=pairKey(e,ltf);
+        metro.push({tournName:t.meta.name||'Metro Finals',date:t.meta.date||'',pair:pk||e.teamName||'—',
+          wins:e.wins||0,losses:e.losses||0,rank:rank||1,fieldSize:allE.length});
+      });
+    } else {
+      cooper.forEach(e=>{
+        const pk=pairKey(e,ltf);
+        nationals.push({tournName:t.meta.name||'Nationals',date:t.meta.date||'',pair:pk||e.teamName||'—',
+          place:e.place||'',wins:e.wins||0,losses:e.losses||0});
+      });
+    }
+  });
+  return {metro,nationals};
 }
 
 function computeWinDist(tourns) {
@@ -944,6 +983,55 @@ function renderAwards(tourns) {
 
   /* Slot 4 reserved for future charts (Metro Finals, Nationals) */
   if (roundChart) { roundChart.destroy(); roundChart = null; }
+
+  /* ── Championship Results ── */
+  const champ = computeChampionshipResults(tourns);
+  const champEl = document.getElementById('aw-champ-section');
+  if (champ.metro.length || champ.nationals.length) {
+    champEl.style.display = '';
+    // Badge highlights
+    const champBadges = [];
+    if (champ.metro.length) {
+      champBadges.push({ num: champ.metro.length, lbl: `Metro Finals appearance${champ.metro.length!==1?'s':''}` });
+    }
+    if (champ.nationals.length) {
+      champBadges.push({ num: champ.nationals.length, lbl: `Nationals appearance${champ.nationals.length!==1?'s':''}` });
+    }
+    const topNat = champ.nationals.find(r => r.place && /champion|semifinal|quarter|octo/i.test(r.place));
+
+    champEl.innerHTML = `
+      <div class="aw-chart-title" style="margin-bottom:16px;">🏆 Championship Results</div>
+      ${champBadges.length ? `<div class="aw-stat-strip" style="margin-bottom:24px;">
+        ${champBadges.map(b=>`<div class="aw-stat-box">
+          <div class="aw-stat-num" style="font-size:clamp(2rem,5vw,3rem)">${b.num}</div>
+          <div class="aw-stat-divider"></div>
+          <div class="aw-stat-lbl">${b.lbl}</div>
+        </div>`).join('')}
+        ${topNat ? `<div class="aw-stat-box" style="border-color:rgba(139,92,246,0.5);">
+          <div class="aw-stat-num" style="font-size:clamp(1rem,2.5vw,1.4rem);padding-bottom:12px;color:#c4b5fd">${topNat.place}</div>
+          <div class="aw-stat-divider" style="background:linear-gradient(90deg,transparent,rgba(139,92,246,0.85) 30%,#c4b5fd 50%,rgba(139,92,246,0.85) 70%,transparent)"></div>
+          <div class="aw-stat-lbl" style="color:rgba(196,181,253,0.7)">Best Nationals Finish</div>
+        </div>` : ''}
+      </div>` : ''}
+      <div class="aw-tourn-grid" style="margin-bottom:0">
+        ${champ.metro.map(r=>`<div class="aw-tourn-card">
+          <div style="margin-bottom:8px"><span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif;color:rgba(212,160,23,0.85);background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.28);padding:2px 9px;border-radius:50px">Metro Finals</span></div>
+          <div class="aw-tourn-name">${r.tournName}</div>
+          <div class="aw-tourn-date">${fmtDate(r.date)}</div>
+          <div class="aw-tourn-rec">${r.pair}</div>
+          <div class="aw-tourn-sub">${r.wins}–${r.losses} · Ranked ${r.rank}${ordSuffix(r.rank)} of ${r.fieldSize} teams</div>
+        </div>`).join('')}
+        ${champ.nationals.map(r=>`<div class="aw-tourn-card" style="border-color:rgba(139,92,246,0.2);">
+          <div style="margin-bottom:8px"><span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif;color:rgba(196,181,253,0.9);background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28);padding:2px 9px;border-radius:50px">Nationals</span></div>
+          <div class="aw-tourn-name">${r.tournName}</div>
+          <div class="aw-tourn-date">${fmtDate(r.date)}</div>
+          <div class="aw-tourn-rec" style="color:#c4b5fd">${r.place || (r.wins+'–'+r.losses)}</div>
+          <div class="aw-tourn-sub">${r.wins}–${r.losses} prelim record · ${r.pair}</div>
+        </div>`).join('')}
+      </div>`;
+  } else {
+    champEl.style.display = 'none';
+  }
 }
 
 /* ── Data loading ── */

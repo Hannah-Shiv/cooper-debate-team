@@ -1760,6 +1760,7 @@ function _pairKey(e, ltf) {
 }
 
 function computeMetroEligibility(tournaments) {
+  tournaments = tournaments.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const ltf = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
@@ -1782,6 +1783,7 @@ function computeMetroEligibility(tournaments) {
 }
 
 function computeLeaderboard(tournaments) {
+  tournaments = tournaments.filter(t => ((t.meta?.tournType) || 'regular') === 'regular');
   const ltf = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
