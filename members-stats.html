@@ -1177,6 +1177,74 @@
     .stat-section.collapsed > *:not(.stat-section-title) { display:none; }
     .stat-section.collapsed > .stat-section-title { margin-bottom:0; }
 
+    /* ── Debaters & Pairs — card navigation row ─────────────── */
+    .deb-cards-row {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px;
+    }
+    .deb-card {
+      background:rgba(5,10,38,0.88); border-radius:14px;
+      border:1.5px solid rgba(255,255,255,0.08);
+      padding:20px 22px; cursor:pointer;
+      transition:border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      display:flex; flex-direction:column; gap:8px;
+    }
+    .deb-card-lb   { border-color:rgba(212,160,23,0.28); }
+    .deb-card-pair { border-color:rgba(167,139,250,0.28); }
+    .deb-card-prog { border-color:rgba(20,184,166,0.28); }
+    .deb-card-lb:hover,   .deb-card-lb.active   { border-color:rgba(212,160,23,0.7); background:rgba(212,160,23,0.07); box-shadow:0 4px 24px rgba(212,160,23,0.09); }
+    .deb-card-pair:hover, .deb-card-pair.active  { border-color:rgba(167,139,250,0.7); background:rgba(167,139,250,0.07); box-shadow:0 4px 24px rgba(167,139,250,0.09); }
+    .deb-card-prog:hover, .deb-card-prog.active  { border-color:rgba(20,184,166,0.7); background:rgba(20,184,166,0.07); box-shadow:0 4px 24px rgba(20,184,166,0.09); }
+    .deb-card-icon {
+      width:40px; height:40px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center; margin-bottom:2px;
+    }
+    .deb-icon-lb   { background:rgba(212,160,23,0.14); color:#FFD700; }
+    .deb-icon-pair { background:rgba(167,139,250,0.14); color:#c4b5fd; }
+    .deb-icon-prog { background:rgba(20,184,166,0.14); color:#2dd4bf; }
+    .deb-card-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
+      letter-spacing:0.13em; text-transform:uppercase;
+    }
+    .deb-card-lb .deb-card-title   { color:#c8a96e; }
+    .deb-card-pair .deb-card-title { color:#c4b5fd; }
+    .deb-card-prog .deb-card-title { color:#2dd4bf; }
+    .deb-card-desc {
+      font-family:'Josefin Sans',sans-serif; font-size:0.83rem;
+      color:rgba(255,255,255,0.38); line-height:1.55; flex:1;
+    }
+    .deb-card-action {
+      font-family:'Josefin Sans',sans-serif; font-size:0.85rem; font-weight:700;
+      letter-spacing:0.06em; margin-top:6px;
+    }
+    .deb-card-lb .deb-card-action   { color:rgba(200,169,110,0.75); }
+    .deb-card-pair .deb-card-action { color:rgba(167,139,250,0.75); }
+    .deb-card-prog .deb-card-action { color:rgba(20,184,166,0.75); }
+    /* Content areas */
+    .deb-section-content { border:1px solid rgba(255,255,255,0.08); border-radius:14px; overflow:hidden; margin-bottom:16px; }
+    .deb-content-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:13px 20px; background:rgba(4,8,30,0.97);
+      border-bottom:1px solid rgba(255,255,255,0.07);
+    }
+    .deb-header-lb   { border-bottom-color:rgba(212,160,23,0.22); }
+    .deb-header-pair { border-bottom-color:rgba(167,139,250,0.22); }
+    .deb-header-prog { border-bottom-color:rgba(20,184,166,0.22); }
+    .deb-content-header-left {
+      display:flex; align-items:center; gap:9px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.83rem; font-weight:700;
+      letter-spacing:0.13em; text-transform:uppercase;
+    }
+    .deb-header-lb   .deb-content-header-left { color:#c8a96e; }
+    .deb-header-pair .deb-content-header-left { color:#c4b5fd; }
+    .deb-header-prog .deb-content-header-left { color:#2dd4bf; }
+    .deb-hide-btn {
+      font-family:'Josefin Sans',sans-serif; font-size:0.82rem; font-weight:700;
+      letter-spacing:0.06em; background:transparent; border:none; cursor:pointer;
+      color:rgba(255,255,255,0.32); transition:color 0.15s; padding:0;
+    }
+    .deb-hide-btn:hover { color:rgba(255,255,255,0.7); }
+    .deb-content-body { padding:20px; }
+
     .drill-header {
       display:flex; flex-wrap:wrap; justify-content:space-between;
       align-items:flex-start; gap:16px; margin-bottom:24px;
@@ -1682,13 +1750,48 @@
     <!-- ══ DEBATERS & PAIRS TAB ══ -->
     <div class="tab-pane" id="tab-pairs">
 
-      <!-- Individual Leaderboard -->
-      <div class="stat-section collapsed">
-        <div class="stat-section-title">Individual Leaderboard <span id="season-badge-lb" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▶</button></div>
-        <div class="lb-table-wrap">
-          <table class="lb-table" id="lb-table">
-            <thead>
-              <tr>
+      <!-- ── Section navigation cards ──────────────────────────── -->
+      <div class="deb-cards-row">
+        <div class="deb-card deb-card-lb" id="deb-card-lb" onclick="toggleDebSection('lb')">
+          <div class="deb-card-icon deb-icon-lb">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+          </div>
+          <div class="deb-card-title">Individual Leaderboard</div>
+          <div class="deb-card-desc">Ranked by wins, win rate, and average speaker points</div>
+          <div class="deb-card-action" id="deb-action-lb">View Table ↓</div>
+        </div>
+        <div class="deb-card deb-card-pair" id="deb-card-pair" onclick="toggleDebSection('pair')">
+          <div class="deb-card-icon deb-icon-pair">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="15" cy="8" r="3"/><path d="M3 20c0-3.5 2.7-6 6-6h6c3.3 0 6 2.5 6 6"/></svg>
+          </div>
+          <div class="deb-card-title">Partnership Records</div>
+          <div class="deb-card-desc">Performance by debate pair</div>
+          <div class="deb-card-action" id="deb-action-pair">View Table ↓</div>
+        </div>
+        <div class="deb-card deb-card-prog" id="deb-card-prog" onclick="toggleDebSection('prog')">
+          <div class="deb-card-icon deb-icon-prog">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+          <div class="deb-card-title">Pair Progression</div>
+          <div class="deb-card-desc">How partnerships have performed tournament by tournament</div>
+          <div class="deb-card-action" id="deb-action-prog">View Table ↓</div>
+        </div>
+      </div>
+
+      <!-- ── Individual Leaderboard content ─────────────────────── -->
+      <div class="deb-section-content" id="deb-content-lb" style="display:none">
+        <div class="deb-content-header deb-header-lb">
+          <div class="deb-content-header-left">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Individual Leaderboard
+            <span id="season-badge-lb" class="season-scope-badge" style="display:none"></span>
+          </div>
+          <button class="deb-hide-btn" onclick="toggleDebSection('lb')">Hide Table ↑</button>
+        </div>
+        <div class="deb-content-body">
+          <div class="lb-table-wrap">
+            <table class="lb-table" id="lb-table">
+              <thead><tr>
                 <th style="cursor:default">#</th>
                 <th>Debater</th>
                 <th class="num">W</th>
@@ -1697,53 +1800,64 @@
                 <th class="num">Avg Speak</th>
                 <th class="num">Tournaments</th>
                 <th>Metro</th>
-              </tr>
-            </thead>
-            <tbody id="lb-tbody"></tbody>
-          </table>
+              </tr></thead>
+              <tbody id="lb-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <hr class="section-divider">
-
-      <!-- Partnership records -->
-      <div class="stat-section collapsed">
-        <div class="stat-section-title">Partnership Records <span id="season-badge-pair" class="season-scope-badge" style="display:none"></span><button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▶</button></div>
-        <div class="pair-table-wrap">
-          <table class="pair-table" id="pair-table">
-            <thead>
-              <tr>
+      <!-- ── Partnership Records content ────────────────────────── -->
+      <div class="deb-section-content" id="deb-content-pair" style="display:none">
+        <div class="deb-content-header deb-header-pair">
+          <div class="deb-content-header-left">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="15" cy="8" r="3"/><path d="M3 20c0-3.5 2.7-6 6-6h6c3.3 0 6 2.5 6 6"/></svg>
+            Partnership Records
+            <span id="season-badge-pair" class="season-scope-badge" style="display:none"></span>
+          </div>
+          <button class="deb-hide-btn" onclick="toggleDebSection('pair')">Hide Table ↑</button>
+        </div>
+        <div class="deb-content-body">
+          <div class="pair-table-wrap">
+            <table class="pair-table" id="pair-table">
+              <thead><tr>
                 <th>Partnership</th>
                 <th class="num">W</th>
                 <th class="num">L</th>
                 <th class="num">Win %</th>
                 <th class="num">Avg Team Speak</th>
                 <th class="num">Tournaments</th>
-              </tr>
-            </thead>
-            <tbody id="pair-tbody"></tbody>
-          </table>
+              </tr></thead>
+              <tbody id="pair-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
-      <hr class="section-divider">
-
-      <!-- Pair Progression chart -->
-      <div class="stat-section collapsed">
-        <div class="stat-section-title">Pair Progression <button class="section-collapse-btn" onclick="toggleSection(this)" title="Collapse/expand">▶</button></div>
-        <p style="font-family:'Josefin Sans',sans-serif;font-size:0.82rem;color:rgba(255,255,255,0.65);margin:-10px 0 18px;line-height:1.7">
-          Select a partnership to see their win rate tournament by tournament.
-        </p>
-        <div class="pair-prog-controls">
-          <select class="tourn-season-sel" id="pair-prog-sel" onchange="renderPairProgressionChart()" style="max-width:360px">
-            <option value="">— Select a pair —</option>
-          </select>
+      <!-- ── Pair Progression content ───────────────────────────── -->
+      <div class="deb-section-content" id="deb-content-prog" style="display:none">
+        <div class="deb-content-header deb-header-prog">
+          <div class="deb-content-header-left">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Pair Progression
+          </div>
+          <button class="deb-hide-btn" onclick="toggleDebSection('prog')">Hide ↑</button>
         </div>
-        <div id="pair-prog-msg" style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:16px;display:none"></div>
-        <div class="chart-card" id="pair-prog-card" style="margin-top:20px;display:none">
-          <div class="chart-card-title" id="pair-prog-title"></div>
-          <div class="chart-canvas-wrap" style="height:320px">
-            <canvas id="pair-prog-chart"></canvas>
+        <div class="deb-content-body">
+          <p style="font-family:'Josefin Sans',sans-serif;font-size:0.84rem;color:rgba(255,255,255,0.5);margin:0 0 18px;line-height:1.7">
+            Select a partnership to see their win rate tournament by tournament.
+          </p>
+          <div class="pair-prog-controls">
+            <select class="tourn-season-sel" id="pair-prog-sel" onchange="renderPairProgressionChart()" style="max-width:360px">
+              <option value="">— Select a pair —</option>
+            </select>
+          </div>
+          <div id="pair-prog-msg" style="font-family:'Josefin Sans',sans-serif;font-size:0.85rem;color:rgba(255,255,255,0.4);margin-top:16px;display:none"></div>
+          <div class="chart-card" id="pair-prog-card" style="margin-top:20px;display:none">
+            <div class="chart-card-title" id="pair-prog-title"></div>
+            <div class="chart-canvas-wrap" style="height:320px">
+              <canvas id="pair-prog-chart"></canvas>
+            </div>
           </div>
         </div>
       </div>
@@ -2818,6 +2932,25 @@ function computeRoundStats(tournaments) {
    TAB  SWITCHING
 ═══════════════════════════════════════════════════════════════ */
 /* ── Collapsible sections ───────────────────────────────────── */
+function toggleDebSection(key) {
+  ['lb','pair','prog'].forEach(k => {
+    const content = document.getElementById('deb-content-' + k);
+    const card    = document.getElementById('deb-card-' + k);
+    const action  = document.getElementById('deb-action-' + k);
+    if (!content) return;
+    if (k === key) {
+      const opening = content.style.display === 'none';
+      content.style.display = opening ? '' : 'none';
+      if (card)   card.classList.toggle('active', opening);
+      if (action) action.textContent = opening ? 'Hide Table ↑' : 'View Table ↓';
+    } else {
+      content.style.display = 'none';
+      if (card)   card.classList.remove('active');
+      if (action) action.textContent = 'View Table ↓';
+    }
+  });
+}
+
 function toggleSection(btn) {
   const section = btn.closest('.stat-section');
   const collapsed = section.classList.toggle('collapsed');
