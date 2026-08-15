@@ -3353,10 +3353,16 @@ function _paintLeaderboard(data) {
 function renderTournaments(tourns) {
   const grid = document.getElementById('tourn-grid');
   const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
-  const list = (tourns || allTournaments).slice().sort((a, b) => {
-    const da = new Date(a.meta.date || 0), db = new Date(b.meta.date || 0);
-    return db - da;   // latest first
-  });
+  function parseTournDate(str) {
+    if (!str) return 0;
+    // Strip ordinal suffixes: "10th" → "10", "1st" → "1", etc.
+    const cleaned = str.replace(/(\d+)(st|nd|rd|th)/gi, '$1');
+    const d = new Date(cleaned);
+    return isNaN(d) ? 0 : d.getTime();
+  }
+  const list = (tourns || allTournaments).slice().sort((a, b) =>
+    parseTournDate(b.meta.date) - parseTournDate(a.meta.date)   // latest first
+  );
 
   // Close any open detail panel when re-rendering
   openTournId = null;
