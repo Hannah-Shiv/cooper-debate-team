@@ -4625,24 +4625,33 @@ function openDebModalData(d) {
   profileBtn.href = `members-stats.html?debater=${slug}`;
 
   const body = document.getElementById('deb-modal-body');
-  body.innerHTML = d.tournDetails.map(t => {
+  // Sort tournaments oldest → newest so the timeline reads naturally
+  const sortedTournDetails = [...d.tournDetails].sort((a, b) => {
+    const da = parseTournDate(a.date), db = parseTournDate(b.date);
+    return (isNaN(da) ? 0 : da) - (isNaN(db) ? 0 : db);
+  });
+  body.innerHTML = sortedTournDetails.map(t => {
+    const hasSpeak = t.avgSpeak > 0 || t.totalSpeaks > 0;
     const rows = t.rounds.filter(r => r.result !== 'BYE').map(r =>
       `<tr>
         <td>Round ${r.round}</td>
         <td class="result-${r.result.toLowerCase()}">${r.result}</td>
-        <td><span class="speak-badge">${r.speak.toFixed(1)}</span></td>
+        <td>${hasSpeak ? `<span class="speak-badge">${r.speak.toFixed(1)}</span>` : '<span style="color:rgba(255,255,255,0.3)">—</span>'}</td>
       </tr>`
     ).join('');
+    const speakDisplay = hasSpeak
+      ? `<div><span style="font-family:'Josefin Sans',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4)">Avg Speak</span><br><span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#FFD700">${t.avgSpeak.toFixed(2)}</span></div>`
+      : '';
     return `<div class="deb-tourn-section">
       <div class="deb-tourn-section-name">${t.name} &nbsp;·&nbsp; ${t.date ? parseTournDate(t.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : ''}</div>
       <div style="display:flex;gap:20px;margin-bottom:12px;flex-wrap:wrap">
         <div><span style="font-family:'Josefin Sans',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4)">Record</span><br><span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#FFD700">${t.wins}–${t.losses}</span></div>
-        <div><span style="font-family:'Josefin Sans',sans-serif;font-size:0.6rem;text-transform:uppercase;letter-spacing:0.12em;color:rgba(255,255,255,0.4)">Avg Speak</span><br><span style="font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:700;color:#FFD700">${t.avgSpeak.toFixed(2)}</span></div>
+        ${speakDisplay}
       </div>
-      <table class="round-row-table">
+      ${rows ? `<table class="round-row-table">
         <thead><tr><th>Round</th><th>Result</th><th>Speaker Pts</th></tr></thead>
         <tbody>${rows}</tbody>
-      </table>
+      </table>` : '<p style="color:rgba(255,255,255,0.3);font-family:Josefin Sans,sans-serif;font-size:0.8rem">No round-by-round data — imported without speaker CSV</p>'}
     </div>`;
   }).join('');
 
