@@ -1591,7 +1591,7 @@
               </svg>
             </span>
             <div class="file-drop-text">
-              <div class="file-drop-label">Speaker Awards CSV</div>
+              <div class="file-drop-label">Speaker Awards CSV <span style="font-size:0.75em;opacity:0.55;font-weight:400">(optional)</span></div>
               <div class="file-drop-hint" id="hint-speak">Individual speaker points per round</div>
             </div>
             <button class="file-drop-clear" title="Remove file" onclick="clearFile(event,'speak')">✕</button>
@@ -5251,7 +5251,7 @@ async function runImport() {
   if (!topicType) missing.push('Debate Format');
   if (!topic)     missing.push('Resolution');
   if (!teamCsvText)  missing.push('Entry Results CSV');
-  if (!speakCsvText) missing.push('Speaker Awards CSV');
+  // Speaker Awards CSV is optional — no validation required
   if (missing.length) {
     setStatus('error', `Missing required fields: ${missing.join(' · ')}`);
     return;
@@ -5262,7 +5262,7 @@ async function runImport() {
   try {
     // ── Step 1: Extract ──────────────────────────────────────────
     const teamEntries = parseTeamCSV(teamCsvText);
-    const debaters    = parseSpeakerCSV(speakCsvText);
+    const debaters    = speakCsvText ? parseSpeakerCSV(speakCsvText) : [];
     const totalRows   = teamEntries.length + debaters.length;
 
     // ── Step 2: Transform ────────────────────────────────────────
