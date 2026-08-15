@@ -3191,18 +3191,55 @@ function renderFiltered() {
 /* ═══════════════════════════════════════════════════════════════
    METRO  FINALS  ELIGIBILITY
 ═══════════════════════════════════════════════════════════════ */
+// ── Metro name-resolution helpers ───────────────────────────────────────────
+// Build last-name (lowercase) → full name map from entries that have full records.
+function _buildLastToFull(tournaments) {
+  const m = {};
+  tournaments.forEach(t => t.entries.forEach(e =>
+    (e.debaters || []).forEach(d => {
+      const first = (d.first || '').trim();
+      const last  = (d.last  || '').trim();
+      if (first && last) m[last.toLowerCase()] = `${first} ${last}`;
+    })
+  ));
+  return m;
+}
+// Resolve a single debater object → display name, using lastToFull for stubs.
+function _resolveDebName(d, lastToFull) {
+  const first = (d.first || '').trim();
+  const last  = (d.last  || '').trim();
+  if (first) return `${first} ${last}`;
+  return lastToFull[last.toLowerCase()] || last;
+}
+// Parse "Shiv & Gibbons" teamName → sorted full-name pair, or null if unusable.
+function _teamNameToPair(teamName, lastToFull) {
+  if (!teamName) return null;
+  const parts = teamName.split('&').map(s => s.trim()).filter(Boolean);
+  if (parts.length !== 2) return null;
+  return parts.map(last => lastToFull[last.toLowerCase()] || last).sort();
+}
+// Canonical pair key for an entry — works with or without speaker CSV.
+function _pairKey(e, lastToFull) {
+  const debs = e.debaters || [];
+  if (debs.length >= 2) return debs.map(d => _resolveDebName(d, lastToFull)).sort().join(' & ');
+  return (_teamNameToPair(e.teamName, lastToFull) || []).join(' & ') || null;
+}
+// ────────────────────────────────────────────────────────────────────────────
+
 function computeMetroEligibility(tournaments) {
   // Per-pair, track finishes across tournaments.
   // Each finish stores {wins, maxRounds} so 3-round tournaments are handled correctly:
   //   undefeated = wins === maxRounds  (3-0 ≡ 4-0)
   //   qualifying  = wins >= maxRounds-1 (2-1 ≡ 3-1)
+  // Name resolution works without speaker CSV: stubs (first='') are matched to
+  // full names via a last-name lookup built from other tournaments' full records.
+  const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
-    const maxRounds = t.entries.reduce((m, e) => Math.max(m, e.wins + e.losses), 0);
+    const maxRounds = t.entries.reduce((m, e) => Math.max(m, (e.wins||0) + (e.losses||0)), 0);
     t.entries.forEach(e => {
-      if (e.debaters.length < 2) return;
-      const names = e.debaters.map(d => `${d.first} ${d.last}`.trim()).sort();
-      const key = names.join(' & ');
+      const key = _pairKey(e, lastToFull);
+      if (!key) return;
       if (!map[key]) map[key] = { pair: key, tourns: 0, finishes: [], bestWins: 0, bestMaxRounds: 4 };
       const pm = map[key];
       pm.tourns++;
@@ -4908,15 +4945,15 @@ function renderFullDebaterProfile(d) {
 
 // Build pair → metro eligibility map from a set of tournaments
 function buildMetroMap(tournaments) {
+  const lastToFull = _buildLastToFull(tournaments);
   const map = {};
   tournaments.forEach(t => {
-    const maxRounds = t.entries.reduce((m, e) => Math.max(m, e.wins + e.losses), 0);
+    const maxRounds = t.entries.reduce((m, e) => Math.max(m, (e.wins||0) + (e.losses||0)), 0);
     t.entries.forEach(e => {
-      if (e.debaters.length < 2) return;
-      const names = e.debaters.map(d => `${d.first} ${d.last}`.trim()).sort();
-      const key = names.join(' & ');
+      const key = _pairKey(e, lastToFull);
+      if (!key) return;
       if (!map[key]) map[key] = { pair: key, finishes: [] };
-      map[key].finishes.push({ wins: e.wins, maxRounds });
+      map[key].finishes.push({ wins: e.wins||0, maxRounds });
     });
   });
   const result = {};
@@ -4942,9 +4979,10 @@ function buildMetroMap(tournaments) {
 }
 
 // Get the normalized pair key for an entry (same logic as computeMetroEligibility)
-function entryPairKey(entry) {
-  if (!entry.debaters || entry.debaters.length < 2) return null;
-  return entry.debaters.map(d => `${d.first} ${d.last}`).sort().join(' & ');
+// Accepts optional lastToFull map; builds one from allTournaments if omitted.
+function entryPairKey(entry, lastToFull) {
+  const ltf = lastToFull || _buildLastToFull(allTournaments);
+  return _pairKey(entry, ltf);
 }
 
 function toggleTournDetail(id) {
