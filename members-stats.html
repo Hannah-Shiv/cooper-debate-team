@@ -2474,8 +2474,8 @@ function _paintProfileTournaments(data) {
       <td style="color:rgba(255,255,255,0.7)">${t.partnerName}</td>
       <td class="num" style="${resultCls};font-weight:700">${t.wins}</td>
       <td class="num">${t.losses}</td>
-      <td class="num"><span class="speak-badge">${t.avgSpeak.toFixed(2)}</span></td>
-      <td class="num">${t.totalSpeaks.toFixed(1)}</td>
+      <td class="num">${t.avgSpeak > 0 || t.totalSpeaks > 0 ? `<span class="speak-badge">${t.avgSpeak.toFixed(2)}</span>` : '<span style="color:rgba(255,255,255,0.3)">—</span>'}</td>
+      <td class="num">${t.avgSpeak > 0 || t.totalSpeaks > 0 ? t.totalSpeaks.toFixed(1) : '<span style="color:rgba(255,255,255,0.3)">—</span>'}</td>
     </tr>`;
   }).join('');
 }
@@ -4467,13 +4467,12 @@ function populatePairProgressionSelect(pairings) {
 
 function computePairProgression(pairName) {
   const results = [];
-  const nameParts = pairName.split(' & ').map(n => n.trim().toLowerCase());
+  const _ltfProg = _buildLastToFull(allTournaments);
   allTournaments.forEach(t => {
     t.entries.forEach(e => {
-      if (e.debaters.length < 2) return;
-      const debNames = e.debaters.map(d => `${d.first} ${d.last}`.toLowerCase()).sort();
-      const matchParts = nameParts.slice().sort();
-      if (JSON.stringify(debNames) === JSON.stringify(matchParts)) {
+      const key = _pairKey(e, _ltfProg);
+      if (!key) return;
+      if (key.toLowerCase() === pairName.toLowerCase()) {
         const d = parseTournDate(t.meta.date);
         const dateLabel = isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         results.push({
@@ -4768,10 +4767,11 @@ function renderFullDebaterProfile(d) {
     const d = parseTournDate(t.date);
     return isNaN(d) ? t.name.slice(0,18) : d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'2-digit'});
   });
-  const chartData = sortedDetails.map(t => t.avgSpeak);
+  // null out speaks for tournaments imported without a speaker CSV
+  const chartData = sortedDetails.map(t => (t.avgSpeak > 0 || t.totalSpeaks > 0) ? t.avgSpeak : null);
   const chartWinData = sortedDetails.map(t => t.wins + t.losses > 0 ? +((t.wins/(t.wins+t.losses))*100).toFixed(1) : null);
 
-  // Trend pill for speaks line
+  // Trend pill — only considers tournaments that actually have speak data
   const validSpeak = chartData.filter(v => v !== null && v !== undefined);
   let spkPillLabel = null, spkPillBg = 'rgba(60,70,110,0.9)';
   if (validSpeak.length >= 2) {
@@ -4800,6 +4800,7 @@ function renderFullDebaterProfile(d) {
           pointBorderColor: '#1c2030',
           pointRadius: 7, pointHoverRadius: 10,
           tension: 0.35, fill: true, borderWidth: 3,
+          spanGaps: false,
           yAxisID: 'y',
         },
         {
