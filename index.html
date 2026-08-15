@@ -16,6 +16,64 @@
     /* Base: stats 4-col grid (set here so media queries can override) */
     #idx-stats-grid { grid-template-columns: repeat(4,1fr) !important; }
 
+    /* Stat card icon circle */
+    .idx-stat-icon {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(212,160,23,0.5);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      background: rgba(212,160,23,0.07);
+    }
+    .idx-stat-icon svg { display: block; }
+
+    /* Championship panel two-column layout */
+    #idx-champ-grid { display: grid; grid-template-columns: 1fr; gap: 18px; }
+    @media (min-width: 760px) {
+      #idx-champ-grid { grid-template-columns: 2fr 1fr; }
+    }
+
+    /* Sparkle background for championship card */
+    .idx-champ-main {
+      position: relative;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 70% 50%, rgba(212,160,23,0.12) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(212,160,23,0.06) 0%, transparent 50%),
+                  rgba(9,22,62,0.95);
+      border: 1px solid rgba(212,160,23,0.45);
+      border-radius: 14px;
+      padding: 28px 28px 28px 24px;
+    }
+    .idx-champ-main::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image:
+        radial-gradient(circle, rgba(255,215,0,0.55) 1px, transparent 1px),
+        radial-gradient(circle, rgba(255,215,0,0.3) 1px, transparent 1px);
+      background-size: 60px 60px, 37px 37px;
+      background-position: 0 0, 30px 30px;
+      opacity: 0.18;
+    }
+
+    /* Place number */
+    .idx-champ-place {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(3rem, 7vw, 5rem);
+      font-weight: 700;
+      color: #FFD700;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(255,215,0,0.5), 0 2px 4px rgba(0,0,0,0.4);
+    }
+
+    /* Metro right card */
+    .idx-metro-card {
+      background: rgba(9,26,66,0.88);
+      border: 1px solid rgba(212,160,23,0.35);
+      border-radius: 14px;
+      padding: 28px 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
       /* Stats: 4-col → 2×2 */
       #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
@@ -219,31 +277,67 @@
     <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
       <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
       <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
-      <div id="idx-stats-grid" style="display:grid;gap:18px;margin-bottom:36px;">
-        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-tourneys">…</div>
-          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Tournaments</div>
+
+      <!-- 4-stat top row -->
+      <div id="idx-stats-grid" style="display:grid;gap:18px;margin-bottom:24px;">
+
+        <!-- Tournaments -->
+        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div class="idx-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 2h12v10a6 6 0 0 1-12 0V2z"/><path d="M6 7H3a2 2 0 0 0 0 4h3"/><path d="M18 7h3a2 2 0 0 1 0 4h-3"/><line x1="12" y1="18" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>
+            </svg>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:14px;text-shadow:0 0 18px rgba(242,209,107,0.45);" id="idx-stat-tourneys">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 12px;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.6);">Tournaments</div>
         </div>
-        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-record">…</div>
-          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Team Record</div>
+
+        <!-- Team Record -->
+        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div class="idx-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/><line x1="22" y1="2" x2="16" y2="8"/><line x1="19" y1="2" x2="22" y2="5"/>
+            </svg>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:14px;text-shadow:0 0 18px rgba(242,209,107,0.45);" id="idx-stat-record">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 12px;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.6);">Team Record</div>
         </div>
-        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-winrate">…</div>
-          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Win Rate</div>
+
+        <!-- Win Rate -->
+        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div class="idx-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:14px;text-shadow:0 0 18px rgba(242,209,107,0.45);" id="idx-stat-winrate">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 12px;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.6);">Win Rate</div>
         </div>
-        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:32px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
-          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:16px;text-shadow:0 1px 3px rgba(255,255,255,0.2),0 0 14px rgba(242,209,107,0.35);" id="idx-stat-metro">…</div>
-          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;flex-shrink:0;"></div>
-          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.65);">Metro Qualified</div>
+
+        <!-- Metro Qualified -->
+        <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:28px 20px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
+          <div class="idx-stat-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:3.4rem;font-weight:600;color:#F2D16B;line-height:1;padding-bottom:14px;text-shadow:0 0 18px rgba(242,209,107,0.45);" id="idx-stat-metro">…</div>
+          <div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 12px;"></div>
+          <div style="font-family:'Josefin Sans',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.6);line-height:1.4;">Pairs Qualified<br>for Metro Finals</div>
         </div>
       </div>
-      <!-- Championship results panel (hidden until JS populates it) -->
-      <div id="idx-champ-panel" style="display:none;margin-top:28px;padding:22px 28px;background:rgba(212,160,23,0.06);border:1px solid rgba(212,160,23,0.3);border-radius:12px;">
-        <div id="idx-champ-content"></div>
+
+      <!-- Championship panel (hidden until JS populates it) -->
+      <div id="idx-champ-panel" style="display:none;margin-top:8px;">
+        <div id="idx-champ-grid">
+          <!-- main card — JS fills idx-champ-content -->
+          <div id="idx-champ-content" class="idx-champ-main"></div>
+          <!-- right card — JS fills idx-champ-right (hidden if no content) -->
+          <div id="idx-champ-right" style="display:none;" class="idx-metro-card"></div>
+        </div>
       </div>
 
       <div style="text-align:center;margin-top:32px;">
@@ -651,46 +745,96 @@
 
         /* Championship panel */
         if (champTourns.length) {
-          var champLines = [];
+          var mainCards = [];
+          var hasChampContent = false;
+
           champTourns.forEach(function(t) {
             var typ = t.meta.tournType;
             var cooperEntries = (t.entries || []).filter(function(e) { return e.isCooper; });
             if (!cooperEntries.length) return;
+            hasChampContent = true;
+
             if (typ === 'metro') {
-              var allSorted = t.entries.slice().sort(function(a,b){ return (b.wins||0)-(a.wins||0); });
+              var allSorted = t.entries.slice().sort(function(a,b){
+                if ((b.wins||0) !== (a.wins||0)) return (b.wins||0)-(a.wins||0);
+                var bSpk = (b.speakerPoints||b.teamSpeak||0), aSpk = (a.speakerPoints||a.teamSpeak||0);
+                return bSpk - aSpk;
+              });
               var bestRank = 999;
               cooperEntries.forEach(function(e) {
                 var rank = allSorted.indexOf(e) + 1;
                 if (rank > 0 && rank < bestRank) bestRank = rank;
               });
-              var sfx = bestRank === 1 ? 'st' : bestRank === 2 ? 'nd' : bestRank === 3 ? 'rd' : 'th';
-              champLines.push(
-                '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.85);margin-bottom:6px">' +
-                '<span style="color:#FFD700;font-weight:700">' + (t.meta.name || 'Metro Finals') + '</span>' +
-                ' — ' + cooperEntries.length + ' Cooper team' + (cooperEntries.length!==1?'s':'') +
-                (bestRank < 999 ? ' · Top finish: ' + bestRank + sfx + ' of ' + t.entries.length + ' teams' : '') +
+              var sfx = bestRank===1?'st':bestRank===2?'nd':bestRank===3?'rd':'th';
+              var placeLabel = bestRank < 999 ? (bestRank + '<sup style="font-size:0.45em;vertical-align:super;">' + sfx.toUpperCase() + '</sup> <span style="font-size:0.55em;font-weight:600">PLACE</span>') : '';
+              mainCards.push(
+                '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
+                  /* Plaque image */
+                  '<img src="images/icon-plaque.png" alt="Championship Plaque" style="width:clamp(90px,18vw,130px);flex-shrink:0;filter:drop-shadow(0 4px 24px rgba(212,160,23,0.45));transform:rotate(-3deg)"/>' +
+                  /* Details */
+                  '<div style="flex:1;min-width:180px;">' +
+                    /* Badge + hierarchy */
+                    '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
+                      '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#FFD700;background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.4);padding:3px 10px;border-radius:50px;">🏆 Metro Finals · Elite Championship</span>' +
+                    '</div>' +
+                    '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.6rem;font-weight:600;letter-spacing:0.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:8px;">Nationals &nbsp;›&nbsp; <span style="color:rgba(212,160,23,0.7)">Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>' +
+                    /* Tournament name */
+                    '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:clamp(0.85rem,2vw,1.05rem);font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:10px;line-height:1.3;">' + (t.meta.name || 'Metro Finals') + '</div>' +
+                    /* Place */
+                    (placeLabel ? '<div class="idx-champ-place" style="margin-bottom:6px;">' + placeLabel + '</div>' : '') +
+                    /* Field size */
+                    (bestRank < 999 ? '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.45);letter-spacing:0.06em;margin-bottom:10px;">⭐ of ' + t.entries.length + ' teams &nbsp;⭐</div>' : '') +
+                    /* Cooper teams */
+                    '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:6px;">' +
+                      '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(212,160,23,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+                      cooperEntries.length + ' Cooper team' + (cooperEntries.length!==1?'s':'') + ' competed' +
+                    '</div>' +
+                  '</div>' +
                 '</div>'
               );
             } else {
+              /* Nationals */
               cooperEntries.forEach(function(e) {
-                champLines.push(
-                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.85);margin-bottom:6px">' +
-                  '<span style="color:#c4b5fd;font-weight:700">' + (t.meta.name || 'Nationals') + '</span>' +
-                  (e.place ? ' — ' + e.place : '') +
-                  (e.teamName ? ' <span style="color:rgba(255,255,255,0.45)">(' + e.teamName + ')</span>' : '') +
+                mainCards.push(
+                  '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
+                    '<img src="images/icon-plaque.png" alt="Nationals Plaque" style="width:clamp(90px,18vw,130px);flex-shrink:0;filter:drop-shadow(0 4px 24px rgba(139,92,246,0.5)) hue-rotate(260deg) saturate(0.7);transform:rotate(-3deg)"/>' +
+                    '<div style="flex:1;min-width:180px;">' +
+                      '<div style="margin-bottom:10px;">' +
+                        '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);padding:3px 10px;border-radius:50px;">🌟 NSDA Nationals</span>' +
+                      '</div>' +
+                      '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:clamp(0.85rem,2vw,1.05rem);font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:10px;line-height:1.3;">' + (t.meta.name || 'Nationals') + '</div>' +
+                      (e.place ? '<div class="idx-champ-place" style="color:#c4b5fd;text-shadow:0 0 30px rgba(139,92,246,0.6);margin-bottom:6px;">' + e.place + '</div>' : '') +
+                      (e.teamName ? '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.78rem;color:rgba(255,255,255,0.5);">' + e.teamName + '</div>' : '') +
+                    '</div>' +
                   '</div>'
                 );
               });
             }
           });
-          if (champLines.length) {
+
+          if (hasChampContent) {
             var panel   = document.getElementById('idx-champ-panel');
             var content = document.getElementById('idx-champ-content');
             if (panel && content) {
-              content.innerHTML =
-                '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(212,160,23,0.8);margin-bottom:12px">🏆 Championship Results</div>' +
-                champLines.join('');
+              content.innerHTML = mainCards.join('<hr style="border:none;border-top:1px solid rgba(212,160,23,0.15);margin:22px 0;position:relative;z-index:1"/>');
               panel.style.display = '';
+            }
+
+            /* Right card — metro qualified detail */
+            if (metroElig > 0) {
+              var rightCard = document.getElementById('idx-champ-right');
+              if (rightCard) {
+                rightCard.style.display = '';
+                rightCard.innerHTML =
+                  '<div style="width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(212,160,23,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;background:rgba(212,160,23,0.07);">' +
+                    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
+                  '</div>' +
+                  '<div style="font-family:\'Cormorant Garamond\',serif;font-size:3.4rem;font-weight:700;color:#F2D16B;line-height:1;text-shadow:0 0 18px rgba(242,209,107,0.45);margin-bottom:12px;">' + metroElig + '</div>' +
+                  '<div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;"></div>' +
+                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;">Pairs Qualified<br>for Metro Finals</div>' +
+                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;color:rgba(255,255,255,0.35);line-height:1.6;">These pairs earned their spot among the top in the metro.</div>' +
+                  '<div style="margin-top:16px;font-size:1rem;letter-spacing:0.15em;color:rgba(212,160,23,0.5);">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>';
+              }
             }
           }
         }
