@@ -5076,7 +5076,7 @@ function _paintDrillEntries(data) {
           const n = `${d.first} ${d.last}`;
           return `<span class="deb-link entry-deb-names" onclick="openDebModalByName('${n.replace(/'/g,"\\'")}')">${n}</span>`;
         }).join('<span style="color:rgba(255,255,255,0.35);letter-spacing:0.04em;margin:0 6px;font-size:0.82rem">●──●</span>')
-      : (e.debNames || '—');
+      : `<span class="entry-deb-names" style="color:rgba(255,255,255,0.55)">${e.teamName || '—'}</span>`;
     return `<tr>
       <td>${clickableDebs}</td>
       <td class="num">${e.wins}</td>
