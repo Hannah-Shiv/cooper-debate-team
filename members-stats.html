@@ -2841,13 +2841,13 @@ function computeLeaderboard(tournaments) {
       const partnerNames = e.debaters.map(d => `${d.first} ${d.last}`);
       e.debaters.forEach(d => {
         const key = `${d.first} ${d.last}`;
-        if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournaments: 0, partners: new Set(), tournDetails: [] };
+        if (!map[key]) map[key] = { name: key, first: d.first, last: d.last, wins: 0, losses: 0, speakSum: 0, roundCount: 0, tournSet: new Set(), partners: new Set(), tournDetails: [] };
         const dm = map[key];
         dm.wins   += d.wins;
         dm.losses += d.losses;
         dm.speakSum   += d.totalSpeaks;
         dm.roundCount += d.rounds.filter(r => r.result !== 'BYE').length;
-        dm.tournaments++;
+        dm.tournSet.add(t.id);
         partnerNames.filter(p => p !== key).forEach(p => dm.partners.add(p));
         dm.tournDetails.push({
           name:       t.meta.name,
@@ -2876,6 +2876,7 @@ function computeLeaderboard(tournaments) {
     });
     return {
       ...d,
+      tournaments: d.tournSet.size,
       avgSpeak: d.roundCount > 0 ? +(d.speakSum / d.roundCount).toFixed(2) : 0,
       winRate:  d.wins + d.losses > 0 ? d.wins / (d.wins + d.losses) : 0,
       partnerList: [...d.partners].join(', '),
