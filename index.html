@@ -81,6 +81,36 @@
       text-align: center;
        box-shadow: 0 16px 34px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
     }
+     .idx-champ-date {
+       display:flex; align-items:center; gap:11px; width:fit-content; min-width:260px;
+       margin:8px 0 16px; padding:9px 14px; border:1px solid rgba(242,193,66,0.65);
+       border-radius:10px; background:rgba(5,17,48,0.58);
+       box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+     }
+     .idx-champ-date-label {
+       padding-right:11px; border-right:1px solid rgba(242,193,66,0.34);
+       font-family:'Josefin Sans',sans-serif; font-size:0.7rem; font-weight:700;
+       letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.6);
+     }
+     .idx-champ-date-value {
+       font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:700;
+       color:rgba(255,255,255,0.95); line-height:1;
+     }
+     .idx-champ-foot { display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+     .idx-champ-field {
+       font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
+       color:rgba(255,255,255,0.58); letter-spacing:0.04em;
+     }
+     .idx-champ-competed {
+       display:flex; align-items:center; gap:6px; padding-left:12px;
+       border-left:1px solid rgba(242,193,66,0.28); font-family:'Josefin Sans',sans-serif;
+       font-size:0.88rem; color:rgba(255,255,255,0.66);
+     }
+     @media (max-width:520px) {
+       .idx-champ-date { min-width:0; width:100%; }
+       .idx-champ-date-value { font-size:1.15rem; }
+       .idx-champ-competed { padding-left:0; border-left:none; }
+     }
 
     @media (max-width: 768px) {
       /* Stats: 4-col → 2×2 */
@@ -646,8 +676,20 @@
     if (!str) return new Date(NaN);
     var d = new Date(str + 'T12:00:00');
     if (!isNaN(d)) return d;
+    var readable = new Date(str);
+    if (!isNaN(readable)) return readable;
     var c = str.replace(/(\d+)(st|nd|rd|th)\b/gi,'$1').replace(/^[A-Za-z]+[,]?\s*/,'');
     return new Date(c);
+  }
+  function formatChampDate(str) {
+    var d = parseTournDate(str);
+    if (isNaN(d)) return str || '';
+    var day = d.getDate();
+    var suffix = day % 10 === 1 && day !== 11 ? 'st' :
+                 day % 10 === 2 && day !== 12 ? 'nd' :
+                 day % 10 === 3 && day !== 13 ? 'rd' : 'th';
+    return day + suffix + ' ' +
+      d.toLocaleDateString('en-US', {month:'short'}) + ' ' + d.getFullYear();
   }
   function dateToSeasonYear(d) {
     return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1;
@@ -782,10 +824,11 @@
               });
               var sfx = bestRank===1?'st':bestRank===2?'nd':bestRank===3?'rd':'th';
               var placeLabel = bestRank < 999 ? (bestRank + '<sup style="font-size:0.45em;vertical-align:super;">' + sfx.toUpperCase() + '</sup> <span style="font-size:0.55em;font-weight:600">PLACE</span>') : '';
+              var champDate = formatChampDate(t.meta.date);
               mainCards.push(
                 '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
                   /* Plaque image */
-                   '<img src="images/icon-plaque.png" alt="Championship Plaque" style="width:clamp(90px,18vw,130px);flex-shrink:0;filter:drop-shadow(0 5px 24px rgba(212,160,23,0.55)) contrast(1.08) saturate(1.08);transform:rotate(-3deg)"/>' +
+                    '<img src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque" style="width:clamp(110px,17vw,160px);flex-shrink:0;filter:drop-shadow(0 7px 26px rgba(212,160,23,0.6)) contrast(1.06) saturate(1.08);"/>' +
                   /* Details */
                   '<div style="flex:1;min-width:180px;">' +
                     /* Badge + hierarchy */
@@ -798,12 +841,14 @@
                     /* Place */
                     (placeLabel ? '<div class="idx-champ-place" style="margin-bottom:6px;">' + placeLabel + '</div>' : '') +
                     /* Field size */
-                    (bestRank < 999 ? '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.45);letter-spacing:0.06em;margin-bottom:10px;">⭐ of ' + t.entries.length + ' teams &nbsp;⭐</div>' : '') +
+                    (champDate ? '<div class="idx-champ-date"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg><span class="idx-champ-date-label">Date</span><span class="idx-champ-date-value">' + champDate + '</span></div>' : '') +
+                    '<div class="idx-champ-foot">' +
+                    (bestRank < 999 ? '<div class="idx-champ-field">⭐ of ' + t.entries.length + ' teams</div>' : '') +
                     /* Cooper teams */
-                    '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.55);display:flex;align-items:center;gap:6px;">' +
+                    '<div class="idx-champ-competed">' +
                       '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(212,160,23,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
                       cooperEntries.length + ' Cooper team' + (cooperEntries.length!==1?'s':'') + ' competed' +
-                    '</div>' +
+                    '</div></div>' +
                   '</div>' +
                 '</div>'
               );
