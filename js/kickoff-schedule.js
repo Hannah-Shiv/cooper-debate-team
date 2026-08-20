@@ -13,7 +13,7 @@
       <div class="kickoff-schedule__dates">
         <article class="kickoff-schedule__date-card">
           <div class="kickoff-schedule__date-heading">
-            <span class="kickoff-schedule__event-icon" data-icon="calendar" aria-hidden="true"></span>
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-calendar.png" alt="">
             <span>
               <span class="kickoff-schedule__weekday">Thursday</span>
               <span class="kickoff-schedule__date">September 10</span>
@@ -32,7 +32,7 @@
 
         <article class="kickoff-schedule__date-card">
           <div class="kickoff-schedule__date-heading">
-            <span class="kickoff-schedule__event-icon" data-icon="people" aria-hidden="true"></span>
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-activity-fair.png" alt="">
             <span>
               <span class="kickoff-schedule__weekday">Monday</span>
               <span class="kickoff-schedule__date">September 14</span>
@@ -52,7 +52,7 @@
         <article class="kickoff-schedule__date-card kickoff-schedule__date-card--pending">
           <div class="kickoff-schedule__hours"><strong>2</strong>hours</div>
           <div class="kickoff-schedule__date-heading">
-            <span class="kickoff-schedule__event-icon" data-icon="chat" aria-hidden="true"></span>
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-mini-debates-tuesday.png" alt="">
             <span>
               <span class="kickoff-schedule__weekday">Tuesday</span>
               <span class="kickoff-schedule__date">September 22</span>
@@ -72,7 +72,7 @@
         <article class="kickoff-schedule__date-card kickoff-schedule__date-card--pending">
           <div class="kickoff-schedule__hours"><strong>2</strong>hours</div>
           <div class="kickoff-schedule__date-heading">
-            <span class="kickoff-schedule__event-icon" data-icon="chat" aria-hidden="true"></span>
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-mini-debates-wednesday.png" alt="">
             <span>
               <span class="kickoff-schedule__weekday">Wednesday</span>
               <span class="kickoff-schedule__date">September 23</span>
