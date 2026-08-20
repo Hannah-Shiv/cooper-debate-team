@@ -60,6 +60,10 @@
        background:linear-gradient(122deg, transparent 40%, rgba(255,215,0,0.1) 47%, transparent 56%);
        transform:rotate(-8deg); opacity:0.75;
     }
+     .idx-champ-plaque {
+       display:block; width:clamp(190px,25vw,300px); flex-shrink:0;
+       filter:drop-shadow(0 7px 26px rgba(212,160,23,0.6)) contrast(1.06) saturate(1.08);
+     }
 
     /* Place number */
     .idx-champ-place {
@@ -110,6 +114,7 @@
        .idx-champ-date { min-width:0; width:100%; }
        .idx-champ-date-value { font-size:1.15rem; }
        .idx-champ-competed { padding-left:0; border-left:none; }
+      .idx-champ-plaque { width:min(280px,72vw); margin-inline:auto; }
      }
 
     @media (max-width: 768px) {
@@ -828,7 +833,7 @@
               mainCards.push(
                 '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
                   /* Plaque image */
-                    '<img src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque" style="width:clamp(110px,17vw,160px);flex-shrink:0;filter:drop-shadow(0 7px 26px rgba(212,160,23,0.6)) contrast(1.06) saturate(1.08);"/>' +
+                    '<img class="idx-champ-plaque" src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque"/>' +
                   /* Details */
                   '<div style="flex:1;min-width:180px;">' +
                     /* Badge + hierarchy */
