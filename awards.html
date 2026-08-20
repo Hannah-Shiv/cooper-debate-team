@@ -178,6 +178,94 @@
     .aw-champ-dashboard {
       margin: 8px 0 40px;
     }
+    .aw-champ-highlight-grid {
+      display:grid; grid-template-columns:minmax(0,2fr) minmax(220px,1fr); gap:18px;
+      margin:0 0 28px;
+    }
+    .aw-champ-highlight-main {
+      position:relative; overflow:hidden; display:flex; align-items:center;
+      min-height:250px; padding:28px 28px 28px 24px;
+      background:radial-gradient(ellipse at 70% 50%,rgba(212,160,23,0.12) 0%,transparent 65%),
+                 radial-gradient(ellipse at 20% 80%,rgba(212,160,23,0.06) 0%,transparent 50%),
+                 rgba(9,22,62,0.95);
+      border:1px solid rgba(212,160,23,0.45); border-radius:14px;
+    }
+    .aw-champ-highlight-main::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image:radial-gradient(circle,rgba(255,215,0,0.55) 1px,transparent 1px),
+                       radial-gradient(circle,rgba(255,215,0,0.3) 1px,transparent 1px);
+      background-size:60px 60px,37px 37px; background-position:0 0,30px 30px; opacity:0.18;
+    }
+    .aw-champ-highlight-content {
+      display:flex; gap:22px; align-items:center; position:relative; z-index:1;
+      width:100%; flex-wrap:wrap;
+    }
+    .aw-champ-highlight-plaque {
+      width:clamp(90px,18vw,130px); flex-shrink:0;
+      filter:drop-shadow(0 4px 24px rgba(212,160,23,0.45)); transform:rotate(-3deg);
+    }
+    .aw-champ-highlight-details { flex:1; min-width:180px; }
+    .aw-champ-highlight-badge {
+      display:inline-block; margin-bottom:10px; padding:3px 10px; border-radius:50px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.75rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:#FFD700;
+      background:rgba(212,160,23,0.15); border:1px solid rgba(212,160,23,0.4);
+    }
+    .aw-champ-highlight-hierarchy {
+      margin-bottom:8px; font-family:'Josefin Sans',sans-serif; font-size:0.69rem;
+      font-weight:600; letter-spacing:0.1em; color:rgba(255,255,255,0.3); text-transform:uppercase;
+    }
+    .aw-champ-highlight-hierarchy span { color:rgba(212,160,23,0.7); }
+    .aw-champ-highlight-name {
+      margin-bottom:10px; font-family:'Josefin Sans',sans-serif; font-size:clamp(0.98rem,2.3vw,1.21rem);
+      font-weight:700; line-height:1.3; color:rgba(255,255,255,0.9);
+    }
+    .aw-champ-highlight-place {
+      margin-bottom:6px; font-family:'Cormorant Garamond',serif; font-size:clamp(3.45rem,8.05vw,5.75rem);
+      font-weight:700; line-height:1; color:#FFD700;
+      text-shadow:0 0 30px rgba(255,215,0,0.5),0 2px 4px rgba(0,0,0,0.4);
+    }
+    .aw-champ-highlight-place sup { font-size:0.45em; vertical-align:super; }
+    .aw-champ-highlight-place-label { font-size:0.55em; font-family:'Josefin Sans',sans-serif; font-weight:600; }
+    .aw-champ-highlight-field, .aw-champ-highlight-competed {
+      font-family:'Josefin Sans',sans-serif; font-size:0.9rem; color:rgba(255,255,255,0.45);
+      letter-spacing:0.06em;
+    }
+    .aw-champ-highlight-competed {
+      display:flex; align-items:center; gap:6px; margin-top:10px; color:rgba(255,255,255,0.55);
+      letter-spacing:0;
+    }
+    .aw-champ-highlight-competed svg { flex-shrink:0; }
+    .aw-champ-highlight-right {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      min-height:250px; padding:28px 20px; text-align:center;
+      background:rgba(9,26,66,0.88); border:1px solid rgba(212,160,23,0.35); border-radius:14px;
+    }
+    .aw-champ-highlight-icon {
+      width:52px; height:52px; border-radius:50%; border:1.5px solid rgba(212,160,23,0.5);
+      display:flex; align-items:center; justify-content:center; margin:0 auto 16px;
+      background:rgba(212,160,23,0.07);
+    }
+    .aw-champ-highlight-number {
+      margin-bottom:12px; font-family:'Cormorant Garamond',serif; font-size:3.4rem;
+      font-weight:700; line-height:1; color:#F2D16B; text-shadow:0 0 18px rgba(242,209,107,0.45);
+    }
+    .aw-champ-highlight-rule {
+      width:48px; height:1px; margin:0 auto 14px;
+      background:linear-gradient(90deg,transparent,rgba(212,160,23,0.85) 30%,#F2D16B 50%,rgba(212,160,23,0.85) 70%,transparent);
+    }
+    .aw-champ-highlight-label {
+      margin-bottom:14px; font-family:'Josefin Sans',sans-serif; font-size:0.86rem;
+      font-weight:700; letter-spacing:0.12em; line-height:1.5; text-transform:uppercase;
+      color:rgba(255,255,255,0.65);
+    }
+    .aw-champ-highlight-description {
+      font-family:'Josefin Sans',sans-serif; font-size:0.86rem; line-height:1.6;
+      color:rgba(255,255,255,0.35);
+    }
+    .aw-champ-highlight-stars {
+      margin-top:16px; font-size:1rem; letter-spacing:0.15em; color:rgba(212,160,23,0.5);
+    }
     .aw-champ-kicker {
       display:flex; align-items:center; gap:9px;
       margin:0 0 14px;
@@ -266,6 +354,7 @@
       .aw-champ-metric:nth-child(2) { border-right:none; }
       .aw-champ-metric:nth-child(-n+2) { border-bottom:1px solid rgba(212,160,23,0.2); }
       .aw-champ-chart-grid { grid-template-columns:1fr; }
+      .aw-champ-highlight-grid { grid-template-columns:1fr; }
     }
     @media(max-width:500px){
       .aw-champ-summary { grid-template-columns:repeat(2,1fr); }
@@ -435,6 +524,9 @@
       <!-- Tournament cards — full width 2-col grid -->
       <div class="aw-chart-title" style="margin-bottom:16px;">Regular Season Results</div>
       <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
+
+      <!-- Concise championship highlight, matching the homepage -->
+      <div id="aw-champ-highlight" style="display:none;"></div>
 
       <!-- Championship results (populated when championship data exists) -->
       <div id="aw-champ-section" style="display:none;margin-bottom:40px;"></div>
@@ -1090,6 +1182,51 @@ function renderAwards(tourns) {
 
   /* ── Championship Results — aggregate-only dashboard ── */
   const champ = computeChampionshipResults(tourns);
+  const highlightEl = document.getElementById('aw-champ-highlight');
+  if (champ.metro.length) {
+    const bestMetro = [...champ.metro].sort((a,b) =>
+      (a.rank || 999) - (b.rank || 999) ||
+      (b.wins || 0) - (a.wins || 0)
+    )[0];
+    const bestRank = Math.max(1, bestMetro.rank || 1);
+    const rankSuffix = ordSuffix(bestRank).slice(-2).toUpperCase();
+    const competed = champ.metro.filter(r => r.tournName === bestMetro.tournName).length;
+    const qualified = metroElig;
+
+    highlightEl.style.display = '';
+    highlightEl.innerHTML = `
+      <div class="aw-champ-highlight-grid">
+        <div class="aw-champ-highlight-main">
+          <div class="aw-champ-highlight-content">
+            <img class="aw-champ-highlight-plaque" src="images/icon-plaque.png" alt="Championship plaque">
+            <div class="aw-champ-highlight-details">
+              <div class="aw-champ-highlight-badge">🏆 Metro Finals · Elite Championship</div>
+              <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
+              <div class="aw-champ-highlight-name">${bestMetro.tournName}</div>
+              <div class="aw-champ-highlight-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-champ-highlight-place-label">PLACE</span></div>
+              <div class="aw-champ-highlight-field">⭐ of ${bestMetro.fieldSize || '—'} teams &nbsp;⭐</div>
+              <div class="aw-champ-highlight-competed">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(212,160,23,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                ${competed} Cooper team${competed === 1 ? '' : 's'} competed
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="aw-champ-highlight-right">
+          <div class="aw-champ-highlight-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div class="aw-champ-highlight-number">${qualified}</div>
+          <div class="aw-champ-highlight-rule"></div>
+          <div class="aw-champ-highlight-label">Pairs Qualified<br>for Metro Finals</div>
+          <div class="aw-champ-highlight-description">These pairs earned their spot among the top in the metro.</div>
+          <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
+        </div>
+      </div>`;
+  } else {
+    highlightEl.style.display = 'none';
+  }
+
   const champEl = document.getElementById('aw-champ-section');
   if (champ.metro.length || champ.nationals.length) {
     champEl.style.display = '';
