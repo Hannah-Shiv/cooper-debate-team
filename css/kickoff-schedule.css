@@ -1,0 +1,462 @@
+/* ============================================================
+   Cooper Debate Team — Fall 2026 Kickoff Schedule
+   Shared by the public homepage and private member calendar.
+   ============================================================ */
+
+.kickoff-schedule-mount {
+  width: 100%;
+}
+
+.kickoff-schedule {
+  width: 100%;
+  box-sizing: border-box;
+  color: #fff;
+  padding: clamp(22px, 3vw, 34px) clamp(18px, 3.2vw, 38px) 26px;
+  border: 1px solid rgba(212, 160, 23, 0.42);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(39, 94, 190, 0.18), transparent 33%),
+    linear-gradient(145deg, #071b45 0%, #071333 52%, #06112d 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 16px 38px rgba(0, 0, 0, 0.22);
+}
+
+.kickoff-schedule__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  color: #f2c43d;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__eyebrow-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: #ffc52f;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.kickoff-schedule__title {
+  margin: 0;
+  color: #fff;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2rem, 4vw, 3.05rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.98;
+}
+
+.kickoff-schedule__intro {
+  max-width: 560px;
+  margin: 10px 0 20px;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.kickoff-schedule__rule {
+  width: 62px;
+  height: 2px;
+  margin: 0 0 14px;
+  border: 0;
+  background: #d4a017;
+}
+
+.kickoff-schedule__dates {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.kickoff-schedule__date-card {
+  position: relative;
+  min-width: 0;
+  min-height: 220px;
+  box-sizing: border-box;
+  padding: 15px 15px 14px;
+  overflow: hidden;
+  border: 1px solid rgba(212, 160, 23, 0.42);
+  border-radius: 10px;
+  background: linear-gradient(160deg, rgba(9, 32, 78, 0.96), rgba(5, 18, 51, 0.96));
+}
+
+.kickoff-schedule__date-card::after {
+  position: absolute;
+  right: -24px;
+  bottom: -32px;
+  width: 96px;
+  height: 96px;
+  border: 1px solid rgba(53, 115, 214, 0.14);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.kickoff-schedule__date-card--pending {
+  border-color: rgba(212, 160, 23, 0.52);
+}
+
+.kickoff-schedule__hours {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 37px;
+  height: 38px;
+  box-sizing: border-box;
+  border: 1px solid rgba(242, 196, 61, 0.8);
+  border-radius: 5px;
+  background: rgba(6, 20, 54, 0.9);
+  color: #f2c43d;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.52rem;
+  font-weight: 700;
+  line-height: 0.95;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__hours strong {
+  font-size: 1.15rem;
+  line-height: 0.95;
+}
+
+.kickoff-schedule__date-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  margin-bottom: 12px;
+  padding-right: 38px;
+}
+
+.kickoff-schedule__event-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 42px;
+  box-sizing: border-box;
+  border: 1px solid rgba(242, 196, 61, 0.85);
+  border-radius: 50%;
+  background: radial-gradient(circle, #2155a6 0%, #112e6e 60%, #091e4c 100%);
+  color: #ffd040;
+  font-family: Arial, sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  box-shadow: 0 0 0 5px rgba(21, 63, 137, 0.2);
+}
+
+.kickoff-schedule__event-icon[data-icon="calendar"]::before { content: "▦"; }
+.kickoff-schedule__event-icon[data-icon="people"]::before { content: "••"; letter-spacing: -0.14em; }
+.kickoff-schedule__event-icon[data-icon="chat"]::before { content: "•••"; letter-spacing: -0.16em; font-size: 0.82rem; }
+
+.kickoff-schedule__weekday,
+.kickoff-schedule__date {
+  display: block;
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__weekday {
+  color: #f2c43d;
+  font-size: 0.67rem;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+}
+
+.kickoff-schedule__date {
+  margin-top: 3px;
+  color: #fff;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+}
+
+.kickoff-schedule__event-title {
+  min-height: 38px;
+  margin: 0 0 10px;
+  color: #fff;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.13rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.kickoff-schedule__detail {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.7rem;
+  line-height: 1.35;
+}
+
+.kickoff-schedule__detail-icon {
+  flex: 0 0 18px;
+  color: #ffc52f;
+  font-size: 1.05rem;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.kickoff-schedule__detail strong {
+  display: block;
+  margin-top: 2px;
+  color: #f2c43d;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.kickoff-schedule__weekly {
+  margin-top: 24px;
+  padding-top: 0;
+  border: 1px solid rgba(212, 160, 23, 0.35);
+  border-radius: 10px;
+  background: rgba(7, 24, 59, 0.78);
+}
+
+.kickoff-schedule__weekly-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: -15px;
+  color: #f2c43d;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+}
+
+.kickoff-schedule__weekly-heading::before,
+.kickoff-schedule__weekly-heading::after {
+  width: 66px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 196, 61, 0.8));
+  content: "";
+}
+
+.kickoff-schedule__weekly-heading::after {
+  background: linear-gradient(90deg, rgba(242, 196, 61, 0.8), transparent);
+}
+
+.kickoff-schedule__weekly-subtitle {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.72);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.7rem;
+  text-align: center;
+}
+
+.kickoff-schedule__weekly-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  padding: 0 12px 12px;
+}
+
+.kickoff-schedule__weekly-card {
+  overflow: hidden;
+  border: 1px solid rgba(212, 160, 23, 0.48);
+  border-radius: 8px;
+  background: rgba(5, 18, 51, 0.78);
+}
+
+.kickoff-schedule__weekly-card--optional {
+  border-color: rgba(83, 139, 224, 0.62);
+}
+
+.kickoff-schedule__weekly-card-title {
+  padding: 8px 12px;
+  background: linear-gradient(90deg, rgba(172, 118, 0, 0.95), rgba(133, 91, 0, 0.9));
+  color: #fff;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__weekly-card--optional .kickoff-schedule__weekly-card-title {
+  background: linear-gradient(90deg, rgba(27, 70, 143, 0.95), rgba(21, 57, 117, 0.92));
+}
+
+.kickoff-schedule__weekly-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 73px;
+  padding: 12px;
+}
+
+.kickoff-schedule__session {
+  padding: 0 12px;
+  color: #fff;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.74rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.kickoff-schedule__session + .kickoff-schedule__session {
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.kickoff-schedule__session strong {
+  display: block;
+  margin-bottom: 3px;
+  color: #6ea4ff;
+  font-size: 0.69rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__session-time {
+  white-space: nowrap;
+}
+
+.kickoff-schedule__optional-copy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  min-height: 73px;
+  padding: 10px 20px;
+  color: rgba(255, 255, 255, 0.78);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.73rem;
+  line-height: 1.45;
+}
+
+.kickoff-schedule__optional-copy .kickoff-schedule__event-icon {
+  flex-basis: 43px;
+  width: 43px;
+  height: 43px;
+  border-color: rgba(120, 167, 255, 0.55);
+  box-shadow: 0 0 0 5px rgba(36, 86, 177, 0.14);
+}
+
+.kickoff-schedule__optional-copy strong {
+  display: block;
+  color: #fff;
+  font-family: "Cormorant Garamond", serif;
+  font-size: 1.05rem;
+  line-height: 1.05;
+}
+
+.kickoff-schedule__weekly-note {
+  margin: 0 12px 12px;
+  padding: 7px 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.68rem;
+  text-align: center;
+}
+
+.kickoff-schedule__weekly-note strong {
+  color: #f2c43d;
+}
+
+.kickoff-schedule__footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(212, 160, 23, 0.3);
+  border-radius: 8px;
+  background: rgba(10, 33, 77, 0.72);
+}
+
+.kickoff-schedule__footer-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(242, 196, 61, 0.68);
+  border-radius: 50%;
+  color: #ffc52f;
+  font-size: 1.3rem;
+}
+
+.kickoff-schedule__footer strong {
+  display: block;
+  margin-bottom: 2px;
+  color: #f2c43d;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kickoff-schedule__footer span {
+  color: rgba(255, 255, 255, 0.78);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.74rem;
+}
+
+@media (max-width: 980px) {
+  .kickoff-schedule__dates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .kickoff-schedule {
+    padding: 22px 14px 16px;
+  }
+
+  .kickoff-schedule__title {
+    font-size: 2.2rem;
+  }
+
+  .kickoff-schedule__dates {
+    grid-template-columns: 1fr;
+  }
+
+  .kickoff-schedule__date-card {
+    min-height: 0;
+  }
+
+  .kickoff-schedule__weekly-heading {
+    font-size: 1.15rem;
+  }
+
+  .kickoff-schedule__weekly-heading::before,
+  .kickoff-schedule__weekly-heading::after {
+    width: 28px;
+  }
+
+  .kickoff-schedule__weekly-columns {
+    grid-template-columns: 1fr;
+  }
+
+  .kickoff-schedule__footer {
+    align-items: flex-start;
+  }
+}

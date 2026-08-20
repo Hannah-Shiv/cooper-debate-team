@@ -35,11 +35,11 @@ const FALL_2026_KICKOFF_EVENTS = [
     id: "fall-2026-info-session",
     title: "Debate Info Session",
     type: "meeting",
-    start: new Date("2026-09-10T12:00:00Z"),
-    end: null,
-    allDay: true,
+    start: new Date("2026-09-10T09:35:00-04:00"),
+    end: new Date("2026-09-10T10:25:00-04:00"),
+    allDay: false,
     location: "Lecture Hall",
-    notes: "During QST."
+    notes: "During QST, 9:35 AM–10:25 AM."
   },
   {
     id: "fall-2026-activity-fair",
@@ -49,27 +49,27 @@ const FALL_2026_KICKOFF_EVENTS = [
     end: null,
     allDay: true,
     location: null,
-    notes: "After school. Late buses begin."
+    notes: "After school. Late buses begin at 4:30 PM."
   },
   {
     id: "fall-2026-mini-debates-1",
     title: "Mini-Debates · Location TBA",
     type: "practice",
-    start: new Date("2026-09-22T12:00:00Z"),
-    end: null,
-    allDay: true,
+    start: new Date("2026-09-22T14:30:00-04:00"),
+    end: new Date("2026-09-22T16:30:00-04:00"),
+    allDay: false,
     location: null,
-    notes: "The Lecture Hall or Cafeteria location will be announced once confirmed."
+    notes: "Both A and B sessions, 2:30 PM–4:30 PM. The room will be announced once confirmed."
   },
   {
     id: "fall-2026-mini-debates-2",
     title: "Mini-Debates · Location TBA",
     type: "practice",
-    start: new Date("2026-09-23T12:00:00Z"),
-    end: null,
-    allDay: true,
+    start: new Date("2026-09-23T14:30:00-04:00"),
+    end: new Date("2026-09-23T16:30:00-04:00"),
+    allDay: false,
     location: null,
-    notes: "The Lecture Hall or Cafeteria location will be announced once confirmed."
+    notes: "Both A and B sessions, 2:30 PM–4:30 PM. The room will be announced once confirmed."
   }
 ].map(event => ({ ...event, _staticSchedule: true }));
 

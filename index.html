@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
+  <link rel="stylesheet" href="css/kickoff-schedule.css?v=1"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -491,6 +492,9 @@
 <section id="idx-bottom-section" style="background:var(--navy-dark);padding:48px 0 56px;">
   <div class="section-wrap" style="display:flex;flex-direction:column;gap:20px;">
 
+    <!-- Fall 2026 kickoff schedule — shared with the private calendar -->
+    <div class="kickoff-schedule-mount"></div>
+
     <!-- Latest News -->
     <div id="idx-news-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:28px 32px;">
       <div class="news-strip-header">
@@ -581,6 +585,7 @@
 
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script src="js/kickoff-schedule.js?v=1"></script>
 <script src="data/announcements.js"></script>
 <script>
   const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
