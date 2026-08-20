@@ -174,6 +174,110 @@
       background:rgba(212,160,23,0.1); font-size:0.84rem; color:var(--gold-pale);
     }
 
+    /* Championship results dashboard — aggregate presentation only */
+    .aw-champ-dashboard {
+      margin: 8px 0 40px;
+    }
+    .aw-champ-kicker {
+      display:flex; align-items:center; gap:9px;
+      margin:0 0 14px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem;
+      font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+      color:var(--gold);
+    }
+    .aw-champ-kicker::before {
+      content:'🏆'; font-size:0.92rem; letter-spacing:0;
+    }
+    .aw-champ-summary {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+      background:linear-gradient(135deg,rgba(13,46,86,0.75),rgba(10,32,74,0.82));
+      border:1px solid rgba(212,160,23,0.28); border-radius:12px;
+      overflow:hidden; margin-bottom:14px;
+    }
+    .aw-champ-metric {
+      min-height:126px; padding:22px 15px 18px; text-align:center;
+      border-right:1px solid rgba(212,160,23,0.2);
+      display:flex; flex-direction:column; justify-content:center; align-items:center;
+    }
+    .aw-champ-metric:last-child { border-right:none; }
+    .aw-champ-metric-icon {
+      width:42px; height:42px; border:1px solid rgba(212,160,23,0.5);
+      border-radius:50%; display:flex; align-items:center; justify-content:center;
+      color:var(--gold); font-size:1.15rem; margin-bottom:8px;
+      background:rgba(212,160,23,0.07);
+    }
+    .aw-champ-metric-value {
+      font-family:'Cormorant Garamond',serif; font-size:2.5rem;
+      font-weight:700; line-height:1; color:#F2D16B;
+      text-shadow:0 0 14px rgba(242,209,107,0.3);
+    }
+    .aw-champ-metric-label {
+      margin-top:7px; font-family:'Josefin Sans',sans-serif; font-size:0.68rem;
+      font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      color:rgba(255,255,255,0.68); line-height:1.45;
+    }
+    .aw-champ-card {
+      background:rgba(13,46,86,0.42);
+      border:1px solid rgba(212,160,23,0.18); border-radius:12px;
+      padding:24px 22px;
+    }
+    .aw-champ-card-title {
+      font-family:'Josefin Sans',sans-serif; font-size:0.9rem;
+      font-weight:700; letter-spacing:0.07em; text-transform:uppercase;
+      color:var(--white); margin-bottom:5px;
+    }
+    .aw-champ-card-subtitle {
+      font-size:0.78rem; color:var(--gray-mid); margin-bottom:20px;
+    }
+    .aw-champ-chart-grid {
+      display:grid; grid-template-columns:minmax(0,1.3fr) minmax(250px,0.9fr);
+      gap:18px; margin-bottom:14px;
+    }
+    .aw-record-bars { display:flex; align-items:flex-end; gap:10px; height:204px; padding:12px 12px 0; border-bottom:1px solid rgba(255,255,255,0.3); }
+    .aw-record-bar-col { flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-width:0; }
+    .aw-record-bar-count { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#fff; margin-bottom:5px; }
+    .aw-record-bar {
+      width:min(42px,72%); min-height:4px; border-radius:4px 4px 0 0;
+      background:var(--bar-color,#D4A017); box-shadow:0 0 12px color-mix(in srgb,var(--bar-color,#D4A017) 35%,transparent);
+    }
+    .aw-record-bar-label { margin-top:8px; font-family:'Josefin Sans',sans-serif; font-size:0.72rem; color:rgba(255,255,255,0.75); white-space:nowrap; }
+    .aw-record-table { width:100%; border-collapse:collapse; font-family:'Josefin Sans',sans-serif; font-size:0.78rem; }
+    .aw-record-table th { padding:7px 8px; text-align:left; color:rgba(255,255,255,0.45); font-size:0.62rem; letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid rgba(255,255,255,0.12); }
+    .aw-record-table th:not(:first-child), .aw-record-table td:not(:first-child) { text-align:center; }
+    .aw-record-table td { padding:9px 8px; color:rgba(255,255,255,0.8); border-bottom:1px solid rgba(255,255,255,0.07); }
+    .aw-record-dot { display:inline-block; width:10px; height:10px; border-radius:3px; background:var(--dot-color,#D4A017); margin-right:7px; vertical-align:-1px; }
+    .aw-record-table tfoot td { color:var(--gold); font-weight:700; border-bottom:none; padding-top:12px; }
+    .aw-placement-card { margin-top:0; }
+    .aw-placement-strip { display:flex; gap:6px; flex-wrap:wrap; align-items:stretch; }
+    .aw-place-tile {
+      flex:1 1 66px; min-width:58px; min-height:72px; padding:10px 6px 8px;
+      text-align:center; border:1px solid rgba(255,255,255,0.14); border-radius:6px;
+      background:rgba(7,26,54,0.5); display:flex; flex-direction:column; justify-content:center;
+    }
+    .aw-place-tile.top { border-color:rgba(212,160,23,0.75); background:rgba(212,160,23,0.08); }
+    .aw-place-rank { font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:700; color:#fff; line-height:1; }
+    .aw-place-tile.top .aw-place-rank { color:#F2D16B; }
+    .aw-place-count { margin-top:6px; font-family:'Josefin Sans',sans-serif; font-size:0.62rem; color:rgba(255,255,255,0.55); }
+    .aw-placement-legend { display:flex; justify-content:space-around; gap:16px; margin-top:14px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); font-family:'Josefin Sans',sans-serif; font-size:0.7rem; letter-spacing:0.08em; text-transform:uppercase; color:rgba(255,255,255,0.5); }
+    .aw-placement-note { margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.08); font-family:'Josefin Sans',sans-serif; font-size:0.76rem; color:rgba(255,255,255,0.58); }
+    .aw-placement-note strong { color:#F2D16B; }
+    @media(max-width:800px){
+      .aw-champ-summary { grid-template-columns:repeat(2,1fr); }
+      .aw-champ-metric:nth-child(2) { border-right:none; }
+      .aw-champ-metric:nth-child(-n+2) { border-bottom:1px solid rgba(212,160,23,0.2); }
+      .aw-champ-chart-grid { grid-template-columns:1fr; }
+    }
+    @media(max-width:500px){
+      .aw-champ-summary { grid-template-columns:repeat(2,1fr); }
+      .aw-champ-metric { min-height:108px; padding:16px 8px; }
+      .aw-champ-metric-value { font-size:2.05rem; }
+      .aw-champ-metric-label { font-size:0.59rem; }
+      .aw-champ-card { padding:18px 13px; }
+      .aw-record-bars { gap:4px; padding-left:0; padding-right:0; }
+      .aw-record-bar-label { font-size:0.64rem; }
+      .aw-placement-legend { font-size:0.6rem; }
+    }
+
     /* Leaderboard */
     .aw-lb-row {
       display:flex; align-items:center; gap:16px; padding:14px 18px;
@@ -984,50 +1088,119 @@ function renderAwards(tourns) {
   /* Slot 4 reserved for future charts (Metro Finals, Nationals) */
   if (roundChart) { roundChart.destroy(); roundChart = null; }
 
-  /* ── Championship Results ── */
+  /* ── Championship Results — aggregate-only dashboard ── */
   const champ = computeChampionshipResults(tourns);
   const champEl = document.getElementById('aw-champ-section');
   if (champ.metro.length || champ.nationals.length) {
     champEl.style.display = '';
-    // Badge highlights
-    const champBadges = [];
-    if (champ.metro.length) {
-      champBadges.push({ num: champ.metro.length, lbl: `Metro Finals appearance${champ.metro.length!==1?'s':''}` });
-    }
-    if (champ.nationals.length) {
-      champBadges.push({ num: champ.nationals.length, lbl: `Nationals appearance${champ.nationals.length!==1?'s':''}` });
-    }
-    const topNat = champ.nationals.find(r => r.place && /champion|semifinal|quarter|octo/i.test(r.place));
+
+    const metro = champ.metro;
+    const fieldSize = metro.reduce((max, r) => Math.max(max, r.fieldSize || 0), 0);
+    const pairNames = new Set();
+    metro.forEach(r => (r.pair || '').split(' & ').filter(Boolean).forEach(n => pairNames.add(n)));
+    const students = pairNames.size;
+    const atOrAbove500 = metro.filter(r => r.wins >= r.losses).length;
+
+    const recordColors = ['#D4A017','#22c55e','#2f86d4','#7c4dcc','#e03030','#8b5cf6'];
+    const recordMap = {};
+    metro.forEach(r => {
+      const key = `${r.wins}–${r.losses}`;
+      if (!recordMap[key]) recordMap[key] = { wins:r.wins, losses:r.losses, pairs:0 };
+      recordMap[key].pairs++;
+    });
+    const records = Object.values(recordMap).sort((a,b) => b.wins-a.wins || a.losses-b.losses);
+    const maxRecordPairs = Math.max(...records.map(r => r.pairs), 1);
+    const recordRows = records.map((r, i) => {
+      const color = recordColors[i % recordColors.length];
+      return { ...r, color };
+    });
+
+    const placeMap = {};
+    metro.forEach(r => {
+      const key = r.rank || 0;
+      if (key) placeMap[key] = (placeMap[key] || 0) + 1;
+    });
+    const places = Object.keys(placeMap).map(Number).sort((a,b) => a-b);
+    const topTen = places.filter(p => p <= 10).reduce((sum,p) => sum + placeMap[p], 0);
+    const outsideTopTen = metro.length - topTen;
+
+    const metric = (icon, value, label) => `
+      <div class="aw-champ-metric">
+        <div class="aw-champ-metric-icon">${icon}</div>
+        <div class="aw-champ-metric-value">${value}</div>
+        <div class="aw-champ-metric-label">${label}</div>
+      </div>`;
+
+    const placeLabel = p => `${p}${ordSuffix(p)}`;
+    const placeTiles = places.map(p => `
+      <div class="aw-place-tile ${p <= 10 ? 'top' : ''}">
+        <div class="aw-place-rank">${placeLabel(p)}</div>
+        <div class="aw-place-count">${placeMap[p]} ${placeMap[p] === 1 ? 'pair' : 'pairs'}</div>
+      </div>`).join('');
+
+    const bestNationals = champ.nationals
+      .map(r => r.place)
+      .filter(Boolean)
+      .sort((a,b) => parseInt(a,10) - parseInt(b,10))[0];
 
     champEl.innerHTML = `
-      <div class="aw-chart-title" style="margin-bottom:16px;">🏆 Championship Results</div>
-      ${champBadges.length ? `<div class="aw-stat-strip" style="margin-bottom:24px;">
-        ${champBadges.map(b=>`<div class="aw-stat-box">
-          <div class="aw-stat-num" style="font-size:clamp(2rem,5vw,3rem)">${b.num}</div>
-          <div class="aw-stat-divider"></div>
-          <div class="aw-stat-lbl">${b.lbl}</div>
-        </div>`).join('')}
-        ${topNat ? `<div class="aw-stat-box" style="border-color:rgba(139,92,246,0.5);">
-          <div class="aw-stat-num" style="font-size:clamp(1rem,2.5vw,1.4rem);padding-bottom:12px;color:#c4b5fd">${topNat.place}</div>
-          <div class="aw-stat-divider" style="background:linear-gradient(90deg,transparent,rgba(139,92,246,0.85) 30%,#c4b5fd 50%,rgba(139,92,246,0.85) 70%,transparent)"></div>
-          <div class="aw-stat-lbl" style="color:rgba(196,181,253,0.7)">Best Nationals Finish</div>
-        </div>` : ''}
-      </div>` : ''}
-      <div class="aw-tourn-grid" style="margin-bottom:0">
-        ${champ.metro.map(r=>`<div class="aw-tourn-card">
-          <div style="margin-bottom:8px"><span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif;color:rgba(212,160,23,0.85);background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.28);padding:2px 9px;border-radius:50px">Metro Finals</span></div>
-          <div class="aw-tourn-name">${r.tournName}</div>
-          <div class="aw-tourn-date">${fmtDate(r.date)}</div>
-          <div class="aw-tourn-rec">${r.pair}</div>
-          <div class="aw-tourn-sub">${r.wins}–${r.losses} · Ranked ${r.rank}${ordSuffix(r.rank)} of ${r.fieldSize} teams</div>
-        </div>`).join('')}
-        ${champ.nationals.map(r=>`<div class="aw-tourn-card" style="border-color:rgba(139,92,246,0.2);">
-          <div style="margin-bottom:8px"><span style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;font-family:'Josefin Sans',sans-serif;color:rgba(196,181,253,0.9);background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.28);padding:2px 9px;border-radius:50px">Nationals</span></div>
-          <div class="aw-tourn-name">${r.tournName}</div>
-          <div class="aw-tourn-date">${fmtDate(r.date)}</div>
-          <div class="aw-tourn-rec" style="color:#c4b5fd">${r.place || (r.wins+'–'+r.losses)}</div>
-          <div class="aw-tourn-sub">${r.wins}–${r.losses} prelim record · ${r.pair}</div>
-        </div>`).join('')}
+      <div class="aw-champ-dashboard">
+        <div class="aw-champ-kicker">Championship Results</div>
+
+        <div class="aw-champ-summary">
+          ${metric('★', metro.length || '—', 'Pairs<br>Qualified for Metro Finals')}
+          ${metric('♟', students || '—', 'Students<br>Represented Cooper')}
+          ${metric('◈', atOrAbove500 || '—', 'of ${metro.length || 0} pairs<br>finished .500 or better')}
+          ${metric('▣', fieldSize || '—', 'Total Pairs<br>at Metro Finals')}
+        </div>
+
+        <div class="aw-champ-chart-grid">
+          <div class="aw-champ-card">
+            <div class="aw-champ-card-title">Metro Finals Performance</div>
+            <div class="aw-champ-card-subtitle">Distribution of Cooper pairs by final Metro Finals record</div>
+            <div class="aw-record-bars">
+              ${recordRows.map(r => `
+                <div class="aw-record-bar-col">
+                  <div class="aw-record-bar-count">${r.pairs}</div>
+                  <div class="aw-record-bar" style="--bar-color:${r.color};height:${Math.max(8, Math.round((r.pairs / maxRecordPairs) * 142))}px"></div>
+                  <div class="aw-record-bar-label">${r.wins}–${r.losses}</div>
+                </div>`).join('')}
+            </div>
+          </div>
+
+          <div class="aw-champ-card">
+            <div class="aw-champ-card-title">Final Record</div>
+            <div class="aw-champ-card-subtitle">Cooper pairs · students represented</div>
+            <table class="aw-record-table">
+              <thead><tr><th>Record</th><th>Pairs</th><th>Students</th></tr></thead>
+              <tbody>
+                ${recordRows.map(r => `
+                  <tr>
+                    <td><span class="aw-record-dot" style="--dot-color:${r.color}"></span>${r.wins}–${r.losses}</td>
+                    <td>${r.pairs}</td><td>${r.pairs * 2}</td>
+                  </tr>`).join('')}
+              </tbody>
+              <tfoot><tr><td>Total</td><td>${metro.length}</td><td>${students || metro.length * 2}</td></tr></tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="aw-champ-card aw-placement-card">
+          <div class="aw-champ-card-title">Final Placements <span style="font-size:0.7em;font-weight:400;color:rgba(255,255,255,0.55);">(${fieldSize || 0} pairs)</span></div>
+          <div class="aw-champ-card-subtitle">How Cooper pairs placed at Metro Finals</div>
+          <div class="aw-placement-strip">${placeTiles || '<div style="color:rgba(255,255,255,0.45);font-size:0.8rem;">Placement data unavailable.</div>'}</div>
+          <div class="aw-placement-legend">
+            <span>Top 10 finishes · ${topTen} ${topTen === 1 ? 'pair' : 'pairs'}</span>
+            <span>Outside top 10 · ${outsideTopTen} ${outsideTopTen === 1 ? 'pair' : 'pairs'}</span>
+          </div>
+          <div class="aw-placement-note">★ <strong>${topTen}</strong> of ${metro.length} pairs (${metro.length ? Math.round(topTen / metro.length * 100) : 0}%) finished in the top 10 at Metro Finals.</div>
+        </div>
+
+        ${champ.nationals.length ? `
+          <div class="aw-champ-card" style="margin-top:14px;border-color:rgba(139,92,246,0.3);">
+            <div class="aw-champ-card-title" style="color:#c4b5fd;">Nationals Results</div>
+            <div class="aw-champ-card-subtitle">${champ.nationals.length} Cooper ${champ.nationals.length === 1 ? 'pair' : 'pairs'} represented at Nationals${bestNationals ? ` · Best finish: ${bestNationals}` : ''}</div>
+          </div>` : ''}
       </div>`;
   } else {
     champEl.style.display = 'none';
