@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Cooper Debate Team tournament calendar, results, and parent information for WACFL and NSDA competitions."/>
+  <meta name="description" content="Cooper Debate Team tournament calendar, results, and parent information for WASDL and NSDA competitions."/>
   <title>Tournaments — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -110,7 +110,7 @@
     .cal-tags { display:flex; gap:6px; flex-wrap:wrap; }
     .cal-tag { padding:2px 8px; border-radius:3px; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
     .tag-tourn { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
-    .tag-wacfl { background:rgba(212,160,23,0.12); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.25); }
+    .tag-wasdl { background:rgba(212,160,23,0.12); color:var(--gold-pale); border:1px solid rgba(212,160,23,0.25); }
     .tag-national { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
     .tag-practice { background:rgba(34,197,94,0.12); color:#86efac; border:1px solid rgba(34,197,94,0.2); }
     .tag-deadline { background:rgba(249,115,22,0.12); color:#fdba74; border:1px solid rgba(249,115,22,0.2); }
@@ -193,7 +193,7 @@
 
 <div class="page-header">
   <div class="page-header-content">
-    <p class="page-header-label">WACFL · NSDA</p>
+    <p class="page-header-label">WASDL · NSDA</p>
     <h1 class="page-title">Tournaments</h1>
     <p class="page-subtitle">Calendar, results, and everything families need to know</p>
   </div>
@@ -232,7 +232,7 @@
           <button class="season-toggle-btn active" id="btn-last-season" onclick="showSeason('last')">Last Season</button>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;" id="cal-legend">
-          <span class="cal-tag tag-wacfl" style="padding:5px 12px;">WACFL</span>
+          <span class="cal-tag tag-wasdl" style="padding:5px 12px;">WASDL</span>
           <span class="cal-tag tag-national" style="padding:5px 12px;">National</span>
           <span class="cal-tag tag-practice" style="padding:5px 12px;">Practice</span>
           <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
@@ -262,7 +262,7 @@
         <div class="ls-controls">
           <div class="ls-filters">
             <button class="ls-filter-btn active" onclick="lsFilter('all',this)">All</button>
-            <button class="ls-filter-btn" onclick="lsFilter('wacfl',this)">WACFL</button>
+            <button class="ls-filter-btn" onclick="lsFilter('wasdl',this)">WASDL</button>
             <button class="ls-filter-btn" onclick="lsFilter('national',this)">National</button>
             <button class="ls-filter-btn" onclick="lsFilter('invitational',this)">Invitational</button>
           </div>
@@ -310,7 +310,7 @@
       <div class="parent-card fade-up">
         <img src="images/icons/icon-schedule.png" alt="" class="parent-card-icon" style="width:72px;height:72px;object-fit:contain;">
         <div class="parent-card-title">Tournament Day Schedule</div>
-        <p class="parent-card-text">WACFL tournaments typically run from 8:30 AM to 5:00 PM. Students should arrive 30 minutes early. Rounds run throughout the day with lunch breaks.</p>
+        <p class="parent-card-text">WASDL tournaments typically run from 8:30 AM to 5:00 PM. Students should arrive 30 minutes early. Rounds run throughout the day with lunch breaks.</p>
       </div>
       <div class="parent-card fade-up">
         <img src="images/icons/icon-dresscode.png" alt="" class="parent-card-icon" style="width:72px;height:72px;object-fit:contain;">
@@ -325,7 +325,7 @@
       <div class="parent-card fade-up">
         <img src="images/icons/icon-registration.png" alt="" class="parent-card-icon" style="width:72px;height:72px;object-fit:contain;">
         <div class="parent-card-title">Registration &amp; Fees</div>
-        <p class="parent-card-text">Tournament entry fees vary. The team charges a seasonal activity fee that covers most WACFL tournaments. Nationals requires additional registration.</p>
+        <p class="parent-card-text">Tournament entry fees vary. The team charges a seasonal activity fee that covers most WASDL tournaments. Nationals requires additional registration.</p>
       </div>
       <div class="parent-card fade-up">
         <img src="images/icons/icon-communication.png" alt="" class="parent-card-icon" style="width:72px;height:72px;object-fit:contain;">
@@ -335,7 +335,7 @@
       <div class="parent-card fade-up">
         <img src="images/icons/icon-watching.png" alt="" class="parent-card-icon" style="width:72px;height:72px;object-fit:contain;">
         <div class="parent-card-title">Watching Rounds</div>
-        <p class="parent-card-text">Parents are generally welcome to observe rounds at WACFL tournaments — but please remain silent and avoid signaling to debaters during rounds.</p>
+        <p class="parent-card-text">Parents are generally welcome to observe rounds at WASDL tournaments — but please remain silent and avoid signaling to debaters during rounds.</p>
       </div>
     </div>
   </div>
@@ -474,7 +474,7 @@ let _lsDir     = 'desc';
 function _tournType(name) {
   const n = name.toLowerCase();
   if (n.includes('national') || n.includes('nsda')) return 'national';
-  if (n.includes('metro') || n.includes('championship') || n.includes('wacfl')) return 'wacfl';
+  if (n.includes('metro') || n.includes('championship') || n.includes('wasdl') || n.includes('wacfl')) return 'wasdl';
   return 'invitational';
 }
 
@@ -548,8 +548,8 @@ function lsRender() {
     const subtitle = [school, location].filter(Boolean).join(' · ');
     const pairs    = t.entries ? t.entries.length : 0;
 
-    const typeTagClass = t._type === 'national' ? 'tag-national' : t._type === 'wacfl' ? 'tag-wacfl' : 'tag-tourn';
-    const typeLabel    = t._type === 'national' ? 'National' : t._type === 'wacfl' ? 'WACFL' : 'Invitational';
+    const typeTagClass = t._type === 'national' ? 'tag-national' : t._type === 'wasdl' ? 'tag-wasdl' : 'tag-tourn';
+    const typeLabel    = t._type === 'national' ? 'National' : t._type === 'wasdl' ? 'WASDL' : 'Invitational';
 
     return `<div class="result-row ls-row" style="display:grid;">
       <div style="font-size:0.82rem;color:var(--gray-mid);line-height:1.4;">${dateStr}</div>
