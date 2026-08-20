@@ -27,6 +27,64 @@ let _editingId   = null;    // doc ID being edited (null = new)
 let _countdownInterval = null;
 let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
+// Published Fall 2026 kickoff dates. These remain visible to every approved
+// member even before the regular Firestore event calendar is populated.
+// They are intentionally read-only in the calendar UI.
+const FALL_2026_KICKOFF_EVENTS = [
+  {
+    id: "fall-2026-info-session",
+    title: "Debate Info Session",
+    type: "meeting",
+    start: new Date("2026-09-10T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: "Lecture Hall",
+    notes: "During QST."
+  },
+  {
+    id: "fall-2026-activity-fair",
+    title: "Activity Fair · A Session",
+    type: "meeting",
+    start: new Date("2026-09-14T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: null,
+    notes: "After school. Late buses begin."
+  },
+  {
+    id: "fall-2026-mini-debates-1",
+    title: "Mini-Debates · Location TBA",
+    type: "practice",
+    start: new Date("2026-09-22T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: null,
+    notes: "The Lecture Hall or Cafeteria location will be announced once confirmed."
+  },
+  {
+    id: "fall-2026-mini-debates-2",
+    title: "Mini-Debates · Location TBA",
+    type: "practice",
+    start: new Date("2026-09-23T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: null,
+    notes: "The Lecture Hall or Cafeteria location will be announced once confirmed."
+  }
+].map(event => ({ ...event, _staticSchedule: true }));
+
+function calendarEventDocs() {
+  const dateKey = event => {
+    const date = event.start?.toDate ? event.start.toDate() : new Date(event.start);
+    return date.toISOString().slice(0, 10);
+  };
+  const firestoreKeys = new Set(_tournaments.map(event => `${event.title}|${dateKey(event)}`));
+  const unpublishedKickoff = FALL_2026_KICKOFF_EVENTS.filter(event =>
+    !firestoreKeys.has(`${event.title}|${dateKey(event)}`)
+  );
+  return [..._tournaments, ...unpublishedKickoff];
+}
+
 // ── Auth helpers (mirrors members-auth.js; members-auth.js is not loaded here) ──
 function isApprovedMember(email) {
   return Array.isArray(APPROVED_MEMBERS) &&
@@ -132,7 +190,7 @@ function loadTournaments() {
     } else {
       resetAllCellColors();          // wipe stale colours before re-render
       calInstance.removeAllEvents();
-      calInstance.addEventSource(buildFcEvents(_tournaments));
+      calInstance.addEventSource(buildFcEvents(calendarEventDocs()));
     }
     renderNextBanner();
   }, err => console.warn("tournaments listener:", err.message));
@@ -303,7 +361,7 @@ function initFullCalendar() {
           if (btn) btn.textContent = _showPastDeadlines ? "Hide past deadlines" : "Show past deadlines";
           // Refresh events
           calInstance.removeAllEvents();
-          calInstance.addEventSource(buildFcEvents(_tournaments));
+          calInstance.addEventSource(buildFcEvents(calendarEventDocs()));
         }
       }
     },
@@ -317,7 +375,7 @@ function initFullCalendar() {
     height:       "auto",
     nowIndicator: true,
     dayMaxEvents: 3,
-    events:       buildFcEvents(_tournaments),
+    events:       buildFcEvents(calendarEventDocs()),
     eventClick: info => {
       if (info.event.extendedProps._isBg) return; // background fill — not clickable
       openEventDetail(info.event);
@@ -458,6 +516,7 @@ function fitBannerText(banner) {
 function openEventDetail(fcEvent) {
   const t = fcEvent.extendedProps;
   const isEditor = calUserRole === "coach" || calUserRole === "captain";
+  const isStaticSchedule = t._staticSchedule === true;
   // Deadline chips have id ending in __deadline; extendedProps point to the parent tournament
   const isDeadline = fcEvent.id.endsWith("__deadline");
 
@@ -570,12 +629,12 @@ function openEventDetail(fcEvent) {
 
   // Edit + Delete buttons (coaches/captains only)
   const editTargetId = fcEvent.id.replace(/__deadline$/, "");
-  const editBtn = isEditor
+  const editBtn = isEditor && !isStaticSchedule
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
   // Deadline chips are synthetic — deleting them would remove the whole parent
   // tournament, which is confusing. Only show Delete on actual events.
-  const deleteBtn = (isEditor && !isDeadline)
+  const deleteBtn = (isEditor && !isDeadline && !isStaticSchedule)
     ? `<button class="det-delete-btn" onclick="deleteEventFromDetail('${calEsc(editTargetId)}','${calEsc(t.title)}')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
         Delete

@@ -458,6 +458,50 @@
       flex: 1; min-width: 0;
     }
 
+    /* ── Fall kickoff member update ───────────────────────── */
+    .member-kickoff-notice {
+      margin: 18px 0 0; padding: 20px 22px;
+      background: linear-gradient(135deg, rgba(13,46,86,0.72), rgba(8,27,64,0.88));
+      border: 1px solid rgba(212,160,23,0.3); border-radius: 11px;
+    }
+    .member-kickoff-title {
+      display:flex; align-items:center; gap:9px; margin:0 0 13px;
+      font-family:'Josefin Sans',sans-serif; font-size:0.78rem; font-weight:700;
+      letter-spacing:0.14em; text-transform:uppercase; color:var(--gold);
+    }
+    .member-kickoff-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:11px;
+    }
+    .member-kickoff-item {
+      min-height:88px; padding:12px 13px; border-radius:7px;
+      background:rgba(5,18,48,0.5); border:1px solid rgba(255,255,255,0.09);
+    }
+    .member-kickoff-date {
+      display:block; margin-bottom:6px; font-family:'Josefin Sans',sans-serif;
+      font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold);
+    }
+    .member-kickoff-name {
+      display:block; font-family:'Josefin Sans',sans-serif; font-size:0.79rem; font-weight:700;
+      color:var(--white); line-height:1.35;
+    }
+    .member-kickoff-detail { display:block; margin-top:5px; font-size:0.72rem; color:rgba(255,255,255,0.55); line-height:1.4; }
+    .member-kickoff-footer {
+      display:flex; justify-content:space-between; align-items:center; gap:16px;
+      margin-top:15px; padding-top:13px; border-top:1px solid rgba(212,160,23,0.15);
+      font-size:0.76rem; color:rgba(255,255,255,0.6);
+    }
+    .member-kickoff-footer strong { color:var(--gold-pale); }
+    .member-kickoff-link {
+      flex-shrink:0; font-family:'Josefin Sans',sans-serif; font-size:0.7rem; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase; color:var(--gold);
+    }
+    @media(max-width:800px) { .member-kickoff-grid { grid-template-columns:repeat(2,1fr); } }
+    @media(max-width:520px) {
+      .member-kickoff-notice { padding:17px 15px; }
+      .member-kickoff-grid { grid-template-columns:1fr; }
+      .member-kickoff-footer { align-items:flex-start; flex-direction:column; }
+    }
+
     /* ── Section divider ──────────────────────────────── */
     .section-divider {
       border: none; border-top: 1px solid rgba(212,160,23,0.3);
@@ -1088,6 +1132,36 @@
         </svg>
       </button>
     </div>
+
+    <section class="member-kickoff-notice" aria-labelledby="member-kickoff-title">
+      <h2 class="member-kickoff-title" id="member-kickoff-title">📅 Fall 2026 Debate Kickoff</h2>
+      <div class="member-kickoff-grid">
+        <div class="member-kickoff-item">
+          <span class="member-kickoff-date">Thu · Sept 10</span>
+          <span class="member-kickoff-name">Debate Info Session</span>
+          <span class="member-kickoff-detail">During QST · Lecture Hall</span>
+        </div>
+        <div class="member-kickoff-item">
+          <span class="member-kickoff-date">Mon · Sept 14</span>
+          <span class="member-kickoff-name">Activity Fair · A Session</span>
+          <span class="member-kickoff-detail">After school · Late buses begin</span>
+        </div>
+        <div class="member-kickoff-item">
+          <span class="member-kickoff-date">Tue · Sept 22</span>
+          <span class="member-kickoff-name">Mini-Debates</span>
+          <span class="member-kickoff-detail">Room to be confirmed</span>
+        </div>
+        <div class="member-kickoff-item">
+          <span class="member-kickoff-date">Wed · Sept 23</span>
+          <span class="member-kickoff-name">Mini-Debates</span>
+          <span class="member-kickoff-detail">Room to be confirmed</span>
+        </div>
+      </div>
+      <div class="member-kickoff-footer">
+        <span><strong>Weekly meetings:</strong> Tuesdays in the Lecture Hall — A: 2:30–3:30 PM · B: 3:30–4:30 PM. Optional Wednesday practice uses the same slots.</span>
+        <a class="member-kickoff-link" href="members-calendar.html">Open Calendar →</a>
+      </div>
+    </section>
 
     <!-- Section divider -->
     <hr class="section-divider">
