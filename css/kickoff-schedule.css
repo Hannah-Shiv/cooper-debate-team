@@ -435,13 +435,13 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 760px) {
   .kickoff-schedule {
     padding: 22px 14px 16px;
   }
 
   .kickoff-schedule__title {
-    font-size: 2.2rem;
+    font-size: clamp(1.9rem, 8vw, 2.2rem);
   }
 
   .kickoff-schedule__dates {
@@ -465,7 +465,72 @@
     grid-template-columns: 1fr;
   }
 
+  .kickoff-schedule__weekly-content {
+    grid-template-columns: 1fr;
+  }
+
+  .kickoff-schedule__session {
+    padding: 8px 10px;
+  }
+
+  .kickoff-schedule__session + .kickoff-schedule__session {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    border-left: 0;
+  }
+
   .kickoff-schedule__footer {
     align-items: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .kickoff-schedule {
+    padding: 18px 10px 14px;
+  }
+
+  .kickoff-schedule__eyebrow {
+    font-size: 0.68rem;
+    gap: 6px;
+  }
+
+  .kickoff-schedule__eyebrow-icon {
+    width: 20px;
+    height: 20px;
+    font-size: 1rem;
+  }
+
+  .kickoff-schedule__date-card {
+    padding: 13px 12px;
+  }
+
+  .kickoff-schedule__date-heading {
+    gap: 8px;
+    padding-right: 34px;
+  }
+
+  .kickoff-schedule__date-icon {
+    flex-basis: 44px;
+    width: 44px;
+    height: 44px;
+  }
+
+  .kickoff-schedule__weekly-columns {
+    padding: 0 8px 8px;
+  }
+
+  .kickoff-schedule__weekly-card-title {
+    padding-inline: 8px;
+    font-size: 0.61rem;
+  }
+
+  .kickoff-schedule__footer {
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .kickoff-schedule__footer-icon {
+    flex-basis: 32px;
+    width: 32px;
+    height: 32px;
   }
 }

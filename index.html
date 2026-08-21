@@ -636,7 +636,7 @@
   const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
   const container = document.getElementById('home-news-cards');
   if (container && typeof ANNOUNCEMENTS !== 'undefined') {
-    const items = ANNOUNCEMENTS.slice(0, 2);
+    const items = ANNOUNCEMENTS.filter(p => !p.displayWithSchedule).slice(0, 2);
     if (items.length) {
       container.style.cssText = 'margin-top:20px;';
       if (items.length === 1) {
