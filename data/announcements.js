@@ -16,6 +16,7 @@ const ANNOUNCEMENTS = [
     tag: "team",
     tagLabel: "Fall Kickoff",
     emoji: "📅",
+    displayWithSchedule: true,
     title: "Fall 2026 Debate Kickoff Dates Announced",
     body: `Mark your calendars! Our Debate Info Session is Thursday, September 10 during QST (9:35–10:25 AM) in the Lecture Hall. Find us again at the Activity Fair after school on Monday, September 14 (A session); late buses begin at 4:30 PM.\n\nRegular Debate meetings are held in the Lecture Hall on Tuesdays: A Session meets from 2:30–3:30 PM and B Session meets from 3:30–4:30 PM. Optional Wednesday practice uses the same time window.\n\nMini-debates are planned for September 22 and 23 from 2:30–4:30 PM, using both A and B sessions. The room will be announced as soon as it is confirmed.`
   },
