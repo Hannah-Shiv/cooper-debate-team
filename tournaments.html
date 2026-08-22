@@ -168,13 +168,14 @@
       border-bottom:1px solid rgba(212,160,23,0.2); backdrop-filter:blur(12px);
     }
     .tourney-section-nav .section-wrap { display:flex; gap:4px; overflow-x:auto; padding-top:10px; padding-bottom:10px; }
-    .tourney-section-nav a {
+    .tourney-section-nav button {
       flex:1; min-width:max-content; padding:9px 15px; border:1px solid transparent; border-radius:5px;
       color:var(--gray-mid); font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
-      letter-spacing:0.08em; text-align:center; text-decoration:none; text-transform:uppercase; transition:all .2s;
+      letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:all .2s;
+      background:transparent; cursor:pointer;
     }
-    .tourney-section-nav a:hover, .tourney-section-nav a:focus { border-color:rgba(212,160,23,.45); color:var(--gold); background:rgba(212,160,23,.09); outline:none; }
-    .tourney-section-nav a[aria-selected="true"] { color:var(--gold); border-color:rgba(212,160,23,.3); background:rgba(212,160,23,.06); }
+    .tourney-section-nav button:hover, .tourney-section-nav button:focus { border-color:rgba(212,160,23,.45); color:var(--gold); background:rgba(212,160,23,.09); outline:none; }
+    .tourney-section-nav button[aria-selected="true"] { color:var(--gold); border-color:rgba(212,160,23,.3); background:rgba(212,160,23,.06); }
     .tourney-tab-panel { display:none; }
     .tourney-tab-panel.is-active { display:block; }
 
@@ -237,7 +238,7 @@
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:900px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}}
-    @media(max-width:700px){.volunteer-events{grid-template-columns:1fr;}.tourney-section-nav .section-wrap{padding-left:16px;padding-right:16px;}.tourney-section-nav a{flex:auto;}.vol-role{align-items:flex-start;flex-direction:column;}.vol-role-action{align-items:flex-start;}.vol-form-grid{grid-template-columns:1fr;}.vol-form-field.full{grid-column:auto;}}
+    @media(max-width:700px){.volunteer-events{grid-template-columns:1fr;}.tourney-section-nav .section-wrap{padding-left:16px;padding-right:16px;}.tourney-section-nav button{flex:auto;}.vol-role{align-items:flex-start;flex-direction:column;}.vol-role-action{align-items:flex-start;}.vol-form-grid{grid-template-columns:1fr;}.vol-form-field.full{grid-column:auto;}}
     @media(max-width:600px){.three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}.vol-modal-card{padding:25px 20px;}}
   </style>
 </head>
@@ -285,10 +286,10 @@
 
   <nav class="tourney-section-nav" aria-label="Tournament page sections">
     <div class="section-wrap">
-      <a id="tourney-tab-overview" href="#tournament-overview" role="tab" aria-controls="tournament-overview" aria-selected="true">Overview</a>
-      <a id="tourney-tab-calendar" href="#calendar-results" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1">Calendar &amp; Results</a>
-      <a id="tourney-tab-volunteer" href="#volunteer-signup" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1">Volunteer Signup</a>
-      <a id="tourney-tab-parent" href="#parent-info" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1">Parent Guide</a>
+      <button id="tourney-tab-overview" type="button" role="tab" aria-controls="tournament-overview" aria-selected="true">Overview</button>
+      <button id="tourney-tab-calendar" type="button" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1">Calendar &amp; Results</button>
+      <button id="tourney-tab-volunteer" type="button" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1">Volunteer Signup</button>
+      <button id="tourney-tab-parent" type="button" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1">Parent Guide</button>
     </div>
   </nav>
 
@@ -729,12 +730,15 @@ function renderLastSeason(tourns) {
 
   function tabIdFromHash() {
     const hash = window.location.hash.slice(1);
-    return panelIds.has(hash) ? hash : null;
+    if (panelIds.has(hash)) return hash;
+    const queryTab = new URLSearchParams(window.location.search).get('tab');
+    return panelIds.has(queryTab) ? queryTab : null;
   }
 
-  function updateHash(id, replace) {
+  function updateUrl(id, replace) {
     const url = new URL(window.location.href);
-    url.hash = id;
+    url.searchParams.set('tab', id);
+    url.hash = '';
     window.history[replace ? 'replaceState' : 'pushState']({}, '', url);
   }
 
@@ -750,7 +754,7 @@ function renderLastSeason(tourns) {
       panel.classList.toggle('is-active', selected);
       panel.hidden = !selected;
     });
-    if (options.updateUrl) updateHash(activeId, false);
+    if (options.updateUrl) updateUrl(activeId, false);
     if (options.focus) {
       const activeTab = tabs.find(tab => tab.getAttribute('aria-controls') === activeId);
       if (activeTab) activeTab.focus({ preventScroll: true });
@@ -779,7 +783,7 @@ function renderLastSeason(tourns) {
 
   const initialId = window.__TOURNEY_INITIAL_TAB || tabIdFromHash() || panels[0].id;
   activateTab(initialId);
-  if (window.__TOURNEY_INITIAL_TAB) updateHash(initialId, true);
+  if (window.__TOURNEY_INITIAL_TAB) updateUrl(initialId, true);
 }());
 
 /* ── Init: default to Last Season until this season has data ── */
