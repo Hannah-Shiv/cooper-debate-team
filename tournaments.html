@@ -238,7 +238,20 @@
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:900px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}}
-    @media(max-width:700px){.volunteer-events{grid-template-columns:1fr;}.tourney-section-nav .section-wrap{padding-left:16px;padding-right:16px;}.tourney-section-nav button{flex:auto;}.vol-role{align-items:flex-start;flex-direction:column;}.vol-role-action{align-items:flex-start;}.vol-form-grid{grid-template-columns:1fr;}.vol-form-field.full{grid-column:auto;}}
+    @media(max-width:700px){
+      .volunteer-events{grid-template-columns:1fr;}
+      .tourney-section-nav .section-wrap{
+        display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px;
+        overflow:visible; padding-left:16px; padding-right:16px;
+      }
+      .tourney-section-nav button{
+        min-width:0; padding:11px 7px; line-height:1.25; width:100%;
+      }
+      .vol-role{align-items:flex-start;flex-direction:column;}
+      .vol-role-action{align-items:flex-start;}
+      .vol-form-grid{grid-template-columns:1fr;}
+      .vol-form-field.full{grid-column:auto;}
+    }
     @media(max-width:600px){.three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}.vol-modal-card{padding:25px 20px;}}
   </style>
 </head>
