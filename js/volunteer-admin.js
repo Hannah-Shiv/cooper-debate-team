@@ -43,7 +43,7 @@
     wrap.innerHTML = `
       <button class="remove-role" type="button" title="Remove role">Remove</button>
       <div class="role-editor-grid">
-        <input class="role-label" maxlength="100" required placeholder="Role name" value="${esc(role.label)}">
+        <input class="role-label" maxlength="100" required placeholder="Role name" value="${esc(role.label || "Judge")}">
         <input class="role-capacity" min="1" max="100" required type="number" placeholder="Capacity" value="${Number(role.capacity) || 1}">
       </div>
       <input class="role-description" maxlength="280" placeholder="Short description (optional)" value="${esc(role.description)}">`;
@@ -78,6 +78,13 @@
     $("event-date").value = event.date || "";
     $("event-deadline").value = event.signupDeadline || "";
     $("event-location").value = event.location || "";
+    $("event-address").value = event.address || "";
+    $("event-start-time").value = event.startTime || "";
+    $("event-end-time").value = event.endTime || "";
+    $("event-format").value = event.debateFormat || "";
+    $("event-host").value = event.host || "";
+    $("event-resolution").value = event.resolution || "";
+    $("event-judge-instructions").value = event.judgeInstructions || "";
     $("event-details").value = event.details || "";
     $("event-published").checked = !!event.published;
     $("role-editors").innerHTML = "";
@@ -104,6 +111,13 @@
       title, date, roles,
       signupDeadline: $("event-deadline").value || "",
       location: $("event-location").value.trim(),
+      address: $("event-address").value.trim(),
+      startTime: $("event-start-time").value || "",
+      endTime: $("event-end-time").value || "",
+      debateFormat: $("event-format").value.trim(),
+      host: $("event-host").value.trim(),
+      resolution: $("event-resolution").value.trim(),
+      judgeInstructions: $("event-judge-instructions").value.trim(),
       details: $("event-details").value.trim(),
       published: $("event-published").checked,
     };
@@ -151,9 +165,9 @@
     if (!event) return;
     try {
       const signups = await signupsForEvent(eventId);
-      const rows = [["Event", "Date", "Role", "Parent / guardian", "Email", "Phone", "Debater", "Notes", "Submitted"]];
+      const rows = [["Event", "Date", "Role", "Judging availability", "Parent / guardian", "Email", "Phone", "Debater", "Notes", "Submitted"]];
       signups.forEach(signup => rows.push([
-        event.title, event.date, signup.roleLabel, signup.parentName, signup.email,
+        event.title, event.date, signup.roleLabel, [signup.availabilityStart, signup.availabilityEnd].filter(Boolean).join(" – "), signup.parentName, signup.email,
         signup.phone, signup.studentName, signup.notes,
         signup.createdAt && signup.createdAt.toDate ? signup.createdAt.toDate().toLocaleString() : "",
       ]));
@@ -197,8 +211,9 @@
       const roles = (item.roles || []).map(role => `<div><b>${Math.max(0, Number(role.capacity || 0) - Number(role.signedUp || 0))}/${Number(role.capacity || 0)} open</b> &nbsp; ${esc(role.label)}</div>`).join("");
       return `<article class="vol-event" data-event="${esc(item.id)}">
         <div class="vol-event-main">
-          <div class="vol-event-top"><div><h3>${esc(item.title)}</h3><p class="vol-event-meta">${esc(item.date)}${item.location ? ` · ${esc(item.location)}` : ""}${item.signupDeadline ? ` · sign up by ${esc(item.signupDeadline)}` : ""}</p></div><span class="vol-status ${item.published ? "open" : "closed"}">${item.published ? "Published" : "Closed"}</span></div>
-          ${item.details ? `<p class="vol-event-meta" style="margin:10px 0 0">${esc(item.details)}</p>` : ""}
+          <div class="vol-event-top"><div><h3>${esc(item.title)}</h3><p class="vol-event-meta">${esc(item.date)}${item.startTime && item.endTime ? ` · ${esc(item.startTime)}–${esc(item.endTime)}` : ""}${item.location ? ` · ${esc(item.location)}` : ""}${item.signupDeadline ? ` · sign up by ${esc(item.signupDeadline)}` : ""}</p></div><span class="vol-status ${item.published ? "open" : "closed"}">${item.published ? "Published" : "Closed"}</span></div>
+          ${item.debateFormat ? `<p class="vol-event-meta" style="margin:10px 0 0">${esc(item.debateFormat)}${item.host ? ` · Hosted by ${esc(item.host)}` : ""}</p>` : ""}
+          ${item.details ? `<p class="vol-event-meta" style="margin:7px 0 0">${esc(item.details)}</p>` : ""}
           <div class="vol-role-summary">${roles}</div>
           <div class="vol-event-actions">
             <button class="vol-action" data-edit="${esc(item.id)}">Edit event</button>
@@ -220,7 +235,7 @@
       if (!body) return;
       try {
         const signups = await signupsForEvent(item.id);
-        body.innerHTML = signups.length ? signups.map(signup => `<div class="vol-signup-row"><div><div class="vol-signup-name">${esc(signup.parentName)} <span style="color:var(--vol-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="vol-signup-details">${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="vol-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="vol-no-signups">No parent signups yet.</p>`;
+        body.innerHTML = signups.length ? signups.map(signup => `<div class="vol-signup-row"><div><div class="vol-signup-name">${esc(signup.parentName)} <span style="color:var(--vol-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="vol-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="vol-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="vol-no-signups">No parent signups yet.</p>`;
         body.querySelectorAll("[data-remove]").forEach(button => {
           const signup = signups.find(item => item.id === button.dataset.remove);
           button.addEventListener("click", () => removeSignup(signup));

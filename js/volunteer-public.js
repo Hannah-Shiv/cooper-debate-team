@@ -1,4 +1,4 @@
-/* Cooper Debate Team — Public tournament volunteer signup */
+/* Cooper Debate Team — public judge volunteer signup */
 (function () {
   "use strict";
 
@@ -6,9 +6,11 @@
   let volunteerEvents = [];
   let selectedEvent = null;
   let selectedRole = null;
+  let wizardStep = 1;
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
 
+  const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -22,20 +24,46 @@
     return Number.isNaN(parsed.getTime())
       ? value
       : parsed.toLocaleDateString("en-US", {
-        weekday: "short", month: "long", day: "numeric", year: "numeric",
+        weekday: "long", month: "long", day: "numeric", year: "numeric",
       });
   };
 
+  const timeLabel = value => {
+    if (!/^\d{2}:\d{2}$/.test(value || "")) return "";
+    const [rawHour, minutes] = value.split(":").map(Number);
+    const suffix = rawHour >= 12 ? "PM" : "AM";
+    const hour = rawHour % 12 || 12;
+    return `${hour}:${String(minutes).padStart(2, "0")} ${suffix}`;
+  };
+
+  const timeRange = (start, end) => {
+    const startLabel = timeLabel(start);
+    const endLabel = timeLabel(end);
+    return startLabel && endLabel ? `${startLabel} – ${endLabel}` : "";
+  };
+
+  function eventFacts(event) {
+    const facts = [
+      event.date && { label: "Date", value: dateLabel(event.date) },
+      timeRange(event.startTime, event.endTime) && { label: "Tournament hours", value: timeRange(event.startTime, event.endTime) },
+      event.location && { label: "Venue", value: event.location },
+      event.address && { label: "Address", value: event.address },
+      event.debateFormat && { label: "Debate", value: event.debateFormat },
+      event.host && { label: "Hosted by", value: event.host },
+    ].filter(Boolean);
+    return facts.map(fact => `<div class="vol-event-fact"><span>${escapeHtml(fact.label)}</span><strong>${escapeHtml(fact.value)}</strong></div>`).join("");
+  }
+
   function renderEvents() {
-    const root = document.getElementById("volunteer-events");
+    const root = $("volunteer-events");
     if (!root) return;
 
     if (!volunteerEvents.length) {
       root.innerHTML = `
         <div class="vol-empty">
           <span aria-hidden="true">📬</span>
-          <h3>No volunteer openings are posted yet</h3>
-          <p>When a tournament needs judges or chaperones, the signup will appear here. Please check back soon.</p>
+          <h3>No judge openings are posted yet</h3>
+          <p>When a tournament needs parent judges, the signup will appear here. Please check back soon.</p>
         </div>`;
       return;
     }
@@ -58,14 +86,14 @@
             <div class="vol-role-copy">
               <h4>${escapeHtml(role.label)}</h4>
               ${role.description ? `<p>${escapeHtml(role.description)}</p>` : ""}
-              <div class="vol-taken">${signupNames ? `<span class="vol-taken-label">Signed up:</span>${signupNames}` : "No signups yet"}</div>
+              <div class="vol-taken">${signupNames ? `<span class="vol-taken-label">Judge volunteers:</span>${signupNames}` : "No judge volunteers yet"}</div>
             </div>
             <div class="vol-role-action">
               <span class="vol-count">${filled} / ${capacity} filled · ${remaining} open</span>
-              <span class="vol-progress" aria-label="${filled} of ${capacity} spots filled"><span style="width:${capacity ? (filled / capacity) * 100 : 0}%"></span></span>
+              <span class="vol-progress" aria-label="${filled} of ${capacity} openings filled"><span style="width:${capacity ? (filled / capacity) * 100 : 0}%"></span></span>
               <button type="button" class="vol-signup-btn" ${full ? "disabled" : ""}
                 data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(role.id)}">
-                ${full ? "Filled" : "Sign Up"}
+                ${full ? "Filled" : "Choose time"}
               </button>
             </div>
           </div>`;
@@ -73,9 +101,11 @@
 
       return `
         <article class="vol-event-card">
-          <div class="vol-event-date">${escapeHtml(dateLabel(event.date))}</div>
+          <div class="vol-event-date">Judge volunteer opportunity</div>
           <h3>${escapeHtml(event.title)}</h3>
-          ${event.location ? `<p class="vol-event-location">📍 ${escapeHtml(event.location)}</p>` : ""}
+          <div class="vol-event-facts">${eventFacts(event)}</div>
+          ${event.resolution ? `<div class="vol-resolution"><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
+          ${event.judgeInstructions ? `<div class="vol-event-note"><strong>For judges</strong>${escapeHtml(event.judgeInstructions)}</div>` : ""}
           ${event.details ? `<p class="vol-event-details">${escapeHtml(event.details)}</p>` : ""}
           ${event.signupDeadline ? `<p class="vol-deadline">Sign up by ${escapeHtml(dateLabel(event.signupDeadline))}</p>` : ""}
           <div class="vol-roles">${roles}</div>
@@ -83,18 +113,14 @@
     }).join("");
 
     root.querySelectorAll(".vol-signup-btn:not(:disabled)").forEach(button => {
-      button.addEventListener("click", () => openSignup(
-        button.dataset.eventId,
-        button.dataset.roleId,
-      ));
+      button.addEventListener("click", () => openSignup(button.dataset.eventId, button.dataset.roleId));
     });
   }
 
   async function loadVolunteerEvents() {
-    const root = document.getElementById("volunteer-events");
+    const root = $("volunteer-events");
     if (!root) return;
-    root.innerHTML = `<div class="vol-loading" aria-live="polite">Loading volunteer opportunities…</div>`;
-
+    root.innerHTML = `<div class="vol-loading" aria-live="polite">Loading judge volunteer opportunities…</div>`;
     try {
       const response = await fetch(ENDPOINT, { headers: { Accept: "application/json" } });
       if (!response.ok) throw new Error("Unable to load volunteer events.");
@@ -106,49 +132,14 @@
       root.innerHTML = `
         <div class="vol-empty">
           <span aria-hidden="true">⚠</span>
-          <h3>Volunteer signups are temporarily unavailable</h3>
+          <h3>Judge signups are temporarily unavailable</h3>
           <p>Please refresh in a moment, or contact <a href="mailto:CooperDebateTeam@gmail.com">CooperDebateTeam@gmail.com</a> for help.</p>
         </div>`;
     }
   }
 
-  function openSignup(eventId, roleId) {
-    selectedEvent = volunteerEvents.find(event => event.id === eventId) || null;
-    selectedRole = selectedEvent && selectedEvent.roles.find(role => role.id === roleId);
-    if (!selectedEvent || !selectedRole) return;
-
-    const title = document.getElementById("vol-modal-title");
-    const context = document.getElementById("vol-modal-context");
-    const form = document.getElementById("volunteer-signup-form");
-    if (!title || !context || !form) return;
-
-    title.textContent = `Sign up to ${selectedRole.label}`;
-    context.textContent = `${selectedEvent.title}${selectedEvent.date ? ` · ${dateLabel(selectedEvent.date)}` : ""}`;
-    form.reset();
-    setStatus("");
-    renderTurnstile();
-    if (!isTurnstileConfigured()) {
-      setStatus("Volunteer verification is not configured yet. Please contact the coaching staff.", true);
-      document.getElementById("vol-submit").disabled = true;
-    } else if (window.turnstile && turnstileWidgetId !== null) {
-      window.turnstile.reset(turnstileWidgetId);
-      document.getElementById("vol-submit").disabled = false;
-    }
-    document.getElementById("volunteer-modal").style.display = "flex";
-    document.body.classList.add("vol-modal-open");
-    document.getElementById("vol-parent-name").focus();
-  }
-
-  function closeSignup() {
-    const modal = document.getElementById("volunteer-modal");
-    if (modal) modal.style.display = "none";
-    document.body.classList.remove("vol-modal-open");
-    selectedEvent = null;
-    selectedRole = null;
-  }
-
   function setStatus(message, isError) {
-    const status = document.getElementById("vol-form-status");
+    const status = $("vol-form-status");
     if (!status) return;
     status.textContent = message || "";
     status.className = `vol-form-status${message ? (isError ? " is-error" : " is-success") : ""}`;
@@ -160,7 +151,7 @@
   }
 
   function renderTurnstile() {
-    const root = document.getElementById("vol-turnstile");
+    const root = $("vol-turnstile");
     if (!root || !turnstileLoaded || !window.turnstile || turnstileWidgetId !== null || !isTurnstileConfigured()) return;
     turnstileWidgetId = window.turnstile.render(root, {
       sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
@@ -176,30 +167,123 @@
     renderTurnstile();
   };
 
+  function renderTournamentBrief() {
+    const root = $("vol-tournament-brief");
+    if (!root || !selectedEvent) return;
+    root.innerHTML = `
+      <div class="vol-brief-top">
+        <span class="vol-brief-role">${escapeHtml(selectedRole.label)}</span>
+        <h3>${escapeHtml(selectedEvent.title)}</h3>
+      </div>
+      <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
+      ${selectedEvent.resolution ? `<div class="vol-brief-resolution"><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div>` : ""}
+      ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout">${escapeHtml(selectedEvent.judgeInstructions)}</div>` : ""}`;
+  }
+
+  function renderReview() {
+    const root = $("vol-review");
+    if (!root || !selectedEvent || !selectedRole) return;
+    const firstName = $("vol-parent-first-name").value.trim();
+    const lastName = $("vol-parent-last-name").value.trim();
+    root.innerHTML = `
+      <div class="vol-review-card">
+        <span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong>
+        <span>Role</span><strong>${escapeHtml(selectedRole.label)}</strong>
+        <span>Judging availability</span><strong>${escapeHtml(timeRange($("vol-availability-start").value, $("vol-availability-end").value))}</strong>
+        <span>Volunteer</span><strong>${escapeHtml(`${firstName} ${lastName}`.trim())}</strong>
+        <span>Contact</span><strong>${escapeHtml($("vol-email").value.trim())} · ${escapeHtml($("vol-phone").value.trim())}</strong>
+      </div>`;
+  }
+
+  function showStep(step) {
+    wizardStep = Math.max(1, Math.min(3, step));
+    document.querySelectorAll("[data-vol-step]").forEach(panel => {
+      panel.hidden = Number(panel.dataset.volStep) !== wizardStep;
+    });
+    document.querySelectorAll("[data-vol-progress]").forEach(item => {
+      const active = Number(item.dataset.volProgress) <= wizardStep;
+      item.classList.toggle("is-active", active);
+      item.classList.toggle("is-current", Number(item.dataset.volProgress) === wizardStep);
+    });
+    if (wizardStep === 3) {
+      renderReview();
+      renderTurnstile();
+    }
+    setStatus("");
+  }
+
+  function validateStep(step) {
+    const panel = document.querySelector(`[data-vol-step="${step}"]`);
+    const fields = panel ? [...panel.querySelectorAll("input[required], textarea[required]")] : [];
+    return fields.every(field => {
+      if (field.checkValidity()) return true;
+      field.reportValidity();
+      return false;
+    });
+  }
+
+  function openSignup(eventId, roleId) {
+    selectedEvent = volunteerEvents.find(event => event.id === eventId) || null;
+    selectedRole = selectedEvent && selectedEvent.roles.find(role => role.id === roleId);
+    const form = $("volunteer-signup-form");
+    if (!selectedEvent || !selectedRole || !form) return;
+
+    $("vol-modal-title").textContent = "Judge Volunteer Signup";
+    $("vol-modal-context").textContent = "Choose the hours you are available to judge, then review your signup.";
+    form.reset();
+    $("vol-availability-start").min = selectedEvent.startTime || "";
+    $("vol-availability-start").max = selectedEvent.endTime || "";
+    $("vol-availability-end").min = selectedEvent.startTime || "";
+    $("vol-availability-end").max = selectedEvent.endTime || "";
+    $("vol-availability-start").value = selectedEvent.startTime || "";
+    $("vol-availability-end").value = selectedEvent.endTime || "";
+    renderTournamentBrief();
+    if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
+    $("volunteer-modal").style.display = "flex";
+    document.body.classList.add("vol-modal-open");
+    showStep(1);
+    $("vol-availability-start").focus();
+  }
+
+  function closeSignup() {
+    const modal = $("volunteer-modal");
+    if (modal) modal.style.display = "none";
+    document.body.classList.remove("vol-modal-open");
+    selectedEvent = null;
+    selectedRole = null;
+    wizardStep = 1;
+  }
+
   async function submitSignup(event) {
     event.preventDefault();
     if (!selectedEvent || !selectedRole) return;
+    if (wizardStep < 3) {
+      if (validateStep(wizardStep)) showStep(wizardStep + 1);
+      return;
+    }
 
-    const form = event.currentTarget;
-    const button = document.getElementById("vol-submit");
+    const button = $("vol-submit");
     const turnstileToken = window.turnstile && turnstileWidgetId !== null
       ? window.turnstile.getResponse(turnstileWidgetId)
       : "";
     const payload = {
       eventId: selectedEvent.id,
       roleId: selectedRole.id,
-      parentName: document.getElementById("vol-parent-name").value,
-      email: document.getElementById("vol-email").value,
-      phone: document.getElementById("vol-phone").value,
-      studentName: document.getElementById("vol-student-name").value,
-      notes: document.getElementById("vol-notes").value,
-      company: document.getElementById("vol-company").value,
+      parentFirstName: $("vol-parent-first-name").value,
+      parentLastName: $("vol-parent-last-name").value,
+      email: $("vol-email").value,
+      phone: $("vol-phone").value,
+      studentName: $("vol-student-name").value,
+      notes: $("vol-notes").value,
+      availabilityStart: $("vol-availability-start").value,
+      availabilityEnd: $("vol-availability-end").value,
+      company: $("vol-company").value,
       turnstileToken,
     };
 
-    if (!form.reportValidity()) return;
+    if (!validateStep(1) || !validateStep(2)) return;
     if (!turnstileToken) {
-      setStatus("Please complete the volunteer verification before signing up.", true);
+      setStatus("Please complete the volunteer verification before confirming.", true);
       return;
     }
     button.disabled = true;
@@ -214,7 +298,6 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
-
       setStatus(result.message || "You’re signed up. Thank you!", false);
       await loadVolunteerEvents();
       setTimeout(closeSignup, 1800);
@@ -222,18 +305,25 @@
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
     } finally {
       button.disabled = false;
-      button.textContent = "Confirm Signup";
+      button.textContent = "Confirm judge signup";
     }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
     loadVolunteerEvents();
-
-    document.getElementById("volunteer-signup-form")?.addEventListener("submit", submitSignup);
+    $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
       element.addEventListener("click", closeSignup);
     });
-    document.getElementById("volunteer-modal")?.addEventListener("click", event => {
+    document.querySelectorAll("[data-vol-next]").forEach(button => {
+      button.addEventListener("click", () => {
+        if (validateStep(wizardStep)) showStep(Number(button.dataset.volNext));
+      });
+    });
+    document.querySelectorAll("[data-vol-back]").forEach(button => {
+      button.addEventListener("click", () => showStep(Number(button.dataset.volBack)));
+    });
+    $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") closeSignup();
     });
     document.addEventListener("keydown", event => {
@@ -241,4 +331,4 @@
     });
     renderTurnstile();
   });
-})();
+}());

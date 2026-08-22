@@ -164,9 +164,9 @@ exports.notifyOnTournament = onDocumentCreated(
 );
 
 // ── Public tournament volunteer signup ─────────────────────────
-// Parent contact information is never readable from the public site. The
-// browser receives only published event details and role availability; writes
-// are validated and performed here with the Admin SDK.
+// The browser receives only published event details, role availability, and
+// the parent/debater names and availability that families have agreed to show.
+// Contact details remain coach-only; writes are validated with the Admin SDK.
 const COACH_EMAILS = new Set([
   "pgkonde@fcps.edu",
   "hannahbshiv@gmail.com",
@@ -185,6 +185,16 @@ function validEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function cleanTime(value) {
+  const time = cleanText(value, 5);
+  return /^([01]\d|2[0-3]):[0-5]\d$/.test(time) ? time : "";
+}
+
+function timeMinutes(value) {
+  const [hours, minutes] = value.split(":").map(Number);
+  return hours * 60 + minutes;
+}
+
 function cleanRoles(roles) {
   return Array.isArray(roles) ? roles.map(role => ({
     id:          cleanText(role.id, 80),
@@ -201,6 +211,13 @@ function publicVolunteerEvent(id, data) {
     title:          cleanText(data.title, 160),
     date:           cleanText(data.date, 32),
     location:        cleanText(data.location, 200),
+    address:         cleanText(data.address, 240),
+    startTime:       cleanTime(data.startTime),
+    endTime:         cleanTime(data.endTime),
+    debateFormat:    cleanText(data.debateFormat, 120),
+    resolution:      cleanText(data.resolution, 900),
+    host:            cleanText(data.host, 160),
+    judgeInstructions: cleanText(data.judgeInstructions, 900),
     details:         cleanText(data.details, 700),
     signupDeadline:  cleanText(data.signupDeadline, 32),
     roles: cleanRoles(data.roles).map(role => ({
@@ -283,11 +300,15 @@ exports.publicVolunteerSignup = onRequest(
     const body = req.body || {};
     const eventId = cleanText(body.eventId, 160);
     const roleId = cleanText(body.roleId, 80);
-    const parentName = cleanText(body.parentName, 120);
+    const parentFirstName = cleanText(body.parentFirstName, 60);
+    const parentLastName = cleanText(body.parentLastName, 60);
+    const parentName = `${parentFirstName} ${parentLastName}`.trim();
     const email = cleanText(body.email, 160).toLowerCase();
     const phone = cleanText(body.phone, 40);
     const studentName = cleanText(body.studentName, 120);
     const notes = cleanText(body.notes, 600);
+    const availabilityStart = cleanTime(body.availabilityStart);
+    const availabilityEnd = cleanTime(body.availabilityEnd);
     const turnstileToken = cleanText(body.turnstileToken, 4096);
 
     // Hidden honeypot field. Bots should not receive a useful success response.
@@ -296,8 +317,12 @@ exports.publicVolunteerSignup = onRequest(
       return;
     }
 
-    if (!eventId || !roleId || !parentName || !validEmail(email) || !phone) {
-      res.status(400).json({ error: "Please provide your name, email, phone number, and volunteer role." });
+    if (!eventId || !roleId || !parentFirstName || !parentLastName || !validEmail(email) || !phone || !availabilityStart || !availabilityEnd) {
+      res.status(400).json({ error: "Please provide your first and last name, contact details, and judging availability." });
+      return;
+    }
+    if (timeMinutes(availabilityStart) >= timeMinutes(availabilityEnd)) {
+      res.status(400).json({ error: "Your availability end time must be after your start time." });
       return;
     }
     if (!turnstileToken) {
@@ -328,6 +353,15 @@ exports.publicVolunteerSignup = onRequest(
         if (!eventSnap.exists || !eventSnap.data().published) {
           throw new Error("This volunteer opportunity is no longer available.");
         }
+        const eventStartTime = cleanTime(eventSnap.data().startTime);
+        const eventEndTime = cleanTime(eventSnap.data().endTime);
+        if (
+          eventStartTime && eventEndTime &&
+          (timeMinutes(availabilityStart) < timeMinutes(eventStartTime) ||
+            timeMinutes(availabilityEnd) > timeMinutes(eventEndTime))
+        ) {
+          throw new Error("Please choose a judging window within the published tournament hours.");
+        }
         if (signupSnap.exists || duplicateSnap.exists) {
           throw new Error("You are already signed up for this tournament.");
         }
@@ -352,11 +386,15 @@ exports.publicVolunteerSignup = onRequest(
           eventId,
           roleId,
           roleLabel: selectedRole.label,
+          parentFirstName,
+          parentLastName,
           parentName,
           email,
           phone,
           studentName,
           notes,
+          availabilityStart,
+          availabilityEnd,
           duplicateKey,
           createdAt: FieldValue.serverTimestamp(),
         });
@@ -463,6 +501,13 @@ exports.manageVolunteerSignup = onRequest(
         const title = cleanText(incoming.title, 160);
         const date = cleanText(incoming.date, 32);
         const location = cleanText(incoming.location, 200);
+        const address = cleanText(incoming.address, 240);
+        const startTime = cleanTime(incoming.startTime);
+        const endTime = cleanTime(incoming.endTime);
+        const debateFormat = cleanText(incoming.debateFormat, 120);
+        const resolution = cleanText(incoming.resolution, 900);
+        const host = cleanText(incoming.host, 160);
+        const judgeInstructions = cleanText(incoming.judgeInstructions, 900);
         const details = cleanText(incoming.details, 700);
         const signupDeadline = cleanText(incoming.signupDeadline, 32);
         const published = incoming.published === true;
@@ -482,6 +527,9 @@ exports.manageVolunteerSignup = onRequest(
 
         if (!title || !date || !requestedRoles.length) {
           throw new Error("Add an event title, date, and at least one volunteer role.");
+        }
+        if ((startTime && !endTime) || (!startTime && endTime) || (startTime && timeMinutes(startTime) >= timeMinutes(endTime))) {
+          throw new Error("Tournament end time must be after the start time.");
         }
 
         const eventRef = requestedId
@@ -507,7 +555,8 @@ exports.manageVolunteerSignup = onRequest(
           }
 
           const data = {
-            title, date, location, details, signupDeadline, published,
+            title, date, location, address, startTime, endTime, debateFormat,
+            resolution, host, judgeInstructions, details, signupDeadline, published,
             roles: nextRoles,
             updatedAt: FieldValue.serverTimestamp(),
           };
