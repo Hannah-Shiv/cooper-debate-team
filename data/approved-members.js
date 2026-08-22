@@ -16,6 +16,7 @@
 const APPROVED_MEMBERS = [
 
   // ── Coaches ─────────────────────────────────────────────
+  "pgkonde@fcps.edu",
   "Hannahbshiv@gmail.com",
   "CooperDebateTeam@gmail.com",
 

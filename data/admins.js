@@ -21,7 +21,7 @@
 const ADMIN_ROLES = [
 
   // ── Coach ────────────────────────────────────────────────
-  // { email: "pgkonde@fcps.edu",      role: "coach" },     // Coach Konde (uncomment when ready)
+  { email: "pgkonde@fcps.edu",         role: "coach" },      // Coach Konde
   { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
 
   // ── Captains ─────────────────────────────────────────────
