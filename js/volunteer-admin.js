@@ -15,12 +15,31 @@
   const auth = firebase.auth();
   const db = firebase.firestore();
   auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+  window.memberSignOut = function () {
+    auth.signOut().finally(() => { window.location.href = "index.html"; });
+  };
 
   let editingId = null;
   let events = [];
   let currentUser = null;
+  let capacityRoles = [];
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  const dateLabel = value => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+  const timeLabel = value => {
+    if (!/^\d{2}:\d{2}$/.test(value || "")) return "";
+    const [hour, minute] = value.split(":").map(Number);
+    return `${hour % 12 || 12}:${String(minute).padStart(2, "0")} ${hour >= 12 ? "PM" : "AM"}`;
+  };
 
   function isApproved(email) {
     return typeof APPROVED_MEMBERS !== "undefined" &&
@@ -35,44 +54,54 @@
     el.textContent = text || "";
     el.className = `vol-form-msg${kind ? ` ${kind}` : ""}`;
   }
-  function makeRole(role = {}) {
-    const id = role.id || `role-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
-    const wrap = document.createElement("div");
-    wrap.className = "role-editor";
-    wrap.dataset.roleId = id;
-    wrap.innerHTML = `
-      <button class="remove-role" type="button" title="Remove role">Remove</button>
-      <div class="role-editor-grid">
-        <input class="role-label" maxlength="100" required placeholder="Role name" value="${esc(role.label || "Judge")}">
-        <input class="role-capacity" min="1" max="100" required type="number" placeholder="Capacity" value="${Number(role.capacity) || 1}">
-      </div>
-      <input class="role-description" maxlength="280" placeholder="Short description (optional)" value="${esc(role.description)}">`;
-    wrap.querySelector(".remove-role").addEventListener("click", () => {
-      if ($("role-editors").children.length > 1) wrap.remove();
-      else message("Each opportunity needs at least one role.", "error");
-    });
-    $("role-editors").appendChild(wrap);
+  function setCapacityRoles(roles = []) {
+    const visibleRoles = roles.filter(role => role.label !== "Duplicate-check test");
+    capacityRoles = visibleRoles.length ? visibleRoles.map(role => ({
+      id: role.id || `judge-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      label: role.label || "Judge",
+      description: role.description || "",
+      capacity: Math.max(1, Number(role.capacity) || 1),
+      signedUp: Math.max(0, Number(role.signedUp) || 0),
+    })) : [{
+      id: `judge-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      label: "Judge",
+      description: "Judge volunteer",
+      capacity: 1,
+      signedUp: 0,
+    }];
+    $("event-judge-capacity").value = capacityRoles.reduce((total, role) => total + role.capacity, 0);
   }
   function rolesFromForm() {
-    return [...document.querySelectorAll(".role-editor")].map((element, index) => ({
-      id: element.dataset.roleId || `role-${index + 1}`,
-      label: element.querySelector(".role-label").value.trim(),
-      capacity: Number(element.querySelector(".role-capacity").value),
-      description: element.querySelector(".role-description").value.trim(),
-      signedUp: Number(element.dataset.signedUp || 0),
-    })).filter(role => role.label && Number.isInteger(role.capacity) && role.capacity > 0 && role.capacity <= 100);
+    const confirmedCapacity = capacityRoles.reduce((total, role) => total + role.signedUp, 0);
+    const desiredCapacity = Math.min(100, Math.max(1, confirmedCapacity, Number($("event-judge-capacity").value) || 1));
+    $("event-judge-capacity").value = desiredCapacity;
+    const roles = capacityRoles.map(role => ({ ...role }));
+    const currentCapacity = roles.reduce((total, role) => total + role.capacity, 0);
+    if (desiredCapacity > currentCapacity) {
+      roles[0].capacity += desiredCapacity - currentCapacity;
+    } else if (desiredCapacity < currentCapacity) {
+      let remainingToRemove = currentCapacity - desiredCapacity;
+      [...roles].reverse().forEach(role => {
+        const removable = Math.max(0, role.capacity - role.signedUp);
+        const amount = Math.min(removable, remainingToRemove);
+        role.capacity -= amount;
+        remainingToRemove -= amount;
+      });
+      if (remainingToRemove) roles[0].capacity -= remainingToRemove;
+    }
+    return roles.filter(role => role.label && Number.isInteger(role.capacity) && role.capacity > 0 && role.capacity <= 100);
   }
   function resetForm() {
     editingId = null;
     $("vol-event-form").reset();
-    $("role-editors").innerHTML = "";
-    makeRole();
-    $("vol-form-heading").textContent = "New volunteer event";
-    $("vol-save").textContent = "Publish volunteer event";
+    setCapacityRoles();
+    $("tm-crumb-event").textContent = "New tournament";
+    $("vol-save").textContent = "Create tournament";
     $("vol-cancel-edit").style.display = "none";
     message("");
+    updateManagerSummary();
   }
-  function populateForm(event) {
+  function populateForm(event, shouldScroll = true) {
     editingId = event.id;
     $("event-title").value = event.title || "";
     $("event-date").value = event.date || "";
@@ -93,22 +122,59 @@
     $("event-coach-phone").value = event.coachPhone || "";
     $("event-details").value = event.details || "";
     $("event-published").checked = !!event.published;
-    $("role-editors").innerHTML = "";
-    (event.roles || []).forEach(role => {
-      makeRole(role);
-      $("role-editors").lastElementChild.dataset.signedUp = Number(role.signedUp) || 0;
-    });
-    if (!$("role-editors").children.length) makeRole();
-    $("vol-form-heading").textContent = "Edit volunteer event";
+    const providedMeal = event.mealInfo || "";
+    const mealPrefix = /^Lunch and refreshments provided\.?\s*(?:·\s*)?/i;
+    $("event-lunch-provided").checked = mealPrefix.test(providedMeal);
+    $("event-meal").value = providedMeal.replace(mealPrefix, "");
+    setCapacityRoles(event.roles || []);
+    $("tm-crumb-event").textContent = event.title || "Tournament Manager";
     $("vol-save").textContent = "Save changes";
     $("vol-cancel-edit").style.display = "block";
     message("");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    updateManagerSummary();
+    if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function updateManagerSummary() {
+    const roles = rolesFromForm();
+    const capacity = roles.reduce((total, role) => total + (Number(role.capacity) || 0), 0);
+    const confirmed = roles.reduce((total, role) => total + (Number(role.signedUp) || 0), 0);
+    const title = $("event-title")?.value.trim() || "New tournament";
+    const date = $("event-date")?.value || "";
+    const location = $("event-location")?.value.trim();
+    const address = $("event-address")?.value.trim();
+    const startTime = $("event-start-time")?.value || "";
+    const endTime = $("event-end-time")?.value || "";
+    const signupDeadline = $("event-deadline")?.value || "";
+    const resolution = $("event-resolution")?.value.trim() || "";
+    const published = Boolean($("event-published")?.checked);
+    const rolesSummary = roles.length
+      ? roles.map(role => `<b>${esc(role.label)}</b> · ${Math.max(0, Number(role.capacity) - Number(role.signedUp || 0))} open`).join("<br>")
+      : "Add a judge role to preview openings.";
+    $("tm-summary-title").textContent = title;
+    $("tm-summary-date").textContent = date ? dateLabel(date) : "Choose a tournament date";
+    $("tm-summary-time").textContent = startTime && endTime
+      ? `${timeLabel(startTime)} to ${timeLabel(endTime)}`
+      : "Schedule to be added";
+    $("tm-summary-location").textContent = [location, address].filter(Boolean).join(" · ") || "Location to be added";
+    $("tm-summary-deadline").textContent = signupDeadline ? dateLabel(signupDeadline) : "No deadline set";
+    $("tm-summary-resolution").textContent = resolution || "Resolution to be added";
+    $("tm-capacity").textContent = capacity;
+    $("tm-confirmed").textContent = confirmed;
+    $("tm-available").textContent = Math.max(0, capacity - confirmed);
+    $("tm-fill-rate").textContent = `${capacity ? Math.round((confirmed / capacity) * 100) : 0}% Filled`;
+    $("tm-status").textContent = published ? "Live" : "Draft";
+    $("tm-status-note").textContent = published ? "Volunteer signup open" : "Not published";
+    $("tm-preview-title").textContent = title;
+    $("tm-preview-meta").textContent = [date ? dateLabel(date) : "Choose a tournament date", location || "Location to be added"].join(" · ");
+    $("tm-preview-roles").innerHTML = rolesSummary;
+    $("tm-side-status").textContent = published ? "Published" : "Draft";
+    $("tm-side-status").style.color = published ? "var(--tm-green)" : "var(--tm-gold)";
   }
   function formEvent() {
     const roles = rolesFromForm();
     const title = $("event-title").value.trim();
     const date = $("event-date").value;
+    const mealNotes = $("event-meal").value.trim();
     if (!title || !date || !roles.length) throw new Error("Add an event title, date, and at least one role with a capacity.");
     if (roles.some(role => role.capacity < role.signedUp)) {
       throw new Error("A role’s capacity cannot be lower than its current signup count.");
@@ -120,7 +186,9 @@
       address: $("event-address").value.trim(),
       startTime: $("event-start-time").value || "",
       endTime: $("event-end-time").value || "",
-      mealInfo: $("event-meal").value.trim(),
+      mealInfo: $("event-lunch-provided").checked
+        ? `Lunch and refreshments provided${mealNotes ? ` · ${mealNotes}` : ""}`
+        : mealNotes,
       debateFormat: $("event-format").value.trim(),
       host: $("event-host").value.trim(),
       resolution: $("event-resolution").value.trim(),
@@ -213,27 +281,62 @@
       alert(error.message || "Unable to update this event.");
     }
   }
+  function eventPayload(item, roles = item.roles || []) {
+    return {
+      title: item.title || "",
+      date: item.date || "",
+      roles,
+      signupDeadline: item.signupDeadline || "",
+      location: item.location || "",
+      address: item.address || "",
+      startTime: item.startTime || "",
+      endTime: item.endTime || "",
+      mealInfo: item.mealInfo || "",
+      debateFormat: item.debateFormat || "",
+      host: item.host || "",
+      resolution: item.resolution || "",
+      judgeInstructions: item.judgeInstructions || "",
+      expectations: item.expectations || "",
+      invitationUrl: item.invitationUrl || "",
+      coachName: item.coachName || "",
+      coachEmail: item.coachEmail || "",
+      coachPhone: item.coachPhone || "",
+      details: item.details || "",
+      published: item.published === true,
+    };
+  }
+  function visibleRoles(roles = []) {
+    return roles.filter(role => role.label !== "Duplicate-check test");
+  }
+  function roleDisplayLabel(role) {
+    return role.label === "Single-slot test" ? "Debate Judge" : role.label;
+  }
+  function roleAvailabilityText(label) {
+    return `${esc(label)}${label === "Single-slot timeslots" ? " are open" : " openings"}`;
+  }
   async function renderEvents(items) {
     const root = $("vol-event-list");
     if (!items.length) {
-      root.innerHTML = `<div class="vol-empty">No volunteer opportunities have been created yet. Start with the form on the left, then publish when families are ready to sign up.</div>`;
+      root.innerHTML = `<div class="tm-empty">No tournaments have been created yet. Add the tournament details below, set judge capacity, then publish when families are ready to sign up.</div>`;
       return;
     }
     root.innerHTML = items.map(item => {
-      const roles = (item.roles || []).map(role => `<div><b>${Math.max(0, Number(role.capacity || 0) - Number(role.signedUp || 0))}/${Number(role.capacity || 0)} open</b> &nbsp; ${esc(role.label)}</div>`).join("");
-      return `<article class="vol-event" data-event="${esc(item.id)}">
-        <div class="vol-event-main">
-          <div class="vol-event-top"><div><h3>${esc(item.title)}</h3><p class="vol-event-meta">${esc(item.date)}${item.startTime && item.endTime ? ` · ${esc(item.startTime)}–${esc(item.endTime)}` : ""}${item.location ? ` · ${esc(item.location)}` : ""}${item.signupDeadline ? ` · sign up by ${esc(item.signupDeadline)}` : ""}</p></div><span class="vol-status ${item.published ? "open" : "closed"}">${item.published ? "Published" : "Closed"}</span></div>
-          ${item.debateFormat ? `<p class="vol-event-meta" style="margin:10px 0 0">${esc(item.debateFormat)}${item.host ? ` · Hosted by ${esc(item.host)}` : ""}</p>` : ""}
-          ${item.details ? `<p class="vol-event-meta" style="margin:7px 0 0">${esc(item.details)}</p>` : ""}
-          <div class="vol-role-summary">${roles}</div>
-          <div class="vol-event-actions">
-            <button class="vol-action" data-edit="${esc(item.id)}">Edit event</button>
-            <button class="vol-action close" data-toggle="${esc(item.id)}">${item.published ? "Close signups" : "Reopen signups"}</button>
-            <button class="vol-action" data-export="${esc(item.id)}">Export CSV</button>
+      const roles = visibleRoles(item.roles).map(role => {
+        const label = roleDisplayLabel(role);
+        const open = Math.max(0, Number(role.capacity || 0) - Number(role.signedUp || 0));
+        return `<div class="tm-role-pill"><b>${open}/${Number(role.capacity || 0)}</b><span>${roleAvailabilityText(label)}</span></div>`;
+      }).join("");
+      return `<article class="tm-event" data-event="${esc(item.id)}">
+        <div class="tm-event-main">
+          <div class="tm-event-top"><div><h3>${esc(item.title)}</h3></div><span class="tm-status ${item.published ? "open" : "closed"}">${item.published ? "Published" : "Draft"}</span></div>
+          <div class="tm-event-actions">
+            <button class="tm-action" data-edit="${esc(item.id)}">Manage tournament</button>
+            <button class="tm-action close" data-toggle="${esc(item.id)}">${item.published ? "Close signups" : "Publish signups"}</button>
+            <button class="tm-action" data-export="${esc(item.id)}">Export CSV</button>
           </div>
         </div>
-        <div class="vol-signups"><h4>Private parent signups</h4><div class="signups-body"><p class="vol-no-signups">Loading signups…</p></div></div>
+        <div class="tm-role-summary">${roles}</div>
+        <div class="tm-signups"><h4>Private parent signups</h4><div class="signups-body"><p class="tm-no-signups">Loading signups…</p></div></div>
       </article>`;
     }).join("");
     root.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => populateForm(events.find(item => item.id === button.dataset.edit))));
@@ -243,17 +346,17 @@
     }));
     root.querySelectorAll("[data-export]").forEach(button => button.addEventListener("click", () => exportEvent(button.dataset.export)));
     await Promise.all(items.map(async item => {
-      const body = root.querySelector(`[data-event="${CSS.escape(item.id)}"] .signups-body`);
+       const body = root.querySelector(`[data-event="${CSS.escape(item.id)}"] .signups-body`);
       if (!body) return;
       try {
         const signups = await signupsForEvent(item.id);
-        body.innerHTML = signups.length ? signups.map(signup => `<div class="vol-signup-row"><div><div class="vol-signup-name">${esc(signup.parentName)} <span style="color:var(--vol-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="vol-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="vol-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="vol-no-signups">No parent signups yet.</p>`;
+         body.innerHTML = signups.length ? signups.map(signup => `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="tm-no-signups">No parent signups yet.</p>`;
         body.querySelectorAll("[data-remove]").forEach(button => {
           const signup = signups.find(item => item.id === button.dataset.remove);
           button.addEventListener("click", () => removeSignup(signup));
         });
       } catch (_) {
-        body.innerHTML = `<p class="vol-no-signups">Unable to load signups.</p>`;
+         body.innerHTML = `<p class="tm-no-signups">Unable to load signups.</p>`;
       }
     }));
   }
@@ -261,12 +364,16 @@
     db.collection("volunteer_events").orderBy("date", "asc").onSnapshot(snapshot => {
       events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       renderEvents(events);
+      if (!editingId) {
+        const currentOpenEvent = events.find(event => event.published) || events[0];
+        if (currentOpenEvent) populateForm(currentOpenEvent, false);
+      }
     }, error => {
-      $("vol-event-list").innerHTML = `<div class="vol-empty">Volunteer events could not be loaded: ${esc(error.message)}</div>`;
+       $("vol-event-list").innerHTML = `<div class="tm-empty">Volunteer events could not be loaded: ${esc(error.message)}</div>`;
     });
   }
   function showAccess(title, text, login) {
-    $("vol-auth").innerHTML = `<div class="vol-auth-box"><h1>${esc(title)}</h1><p>${esc(text)}</p>${login ? `<a class="vol-login" href="members.html">Sign in to Member Portal</a>` : ""}</div>`;
+    $("vol-auth").innerHTML = `<div class="tm-auth-box"><div class="tm-auth-mark">◆</div><h1>${esc(title)}</h1><p>${esc(text)}</p>${login ? `<a class="tm-login" href="members.html">Sign in to Member Portal</a>` : ""}</div>`;
   }
 
   auth.onAuthStateChanged(user => {
@@ -285,14 +392,48 @@
     currentUser = user;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
-    $("vol-user").textContent = `${user.email} · Coach`;
+    const shortName = (user.displayName || user.email.split("@")[0])
+      .split(/[._-]/)
+      .filter(Boolean)
+      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
+    $("member-name").textContent = shortName;
+    $("member-email").textContent = user.email;
+    $("member-role-badge").textContent = "🛡️ Coach";
+    $("member-userbar").classList.add("visible");
     resetForm();
     startEvents();
   });
 
   document.addEventListener("DOMContentLoaded", () => {
-    $("add-role").addEventListener("click", () => makeRole());
     $("vol-event-form").addEventListener("submit", saveEvent);
     $("vol-cancel-edit").addEventListener("click", resetForm);
+    $("vol-event-form").addEventListener("input", updateManagerSummary);
+    $("vol-event-form").addEventListener("change", updateManagerSummary);
+    const adjustCapacity = amount => {
+      const input = $("event-judge-capacity");
+      const minimum = Math.max(1, capacityRoles.reduce((total, role) => total + role.signedUp, 0));
+      input.value = Math.max(minimum, Math.min(100, (Number(input.value) || minimum) + amount));
+      updateManagerSummary();
+    };
+    $("judge-capacity-down").addEventListener("click", () => adjustCapacity(-1));
+    $("judge-capacity-up").addEventListener("click", () => adjustCapacity(1));
+    const schedulePresets = {
+      "8:30 AM – 5:00 PM": ["08:30", "17:00"],
+      "9:00 AM – 4:30 PM": ["09:00", "16:30"],
+      "9:00 AM – 5:00 PM": ["09:00", "17:00"],
+    };
+    $("event-time-preset").addEventListener("change", () => {
+      const preset = schedulePresets[$("event-time-preset").value];
+      if (preset) {
+        $("event-start-time").value = preset[0];
+        $("event-end-time").value = preset[1];
+        updateManagerSummary();
+      }
+    });
+    document.querySelectorAll("[data-tm-tab]").forEach(button => button.addEventListener("click", () => {
+      document.querySelectorAll("[data-tm-tab]").forEach(tab => tab.classList.toggle("active", tab === button));
+      $(button.dataset.tmTab)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
   });
 })();

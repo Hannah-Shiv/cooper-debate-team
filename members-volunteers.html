@@ -3,104 +3,351 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Coach volunteer signup management — Cooper Debate Team"/>
-  <title>Volunteer Signups — Cooper Debate Team</title>
+  <meta name="description" content="Coach tournament and judge volunteer management — Cooper Debate Team"/>
+  <title>Tournament Manager — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
   <style>
-    :root{--vol-gold:#e8b84b;--vol-navy:#1c2030;--vol-card:#232840;--vol-muted:rgba(255,255,255,.56)}
-    *{box-sizing:border-box} body{background:var(--vol-navy);color:#fff;font-family:'Josefin Sans',sans-serif;margin:0}
-    .vol-page{min-height:100vh;padding:120px 32px 80px;background:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(20,40,100,.3),transparent 66%)}
-    body.dome-open .vol-page{padding-top:240px}.vol-shell{max-width:1160px;margin:auto}
-    .vol-auth{align-items:center;display:flex;justify-content:center;min-height:calc(100vh - 220px);text-align:center}.vol-auth-box{max-width:480px}.spinner{width:38px;height:38px;border:3px solid rgba(232,184,75,.2);border-top-color:var(--vol-gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 18px}@keyframes spin{to{transform:rotate(360deg)}}
-    .vol-auth h1,.vol-header h1{font-family:'Cormorant Garamond',serif;color:#ffd700;font-size:clamp(2.2rem,4vw,3.2rem);margin:0 0 8px}.vol-auth p,.vol-header p{color:var(--vol-muted);font-size:.88rem;line-height:1.7;margin:0}
-    .vol-login{background:var(--vol-gold);border-radius:4px;color:#0a1835;display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.1em;margin-top:20px;padding:12px 17px;text-decoration:none;text-transform:uppercase}
-    .vol-header{align-items:flex-start;display:flex;gap:20px;justify-content:space-between;margin-bottom:30px}.vol-header-right{align-items:center;display:flex;gap:12px}.vol-user{color:var(--vol-muted);font-size:.74rem}.vol-signout{background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:4px;color:#fff;cursor:pointer;font:700 .65rem 'Josefin Sans',sans-serif;letter-spacing:.08em;padding:9px 12px;text-transform:uppercase}
-    .vol-grid{display:grid;grid-template-columns:390px 1fr;gap:24px;align-items:start}.vol-panel{background:rgba(35,40,64,.82);border:1px solid rgba(232,184,75,.18);border-radius:10px;padding:25px}.vol-panel h2{color:var(--vol-gold);font:700 1.45rem 'Cormorant Garamond',serif;margin:0 0 5px}.vol-panel-intro{color:var(--vol-muted);font-size:.77rem;line-height:1.6;margin:0 0 20px}
-    .vol-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}.vol-field label,.role-head{color:#cbd5e1;font-size:.63rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase}.vol-field input,.vol-field textarea{background:rgba(4,12,30,.48);border:1px solid rgba(255,255,255,.15);border-radius:4px;color:#fff;font:inherit;font-size:.82rem;padding:10px}.vol-field textarea{min-height:75px;resize:vertical}.vol-field input:focus,.vol-field textarea:focus{border-color:var(--vol-gold);outline:0}.vol-inline{display:grid;gap:11px;grid-template-columns:1fr 1fr}.vol-check{align-items:center;color:var(--vol-muted);display:flex;font-size:.76rem;gap:8px;margin:3px 0 18px}
-    .role-head{align-items:center;display:flex;justify-content:space-between;margin:20px 0 9px}.add-role{background:transparent;border:0;color:var(--vol-gold);cursor:pointer;font:700 .62rem 'Josefin Sans',sans-serif;letter-spacing:.07em;text-transform:uppercase}.role-editor{border:1px solid rgba(255,255,255,.1);border-radius:6px;margin-bottom:9px;padding:12px;position:relative}.role-editor-grid{display:grid;gap:9px;grid-template-columns:1fr 90px}.role-editor input{background:rgba(4,12,30,.48);border:1px solid rgba(255,255,255,.14);border-radius:4px;color:#fff;font:inherit;font-size:.75rem;padding:8px;width:100%}.role-editor .role-description{margin-top:8px}.remove-role{background:none;border:0;color:#e7a1a1;cursor:pointer;font-size:.7rem;position:absolute;right:7px;top:5px}.vol-save{background:var(--vol-gold);border:0;border-radius:4px;color:#0a1835;cursor:pointer;font:700 .68rem 'Josefin Sans',sans-serif;letter-spacing:.09em;padding:12px 15px;text-transform:uppercase;width:100%}.vol-form-msg{font-size:.77rem;line-height:1.5;min-height:1.1em;margin:12px 0 0}.vol-form-msg.error{color:#ffb3b3}.vol-form-msg.ok{color:#9ce4ad}.vol-cancel-edit{background:none;border:0;color:var(--vol-muted);cursor:pointer;display:none;font:700 .65rem 'Josefin Sans',sans-serif;letter-spacing:.08em;margin:12px auto 0;text-transform:uppercase}
-    .vol-list-title{align-items:center;display:flex;justify-content:space-between;margin-bottom:13px}.vol-list-title h2{margin:0}.vol-event-list{display:grid;gap:14px}.vol-event{background:rgba(35,40,64,.82);border:1px solid rgba(232,184,75,.16);border-radius:10px;overflow:hidden}.vol-event-main{padding:21px}.vol-event-top{align-items:flex-start;display:flex;gap:14px;justify-content:space-between}.vol-event h3{color:#fff;font:700 1.28rem 'Cormorant Garamond',serif;margin:0 0 5px}.vol-event-meta{color:var(--vol-muted);font-size:.73rem;line-height:1.55}.vol-status{border-radius:999px;font-size:.58rem;font-weight:700;letter-spacing:.08em;padding:5px 8px;text-transform:uppercase;white-space:nowrap}.vol-status.open{background:rgba(76,175,120,.14);color:#9ce4ad}.vol-status.closed{background:rgba(255,255,255,.08);color:var(--vol-muted)}.vol-event-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:15px}.vol-action{background:transparent;border:1px solid rgba(255,255,255,.18);border-radius:4px;color:#d9e2f2;cursor:pointer;font:700 .61rem 'Josefin Sans',sans-serif;letter-spacing:.07em;padding:8px 10px;text-transform:uppercase}.vol-action.close{border-color:rgba(232,184,75,.42);color:var(--vol-gold)}.vol-role-summary{border-top:1px solid rgba(255,255,255,.08);display:grid;gap:6px;margin-top:16px;padding-top:13px}.vol-role-summary div{color:#cbd5e1;font-size:.73rem}.vol-role-summary b{color:var(--vol-gold);font-size:.68rem}
-    .vol-signups{background:rgba(4,12,30,.27);border-top:1px solid rgba(255,255,255,.08);padding:17px 21px}.vol-signups h4{color:var(--vol-gold);font-size:.65rem;letter-spacing:.1em;margin:0 0 11px;text-transform:uppercase}.vol-signup-row{align-items:center;border-top:1px solid rgba(255,255,255,.07);display:grid;gap:10px;grid-template-columns:1fr auto;padding:11px 0}.vol-signup-row:first-of-type{border-top:0}.vol-signup-name{font-size:.79rem;font-weight:700}.vol-signup-details{color:var(--vol-muted);font-size:.69rem;line-height:1.6;margin-top:3px}.vol-remove{background:none;border:0;color:#f1a4a4;cursor:pointer;font:700 .59rem 'Josefin Sans',sans-serif;letter-spacing:.07em;text-transform:uppercase}.vol-no-signups{color:var(--vol-muted);font-size:.75rem;margin:0}.vol-empty{border:1px dashed rgba(232,184,75,.25);border-radius:10px;color:var(--vol-muted);font-size:.8rem;line-height:1.65;padding:30px;text-align:center}.vol-loading{color:var(--vol-muted);font-size:.78rem;padding:20px;text-align:center}
-    @media(max-width:900px){.vol-grid{grid-template-columns:1fr}.vol-page{padding:108px 18px 55px}}@media(max-width:600px){body.dome-open .vol-page{padding-top:210px}.vol-header{flex-direction:column}.vol-inline,.role-editor-grid{grid-template-columns:1fr}.vol-event-top{flex-direction:column}.vol-status{margin-top:-5px}.vol-signup-row{grid-template-columns:1fr}.vol-remove{justify-self:start}}
+    :root{--tm-navy:#07142c;--tm-navy-deep:#1c2030;--tm-card:#0c1d3b;--tm-card-2:#0a1933;--tm-line:rgba(159,185,225,.18);--tm-gold:#f2bf3d;--tm-muted:#aebbd0;--tm-green:#82ddb3;--tm-red:#ee9b9b}
+    *{box-sizing:border-box}body{background:var(--tm-navy-deep);color:#f5f8ff;font-family:'Josefin Sans',sans-serif;margin:0}
+    button,input,textarea{font:inherit}button{font-family:'Josefin Sans',sans-serif}
+    .tm-app{background:#1c2030;background-image:radial-gradient(ellipse 80% 40% at 50% 0%,rgba(20,40,100,.22) 0%,transparent 70%),radial-gradient(ellipse 60% 30% at 80% 80%,rgba(15,30,80,.12) 0%,transparent 60%);min-height:100vh}.tm-app [hidden]{display:none!important}
+    .tm-topbar{align-items:center;background:rgba(4,14,34,.94);border-bottom:1px solid var(--tm-line);display:flex;height:52px;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:10}
+    .tm-brand{align-items:center;color:#fff;display:flex;font-weight:700;gap:8px;letter-spacing:.03em;text-decoration:none}.tm-brand img{height:35px;object-fit:contain;width:35px}.tm-brand-copy{display:flex;flex-direction:column;font-size:.67rem;line-height:.98;text-transform:uppercase}.tm-brand-copy b{font-size:.86rem}.tm-brand-copy span{color:var(--tm-gold);font-size:.47rem;letter-spacing:.14em;margin-top:3px}
+    .tm-top-actions{align-items:center;display:flex;gap:16px}.tm-top-actions[hidden]{display:none!important}.tm-user{color:var(--tm-muted);font-size:.68rem}.tm-user strong{color:#fff;font-weight:600}.tm-signout,.tm-preview{background:transparent;border:1px solid rgba(255,255,255,.35);border-radius:4px;color:#fff;cursor:pointer;font-size:.61rem;font-weight:700;letter-spacing:.09em;padding:9px 12px;text-transform:uppercase}.tm-signout:hover,.tm-preview:hover{border-color:var(--tm-gold);color:var(--tm-gold)}
+    .tm-layout{display:grid;grid-template-columns:188px minmax(0,1fr);min-height:calc(100vh - 52px)}.tm-sidebar{background:rgba(3,14,33,.65);border-right:1px solid var(--tm-line);padding:20px 10px}.tm-side-label{color:#8190ad;font-size:.52rem;font-weight:700;letter-spacing:.13em;margin:21px 8px 8px;text-transform:uppercase}.tm-side-label:first-child{margin-top:0}.tm-side-link{align-items:center;border-left:2px solid transparent;color:#b6c3d8;display:flex;font-size:.66rem;gap:9px;margin:2px 0;padding:9px 8px;text-decoration:none}.tm-side-link:hover{background:rgba(255,255,255,.04);color:#fff}.tm-side-link.active{background:linear-gradient(90deg,rgba(242,191,61,.18),transparent);border-left-color:var(--tm-gold);color:var(--tm-gold);font-weight:700}.tm-side-icon{color:inherit;font-size:.82rem;line-height:1;width:14px;text-align:center}
+    .tm-main{min-width:0;padding:32px clamp(20px,4vw,60px) 70px}.tm-shell{margin:auto;max-width:1360px}.tm-auth{align-items:center;display:flex;justify-content:center;min-height:calc(100vh - 200px);text-align:center}.tm-auth-box{max-width:510px}.tm-auth-mark{color:var(--tm-gold);font-size:1.5rem;margin-bottom:16px}.tm-auth h1,.tm-page-heading h1{color:#fff;font:700 clamp(2rem,3vw,2.75rem) 'Cormorant Garamond',serif;margin:0 0 7px}.tm-auth p,.tm-page-heading p{color:var(--tm-muted);font-size:.78rem;line-height:1.65;margin:0}.tm-login{background:var(--tm-gold);border-radius:4px;color:#08152d;display:inline-block;font-size:.67rem;font-weight:700;letter-spacing:.09em;margin-top:22px;padding:12px 17px;text-decoration:none;text-transform:uppercase}
+    .tm-breadcrumb{align-items:center;color:#aebbd0;display:flex;font-size:.62rem;gap:9px;margin-bottom:12px}.tm-breadcrumb a{color:inherit;text-decoration:none}.tm-breadcrumb .current{color:#fff}.tm-page-row{align-items:flex-start;display:flex;gap:20px;justify-content:space-between;margin-bottom:24px}.tm-page-heading p{max-width:620px}.tm-preview{border-color:rgba(242,191,61,.7);color:var(--tm-gold);margin-top:8px;white-space:nowrap}
+    .tm-summary{background:linear-gradient(135deg,rgba(14,37,74,.98),rgba(9,27,56,.98));border:1px solid var(--tm-line);border-radius:7px;display:grid;grid-template-columns:minmax(220px,1.65fr) repeat(4,minmax(100px,1fr));margin-bottom:20px;overflow:hidden}.tm-summary-title{border-right:1px solid var(--tm-line);padding:20px 22px}.tm-summary-kicker{color:var(--tm-gold);font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.tm-summary-title h2{font:700 1.45rem 'Cormorant Garamond',serif;margin:7px 0 3px}.tm-summary-title p{color:var(--tm-muted);font-size:.68rem;margin:0}.tm-metric{border-right:1px solid var(--tm-line);padding:20px 18px}.tm-metric:last-child{border:0}.tm-metric-label{color:var(--tm-muted);font-size:.58rem;letter-spacing:.06em;text-transform:uppercase}.tm-metric strong{color:#fff;display:block;font:700 1.75rem 'Cormorant Garamond',serif;line-height:1.1;margin:4px 0 3px}.tm-metric small{color:#8292ac;font-size:.61rem}
+    .tm-event-list{display:grid;gap:10px;margin:0 0 22px}.tm-event{background:rgba(10,27,57,.74);border:1px solid var(--tm-line);border-radius:7px;overflow:hidden}.tm-event-main{align-items:center;display:grid;gap:15px;grid-template-columns:minmax(0,1fr) auto;padding:15px 18px}.tm-event-top{align-items:center;display:flex;gap:14px}.tm-event h3{font:700 1.08rem 'Cormorant Garamond',serif;margin:0 0 3px}.tm-event-meta{color:var(--tm-muted);font-size:.67rem;line-height:1.5;margin:0}.tm-status{border-radius:3px;font-size:.54rem;font-weight:700;letter-spacing:.09em;padding:5px 7px;text-transform:uppercase;white-space:nowrap}.tm-status.open{background:rgba(64,177,122,.15);color:var(--tm-green)}.tm-status.closed{background:rgba(255,255,255,.07);color:var(--tm-muted)}.tm-event-actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}.tm-action{background:transparent;border:1px solid rgba(255,255,255,.19);border-radius:3px;color:#dce5f3;cursor:pointer;font-size:.57rem;font-weight:700;letter-spacing:.07em;padding:8px 9px;text-transform:uppercase}.tm-action:hover{border-color:var(--tm-gold);color:var(--tm-gold)}.tm-action.close{border-color:rgba(242,191,61,.42);color:var(--tm-gold)}.tm-role-summary{border-top:1px solid rgba(255,255,255,.07);display:flex;flex-wrap:wrap;gap:12px;padding:10px 18px}.tm-role-summary div{color:#c8d3e3;font-size:.65rem}.tm-role-summary b{color:var(--tm-gold);font-weight:700}.tm-signups{background:rgba(2,12,30,.25);border-top:1px solid rgba(255,255,255,.07);padding:14px 18px}.tm-signups h4{color:var(--tm-gold);font-size:.58rem;letter-spacing:.1em;margin:0 0 8px;text-transform:uppercase}.tm-signup-row{align-items:center;border-top:1px solid rgba(255,255,255,.07);display:grid;gap:10px;grid-template-columns:1fr auto;padding:9px 0}.tm-signup-name{font-size:.72rem;font-weight:700}.tm-signup-details,.tm-no-signups{color:var(--tm-muted);font-size:.63rem;line-height:1.55;margin:3px 0 0}.tm-remove{background:none;border:0;color:var(--tm-red);cursor:pointer;font-size:.56rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase}.tm-empty{border:1px dashed rgba(242,191,61,.28);border-radius:7px;color:var(--tm-muted);font-size:.78rem;line-height:1.65;padding:30px;text-align:center}
+    .tm-tabs{border-bottom:1px solid var(--tm-line);display:flex;gap:4px;margin:0 0 14px;overflow-x:auto}.tm-tab{background:transparent;border:0;border-bottom:2px solid transparent;color:var(--tm-muted);cursor:pointer;font-size:.61rem;font-weight:700;letter-spacing:.04em;padding:12px 16px;text-transform:uppercase;white-space:nowrap}.tm-tab:hover,.tm-tab.active{border-bottom-color:var(--tm-gold);color:var(--tm-gold)}
+    .tm-workspace{display:grid;gap:18px;grid-template-columns:minmax(0,1.6fr) minmax(290px,.82fr)}.tm-form-card,.tm-side-card{background:linear-gradient(145deg,rgba(12,30,61,.95),rgba(8,24,51,.95));border:1px solid var(--tm-line);border-radius:7px;padding:23px}.tm-section{border-bottom:1px solid rgba(255,255,255,.08);margin:0 0 23px;padding:0 0 20px}.tm-section:last-of-type{border:0;margin-bottom:5px;padding-bottom:0}.tm-section-title{align-items:baseline;display:flex;gap:9px;margin:0 0 16px}.tm-section-number{color:var(--tm-gold);font-size:.6rem;font-weight:700}.tm-section-title h2{color:var(--tm-gold);font-size:.66rem;letter-spacing:.08em;margin:0;text-transform:uppercase}.tm-section-note{color:#8190a9;font-size:.64rem;line-height:1.55;margin:-7px 0 16px}.tm-fields{display:grid;gap:13px;grid-template-columns:repeat(2,minmax(0,1fr))}.tm-field{display:flex;flex-direction:column;gap:6px;min-width:0}.tm-field.full{grid-column:1 / -1}.tm-field label,.tm-role-head{color:#d6dfed;font-size:.57rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase}.tm-field input,.tm-field textarea,.tm-field select{background:rgba(3,13,33,.7);border:1px solid rgba(178,199,231,.22);border-radius:3px;color:#fff;font-size:.76rem;outline:none;padding:10px}.tm-field textarea{line-height:1.48;min-height:85px;resize:vertical}.tm-field input:focus,.tm-field textarea:focus,.tm-field select:focus{border-color:var(--tm-gold);box-shadow:0 0 0 2px rgba(242,191,61,.08)}.tm-field input::placeholder,.tm-field textarea::placeholder{color:#71819b}.tm-switch{align-items:center;color:#d9e1ed;display:flex;font-size:.7rem;gap:9px;margin-top:2px}.tm-switch input{accent-color:var(--tm-gold)}
+    .tm-toggle-line{align-items:center;color:#dce5f2;display:flex;font-size:.7rem;gap:9px;margin-top:1px}.tm-toggle-line input{accent-color:var(--tm-gold)}.tm-preset-note{color:#8190a9;font-size:.61rem;line-height:1.5;margin:0}
+    .tm-capacity-control{align-items:center;display:grid;grid-template-columns:42px minmax(0,1fr) 42px;margin:14px 0 9px}.tm-capacity-control button{background:rgba(3,13,33,.9);border:1px solid rgba(178,199,231,.25);color:var(--tm-gold);cursor:pointer;font-size:1.2rem;height:42px}.tm-capacity-control button:first-child{border-radius:4px 0 0 4px}.tm-capacity-control button:last-child{border-radius:0 4px 4px 0}.tm-capacity-control input{appearance:textfield;background:rgba(3,13,33,.7);border:1px solid rgba(178,199,231,.25);border-left:0;border-right:0;color:#fff;font:700 1.35rem 'Cormorant Garamond',serif;height:42px;min-width:0;text-align:center}.tm-capacity-control input::-webkit-inner-spin-button,.tm-capacity-control input::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.tm-capacity-caption{color:var(--tm-muted);font-size:.62rem;line-height:1.55;margin:0}.tm-capacity-warning{background:rgba(242,191,61,.08);border:1px solid rgba(242,191,61,.18);border-radius:4px;color:#d7e0ee;font-size:.64rem;line-height:1.55;margin:14px 0 0;padding:10px}.tm-capacity-warning b{color:var(--tm-gold)}.tm-form-footer{align-items:center;display:flex;gap:12px;justify-content:space-between;margin-top:22px}.tm-save{background:var(--tm-gold);border:0;border-radius:3px;color:#061228;cursor:pointer;font-size:.66rem;font-weight:700;letter-spacing:.08em;padding:12px 17px;text-transform:uppercase}.tm-save:disabled{cursor:wait;opacity:.65}.tm-cancel{background:transparent;border:1px solid rgba(255,255,255,.22);border-radius:3px;color:#cad5e5;cursor:pointer;display:none;font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:11px 13px;text-transform:uppercase}.tm-form-msg{font-size:.69rem;line-height:1.4;margin:0}.tm-form-msg.error{color:#ffb3b3}.tm-form-msg.ok{color:var(--tm-green)}
+    .tm-side-stack{display:grid;gap:18px}.tm-side-card h3{color:var(--tm-gold);font-size:.63rem;letter-spacing:.1em;margin:0 0 14px;text-transform:uppercase}.tm-preview-event{border:1px solid rgba(242,191,61,.22);border-radius:5px;padding:15px}.tm-preview-event h4{font:700 1.2rem 'Cormorant Garamond',serif;margin:0 0 5px}.tm-preview-event p{color:var(--tm-muted);font-size:.67rem;line-height:1.55;margin:0}.tm-preview-divider{border-top:1px solid rgba(255,255,255,.1);margin:12px 0}.tm-preview-role{color:#dbe4f1;font-size:.66rem}.tm-preview-role b{color:var(--tm-gold)}.tm-side-link-button{background:transparent;border:1px solid rgba(242,191,61,.48);border-radius:3px;color:var(--tm-gold);cursor:pointer;display:block;font-size:.59rem;font-weight:700;letter-spacing:.07em;margin-top:12px;padding:10px;text-align:center;text-decoration:none;text-transform:uppercase;width:100%}.tm-guidance{color:var(--tm-muted);font-size:.7rem;line-height:1.7;margin:0}.tm-guidance b{color:#fff}.tm-status-row{align-items:center;border-top:1px solid rgba(255,255,255,.09);display:flex;font-size:.67rem;justify-content:space-between;padding:10px 0}.tm-status-row:first-of-type{border-top:0;padding-top:0}.tm-status-row span{color:var(--tm-muted)}
+    .tm-summary{background:radial-gradient(circle at 15% 0%,rgba(48,127,244,.34),transparent 38%),linear-gradient(110deg,#103773,#091e46);border-color:rgba(124,182,255,.38);box-shadow:0 14px 30px rgba(1,9,28,.3)}.tm-summary-title{background:linear-gradient(135deg,rgba(38,104,207,.2),rgba(8,28,66,.06));padding:24px 25px}.tm-summary-kicker{color:#ffd96e}.tm-summary-title h2{color:#fff;font-size:1.7rem}.tm-summary-title p{color:#d3e2f8;font-size:.73rem}.tm-metric{background:rgba(3,18,48,.18);padding:24px 20px}.tm-metric-label{color:#a8cbff}.tm-metric strong{color:#fff;font-size:2rem}.tm-metric small{color:#c4d8f2}.tm-event{background:radial-gradient(circle at 6% 0%,rgba(41,103,203,.28),transparent 36%),linear-gradient(110deg,rgba(14,46,95,.96),rgba(9,29,61,.98));border-color:rgba(126,177,255,.3);box-shadow:0 12px 28px rgba(0,0,0,.18)}.tm-event-main{background:linear-gradient(90deg,rgba(35,92,177,.15),transparent 55%);padding:24px 28px}.tm-event h3{color:#fff;font-size:1.62rem;letter-spacing:.01em}.tm-event-facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:11px}.tm-event-fact{align-items:center;background:rgba(2,16,40,.45);border:1px solid rgba(160,197,247,.17);border-radius:4px;color:#d7e7fb;display:inline-flex;font-size:.93rem;gap:7px;padding:7px 10px}.tm-event-fact b{color:#83baff;font-size:.825rem;letter-spacing:.06em;text-transform:uppercase}.tm-event-meta{color:#c1d4ee}.tm-status{font-size:.81rem;padding:8px 11px}.tm-status.open{background:rgba(67,204,137,.2);border:1px solid rgba(108,235,171,.34);color:#a6f6c6}.tm-event-actions .tm-action{background:rgba(255,255,255,.045);border-color:rgba(177,209,255,.34);font-size:.855rem;padding:12px 15px}.tm-event-actions .tm-action:hover{background:rgba(242,191,61,.15)}.tm-role-summary{background:linear-gradient(90deg,rgba(242,191,61,.11),rgba(242,191,61,.025));border-top-color:rgba(242,191,61,.24);gap:12px;padding:18px 28px}.tm-role-pill{align-items:center;background:rgba(3,17,42,.52);border:1px solid rgba(242,191,61,.3);border-radius:999px;color:#e9f2ff;display:flex;font-size:.96rem;gap:12px;padding:9px 14px}.tm-role-pill b{color:#ffd86d;font-weight:700}.tm-role-pill span{color:#d4e2f5}.tm-signups{background:linear-gradient(90deg,rgba(8,29,61,.86),rgba(4,18,43,.8));padding:22px 28px}.tm-signups h4{color:#ffd86d;font-size:.87rem}.tm-signup-name{font-size:1.08rem}.tm-signup-details,.tm-no-signups{color:#b9d0ee;font-size:.945rem}.tm-remove{font-size:.84rem}
+    @media(max-width:1050px){.tm-summary{grid-template-columns:1.5fr repeat(2,1fr)}.tm-summary-title{grid-row:span 2}.tm-metric:nth-child(4){border-top:1px solid var(--tm-line)}.tm-workspace{grid-template-columns:1fr}.tm-side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:780px){.tm-topbar{padding:0 18px}.tm-layout{grid-template-columns:1fr}.tm-sidebar{border-bottom:1px solid var(--tm-line);border-right:0;display:flex;overflow-x:auto;padding:8px}.tm-side-label{display:none}.tm-side-link{font-size:.63rem;white-space:nowrap}.tm-main{padding:24px 18px 50px}.tm-page-row{flex-direction:column}.tm-preview{margin:0}.tm-summary{grid-template-columns:1fr 1fr}.tm-summary-title{border-bottom:1px solid var(--tm-line);border-right:0;grid-column:1/-1;grid-row:auto}.tm-metric:nth-child(3),.tm-metric:nth-child(5){border-right:0}.tm-metric:nth-child(4){border-top:0}.tm-event-main{grid-template-columns:1fr}.tm-event-actions{justify-content:flex-start}.tm-side-stack{grid-template-columns:1fr}}@media(max-width:520px){.tm-brand-copy{display:none}.tm-user{display:none}.tm-top-actions{gap:8px}.tm-summary{grid-template-columns:1fr 1fr}.tm-metric{padding:15px}.tm-fields,.tm-role-editor-grid{grid-template-columns:1fr}.tm-field.full{grid-column:auto}.tm-form-card,.tm-side-card{padding:17px}.tm-form-footer{align-items:flex-start;flex-direction:column-reverse}.tm-signup-row{grid-template-columns:1fr}.tm-remove{justify-self:start}}
+  </style>
+  <style>
+    /* Shared member-page header — matches the Statistics page. */
+    .tm-app { min-height:100vh; }
+    .tm-layout { min-height:calc(100vh - 88px); padding-top:88px; }
+    .tm-main { padding-top:32px; transition:padding-top .4s cubic-bezier(.16,1,.3,1); }
+    body.dome-open .tm-main { padding-top:172px; }
+    .tm-summary {
+      background:
+        radial-gradient(circle at 14% 0%,rgba(55,132,255,.38),transparent 42%),
+        linear-gradient(110deg,#0d3473 0%,#071d47 100%);
+      border-color:rgba(124,182,255,.38);
+      box-shadow:0 16px 34px rgba(1,9,28,.34);
+      grid-template-columns:minmax(0,1.2fr) minmax(440px,.8fr);
+    }
+    .tm-summary-title {
+      background:linear-gradient(135deg,rgba(47,117,227,.22),rgba(8,28,66,.05));
+      padding:24px 26px;
+    }
+    /* The tournament title intentionally stays at its existing size. */
+    .tm-summary-title h2 { font-size:1.85rem; }
+    .tm-summary-kicker { font-size:.65rem; }
+    .tm-summary-details {
+      display:grid;
+      gap:12px 18px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      margin-top:14px;
+    }
+    .tm-summary-fact {
+      align-items:center;
+      color:#d9e8fc;
+      display:flex;
+      font-size:.86rem;
+      gap:10px;
+      line-height:1.5;
+      min-width:0;
+    }
+    .tm-summary-fact-icon {
+      align-items:center;
+      background:rgba(91,157,255,.14);
+      border:1px solid rgba(124,182,255,.4);
+      border-radius:50%;
+      color:#8fc0ff;
+      display:flex;
+      flex:0 0 31px;
+      height:31px;
+      justify-content:center;
+      width:31px;
+    }
+    .tm-summary-fact-icon svg { fill:none; height:16px; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; width:16px; }
+    .tm-summary-fact-copy { min-width:0; }
+    .tm-summary-fact-label { color:#a9c9f5; display:block; font-size:.54rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+    .tm-summary-fact-value { color:#edf5ff; display:block; font-size:.86rem; font-weight:600; overflow-wrap:anywhere; }
+    .tm-summary-resolution { align-items:flex-start; grid-column:1/-1; }
+    .tm-summary-resolution .tm-summary-fact-icon { margin-top:2px; }
+    .tm-summary-resolution .tm-summary-fact-value { line-height:1.5; }
+    .tm-summary-metrics {
+      background:rgba(3,18,48,.18);
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      grid-template-rows:repeat(2,minmax(0,1fr));
+      min-width:0;
+    }
+    .tm-metric {
+      align-items:center;
+      background:transparent;
+      border-bottom:1px solid var(--tm-line);
+      border-right:1px solid var(--tm-line);
+      display:flex;
+      gap:16px;
+      padding:28px 20px;
+    }
+    .tm-metric:nth-child(2n) { border-right:0; }
+    .tm-metric:nth-last-child(-n+2) { border-bottom:0; }
+    .tm-metric-icon {
+      align-items:center;
+      background:rgba(85,143,255,.13);
+      border:1px solid rgba(108,167,255,.36);
+      border-radius:50%;
+      color:#6aa4ff;
+      display:flex;
+      flex:0 0 56px;
+      height:56px;
+      justify-content:center;
+      margin-top:1px;
+      width:56px;
+    }
+    .tm-metric-icon svg { fill:none; height:29px; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; width:29px; }
+    .tm-metric-copy { min-width:0; }
+    .tm-metric-label { color:#b9d5ff; display:block; font-size:.65rem; font-weight:700; letter-spacing:.08em; }
+    .tm-metric strong { font-size:2.31rem; margin:6px 0 4px; }
+    .tm-metric small { color:#c2d8f4; display:block; font-size:.72rem; }
+    .tm-fill-rate { color:#58e1a1!important; font-size:1.44rem!important; font-weight:700; margin-top:3px; }
+    .tm-metric.confirmed .tm-metric-icon { background:rgba(42,207,139,.12); border-color:rgba(61,226,159,.36); color:#4edc9a; }
+    .tm-metric.available .tm-metric-icon { background:rgba(141,96,255,.14); border-color:rgba(160,122,255,.4); color:#a383ff; }
+    .tm-metric.status .tm-metric-icon { background:rgba(255,196,53,.12); border-color:rgba(255,210,86,.38); color:#ffd25b; }
+    .tm-metric.status strong { color:#fff0ac; font-size:1.86rem; margin-top:10px; }
+    @media(max-width:1050px) {
+      .tm-summary { grid-template-columns:1fr; }
+      .tm-summary-title { border-bottom:1px solid var(--tm-line); border-right:0; grid-row:auto; }
+    }
+    @media(max-width:780px) {
+      .tm-layout { padding-top:70px; }
+      .tm-main { padding-top:24px; }
+      body.dome-open .tm-main { padding-top:164px; }
+      .tm-summary-details { gap:10px 14px; }
+      .tm-summary-fact { font-size:.75rem; }
+      .tm-summary-fact-value { font-size:.75rem; }
+    }
+    @media(max-width:520px) {
+      .member-userbar { right:8px; }
+      .member-userbar .mub-bell,
+      .member-userbar .mub-email,
+      .member-userbar .mub-badge,
+      .member-userbar .mub-sep { display:none; }
+      .member-userbar .mub-name { font-size:.65rem; padding:5px 8px; }
+      .member-userbar .mub-signout { font-size:.58rem; padding:8px 9px; }
+      .tm-summary-details { grid-template-columns:1fr; }
+      .tm-summary-metrics { grid-template-columns:1fr; grid-template-rows:auto; }
+      .tm-metric { gap:10px; padding:18px 14px; }
+      .tm-metric, .tm-metric:nth-child(2n), .tm-metric:nth-last-child(-n+2) { border-bottom:1px solid var(--tm-line); border-right:0; }
+      .tm-metric:last-child { border-bottom:0; }
+      .tm-metric-icon { flex-basis:42px; height:42px; width:42px; }
+      .tm-metric-icon svg { height:21px; width:21px; }
+      .tm-metric-label { font-size:.55rem; }
+      .tm-metric strong { font-size:1.8rem; }
+      .tm-metric small { font-size:.59rem; }
+      .tm-fill-rate { font-size:1.18rem!important; }
+      .tm-metric.status strong { font-size:1.46rem; }
+    }
   </style>
 </head>
 <body>
+  <div class="mp-topbar"></div>
+  <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
+    <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+  </a>
+  <div class="member-userbar" id="member-userbar">
+    <button class="mub-bell" type="button" aria-label="Coach notification status" title="Coach portal">
+      <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <span class="mub-notif-state on" aria-hidden="true"></span>
+    </button>
+    <div class="mub-sep"></div>
+    <span class="mub-name" id="member-name"></span>
+    <div class="mub-sep"></div>
+    <span class="mub-email" id="member-email"></span>
+    <div class="mub-sep"></div>
+    <span class="mub-badge" id="member-role-badge">🛡️ Coach</span>
+    <div class="mub-sep"></div>
+    <button class="mub-signout" type="button" onclick="memberSignOut()">
+      <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Sign Out
+    </button>
+  </div>
+  <script>window.__NAV_PAGE = "volunteers";</script>
   <div id="dome-nav-root"></div>
-  <main class="vol-page">
-    <div class="vol-shell">
-      <section id="vol-auth" class="vol-auth">
-        <div class="vol-auth-box">
-          <div class="spinner"></div>
-          <h1>Checking access</h1>
-          <p>Loading the volunteer signup manager…</p>
-        </div>
-      </section>
-
-      <section id="vol-dashboard" hidden>
-        <header class="vol-header">
-          <div><h1>Judge Volunteer Signups</h1><p>Publish tournament details, set judge capacity, and keep parent availability and contact details in one private coach view.</p></div>
-          <div class="vol-header-right"><span id="vol-user" class="vol-user"></span><button class="vol-signout" type="button" onclick="memberSignOut()">Sign Out</button></div>
-        </header>
-        <div class="vol-grid">
-          <aside class="vol-panel">
-            <h2 id="vol-form-heading">New volunteer event</h2>
-            <p class="vol-panel-intro">Only published events appear on the public Tourneys page. Families choose their own judging start and end time; email, phone, and coach notes stay private.</p>
-            <form id="vol-event-form">
-              <div class="vol-field"><label for="event-title">Event title</label><input id="event-title" maxlength="160" required placeholder="e.g., WASDL Tournament #1"></div>
-              <div class="vol-inline">
-                <div class="vol-field"><label for="event-date">Tournament date</label><input id="event-date" type="date" required></div>
-                <div class="vol-field"><label for="event-deadline">Signup deadline</label><input id="event-deadline" type="date"></div>
+  <div class="tm-app">
+    <div class="tm-layout">
+      <nav class="tm-sidebar" aria-label="Member portal">
+        <p class="tm-side-label">Member portal</p>
+        <a class="tm-side-link" href="members.html"><span class="tm-side-icon">⌂</span>Dashboard</a>
+        <p class="tm-side-label">Tournaments</p>
+        <a class="tm-side-link" href="#vol-event-list"><span class="tm-side-icon">▦</span>All tournaments</a>
+        <a class="tm-side-link" href="#event-information"><span class="tm-side-icon">⊕</span>Add tournament</a>
+        <p class="tm-side-label">Volunteer signups</p>
+        <a class="tm-side-link active" href="members-volunteers.html"><span class="tm-side-icon">♙</span>Volunteer Signups</a>
+        <a class="tm-side-link" href="#vol-event-list"><span class="tm-side-icon">◎</span>View signups</a>
+        <p class="tm-side-label">Resources</p>
+        <a class="tm-side-link" href="members-resources.html"><span class="tm-side-icon">▤</span>Resources</a>
+        <a class="tm-side-link" href="members-directory.html"><span class="tm-side-icon">◎</span>Directory</a>
+      </nav>
+      <main class="tm-main">
+        <div class="tm-shell">
+          <section id="vol-auth" class="tm-auth">
+            <div class="tm-auth-box">
+              <div class="tm-auth-mark">◆</div>
+              <h1>Checking access</h1>
+              <p>Loading the Tournament Manager…</p>
+            </div>
+          </section>
+          <section id="vol-dashboard" hidden>
+            <div class="tm-breadcrumb"><a href="members.html">Member Portal</a><span>›</span><span class="current">Volunteer Signups</span><span>›</span><span id="tm-crumb-event">Tournament Manager</span></div>
+            <div class="tm-page-row">
+              <div class="tm-page-heading"><h1>Tournament Manager</h1><p>Create and manage tournament details, judge capacity, and parent volunteer signups in one coach-only workspace.</p></div>
+              <a class="tm-preview" href="tournaments.html#volunteer-signup" target="_blank" rel="noopener">Preview volunteer view ↗</a>
+            </div>
+            <section class="tm-summary" aria-label="Tournament summary">
+              <div class="tm-summary-title">
+                <span class="tm-summary-kicker">Current open tournament</span>
+                <h2 id="tm-summary-title">Loading tournament…</h2>
+                <div class="tm-summary-details" aria-label="Public tournament details">
+                  <div class="tm-summary-fact">
+                    <span class="tm-summary-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></svg></span>
+                    <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Date</span><span class="tm-summary-fact-value" id="tm-summary-date">Loading date…</span></span>
+                  </div>
+                  <div class="tm-summary-fact">
+                    <span class="tm-summary-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg></span>
+                    <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Time</span><span class="tm-summary-fact-value" id="tm-summary-time">Loading time…</span></span>
+                  </div>
+                  <div class="tm-summary-fact">
+                    <span class="tm-summary-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg></span>
+                    <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Location</span><span class="tm-summary-fact-value" id="tm-summary-location">Loading location…</span></span>
+                  </div>
+                  <div class="tm-summary-fact">
+                    <span class="tm-summary-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3v3M18 3v3"/><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 15h3M8 18h5"/></svg></span>
+                    <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Signup deadline</span><span class="tm-summary-fact-value" id="tm-summary-deadline">Loading deadline…</span></span>
+                  </div>
+                  <div class="tm-summary-fact tm-summary-resolution">
+                    <span class="tm-summary-fact-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M4 5.5v16M8 7h8M8 11h8M8 15h5"/></svg></span>
+                    <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Debate resolution</span><span class="tm-summary-fact-value" id="tm-summary-resolution">Loading resolution…</span></span>
+                  </div>
+                </div>
               </div>
-              <div class="vol-inline">
-                <div class="vol-field"><label for="event-start-time">Tournament start time</label><input id="event-start-time" type="time"></div>
-                <div class="vol-field"><label for="event-end-time">Tournament end time</label><input id="event-end-time" type="time"></div>
+              <div class="tm-summary-metrics" aria-label="Volunteer signup metrics">
+                <div class="tm-metric capacity">
+                  <span class="tm-metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><path d="M2.5 20v-1.5a5.5 5.5 0 0 1 11 0V20"/><circle cx="17" cy="8" r="2.5"/><path d="M17 15a5 5 0 0 1 4.5 5"/></svg></span>
+                  <span class="tm-metric-copy"><span class="tm-metric-label">Judge capacity</span><strong id="tm-capacity">0</strong><small>Total openings</small></span>
+                </div>
+                <div class="tm-metric confirmed">
+                  <span class="tm-metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v3M16 3v3M8 12l2.6 2.6L16.5 9"/></svg></span>
+                  <span class="tm-metric-copy"><span class="tm-metric-label">Confirmed</span><strong id="tm-confirmed">0</strong><small>Parent signups</small><small class="tm-fill-rate" id="tm-fill-rate">0% Filled</small></span>
+                </div>
+                <div class="tm-metric available">
+                  <span class="tm-metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 21v-1.5a7.5 7.5 0 0 1 15 0V21"/></svg></span>
+                  <span class="tm-metric-copy"><span class="tm-metric-label">Available</span><strong id="tm-available">0</strong><small>Open spots</small></span>
+                </div>
+                <div class="tm-metric status">
+                  <span class="tm-metric-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/><circle cx="8" cy="15" r=".6" fill="currentColor"/><circle cx="12" cy="15" r=".6" fill="currentColor"/></svg></span>
+                  <span class="tm-metric-copy"><span class="tm-metric-label">Status</span><strong id="tm-status">Draft</strong><small id="tm-status-note">Not published</small></span>
+                </div>
               </div>
-              <div class="vol-field"><label for="event-meal">Meal / refreshments</label><input id="event-meal" maxlength="180" placeholder="e.g., Lunch and refreshments are provided"></div>
-              <div class="vol-field"><label for="event-location">Location</label><input id="event-location" maxlength="200" placeholder="School or venue"></div>
-              <div class="vol-field"><label for="event-address">Street address</label><input id="event-address" maxlength="240" placeholder="e.g., 977 Balls Hill Rd, McLean, VA 22101"></div>
-              <div class="vol-inline">
-                <div class="vol-field"><label for="event-format">Debate format</label><input id="event-format" maxlength="120" placeholder="e.g., Public Forum (Middle School)"></div>
-                <div class="vol-field"><label for="event-host">Hosted by</label><input id="event-host" maxlength="160" placeholder="e.g., Cooper Debate Team"></div>
-              </div>
-              <div class="vol-field"><label for="event-resolution">Resolution / topic</label><textarea id="event-resolution" maxlength="900" placeholder="The resolution or topic for this tournament"></textarea></div>
-              <div class="vol-field"><label for="event-judge-instructions">Important information for judges</label><textarea id="event-judge-instructions" maxlength="900" placeholder="Arrival time, orientation, round expectations, lunch, or ballot instructions"></textarea></div>
-              <div class="vol-field"><label for="event-expectations">What to expect <span style="opacity:.65;">(one item per line)</span></label><textarea id="event-expectations" maxlength="1200" placeholder="Arrive 15–20 minutes early&#10;Judge two preliminary rounds&#10;Use the NSDA electronic ballot system"></textarea></div>
-              <div class="vol-field"><label for="event-invitation-url">Full invitation link <span style="opacity:.65;">(optional)</span></label><input id="event-invitation-url" type="url" maxlength="500" placeholder="https://..."></div>
-              <div class="vol-inline">
-                <div class="vol-field"><label for="event-coach-name">Questions contact</label><input id="event-coach-name" maxlength="120" placeholder="e.g., Coach Konde"></div>
-                <div class="vol-field"><label for="event-coach-email">Contact email</label><input id="event-coach-email" type="email" maxlength="160" placeholder="coach@example.org"></div>
-              </div>
-              <div class="vol-field"><label for="event-coach-phone">Contact phone <span style="opacity:.65;">(optional)</span></label><input id="event-coach-phone" type="tel" maxlength="40" placeholder="(703) 555-0123"></div>
-              <div class="vol-field"><label for="event-details">Additional notes for families</label><textarea id="event-details" maxlength="700" placeholder="Parking, logistics, or anything else families should know"></textarea></div>
-              <label class="vol-check"><input id="event-published" type="checkbox" checked> Publish this opportunity to families</label>
-              <div class="role-head"><span>Judge &amp; volunteer roles</span><button id="add-role" class="add-role" type="button">+ Add role</button></div>
-              <div id="role-editors"></div>
-              <button id="vol-save" class="vol-save" type="submit">Publish volunteer event</button>
-              <button id="vol-cancel-edit" class="vol-cancel-edit" type="button">Cancel editing</button>
-              <p id="vol-form-msg" class="vol-form-msg" role="status"></p>
+            </section>
+            <div id="vol-event-list" class="tm-event-list" aria-live="polite"><div class="tm-empty">Loading tournament opportunities…</div></div>
+            <div class="tm-tabs" role="tablist" aria-label="Tournament manager sections">
+              <button class="tm-tab active" type="button" data-tm-tab="event-information">Event details</button>
+              <button class="tm-tab" type="button" data-tm-tab="availability-settings">Availability &amp; schedule</button>
+              <button class="tm-tab" type="button" data-tm-tab="judge-guidance">Judge guidance</button>
+              <button class="tm-tab" type="button" data-tm-tab="judge-capacity">Judge capacity</button>
+              <button class="tm-tab" type="button" data-tm-tab="publish-share">Publish &amp; share</button>
+            </div>
+            <form id="vol-event-form" class="tm-workspace">
+              <section class="tm-form-card">
+                <div class="tm-section" id="event-information">
+                  <div class="tm-section-title"><span class="tm-section-number">01.</span><h2>Event information</h2></div>
+                  <div class="tm-fields">
+                    <div class="tm-field full"><label for="event-title">Event title *</label><input id="event-title" maxlength="160" required placeholder="e.g., WASDL Tournament #1"></div>
+                    <div class="tm-field"><label for="event-date">Tournament date *</label><input id="event-date" type="date" required></div>
+                    <div class="tm-field"><label for="event-deadline">Signup deadline</label><input id="event-deadline" type="date"></div>
+                    <div class="tm-field full"><label for="event-location">Location</label><input id="event-location" list="location-presets" maxlength="200" placeholder="School or venue"><datalist id="location-presets"><option value="Cooper Middle School"><option value="Virtual / Online"><option value="Other school or venue"></datalist></div>
+                    <div class="tm-field full"><label for="event-address">Street address</label><input id="event-address" maxlength="240" placeholder="e.g., 977 Balls Hill Rd, McLean, VA 22101"></div>
+                    <div class="tm-field"><label for="event-format">Debate format</label><input id="event-format" list="format-presets" maxlength="120" placeholder="Choose or enter format"><datalist id="format-presets"><option value="Public Forum"><option value="Public Forum (Middle School)"><option value="Lincoln Douglas"><option value="Congressional Debate"><option value="Policy Debate"></datalist></div>
+                    <div class="tm-field"><label for="event-host">Hosted by</label><input id="event-host" list="host-presets" maxlength="160" placeholder="Choose or enter host"><datalist id="host-presets"><option value="Cooper Debate Team"><option value="WASDL"><option value="Cooper Middle School"></datalist></div>
+                    <div class="tm-field full"><label for="event-resolution">Resolution / topic</label><textarea id="event-resolution" maxlength="900" placeholder="The resolution or topic for this tournament"></textarea></div>
+                  </div>
+                </div>
+                <div class="tm-section" id="availability-settings">
+                  <div class="tm-section-title"><span class="tm-section-number">02.</span><h2>Availability &amp; schedule</h2></div>
+                  <p class="tm-section-note">Families choose their own available-from and available-until window. The tournament hours below set the valid range.</p>
+                  <div class="tm-fields">
+                    <div class="tm-field"><label for="event-start-time">Tournament start time</label><input id="event-start-time" type="time"></div>
+                    <div class="tm-field"><label for="event-end-time">Tournament end time</label><input id="event-end-time" type="time"></div>
+                    <div class="tm-field full"><label for="event-time-preset">Schedule shortcut</label><select id="event-time-preset"><option value="">Choose a common schedule</option><option value="8:30 AM – 5:00 PM">8:30 AM – 5:00 PM</option><option value="9:00 AM – 4:30 PM">9:00 AM – 4:30 PM</option><option value="9:00 AM – 5:00 PM">9:00 AM – 5:00 PM</option></select><p class="tm-preset-note">Choosing a shortcut automatically fills both tournament time fields.</p></div>
+                    <div class="tm-field full"><label class="tm-toggle-line" for="event-lunch-provided"><input id="event-lunch-provided" type="checkbox"> Lunch / refreshments provided</label><input id="event-meal" maxlength="180" placeholder="Optional meal details, dietary notes, or lunch location"></div>
+                  </div>
+                </div>
+                <div class="tm-section" id="judge-guidance">
+                  <div class="tm-section-title"><span class="tm-section-number">03.</span><h2>Judge guidance</h2></div>
+                  <div class="tm-fields">
+                    <div class="tm-field full"><label for="event-judge-instructions">Important information for judges</label><textarea id="event-judge-instructions" maxlength="900" placeholder="Arrival time, orientation, round expectations, lunch, or ballot instructions"></textarea></div>
+                    <div class="tm-field full"><label for="event-expectations">What to expect <span style="opacity:.7">(one item per line)</span></label><textarea id="event-expectations" maxlength="1200" placeholder="Arrive 15–20 minutes early&#10;Judge two preliminary rounds&#10;Use the NSDA electronic ballot system"></textarea></div>
+                    <div class="tm-field full"><label for="event-invitation-url">Full invitation link <span style="opacity:.7">(optional)</span></label><input id="event-invitation-url" type="url" maxlength="500" placeholder="https://..."></div>
+                  </div>
+                </div>
+                <div class="tm-section" id="publish-share">
+                  <div class="tm-section-title"><span class="tm-section-number">04.</span><h2>Coach contact &amp; publishing</h2></div>
+                  <div class="tm-fields">
+                    <div class="tm-field"><label for="event-coach-name">Questions contact</label><input id="event-coach-name" maxlength="120" placeholder="e.g., Coach Konde"></div>
+                    <div class="tm-field"><label for="event-coach-email">Contact email</label><input id="event-coach-email" type="email" maxlength="160" placeholder="coach@example.org"></div>
+                    <div class="tm-field"><label for="event-coach-phone">Contact phone <span style="opacity:.7">(optional)</span></label><input id="event-coach-phone" type="tel" maxlength="40" placeholder="(703) 555-0123"></div>
+                    <div class="tm-field"><label for="event-details">Additional notes for families</label><input id="event-details" maxlength="700" placeholder="Parking, logistics, or anything else families should know"></div>
+                  </div>
+                  <label class="tm-switch"><input id="event-published" type="checkbox" checked> Publish this opportunity to families</label>
+                </div>
+                <div class="tm-form-footer"><div><button id="vol-cancel-edit" class="tm-cancel" type="button">Cancel editing</button><p id="vol-form-msg" class="tm-form-msg" role="status"></p></div><button id="vol-save" class="tm-save" type="submit">Create tournament</button></div>
+              </section>
+              <aside class="tm-side-stack">
+                <section class="tm-side-card" id="judge-capacity">
+                  <h3>Judge capacity</h3>
+                  <p class="tm-section-note">Set the total number of judges needed. Use the controls to adjust capacity without retyping it.</p>
+                  <label class="tm-field"><span>Total judge capacity *</span></label>
+                  <div class="tm-capacity-control"><button id="judge-capacity-down" type="button" aria-label="Decrease judge capacity">−</button><input id="event-judge-capacity" min="1" max="100" required type="number" value="1" aria-label="Total judge capacity"><button id="judge-capacity-up" type="button" aria-label="Increase judge capacity">+</button></div>
+                  <p class="tm-capacity-caption">Maximum number of parent judges needed for this tournament.</p>
+                  <p class="tm-capacity-warning"><b>Capacity note:</b> Parent signups are counted against this total. Capacity cannot be lowered below the number already confirmed.</p>
+                </section>
+                <section class="tm-side-card">
+                  <h3>Quick preview</h3>
+                  <div class="tm-preview-event"><h4 id="tm-preview-title">Tournament title</h4><p id="tm-preview-meta">Tournament date · Location</p><div class="tm-preview-divider"></div><p class="tm-preview-role" id="tm-preview-roles">Add a judge role to preview openings.</p></div>
+                  <a class="tm-side-link-button" href="tournaments.html#volunteer-signup" target="_blank" rel="noopener">Open public signup ↗</a>
+                </section>
+                <section class="tm-side-card">
+                  <h3>Event status</h3>
+                  <div class="tm-status-row"><span>Status</span><b id="tm-side-status">Draft</b></div>
+                  <p class="tm-guidance"><b>Privacy:</b> Parent availability, email, phone number, and notes stay in this coach-only manager and CSV export.</p>
+                </section>
+              </aside>
             </form>
-          </aside>
-          <section>
-            <div class="vol-list-title"><h2 style="font:700 1.7rem 'Cormorant Garamond',serif;color:#ffd700;">Upcoming opportunities</h2></div>
-            <div id="vol-event-list" class="vol-event-list"><div class="vol-loading">Loading events…</div></div>
           </section>
         </div>
-      </section>
+      </main>
     </div>
-  </main>
-
+  </div>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=2"></script>
   <script src="data/admins.js"></script>
-  <script src="js/volunteer-admin.js?v=3"></script>
-  <script>window.__NAV_PAGE = "volunteers";</script>
-  <script src="js/members-nav.js?v=7"></script>
+  <script src="js/volunteer-admin.js?v=12"></script>
+  <script src="js/members-nav.js?v=6"></script>
   <script src="js/dome-nav.js"></script>
-  <script src="js/main.js"></script>
 </body>
 </html>

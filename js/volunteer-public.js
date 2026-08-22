@@ -19,13 +19,14 @@
     .replace(/'/g, "&#039;");
 
   const dateLabel = value => {
-    if (!value) return "";
-    const parsed = new Date(`${value}T12:00:00`);
-    return Number.isNaN(parsed.getTime())
-      ? value
-      : parsed.toLocaleDateString("en-US", {
-        weekday: "long", month: "long", day: "numeric", year: "numeric",
-      });
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
   };
 
   const timeLabel = value => {
@@ -48,6 +49,19 @@
     .filter(Boolean)
     .slice(0, 12);
 
+  const bulletItems = value => lineItems(value)
+    .flatMap(item => item.split(/(?<=[.!?])\s+/))
+    .map(item => item.trim())
+    .filter(Boolean)
+    .slice(0, 12);
+
+  const roleDisplayLabel = role => {
+    const label = String(role?.label || "").trim();
+    return !label || /^single-slot test$/i.test(label) ? "Debate Judge" : label;
+  };
+
+  const modalIcon = name => `<svg class="vol-modal-icon vol-icon-${name}" aria-hidden="true" focusable="false"><use href="#vol-icon-${name}"></use></svg>`;
+
   const safeExternalUrl = value => {
     try {
       const url = new URL(value);
@@ -59,20 +73,78 @@
 
   function eventFacts(event) {
     const facts = [
-      event.date && { label: "Date", value: dateLabel(event.date) },
-      timeRange(event.startTime, event.endTime) && { label: "Tournament hours", value: timeRange(event.startTime, event.endTime) },
-      event.mealInfo && { label: "Meals", value: event.mealInfo },
-      event.location && { label: "Venue", value: event.location },
-      event.address && { label: "Address", value: event.address },
-      event.debateFormat && { label: "Debate", value: event.debateFormat },
-      event.host && { label: "Hosted by", value: event.host },
+      event.date && { icon: "calendar", label: "Date", value: dateLabel(event.date) },
+      timeRange(event.startTime, event.endTime) && { icon: "clock", label: "Tournament hours", value: timeRange(event.startTime, event.endTime) },
+      event.debateFormat && { icon: "debate", label: "Debate format", value: event.debateFormat },
+      event.mealInfo && { icon: "utensils", label: "Meals", value: event.mealInfo },
+      (event.location || event.address) && { icon: "pin", label: "Location", value: [event.location, event.address].filter(Boolean).join(" · ") },
+      event.host && { icon: "users", label: "Hosted by", value: event.host },
     ].filter(Boolean);
-    return facts.map(fact => `<div class="vol-event-fact"><span>${escapeHtml(fact.label)}</span><strong>${escapeHtml(fact.value)}</strong></div>`).join("");
+    return facts.map(fact => `<div class="vol-event-fact">${modalIcon(fact.icon)}<div><span>${escapeHtml(fact.label)}</span><strong>${escapeHtml(fact.value)}</strong></div></div>`).join("");
+  }
+
+  function eventSignupStats(event) {
+    const roles = Array.isArray(event.roles)
+      ? event.roles.filter(role => role.label !== "Duplicate-check test")
+      : [];
+    const capacity = roles.reduce((total, role) => total + Math.max(0, Number(role.capacity) || 0), 0);
+    const confirmed = roles.reduce((total, role) => {
+      const roleCapacity = Math.max(0, Number(role.capacity) || 0);
+      return total + Math.min(roleCapacity, Math.max(0, Number(role.taken) || 0));
+    }, 0);
+    return {
+      capacity,
+      confirmed,
+      available: Math.max(0, capacity - confirmed),
+      fillRate: capacity ? Math.round((confirmed / capacity) * 100) : 0,
+    };
+  }
+
+  const timeToMinutes = value => {
+    if (!/^\d{2}:\d{2}$/.test(value || "")) return null;
+    const [hours, minutes] = value.split(":").map(Number);
+    return hours * 60 + minutes;
+  };
+
+  const minutesToTime = value => {
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+  };
+
+  const durationLabel = minutes => {
+    const hours = minutes / 60;
+    return `${Number.isInteger(hours) ? hours : hours.toFixed(1)} hrs`;
+  };
+
+  function availabilityChoices(event) {
+    const start = timeToMinutes(event.startTime);
+    const end = timeToMinutes(event.endTime);
+    if (start === null || end === null || end <= start) {
+      return [{ id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: "", end: "", duration: "" }];
+    }
+    const total = end - start;
+    const morningLength = Math.min(240, Math.max(60, Math.floor((total / 2) / 30) * 30));
+    const split = start + morningLength;
+    return [
+      { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
+      { id: "afternoon", label: timeRange(minutesToTime(split), minutesToTime(end)), detail: "Afternoon availability", icon: "☀", start: minutesToTime(split), end: minutesToTime(end), duration: durationLabel(end - split) },
+      { id: "full", label: timeRange(event.startTime, event.endTime), detail: "Full tournament", icon: "☀", start: event.startTime, end: event.endTime, duration: durationLabel(total) },
+      { id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
+    ];
+  }
+
+  function renderVolunteerSummary() {
+    const root = $("vol-public-summary");
+    if (!root) return;
+    root.hidden = true;
+    root.innerHTML = "";
   }
 
   function renderEvents() {
     const root = $("volunteer-events");
     if (!root) return;
+    renderVolunteerSummary();
 
     if (!volunteerEvents.length) {
       root.innerHTML = `
@@ -85,51 +157,94 @@
     }
 
     root.innerHTML = volunteerEvents.map(event => {
-      const roles = event.roles.map(role => {
-        const capacity = Number(role.capacity || 0);
-        const filled = Math.min(capacity, Number(role.taken || 0));
-        const remaining = Math.max(0, capacity - filled);
-        const full = remaining === 0;
-        const signups = Array.isArray(event.signups)
-          ? event.signups.filter(signup => signup.roleId === role.id)
-          : [];
-        const signupNames = signups.map(signup => `
-          <span class="vol-taken-person">
-            ${escapeHtml(signup.parentName)}${signup.studentName ? ` <small>· ${escapeHtml(signup.studentName)}</small>` : ""}
-          </span>`).join("");
-        return `
-          <div class="vol-role${full ? " is-full" : ""}">
-            <div class="vol-role-copy">
-              <h4>${escapeHtml(role.label)}</h4>
-              ${role.description ? `<p>${escapeHtml(role.description)}</p>` : ""}
-              <div class="vol-taken">${signupNames ? `<span class="vol-taken-label">Judge volunteers:</span>${signupNames}` : "No judge volunteers yet"}</div>
-            </div>
-            <div class="vol-role-action">
-              <span class="vol-count">${filled} / ${capacity} filled · ${remaining} open</span>
-              <span class="vol-progress" aria-label="${filled} of ${capacity} openings filled"><span style="width:${capacity ? (filled / capacity) * 100 : 0}%"></span></span>
-              <button type="button" class="vol-signup-btn" ${full ? "disabled" : ""}
-                data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(role.id)}">
-                ${full ? "Filled" : "Choose time"}
-              </button>
-            </div>
-          </div>`;
-      }).join("");
+      const stats = eventSignupStats(event);
+      const invitationUrl = safeExternalUrl(event.invitationUrl);
+      const expectations = lineItems(event.expectations);
+      const formatMark = (event.debateFormat || "Judge").split(/\s+/).map(word => word[0]).join("").slice(0, 2).toUpperCase();
+      const publicExpectations = expectations.length
+        ? expectations
+        : ["Arrive 15–20 minutes early", "We’ll assign rounds within your availability", "Bring a device for electronic ballots when required"];
+      const judgeNotes = bulletItems(event.judgeInstructions);
+      const assignmentNotes = [
+        "You may be assigned to one or more rounds within your availability.",
+        "Please arrive 20 minutes early; walking from the parking lot takes about 5 minutes.",
+      ];
+      const availableRole = event.roles
+        .filter(role => role.label !== "Duplicate-check test")
+        .find(role => Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0)) > 0);
+      const choices = availabilityChoices(event);
+      const availabilityMarkup = choices.map((choice, index) => `
+        <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
+          <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
+          <span class="vol-availability-radio" aria-hidden="true"></span>
+          <span class="vol-availability-icon" aria-hidden="true">${choice.icon}</span>
+          <span class="vol-availability-copy"><strong>${escapeHtml(choice.label)}</strong><small>${escapeHtml(choice.detail)}</small></span>
+          ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
+        </label>`).join("");
 
       return `
-        <article class="vol-event-card">
-          <div class="vol-event-date">Judge volunteer opportunity</div>
-          <h3>${escapeHtml(event.title)}</h3>
-          <div class="vol-event-facts">${eventFacts(event)}</div>
-          ${event.resolution ? `<div class="vol-resolution"><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
-          ${event.judgeInstructions ? `<div class="vol-event-note"><strong>For judges</strong>${escapeHtml(event.judgeInstructions)}</div>` : ""}
-          ${event.details ? `<p class="vol-event-details">${escapeHtml(event.details)}</p>` : ""}
-          ${event.signupDeadline ? `<p class="vol-deadline">Sign up by ${escapeHtml(dateLabel(event.signupDeadline))}</p>` : ""}
-          <div class="vol-roles">${roles}</div>
+        <article class="vol-event-card vol-unified-card">
+          <header class="vol-unified-header">
+            <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
+            <div class="vol-unified-title">
+              <span>Judge volunteer opportunity</span>
+              <h3>${escapeHtml(event.title)}</h3>
+              ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
+            </div>
+            <div class="vol-open-status">✓ Signup open</div>
+          </header>
+          <div class="vol-unified-facts">
+            <div><span class="vol-unified-icon">▣</span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
+            <div><span class="vol-unified-icon">◷</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
+            <div><span class="vol-unified-icon">⌖</span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
+            <div><span class="vol-unified-icon">♙</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
+          </div>
+          <div class="vol-unified-brief">
+            ${event.resolution ? `<div><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
+            <div><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></div>
+            ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
+          </div>
+          <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
+            <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
+            <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Parent signups</small></div>
+            <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
+            <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
+            <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
+          </div>
+          <div class="vol-unified-signup">
+            <div class="vol-role-area">
+              <div class="vol-role-heading"><span>▣</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
+              <div class="vol-availability-options">${availabilityMarkup}</div>
+              <button type="button" class="vol-inline-continue" ${availableRole ? "" : "disabled"} data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
+                ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
+              </button>
+            </div>
+            <aside class="vol-public-sidebar">
+              <section><h4>What to expect</h4><ul>${publicExpectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+              ${judgeNotes.length ? `<section><h4>For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
+              <section class="vol-public-secure"><h4>Private &amp; secure</h4><ul><li>Your contact details and notes are visible only to the coaching staff.</li></ul></section>
+              <section class="vol-public-assignment"><h4>Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+            </aside>
+          </div>
         </article>`;
     }).join("");
 
-    root.querySelectorAll(".vol-signup-btn:not(:disabled)").forEach(button => {
-      button.addEventListener("click", () => openSignup(button.dataset.eventId, button.dataset.roleId));
+    root.querySelectorAll(".vol-availability-option input").forEach(input => {
+      input.addEventListener("change", () => {
+        input.closest(".vol-availability-options").querySelectorAll(".vol-availability-option").forEach(option => {
+          option.classList.toggle("is-selected", option.contains(input));
+        });
+      });
+    });
+    root.querySelectorAll(".vol-inline-continue:not(:disabled)").forEach(button => {
+      button.addEventListener("click", () => {
+        const card = button.closest(".vol-unified-card");
+        const selected = card?.querySelector(".vol-availability-option input:checked");
+        openSignup(button.dataset.eventId, button.dataset.roleId, {
+          start: selected?.dataset.start || "",
+          end: selected?.dataset.end || "",
+        });
+      });
     });
   }
 
@@ -189,18 +304,17 @@
     const invitationUrl = safeExternalUrl(selectedEvent.invitationUrl);
     root.innerHTML = `
       <div class="vol-brief-heading">
-        <div>
-          <span>Tournament details</span>
-          <h3>${escapeHtml(selectedEvent.title)}</h3>
+        <div class="vol-brief-title">
+          ${modalIcon("trophy")}
+          <div><span>Tournament details</span><h3>${escapeHtml(selectedEvent.title)}</h3></div>
         </div>
-        <span class="vol-brief-role">${escapeHtml(selectedRole.label)}</span>
+        <span class="vol-brief-role">${escapeHtml(roleDisplayLabel(selectedRole))}</span>
       </div>
       <div class="vol-brief-grid">
         <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
         <div class="vol-brief-debate">
-          ${selectedEvent.debateFormat ? `<div class="vol-brief-format"><span>Debate format</span><strong>${escapeHtml(selectedEvent.debateFormat)}</strong></div>` : ""}
-          ${selectedEvent.resolution ? `<div class="vol-brief-resolution"><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div>` : ""}
-          ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout"><strong>Important information</strong>${escapeHtml(selectedEvent.judgeInstructions)}</div>` : ""}
+          ${selectedEvent.resolution ? `<div class="vol-brief-resolution">${modalIcon("document")}<div><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div></div>` : ""}
+          ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout">${modalIcon("info")}<div><strong>Important information</strong><p>${escapeHtml(selectedEvent.judgeInstructions)}</p></div></div>` : ""}
           ${invitationUrl ? `<a class="vol-invitation-link" href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
         </div>
       </div>`;
@@ -212,6 +326,13 @@
     if (!root || !selectedEvent || !selectedRole) return;
     const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
     const expectations = lineItems(selectedEvent.expectations);
+    const expectationItems = expectations.length
+      ? expectations.map(label => ({ icon: "star", label }))
+      : [
+        { icon: "users", label: "Judge at least 3 preliminary rounds" },
+        { icon: "document", label: "Round times will be shared the week of the tournament" },
+        { icon: "gift", label: "Light refreshments provided" },
+      ];
     const contact = [
       selectedEvent.coachName,
       selectedEvent.coachEmail,
@@ -219,20 +340,19 @@
     ].filter(Boolean);
     root.innerHTML = `
       <section class="vol-side-card vol-selection-card">
-        <h4>Your selection</h4>
+        <h4>${modalIcon("clipboard")}<span>Your selection</span></h4>
         <div class="vol-side-row"><span>Event</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
-        <div class="vol-side-row"><span>Role</span><strong>${escapeHtml(selectedRole.label)}</strong></div>
+        <div class="vol-side-row"><span>Role</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))}</strong></div>
         <div class="vol-side-row"><span>Selected availability</span><strong>${escapeHtml(chosenTime || "Choose your start and end time")}</strong></div>
-        <div class="vol-side-reassurance">✓ We’ll do our best to assign rounds within your availability.</div>
+        <div class="vol-side-reassurance">${modalIcon("check")}<span>We’ll do our best to assign rounds within your availability.</span></div>
       </section>
-      ${expectations.length ? `
-        <section class="vol-side-card">
-          <h4>What to expect</h4>
-          <ul class="vol-expectations">${expectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
-        </section>` : ""}
+      <section class="vol-side-card">
+        <h4>${modalIcon("star")}<span>What to expect</span></h4>
+        <ul class="vol-expectations">${expectationItems.map(item => `<li>${modalIcon(item.icon)}<span>${escapeHtml(item.label)}</span></li>`).join("")}</ul>
+      </section>
       ${contact.length ? `
         <section class="vol-side-card">
-          <h4>Questions?</h4>
+          <h4>${modalIcon("question")}<span>Questions?</span></h4>
           ${selectedEvent.coachName ? `<p class="vol-contact-name">${escapeHtml(selectedEvent.coachName)}</p>` : ""}
           ${selectedEvent.coachEmail ? `<p><a href="mailto:${encodeURIComponent(selectedEvent.coachEmail)}">${escapeHtml(selectedEvent.coachEmail)}</a></p>` : ""}
           ${selectedEvent.coachPhone ? `<p>${escapeHtml(selectedEvent.coachPhone)}</p>` : ""}
@@ -247,7 +367,7 @@
     root.innerHTML = `
       <div class="vol-review-card">
         <span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong>
-        <span>Role</span><strong>${escapeHtml(selectedRole.label)}</strong>
+        <span>Role</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))}</strong>
         <span>Judging availability</span><strong>${escapeHtml(timeRange($("vol-availability-start").value, $("vol-availability-end").value))}</strong>
         <span>Volunteer</span><strong>${escapeHtml(`${firstName} ${lastName}`.trim())}</strong>
         <span>Contact</span><strong>${escapeHtml($("vol-email").value.trim())} · ${escapeHtml($("vol-phone").value.trim())}</strong>
@@ -281,7 +401,7 @@
     });
   }
 
-  function openSignup(eventId, roleId) {
+  function openSignup(eventId, roleId, availability) {
     selectedEvent = volunteerEvents.find(event => event.id === eventId) || null;
     selectedRole = selectedEvent && selectedEvent.roles.find(role => role.id === roleId);
     const form = $("volunteer-signup-form");
@@ -294,8 +414,8 @@
     $("vol-availability-start").max = selectedEvent.endTime || "";
     $("vol-availability-end").min = selectedEvent.startTime || "";
     $("vol-availability-end").max = selectedEvent.endTime || "";
-    $("vol-availability-start").value = selectedEvent.startTime || "";
-    $("vol-availability-end").value = selectedEvent.endTime || "";
+    $("vol-availability-start").value = availability?.start || selectedEvent.startTime || "";
+    $("vol-availability-end").value = availability?.end || selectedEvent.endTime || "";
     renderTournamentBrief();
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     $("volunteer-modal").style.display = "flex";
