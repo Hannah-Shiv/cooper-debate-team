@@ -168,6 +168,7 @@
     /* ── Public volunteer signup ─────────────────────────────── */
     .volunteer-section { background:linear-gradient(130deg,#102657 0%,var(--navy-dark) 70%); }
     .volunteer-intro { max-width:660px; margin:0 auto 32px; text-align:center; color:var(--gray-mid); font-size:.92rem; line-height:1.75; }
+    .volunteer-privacy { color:#9bb9e8; font-family:'Josefin Sans',sans-serif; font-size:.67rem; letter-spacing:.05em; margin:-15px auto 30px; max-width:660px; text-align:center; }
     .volunteer-events { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
     .vol-event-card { border:1px solid rgba(212,160,23,.22); border-radius:12px; padding:26px; background:rgba(7,24,56,.75); box-shadow:0 12px 28px rgba(0,0,0,.18); }
     .vol-event-date { color:var(--gold); font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
@@ -179,8 +180,14 @@
     .vol-role:last-child { border-bottom:0; padding-bottom:0; }
     .vol-role-copy h4 { color:var(--white); font-family:'Josefin Sans',sans-serif; font-size:.82rem; letter-spacing:.04em; margin:0 0 4px; }
     .vol-role-copy p { color:var(--gray-mid); font-size:.77rem; line-height:1.45; margin:0; }
+    .vol-taken { color:rgba(203,213,225,.66); font-size:.68rem; line-height:1.55; margin-top:8px; }
+    .vol-taken-label { color:#e6c979; display:block; font-family:'Josefin Sans',sans-serif; font-size:.59rem; font-weight:700; letter-spacing:.07em; margin-bottom:2px; text-transform:uppercase; }
+    .vol-taken-person { display:block; }
+    .vol-taken-person small { color:rgba(203,213,225,.52); font-size:.65rem; }
     .vol-role-action { display:flex; flex-direction:column; align-items:flex-end; gap:7px; flex-shrink:0; }
     .vol-count { color:#9bb9e8; font-family:'Josefin Sans',sans-serif; font-size:.61rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    .vol-progress { background:rgba(255,255,255,.1); border-radius:99px; display:block; height:4px; overflow:hidden; width:112px; }
+    .vol-progress span { background:var(--gold); border-radius:99px; display:block; height:100%; transition:width .25s ease; }
     .vol-signup-btn { background:var(--gold); border:0; border-radius:4px; color:#081833; cursor:pointer; font-family:'Josefin Sans',sans-serif; font-size:.66rem; font-weight:700; letter-spacing:.09em; padding:8px 13px; text-transform:uppercase; transition:transform .2s,background .2s; }
     .vol-signup-btn:hover { background:#f2cd63; transform:translateY(-1px); }
     .vol-signup-btn:disabled { background:rgba(255,255,255,.13); color:var(--gray-mid); cursor:not-allowed; }
@@ -378,7 +385,8 @@
       <p class="section-label" style="justify-content:center;">Families Make Tournament Days Possible</p>
       <h2 class="section-title">Tournament Volunteer Signup</h2>
     </div>
-    <p class="volunteer-intro">Help our debaters have a great tournament day. Choose an open role below—your contact information goes directly to the coaching staff and is never displayed publicly.</p>
+    <p class="volunteer-intro">Help our debaters have a great tournament day. Choose an open role below—parent and debater names are shown so families can see who is covering each role.</p>
+    <p class="volunteer-privacy">Open and filled totals, parent names, and debater names are public. Email, phone, and private notes go only to the coaching staff.</p>
     <div id="volunteer-events" class="volunteer-events" aria-live="polite"></div>
   </div>
 </section>

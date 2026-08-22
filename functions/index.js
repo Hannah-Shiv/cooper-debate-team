@@ -213,6 +213,15 @@ function publicVolunteerEvent(id, data) {
   };
 }
 
+function publicVolunteerSignup(data) {
+  return {
+    parentName:  cleanText(data.parentName, 120),
+    studentName: cleanText(data.studentName, 120),
+    roleId:      cleanText(data.roleId, 80),
+    roleLabel:   cleanText(data.roleLabel, 100),
+  };
+}
+
 async function verifyTurnstile(token) {
   const secret = turnstileSecret.value();
   if (!secret) {
@@ -242,11 +251,22 @@ exports.publicVolunteerSignup = onRequest(
         const snap = await db.collection("volunteer_events")
           .where("published", "==", true)
           .get();
-        const events = snap.docs
-          .map(doc => publicVolunteerEvent(doc.id, doc.data()))
+        const events = await Promise.all(snap.docs.map(async doc => {
+          const event = publicVolunteerEvent(doc.id, doc.data());
+          const signupSnap = await db.collection("volunteer_signups")
+            .where("eventId", "==", doc.id)
+            .get();
+          return {
+            ...event,
+            signups: signupSnap.docs
+              .map(signup => publicVolunteerSignup(signup.data()))
+              .filter(signup => signup.parentName && signup.roleId),
+          };
+        }));
+        const publishedEvents = events
           .filter(event => event.title && event.roles.length)
           .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-        res.status(200).json({ events });
+        res.status(200).json({ events: publishedEvents });
       } catch (error) {
         console.error("publicVolunteerSignup GET failed:", error);
         res.status(500).json({ error: "Volunteer opportunities are temporarily unavailable." });

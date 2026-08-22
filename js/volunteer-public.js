@@ -42,16 +42,27 @@
 
     root.innerHTML = volunteerEvents.map(event => {
       const roles = event.roles.map(role => {
-        const remaining = Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0));
+        const capacity = Number(role.capacity || 0);
+        const filled = Math.min(capacity, Number(role.taken || 0));
+        const remaining = Math.max(0, capacity - filled);
         const full = remaining === 0;
+        const signups = Array.isArray(event.signups)
+          ? event.signups.filter(signup => signup.roleId === role.id)
+          : [];
+        const signupNames = signups.map(signup => `
+          <span class="vol-taken-person">
+            ${escapeHtml(signup.parentName)}${signup.studentName ? ` <small>· ${escapeHtml(signup.studentName)}</small>` : ""}
+          </span>`).join("");
         return `
           <div class="vol-role${full ? " is-full" : ""}">
             <div class="vol-role-copy">
               <h4>${escapeHtml(role.label)}</h4>
               ${role.description ? `<p>${escapeHtml(role.description)}</p>` : ""}
+              <div class="vol-taken">${signupNames ? `<span class="vol-taken-label">Signed up:</span>${signupNames}` : "No signups yet"}</div>
             </div>
             <div class="vol-role-action">
-              <span class="vol-count">${full ? "Full" : `${remaining} ${remaining === 1 ? "spot" : "spots"} open`}</span>
+              <span class="vol-count">${filled} / ${capacity} filled · ${remaining} open</span>
+              <span class="vol-progress" aria-label="${filled} of ${capacity} spots filled"><span style="width:${capacity ? (filled / capacity) * 100 : 0}%"></span></span>
               <button type="button" class="vol-signup-btn" ${full ? "disabled" : ""}
                 data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(role.id)}">
                 ${full ? "Filled" : "Sign Up"}
