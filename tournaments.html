@@ -170,12 +170,24 @@
     .tourney-section-nav .section-wrap { display:flex; gap:4px; overflow-x:auto; padding-top:10px; padding-bottom:10px; }
     .tourney-section-nav button {
       flex:1; min-width:max-content; padding:9px 15px; border:1px solid transparent; border-radius:5px;
-      color:var(--gray-mid); font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      color:var(--tab-color); font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
       letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:all .2s;
-      background:transparent; cursor:pointer;
+      background:var(--tab-soft); border-color:var(--tab-border); cursor:pointer;
+      box-shadow:0 2px 8px rgba(0,0,0,.12); min-height:42px;
     }
-    .tourney-section-nav button:hover, .tourney-section-nav button:focus { border-color:rgba(212,160,23,.45); color:var(--gold); background:rgba(212,160,23,.09); outline:none; }
-    .tourney-section-nav button[aria-selected="true"] { color:var(--gold); border-color:rgba(212,160,23,.3); background:rgba(212,160,23,.06); }
+    .tourney-section-nav button:nth-child(1) { --tab-color:#f4c84e; --tab-soft:rgba(244,200,78,.11); --tab-border:rgba(244,200,78,.34); --tab-active:#f4c84e; }
+    .tourney-section-nav button:nth-child(2) { --tab-color:#8fc5ff; --tab-soft:rgba(82,156,232,.13); --tab-border:rgba(82,156,232,.38); --tab-active:#8fc5ff; }
+    .tourney-section-nav button:nth-child(3) { --tab-color:#70e0bd; --tab-soft:rgba(55,190,151,.13); --tab-border:rgba(55,190,151,.4); --tab-active:#70e0bd; }
+    .tourney-section-nav button:nth-child(4) { --tab-color:#ddb0f2; --tab-soft:rgba(184,113,220,.14); --tab-border:rgba(184,113,220,.4); --tab-active:#ddb0f2; }
+    .tourney-section-nav button:hover, .tourney-section-nav button:focus-visible {
+      border-color:var(--tab-active); background:var(--tab-soft); outline:none;
+      transform:translateY(-1px); box-shadow:0 4px 12px rgba(0,0,0,.2);
+    }
+    .tourney-section-nav button[aria-selected="true"] {
+      color:#08172f; border-color:var(--tab-active); background:var(--tab-active);
+      box-shadow:0 4px 14px rgba(0,0,0,.28); transform:translateY(-1px);
+    }
+    .tourney-section-nav button:active { transform:translateY(0); }
     .tourney-tab-panel { display:none; }
     .tourney-tab-panel.is-active { display:block; }
 
