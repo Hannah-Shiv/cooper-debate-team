@@ -10,6 +10,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
+  <script>
+    /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
+    (function () {
+      var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "parent-info"];
+      var incomingTab = window.location.hash.slice(1);
+      if (validTabs.indexOf(incomingTab) !== -1) {
+        window.__TOURNEY_INITIAL_TAB = incomingTab;
+        window.history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+    }());
+  </script>
   <style>
     html { font-size:18px !important; }
 
@@ -163,7 +174,9 @@
       letter-spacing:0.08em; text-align:center; text-decoration:none; text-transform:uppercase; transition:all .2s;
     }
     .tourney-section-nav a:hover, .tourney-section-nav a:focus { border-color:rgba(212,160,23,.45); color:var(--gold); background:rgba(212,160,23,.09); outline:none; }
-    .tourney-section-nav a:first-child { color:var(--gold); border-color:rgba(212,160,23,.3); }
+    .tourney-section-nav a[aria-selected="true"] { color:var(--gold); border-color:rgba(212,160,23,.3); background:rgba(212,160,23,.06); }
+    .tourney-tab-panel { display:none; }
+    .tourney-tab-panel.is-active { display:block; }
 
     /* ── Public volunteer signup ─────────────────────────────── */
     .volunteer-section { background:linear-gradient(130deg,#102657 0%,var(--navy-dark) 70%); }
@@ -272,15 +285,15 @@
 
   <nav class="tourney-section-nav" aria-label="Tournament page sections">
     <div class="section-wrap">
-      <a href="#tournament-overview">Overview</a>
-      <a href="#calendar-results">Calendar &amp; Results</a>
-      <a href="#volunteer-signup">Volunteer Signup</a>
-      <a href="#parent-info">Parent Guide</a>
+      <a id="tourney-tab-overview" href="#tournament-overview" role="tab" aria-controls="tournament-overview" aria-selected="true">Overview</a>
+      <a id="tourney-tab-calendar" href="#calendar-results" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1">Calendar &amp; Results</a>
+      <a id="tourney-tab-volunteer" href="#volunteer-signup" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1">Volunteer Signup</a>
+      <a id="tourney-tab-parent" href="#parent-info" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1">Parent Guide</a>
     </div>
   </nav>
 
 <!-- CURRENT RESOLUTION BANNER -->
-<section id="tournament-overview" class="resolution-banner">
+ <section id="tournament-overview" class="resolution-banner tourney-tab-panel is-active" role="tabpanel" aria-labelledby="tourney-tab-overview" data-tourney-panel>
   <div class="section-wrap">
     <div class="resolution-card">
       <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
@@ -299,7 +312,7 @@
 </section>
 
 <!-- CALENDAR + LAST SEASON (tabbed) -->
-<section id="calendar-results" class="section" style="background:var(--navy-dark);">
+ <section id="calendar-results" class="section tourney-tab-panel" role="tabpanel" aria-labelledby="tourney-tab-calendar" data-tourney-panel>
   <div class="section-wrap">
     <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
@@ -379,7 +392,7 @@
 </section>
 
 <!-- VOLUNTEER SIGNUP -->
-<section id="volunteer-signup" class="section volunteer-section">
+ <section id="volunteer-signup" class="section volunteer-section tourney-tab-panel" role="tabpanel" aria-labelledby="tourney-tab-volunteer" data-tourney-panel>
   <div class="section-wrap">
     <div style="text-align:center;margin-bottom:14px;">
       <p class="section-label" style="justify-content:center;">Families Make Tournament Days Possible</p>
@@ -392,7 +405,7 @@
 </section>
 
 <!-- PARENT INFO -->
-<section id="parent-info" class="section" style="background:var(--navy-dark);">
+ <section id="parent-info" class="section tourney-tab-panel" style="background:var(--navy-dark);" role="tabpanel" aria-labelledby="tourney-tab-parent" data-tourney-panel>
   <div class="section-wrap">
     <div style="text-align:center;margin-bottom:48px;">
       <p class="section-label" style="justify-content:center;">For Families</p>
@@ -706,6 +719,68 @@ function renderLastSeason(tourns) {
   document.getElementById('last-season-table-wrap').style.display = '';
   lsRender();
 }
+
+/* ── Tourneys page tabs ────────────────────────────────────── */
+(function initTournamentTabs() {
+  const tabs = Array.from(document.querySelectorAll('.tourney-section-nav [role="tab"]'));
+  const panels = Array.from(document.querySelectorAll('[data-tourney-panel]'));
+  const panelIds = new Set(panels.map(panel => panel.id));
+  if (!tabs.length || !panels.length) return;
+
+  function tabIdFromHash() {
+    const hash = window.location.hash.slice(1);
+    return panelIds.has(hash) ? hash : null;
+  }
+
+  function updateHash(id, replace) {
+    const url = new URL(window.location.href);
+    url.hash = id;
+    window.history[replace ? 'replaceState' : 'pushState']({}, '', url);
+  }
+
+  function activateTab(id, options = {}) {
+    const activeId = panelIds.has(id) ? id : panels[0].id;
+    tabs.forEach(tab => {
+      const selected = tab.getAttribute('aria-controls') === activeId;
+      tab.setAttribute('aria-selected', String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+    });
+    panels.forEach(panel => {
+      const selected = panel.id === activeId;
+      panel.classList.toggle('is-active', selected);
+      panel.hidden = !selected;
+    });
+    if (options.updateUrl) updateHash(activeId, false);
+    if (options.focus) {
+      const activeTab = tabs.find(tab => tab.getAttribute('aria-controls') === activeId);
+      if (activeTab) activeTab.focus({ preventScroll: true });
+    }
+  }
+
+  tabs.forEach((tab, index) => {
+    tab.addEventListener('click', event => {
+      event.preventDefault();
+      activateTab(tab.getAttribute('aria-controls'), { updateUrl: true, focus: true });
+    });
+    tab.addEventListener('keydown', event => {
+      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+      event.preventDefault();
+      const nextIndex = event.key === 'Home'
+        ? 0
+        : event.key === 'End'
+          ? tabs.length - 1
+          : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+      activateTab(tabs[nextIndex].getAttribute('aria-controls'), { updateUrl: true, focus: true });
+    });
+  });
+
+  window.addEventListener('popstate', () => activateTab(tabIdFromHash()));
+  window.addEventListener('hashchange', () => activateTab(tabIdFromHash()));
+
+  const initialId = window.__TOURNEY_INITIAL_TAB || tabIdFromHash() || panels[0].id;
+  activateTab(initialId);
+  if (window.__TOURNEY_INITIAL_TAB) updateHash(initialId, true);
+}());
 
 /* ── Init: default to Last Season until this season has data ── */
 document.addEventListener('DOMContentLoaded', function() {
