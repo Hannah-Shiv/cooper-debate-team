@@ -59,5 +59,23 @@ service cloud.firestore {
       allow write: if false;  // Cloud Functions use admin SDK — rules don't apply
     }
 
+    // Volunteer opportunities are published to parents through a Cloud
+    // Function, which returns only safe event details and remaining openings.
+    // Coaches manage events directly; private signup records are never
+    // readable from the public site.
+    match /volunteer_events/{docId} {
+      allow read:  if isCoach();
+      allow write: if false;  // Coach mutations go through a checked transaction
+    }
+
+    match /volunteer_signups/{docId} {
+      allow read:  if isCoach();
+      allow write: if false;  // Cloud Function validates public submissions
+    }
+
+    match /volunteer_signup_keys/{docId} {
+      allow read, write: if false;  // Cloud Function only
+    }
+
   }
 }
