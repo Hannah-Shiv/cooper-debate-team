@@ -151,10 +151,74 @@
     .parent-card-title { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.88rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); margin-bottom:8px; }
     .parent-card-text { font-size:0.85rem; color:var(--gray-mid); line-height:1.7; }
 
+    /* ── Tourneys in-page navigation ─────────────────────────── */
+    .tourney-section-nav {
+      position:sticky; top:0; z-index:20; background:rgba(5,17,40,0.94);
+      border-bottom:1px solid rgba(212,160,23,0.2); backdrop-filter:blur(12px);
+    }
+    .tourney-section-nav .section-wrap { display:flex; gap:4px; overflow-x:auto; padding-top:10px; padding-bottom:10px; }
+    .tourney-section-nav a {
+      flex:1; min-width:max-content; padding:9px 15px; border:1px solid transparent; border-radius:5px;
+      color:var(--gray-mid); font-family:'Josefin Sans',sans-serif; font-size:0.68rem; font-weight:700;
+      letter-spacing:0.08em; text-align:center; text-decoration:none; text-transform:uppercase; transition:all .2s;
+    }
+    .tourney-section-nav a:hover, .tourney-section-nav a:focus { border-color:rgba(212,160,23,.45); color:var(--gold); background:rgba(212,160,23,.09); outline:none; }
+    .tourney-section-nav a:first-child { color:var(--gold); border-color:rgba(212,160,23,.3); }
+
+    /* ── Public volunteer signup ─────────────────────────────── */
+    .volunteer-section { background:linear-gradient(130deg,#102657 0%,var(--navy-dark) 70%); }
+    .volunteer-intro { max-width:660px; margin:0 auto 32px; text-align:center; color:var(--gray-mid); font-size:.92rem; line-height:1.75; }
+    .volunteer-events { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+    .vol-event-card { border:1px solid rgba(212,160,23,.22); border-radius:12px; padding:26px; background:rgba(7,24,56,.75); box-shadow:0 12px 28px rgba(0,0,0,.18); }
+    .vol-event-date { color:var(--gold); font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; margin-bottom:8px; }
+    .vol-event-card h3 { color:var(--white); font-family:'Cormorant Garamond',serif; font-size:1.7rem; margin:0 0 8px; }
+    .vol-event-location,.vol-event-details,.vol-deadline { color:var(--gray-mid); font-size:.83rem; line-height:1.65; margin:5px 0; }
+    .vol-deadline { color:#e6c979; font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-top:13px; }
+    .vol-roles { border-top:1px solid rgba(255,255,255,.09); margin-top:18px; padding-top:5px; }
+    .vol-role { display:flex; align-items:center; justify-content:space-between; gap:16px; border-bottom:1px solid rgba(255,255,255,.08); padding:15px 0; }
+    .vol-role:last-child { border-bottom:0; padding-bottom:0; }
+    .vol-role-copy h4 { color:var(--white); font-family:'Josefin Sans',sans-serif; font-size:.82rem; letter-spacing:.04em; margin:0 0 4px; }
+    .vol-role-copy p { color:var(--gray-mid); font-size:.77rem; line-height:1.45; margin:0; }
+    .vol-role-action { display:flex; flex-direction:column; align-items:flex-end; gap:7px; flex-shrink:0; }
+    .vol-count { color:#9bb9e8; font-family:'Josefin Sans',sans-serif; font-size:.61rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    .vol-signup-btn { background:var(--gold); border:0; border-radius:4px; color:#081833; cursor:pointer; font-family:'Josefin Sans',sans-serif; font-size:.66rem; font-weight:700; letter-spacing:.09em; padding:8px 13px; text-transform:uppercase; transition:transform .2s,background .2s; }
+    .vol-signup-btn:hover { background:#f2cd63; transform:translateY(-1px); }
+    .vol-signup-btn:disabled { background:rgba(255,255,255,.13); color:var(--gray-mid); cursor:not-allowed; }
+    .vol-role.is-full .vol-count { color:#d4a6a6; }
+    .vol-loading,.vol-empty { grid-column:1/-1; border:1px dashed rgba(212,160,23,.28); border-radius:10px; color:var(--gray-mid); padding:36px 24px; text-align:center; }
+    .vol-empty span { display:block; font-size:1.9rem; margin-bottom:10px; }
+    .vol-empty h3 { color:var(--white); font-family:'Cormorant Garamond',serif; font-size:1.5rem; margin:0 0 8px; }
+    .vol-empty p { font-size:.84rem; line-height:1.65; margin:0 auto; max-width:480px; }
+    .vol-empty a { color:var(--gold); }
+    .volunteer-modal { align-items:center; background:rgba(2,9,24,.78); display:none; inset:0; justify-content:center; padding:20px; position:fixed; z-index:1000; }
+    .vol-modal-card { background:#0c214b; border:1px solid rgba(232,184,75,.55); border-radius:12px; box-shadow:0 24px 70px rgba(0,0,0,.55); max-height:calc(100vh - 40px); max-width:570px; overflow:auto; padding:30px; position:relative; width:100%; }
+    .vol-modal-close { background:none; border:0; color:var(--gray-mid); cursor:pointer; font-size:1.6rem; line-height:1; padding:5px; position:absolute; right:16px; top:12px; }
+    .vol-modal-kicker { color:var(--gold); font-family:'Josefin Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin:0 0 8px; }
+    .vol-modal-card h2 { color:var(--white); font-family:'Cormorant Garamond',serif; font-size:2rem; line-height:1.1; margin:0 30px 7px 0; }
+    .vol-modal-context { color:var(--gray-mid); font-size:.8rem; line-height:1.5; margin:0 0 21px; }
+    .vol-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+    .vol-form-field { display:flex; flex-direction:column; gap:6px; }
+    .vol-form-field.full { grid-column:1/-1; }
+    .vol-form-field label { color:#d4deef; font-family:'Josefin Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
+    .vol-form-field input,.vol-form-field textarea { background:rgba(2,12,32,.54); border:1px solid rgba(255,255,255,.15); border-radius:5px; color:white; font:inherit; font-size:.84rem; padding:11px; }
+    .vol-form-field textarea { min-height:78px; resize:vertical; }
+    .vol-form-field input:focus,.vol-form-field textarea:focus { border-color:var(--gold); outline:0; }
+    .vol-honeypot { height:0; left:-10000px; overflow:hidden; position:absolute; width:0; }
+    .vol-form-status { font-size:.8rem; line-height:1.5; margin:14px 0 0; min-height:1.2em; }
+    .vol-form-status.is-error { color:#ffb3b3; }
+    .vol-form-status.is-success { color:#9ee5b1; }
+    .vol-modal-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:18px; }
+    .vol-cancel,.vol-submit { border-radius:4px; cursor:pointer; font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.08em; padding:11px 17px; text-transform:uppercase; }
+    .vol-cancel { background:transparent; border:1px solid rgba(255,255,255,.25); color:var(--gray-mid); }
+    .vol-submit { background:var(--gold); border:1px solid var(--gold); color:#081833; }
+    .vol-submit:disabled { cursor:wait; opacity:.7; }
+    body.vol-modal-open { overflow:hidden; }
+
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:900px){.two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}}
-    @media(max-width:600px){.three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}}
+    @media(max-width:700px){.volunteer-events{grid-template-columns:1fr;}.tourney-section-nav .section-wrap{padding-left:16px;padding-right:16px;}.tourney-section-nav a{flex:auto;}.vol-role{align-items:flex-start;flex-direction:column;}.vol-role-action{align-items:flex-start;}.vol-form-grid{grid-template-columns:1fr;}.vol-form-field.full{grid-column:auto;}}
+    @media(max-width:600px){.three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}.vol-modal-card{padding:25px 20px;}}
   </style>
 </head>
 <body>
@@ -199,8 +263,17 @@
   </div>
 </div>
 
+  <nav class="tourney-section-nav" aria-label="Tournament page sections">
+    <div class="section-wrap">
+      <a href="#tournament-overview">Overview</a>
+      <a href="#calendar-results">Calendar &amp; Results</a>
+      <a href="#volunteer-signup">Volunteer Signup</a>
+      <a href="#parent-info">Parent Guide</a>
+    </div>
+  </nav>
+
 <!-- CURRENT RESOLUTION BANNER -->
-<section class="resolution-banner">
+<section id="tournament-overview" class="resolution-banner">
   <div class="section-wrap">
     <div class="resolution-card">
       <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
@@ -219,7 +292,7 @@
 </section>
 
 <!-- CALENDAR + LAST SEASON (tabbed) -->
-<section class="section" style="background:var(--navy-dark);">
+<section id="calendar-results" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
@@ -298,6 +371,18 @@
   </div>
 </section>
 
+<!-- VOLUNTEER SIGNUP -->
+<section id="volunteer-signup" class="section volunteer-section">
+  <div class="section-wrap">
+    <div style="text-align:center;margin-bottom:14px;">
+      <p class="section-label" style="justify-content:center;">Families Make Tournament Days Possible</p>
+      <h2 class="section-title">Tournament Volunteer Signup</h2>
+    </div>
+    <p class="volunteer-intro">Help our debaters have a great tournament day. Choose an open role below—your contact information goes directly to the coaching staff and is never displayed publicly.</p>
+    <div id="volunteer-events" class="volunteer-events" aria-live="polite"></div>
+  </div>
+</section>
+
 <!-- PARENT INFO -->
 <section id="parent-info" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
@@ -346,7 +431,7 @@
     <div class="footer-grid">
       <div><div class="footer-brand-name">Cooper Debate Team</div><div class="footer-brand-school">Cooper Middle School · McLean, VA</div><p class="footer-tagline">"Speak · Reason · Lead"</p></div>
       <div><div class="footer-col-title">Navigate</div><ul class="footer-links"><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="awards.html">Awards</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="announcements.html">Announcements</a></li></ul></div>
-      <div><div class="footer-col-title">Tournaments</div><ul class="footer-links"><li><a href="tournaments.html">Calendar</a></li><li><a href="tournaments.html#results">Results</a></li><li><a href="tournaments.html#parent-info">Parent Info</a></li></ul></div>
+      <div><div class="footer-col-title">Tournaments</div><ul class="footer-links"><li><a href="tournaments.html#calendar-results">Calendar</a></li><li><a href="tournaments.html#calendar-results">Results</a></li><li><a href="tournaments.html#volunteer-signup">Volunteer Signup</a></li><li><a href="tournaments.html#parent-info">Parent Info</a></li></ul></div>
       <div><div class="footer-col-title">Contact</div><ul class="footer-links"><li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li><li><a href="mailto:CooperDebateTeam@gmail.com">CooperDebateTeam@gmail.com</a></li></ul></div>
     </div>
     <div class="footer-bottom">
@@ -355,6 +440,48 @@
     </div>
   </div>
 </footer>
+<div id="volunteer-modal" class="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="vol-modal-title">
+  <div class="vol-modal-card">
+    <button class="vol-modal-close" type="button" aria-label="Close signup form" data-close-volunteer-modal>&times;</button>
+    <p class="vol-modal-kicker">Tournament Volunteer</p>
+    <h2 id="vol-modal-title">Volunteer Signup</h2>
+    <p id="vol-modal-context" class="vol-modal-context"></p>
+    <form id="volunteer-signup-form">
+      <div class="vol-form-grid">
+        <div class="vol-form-field">
+          <label for="vol-parent-name">Parent / guardian name</label>
+          <input id="vol-parent-name" type="text" autocomplete="name" maxlength="120" required>
+        </div>
+        <div class="vol-form-field">
+          <label for="vol-student-name">Debater's name <span style="opacity:.65;">(optional)</span></label>
+          <input id="vol-student-name" type="text" maxlength="120">
+        </div>
+        <div class="vol-form-field">
+          <label for="vol-email">Email</label>
+          <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
+        </div>
+        <div class="vol-form-field">
+          <label for="vol-phone">Phone</label>
+          <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
+        </div>
+        <div class="vol-form-field full">
+          <label for="vol-notes">Notes for the coach <span style="opacity:.65;">(optional)</span></label>
+          <textarea id="vol-notes" maxlength="600" placeholder="Availability, questions, or anything the coach should know"></textarea>
+        </div>
+      </div>
+      <div class="vol-honeypot" aria-hidden="true">
+        <label for="vol-company">Company</label>
+        <input id="vol-company" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <div id="vol-turnstile" style="margin-top:17px;"></div>
+      <p id="vol-form-status" class="vol-form-status" role="status"></p>
+      <div class="vol-modal-actions">
+        <button class="vol-cancel" type="button" data-close-volunteer-modal>Cancel</button>
+        <button id="vol-submit" class="vol-submit" type="submit">Confirm Signup</button>
+      </div>
+    </form>
+  </div>
+</div>
 <script>
 /* ── Firestore REST (no SDK, no auth required) ────────────── */
 const _FS_BASE = 'https://firestore.googleapis.com/v1/projects/cooper-debate-team/databases/(default)/documents';
@@ -579,5 +706,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script src="data/turnstile-config.js?v=2"></script>
+<script src="js/volunteer-public.js?v=2"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 </body>
 </html>
