@@ -236,7 +236,7 @@
     .vol-empty a { color:var(--gold); }
     .volunteer-modal { align-items:center; background:rgba(2,9,24,.78); display:none; inset:0; justify-content:center; padding:20px; position:fixed; z-index:1000; }
     .vol-modal-card { background:#0c214b; border:1px solid rgba(232,184,75,.55); border-radius:12px; box-shadow:0 24px 70px rgba(0,0,0,.55); max-height:calc(100vh - 40px); max-width:570px; overflow:auto; padding:30px; position:relative; width:100%; }
-    .vol-judge-modal { max-width:900px; }
+    .vol-judge-modal { max-width:1060px; }
     .vol-modal-close { background:none; border:0; color:var(--gray-mid); cursor:pointer; font-size:1.6rem; line-height:1; padding:5px; position:absolute; right:16px; top:12px; }
     .vol-modal-kicker { color:var(--gold); font-family:'Josefin Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; margin:0 0 8px; }
     .vol-modal-card h2 { color:var(--white); font-family:'Cormorant Garamond',serif; font-size:2rem; line-height:1.1; margin:0 30px 7px 0; }
@@ -248,23 +248,50 @@
     .vol-stepper .is-active { color:#f0c85b; }
     .vol-stepper .is-active b { border-color:#e8b84b; color:#e8b84b; }
     .vol-stepper .is-current b { background:#e8b84b; color:#091934; }
+    .vol-choose-layout { align-items:start; display:grid; gap:16px; grid-template-columns:minmax(0,1fr) 275px; }
+    .vol-choose-main { min-width:0; }
+    .vol-signup-sidebar { display:flex; flex-direction:column; gap:12px; }
     .vol-tournament-brief { background:linear-gradient(135deg,rgba(27,70,135,.3),rgba(7,24,56,.55)); border:1px solid rgba(112,173,250,.25); border-radius:10px; margin-bottom:18px; padding:19px; }
     .vol-brief-top { align-items:flex-start; border-bottom:1px solid rgba(255,255,255,.1); display:flex; gap:13px; justify-content:space-between; margin-bottom:15px; padding-bottom:13px; }
     .vol-brief-top h3 { color:#fff; font:700 1.35rem 'Cormorant Garamond',serif; margin:0; }
+    .vol-brief-heading { align-items:flex-start; border-bottom:1px solid rgba(255,255,255,.1); display:flex; gap:13px; justify-content:space-between; margin-bottom:15px; padding-bottom:13px; }
+    .vol-brief-heading > div > span { color:#f0c85b; display:block; font:700 .6rem 'Josefin Sans',sans-serif; letter-spacing:.09em; margin-bottom:5px; text-transform:uppercase; }
+    .vol-brief-heading h3 { color:#fff; font:700 1.5rem 'Cormorant Garamond',serif; margin:0; }
     .vol-brief-role { background:rgba(232,184,75,.16); border:1px solid rgba(232,184,75,.3); border-radius:4px; color:#f0cb65; font:700 .59rem 'Josefin Sans',sans-serif; letter-spacing:.08em; padding:5px 7px; text-transform:uppercase; white-space:nowrap; }
+    .vol-brief-grid { display:grid; gap:19px; grid-template-columns:minmax(0,1fr) minmax(235px,.95fr); }
     .vol-brief-facts { display:grid; gap:10px 18px; grid-template-columns:repeat(2,minmax(0,1fr)); }
     .vol-brief-facts .vol-event-fact { border-left-color:#77b5ff; }
-    .vol-brief-resolution { border-top:1px solid rgba(255,255,255,.1); margin-top:15px; padding-top:14px; }
+    .vol-brief-debate { border-left:1px solid rgba(255,255,255,.1); padding-left:19px; }
+    .vol-brief-format { margin-bottom:13px; }
+    .vol-brief-format span { color:#9dc9ff; display:block; font:700 .58rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin-bottom:4px; text-transform:uppercase; }
+    .vol-brief-format strong { color:#fff; display:block; font-size:.83rem; font-weight:600; line-height:1.4; }
+    .vol-brief-resolution { margin-top:13px; }
     .vol-brief-resolution span { color:#f0c85b; display:block; font:700 .6rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin-bottom:5px; text-transform:uppercase; }
     .vol-brief-resolution p { color:#d8e6fb; font-size:.78rem; line-height:1.55; margin:0; }
     .vol-brief-callout,.vol-availability-tip,.vol-secure-note,.vol-public-note { border-radius:6px; font-size:.75rem; line-height:1.55; margin-top:14px; padding:11px 12px; }
     .vol-brief-callout { background:rgba(35,181,135,.12); border:1px solid rgba(74,205,160,.22); color:#beeada; }
+    .vol-brief-callout strong { color:#78e1bc; display:block; font:700 .58rem 'Josefin Sans',sans-serif; letter-spacing:.07em; margin-bottom:5px; text-transform:uppercase; }
+    .vol-invitation-link { color:#a8d1ff; display:inline-block; font:700 .7rem 'Josefin Sans',sans-serif; letter-spacing:.04em; margin-top:13px; text-decoration:none; }
+    .vol-invitation-link:hover { color:#f0c85b; text-decoration:underline; }
     .vol-availability-card { border:1px solid rgba(232,184,75,.34); border-radius:10px; margin:0; padding:19px; }
     .vol-availability-card legend { color:#f0c85b; font:700 .75rem 'Josefin Sans',sans-serif; letter-spacing:.08em; padding:0 7px; text-transform:uppercase; }
     .vol-availability-card > p { color:#a9b8cf; font-size:.78rem; line-height:1.55; margin:0 0 15px; }
     .vol-time-grid { display:grid; gap:13px; grid-template-columns:1fr 1fr; }
     .vol-time-grid input { color-scheme:dark; font-size:1rem !important; }
     .vol-availability-tip { background:rgba(53,120,205,.12); border:1px solid rgba(97,158,240,.2); color:#b8d7ff; }
+    .vol-side-card { background:rgba(2,12,32,.44); border:1px solid rgba(255,255,255,.15); border-radius:9px; padding:15px; }
+    .vol-side-card h4 { color:#f0c85b; font:700 .67rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin:0 0 12px; text-transform:uppercase; }
+    .vol-side-row { border-bottom:1px solid rgba(255,255,255,.08); padding:0 0 10px; margin:0 0 10px; }
+    .vol-side-row span { color:#8da7cd; display:block; font:700 .55rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin-bottom:4px; text-transform:uppercase; }
+    .vol-side-row strong { color:#e4edfb; display:block; font-size:.75rem; font-weight:500; line-height:1.45; }
+    .vol-side-reassurance { background:rgba(35,181,135,.13); border:1px solid rgba(74,205,160,.22); border-radius:5px; color:#bfe9d9; font-size:.68rem; line-height:1.5; padding:9px; }
+    .vol-expectations { color:#d4e2f8; display:grid; font-size:.73rem; gap:9px; line-height:1.45; list-style:none; margin:0; padding:0; }
+    .vol-expectations li { padding-left:17px; position:relative; }
+    .vol-expectations li::before { color:#8fd4ff; content:"◷"; font-size:.78rem; left:0; position:absolute; top:-1px; }
+    .vol-side-card p { color:#d7e5fa; font-size:.73rem; line-height:1.5; margin:5px 0; }
+    .vol-side-card .vol-contact-name { color:#fff; font-weight:600; margin-top:0; }
+    .vol-side-card a { color:#9bcaff; text-decoration:none; }
+    .vol-side-card a:hover { color:#f0c85b; text-decoration:underline; }
     .vol-review-card { display:grid; gap:7px 18px; grid-template-columns:140px 1fr; background:rgba(2,12,32,.42); border:1px solid rgba(232,184,75,.28); border-radius:10px; padding:18px; }
     .vol-review-card span { color:#9bb9e8; font:700 .6rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
     .vol-review-card strong { color:#fff; font-size:.8rem; font-weight:400; line-height:1.45; }
@@ -303,7 +330,8 @@
       .vol-role-action{align-items:flex-start;}
       .vol-form-grid{grid-template-columns:1fr;}
       .vol-form-field.full{grid-column:auto;}
-      .vol-event-facts,.vol-brief-facts,.vol-time-grid{grid-template-columns:1fr;}
+      .vol-event-facts,.vol-brief-facts,.vol-time-grid,.vol-brief-grid,.vol-choose-layout{grid-template-columns:1fr;}
+      .vol-brief-debate{border-left:0;border-top:1px solid rgba(255,255,255,.1);padding-left:0;padding-top:15px;}
       .vol-stepper span{font-size:.52rem;}
       .vol-stepper span:not(:last-child)::after{margin:0 5px;}
     }
@@ -543,22 +571,27 @@
     </div>
     <form id="volunteer-signup-form">
       <section data-vol-step="1">
-        <div id="vol-tournament-brief" class="vol-tournament-brief"></div>
-        <fieldset class="vol-availability-card">
-          <legend>What hours are you available to judge?</legend>
-          <p>Select the exact start and end time that works for you. Coaches will assign rounds within this window.</p>
-          <div class="vol-time-grid">
-            <div class="vol-form-field">
-              <label for="vol-availability-start">Available from</label>
-              <input id="vol-availability-start" type="time" required>
-            </div>
-            <div class="vol-form-field">
-              <label for="vol-availability-end">Available until</label>
-              <input id="vol-availability-end" type="time" required>
-            </div>
+        <div class="vol-choose-layout">
+          <div class="vol-choose-main">
+            <div id="vol-tournament-brief" class="vol-tournament-brief"></div>
+            <fieldset class="vol-availability-card">
+              <legend>What hours are you available to judge?</legend>
+              <p>Select the exact start and end time that works for you. Coaches will assign rounds within this window.</p>
+              <div class="vol-time-grid">
+                <div class="vol-form-field">
+                  <label for="vol-availability-start">Available from</label>
+                  <input id="vol-availability-start" type="time" required>
+                </div>
+                <div class="vol-form-field">
+                  <label for="vol-availability-end">Available until</label>
+                  <input id="vol-availability-end" type="time" required>
+                </div>
+              </div>
+              <div class="vol-availability-tip">Choose the exact window that works for you, such as 9:00 AM–12:30 PM or 9:00 AM–5:00 PM. We will schedule rounds within those hours.</div>
+            </fieldset>
           </div>
-          <div class="vol-availability-tip">Your availability can be any window during the tournament day—for example, 9:00 AM–12:30 PM or 9:00 AM–5:00 PM.</div>
-        </fieldset>
+          <aside id="vol-signup-sidebar" class="vol-signup-sidebar" aria-label="Tournament information"></aside>
+        </div>
         <div class="vol-modal-actions">
           <button class="vol-cancel" type="button" data-close-volunteer-modal>Cancel</button>
           <button class="vol-submit" type="button" data-vol-next="2">Continue →</button>
@@ -907,7 +940,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=4"></script>
+<script src="js/volunteer-public.js?v=5"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 </body>
 </html>

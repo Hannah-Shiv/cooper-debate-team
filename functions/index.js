@@ -214,10 +214,16 @@ function publicVolunteerEvent(id, data) {
     address:         cleanText(data.address, 240),
     startTime:       cleanTime(data.startTime),
     endTime:         cleanTime(data.endTime),
+    mealInfo:        cleanText(data.mealInfo, 180),
     debateFormat:    cleanText(data.debateFormat, 120),
     resolution:      cleanText(data.resolution, 900),
     host:            cleanText(data.host, 160),
     judgeInstructions: cleanText(data.judgeInstructions, 900),
+    expectations:    cleanText(data.expectations, 1200),
+    coachName:       cleanText(data.coachName, 120),
+    coachEmail:      cleanText(data.coachEmail, 160),
+    coachPhone:      cleanText(data.coachPhone, 40),
+    invitationUrl:   cleanText(data.invitationUrl, 500),
     details:         cleanText(data.details, 700),
     signupDeadline:  cleanText(data.signupDeadline, 32),
     roles: cleanRoles(data.roles).map(role => ({
@@ -504,10 +510,16 @@ exports.manageVolunteerSignup = onRequest(
         const address = cleanText(incoming.address, 240);
         const startTime = cleanTime(incoming.startTime);
         const endTime = cleanTime(incoming.endTime);
+        const mealInfo = cleanText(incoming.mealInfo, 180);
         const debateFormat = cleanText(incoming.debateFormat, 120);
         const resolution = cleanText(incoming.resolution, 900);
         const host = cleanText(incoming.host, 160);
         const judgeInstructions = cleanText(incoming.judgeInstructions, 900);
+        const expectations = cleanText(incoming.expectations, 1200);
+        const coachName = cleanText(incoming.coachName, 120);
+        const coachEmail = cleanText(incoming.coachEmail, 160);
+        const coachPhone = cleanText(incoming.coachPhone, 40);
+        const invitationUrl = cleanText(incoming.invitationUrl, 500);
         const details = cleanText(incoming.details, 700);
         const signupDeadline = cleanText(incoming.signupDeadline, 32);
         const published = incoming.published === true;
@@ -555,8 +567,9 @@ exports.manageVolunteerSignup = onRequest(
           }
 
           const data = {
-            title, date, location, address, startTime, endTime, debateFormat,
-            resolution, host, judgeInstructions, details, signupDeadline, published,
+            title, date, location, address, startTime, endTime, mealInfo, debateFormat,
+            resolution, host, judgeInstructions, expectations, coachName, coachEmail,
+            coachPhone, invitationUrl, details, signupDeadline, published,
             roles: nextRoles,
             updatedAt: FieldValue.serverTimestamp(),
           };

@@ -58,6 +58,7 @@
                 <div class="vol-field"><label for="event-start-time">Tournament start time</label><input id="event-start-time" type="time"></div>
                 <div class="vol-field"><label for="event-end-time">Tournament end time</label><input id="event-end-time" type="time"></div>
               </div>
+              <div class="vol-field"><label for="event-meal">Meal / refreshments</label><input id="event-meal" maxlength="180" placeholder="e.g., Lunch and refreshments are provided"></div>
               <div class="vol-field"><label for="event-location">Location</label><input id="event-location" maxlength="200" placeholder="School or venue"></div>
               <div class="vol-field"><label for="event-address">Street address</label><input id="event-address" maxlength="240" placeholder="e.g., 977 Balls Hill Rd, McLean, VA 22101"></div>
               <div class="vol-inline">
@@ -65,7 +66,14 @@
                 <div class="vol-field"><label for="event-host">Hosted by</label><input id="event-host" maxlength="160" placeholder="e.g., Cooper Debate Team"></div>
               </div>
               <div class="vol-field"><label for="event-resolution">Resolution / topic</label><textarea id="event-resolution" maxlength="900" placeholder="The resolution or topic for this tournament"></textarea></div>
-              <div class="vol-field"><label for="event-judge-instructions">Judge-day expectations</label><textarea id="event-judge-instructions" maxlength="900" placeholder="Arrival time, orientation, round expectations, lunch, or ballot instructions"></textarea></div>
+              <div class="vol-field"><label for="event-judge-instructions">Important information for judges</label><textarea id="event-judge-instructions" maxlength="900" placeholder="Arrival time, orientation, round expectations, lunch, or ballot instructions"></textarea></div>
+              <div class="vol-field"><label for="event-expectations">What to expect <span style="opacity:.65;">(one item per line)</span></label><textarea id="event-expectations" maxlength="1200" placeholder="Arrive 15–20 minutes early&#10;Judge two preliminary rounds&#10;Use the NSDA electronic ballot system"></textarea></div>
+              <div class="vol-field"><label for="event-invitation-url">Full invitation link <span style="opacity:.65;">(optional)</span></label><input id="event-invitation-url" type="url" maxlength="500" placeholder="https://..."></div>
+              <div class="vol-inline">
+                <div class="vol-field"><label for="event-coach-name">Questions contact</label><input id="event-coach-name" maxlength="120" placeholder="e.g., Coach Konde"></div>
+                <div class="vol-field"><label for="event-coach-email">Contact email</label><input id="event-coach-email" type="email" maxlength="160" placeholder="coach@example.org"></div>
+              </div>
+              <div class="vol-field"><label for="event-coach-phone">Contact phone <span style="opacity:.65;">(optional)</span></label><input id="event-coach-phone" type="tel" maxlength="40" placeholder="(703) 555-0123"></div>
               <div class="vol-field"><label for="event-details">Additional notes for families</label><textarea id="event-details" maxlength="700" placeholder="Parking, logistics, or anything else families should know"></textarea></div>
               <label class="vol-check"><input id="event-published" type="checkbox" checked> Publish this opportunity to families</label>
               <div class="role-head"><span>Judge &amp; volunteer roles</span><button id="add-role" class="add-role" type="button">+ Add role</button></div>
@@ -89,7 +97,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=2"></script>
   <script src="data/admins.js"></script>
-  <script src="js/volunteer-admin.js?v=2"></script>
+  <script src="js/volunteer-admin.js?v=3"></script>
   <script>window.__NAV_PAGE = "volunteers";</script>
   <script src="js/members-nav.js?v=7"></script>
   <script src="js/dome-nav.js"></script>

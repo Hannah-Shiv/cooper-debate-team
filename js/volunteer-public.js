@@ -42,10 +42,26 @@
     return startLabel && endLabel ? `${startLabel} – ${endLabel}` : "";
   };
 
+  const lineItems = value => String(value || "")
+    .split(/\r?\n/)
+    .map(item => item.trim())
+    .filter(Boolean)
+    .slice(0, 12);
+
+  const safeExternalUrl = value => {
+    try {
+      const url = new URL(value);
+      return /^https?:$/.test(url.protocol) ? url.href : "";
+    } catch (_) {
+      return "";
+    }
+  };
+
   function eventFacts(event) {
     const facts = [
       event.date && { label: "Date", value: dateLabel(event.date) },
       timeRange(event.startTime, event.endTime) && { label: "Tournament hours", value: timeRange(event.startTime, event.endTime) },
+      event.mealInfo && { label: "Meals", value: event.mealInfo },
       event.location && { label: "Venue", value: event.location },
       event.address && { label: "Address", value: event.address },
       event.debateFormat && { label: "Debate", value: event.debateFormat },
@@ -170,14 +186,57 @@
   function renderTournamentBrief() {
     const root = $("vol-tournament-brief");
     if (!root || !selectedEvent) return;
+    const invitationUrl = safeExternalUrl(selectedEvent.invitationUrl);
     root.innerHTML = `
-      <div class="vol-brief-top">
+      <div class="vol-brief-heading">
+        <div>
+          <span>Tournament details</span>
+          <h3>${escapeHtml(selectedEvent.title)}</h3>
+        </div>
         <span class="vol-brief-role">${escapeHtml(selectedRole.label)}</span>
-        <h3>${escapeHtml(selectedEvent.title)}</h3>
       </div>
-      <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
-      ${selectedEvent.resolution ? `<div class="vol-brief-resolution"><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div>` : ""}
-      ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout">${escapeHtml(selectedEvent.judgeInstructions)}</div>` : ""}`;
+      <div class="vol-brief-grid">
+        <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
+        <div class="vol-brief-debate">
+          ${selectedEvent.debateFormat ? `<div class="vol-brief-format"><span>Debate format</span><strong>${escapeHtml(selectedEvent.debateFormat)}</strong></div>` : ""}
+          ${selectedEvent.resolution ? `<div class="vol-brief-resolution"><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div>` : ""}
+          ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout"><strong>Important information</strong>${escapeHtml(selectedEvent.judgeInstructions)}</div>` : ""}
+          ${invitationUrl ? `<a class="vol-invitation-link" href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
+        </div>
+      </div>`;
+    renderSignupSidebar();
+  }
+
+  function renderSignupSidebar() {
+    const root = $("vol-signup-sidebar");
+    if (!root || !selectedEvent || !selectedRole) return;
+    const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
+    const expectations = lineItems(selectedEvent.expectations);
+    const contact = [
+      selectedEvent.coachName,
+      selectedEvent.coachEmail,
+      selectedEvent.coachPhone,
+    ].filter(Boolean);
+    root.innerHTML = `
+      <section class="vol-side-card vol-selection-card">
+        <h4>Your selection</h4>
+        <div class="vol-side-row"><span>Event</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
+        <div class="vol-side-row"><span>Role</span><strong>${escapeHtml(selectedRole.label)}</strong></div>
+        <div class="vol-side-row"><span>Selected availability</span><strong>${escapeHtml(chosenTime || "Choose your start and end time")}</strong></div>
+        <div class="vol-side-reassurance">✓ We’ll do our best to assign rounds within your availability.</div>
+      </section>
+      ${expectations.length ? `
+        <section class="vol-side-card">
+          <h4>What to expect</h4>
+          <ul class="vol-expectations">${expectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        </section>` : ""}
+      ${contact.length ? `
+        <section class="vol-side-card">
+          <h4>Questions?</h4>
+          ${selectedEvent.coachName ? `<p class="vol-contact-name">${escapeHtml(selectedEvent.coachName)}</p>` : ""}
+          ${selectedEvent.coachEmail ? `<p><a href="mailto:${encodeURIComponent(selectedEvent.coachEmail)}">${escapeHtml(selectedEvent.coachEmail)}</a></p>` : ""}
+          ${selectedEvent.coachPhone ? `<p>${escapeHtml(selectedEvent.coachPhone)}</p>` : ""}
+        </section>` : ""}`;
   }
 
   function renderReview() {
@@ -322,6 +381,10 @@
     });
     document.querySelectorAll("[data-vol-back]").forEach(button => {
       button.addEventListener("click", () => showStep(Number(button.dataset.volBack)));
+    });
+    ["vol-availability-start", "vol-availability-end"].forEach(id => {
+      $(id)?.addEventListener("input", renderSignupSidebar);
+      $(id)?.addEventListener("change", renderSignupSidebar);
     });
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") closeSignup();

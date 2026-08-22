@@ -81,10 +81,16 @@
     $("event-address").value = event.address || "";
     $("event-start-time").value = event.startTime || "";
     $("event-end-time").value = event.endTime || "";
+    $("event-meal").value = event.mealInfo || "";
     $("event-format").value = event.debateFormat || "";
     $("event-host").value = event.host || "";
     $("event-resolution").value = event.resolution || "";
     $("event-judge-instructions").value = event.judgeInstructions || "";
+    $("event-expectations").value = event.expectations || "";
+    $("event-invitation-url").value = event.invitationUrl || "";
+    $("event-coach-name").value = event.coachName || "";
+    $("event-coach-email").value = event.coachEmail || "";
+    $("event-coach-phone").value = event.coachPhone || "";
     $("event-details").value = event.details || "";
     $("event-published").checked = !!event.published;
     $("role-editors").innerHTML = "";
@@ -114,10 +120,16 @@
       address: $("event-address").value.trim(),
       startTime: $("event-start-time").value || "",
       endTime: $("event-end-time").value || "",
+      mealInfo: $("event-meal").value.trim(),
       debateFormat: $("event-format").value.trim(),
       host: $("event-host").value.trim(),
       resolution: $("event-resolution").value.trim(),
       judgeInstructions: $("event-judge-instructions").value.trim(),
+      expectations: $("event-expectations").value.trim(),
+      invitationUrl: $("event-invitation-url").value.trim(),
+      coachName: $("event-coach-name").value.trim(),
+      coachEmail: $("event-coach-email").value.trim(),
+      coachPhone: $("event-coach-phone").value.trim(),
       details: $("event-details").value.trim(),
       published: $("event-published").checked,
     };
