@@ -52,11 +52,56 @@
     return `${String(event.title || "").trim().toLowerCase()}|${nyDateKey(event.start)}`;
   }
 
-  function palette(type) {
-    if (type === "practice") return "#22c55e";
-    if (type === "meeting") return "#d6a800";
-    if (type === "deadline") return "#f97316";
-    return "#991b1b";
+  function eventColors(type) {
+    if (type === "practice") return { bg:"#166534", text:"#ffffff" };
+    if (type === "meeting") return { bg:"#ffd700", text:"#000000" };
+    if (type === "deadline") return { bg:"#9a3412", text:"#ffffff" };
+    return { bg:"#7f1d1d", text:"#ffffff" };
+  }
+
+  function toESTDateStr(date) {
+    return date.toLocaleDateString("en-CA", { timeZone:"America/New_York" });
+  }
+
+  // Match the private calendar's month view: the event color fills every
+  // relevant day cell, including the complete span of multi-day events.
+  function colorDayCells(container, start, end, allDay, color, isPast, textColor) {
+    let currentKey = nyDateKey(start);
+    if (!currentKey) return;
+    const nextDayKey = key => {
+      const noon = new Date(`${key}T12:00:00Z`);
+      noon.setUTCDate(noon.getUTCDate() + 1);
+      return noon.toISOString().slice(0, 10);
+    };
+    let stopKey;
+    if (end) {
+      stopKey = nyDateKey(end);
+      if (!allDay) stopKey = nextDayKey(stopKey);
+    } else {
+      stopKey = nextDayKey(currentKey);
+    }
+
+    while (currentKey < stopKey) {
+      const cell = container.querySelector(`td.fc-daygrid-day[data-date="${currentKey}"]`);
+      if (cell) {
+        cell.style.setProperty("background", color, "important");
+        if (isPast) cell.style.setProperty("opacity", "0.6", "important");
+        const dateNumber = cell.querySelector(".fc-daygrid-day-number");
+        if (dateNumber) dateNumber.style.setProperty("color", textColor, "important");
+      }
+      currentKey = nextDayKey(currentKey);
+    }
+  }
+
+  function resetCellColors() {
+    const mount = byId("public-calendar");
+    if (!mount) return;
+    mount.querySelectorAll("td.fc-daygrid-day").forEach(cell => {
+      cell.style.setProperty("background", "#050e28", "important");
+      cell.style.removeProperty("opacity");
+      const dateNumber = cell.querySelector(".fc-daygrid-day-number");
+      if (dateNumber) dateNumber.style.setProperty("color", "#ffffff", "important");
+    });
   }
 
   function hasSavedTimes(event) {
@@ -114,13 +159,19 @@
 
   function fcEvents() {
     return events.map(event => ({
+      ...(() => {
+        const colors = eventColors(event.type);
+        return {
+          backgroundColor: colors.bg,
+          borderColor: colors.bg,
+          textColor: colors.text
+        };
+      })(),
       id: event.id,
       title: event.title,
       start: eventStart(event),
       end: eventEnd(event),
       allDay: !hasSavedTimes(event) && event.allDay !== false,
-      backgroundColor: palette(event.type),
-      borderColor: palette(event.type),
       extendedProps: event
     }));
   }
@@ -159,11 +210,36 @@
           openEvent(info.event.extendedProps);
         },
         eventContent(info) {
-          return { html:`<span>${esc(info.event.title)}</span>` };
+          return { html:`<span class="public-cal-event-title">${esc(info.event.title)}</span>` };
+        },
+        dayCellDidMount(info) {
+          info.el.style.setProperty("background", "#050e28", "important");
+        },
+        eventDidMount(info) {
+          if (info.view.type !== "dayGridMonth") return;
+          // FullCalendar normalizes all-day starts to midnight internally.
+          // Use the original public event dates so New York all-day events
+          // keep their background fill on the same day as their label.
+          const publicEvent = info.event.extendedProps;
+          const colors = eventColors(publicEvent.type);
+          colorDayCells(
+            mount,
+            eventStart(publicEvent),
+            eventEnd(publicEvent),
+            info.event.allDay,
+            colors.bg,
+            eventStart(publicEvent) < new Date(),
+            colors.text
+          );
+          info.el.style.setProperty("background", "transparent", "important");
+          info.el.style.setProperty("border", "none", "important");
+          info.el.style.setProperty("box-shadow", "none", "important");
+          info.el.style.setProperty("color", colors.text, "important");
         }
       });
       calendar.render();
     } else {
+      resetCellColors();
       calendar.removeAllEvents();
       calendar.addEventSource(fcEvents());
       if (initial) calendar.gotoDate(currentOrNextMonthDate());
@@ -188,10 +264,10 @@
     const date = nextStart.toLocaleDateString("en-US", {
       timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric"
     });
-    banner.innerHTML = `<span class="public-countdown-icon" aria-hidden="true">🏆</span>
-      <span class="public-countdown-label">Upcoming tournament</span>
-      <span class="public-countdown-name">${esc(next.title)} <small style="display:block;font:700 .64rem 'Josefin Sans',sans-serif;letter-spacing:.07em;margin-top:4px;">${esc(date)}</small></span>
-      <span class="public-countdown-time">⏱ ${days > 0 ? `${days}d ${hours}h` : `${hours}h`} left</span>`;
+    banner.innerHTML = `<span class="public-countdown-label">Upcoming tournament</span>
+      <span class="public-countdown-name">${esc(next.title)}</span>
+      <span class="public-countdown-date">${esc(date)}</span>
+      <span class="public-countdown-time">${days > 0 ? `${days}d ${hours}h` : `${hours}h`} left</span>`;
     banner.style.display = "flex";
   }
 

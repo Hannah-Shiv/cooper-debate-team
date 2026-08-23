@@ -239,10 +239,10 @@ function loadTournaments() {
 // ── Event colour/time defaults by type ───────────────────────
 function evtColors(type) {
   switch (type) {
-    case "practice": return { bg: "#22c55e", text: "#000000" };
+    case "practice": return { bg: "#166534", text: "#ffffff" };
     case "meeting":  return { bg: "#ffd700", text: "#000000" };
-    case "deadline": return { bg: "#f97316", text: "#000000" };
-    default:         return { bg: "#991b1b", text: "#ffffff" }; // tournament
+    case "deadline": return { bg: "#9a3412", text: "#ffffff" };
+    default:         return { bg: "#7f1d1d", text: "#ffffff" }; // tournament
   }
 }
 function evtDefaultTimes(type) {
@@ -524,11 +524,10 @@ function renderNextBanner() {
   const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
   banner.style.display = "flex";
   banner.innerHTML = `
-    <span class="next-trophy">🏆</span>
     <span class="next-label">Upcoming Tournament</span>
     <span class="next-name">${calEsc(next.title)}</span>
-    <span class="next-date">📅 ${dateStr}</span>
-    <span class="next-countdown">⏱ ${countdownText}</span>
+    <span class="next-date">${dateStr}</span>
+    <span class="next-countdown">${countdownText}</span>
   `;
   fitBannerText(banner);
 }

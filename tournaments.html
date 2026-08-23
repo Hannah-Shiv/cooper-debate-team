@@ -63,10 +63,11 @@
       display:none; gap:0; margin:0 0 16px; overflow:hidden;
     }
     .public-countdown > span { align-items:center; display:flex; min-height:60px; padding:13px 18px; }
-    .public-countdown-icon { background:rgba(0,0,0,.13); border-right:1px solid rgba(255,255,255,.25); font-size:1.45rem; }
-    .public-countdown-label { border-right:1px solid rgba(255,255,255,.25); font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    .public-countdown > span:not(:last-child) { border-right:1px solid rgba(255,255,255,.48); }
+    .public-countdown-label { font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
     .public-countdown-name { flex:1; font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:700; line-height:1.05; min-width:0; }
-    .public-countdown-time { background:rgba(0,0,0,.16); border-left:1px solid rgba(255,255,255,.25); font-family:'Josefin Sans',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    .public-countdown-date, .public-countdown-time { font-family:'Josefin Sans',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    .public-countdown-time { background:rgba(0,0,0,.16); }
     .public-calendar-legend { display:flex; flex-wrap:wrap; gap:14px; margin:0 0 14px; }
     .public-calendar-legend span { align-items:center; color:#d9e6f8; display:inline-flex; font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
     .public-calendar-legend i { border-radius:50%; display:inline-block; height:10px; margin-right:7px; width:10px; }
@@ -80,13 +81,14 @@
     #public-calendar .fc-scrollgrid, #public-calendar td, #public-calendar th { border-color:rgba(72,112,187,.34)!important; }
     #public-calendar .fc-col-header-cell { background:#18448d!important; }
     #public-calendar .fc-col-header-cell-cushion { color:#fff!important; font:700 .62rem 'Josefin Sans',sans-serif; letter-spacing:.1em; padding:10px 0!important; text-decoration:none!important; text-transform:uppercase; }
-    #public-calendar .fc-daygrid-day { background:#071735!important; }
-    #public-calendar .fc-daygrid-day:hover { background:#0a214c!important; }
-    #public-calendar .fc-day-today { background:#0c2857!important; }
-    #public-calendar .fc-daygrid-day-number { color:#e9f1ff!important; font-weight:700; padding:7px 10px!important; text-decoration:none!important; }
-    #public-calendar .fc-day-today .fc-daygrid-day-number { color:var(--gold)!important; }
-    #public-calendar .fc-event { border:0!important; border-radius:4px!important; box-shadow:none!important; cursor:pointer!important; margin:2px 3px!important; padding:3px 6px!important; }
-    #public-calendar .fc-event-title { color:#fff!important; font-size:.76rem!important; font-weight:700!important; line-height:1.25!important; white-space:normal!important; }
+    #public-calendar .fc-daygrid-day { background:#050e28!important; }
+    #public-calendar .fc-daygrid-day:hover { background:#0a1a3f!important; }
+    #public-calendar .fc-day-today { background:#050e28!important; }
+    #public-calendar .fc-daygrid-day-number { color:#fff!important; font-size:1.05rem!important; font-weight:700; padding:6px 10px!important; text-decoration:none!important; }
+    #public-calendar .fc-day-today .fc-daygrid-day-number { color:var(--gold)!important; font-weight:900; }
+    #public-calendar .fc-daygrid-day-frame { min-height:80px!important; position:relative!important; }
+    #public-calendar .fc-event { background:transparent!important; border:0!important; border-radius:3px!important; box-shadow:none!important; cursor:pointer!important; margin:2px 3px!important; overflow:visible!important; padding:3px 6px!important; white-space:normal!important; }
+    #public-calendar .public-cal-event-title { color:inherit!important; display:block!important; font-size:.92rem!important; font-weight:900!important; line-height:1.25!important; overflow-wrap:anywhere!important; white-space:normal!important; word-break:break-word!important; }
     #public-calendar .fc-list { border:0!important; }
     #public-calendar .fc-list-day-cushion { background:#102d61!important; }
     #public-calendar .fc-list-day-text, #public-calendar .fc-list-day-side-text { color:#dce9ff!important; text-decoration:none!important; }
@@ -102,11 +104,13 @@
     .public-event-detail { color:#d7e3f5; font-size:.88rem; line-height:1.65; margin:6px 0; }
     .public-event-empty { color:var(--gray-mid); font-size:.9rem; line-height:1.65; padding:30px 18px; text-align:center; }
     @media(max-width:700px){
-      .public-countdown { display:block; }
+      .public-countdown { display:grid; grid-template-columns:1fr 1fr; }
       .public-countdown > span { min-height:0; padding:10px 14px; }
-      .public-countdown-icon, .public-countdown-label { border:0; display:inline-flex; }
-      .public-countdown-name { display:block; font-size:1.35rem; padding-top:3px; }
-      .public-countdown-time { border-left:0; border-top:1px solid rgba(255,255,255,.2); display:block; }
+      .public-countdown > span:nth-child(odd) { border-right:1px solid rgba(255,255,255,.35); }
+      .public-countdown > span:nth-child(even) { border-right:0; }
+      .public-countdown > span:nth-child(-n+2) { border-bottom:1px solid rgba(255,255,255,.35); }
+      .public-countdown-name { font-size:1.2rem; }
+      .public-countdown-time { background:rgba(0,0,0,.16); }
       #public-calendar { min-height:500px; }
       #public-calendar .fc-toolbar { align-items:center; padding:10px; }
       #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
@@ -789,10 +793,10 @@
        <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. The existing <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a> is the only application needed.</p>
        <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
        <div class="public-calendar-legend" aria-label="Calendar legend">
-         <span><i style="background:#991b1b;"></i>Tournament</span>
-         <span><i style="background:#22c55e;"></i>Practice</span>
+          <span><i style="background:#7f1d1d;"></i>Tournament</span>
+          <span><i style="background:#166534;"></i>Practice</span>
          <span><i style="background:#ffd700;"></i>Meeting</span>
-         <span><i style="background:#f97316;"></i>Deadline</span>
+          <span><i style="background:#9a3412;"></i>Deadline</span>
        </div>
        <div class="public-calendar-shell">
          <div id="public-calendar" aria-label="Public tournament calendar"></div>
@@ -1342,7 +1346,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=1"></script>
+<script src="js/public-calendar.js?v=2"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
