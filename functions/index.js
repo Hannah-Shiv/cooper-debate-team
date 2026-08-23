@@ -773,6 +773,76 @@ exports.submitApplication = onRequest(
   }
 );
 
+// Application records are deliberately browser read-only. Coaches use this
+// endpoint to leave an authenticated, attributable admissions decision without
+// changing the separate email-delivery workflow.
+exports.manageApplicationReview = onRequest(
+  { region: "us-central1", cors: true },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.set("Allow", "POST");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
+    if (!token) {
+      res.status(401).json({ error: "Sign in as a coach to review applications." });
+      return;
+    }
+
+    let decoded;
+    try {
+      decoded = await getAuth().verifyIdToken(token);
+    } catch (_) {
+      res.status(401).json({ error: "Your sign-in session has expired. Please sign in again." });
+      return;
+    }
+
+    const reviewerEmail = cleanEmail(decoded.email);
+    if (!COACH_EMAILS.has(reviewerEmail)) {
+      res.status(403).json({ error: "Only coaches can review applications." });
+      return;
+    }
+
+    const body = req.body || {};
+    const applicationId = cleanText(body.applicationId, 128);
+    const decision = cleanText(body.decision, 24).toLowerCase();
+    const internalNote = cleanText(body.internalNote, 2000);
+
+    if (!/^[a-zA-Z0-9_-]{12,128}$/.test(applicationId)) {
+      res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
+    if (!["accepted", "declined"].includes(decision)) {
+      res.status(400).json({ error: "Choose Accept or Decline before saving." });
+      return;
+    }
+
+    const applicationRef = getFirestore().collection("applications").doc(applicationId);
+    try {
+      await getFirestore().runTransaction(async transaction => {
+        const application = await transaction.get(applicationRef);
+        if (!application.exists) throw new Error("That application no longer exists.");
+        transaction.update(applicationRef, {
+          reviewStatus: decision,
+          reviewNote: internalNote,
+          reviewedBy: reviewerEmail,
+          reviewedAt: FieldValue.serverTimestamp(),
+        });
+      });
+      res.status(200).json({ ok: true });
+    } catch (error) {
+      console.error("manageApplicationReview failed:", {
+        applicationId,
+        decision,
+        message: error instanceof Error ? error.message : String(error),
+      });
+      res.status(400).json({ error: cleanText(error.message, 240) || "Unable to save the review decision." });
+    }
+  }
+);
+
 // A temporary Resend outage should never strand a saved application. Failed
 // delivery requests are retried server-side; each recipient has its own
 // idempotency key, so messages already accepted by Resend are not duplicated.
