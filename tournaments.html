@@ -639,7 +639,10 @@
       .vol-roster-progress-copy > strong{font-size:2.25rem;}
       .vol-roster-table{border-radius:7px;}
       .vol-roster-table-head{display:none;}
-      .vol-roster-row{grid-template-columns:1fr;}
+      .vol-roster-table{background:transparent;border:0;overflow:visible;}
+      .vol-roster-table-body{display:grid;gap:13px;}
+      .vol-roster-row{background:linear-gradient(145deg,rgba(16,48,100,.72),rgba(4,22,55,.8));border:1px solid rgba(125,166,220,.5);border-radius:9px;box-shadow:0 5px 14px rgba(0,0,0,.16);grid-template-columns:1fr;overflow:hidden;}
+      .vol-roster-row,.vol-roster-row:first-child{border-top:1px solid rgba(125,166,220,.5);}
       .vol-roster-row > div{align-items:center;justify-content:center;min-height:0;padding:31px 12px 13px;position:relative;text-align:center;}
       .vol-roster-row > div,.vol-roster-row > div:nth-child(2n),.vol-roster-row > div:nth-last-child(-n+2){border-bottom:1px solid rgba(125,166,220,.24);border-right:0;}
       .vol-roster-row > div:last-child{border-bottom:0;}
