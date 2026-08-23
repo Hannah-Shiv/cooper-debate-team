@@ -336,6 +336,11 @@
     }
     .form-select option { background: #0B2545; color: #fff; }
     .form-textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+    .external-email-note {
+      background:rgba(184,111,20,.11); border-left:3px solid #E8C47C; border-radius:0 6px 6px 0;
+      color:rgba(255,237,194,.9); font-size:.82rem; line-height:1.5; margin:2px 0 0; padding:8px 10px;
+    }
+    .external-email-note strong { color:#ffe1a0; }
 
     /* ── Commitment schedule note ── */
     .schedule-note {
@@ -647,12 +652,13 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="student-email">Student Email <span class="req">*</span></label>
-                <input class="form-input" type="email" id="student-email" name="Student Email" placeholder="student@fcpsschools.net" required autocomplete="email"/>
+                <label class="form-label" for="student-school-email">Student School Email <span class="req">*</span></label>
+                <input class="form-input" type="email" id="student-school-email" name="Student School Email" placeholder="student@fcpsschools.net" required autocomplete="email"/>
               </div>
               <div class="form-group">
-                <label class="form-label" for="homeroom">Homeroom Teacher</label>
-                <input class="form-input" type="text" id="homeroom" name="Homeroom Teacher" placeholder="Teacher's full name"/>
+                <label class="form-label" for="student-personal-email">Student Personal Email <span class="req">*</span></label>
+                <input class="form-input" type="email" id="student-personal-email" name="Student Personal Email" placeholder="student@gmail.com" required autocomplete="email"/>
+                <p class="external-email-note"><strong>Important:</strong> An <strong>@fcpsschools.net</strong> address will not work for confirmations. Use a personal email such as <strong>@gmail.com</strong>, <strong>@yahoo.com</strong>, or another address that can send and receive external email.</p>
               </div>
             </div>
 
@@ -688,7 +694,7 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="parent-email">Parent Email <span class="req">*</span></label>
+                <label class="form-label" for="parent-email">Parent Email <span class="req">*</span> <span style="font-size:.72em;font-weight:400;letter-spacing:.04em;text-transform:none;">(receives a copy)</span></label>
                 <input class="form-input" type="email" id="parent-email" name="Parent Email" placeholder="parent@email.com" required autocomplete="email"/>
               </div>
               <div class="form-group">
@@ -864,7 +870,7 @@
               </button>
               <p class="form-note">
                 You will see a confirmation message on this page immediately after submitting.<br/>
-                A copy will also be sent to the email address provided above.
+                A complete copy will also be sent to the student's personal email and the parent/guardian email.
               </p>
             </div>
           </div>
@@ -995,6 +1001,7 @@
   const successDiv = document.getElementById('form-success');
   const submitBtn = document.getElementById('submit-btn');
   const applicationCopyRecipient = document.getElementById('application-copy-recipient');
+  const studentPersonalEmail = document.getElementById('student-personal-email');
 
   document.getElementById('next-url').value = window.location.origin + window.location.pathname + '?success=1';
 
@@ -1016,19 +1023,32 @@
         valid = false;
       }
     });
+    if (/@fcpsschools\.net$/i.test(studentPersonalEmail.value.trim())) {
+      studentPersonalEmail.style.borderColor = 'rgba(220,60,60,0.8)';
+      studentPersonalEmail.setCustomValidity('Use a personal email address that can receive external email.');
+      valid = false;
+    } else {
+      studentPersonalEmail.setCustomValidity('');
+    }
     if (!valid) {
       e.preventDefault();
       const firstError = form.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    applicationCopyRecipient.value = document.getElementById('parent-email').value.trim();
+    applicationCopyRecipient.value = [
+      studentPersonalEmail.value.trim(),
+      document.getElementById('parent-email').value.trim()
+    ].filter((email, index, recipients) => email && recipients.indexOf(email) === index).join(',');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting…';
   });
 
   form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
-    el.addEventListener('input', () => { el.style.borderColor = ''; });
+    el.addEventListener('input', () => {
+      el.style.borderColor = '';
+      if (el === studentPersonalEmail) studentPersonalEmail.setCustomValidity('');
+    });
   });
   form.querySelectorAll('input[type="checkbox"]').forEach(el => {
     el.addEventListener('change', () => {
