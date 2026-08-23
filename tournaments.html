@@ -58,8 +58,8 @@
     .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:780px;margin:0 0 22px; }
     .public-calendar-shell { border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
     .public-countdown {
-      align-items:stretch; background:linear-gradient(115deg,#6f151b,#b01f2a 50%,#79131a);
-      border:1px solid rgba(255,126,126,.62); border-radius:10px; color:#fff;
+      align-items:stretch; background:#b30000;
+      border:1px solid #ffe58f; border-radius:10px; box-shadow:0 8px 22px rgba(77,0,0,.3); color:#fff;
       display:none; gap:0; margin:0 0 16px; overflow:hidden;
     }
     .public-countdown > span { align-items:center; display:flex; min-height:60px; padding:13px 18px; }
@@ -67,7 +67,7 @@
     .public-countdown-label { font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; white-space:nowrap; }
     .public-countdown-name { flex:1; font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:700; line-height:1.05; min-width:0; }
     .public-countdown-date, .public-countdown-time { font-family:'Josefin Sans',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
-    .public-countdown-time { background:rgba(0,0,0,.16); }
+    .public-countdown-time { background:rgba(0,0,0,.12); }
     .public-calendar-legend { display:flex; flex-wrap:wrap; gap:14px; margin:0 0 14px; }
     .public-calendar-legend span { align-items:center; color:#d9e6f8; display:inline-flex; font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
     .public-calendar-legend i { border-radius:50%; display:inline-block; height:10px; margin-right:7px; width:10px; }
@@ -111,11 +111,9 @@
     .public-event-detail { color:#d7e3f5; font-size:.88rem; line-height:1.65; margin:6px 0; }
     .public-event-empty { color:var(--gray-mid); font-size:.9rem; line-height:1.65; padding:30px 18px; text-align:center; }
     @media(max-width:700px){
-      .public-countdown { display:grid; grid-template-columns:1fr 1fr; }
-      .public-countdown > span { min-height:0; padding:10px 14px; }
-      .public-countdown > span:nth-child(odd) { border-right:1px solid rgba(255,255,255,.35); }
-      .public-countdown > span:nth-child(even) { border-right:0; }
-      .public-countdown > span:nth-child(-n+2) { border-bottom:1px solid rgba(255,255,255,.35); }
+      .public-countdown { display:block; }
+      .public-countdown > span { min-height:0; padding:10px 14px; width:100%; }
+      .public-countdown > span:not(:last-child) { border-bottom:1px solid rgba(255,255,255,.42); border-right:0; }
       .public-countdown-name { font-size:1.2rem; }
       .public-countdown-time { background:rgba(0,0,0,.16); }
       .public-calendar-intro { font-size:.84rem; line-height:1.6; margin-bottom:16px; }
@@ -145,10 +143,7 @@
       .public-calendar-status { font-size:.75rem; padding-top:9px; }
     }
     @media(max-width:480px){
-      .public-countdown { grid-template-columns:1fr; }
       .public-countdown > span { padding:10px 13px; }
-      .public-countdown > span:nth-child(n) { border-right:0; }
-      .public-countdown > span:not(:last-child) { border-bottom:1px solid rgba(255,255,255,.35); }
       .public-countdown-name { font-size:1.28rem; }
       #public-calendar .fc-toolbar-title { font-size:1.2rem!important; }
       #public-calendar .fc-list-event-time { width:66px; }
