@@ -238,10 +238,12 @@ function publicVolunteerEvent(id, data) {
 
 function publicVolunteerSignup(data) {
   return {
-    parentName:  cleanText(data.parentName, 120),
-    studentName: cleanText(data.studentName, 120),
-    roleId:      cleanText(data.roleId, 80),
-    roleLabel:   cleanText(data.roleLabel, 100),
+    parentName:        cleanText(data.parentName, 120),
+    studentName:       cleanText(data.studentName, 120),
+    roleId:            cleanText(data.roleId, 80),
+    roleLabel:         cleanText(data.roleLabel, 100),
+    availabilityStart: cleanTime(data.availabilityStart),
+    availabilityEnd:   cleanTime(data.availabilityEnd),
   };
 }
 

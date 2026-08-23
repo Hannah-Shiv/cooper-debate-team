@@ -173,6 +173,26 @@
         .filter(role => role.label !== "Duplicate-check test")
         .find(role => Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0)) > 0);
       const choices = availabilityChoices(event);
+      const publicSignups = Array.isArray(event.signups)
+        ? event.signups.filter(signup => signup.parentName && signup.roleId)
+        : [];
+      const rosterMarkup = publicSignups.length
+        ? publicSignups.map(signup => {
+          const availability = timeRange(signup.availabilityStart, signup.availabilityEnd) || "Availability shared with coaches";
+          return `
+            <li class="vol-roster-person">
+              <span class="vol-roster-avatar" aria-hidden="true">${escapeHtml(signup.parentName.slice(0, 1).toUpperCase())}</span>
+              <div class="vol-roster-person-copy">
+                <strong>${escapeHtml(signup.parentName)}</strong>
+                ${signup.studentName ? `<span>Debater: ${escapeHtml(signup.studentName)}</span>` : "<span>Family volunteer</span>"}
+              </div>
+              <div class="vol-roster-shift">
+                <span>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</span>
+                <small>${escapeHtml(availability)}</small>
+              </div>
+            </li>`;
+        }).join("")
+        : `<li class="vol-roster-empty">Be the first family to volunteer for this tournament.</li>`;
       const availabilityMarkup = choices.map((choice, index) => `
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
@@ -199,7 +219,7 @@
             <div><span class="vol-unified-icon">⌖</span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
             <div><span class="vol-unified-icon">♙</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
           </div>
-          <div class="vol-unified-brief">
+          <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
             ${event.resolution ? `<div><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
             <div><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></div>
             ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
@@ -226,6 +246,15 @@
               <section class="vol-public-assignment"><h4>Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
             </aside>
           </div>
+          <section class="vol-public-roster" aria-label="Families signed up to judge">
+            <div class="vol-public-roster-heading">
+              ${modalIcon("users")}
+              <div><span>Judge volunteer roster</span><h4>Signed up so far</h4></div>
+              <small>${publicSignups.length} ${publicSignups.length === 1 ? "family" : "families"}</small>
+            </div>
+            <p class="vol-public-roster-note">Names, debaters, roles, and chosen availability are visible to tournament families. Contact details and notes remain private.</p>
+            <ul class="vol-roster-list">${rosterMarkup}</ul>
+          </section>
         </article>`;
     }).join("");
 
@@ -364,14 +393,27 @@
     if (!root || !selectedEvent || !selectedRole) return;
     const firstName = $("vol-parent-first-name").value.trim();
     const lastName = $("vol-parent-last-name").value.trim();
+    const parentName = `${firstName} ${lastName}`.trim();
+    const studentName = $("vol-student-name").value.trim();
+    const availability = timeRange($("vol-availability-start").value, $("vol-availability-end").value);
     root.innerHTML = `
-      <div class="vol-review-card">
-        <span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong>
-        <span>Role</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))}</strong>
-        <span>Judging availability</span><strong>${escapeHtml(timeRange($("vol-availability-start").value, $("vol-availability-end").value))}</strong>
-        <span>Volunteer</span><strong>${escapeHtml(`${firstName} ${lastName}`.trim())}</strong>
-        <span>Contact</span><strong>${escapeHtml($("vol-email").value.trim())} · ${escapeHtml($("vol-phone").value.trim())}</strong>
-      </div>`;
+      <div class="vol-review-intro">
+        ${modalIcon("check")}
+        <div><span>Almost finished</span><h3>Review your judge signup</h3><p>Confirm the details below, then complete the verification to reserve your availability.</p></div>
+      </div>
+      <section class="vol-review-card">
+        <div class="vol-review-primary">
+          ${modalIcon("trophy")}
+          <div><span>You’re volunteering for</span><strong>${escapeHtml(selectedEvent.title)}</strong><small>${escapeHtml(roleDisplayLabel(selectedRole))}</small></div>
+        </div>
+        <div class="vol-review-details">
+          <div class="vol-review-detail">${modalIcon("clock")}<div><span>Judging availability</span><strong>${escapeHtml(availability)}</strong></div></div>
+          <div class="vol-review-detail">${modalIcon("users")}<div><span>Volunteer</span><strong>${escapeHtml(parentName)}</strong></div></div>
+          <div class="vol-review-detail">${modalIcon("debate")}<div><span>Debater</span><strong>${escapeHtml(studentName || "Not provided")}</strong></div></div>
+        </div>
+        <div class="vol-review-privacy">${modalIcon("info")}<div><strong>What families will see</strong><p>${escapeHtml(parentName)}, ${studentName ? `${studentName}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)}. Your email, phone, and notes remain coach-only.</p></div></div>
+        <div class="vol-review-contact"><span>Private contact for coaches</span><strong>${escapeHtml($("vol-email").value.trim())} <i>·</i> ${escapeHtml($("vol-phone").value.trim())}</strong></div>
+      </section>`;
   }
 
   function showStep(step) {
