@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const { FieldValue } = require("firebase-admin/firestore");
 
 const SENDER = "Cooper Debate Team <admin@cooperdebateteam.com>";
+const STALE_SEND_MS = 10 * 60 * 1000;
 
 function cleanText(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -114,14 +115,28 @@ function safeError(error) {
   return cleanText(error && error.message, 300) || "Email delivery could not be completed.";
 }
 
+function timestampMillis(value) {
+  return value && typeof value.toMillis === "function" ? value.toMillis() : 0;
+}
+
 function createApplicationEmailService({ db, resendSecret, coachEmails }) {
   async function reserveNotification(applicationId, recipientType, recipients) {
     const key = notificationKey(applicationId, recipientType, recipients);
     const reference = db.collection("application_email_notifications").doc(key);
     return db.runTransaction(async transaction => {
       const existing = await transaction.get(reference);
-      if (existing.exists && existing.data().status === "accepted") {
-        return { key, reference, alreadyAccepted: true };
+      if (existing.exists) {
+        const data = existing.data();
+        if (data.status === "accepted") {
+          return { key, reference, alreadyAccepted: true, inProgress: false };
+        }
+        if (
+          data.status === "sending" &&
+          timestampMillis(data.startedAt) &&
+          Date.now() - timestampMillis(data.startedAt) < STALE_SEND_MS
+        ) {
+          return { key, reference, alreadyAccepted: false, inProgress: true };
+        }
       }
       transaction.set(reference, {
         applicationId,
@@ -132,7 +147,7 @@ function createApplicationEmailService({ db, resendSecret, coachEmails }) {
         startedAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
-      return { key, reference, alreadyAccepted: false };
+      return { key, reference, alreadyAccepted: false, inProgress: false };
     });
   }
 
@@ -144,6 +159,7 @@ function createApplicationEmailService({ db, resendSecret, coachEmails }) {
 
     const reserved = await reserveNotification(applicationId, recipientType, cleanRecipients);
     if (reserved.alreadyAccepted) return { accepted: true, retry: false };
+    if (reserved.inProgress) return { accepted: false, inProgress: true };
 
     try {
       const apiKey = resendSecret.value();
@@ -204,6 +220,9 @@ function createApplicationEmailService({ db, resendSecret, coachEmails }) {
     const failed = results.find(result => result.status === "rejected");
     if (failed) {
       throw failed.reason;
+    }
+    if (results.some(result => result.value && result.value.inProgress)) {
+      throw new Error("Email delivery is already being processed. Please try again in a moment.");
     }
   }
 

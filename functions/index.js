@@ -8,7 +8,7 @@ const { onSchedule }        = require("firebase-functions/v2/scheduler");
 const { initializeApp }     = require("firebase-admin/app");
 const { getAuth }           = require("firebase-admin/auth");
 const { getMessaging }      = require("firebase-admin/messaging");
-const { getFirestore, FieldValue } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue, Timestamp } = require("firebase-admin/firestore");
 const { defineSecret }      = require("firebase-functions/params");
 const crypto = require("node:crypto");
 const { createVolunteerEmailService } = require("./volunteer-email");
@@ -302,6 +302,12 @@ async function reserveApplicationRateLimit(db, req) {
       updatedAt: FieldValue.serverTimestamp(),
     }, { merge: true });
   });
+}
+
+function emailRetryAt(attemptCount) {
+  const baseDelayMs = 15 * 60 * 1000;
+  const cappedAttempt = Math.max(0, Math.min(5, Number(attemptCount) || 0));
+  return Timestamp.fromMillis(Date.now() + baseDelayMs * (2 ** cappedAttempt));
 }
 
 function normalizeApplication(body) {
@@ -642,7 +648,11 @@ exports.publicVolunteerSignup = onRequest(
 // Applications are validated and written by the Admin SDK. Browser clients
 // never receive read access to these private records.
 exports.submitApplication = onRequest(
-  { region: "us-central1", cors: [...APPLICATION_ORIGINS], secrets: [resendSecret] },
+  {
+    region: "us-central1",
+    cors: [...APPLICATION_ORIGINS],
+    secrets: [resendSecret, turnstileSecret],
+  },
   async (req, res) => {
     if (req.method !== "POST") {
       res.set("Allow", "POST");
@@ -663,6 +673,7 @@ exports.submitApplication = onRequest(
     }
 
     const submissionId = cleanText(body.submissionId, 80);
+    const turnstileToken = cleanText(body.turnstileToken, 4096);
     if (!/^[a-zA-Z0-9_-]{20,80}$/.test(submissionId)) {
       res.status(400).json({ error: "Your application reference is invalid. Please review the form and try again." });
       return;
@@ -675,11 +686,16 @@ exports.submitApplication = onRequest(
       res.status(400).json({ error: cleanText(error.message, 240) || "Please review your application and try again." });
       return;
     }
+    if (!turnstileToken) {
+      res.status(400).json({ error: "Please complete the verification before submitting your application." });
+      return;
+    }
 
     const db = getFirestore();
     const applicationRef = db.collection("applications").doc(submissionId);
     const contentHash = applicationContentHash(application);
     let applicationSaved = false;
+    let savedApplication = null;
     try {
       let existing = await applicationRef.get();
       if (existing.exists && existing.data().contentHash !== contentHash) {
@@ -687,31 +703,47 @@ exports.submitApplication = onRequest(
         return;
       }
       applicationSaved = existing.exists;
+      savedApplication = existing.exists ? existing.data() : null;
 
       if (!existing.exists) {
+        await verifyTurnstile(turnstileToken);
         await reserveApplicationRateLimit(db, req);
         try {
           await applicationRef.create({
             ...application,
             contentHash,
             emailStatus: "pending",
+          emailPendingAt: FieldValue.serverTimestamp(),
+            emailAttemptCount: 0,
+            nextEmailAttemptAt: Timestamp.now(),
             createdAt: FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
           });
           applicationSaved = true;
+          savedApplication = { emailAttemptCount: 0 };
         } catch (error) {
           // A double click or network retry can race the first create. Reuse
           // the same submission reference only when its saved content matches.
           existing = await applicationRef.get();
           if (!existing.exists || existing.data().contentHash !== contentHash) throw error;
           applicationSaved = true;
+          savedApplication = existing.data();
         }
       }
 
+      const attemptCount = Number(savedApplication && savedApplication.emailAttemptCount || 0) + 1;
+      await applicationRef.set({
+        emailStatus: "sending",
+        emailAttemptCount: attemptCount,
+        emailAttemptStartedAt: FieldValue.serverTimestamp(),
+        nextEmailAttemptAt: Timestamp.fromMillis(Date.now() + 10 * 60 * 1000),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
       await applicationEmail.sendApplicationCopies(submissionId, application);
       await applicationRef.set({
         emailStatus: "accepted",
         emailAcceptedAt: FieldValue.serverTimestamp(),
+        nextEmailAttemptAt: FieldValue.delete(),
         updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
       res.status(201).json({ ok: true });
@@ -723,6 +755,7 @@ exports.submitApplication = onRequest(
       if (applicationSaved) {
         await applicationRef.set({
           emailStatus: "failed",
+          nextEmailAttemptAt: emailRetryAt(Number(savedApplication && savedApplication.emailAttemptCount || 0) + 1),
           emailError: cleanText(error && error.message, 300) || "Email delivery could not be completed.",
           emailFailedAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
@@ -751,23 +784,34 @@ exports.retryFailedApplicationEmails = onSchedule(
   },
   async () => {
     const db = getFirestore();
-    const failed = await db.collection("applications")
-      .where("emailStatus", "==", "failed")
+    const interrupted = await db.collection("applications")
+      .where("nextEmailAttemptAt", "<=", Timestamp.now())
+      .orderBy("nextEmailAttemptAt")
       .limit(100)
       .get();
-    for (const applicationDoc of failed.docs) {
+    for (const applicationDoc of interrupted.docs) {
       const application = applicationDoc.data();
       try {
+        const attemptCount = Number(application.emailAttemptCount || 0) + 1;
+        await applicationDoc.ref.set({
+          emailStatus: "sending",
+          emailAttemptCount: attemptCount,
+          emailAttemptStartedAt: FieldValue.serverTimestamp(),
+          nextEmailAttemptAt: Timestamp.fromMillis(Date.now() + 10 * 60 * 1000),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
         await applicationEmail.sendApplicationCopies(applicationDoc.id, application);
         await applicationDoc.ref.set({
           emailStatus: "accepted",
           emailAcceptedAt: FieldValue.serverTimestamp(),
           emailRetryAcceptedAt: FieldValue.serverTimestamp(),
+          nextEmailAttemptAt: FieldValue.delete(),
           updatedAt: FieldValue.serverTimestamp(),
         }, { merge: true });
       } catch (error) {
         await applicationDoc.ref.set({
           emailStatus: "failed",
+          nextEmailAttemptAt: emailRetryAt(Number(application.emailAttemptCount || 0) + 1),
           emailError: cleanText(error && error.message, 300) || "Email delivery could not be completed.",
           emailFailedAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),

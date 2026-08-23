@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <style>
 
     /* ── Bright gold override for this page ── */
@@ -453,6 +454,11 @@
       color:#ffe0e0; display:none; font-size:.87rem; line-height:1.5; margin:0 0 16px; padding:11px 13px;
     }
     .application-modal-error.visible { display:block; }
+    .application-turnstile {
+      background:rgba(255,255,255,.035); border:1px solid rgba(126,184,232,.22); border-radius:8px;
+      margin:18px 0 4px; padding:13px;
+    }
+    .application-turnstile p { color:#cbd9ed; font-size:.82rem; line-height:1.5; margin:0 0 11px; }
     .application-review-list { border:1px solid rgba(126,184,232,.25); border-radius:9px; overflow:hidden; }
     .application-review-item {
       display:grid; gap:14px; grid-template-columns:minmax(150px,34%) 1fr; padding:12px 14px;
@@ -948,6 +954,10 @@
             <p class="application-modal-intro">Please review the information below. Choose <strong>Edit application</strong> to make any changes before your final submission.</p>
             <div class="application-modal-error" id="application-submit-error" role="alert"></div>
             <div class="application-review-list" id="application-review-list"></div>
+            <div class="application-turnstile">
+              <p>Please complete this quick verification before sending the application.</p>
+              <div id="application-turnstile-widget"></div>
+            </div>
             <div class="application-modal-actions">
               <button class="application-modal-btn secondary" type="button" data-close-modal="application-review-modal">Edit application</button>
               <button class="application-modal-btn primary" type="button" id="final-submit-btn">Submit application</button>
@@ -1105,6 +1115,8 @@
   const applicationSubmitError = document.getElementById('application-submit-error');
   const applicationEndpoint = 'https://us-central1-cooper-debate-team.cloudfunctions.net/submitApplication';
   const pendingApplicationStorageKey = 'cooper_pending_application';
+  const turnstileSiteKey = '0x4AAAAAAEYjkCMHr8iQrfbK';
+  const turnstileWidget = document.getElementById('application-turnstile-widget');
   const createSubmissionId = () => window.crypto && window.crypto.randomUUID
     ? window.crypto.randomUUID()
     : `application-${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -1119,6 +1131,8 @@
   let submissionId = pendingApplication && typeof pendingApplication.submissionId === 'string'
     ? pendingApplication.submissionId
     : createSubmissionId();
+  let turnstileWidgetId = null;
+  let turnstileToken = '';
 
   const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
@@ -1138,7 +1152,27 @@
       </div>`).join('');
     applicationSubmitError.classList.remove('visible');
     reviewModal.classList.add('is-open');
+    renderTurnstile();
   }
+
+  function renderTurnstile() {
+    if (turnstileWidgetId !== null || !window.turnstile) return;
+    turnstileWidgetId = window.turnstile.render(turnstileWidget, {
+      sitekey: turnstileSiteKey,
+      theme: 'dark',
+      callback: token => {
+        turnstileToken = token;
+        applicationSubmitError.classList.remove('visible');
+      },
+      'expired-callback': () => { turnstileToken = ''; },
+      'error-callback': () => {
+        turnstileToken = '';
+        applicationSubmitError.textContent = 'Verification could not load. Please refresh the page and try again.';
+        applicationSubmitError.classList.add('visible');
+      }
+    });
+  }
+  window.addEventListener('load', renderTurnstile);
 
   function showSubmissionConfirmation() {
     confirmationStudentEmail.textContent = studentPersonalEmail.value.trim();
@@ -1157,6 +1191,7 @@
     return {
       submissionId,
       honey: document.getElementById('application-honey').value.trim(),
+      turnstileToken,
       application: {
         student: {
           firstName: value('first-name'),
@@ -1283,6 +1318,12 @@
   });
 
   finalSubmitBtn.addEventListener('click', async () => {
+    if (!turnstileToken) {
+      applicationSubmitError.textContent = 'Please complete the verification before submitting your application.';
+      applicationSubmitError.classList.add('visible');
+      renderTurnstile();
+      return;
+    }
     finalSubmitBtn.disabled = true;
     finalSubmitBtn.textContent = 'Submitting…';
     applicationSubmitError.classList.remove('visible');
@@ -1308,6 +1349,8 @@
       applicationSubmitError.classList.add('visible');
       finalSubmitBtn.disabled = false;
       finalSubmitBtn.textContent = 'Submit application';
+      turnstileToken = '';
+      if (turnstileWidgetId !== null && window.turnstile) window.turnstile.reset(turnstileWidgetId);
     }
   });
 
