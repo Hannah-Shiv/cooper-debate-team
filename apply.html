@@ -427,6 +427,65 @@
     .success-title { font-family: 'Cormorant Garamond', serif; font-size: 2.3rem; color: var(--white); margin-bottom: 12px; }
     .success-text { font-size: 1.03rem; color: var(--gray-mid); line-height: 1.75; max-width: 460px; margin: 0 auto 28px; }
 
+    /* ── Application review and confirmation ── */
+    .application-modal {
+      align-items:center; background:rgba(2,9,25,.78); display:none; inset:0; justify-content:center;
+      padding:20px; position:fixed; z-index:10050;
+    }
+    .application-modal.is-open { display:flex; }
+    .application-modal-card {
+      background:linear-gradient(145deg,#102b59,#07152f); border:1px solid rgba(242,209,107,.48);
+      border-radius:15px; box-shadow:0 24px 70px rgba(0,0,0,.58); max-height:calc(100vh - 40px);
+      max-width:720px; overflow:auto; padding:30px; position:relative; width:100%;
+    }
+    .application-modal-close {
+      background:transparent; border:0; color:#cbdcf3; cursor:pointer; font-size:1.7rem; line-height:1;
+      padding:5px; position:absolute; right:15px; top:12px;
+    }
+    .application-modal-kicker {
+      color:#F2D16B; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.13em; margin:0 0 8px;
+      text-transform:uppercase;
+    }
+    .application-modal-title { color:#fff; font:700 2.1rem/1 'Cormorant Garamond',serif; margin:0 34px 10px 0; }
+    .application-modal-intro { color:#cbd9ed; font-size:.94rem; line-height:1.6; margin:0 0 20px; }
+    .application-review-list { border:1px solid rgba(126,184,232,.25); border-radius:9px; overflow:hidden; }
+    .application-review-item {
+      display:grid; gap:14px; grid-template-columns:minmax(150px,34%) 1fr; padding:12px 14px;
+    }
+    .application-review-item:nth-child(odd) { background:rgba(255,255,255,.035); }
+    .application-review-item + .application-review-item { border-top:1px solid rgba(126,184,232,.16); }
+    .application-review-label { color:#8ec9f1; font:700 .67rem/1.4 'Josefin Sans',sans-serif; letter-spacing:.07em; text-transform:uppercase; }
+    .application-review-value { color:#fff; font-size:.91rem; line-height:1.48; overflow-wrap:anywhere; }
+    .application-modal-actions { display:flex; flex-wrap:wrap; gap:10px; justify-content:flex-end; margin-top:22px; }
+    .application-modal-btn {
+      border-radius:6px; cursor:pointer; font:700 .74rem 'Josefin Sans',sans-serif; letter-spacing:.09em;
+      padding:12px 17px; text-transform:uppercase; transition:transform .18s,filter .18s;
+    }
+    .application-modal-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
+    .application-modal-btn.secondary { background:transparent; border:1px solid rgba(255,255,255,.33); color:#e0eaff; }
+    .application-modal-btn.primary { background:linear-gradient(135deg,var(--gold),#b8860b); border:1px solid #ffe39a; color:#07152f; }
+    .application-confirmation-mark {
+      align-items:center; background:rgba(74,185,123,.16); border:1px solid rgba(106,222,155,.45); border-radius:50%;
+      color:#a8efbf; display:flex; font-size:1.8rem; height:58px; justify-content:center; margin:0 auto 18px; width:58px;
+    }
+    .application-confirmation-card { max-width:560px; text-align:center; }
+    .application-confirmation-card .application-modal-title { margin-right:0; }
+    .application-confirmation-card .application-modal-intro { margin-left:auto; margin-right:auto; max-width:440px; }
+    .application-confirmation-emails {
+      background:rgba(126,184,232,.09); border:1px solid rgba(126,184,232,.27); border-radius:9px;
+      color:#dceaff; line-height:1.65; margin:20px 0; padding:14px 16px; text-align:left;
+    }
+    .application-confirmation-emails strong { color:#fff; display:block; font:700 .72rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin-bottom:5px; text-transform:uppercase; }
+    .application-confirmation-emails span { display:block; overflow-wrap:anywhere; }
+    @media(max-width:600px) {
+      .application-modal { padding:12px; }
+      .application-modal-card { max-height:calc(100vh - 24px); padding:25px 19px; }
+      .application-modal-title { font-size:1.8rem; }
+      .application-review-item { grid-template-columns:1fr; gap:4px; }
+      .application-modal-actions { justify-content:stretch; }
+      .application-modal-btn { flex:1; }
+    }
+
     /* ── Sidebar cards ── */
     .sidebar-card {
       background: rgba(10,32,68,0.5);
@@ -876,7 +935,7 @@
 
             <div class="form-submit-wrap">
               <button class="btn-submit" type="submit" id="submit-btn">
-                Submit Application →
+                Review Application →
               </button>
               <p class="form-note">
                 You will see a confirmation message on this page immediately after submitting.<br/>
@@ -886,6 +945,36 @@
           </div>
 
         </form>
+
+        <div class="application-modal" id="application-review-modal" role="dialog" aria-modal="true" aria-labelledby="application-review-title">
+          <div class="application-modal-card">
+            <button class="application-modal-close" type="button" data-close-modal="application-review-modal" aria-label="Close review">×</button>
+            <p class="application-modal-kicker">Step 2 of 2</p>
+            <h2 class="application-modal-title" id="application-review-title">Review your application</h2>
+            <p class="application-modal-intro">Please review the information below. Choose <strong>Edit application</strong> to make any changes before your final submission.</p>
+            <div class="application-review-list" id="application-review-list"></div>
+            <div class="application-modal-actions">
+              <button class="application-modal-btn secondary" type="button" data-close-modal="application-review-modal">Edit application</button>
+              <button class="application-modal-btn primary" type="button" id="final-submit-btn">Submit application</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="application-modal" id="application-confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="application-confirmation-title">
+          <div class="application-modal-card application-confirmation-card">
+            <button class="application-modal-close" type="button" data-close-modal="application-confirmation-modal" aria-label="Close confirmation">×</button>
+            <div class="application-confirmation-mark" aria-hidden="true">✓</div>
+            <p class="application-modal-kicker">Application submitted</p>
+            <h2 class="application-modal-title" id="application-confirmation-title">Thank you for applying</h2>
+            <p class="application-modal-intro">Coach Konde will review your application and follow up with next steps after the application deadline.</p>
+            <div class="application-confirmation-emails">
+              <strong>Application copies are being sent to</strong>
+              <span id="application-confirmation-student-email"></span>
+              <span id="application-confirmation-parent-email"></span>
+            </div>
+            <button class="application-modal-btn primary" type="button" data-close-modal="application-confirmation-modal">Done</button>
+          </div>
+        </div>
 
         <!-- SUCCESS MESSAGE -->
         <div class="form-success form-card" id="form-success" role="alert">
@@ -1012,6 +1101,14 @@
   const submitBtn = document.getElementById('submit-btn');
   const applicationCopyRecipient = document.getElementById('application-copy-recipient');
   const studentPersonalEmail = document.getElementById('student-personal-email');
+  const parentEmail = document.getElementById('parent-email');
+  const reviewModal = document.getElementById('application-review-modal');
+  const confirmationModal = document.getElementById('application-confirmation-modal');
+  const reviewList = document.getElementById('application-review-list');
+  const finalSubmitBtn = document.getElementById('final-submit-btn');
+  const confirmationStudentEmail = document.getElementById('application-confirmation-student-email');
+  const confirmationParentEmail = document.getElementById('application-confirmation-parent-email');
+  const confirmationStorageKey = 'cooper_application_confirmation_recipients';
 
   document.getElementById('next-url').value = window.location.origin + window.location.pathname + '?success=1';
 
@@ -1019,9 +1116,43 @@
     form.style.display = 'none';
     successDiv.classList.add('visible');
     successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const recipients = JSON.parse(sessionStorage.getItem(confirmationStorageKey) || '{}');
+    confirmationStudentEmail.textContent = recipients.student || 'Student personal email';
+    confirmationParentEmail.textContent = recipients.parent || 'Parent/guardian email';
+    confirmationModal.classList.add('is-open');
+    sessionStorage.removeItem(confirmationStorageKey);
   }
 
+  const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
+  }[char]));
+
+  function closeApplicationModal(modal) {
+    modal.classList.remove('is-open');
+  }
+
+  function openApplicationReview() {
+    const fields = Array.from(new FormData(form).entries())
+      .filter(([name, value]) => !name.startsWith('_') && value.trim());
+    reviewList.innerHTML = fields.map(([name, value]) => `
+      <div class="application-review-item">
+        <div class="application-review-label">${escapeHtml(name)}</div>
+        <div class="application-review-value">${escapeHtml(value)}</div>
+      </div>`).join('');
+    reviewModal.classList.add('is-open');
+  }
+
+  document.querySelectorAll('[data-close-modal]').forEach(button => {
+    button.addEventListener('click', () => closeApplicationModal(document.getElementById(button.dataset.closeModal)));
+  });
+  [reviewModal, confirmationModal].forEach(modal => {
+    modal.addEventListener('click', event => {
+      if (event.target === modal) closeApplicationModal(modal);
+    });
+  });
+
   form.addEventListener('submit', function(e) {
+    e.preventDefault();
     const required = form.querySelectorAll('[required]');
     let valid = true;
     required.forEach(el => {
@@ -1048,10 +1179,19 @@
     }
     applicationCopyRecipient.value = [
       studentPersonalEmail.value.trim(),
-      document.getElementById('parent-email').value.trim()
+      parentEmail.value.trim()
     ].filter((email, index, recipients) => email && recipients.indexOf(email) === index).join(',');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting…';
+    openApplicationReview();
+  });
+
+  finalSubmitBtn.addEventListener('click', () => {
+    finalSubmitBtn.disabled = true;
+    finalSubmitBtn.textContent = 'Submitting…';
+    sessionStorage.setItem(confirmationStorageKey, JSON.stringify({
+      student: studentPersonalEmail.value.trim(),
+      parent: parentEmail.value.trim()
+    }));
+    form.submit();
   });
 
   form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
