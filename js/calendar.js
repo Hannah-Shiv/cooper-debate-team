@@ -508,15 +508,17 @@ function renderNextBanner() {
   const banner = document.getElementById("next-tournament-banner");
   if (!banner) return;
   const now = new Date();
-  const upcoming = _tournaments
-    .filter(t => t.type === "tournament" && t.start?.toDate && t.start.toDate() > now)
-    .sort((a, b) => a.start.toDate() - b.start.toDate());
+  const eventDate = event => event.start?.toDate ? event.start.toDate() : new Date(event.start);
+  const upcoming = calendarEventDocs()
+    .filter(t => t.type === "tournament" && eventDate(t) > now)
+    .sort((a, b) => eventDate(a) - eventDate(b));
   if (!upcoming.length) { banner.style.display = "none"; return; }
   const next    = upcoming[0];
-  const diff    = next.start.toDate() - now;
+  const nextDate = eventDate(next);
+  const diff    = nextDate - now;
   const days    = Math.floor(diff / 86400000);
   const hours   = Math.floor((diff % 86400000) / 3600000);
-  const dateStr = next.start.toDate().toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric" });
+  const dateStr = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric" });
   const dayWord  = days === 1 ? "1 day" : `${days} days`;
   const hourWord = hours === 1 ? "1 hour" : `${hours} hours`;
   const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
