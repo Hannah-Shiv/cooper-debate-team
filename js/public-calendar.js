@@ -146,9 +146,19 @@
   }
 
   function publicEventsForSeason() {
-    const publishedDates = new Set(latestPublishedEvents.map(event => nyDateKey(event.start)));
+    const timestamp = value => value?.toDate ? value.toDate().getTime() : 0;
+    const publishedByDate = new Map();
+    latestPublishedEvents.forEach(event => {
+      const key = `${event.type || "tournament"}|${nyDateKey(event.start)}`;
+      const existing = publishedByDate.get(key);
+      if (!existing || timestamp(event.updatedAt) >= timestamp(existing.updatedAt)) {
+        publishedByDate.set(key, event);
+      }
+    });
+    const publishedEvents = [...publishedByDate.values()];
+    const publishedDates = new Set(publishedEvents.map(event => nyDateKey(event.start)));
     const bootstrap = KICKOFF_EVENTS.filter(event => !publishedDates.has(nyDateKey(event.start)));
-    return [...bootstrap, ...latestPublishedEvents]
+    return [...bootstrap, ...publishedEvents]
       .filter(event => event.season === PUBLIC_SEASON)
       .sort((a, b) => eventStart(a) - eventStart(b));
   }

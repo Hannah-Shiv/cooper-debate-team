@@ -463,7 +463,14 @@ function initFullCalendar() {
       }, 0);
     },
     eventDidMount: info => {
-      if (info.event.extendedProps._isBg) return; // background fill handled by FC
+      if (info.event.extendedProps._isBg) {
+        // Background events belong to the Week/Day timeline only. FullCalendar
+        // can paint them across a blank adjacent cell in Month view.
+        if (info.view.type === "dayGridMonth") {
+          info.el.style.setProperty("display", "none", "important");
+        }
+        return;
+      }
 
       const viewType   = info.view.type;
       const isDeadline = info.event.id.endsWith("__deadline");
