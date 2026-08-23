@@ -12,6 +12,7 @@ const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { defineSecret }      = require("firebase-functions/params");
 const crypto = require("node:crypto");
 const { createVolunteerEmailService } = require("./volunteer-email");
+const { createApplicationEmailService } = require("./application-email");
 
 initializeApp();
 
@@ -241,9 +242,18 @@ const TURNSTILE_HOSTNAMES = new Set([
   "cooperdebateteam.com",
   "www.cooperdebateteam.com",
 ]);
+const APPLICATION_ORIGINS = new Set([
+  "https://cooperdebateteam.com",
+  "https://www.cooperdebateteam.com",
+]);
 const volunteerEmail = createVolunteerEmailService({
   db: getFirestore(),
   resendSecret,
+});
+const applicationEmail = createApplicationEmailService({
+  db: getFirestore(),
+  resendSecret,
+  coachEmails: [...COACH_EMAILS],
 });
 
 function cleanText(value, maxLength) {
@@ -252,6 +262,111 @@ function cleanText(value, maxLength) {
 
 function validEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function cleanEmail(value) {
+  return cleanText(value, 160).toLowerCase();
+}
+
+function applicationContentHash(application) {
+  return crypto.createHash("sha256").update(JSON.stringify(application)).digest("hex");
+}
+
+function submissionClientAddress(req) {
+  const forwarded = cleanText(req.headers["x-forwarded-for"], 512);
+  // Google proxies append the observed caller address to the forwarding chain.
+  // Prefer that final value instead of trusting an arbitrary caller-supplied prefix.
+  return (forwarded ? forwarded.split(",").at(-1) : req.ip || "").trim();
+}
+
+async function reserveApplicationRateLimit(db, req) {
+  const fingerprint = crypto.createHash("sha256")
+    .update(submissionClientAddress(req) || "unknown")
+    .digest("hex");
+  const reference = db.collection("application_submission_limits").doc(fingerprint);
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+
+  await db.runTransaction(async transaction => {
+    const existing = await transaction.get(reference);
+    const data = existing.exists ? existing.data() : {};
+    const startedAtMs = Number(data.windowStartedAtMs) || now;
+    const inWindow = now - startedAtMs < windowMs;
+    const count = inWindow ? Number(data.count || 0) : 0;
+    if (count >= 3) {
+      throw new Error("Please wait a few minutes before submitting another application.");
+    }
+    transaction.set(reference, {
+      count: count + 1,
+      windowStartedAtMs: inWindow ? startedAtMs : now,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+  });
+}
+
+function normalizeApplication(body) {
+  const source = body && typeof body.application === "object" && body.application
+    ? body.application
+    : {};
+  const studentSource = source.student && typeof source.student === "object" ? source.student : {};
+  const parentSource = source.parent && typeof source.parent === "object" ? source.parent : {};
+  const commitmentSource = source.commitments && typeof source.commitments === "object" ? source.commitments : {};
+  const answerSource = source.answers && typeof source.answers === "object" ? source.answers : {};
+  const student = {
+    firstName: cleanText(studentSource.firstName, 60),
+    lastName: cleanText(studentSource.lastName, 60),
+    grade: cleanText(studentSource.grade, 24),
+    studentId: cleanText(studentSource.studentId, 64),
+    schoolEmail: cleanEmail(studentSource.schoolEmail),
+    personalEmail: cleanEmail(studentSource.personalEmail),
+    debateExperience: cleanText(studentSource.debateExperience, 200),
+  };
+  const parent = {
+    firstName: cleanText(parentSource.firstName, 60),
+    lastName: cleanText(parentSource.lastName, 60),
+    email: cleanEmail(parentSource.email),
+    phone: cleanText(parentSource.phone, 40),
+    relationship: cleanText(parentSource.relationship, 32),
+  };
+  const commitments = {
+    tuesdayMeetings: commitmentSource.tuesdayMeetings === true,
+    saturdayTournaments: commitmentSource.saturdayTournaments === true,
+    partnerCommitment: commitmentSource.partnerCommitment === true,
+    researchPreparation: commitmentSource.researchPreparation === true,
+    teamFee: commitmentSource.teamFee === true,
+    judgeVolunteer: commitmentSource.judgeVolunteer === true,
+    transportation: commitmentSource.transportation === true,
+    googleMeets: commitmentSource.googleMeets === true,
+  };
+  const answers = {
+    whyJoin: cleanText(answerSource.whyJoin, 2500),
+    experienceDetail: cleanText(answerSource.experienceDetail, 1800),
+    scheduleConflicts: cleanText(answerSource.scheduleConflicts, 1800),
+    anythingElse: cleanText(answerSource.anythingElse, 1600),
+  };
+  const application = {
+    season: "2026-2027",
+    student,
+    parent,
+    commitments,
+    answers,
+    parentAgreement: source.parentAgreement === true,
+    parentSignature: cleanText(source.parentSignature, 120),
+  };
+
+  if (
+    !student.firstName || !student.lastName || !student.studentId ||
+    !["7th Grade", "8th Grade"].includes(student.grade) ||
+    !validEmail(student.schoolEmail) || !student.schoolEmail.endsWith("@fcpsschools.net") ||
+    !validEmail(student.personalEmail) || student.personalEmail.endsWith("@fcpsschools.net") ||
+    !parent.firstName || !parent.lastName || !validEmail(parent.email) || !parent.phone ||
+    !["Mother", "Father", "Guardian", "Other"].includes(parent.relationship) ||
+    !answers.whyJoin || !application.parentSignature || !application.parentAgreement ||
+    Object.values(commitments).some(confirmed => !confirmed)
+  ) {
+    throw new Error("Please complete every required application field before submitting.");
+  }
+  return application;
 }
 
 function cleanTime(value) {
@@ -519,6 +634,149 @@ exports.publicVolunteerSignup = onRequest(
         : "We could not complete your signup. Please try again.";
       console.error("publicVolunteerSignup POST failed:", error);
       res.status(400).json({ error: message });
+    }
+  }
+);
+
+// ── Public team application submission ───────────────────────────
+// Applications are validated and written by the Admin SDK. Browser clients
+// never receive read access to these private records.
+exports.submitApplication = onRequest(
+  { region: "us-central1", cors: [...APPLICATION_ORIGINS], secrets: [resendSecret] },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.set("Allow", "POST");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    if (!APPLICATION_ORIGINS.has(cleanText(req.headers.origin, 200))) {
+      res.status(403).json({ error: "Applications must be submitted through the Cooper Debate Team website." });
+      return;
+    }
+
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    if (cleanText(body.honey, 200)) {
+      // Bots should not receive a useful signal that their submission was rejected.
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    const submissionId = cleanText(body.submissionId, 80);
+    if (!/^[a-zA-Z0-9_-]{20,80}$/.test(submissionId)) {
+      res.status(400).json({ error: "Your application reference is invalid. Please review the form and try again." });
+      return;
+    }
+
+    let application;
+    try {
+      application = normalizeApplication(body);
+    } catch (error) {
+      res.status(400).json({ error: cleanText(error.message, 240) || "Please review your application and try again." });
+      return;
+    }
+
+    const db = getFirestore();
+    const applicationRef = db.collection("applications").doc(submissionId);
+    const contentHash = applicationContentHash(application);
+    let applicationSaved = false;
+    try {
+      let existing = await applicationRef.get();
+      if (existing.exists && existing.data().contentHash !== contentHash) {
+        res.status(409).json({ error: "This application reference is already in use. Please refresh the page and try again." });
+        return;
+      }
+      applicationSaved = existing.exists;
+
+      if (!existing.exists) {
+        await reserveApplicationRateLimit(db, req);
+        try {
+          await applicationRef.create({
+            ...application,
+            contentHash,
+            emailStatus: "pending",
+            createdAt: FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+          applicationSaved = true;
+        } catch (error) {
+          // A double click or network retry can race the first create. Reuse
+          // the same submission reference only when its saved content matches.
+          existing = await applicationRef.get();
+          if (!existing.exists || existing.data().contentHash !== contentHash) throw error;
+          applicationSaved = true;
+        }
+      }
+
+      await applicationEmail.sendApplicationCopies(submissionId, application);
+      await applicationRef.set({
+        emailStatus: "accepted",
+        emailAcceptedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      res.status(201).json({ ok: true });
+    } catch (error) {
+      console.error("submitApplication POST failed:", {
+        submissionId,
+        error: cleanText(error && error.message, 400),
+      });
+      if (applicationSaved) {
+        await applicationRef.set({
+          emailStatus: "failed",
+          emailError: cleanText(error && error.message, 300) || "Email delivery could not be completed.",
+          emailFailedAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true }).catch(() => {});
+        res.status(502).json({
+          error: "Your application was saved, but the email copies could not be requested yet. Please try submitting again in a moment.",
+        });
+      } else {
+        res.status(429).json({
+          error: cleanText(error && error.message, 240) || "Please wait a few minutes before trying again.",
+        });
+      }
+    }
+  }
+);
+
+// A temporary Resend outage should never strand a saved application. Failed
+// delivery requests are retried server-side; each recipient has its own
+// idempotency key, so messages already accepted by Resend are not duplicated.
+exports.retryFailedApplicationEmails = onSchedule(
+  {
+    schedule: "every 15 minutes",
+    region: "us-central1",
+    timeoutSeconds: 540,
+    secrets: [resendSecret],
+  },
+  async () => {
+    const db = getFirestore();
+    const failed = await db.collection("applications")
+      .where("emailStatus", "==", "failed")
+      .limit(100)
+      .get();
+    for (const applicationDoc of failed.docs) {
+      const application = applicationDoc.data();
+      try {
+        await applicationEmail.sendApplicationCopies(applicationDoc.id, application);
+        await applicationDoc.ref.set({
+          emailStatus: "accepted",
+          emailAcceptedAt: FieldValue.serverTimestamp(),
+          emailRetryAcceptedAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
+      } catch (error) {
+        await applicationDoc.ref.set({
+          emailStatus: "failed",
+          emailError: cleanText(error && error.message, 300) || "Email delivery could not be completed.",
+          emailFailedAt: FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
+        console.error("retryFailedApplicationEmails failed:", {
+          submissionId: applicationDoc.id,
+          error: cleanText(error && error.message, 400),
+        });
+      }
     }
   }
 );

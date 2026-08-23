@@ -674,19 +674,8 @@
 
       <!-- LEFT: THE FORM -->
       <div>
-        <form
-          id="apply-form"
-           action="https://formsubmit.co/hannahbshiv@gmail.com"
-          method="POST"
-          novalidate
-        >
-          <!-- Hidden fields for formsubmit.co -->
-          <input type="hidden" name="_subject" value="New Cooper Debate Team Application 2026-27"/>
-          <input type="hidden" name="_captcha" value="false"/>
-          <input type="hidden" name="_template" value="table"/>
-          <input type="hidden" name="_next" id="next-url" value=""/>
-          <input type="hidden" name="_cc" id="application-copy-recipient" value=""/>
-          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off"/>
+        <form id="apply-form" novalidate>
+          <input type="text" id="application-honey" name="honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
           <!-- ── SECTION 1: Student Information ── -->
           <div id="section-1" class="form-card card-gold">
@@ -974,7 +963,7 @@
             <h2 class="application-modal-title" id="application-confirmation-title">Thank you for applying</h2>
             <p class="application-modal-intro">Coach Konde will review your application and follow up with next steps after the application deadline.</p>
             <div class="application-confirmation-emails">
-              <strong>Your application has been submitted. Complete copies are being sent to</strong>
+              <strong>The email service accepted complete copies for delivery to</strong>
               <span id="application-confirmation-student-email"></span>
               <span id="application-confirmation-parent-email"></span>
             </div>
@@ -1105,7 +1094,6 @@
   const form = document.getElementById('apply-form');
   const successDiv = document.getElementById('form-success');
   const submitBtn = document.getElementById('submit-btn');
-  const applicationCopyRecipient = document.getElementById('application-copy-recipient');
   const studentPersonalEmail = document.getElementById('student-personal-email');
   const parentEmail = document.getElementById('parent-email');
   const reviewModal = document.getElementById('application-review-modal');
@@ -1115,18 +1103,22 @@
   const confirmationStudentEmail = document.getElementById('application-confirmation-student-email');
   const confirmationParentEmail = document.getElementById('application-confirmation-parent-email');
   const applicationSubmitError = document.getElementById('application-submit-error');
-  const confirmationStorageKey = 'cooper_application_confirmation_recipients';
-
-  if (window.location.search.includes('success=1')) {
-    form.style.display = 'none';
-    successDiv.classList.add('visible');
-    successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    const recipients = JSON.parse(sessionStorage.getItem(confirmationStorageKey) || '{}');
-    confirmationStudentEmail.textContent = recipients.student || 'Student personal email';
-    confirmationParentEmail.textContent = recipients.parent || 'Parent/guardian email';
-    confirmationModal.classList.add('is-open');
-    sessionStorage.removeItem(confirmationStorageKey);
-  }
+  const applicationEndpoint = 'https://us-central1-cooper-debate-team.cloudfunctions.net/submitApplication';
+  const pendingApplicationStorageKey = 'cooper_pending_application';
+  const createSubmissionId = () => window.crypto && window.crypto.randomUUID
+    ? window.crypto.randomUUID()
+    : `application-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  const readPendingApplication = () => {
+    try {
+      return JSON.parse(sessionStorage.getItem(pendingApplicationStorageKey) || 'null');
+    } catch (_) {
+      return null;
+    }
+  };
+  const pendingApplication = readPendingApplication();
+  let submissionId = pendingApplication && typeof pendingApplication.submissionId === 'string'
+    ? pendingApplication.submissionId
+    : createSubmissionId();
 
   const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
@@ -1156,6 +1148,100 @@
     successDiv.classList.add('visible');
     successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     confirmationModal.classList.add('is-open');
+    sessionStorage.removeItem(pendingApplicationStorageKey);
+  }
+
+  function applicationPayload() {
+    const value = id => document.getElementById(id).value.trim();
+    const checked = selector => Boolean(form.querySelector(selector).checked);
+    return {
+      submissionId,
+      honey: document.getElementById('application-honey').value.trim(),
+      application: {
+        student: {
+          firstName: value('first-name'),
+          lastName: value('last-name'),
+          grade: value('grade'),
+          studentId: value('student-id'),
+          schoolEmail: value('student-school-email'),
+          personalEmail: value('student-personal-email'),
+          debateExperience: value('debate-exp')
+        },
+        parent: {
+          firstName: value('parent-first'),
+          lastName: value('parent-last'),
+          email: value('parent-email'),
+          phone: value('parent-phone'),
+          relationship: value('parent-relation')
+        },
+        commitments: {
+          tuesdayMeetings: checked('[name="Student commits to recurring Tuesday team meetings"]'),
+          saturdayTournaments: checked('[name="Student commits to attending at least 3 of 5 Saturday tournaments"]'),
+          partnerCommitment: checked('[name="Student commits to not dropping their debate partner"]'),
+          researchPreparation: checked('[name="Student commits to independent research and speech prep"]'),
+          teamFee: checked('[name="Parent is aware of the $15 per student team fee"]'),
+          judgeVolunteer: checked('[name="Parent will volunteer as a tournament judge for at least 1 tournament"]'),
+          transportation: checked('[name="Parent will arrange driving or carpooling to tournaments"]'),
+          googleMeets: checked('[name="Parent will attend the required team Google Meet sessions"]')
+        },
+        answers: {
+          whyJoin: value('why-join'),
+          experienceDetail: value('experience-detail'),
+          scheduleConflicts: value('schedule-conflicts'),
+          anythingElse: value('anything-else')
+        },
+        parentAgreement: checked('[name="Parent/Guardian has read and agrees to all commitments above"]'),
+        parentSignature: value('parent-sig')
+      }
+    };
+  }
+
+  function restorePendingApplication(application) {
+    if (!application || typeof application !== 'object') return;
+    const student = application.student || {};
+    const parent = application.parent || {};
+    const commitments = application.commitments || {};
+    const answers = application.answers || {};
+    const values = {
+      'first-name': student.firstName,
+      'last-name': student.lastName,
+      grade: student.grade,
+      'student-id': student.studentId,
+      'student-school-email': student.schoolEmail,
+      'student-personal-email': student.personalEmail,
+      'debate-exp': student.debateExperience,
+      'parent-first': parent.firstName,
+      'parent-last': parent.lastName,
+      'parent-email': parent.email,
+      'parent-phone': parent.phone,
+      'parent-relation': parent.relationship,
+      'why-join': answers.whyJoin,
+      'experience-detail': answers.experienceDetail,
+      'schedule-conflicts': answers.scheduleConflicts,
+      'anything-else': answers.anythingElse,
+      'parent-sig': application.parentSignature
+    };
+    Object.entries(values).forEach(([id, value]) => {
+      if (typeof value === 'string') document.getElementById(id).value = value;
+    });
+    const checks = [
+      ['Student commits to recurring Tuesday team meetings', commitments.tuesdayMeetings],
+      ['Student commits to attending at least 3 of 5 Saturday tournaments', commitments.saturdayTournaments],
+      ['Student commits to not dropping their debate partner', commitments.partnerCommitment],
+      ['Student commits to independent research and speech prep', commitments.researchPreparation],
+      ['Parent is aware of the $15 per student team fee', commitments.teamFee],
+      ['Parent will volunteer as a tournament judge for at least 1 tournament', commitments.judgeVolunteer],
+      ['Parent will arrange driving or carpooling to tournaments', commitments.transportation],
+      ['Parent will attend the required team Google Meet sessions', commitments.googleMeets],
+      ['Parent/Guardian has read and agrees to all commitments above', application.parentAgreement]
+    ];
+    checks.forEach(([name, checked]) => {
+      form.querySelector(`[name="${name}"]`).checked = checked === true;
+    });
+  }
+
+  if (pendingApplication && pendingApplication.application) {
+    restorePendingApplication(pendingApplication.application);
   }
 
   document.querySelectorAll('[data-close-modal]').forEach(button => {
@@ -1175,7 +1261,7 @@
       if (el.type === 'checkbox' && !el.checked) {
         el.closest('.check-item').style.borderColor = 'rgba(220,60,60,0.6)';
         valid = false;
-      } else if (el.type !== 'checkbox' && !el.value.trim()) {
+      } else if (el.type !== 'checkbox' && (!el.value.trim() || !el.checkValidity())) {
         el.style.borderColor = 'rgba(220,60,60,0.6)';
         valid = false;
       }
@@ -1193,10 +1279,6 @@
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
-    applicationCopyRecipient.value = [
-      studentPersonalEmail.value.trim(),
-      parentEmail.value.trim()
-    ].filter((email, index, recipients) => email && recipients.indexOf(email) === index).join(',');
     openApplicationReview();
   });
 
@@ -1205,24 +1287,24 @@
     finalSubmitBtn.textContent = 'Submitting…';
     applicationSubmitError.classList.remove('visible');
 
-    const submission = Object.fromEntries(new FormData(form));
-    delete submission._next;
     try {
-      const response = await fetch(form.action.replace('https://formsubmit.co/', 'https://formsubmit.co/ajax/'), {
+      const payload = applicationPayload();
+      sessionStorage.setItem(pendingApplicationStorageKey, JSON.stringify(payload));
+      const response = await fetch(applicationEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         },
-        body: JSON.stringify(submission)
+        body: JSON.stringify(payload)
       });
-      const result = await response.json();
-      if (!response.ok || result.success === false || result.success === 'false') {
-        throw new Error('FormSubmit did not accept the application.');
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.ok !== true) {
+        throw new Error(result.error || 'Your application could not be submitted yet.');
       }
       showSubmissionConfirmation();
     } catch (error) {
-      applicationSubmitError.textContent = 'Your application could not be sent yet. Please check your connection and try submitting again.';
+      applicationSubmitError.textContent = error.message || 'Your application could not be sent yet. Please check your connection and try submitting again.';
       applicationSubmitError.classList.add('visible');
       finalSubmitBtn.disabled = false;
       finalSubmitBtn.textContent = 'Submit application';

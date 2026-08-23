@@ -101,5 +101,25 @@ service cloud.firestore {
       allow write: if false;  // Cloud Functions use the Admin SDK
     }
 
+    // Team applications contain student and family contact information.
+    // They are created and updated only through the validated Cloud Function.
+    match /applications/{docId} {
+      allow read:  if isCoach();
+      allow write: if false;
+    }
+
+    // Email acceptance records support coach-only delivery audits. They do not
+    // contain application answers and are written only by the Cloud Function.
+    match /application_email_notifications/{docId} {
+      allow read:  if isCoach();
+      allow write: if false;
+    }
+
+    // A hashed, server-only rate-limit marker prevents the public application
+    // endpoint from being used for unchecked mass-email requests.
+    match /application_submission_limits/{docId} {
+      allow read, write: if false;
+    }
+
   }
 }
