@@ -557,7 +557,7 @@
       <div class="tab-bar">
         <button class="tab-btn active" id="tab-dir" onclick="switchTab('directory')">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/></svg>
-          Debater Directory
+          Debaters
         </button>
         <button class="tab-btn" id="tab-roster" onclick="switchTab('roster')" style="display:none">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -596,11 +596,11 @@
           <div class="dir-meta-bar">
             <span class="dir-count" id="dir-count"></span>
             <div class="dir-view-toggle">
-              <button class="dir-view-btn active" id="view-btn-cards" onclick="setView('cards')">
+              <button class="dir-view-btn" id="view-btn-cards" onclick="setView('cards')">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
                 Cards View
               </button>
-              <button class="dir-view-btn" id="view-btn-table" onclick="setView('table')">
+              <button class="dir-view-btn active" id="view-btn-table" onclick="setView('table')">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 Table View
               </button>
@@ -1715,7 +1715,7 @@ let _profName      = '';
 let currentSort    = 'name';
 let currentSortDir = 'asc';   // 'asc' | 'desc'
 let currentFilter  = 'all';
-let currentView    = 'cards'; // 'cards' | 'table'
+let currentView    = 'table'; // 'cards' | 'table'
 let tablePage      = 1;
 const TABLE_PAGE_SIZE = 10;
 

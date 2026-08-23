@@ -3566,26 +3566,28 @@ function renderAll() {
 
   buildFilterSelects();
 
-  // Auto-default to the current academic season when it has at least one tournament.
+  // Start on the most recently populated academic season. A new school year
+  // begins as its own empty dataset; no results are carried or combined across
+  // seasons. This keeps 2025–26 visible until 2026–27 has a scored tournament.
   // Season boundary: Aug–Jul (e.g. Aug 2025–Jul 2026 = "2025–26", start year 2025).
-  const currentSeasonYear = dateToSeasonYear(new Date());
-  const hasCurrentSeason  = allTournaments.some(t => {
+  const availableSeasons = [...new Set(allTournaments.map(t => {
     const d = parseTournDate(t.meta.date);
-    return !isNaN(d) && dateToSeasonYear(d) === currentSeasonYear;
-  });
+    return isNaN(d) ? null : dateToSeasonYear(d);
+  }).filter(year => year !== null))].sort((a, b) => b - a);
+  const defaultSeasonYear = availableSeasons[0];
 
-  if (hasCurrentSeason) {
+  if (defaultSeasonYear !== undefined) {
     activeTimeMode = 'season';
     ['all','season','month'].forEach(m => {
       const btn = document.getElementById('tf-' + m);
       if (btn) btn.classList.toggle('active', m === 'season');
     });
-    document.getElementById('tf-season-sel').value        = String(currentSeasonYear);
+    document.getElementById('tf-season-sel').value        = String(defaultSeasonYear);
     document.getElementById('tf-season-sel').style.display = 'inline-block';
     document.getElementById('tf-month-sel').style.display  = 'none';
     filteredTourns = allTournaments.filter(t => {
       const d = parseTournDate(t.meta.date);
-      return !isNaN(d) && dateToSeasonYear(d) === currentSeasonYear;
+      return !isNaN(d) && dateToSeasonYear(d) === defaultSeasonYear;
     });
   } else {
     filteredTourns = [...allTournaments];

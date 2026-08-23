@@ -41,7 +41,7 @@
       icon: '<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'
     },
     {
-      cls: 'dn-p3', href: 'members-directory.html', label: 'Directory',
+      cls: 'dn-p3', href: 'members-directory.html', label: 'Members',
       active: PAGE === 'directory',
       /* two people */
       icon: '<circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/>'
