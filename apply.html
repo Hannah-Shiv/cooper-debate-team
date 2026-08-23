@@ -336,13 +336,16 @@
     }
     .form-select option { background: #0B2545; color: #fff; }
     .form-textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
-    .external-email-note {
-      background:rgba(184,111,20,.11); border-left:3px solid #E8C47C; border-radius:0 6px 6px 0;
-      color:rgba(255,237,194,.9); font-size:.82rem; line-height:1.5; margin:2px 0 0; padding:8px 10px;
+    .email-delivery-note {
+      align-items:flex-start; background:rgba(126,184,232,.08); border:1px solid rgba(126,184,232,.24);
+      border-left:3px solid #7EB8E8; border-radius:7px; color:rgba(255,255,255,.92); display:flex;
+      font-size:.84rem; gap:11px; line-height:1.55; margin:-3px 0 16px; padding:10px 13px;
     }
-    .external-email-note strong { color:#ffe1a0; }
-    .email-copy-note { color:rgba(218,232,255,.82); font-size:.82rem; line-height:1.5; margin:2px 0 0; }
-    .email-copy-note strong { color:#d8edff; }
+    .email-delivery-note::before {
+      border:1px solid rgba(126,184,232,.65); border-radius:50%; color:#d9f0ff; content:"i";
+      flex:0 0 18px; font:700 .76rem/17px Georgia,serif; margin-top:1px; text-align:center;
+    }
+    .email-delivery-note strong { color:#fff; }
 
     /* ── Commitment schedule note ── */
     .schedule-note {
@@ -660,8 +663,10 @@
               <div class="form-group">
                 <label class="form-label" for="student-personal-email">Student Personal Email <span class="req">*</span></label>
                 <input class="form-input" type="email" id="student-personal-email" name="Student Personal Email" placeholder="student@gmail.com" required autocomplete="email"/>
-                <p class="external-email-note"><strong>Important:</strong> An <strong>@fcpsschools.net</strong> address will not work for confirmations. Use a personal email such as <strong>@gmail.com</strong>, <strong>@yahoo.com</strong>, or another address that can send and receive external email. <strong>A copy of this application will be sent to this email address.</strong></p>
               </div>
+            </div>
+            <div class="email-delivery-note">
+              <span><strong>Email delivery:</strong> A complete copy of this application will be sent to the student's personal email. An <strong>@fcpsschools.net</strong> address cannot receive these confirmations, so use a personal <strong>@gmail.com</strong>, <strong>@yahoo.com</strong>, or other external email address.</span>
             </div>
 
             <div class="form-row">
@@ -698,12 +703,14 @@
               <div class="form-group">
                 <label class="form-label" for="parent-email">Parent Email <span class="req">*</span> <span style="font-size:.72em;font-weight:400;letter-spacing:.04em;text-transform:none;">(receives a copy)</span></label>
                 <input class="form-input" type="email" id="parent-email" name="Parent Email" placeholder="parent@email.com" required autocomplete="email"/>
-                <p class="email-copy-note"><strong>A copy of this application will be sent to this email address.</strong></p>
               </div>
               <div class="form-group">
                 <label class="form-label" for="parent-phone">Parent Phone <span class="req">*</span></label>
                 <input class="form-input" type="tel" id="parent-phone" name="Parent Phone" placeholder="(703) 555-0100" required autocomplete="tel"/>
               </div>
+            </div>
+            <div class="email-delivery-note">
+              <span><strong>Parent copy:</strong> A complete copy of this application will also be sent to the parent/guardian email address above.</span>
             </div>
 
             <div class="form-row">
