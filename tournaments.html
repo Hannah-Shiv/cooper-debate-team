@@ -122,8 +122,8 @@
       .public-calendar-legend { gap:9px; margin-bottom:11px; }
       .public-calendar-legend span { font-size:.57rem; letter-spacing:.06em; }
       .public-calendar-legend i { height:8px; margin-right:5px; width:8px; }
-      .public-calendar-shell { border-radius:8px; }
-      #public-calendar { min-height:0; }
+      .public-calendar-shell { border-radius:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
+      #public-calendar { min-height:0; min-width:640px; }
       #public-calendar .fc-toolbar {
         align-items:center; display:grid!important; gap:10px; grid-template-areas:"title title" "nav view";
         grid-template-columns:1fr auto; padding:12px;
@@ -133,7 +133,8 @@
       #public-calendar .fc-toolbar-chunk:nth-child(3) { grid-area:view; }
       #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
       #public-calendar .fc-button { font-size:.59rem!important; padding:7px 9px!important; }
-      #public-calendar .fc-dayGridMonth-button { display:none!important; }
+      #public-calendar .fc-listMonth-button { display:none!important; }
+      #public-calendar .fc-daygrid-day-frame { min-height:84px!important; }
       #public-calendar .fc-list { font-size:.84rem; }
       #public-calendar .fc-list-day-cushion { padding:10px 12px!important; }
       #public-calendar .fc-list-event-time { padding:13px 8px 13px 12px!important; width:76px; }
@@ -1381,7 +1382,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=3"></script>
+<script src="js/public-calendar.js?v=4"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>

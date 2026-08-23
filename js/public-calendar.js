@@ -29,7 +29,6 @@
   let events = [...KICKOFF_EVENTS];
   let latestPublishedEvents = [];
   let countdownTimer = null;
-  const mobileCalendar = window.matchMedia("(max-width: 700px)");
 
   const byId = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/[&<>"']/g, char => ({
@@ -196,7 +195,7 @@
     if (!calendar) {
       calendar = new FullCalendar.Calendar(mount, {
         timeZone: "America/New_York",
-        initialView: window.matchMedia("(max-width: 700px)").matches ? "listMonth" : "dayGridMonth",
+        initialView: "dayGridMonth",
         initialDate: currentOrNextMonthDate(),
         headerToolbar: {
           left: "prev,next today",
@@ -240,6 +239,9 @@
         }
       });
       calendar.render();
+      // The calendar may be created while its tab is visually hidden. A
+      // follow-up size pass keeps the month grid visible on narrow screens.
+      requestAnimationFrame(() => calendar.updateSize());
     } else {
       resetCellColors();
       calendar.removeAllEvents();
@@ -277,12 +279,6 @@
     events = publicEventsForSeason();
     renderCalendar(resetMonth);
     renderCountdown();
-  }
-
-  function syncResponsiveCalendarView() {
-    if (!calendar) return;
-    const preferredView = mobileCalendar.matches ? "listMonth" : "dayGridMonth";
-    if (calendar.view.type !== preferredView) calendar.changeView(preferredView);
   }
 
   function formatEventDate(event) {
@@ -352,11 +348,6 @@
     window.addEventListener("public-calendar-visible", event => {
       if (event.detail?.visible && calendar) calendar.updateSize();
     });
-    if (typeof mobileCalendar.addEventListener === "function") {
-      mobileCalendar.addEventListener("change", syncResponsiveCalendarView);
-    } else {
-      mobileCalendar.addListener(syncResponsiveCalendarView);
-    }
     updateView(true);
     countdownTimer = window.setInterval(renderCountdown, 60000);
     listenForPublishedEvents();
