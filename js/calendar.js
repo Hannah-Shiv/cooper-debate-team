@@ -119,14 +119,29 @@ function calendarEventDocs() {
     const date = event.start?.toDate ? event.start.toDate() : new Date(event.start);
     return date.toLocaleDateString("en-CA", { timeZone:"America/New_York" });
   };
-  const managedDates = new Set(_tournaments.map(dateKey));
+  const timestamp = value => value?.toDate ? value.toDate().getTime() : 0;
+  const displayKey = event => event.kickoffEventId
+    ? `kickoff:${event.kickoffEventId}`
+    : `event:${event.type || ""}|${String(event.title || "").trim().toLowerCase()}|${dateKey(event)}`;
+  const managedByKey = new Map();
+  _tournaments.forEach(event => {
+    const key = displayKey(event);
+    const existing = managedByKey.get(key);
+    const eventUpdated = timestamp(event.updatedAt) || timestamp(event.createdAt);
+    const existingUpdated = existing
+      ? (timestamp(existing.updatedAt) || timestamp(existing.createdAt))
+      : -1;
+    if (!existing || eventUpdated >= existingUpdated) managedByKey.set(key, event);
+  });
+  const managedEvents = [...managedByKey.values()];
+  const managedDates = new Set(managedEvents.map(dateKey));
   const replacedKickoffIds = new Set(
-    _tournaments.map(event => event.kickoffEventId).filter(Boolean)
+    managedEvents.map(event => event.kickoffEventId).filter(Boolean)
   );
   const unpublishedKickoff = FALL_2026_KICKOFF_EVENTS.filter(event =>
     !replacedKickoffIds.has(event.id) && !managedDates.has(dateKey(event))
   );
-  return [..._tournaments, ...unpublishedKickoff];
+  return [...managedEvents, ...unpublishedKickoff];
 }
 
 // ── Auth helpers (mirrors members-auth.js; members-auth.js is not loaded here) ──
