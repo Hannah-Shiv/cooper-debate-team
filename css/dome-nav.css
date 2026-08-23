@@ -179,23 +179,6 @@
 .dn-p1, .dn-p2 { font-size: 13px; }
 .dn-p6 { font-size: 9.5px; letter-spacing: 0.01em; }
 
-/* Coaches get one additional private destination. This only appears after
-   Firebase Auth identifies the viewer as a coach (see members-nav.js). */
-#circ-wrap.member-dome.coach-dome .dn-p1 { left:-136px; top:-6px; transform-origin:172px 42px; }
-#circ-wrap.member-dome.coach-dome .dn-p2 { left:-120px; top:57px; transform-origin:156px -21px; }
-#circ-wrap.member-dome.coach-dome .dn-p3 { left:-74px; top:105px; transform-origin:110px -69px; }
-#circ-wrap.member-dome.coach-dome .dn-p4 { left:-5px; top:123px; transform-origin:41px -87px; }
-#circ-wrap.member-dome.coach-dome .dn-p5 { left:64px; top:105px; transform-origin:-28px -69px; }
-#circ-wrap.member-dome.coach-dome .dn-p6 { left:110px; top:57px; transform-origin:-74px -21px; }
-#circ-wrap.member-dome.coach-dome .dn-p7 { left:124px; top:-6px; transform-origin:-88px 42px; font-size:8px; letter-spacing:0; }
-#circ-wrap.member-dome.coach-dome .dn-p1,
-#circ-wrap.member-dome.coach-dome .dn-p7 { transition-delay:.05s; }
-#circ-wrap.member-dome.coach-dome .dn-p2,
-#circ-wrap.member-dome.coach-dome .dn-p6 { transition-delay:.08s; }
-#circ-wrap.member-dome.coach-dome .dn-p3,
-#circ-wrap.member-dome.coach-dome .dn-p5 { transition-delay:.11s; }
-#circ-wrap.member-dome.coach-dome .dn-p4 { transition-delay:.14s; }
-
 /* Staggered open delays */
 #circ-wrap.open .dn-p1,
 #circ-wrap.open .dn-p6 { transition-delay: 0.05s; }
@@ -312,14 +295,6 @@ body.dome-open .page-header { padding-top: 240px; }
   .dn-p4 { left:   28px; top:  96px; transform-origin:  -2px -70px; }
   .dn-p5 { left:   79px; top:  54px; transform-origin: -53px -28px; }
   .dn-p6 { left:  100px; top:  -4px; transform-origin: -74px  30px; }
-
-  #circ-wrap.member-dome.coach-dome .dn-p1 { left:-104px; top:-4px; transform-origin:130px 30px; }
-  #circ-wrap.member-dome.coach-dome .dn-p2 { left:-91px; top:47px; transform-origin:117px -21px; }
-  #circ-wrap.member-dome.coach-dome .dn-p3 { left:-57px; top:84px; transform-origin:83px -58px; }
-  #circ-wrap.member-dome.coach-dome .dn-p4 { left:-4px; top:98px; transform-origin:30px -72px; }
-  #circ-wrap.member-dome.coach-dome .dn-p5 { left:49px; top:84px; transform-origin:-23px -58px; }
-  #circ-wrap.member-dome.coach-dome .dn-p6 { left:83px; top:47px; transform-origin:-57px -21px; }
-  #circ-wrap.member-dome.coach-dome .dn-p7 { left:100px; top:-4px; transform-origin:-74px 30px; font-size:7px; }
 
   body.dome-open .home-hero .hero-content { padding-top: 210px; }
   body.dome-open .page-header { padding-top: 200px; }
