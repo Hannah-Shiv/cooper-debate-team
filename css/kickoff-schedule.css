@@ -286,6 +286,10 @@
   padding: 0 12px 12px;
 }
 
+.kickoff-schedule__weekly-columns--single {
+  grid-template-columns: 1fr;
+}
+
 .kickoff-schedule__weekly-card {
   overflow: hidden;
   border: 1px solid rgba(212, 160, 23, 0.48);

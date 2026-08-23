@@ -30,21 +30,25 @@
     .resolution-label  { font-size:0.83rem !important; }
     .resolution-stats  { font-size:0.85rem !important; }
 
-    /* ── Season toggle ─────────────────────────────────────────── */
-    .season-toggle {
-      display:inline-flex; border:1px solid rgba(212,160,23,0.3); border-radius:8px;
-      overflow:hidden; flex-shrink:0;
+    /* ── Season picker ─────────────────────────────────────────── */
+    .season-picker { display:flex; flex-direction:column; gap:6px; min-width:245px; }
+    .season-picker-label {
+      color:var(--gray-mid); font-family:'Josefin Sans',sans-serif; font-size:0.62rem;
+      font-weight:700; letter-spacing:0.12em; text-transform:uppercase;
     }
-    .season-toggle-btn {
-      padding:9px 20px; font-family:'Josefin Sans',sans-serif; font-weight:700;
-      font-size:0.72rem; letter-spacing:0.1em; text-transform:uppercase;
-      background:transparent; border:none; color:var(--gray-mid);
-      cursor:pointer; transition:background 0.2s, color 0.2s; white-space:nowrap;
+    .season-picker-select {
+      appearance:none; width:100%; padding:11px 42px 11px 14px;
+      background-color:rgba(11,37,69,0.76);
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4A017' stroke-width='2.4'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-position:right 13px center; background-repeat:no-repeat; background-size:16px;
+      border:1px solid rgba(212,160,23,0.42); border-radius:7px; color:var(--gold);
+      cursor:pointer; font-family:'Josefin Sans',sans-serif; font-size:0.72rem;
+      font-weight:700; letter-spacing:0.06em;
     }
-    .season-toggle-btn.active {
-      background:rgba(212,160,23,0.18); color:var(--gold);
+    .season-picker-select:focus-visible {
+      outline:2px solid var(--gold); outline-offset:3px;
     }
-    .season-toggle-btn:first-child { border-right:1px solid rgba(212,160,23,0.3); }
+    .season-picker-select option { background:#0b2545; color:#fff; }
 
     /* ── Parent card font bump ─────────────────────────────────── */
     .parent-card-title { font-size:1.0rem !important; }
@@ -99,13 +103,12 @@
       .ls-sort-info { font-size:0.72rem; }
       /* Tighter row padding on mobile */
       .result-row { padding:12px 14px; gap:8px; }
-      /* Season header: stack toggle below title */
+      /* Season header: stack picker below title */
       .cal-section-header { flex-direction:column; align-items:flex-start !important; }
       /* Hide the legend tags on mobile */
       #cal-legend { display:none !important; }
-      /* Season toggle full-width */
-      .season-toggle { width:100%; }
-      .season-toggle-btn { flex:1; text-align:center; }
+      /* Season picker full-width */
+      .season-picker { min-width:0; width:100%; }
     }
     .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
     .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
@@ -125,6 +128,11 @@
     .tag-national { background:rgba(239,68,68,0.12); color:#fca5a5; border:1px solid rgba(239,68,68,0.25); }
     .tag-practice { background:rgba(34,197,94,0.12); color:#86efac; border:1px solid rgba(34,197,94,0.2); }
     .tag-deadline { background:rgba(249,115,22,0.12); color:#fdba74; border:1px solid rgba(249,115,22,0.2); }
+    .tag-info { background:rgba(96,165,250,0.14); color:#bfdbfe; border:1px solid rgba(96,165,250,0.3); }
+    .tag-fair { background:rgba(192,132,252,0.13); color:#e9d5ff; border:1px solid rgba(192,132,252,0.28); }
+    .tag-tryout { background:rgba(45,212,191,0.12); color:#99f6e4; border:1px solid rgba(45,212,191,0.26); }
+    .tag-meeting { background:rgba(148,163,184,0.13); color:#e2e8f0; border:1px solid rgba(148,163,184,0.28); }
+    .tag-hosted { background:rgba(248,113,113,0.13); color:#fecaca; border:1px solid rgba(248,113,113,0.28); }
     .tag-next { background:rgba(212,160,23,0.25); color:var(--gold); border:1px solid rgba(212,160,23,0.5); }
 
     .cal-status { text-align:right; }
@@ -738,33 +746,80 @@
   <div class="section-wrap">
     <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
       <div>
-        <p class="section-label" id="cal-season-label">2025–2026 Season</p>
+        <p class="section-label" id="cal-season-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
-        <div class="season-toggle">
-          <button class="season-toggle-btn" id="btn-this-season" onclick="showSeason('this')">This Season</button>
-          <button class="season-toggle-btn active" id="btn-last-season" onclick="showSeason('last')">Last Season</button>
+        <div class="season-picker">
+          <label class="season-picker-label" for="season-picker">Calendar season</label>
+          <select class="season-picker-select" id="season-picker" onchange="showSeason(this.value)">
+            <option value="this" selected>This Season - 2026-27</option>
+            <option value="last">Last Season - 2025-26</option>
+          </select>
         </div>
         <div style="display:flex;gap:10px;flex-wrap:wrap;" id="cal-legend">
+          <span class="cal-tag tag-info" style="padding:5px 12px;">Info Session</span>
+          <span class="cal-tag tag-tryout" style="padding:5px 12px;">Tryout</span>
+          <span class="cal-tag tag-meeting" style="padding:5px 12px;">Meeting</span>
           <span class="cal-tag tag-wasdl" style="padding:5px 12px;">WASDL</span>
-          <span class="cal-tag tag-national" style="padding:5px 12px;">National</span>
-          <span class="cal-tag tag-practice" style="padding:5px 12px;">Practice</span>
           <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
         </div>
       </div>
     </div>
 
     <!-- THIS SEASON -->
-    <div id="pane-this-season" style="display:none;">
-      <div style="text-align:center;padding:56px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
-        <!-- Calendar date widget -->
-        <div id="today-cal-widget" style="display:inline-block;border-radius:14px;overflow:hidden;box-shadow:0 8px 32px rgba(0,0,0,0.4);margin-bottom:28px;min-width:120px;">
-          <div id="today-cal-month" style="background:var(--gold);padding:10px 24px;font-family:'Josefin Sans',sans-serif;font-size:0.78rem;font-weight:800;letter-spacing:0.2em;text-transform:uppercase;color:#0a1428;text-align:center;"></div>
-          <div id="today-cal-day" style="background:#ffffff;padding:14px 24px 18px;font-family:'Cormorant Garamond',serif;font-size:4.5rem;font-weight:700;line-height:1;color:#0a1428;text-align:center;"></div>
+    <div id="pane-this-season">
+      <p style="color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:750px;margin:0 0 28px;">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. The existing <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a> is the only application needed.</p>
+      <div class="calendar-grid">
+        <div class="cal-month">
+          <div class="cal-month-title">September 2026 · Team Kickoff</div>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">10</div></div>
+            <div class="cal-info"><div class="cal-name">QST Debate Info Session</div><div class="cal-location">Thursday · During QST · Lecture Hall</div><div class="cal-tags"><span class="cal-tag tag-info">Info Session</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Students welcome</span></div>
+          </article>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">14</div></div>
+            <div class="cal-info"><div class="cal-name">Activity Fair · A Session</div><div class="cal-location">Monday · After school · approximately 2:30–3:30 PM</div><div class="cal-tags"><span class="cal-tag tag-fair">Activity Fair</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Coach-selected representatives</span></div>
+          </article>
+          <article class="cal-event next">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">16</div></div>
+            <div class="cal-info"><div class="cal-name">Debate Team Applications Due</div><div class="cal-location">Wednesday · Submit the online application by the deadline</div><div class="cal-tags"><span class="cal-tag tag-deadline">Deadline</span></div></div>
+            <div class="cal-status"><a class="status-result" href="apply.html" style="font-size:0.9rem;text-decoration:none;">Apply →</a></div>
+          </article>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">22</div></div>
+            <div class="cal-info"><div class="cal-name">Debate Team Tryouts</div><div class="cal-location">Tuesday · 2:30–4:30 PM · Cafeteria</div><div class="cal-tags"><span class="cal-tag tag-tryout">Tryout</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Selection event</span></div>
+          </article>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">23</div></div>
+            <div class="cal-info"><div class="cal-name">Debate Team Tryouts</div><div class="cal-location">Wednesday · 2:30–4:30 PM · Lecture Hall</div><div class="cal-tags"><span class="cal-tag tag-tryout">Tryout</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Selection event</span></div>
+          </article>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">29</div></div>
+            <div class="cal-info"><div class="cal-name">First Debate Team Meeting</div><div class="cal-location">Tuesday · Team members should keep Tuesday afternoons clear for recurring meetings.</div><div class="cal-tags"><span class="cal-tag tag-meeting">Team Meeting</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Season begins</span></div>
+          </article>
         </div>
-        <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.0rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Season Schedule Being Finalized</div>
-        <p style="color:var(--gray-mid);font-size:1.0rem;line-height:1.7;max-width:420px;margin:0 auto;">Tournament dates for the 2026–27 season will be posted here as soon as they are confirmed by Coach Konde. Check back soon.</p>
+        <div class="cal-month">
+          <div class="cal-month-title">October 2026 · First Tournament</div>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Oct</div><div class="cal-day">24</div></div>
+            <div class="cal-info"><div class="cal-name">First WASDL PF / Middle School Tournament</div><div class="cal-location">Saturday · Public Forum / Middle School division</div><div class="cal-tags"><span class="cal-tag tag-wasdl">WASDL Tournament</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Tournament day</span></div>
+          </article>
+        </div>
+        <div class="cal-month">
+          <div class="cal-month-title">November 2026 · Cooper Hosts</div>
+          <article class="cal-event">
+            <div class="cal-date"><div class="cal-month-sm">Nov</div><div class="cal-day">14</div></div>
+            <div class="cal-info"><div class="cal-name">Cooper Middle School PF Tournament</div><div class="cal-location">Saturday · Cooper hosts the Middle School Public Forum tournament</div><div class="cal-tags"><span class="cal-tag tag-hosted">Hosted Tournament</span><span class="cal-tag tag-wasdl">WASDL</span></div></div>
+            <div class="cal-status"><span class="status-upcoming">Tournament day</span></div>
+          </article>
+        </div>
       </div>
     </div>
 
@@ -1017,7 +1072,7 @@
 const _FS_BASE = 'https://firestore.googleapis.com/v1/projects/cooper-debate-team/databases/(default)/documents';
 const _FS_KEY  = 'AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc';
 
-/* ── Season toggle ────────────────────────────────────────── */
+/* ── Season picker ────────────────────────────────────────── */
 let _lastSeasonLoaded = false;
 
 const _CAL_MONTHS = ['January','February','March','April','May','June',
@@ -1027,15 +1082,9 @@ function showSeason(which) {
   const isThis = (which === 'this');
   document.getElementById('pane-this-season').style.display = isThis ? '' : 'none';
   document.getElementById('pane-last-season').style.display = isThis ? 'none' : '';
-  document.getElementById('btn-this-season').classList.toggle('active', isThis);
-  document.getElementById('btn-last-season').classList.toggle('active', !isThis);
+  document.getElementById('season-picker').value = isThis ? 'this' : 'last';
   document.getElementById('cal-season-label').textContent = isThis ? '2026–2027 Season' : '2025–2026 Season';
   if (!isThis && !_lastSeasonLoaded) loadLastSeason();
-  if (isThis) {
-    const now = new Date();
-    document.getElementById('today-cal-month').textContent = _CAL_MONTHS[now.getMonth()];
-    document.getElementById('today-cal-day').textContent   = now.getDate();
-  }
 }
 
 /* ── Parse Firestore REST typed value ─────────────────────── */
@@ -1294,9 +1343,9 @@ function renderLastSeason(tourns) {
   if (window.__TOURNEY_INITIAL_TAB) updateUrl(initialId, true);
 }());
 
-/* ── Init: default to Last Season until this season has data ── */
+/* ── Init: open on the current season ───────────────────────── */
 document.addEventListener('DOMContentLoaded', function() {
-  loadLastSeason();
+  showSeason('this');
 });
 </script>
 <script src="js/dome-nav.js"></script>

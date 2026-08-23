@@ -7,7 +7,7 @@
         <span>Fall 2026 · Team Start</span>
       </div>
       <h2 class="kickoff-schedule__title" id="kickoff-schedule-title">Debate Kickoff Schedule</h2>
-      <p class="kickoff-schedule__intro">Confirmed dates and weekly meeting times.<br>We’ll update the mini-debate venue once it is assigned.</p>
+      <p class="kickoff-schedule__intro">Confirmed recruitment dates, tryouts, and team expectations for the start of the 2026–27 season.</p>
       <hr class="kickoff-schedule__rule">
 
       <div class="kickoff-schedule__dates">
@@ -41,15 +41,30 @@
           <h3 class="kickoff-schedule__event-title">Activity Fair · A Session</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">◷</span>
-            <span>After school<strong>Late buses begin at 4:30 PM</strong></span>
+            <span>After school<strong>Approximately 2:30 PM – 3:30 PM</strong></span>
           </div>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
-            <span>TBD</span>
+            <span>A Session</span>
           </div>
         </article>
 
-        <article class="kickoff-schedule__date-card kickoff-schedule__date-card--pending">
+        <article class="kickoff-schedule__date-card">
+          <div class="kickoff-schedule__date-heading">
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-calendar.png" alt="">
+            <span>
+              <span class="kickoff-schedule__weekday">Wednesday</span>
+              <span class="kickoff-schedule__date">September 16</span>
+            </span>
+          </div>
+          <h3 class="kickoff-schedule__event-title">Debate Team Applications Due</h3>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">✓</span>
+            <span>Submit the existing Debate Team application by this deadline.</span>
+          </div>
+        </article>
+
+        <article class="kickoff-schedule__date-card">
           <div class="kickoff-schedule__hours"><strong>2</strong>hours</div>
           <div class="kickoff-schedule__date-heading">
             <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-mini-debates-tuesday.png" alt="">
@@ -58,18 +73,18 @@
               <span class="kickoff-schedule__date">September 22</span>
             </span>
           </div>
-          <h3 class="kickoff-schedule__event-title">Mini-Debates</h3>
+          <h3 class="kickoff-schedule__event-title">Debate Team Tryouts</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">◷</span>
-            <span>Both A &amp; B Sessions<strong>2:30 PM – 4:30 PM</strong></span>
+            <span>Tryout session<strong>2:30 PM – 4:30 PM</strong></span>
           </div>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
-            <span>Room to be confirmed</span>
+            <span>Cafeteria</span>
           </div>
         </article>
 
-        <article class="kickoff-schedule__date-card kickoff-schedule__date-card--pending">
+        <article class="kickoff-schedule__date-card">
           <div class="kickoff-schedule__hours"><strong>2</strong>hours</div>
           <div class="kickoff-schedule__date-heading">
             <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-mini-debates-wednesday.png" alt="">
@@ -78,35 +93,41 @@
               <span class="kickoff-schedule__date">September 23</span>
             </span>
           </div>
-          <h3 class="kickoff-schedule__event-title">Mini-Debates</h3>
+          <h3 class="kickoff-schedule__event-title">Debate Team Tryouts</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">◷</span>
-            <span>Both A &amp; B Sessions<strong>2:30 PM – 4:30 PM</strong></span>
+            <span>Tryout session<strong>2:30 PM – 4:30 PM</strong></span>
           </div>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
-            <span>Room to be confirmed</span>
+            <span>Lecture Hall</span>
+          </div>
+        </article>
+
+        <article class="kickoff-schedule__date-card">
+          <div class="kickoff-schedule__date-heading">
+            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-calendar.png" alt="">
+            <span>
+              <span class="kickoff-schedule__weekday">Tuesday</span>
+              <span class="kickoff-schedule__date">September 29</span>
+            </span>
+          </div>
+          <h3 class="kickoff-schedule__event-title">First Debate Team Meeting</h3>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">★</span>
+            <span>The 2026–27 season begins.</span>
           </div>
         </article>
       </div>
 
       <div class="kickoff-schedule__weekly">
         <h3 class="kickoff-schedule__weekly-heading">Weekly Debate Meetings <span aria-hidden="true">★</span></h3>
-        <p class="kickoff-schedule__weekly-subtitle">Lecture Hall on Tuesdays, unless a conflict is announced.</p>
-        <div class="kickoff-schedule__weekly-columns">
+        <p class="kickoff-schedule__weekly-subtitle">Starting September 29, members should keep Tuesday afternoons clear for team meetings.</p>
+        <div class="kickoff-schedule__weekly-columns kickoff-schedule__weekly-columns--single">
           <div class="kickoff-schedule__weekly-card">
-            <div class="kickoff-schedule__weekly-card-title">Tuesday · Regular Meetings</div>
-            <div class="kickoff-schedule__weekly-content">
-              <div class="kickoff-schedule__session"><strong>A Session</strong><span class="kickoff-schedule__session-time">◷ &nbsp;2:30 PM – 3:30 PM</span></div>
-              <div class="kickoff-schedule__session"><strong>B Session</strong><span class="kickoff-schedule__session-time">◷ &nbsp;3:30 PM – 4:30 PM</span></div>
-            </div>
-            <div class="kickoff-schedule__weekly-note"><strong>★</strong> Mini-debates may run across both sessions (2:30 PM – 4:30 PM).</div>
-          </div>
-          <div class="kickoff-schedule__weekly-card kickoff-schedule__weekly-card--optional">
-            <div class="kickoff-schedule__weekly-card-title">Wednesday · Optional Practice</div>
             <div class="kickoff-schedule__optional-copy">
               <span class="kickoff-schedule__event-icon" data-icon="people" aria-hidden="true"></span>
-              <span><strong>Optional practice</strong>Same time as A &amp; B Sessions<br>(2:30 PM – 4:30 PM)</span>
+              <span><strong>Tuesday team meetings</strong>Exact meeting time and location will be shared with team members.</span>
             </div>
           </div>
         </div>
@@ -114,7 +135,7 @@
 
       <div class="kickoff-schedule__footer">
         <span class="kickoff-schedule__footer-icon" aria-hidden="true">⌁</span>
-        <span><strong>Stay informed</strong>Check the website and announcements regularly for venue updates and any changes.</span>
+        <span><strong>Stay informed</strong>Check the Tournament Calendar for the October 24 WASDL tournament and Cooper’s hosted November 14 Middle School PF tournament.</span>
       </div>
     </section>
   `;

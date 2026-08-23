@@ -49,27 +49,67 @@ const FALL_2026_KICKOFF_EVENTS = [
     end: null,
     allDay: true,
     location: null,
-    notes: "After school. Late buses begin at 4:30 PM."
+    notes: "After school during A Session, approximately 2:30 PM–3:30 PM."
   },
   {
-    id: "fall-2026-mini-debates-1",
-    title: "Mini-Debates · Location TBA",
+    id: "fall-2026-application-deadline",
+    title: "Debate Team Applications Due",
+    type: "deadline",
+    start: new Date("2026-09-16T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: null,
+    notes: "Submit the existing Debate Team application by this deadline."
+  },
+  {
+    id: "fall-2026-tryouts-1",
+    title: "Debate Team Tryouts",
     type: "practice",
     start: new Date("2026-09-22T14:30:00-04:00"),
     end: new Date("2026-09-22T16:30:00-04:00"),
     allDay: false,
-    location: null,
-    notes: "Both A and B sessions, 2:30 PM–4:30 PM. The room will be announced once confirmed."
+    location: "Cafeteria",
+    notes: "Tryout session, 2:30 PM–4:30 PM."
   },
   {
-    id: "fall-2026-mini-debates-2",
-    title: "Mini-Debates · Location TBA",
+    id: "fall-2026-tryouts-2",
+    title: "Debate Team Tryouts",
     type: "practice",
     start: new Date("2026-09-23T14:30:00-04:00"),
     end: new Date("2026-09-23T16:30:00-04:00"),
     allDay: false,
+    location: "Lecture Hall",
+    notes: "Tryout session, 2:30 PM–4:30 PM."
+  },
+  {
+    id: "fall-2026-first-team-meeting",
+    title: "First Debate Team Meeting",
+    type: "meeting",
+    start: new Date("2026-09-29T12:00:00Z"),
+    end: null,
+    allDay: true,
     location: null,
-    notes: "Both A and B sessions, 2:30 PM–4:30 PM. The room will be announced once confirmed."
+    notes: "The season begins. Members should keep Tuesday afternoons clear for recurring team meetings."
+  },
+  {
+    id: "fall-2026-first-wasdl-tournament",
+    title: "First WASDL PF / Middle School Tournament",
+    type: "tournament",
+    start: new Date("2026-10-24T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: null,
+    notes: "First WASDL Public Forum / Middle School tournament of the season."
+  },
+  {
+    id: "fall-2026-cooper-hosted-tournament",
+    title: "Cooper Middle School PF Tournament",
+    type: "tournament",
+    start: new Date("2026-11-14T12:00:00Z"),
+    end: null,
+    allDay: true,
+    location: "Cooper Middle School",
+    notes: "Cooper hosts the Middle School Public Forum tournament."
   }
 ].map(event => ({ ...event, _staticSchedule: true }));
 
@@ -201,6 +241,7 @@ function evtColors(type) {
   switch (type) {
     case "practice": return { bg: "#22c55e", text: "#000000" };
     case "meeting":  return { bg: "#ffd700", text: "#000000" };
+    case "deadline": return { bg: "#f97316", text: "#000000" };
     default:         return { bg: "#991b1b", text: "#ffffff" }; // tournament
   }
 }
@@ -644,10 +685,12 @@ function openEventDetail(fcEvent) {
   const typeLabel = isDeadline  ? "⚠️ Entry Deadline"
     : t.type === "practice"     ? "🟢 Practice"
     : t.type === "meeting"      ? "📋 Meeting"
+    : t.type === "deadline"     ? "⚠️ Application Deadline"
     : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
   const accentColor = isDeadline ? "#b45309"
     : t.type === "practice"     ? "#22c55e"
     : t.type === "meeting"      ? "#b45309"
+    : t.type === "deadline"     ? "#c2410c"
     : "#cc0000";
 
   document.getElementById("det-modal-body").innerHTML = `
