@@ -1863,6 +1863,11 @@ function renderDirectory() {
 
   const grid  = document.getElementById('dir-grid');
   const count = document.getElementById('dir-count');
+  const table = document.getElementById('dir-table-wrap');
+  // Keep the rendered view and its container in sync on first load as well as
+  // after searches, sorting, and filter changes.
+  grid.style.display = currentView === 'cards' ? '' : 'none';
+  table.style.display = currentView === 'table' ? '' : 'none';
   count.textContent = list.length === leaderboard.length
     ? `Showing ${list.length} debater${list.length !== 1 ? 's' : ''}`
     : `${list.length} of ${leaderboard.length} debaters`;
