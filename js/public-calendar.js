@@ -295,14 +295,32 @@
     const diff = nextStart - now;
     const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
-    const date = nextStart.toLocaleDateString("en-US", {
-      timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric"
-    });
-    banner.innerHTML = `<span class="public-countdown-label">Upcoming tournament</span>
-      <span class="public-countdown-name">${esc(next.title)}</span>
-      <span class="public-countdown-date">${esc(date)}</span>
-      <span class="public-countdown-time">${days > 0 ? `${days}d ${hours}h` : `${hours}h`} left</span>`;
-    banner.style.display = "flex";
+    const titleParts = next.title.split(/:\s*/, 2);
+    const headline = titleParts[0];
+    const resolution = titleParts[1] || "";
+    const weekday = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
+    const month = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", month:"short" });
+    const day = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", day:"numeric" });
+    banner.innerHTML = `<div class="public-countdown-label">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg>
+        <span>Upcoming</span><strong>Tournament</strong>
+      </div>
+      <div class="public-countdown-name">
+        <span class="public-countdown-headline">${esc(headline)}</span>
+        ${resolution ? `<span class="public-countdown-resolution">${esc(resolution)}</span>` : ""}
+      </div>
+      <div class="public-countdown-date">
+        <span class="public-countdown-weekday">${esc(weekday)}</span>
+        <span class="public-countdown-month">${esc(month)}</span>
+        <strong class="public-countdown-day">${esc(day)}</strong>
+      </div>
+      <div class="public-countdown-time">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 5V2"/></svg>
+        <strong class="public-countdown-value">${days}</strong>
+        <span class="public-countdown-unit">Days</span>
+        <span class="public-countdown-detail">${hours} hours left</span>
+      </div>`;
+    banner.style.display = "grid";
   }
 
   function updateView(resetMonth) {
