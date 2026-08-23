@@ -87,6 +87,11 @@
     #public-calendar .fc-daygrid-day-number { color:#fff!important; font-size:1.05rem!important; font-weight:700; padding:6px 10px!important; text-decoration:none!important; }
     #public-calendar .fc-day-today .fc-daygrid-day-number { color:var(--gold)!important; font-weight:900; }
     #public-calendar .fc-daygrid-day-frame { min-height:80px!important; position:relative!important; }
+    .public-cal-today-watermark {
+      color:rgba(255,215,0,.48); font:600 1.05rem/1 'Cormorant Garamond',serif;
+      left:50%; letter-spacing:.18em; pointer-events:none; position:absolute; text-transform:uppercase;
+      top:50%; transform:translate(-50%,-50%); user-select:none; white-space:nowrap; z-index:0;
+    }
     #public-calendar .fc-event { background:transparent!important; border:0!important; border-radius:3px!important; box-shadow:none!important; cursor:pointer!important; margin:2px 3px!important; overflow:visible!important; padding:3px 6px!important; white-space:normal!important; }
     #public-calendar .public-cal-event-title { color:inherit!important; display:block!important; font-size:.92rem!important; font-weight:900!important; line-height:1.25!important; overflow-wrap:anywhere!important; white-space:normal!important; word-break:break-word!important; }
     #public-calendar .fc-list { border:0!important; }
@@ -160,6 +165,7 @@
       #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
       #public-calendar .fc-button { font-size:.59rem!important; padding:7px 9px!important; }
       #public-calendar .fc-daygrid-day-frame { min-height:84px!important; }
+      .public-cal-today-watermark { font-size:.88rem; }
       #public-calendar .fc-list { font-size:.84rem; }
       #public-calendar .fc-list-day-cushion { padding:10px 12px!important; }
       #public-calendar .fc-list-event-time { font-size:.7rem!important; min-width:92px; padding:13px 8px 13px 12px!important; width:92px; }
@@ -1408,7 +1414,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=6"></script>
+<script src="js/public-calendar.js?v=7"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>

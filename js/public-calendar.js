@@ -215,6 +215,15 @@
         },
         dayCellDidMount(info) {
           info.el.style.setProperty("background", "#050e28", "important");
+          if (info.isToday) {
+            const frame = info.el.querySelector(".fc-daygrid-day-frame");
+            if (frame && !frame.querySelector(".public-cal-today-watermark")) {
+              const watermark = document.createElement("span");
+              watermark.className = "public-cal-today-watermark";
+              watermark.textContent = "Today";
+              frame.appendChild(watermark);
+            }
+          }
         },
         eventDidMount(info) {
           if (info.view.type === "listMonth") {
@@ -228,6 +237,16 @@
           // keep their background fill on the same day as their label.
           const publicEvent = info.event.extendedProps;
           const colors = eventColors(publicEvent.type);
+          const todayCell = mount.querySelector("td.fc-daygrid-day.fc-day-today");
+          if (todayCell) {
+            const todayKey = todayCell.getAttribute("data-date");
+            const startKey = nyDateKey(eventStart(publicEvent));
+            const endKey = info.event.end ? nyDateKey(eventEnd(publicEvent)) : startKey;
+            if (todayKey >= startKey && todayKey <= endKey) {
+              const watermark = todayCell.querySelector(".public-cal-today-watermark");
+              if (watermark) watermark.style.display = "none";
+            }
+          }
           colorDayCells(
             mount,
             eventStart(publicEvent),
