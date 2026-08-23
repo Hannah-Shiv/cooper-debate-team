@@ -13,7 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=22"/>
   <link rel="stylesheet" href="css/dome-nav.css"/>
-  <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -90,15 +89,37 @@
 
     /* userbar styles live in main.css (.mub-*) */
 
-    /* ── POST / ADD EVENT button ──────────────────────────── */
-    /* ── Banner + FAB row ───────────────────────────────────── */
-    .banner-fab-row {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 16px;
+    /* ── Tournament announcement ────────────────────────────── */
+    .banner-fab-row { margin-bottom:16px; }
+    .next-tournament-banner {
+      align-items:stretch; background:#b30000; border:1px solid #ffe58f;
+      border-radius:10px; box-shadow:0 8px 22px rgba(77,0,0,.3); color:#fff;
+      display:none; gap:0; margin:0; overflow:hidden; min-width:0;
     }
+    .next-tournament-banner > span {
+      align-items:center; display:flex; min-height:60px; padding:13px 18px;
+    }
+    .next-tournament-banner > span:not(:last-child) { border-right:1px solid rgba(255,255,255,.48); }
+    .next-tournament-banner { font-size:1rem; }
+    .next-label {
+      color:#fff; font:700 .68em 'Josefin Sans',sans-serif; letter-spacing:.12em;
+      text-transform:uppercase; white-space:nowrap;
+    }
+    .next-name {
+      color:#fff; flex:1; font:700 1.45em/1.05 'Cormorant Garamond',serif; min-width:0;
+    }
+    .next-date, .next-countdown {
+      color:#fff; font:700 .73em 'Josefin Sans',sans-serif; letter-spacing:.06em;
+      text-transform:uppercase; white-space:nowrap;
+    }
+    .next-countdown { background:rgba(0,0,0,.12); }
 
-    /* ── Circular CREATE EVENT FAB (coach/captain only) ──────── */
+    /* ── Calendar controls / Create Event ───────────────────── */
+    .calendar-tools {
+      align-items:center; display:flex; gap:16px; justify-content:space-between; margin-bottom:14px;
+    }
     .post-fab {
-      width: 140px; height: 140px; flex-shrink: 0;
+      width:68px; height:68px; flex-shrink:0;
       background: none; border: none;
       cursor: pointer; padding: 0;
       display: none; align-items: center; justify-content: center;
@@ -113,42 +134,6 @@
     .post-fab:hover {
       transform: scale(1.07);
       filter: drop-shadow(0 6px 20px rgba(0,150,150,0.75));
-    }
-
-    /* ── Next Tournament Banner ───────────────────────────── */
-    .next-tournament-banner {
-      display: none; align-items: center; gap: 0;
-      background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 40%, #7f1d1d 100%);
-      border: 1px solid rgba(220,38,38,0.55); border-radius: 8px;
-      padding: 0; overflow: hidden;
-      flex: 1; min-width: 0;
-    }
-    .next-tournament-banner > * {
-      display: flex; align-items: center; justify-content: center;
-      flex: 1; min-width: 0;
-    }
-    /* Base font-size on the banner; JS shrinks this one value to fit all content.
-       All padding in em so it scales proportionally with the font. */
-    .next-tournament-banner { font-size: 1rem; }
-    .next-label {
-      font-size: 0.95em; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase;
-      color: #ffffff; border-right: 1px solid rgba(255,255,255,0.35);
-      white-space: nowrap; flex: 0 0 auto; padding: 0.875em 1.125em;
-    }
-    .next-name {
-      font-size: 1.15em; font-weight: 900; color: #ffffff; letter-spacing: 0.02em;
-      padding: 0.875em 1.25em; border-right: 1px solid rgba(255,255,255,0.35);
-      white-space: nowrap; overflow: hidden; flex: 0 0 auto;
-    }
-    .next-date {
-      font-size: 1.05em; color: #ffffff; font-weight: 700;
-      padding: 0.875em 1.25em; border-right: 1px solid rgba(255,255,255,0.35);
-      white-space: nowrap; flex: 0 0 auto;
-    }
-    .next-countdown {
-      font-size: 1.05em; font-weight: 800; color: #ffffff;
-      padding: 0.875em 1.25em; margin: 0; flex: 0 0 auto;
-      background: none; border: none; border-radius: 0;
     }
 
     /* ── Legend ──────────────────────────────────────────── */
@@ -568,7 +553,19 @@
       .fc .fc-toolbar { padding: 10px 12px; gap: 6px; }
       .fc .fc-toolbar-title { font-size: 1.15rem !important; }
       .fc .fc-button { font-size: 0.58rem !important; padding: 5px 8px !important; }
-      .next-label { display: none; }
+       .next-tournament-banner {
+         display:grid !important; grid-template-areas:"label label" "name name" "date countdown";
+         grid-template-columns:1fr auto;
+       }
+       .next-tournament-banner > span { min-height:0; padding:10px 12px; }
+       .next-tournament-banner > span:not(:last-child) { border-right:0; }
+       .next-label { display:flex; grid-area:label; border-bottom:1px solid rgba(255,255,255,.48); }
+       .next-name { grid-area:name; border-bottom:1px solid rgba(255,255,255,.48); font-size:1.25em; }
+       .next-date { grid-area:date; }
+       .next-countdown { grid-area:countdown; }
+       .calendar-tools { align-items:center; gap:10px; }
+       .cal-legend { margin-bottom:0; }
+       .post-fab { height:60px; width:60px; }
     }
   </style>
 </head>
@@ -635,22 +632,21 @@
         
       </div>
 
-      <!-- Banner + Create Event FAB on same row -->
+      <!-- Next tournament announcement -->
       <div class="banner-fab-row">
         <div class="next-tournament-banner" id="next-tournament-banner"></div>
+      </div>
+
+      <!-- Calendar controls -->
+      <div class="calendar-tools">
+        <div class="cal-legend">
+          <div class="leg-item"><div class="leg-dot" style="background:#7f1d1d"></div>Tournament</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#166534"></div>Practice</div>
+          <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>Meeting</div>
+        </div>
         <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event" aria-label="Create Event">
           <img src="images/create-event-nobg.png" alt="Create Event">
         </button>
-      </div>
-
-      <!-- Fall 2026 kickoff schedule — shared with the public homepage -->
-      <div class="kickoff-schedule-mount"></div>
-
-      <!-- Legend -->
-      <div class="cal-legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#7f1d1d"></div>Tournament</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#166534"></div>Practice</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>Meeting</div>
       </div>
 
       <!-- FullCalendar mount -->
@@ -783,12 +779,11 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=25"></script>
+<script src="js/calendar.js?v=26"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
-<script src="js/kickoff-schedule.js?v=3"></script>
 
 <script>
 /* ── Notification toggle (calendar page) ─────────────────── */

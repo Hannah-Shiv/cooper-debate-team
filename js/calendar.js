@@ -256,22 +256,17 @@ function evtDefaultTimes(type) {
 // ── Color every day cell in a date range (month view) ─────────
 // allDay events: FC end is exclusive. Timed events: end day is inclusive.
 function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast, textColor) {
-  const cur = new Date(evStart);
-  cur.setHours(0, 0, 0, 0);
+  const nextDay = dateKey => {
+    const date = new Date(`${dateKey}T12:00:00Z`);
+    date.setUTCDate(date.getUTCDate() + 1);
+    return date.toISOString().slice(0, 10);
+  };
+  let current = toESTDateStr(evStart);
+  let stop = evEnd ? toESTDateStr(evEnd) : nextDay(current);
+  if (!evAllDay) stop = nextDay(stop); // timed events include their end date
 
-  let stop;
-  if (evEnd) {
-    stop = new Date(evEnd);
-    stop.setHours(0, 0, 0, 0);
-    if (!evAllDay) stop.setDate(stop.getDate() + 1); // timed: include end day
-  } else {
-    stop = new Date(cur);
-    stop.setDate(stop.getDate() + 1); // single-day fallback
-  }
-
-  while (cur < stop) {
-    const ds = cur.toISOString().slice(0, 10);
-    const cell = container.querySelector(`td.fc-daygrid-day[data-date="${ds}"]`);
+  while (current < stop) {
+    const cell = container.querySelector(`td.fc-daygrid-day[data-date="${current}"]`);
     if (cell) {
       cell.style.setProperty("background", color, "important");
       if (isPast) cell.style.setProperty("opacity", "0.6", "important");
@@ -281,14 +276,15 @@ function colorDayCells(container, evStart, evEnd, evAllDay, color, isPast, textC
         if (dateNum) dateNum.style.setProperty("color", textColor, "important");
       }
     }
-    cur.setDate(cur.getDate() + 1);
+    current = nextDay(current);
   }
 }
 
 // ── EST timezone helpers ──────────────────────────────────────
 // Returns the calendar date string "YYYY-MM-DD" in America/New_York for any JS Date
 function toESTDateStr(d) {
-  return d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+  const date = d?.toDate ? d.toDate() : new Date(d);
+  return date.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
 }
 
 // Returns a JS Date representing timeStr ("HH:MM") in America/New_York on the
@@ -462,8 +458,10 @@ function initFullCalendar() {
         const todayCell = document.querySelector("td.fc-daygrid-day.fc-day-today");
         if (todayCell) {
           const todayStr  = todayCell.getAttribute("data-date"); // "YYYY-MM-DD"
-          const evStart   = toESTDateStr(info.event.start);
-          const evEndRaw  = info.event.end ? new Date(info.event.end.getTime() - 1) : info.event.start;
+          const originalStart = isDeadline ? info.event.start : info.event.extendedProps.start;
+          const originalEnd = isDeadline ? info.event.end : info.event.extendedProps.end;
+          const evStart   = toESTDateStr(originalStart);
+          const evEndRaw  = originalEnd ? originalEnd : originalStart;
           const evEnd     = toESTDateStr(evEndRaw);
           if (todayStr >= evStart && todayStr <= evEnd) {
             const wm = todayCell.querySelector(".cal-today-watermark");
@@ -474,8 +472,8 @@ function initFullCalendar() {
         const container = document.getElementById("cal-container");
         colorDayCells(
           container,
-          info.event.start,
-          info.event.end,
+            isDeadline ? info.event.start : info.event.extendedProps.start,
+            isDeadline ? info.event.end : info.event.extendedProps.end,
           info.event.allDay,
           colors.bg,
           isPast,
@@ -535,6 +533,10 @@ function renderNextBanner() {
 // Shrink banner font-size until all children fit within the container
 function fitBannerText(banner) {
   if (!banner) return;
+  if (window.matchMedia("(max-width: 768px)").matches) {
+    banner.style.fontSize = "1rem";
+    return;
+  }
   setTimeout(() => {
     let size = 1.0;
     banner.style.fontSize = size + 'rem';
