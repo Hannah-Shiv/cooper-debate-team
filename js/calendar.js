@@ -122,7 +122,7 @@ function calendarEventDocs() {
   const timestamp = value => value?.toDate ? value.toDate().getTime() : 0;
   const displayKey = event => event.kickoffEventId
     ? `kickoff:${event.kickoffEventId}`
-    : `event:${event.type || ""}|${String(event.title || "").trim().toLowerCase()}|${dateKey(event)}`;
+    : `event:${event.type || ""}|${dateKey(event)}`;
   const managedByKey = new Map();
   _tournaments.forEach(event => {
     const key = displayKey(event);
