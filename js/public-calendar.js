@@ -217,6 +217,11 @@
           info.el.style.setProperty("background", "#050e28", "important");
         },
         eventDidMount(info) {
+          if (info.view.type === "listMonth") {
+            const timeCell = info.el.querySelector(".fc-list-event-time");
+            if (timeCell && info.event.allDay) timeCell.textContent = "All Day";
+            return;
+          }
           if (info.view.type !== "dayGridMonth") return;
           // FullCalendar normalizes all-day starts to midnight internally.
           // Use the original public event dates so New York all-day events

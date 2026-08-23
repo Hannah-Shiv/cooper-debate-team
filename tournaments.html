@@ -148,7 +148,8 @@
       .public-calendar-legend span { font-size:.57rem; letter-spacing:.06em; }
       .public-calendar-legend i { height:8px; margin-right:5px; width:8px; }
       .public-calendar-shell { border-radius:8px; overflow-x:auto; -webkit-overflow-scrolling:touch; }
-      #public-calendar { min-height:0; min-width:640px; }
+      #public-calendar { min-height:0; min-width:0; }
+      #public-calendar .fc-dayGridMonth-view .fc-scrollgrid { min-width:640px; }
       #public-calendar .fc-toolbar {
         align-items:center; display:grid!important; gap:10px; grid-template-areas:"title title" "nav view";
         grid-template-columns:1fr auto; padding:12px;
@@ -158,11 +159,10 @@
       #public-calendar .fc-toolbar-chunk:nth-child(3) { grid-area:view; }
       #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
       #public-calendar .fc-button { font-size:.59rem!important; padding:7px 9px!important; }
-      #public-calendar .fc-listMonth-button { display:none!important; }
       #public-calendar .fc-daygrid-day-frame { min-height:84px!important; }
       #public-calendar .fc-list { font-size:.84rem; }
       #public-calendar .fc-list-day-cushion { padding:10px 12px!important; }
-      #public-calendar .fc-list-event-time { font-size:.66rem!important; min-width:76px; padding:13px 8px 13px 12px!important; width:76px; }
+      #public-calendar .fc-list-event-time { font-size:.7rem!important; min-width:92px; padding:13px 8px 13px 12px!important; width:92px; }
       #public-calendar .fc-list-event-title { padding:7px 10px 7px 0!important; }
       #public-calendar .fc-list-event .public-cal-event-title { font-size:.82rem!important; line-height:1.35!important; max-width:none; padding:9px 10px; }
       .public-event-card { max-height:calc(100vh - 28px); overflow-y:auto; padding:24px 20px; }
@@ -1404,7 +1404,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=5"></script>
+<script src="js/public-calendar.js?v=6"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
