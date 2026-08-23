@@ -187,7 +187,7 @@ function publicCalendarEvent(data) {
   const season = publicCalendarSeason(data.start);
   if (!season) return null;
   return {
-    title:     cleanText(data.title, 160),
+    title:     cleanText(data.title, 300),
     type:      ["tournament", "practice", "meeting", "deadline"].includes(data.type) ? data.type : "tournament",
     start:     data.start,
     end:       data.end || null,
