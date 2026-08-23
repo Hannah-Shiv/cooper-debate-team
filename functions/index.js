@@ -2,14 +2,16 @@
 // Triggered when a new announcement or tournament is added to Firestore.
 // Sends an FCM push notification to every registered device token.
 
-const { onDocumentCreated } = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } = require("firebase-functions/v2/firestore");
 const { onRequest }         = require("firebase-functions/v2/https");
+const { onSchedule }        = require("firebase-functions/v2/scheduler");
 const { initializeApp }     = require("firebase-admin/app");
 const { getAuth }           = require("firebase-admin/auth");
 const { getMessaging }      = require("firebase-admin/messaging");
 const { getFirestore, FieldValue } = require("firebase-admin/firestore");
 const { defineSecret }      = require("firebase-functions/params");
 const crypto = require("node:crypto");
+const { createVolunteerEmailService } = require("./volunteer-email");
 
 initializeApp();
 
@@ -172,10 +174,15 @@ const COACH_EMAILS = new Set([
   "hannahbshiv@gmail.com",
 ]);
 const turnstileSecret = defineSecret("TURNSTILE_SECRET_KEY");
+const resendSecret = defineSecret("RESEND_API_KEY");
 const TURNSTILE_HOSTNAMES = new Set([
   "cooperdebateteam.com",
   "www.cooperdebateteam.com",
 ]);
+const volunteerEmail = createVolunteerEmailService({
+  db: getFirestore(),
+  resendSecret,
+});
 
 function cleanText(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -188,6 +195,36 @@ function validEmail(email) {
 function cleanTime(value) {
   const time = cleanText(value, 5);
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(time) ? time : "";
+}
+
+function cleanDate(value) {
+  const date = cleanText(value, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return "";
+  const [year, month, day] = date.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.getUTCFullYear() === year &&
+    parsed.getUTCMonth() === month - 1 &&
+    parsed.getUTCDate() === day ? date : "";
+}
+
+function calendarEventSignature(data) {
+  return JSON.stringify({
+    title: cleanText(data.title, 160),
+    date: cleanDate(data.date),
+    startTime: cleanTime(data.startTime),
+    endTime: cleanTime(data.endTime),
+    location: cleanText(data.location, 200),
+    address: cleanText(data.address, 240),
+    mealInfo: cleanText(data.mealInfo, 180),
+    resolution: cleanText(data.resolution, 900),
+    judgeInstructions: cleanText(data.judgeInstructions, 900),
+    expectations: cleanText(data.expectations, 1200),
+    coachName: cleanText(data.coachName, 120),
+    coachEmail: cleanText(data.coachEmail, 160),
+    coachPhone: cleanText(data.coachPhone, 40),
+    invitationUrl: cleanText(data.invitationUrl, 500),
+    details: cleanText(data.details, 700),
+  });
 }
 
 function timeMinutes(value) {
@@ -424,6 +461,122 @@ exports.publicVolunteerSignup = onRequest(
   }
 );
 
+// Volunteer email is intentionally server-only. These functions bind the
+// Firebase Secret Manager value at deploy time and never expose it to the
+// browser or public signup endpoint.
+exports.emailVolunteerSignupConfirmation = onDocumentCreated(
+  {
+    document: "volunteer_signups/{signupId}",
+    region: "us-east4",
+    timeoutSeconds: 540,
+    retry: true,
+    secrets: [resendSecret],
+  },
+  async (event) => {
+    const signupSnap = event.data;
+    if (!signupSnap) return null;
+    const signup = { id: signupSnap.id, ...signupSnap.data() };
+    const eventSnap = await getFirestore().collection("volunteer_events").doc(signup.eventId).get();
+    if (!eventSnap.exists) {
+      console.error("Confirmation email skipped because its volunteer event is missing.", { signupId: signup.id });
+      return null;
+    }
+    await volunteerEmail.sendSignupConfirmation(signup, { id: eventSnap.id, ...eventSnap.data() });
+    return null;
+  }
+);
+
+exports.emailVolunteerSignupCancellation = onDocumentDeleted(
+  {
+    document: "volunteer_signups/{signupId}",
+    region: "us-east4",
+    timeoutSeconds: 540,
+    retry: true,
+    secrets: [resendSecret],
+  },
+  async (event) => {
+    const signupSnap = event.data;
+    if (!signupSnap) return null;
+    const signup = { id: signupSnap.id, ...signupSnap.data() };
+    const eventSnap = await getFirestore().collection("volunteer_events").doc(signup.eventId).get();
+    const volunteerEvent = eventSnap.exists
+      ? { id: eventSnap.id, ...eventSnap.data() }
+      : { title: "a Cooper Debate tournament" };
+    await volunteerEmail.sendSignupCancellation(signup, volunteerEvent);
+    return null;
+  }
+);
+
+exports.emailVolunteerEventUpdate = onDocumentUpdated(
+  {
+    document: "volunteer_events/{eventId}",
+    region: "us-east4",
+    timeoutSeconds: 540,
+    retry: true,
+    secrets: [resendSecret],
+  },
+  async (event) => {
+    if (!event.data) return null;
+    const before = event.data.before.data();
+    const after = event.data.after.data();
+    const cancelled = before.cancelled !== true && after.cancelled === true;
+    if (after.cancelled === true && !cancelled) return null;
+    const changes = volunteerEmail.changedEventFields(before, after);
+
+    const signups = await getFirestore()
+      .collection("volunteer_signups")
+      .where("eventId", "==", event.params.eventId)
+      .get();
+    const volunteerEvent = { id: event.params.eventId, ...after };
+    const volunteers = signups.docs.map(signupDoc => ({ id: signupDoc.id, ...signupDoc.data() }));
+    if (cancelled) {
+      await volunteerEmail.sendEventCancellations(volunteers, volunteerEvent);
+      return null;
+    }
+    if (!changes.length) return null;
+    await volunteerEmail.sendEventUpdates(volunteers, volunteerEvent, changes);
+    return null;
+  }
+);
+
+exports.emailVolunteerEventCancellation = onDocumentDeleted(
+  {
+    document: "volunteer_events/{eventId}",
+    region: "us-east4",
+    timeoutSeconds: 540,
+    retry: true,
+    secrets: [resendSecret],
+  },
+  async (event) => {
+    const eventSnap = event.data;
+    if (!eventSnap) return null;
+    const signups = await getFirestore()
+      .collection("volunteer_signups")
+      .where("eventId", "==", event.params.eventId)
+      .get();
+    const volunteers = signups.docs.map(signupDoc => ({ id: signupDoc.id, ...signupDoc.data() }));
+    await volunteerEmail.sendEventCancellations(volunteers, {
+      id: event.params.eventId,
+      ...eventSnap.data(),
+      calendarSequence: Math.max(0, Math.floor(Number(eventSnap.data().calendarSequence) || 0)) + 1,
+    });
+    return null;
+  }
+);
+
+exports.sendVolunteerTournamentReminders = onSchedule(
+  {
+    schedule: "0 10 * * *",
+    timeZone: "America/New_York",
+    region: "us-east4",
+    timeoutSeconds: 540,
+    secrets: [resendSecret],
+  },
+  async () => {
+    await volunteerEmail.sendDueReminders();
+  }
+);
+
 // Coaches use this endpoint for every volunteer-event mutation. The server
 // preserves live signup counts while roles are edited, and removal keeps role
 // counts and duplicate-prevention records in sync.
@@ -497,6 +650,20 @@ exports.manageVolunteerSignup = onRequest(
         if (!eventId || typeof body.published !== "boolean") throw new Error("An event and visibility setting are required.");
         await db.collection("volunteer_events").doc(eventId).update({
           published: body.published,
+          ...(body.published ? { cancelled: false } : {}),
+          updatedAt: FieldValue.serverTimestamp(),
+        });
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (action === "cancelEvent") {
+        const eventId = cleanText(body.eventId, 160);
+        if (!eventId) throw new Error("A tournament is required.");
+        await db.collection("volunteer_events").doc(eventId).update({
+          published: false,
+          cancelled: true,
+          calendarSequence: FieldValue.increment(1),
           updatedAt: FieldValue.serverTimestamp(),
         });
         res.status(200).json({ ok: true });
@@ -507,7 +674,7 @@ exports.manageVolunteerSignup = onRequest(
         const requestedId = cleanText(body.eventId, 160);
         const incoming = body.event || {};
         const title = cleanText(incoming.title, 160);
-        const date = cleanText(incoming.date, 32);
+        const date = cleanDate(incoming.date);
         const location = cleanText(incoming.location, 200);
         const address = cleanText(incoming.address, 240);
         const startTime = cleanTime(incoming.startTime);
@@ -540,7 +707,7 @@ exports.manageVolunteerSignup = onRequest(
         });
 
         if (!title || !date || !requestedRoles.length) {
-          throw new Error("Add an event title, date, and at least one volunteer role.");
+          throw new Error("Add an event title, a valid tournament date, and at least one volunteer role.");
         }
         if ((startTime && !endTime) || (!startTime && endTime) || (startTime && timeMinutes(startTime) >= timeMinutes(endTime))) {
           throw new Error("Tournament end time must be after the start time.");
@@ -575,8 +742,20 @@ exports.manageVolunteerSignup = onRequest(
             roles: nextRoles,
             updatedAt: FieldValue.serverTimestamp(),
           };
-          if (existingSnap.exists) transaction.update(eventRef, data);
-          else transaction.set(eventRef, { ...data, createdAt: FieldValue.serverTimestamp() });
+          if (existingSnap.exists) {
+            const existing = existingSnap.data();
+            const sequence = Math.max(0, Math.floor(Number(existing.calendarSequence) || 0));
+            data.calendarSequence = calendarEventSignature(existing) === calendarEventSignature(data)
+              ? sequence
+              : sequence + 1;
+            transaction.update(eventRef, data);
+          } else {
+            transaction.set(eventRef, {
+              ...data,
+              calendarSequence: 0,
+              createdAt: FieldValue.serverTimestamp(),
+            });
+          }
         });
         res.status(200).json({ ok: true, eventId: eventRef.id });
         return;

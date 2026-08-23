@@ -235,6 +235,24 @@
         return right - left;
       });
   }
+  async function emailDeliveriesForEvent(eventId) {
+    const snap = await db.collection("volunteer_email_notifications").where("eventId", "==", eventId).get();
+    const latestBySignup = new Map();
+    snap.docs.forEach(doc => {
+      const delivery = doc.data();
+      const current = latestBySignup.get(delivery.signupId);
+      const currentTime = current && current.updatedAt && current.updatedAt.toMillis ? current.updatedAt.toMillis() : 0;
+      const deliveryTime = delivery.updatedAt && delivery.updatedAt.toMillis ? delivery.updatedAt.toMillis() : 0;
+      if (!current || deliveryTime >= currentTime) latestBySignup.set(delivery.signupId, delivery);
+    });
+    return latestBySignup;
+  }
+  function deliveryLabel(delivery) {
+    if (!delivery) return "Email pending";
+    if (delivery.status === "sent") return "Email sent";
+    if (delivery.status === "failed") return "Email retry needed";
+    return "Email sending";
+  }
   function csvCell(value) {
     const raw = String(value || "");
     const safe = /^[\t\r\n ]*[=+\-@]/.test(raw) ? `'${raw}` : raw;
@@ -244,11 +262,14 @@
     const event = events.find(item => item.id === eventId);
     if (!event) return;
     try {
-      const signups = await signupsForEvent(eventId);
-      const rows = [["Event", "Date", "Role", "Judging availability", "Volunteer", "Email", "Phone", "Debater", "Notes", "Submitted"]];
+      const [signups, deliveries] = await Promise.all([
+        signupsForEvent(eventId),
+        emailDeliveriesForEvent(eventId),
+      ]);
+      const rows = [["Event", "Date", "Role", "Judging availability", "Volunteer", "Email", "Phone", "Debater", "Notes", "Email delivery", "Submitted"]];
       signups.forEach(signup => rows.push([
         event.title, event.date, signup.roleLabel, [signup.availabilityStart, signup.availabilityEnd].filter(Boolean).join(" – "), signup.parentName, signup.email,
-        signup.phone, signup.studentName, signup.notes,
+        signup.phone, signup.studentName, signup.notes, deliveryLabel(deliveries.get(signup.id)),
         signup.createdAt && signup.createdAt.toDate ? signup.createdAt.toDate().toLocaleString() : "",
       ]));
       const blob = new Blob([rows.map(row => row.map(csvCell).join(",")).join("\n")], { type: "text/csv;charset=utf-8" });
@@ -279,6 +300,17 @@
       await manage({ action: "setPublished", eventId, published });
     } catch (error) {
       alert(error.message || "Unable to update this event.");
+    }
+  }
+  async function cancelEvent(eventId) {
+    const event = events.find(item => item.id === eventId);
+    if (!event) return;
+    const warning = `Cancel “${event.title}”? This closes public signups and immediately emails every signed-up volunteer a cancellation notice.`;
+    if (!confirm(warning)) return;
+    try {
+      await manage({ action: "cancelEvent", eventId });
+    } catch (error) {
+      alert(error.message || "Unable to cancel this tournament.");
     }
   }
   function eventPayload(item, roles = item.roles || []) {
@@ -328,11 +360,12 @@
       }).join("");
       return `<article class="tm-event" data-event="${esc(item.id)}">
         <div class="tm-event-main">
-          <div class="tm-event-top"><div><h3>${esc(item.title)}</h3></div><span class="tm-status ${item.published ? "open" : "closed"}">${item.published ? "Published" : "Draft"}</span></div>
+          <div class="tm-event-top"><div><h3>${esc(item.title)}</h3></div><span class="tm-status ${item.published ? "open" : "closed"}">${item.cancelled ? "Cancelled" : item.published ? "Published" : "Draft"}</span></div>
           <div class="tm-event-actions">
             <button class="tm-action" data-edit="${esc(item.id)}">Manage tournament</button>
             <button class="tm-action close" data-toggle="${esc(item.id)}">${item.published ? "Close signups" : "Publish signups"}</button>
             <button class="tm-action" data-export="${esc(item.id)}">Export CSV</button>
+            ${item.cancelled ? "" : `<button class="tm-action close" data-cancel="${esc(item.id)}">Cancel tournament</button>`}
           </div>
         </div>
         <div class="tm-role-summary">${roles}</div>
@@ -345,12 +378,20 @@
       setPublished(event.id, !event.published);
     }));
     root.querySelectorAll("[data-export]").forEach(button => button.addEventListener("click", () => exportEvent(button.dataset.export)));
+    root.querySelectorAll("[data-cancel]").forEach(button => button.addEventListener("click", () => cancelEvent(button.dataset.cancel)));
     await Promise.all(items.map(async item => {
        const body = root.querySelector(`[data-event="${CSS.escape(item.id)}"] .signups-body`);
       if (!body) return;
       try {
-        const signups = await signupsForEvent(item.id);
-         body.innerHTML = signups.length ? signups.map(signup => `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="tm-no-signups">No volunteer signups yet.</p>`;
+        const [signups, deliveries] = await Promise.all([
+          signupsForEvent(item.id),
+          emailDeliveriesForEvent(item.id),
+        ]);
+        body.innerHTML = signups.length ? signups.map(signup => {
+          const delivery = deliveries.get(signup.id);
+          const deliveryStyle = delivery && delivery.status === "failed" ? "#b54708" : "#54606f";
+          return `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}<br><span style="color:${deliveryStyle};font-weight:600;">${esc(deliveryLabel(delivery))}</span></div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`;
+        }).join("") : `<p class="tm-no-signups">No volunteer signups yet.</p>`;
         body.querySelectorAll("[data-remove]").forEach(button => {
           const signup = signups.find(item => item.id === button.dataset.remove);
           button.addEventListener("click", () => removeSignup(signup));
