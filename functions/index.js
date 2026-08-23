@@ -165,6 +165,68 @@ exports.notifyOnTournament = onDocumentCreated(
   }
 );
 
+// ── Public calendar projection ─────────────────────────────────
+// Keep the public site on a deliberately narrow collection. Member event
+// notes, schedule links, member names, and editor metadata never leave the
+// private `tournaments` collection.
+function publicCalendarSeason(start) {
+  const date = start && typeof start.toDate === "function" ? start.toDate() : null;
+  if (!date || Number.isNaN(date.getTime())) return "";
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York", year: "numeric", month: "numeric",
+  }).formatToParts(date);
+  const year = Number(parts.find(part => part.type === "year")?.value);
+  const month = Number(parts.find(part => part.type === "month")?.value);
+  if (!year || !month) return "";
+  const startYear = month >= 7 ? year : year - 1;
+  return `${startYear}-${String((startYear + 1) % 100).padStart(2, "0")}`;
+}
+
+function publicCalendarEvent(data) {
+  if (!data || data.isPublic !== true || !data.start || !data.title) return null;
+  const season = publicCalendarSeason(data.start);
+  if (!season) return null;
+  return {
+    title:     cleanText(data.title, 160),
+    type:      ["tournament", "practice", "meeting", "deadline"].includes(data.type) ? data.type : "tournament",
+    start:     data.start,
+    end:       data.end || null,
+    allDay:    data.allDay !== false,
+    startTime: cleanTime(data.startTime),
+    endTime:   cleanTime(data.endTime),
+    isVirtual: data.isVirtual === true,
+    location:  cleanText(data.location, 200),
+    season,
+    updatedAt: FieldValue.serverTimestamp(),
+  };
+}
+
+async function syncPublicCalendarEvent(id, data) {
+  const target = getFirestore().collection("public_calendar_events").doc(id);
+  const publicEvent = publicCalendarEvent(data);
+  if (!publicEvent) {
+    await target.delete();
+    return null;
+  }
+  await target.set(publicEvent, { merge: true });
+  return null;
+}
+
+exports.syncPublicCalendarOnCreate = onDocumentCreated(
+  "tournaments/{docId}",
+  async event => syncPublicCalendarEvent(event.params.docId, event.data?.data())
+);
+
+exports.syncPublicCalendarOnUpdate = onDocumentUpdated(
+  "tournaments/{docId}",
+  async event => syncPublicCalendarEvent(event.params.docId, event.data?.after?.data())
+);
+
+exports.removePublicCalendarOnDelete = onDocumentDeleted(
+  "tournaments/{docId}",
+  async event => getFirestore().collection("public_calendar_events").doc(event.params.docId).delete()
+);
+
 // ── Public tournament volunteer signup ─────────────────────────
 // The browser receives only published event details, role availability, and
 // the parent/debater names and availability that families have agreed to show.

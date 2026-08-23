@@ -54,27 +54,65 @@
     .parent-card-title { font-size:1.0rem !important; }
     .parent-card-text  { font-size:0.97rem !important; }
 
-    .calendar-grid { display:flex; flex-direction:column; gap:0; }
-    .cal-month { margin-bottom:40px; }
-    .cal-month-title {
-      font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.75rem;
-      letter-spacing:0.18em; text-transform:uppercase; color:var(--gold);
-      padding:10px 0; border-bottom:1px solid rgba(212,160,23,0.2);
-      margin-bottom:16px; display:flex; align-items:center; gap:12px;
+    /* ── Public season calendar ────────────────────────────────── */
+    .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:780px;margin:0 0 22px; }
+    .public-calendar-shell { border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
+    .public-countdown {
+      align-items:stretch; background:linear-gradient(115deg,#6f151b,#b01f2a 50%,#79131a);
+      border:1px solid rgba(255,126,126,.62); border-radius:10px; color:#fff;
+      display:none; gap:0; margin:0 0 16px; overflow:hidden;
     }
-    .cal-month-title::after { content:''; flex:1; height:1px; background:rgba(212,160,23,0.12); }
-
-    .cal-event {
-      display:grid; grid-template-columns:80px 1fr auto;
-      gap:20px; align-items:center;
-      padding:20px 24px; border-radius:8px;
-      background:rgba(11,37,69,0.45);
-      border:1px solid rgba(212,160,23,0.12);
-      margin-bottom:10px;
-      transition:border-color 0.25s, transform 0.25s;
+    .public-countdown > span { align-items:center; display:flex; min-height:60px; padding:13px 18px; }
+    .public-countdown-icon { background:rgba(0,0,0,.13); border-right:1px solid rgba(255,255,255,.25); font-size:1.45rem; }
+    .public-countdown-label { border-right:1px solid rgba(255,255,255,.25); font-family:'Josefin Sans',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; }
+    .public-countdown-name { flex:1; font-family:'Cormorant Garamond',serif; font-size:1.45rem; font-weight:700; line-height:1.05; min-width:0; }
+    .public-countdown-time { background:rgba(0,0,0,.16); border-left:1px solid rgba(255,255,255,.25); font-family:'Josefin Sans',sans-serif; font-size:.73rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; white-space:nowrap; }
+    .public-calendar-legend { display:flex; flex-wrap:wrap; gap:14px; margin:0 0 14px; }
+    .public-calendar-legend span { align-items:center; color:#d9e6f8; display:inline-flex; font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .public-calendar-legend i { border-radius:50%; display:inline-block; height:10px; margin-right:7px; width:10px; }
+    #public-calendar { min-height:650px; }
+    #public-calendar .fc { font-family:'Josefin Sans',sans-serif; }
+    #public-calendar .fc-toolbar { background:#050e28; border-bottom:1px solid rgba(101,147,226,.28); margin:0!important; padding:14px 16px; }
+    #public-calendar .fc-toolbar-title { color:#fff!important; font-family:'Cormorant Garamond',serif!important; font-size:1.7rem!important; font-weight:700; }
+    #public-calendar .fc-button { background:rgba(255,255,255,.07)!important; border:1px solid rgba(255,255,255,.16)!important; box-shadow:none!important; color:#e2edff!important; font:700 .65rem 'Josefin Sans',sans-serif!important; letter-spacing:.08em!important; padding:7px 11px!important; text-transform:uppercase; }
+    #public-calendar .fc-button:hover, #public-calendar .fc-button:focus { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:#fff!important; }
+    #public-calendar .fc-button-active { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:var(--gold)!important; }
+    #public-calendar .fc-scrollgrid, #public-calendar td, #public-calendar th { border-color:rgba(72,112,187,.34)!important; }
+    #public-calendar .fc-col-header-cell { background:#18448d!important; }
+    #public-calendar .fc-col-header-cell-cushion { color:#fff!important; font:700 .62rem 'Josefin Sans',sans-serif; letter-spacing:.1em; padding:10px 0!important; text-decoration:none!important; text-transform:uppercase; }
+    #public-calendar .fc-daygrid-day { background:#071735!important; }
+    #public-calendar .fc-daygrid-day:hover { background:#0a214c!important; }
+    #public-calendar .fc-day-today { background:#0c2857!important; }
+    #public-calendar .fc-daygrid-day-number { color:#e9f1ff!important; font-weight:700; padding:7px 10px!important; text-decoration:none!important; }
+    #public-calendar .fc-day-today .fc-daygrid-day-number { color:var(--gold)!important; }
+    #public-calendar .fc-event { border:0!important; border-radius:4px!important; box-shadow:none!important; cursor:pointer!important; margin:2px 3px!important; padding:3px 6px!important; }
+    #public-calendar .fc-event-title { color:#fff!important; font-size:.76rem!important; font-weight:700!important; line-height:1.25!important; white-space:normal!important; }
+    #public-calendar .fc-list { border:0!important; }
+    #public-calendar .fc-list-day-cushion { background:#102d61!important; }
+    #public-calendar .fc-list-day-text, #public-calendar .fc-list-day-side-text { color:#dce9ff!important; text-decoration:none!important; }
+    #public-calendar .fc-list-event:hover td { background:rgba(255,255,255,.05)!important; }
+    .public-calendar-status { color:var(--gray-mid); font-size:.82rem; min-height:22px; padding:12px 4px 0; }
+    .public-calendar-status.is-error { color:#ffb4b4; }
+    .public-event-modal { background:rgba(3,10,26,.78); display:none; inset:0; padding:18px; place-items:center; position:fixed; z-index:10020; }
+    .public-event-modal.is-open { display:grid; }
+    .public-event-card { background:linear-gradient(145deg,#102b59,#07152f); border:1px solid rgba(212,160,23,.42); border-radius:12px; box-shadow:0 20px 55px rgba(0,0,0,.5); max-width:530px; padding:28px; position:relative; width:100%; }
+    .public-event-close { background:transparent; border:0; color:#b6c9e6; cursor:pointer; font-size:1.65rem; line-height:1; padding:4px; position:absolute; right:13px; top:10px; }
+    .public-event-kind { color:var(--gold); font:700 .64rem 'Josefin Sans',sans-serif; letter-spacing:.12em; margin:0 0 8px; text-transform:uppercase; }
+    .public-event-title { color:#fff; font:700 2rem/1 'Cormorant Garamond',serif; margin:0 30px 12px 0; }
+    .public-event-detail { color:#d7e3f5; font-size:.88rem; line-height:1.65; margin:6px 0; }
+    .public-event-empty { color:var(--gray-mid); font-size:.9rem; line-height:1.65; padding:30px 18px; text-align:center; }
+    @media(max-width:700px){
+      .public-countdown { display:block; }
+      .public-countdown > span { min-height:0; padding:10px 14px; }
+      .public-countdown-icon, .public-countdown-label { border:0; display:inline-flex; }
+      .public-countdown-name { display:block; font-size:1.35rem; padding-top:3px; }
+      .public-countdown-time { border-left:0; border-top:1px solid rgba(255,255,255,.2); display:block; }
+      #public-calendar { min-height:500px; }
+      #public-calendar .fc-toolbar { align-items:center; padding:10px; }
+      #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
+      #public-calendar .fc-daygrid-day-frame { min-height:67px; }
+      #public-calendar .fc-event-title { font-size:.63rem!important; }
     }
-    .cal-event:hover { border-color:rgba(212,160,23,0.4); transform:translateX(4px); }
-    .cal-event.past { opacity:0.55; }
     /* Last-season table controls */
     .ls-controls { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; }
     .ls-filters   { display:flex; gap:8px; flex-wrap:wrap; }
@@ -110,17 +148,6 @@
       /* Season picker full-width */
       .season-picker { min-width:0; width:100%; }
     }
-    .cal-event.upcoming { border-color:rgba(212,160,23,0.3); }
-    .cal-event.next { border-color:rgba(212,160,23,0.6); background:rgba(13,46,86,0.7); }
-
-
-    .cal-date { text-align:center; }
-    .cal-month-sm { font-size:0.62rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--gold); }
-    .cal-day { font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:700; color:var(--white); line-height:1; }
-
-    .cal-info {}
-    .cal-name { font-family:'Josefin Sans',sans-serif; font-weight:700; font-size:0.92rem; letter-spacing:0.04em; color:var(--white); margin-bottom:3px; }
-    .cal-location { font-size:0.78rem; color:var(--gray-mid); margin-bottom:6px; }
     .cal-tags { display:flex; gap:6px; flex-wrap:wrap; }
     .cal-tag { padding:2px 8px; border-radius:3px; font-size:0.62rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; }
     .tag-tourn { background:rgba(59,130,246,0.15); color:#93c5fd; border:1px solid rgba(59,130,246,0.25); }
@@ -135,9 +162,6 @@
     .tag-hosted { background:rgba(248,113,113,0.13); color:#fecaca; border:1px solid rgba(248,113,113,0.28); }
     .tag-next { background:rgba(212,160,23,0.25); color:var(--gold); border:1px solid rgba(212,160,23,0.5); }
 
-    .cal-status { text-align:right; }
-    .status-result { font-family:'Playfair Display',serif; font-size:1.1rem; font-weight:700; color:var(--gold); }
-    .status-upcoming { font-size:0.72rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--gray-mid); }
 
     .result-row {
       display:grid; grid-template-columns:1fr 3fr 1fr 1fr 1fr;
@@ -749,7 +773,7 @@
         <p class="section-label" id="cal-season-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
       </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
         <div class="season-picker">
           <label class="season-picker-label" for="season-picker">Calendar season</label>
           <select class="season-picker-select" id="season-picker" onchange="showSeason(this.value)">
@@ -757,70 +781,24 @@
             <option value="last">Last Season - 2025-26</option>
           </select>
         </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;" id="cal-legend">
-          <span class="cal-tag tag-info" style="padding:5px 12px;">Info Session</span>
-          <span class="cal-tag tag-tryout" style="padding:5px 12px;">Tryout</span>
-          <span class="cal-tag tag-meeting" style="padding:5px 12px;">Meeting</span>
-          <span class="cal-tag tag-wasdl" style="padding:5px 12px;">WASDL</span>
-          <span class="cal-tag tag-deadline" style="padding:5px 12px;">Deadline</span>
-        </div>
       </div>
     </div>
 
     <!-- THIS SEASON -->
     <div id="pane-this-season">
-      <p style="color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:750px;margin:0 0 28px;">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. The existing <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a> is the only application needed.</p>
-      <div class="calendar-grid">
-        <div class="cal-month">
-          <div class="cal-month-title">September 2026 · Team Kickoff</div>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">10</div></div>
-            <div class="cal-info"><div class="cal-name">QST Debate Info Session</div><div class="cal-location">Thursday · During QST · Lecture Hall</div><div class="cal-tags"><span class="cal-tag tag-info">Info Session</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Students welcome</span></div>
-          </article>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">14</div></div>
-            <div class="cal-info"><div class="cal-name">Activity Fair · A Session</div><div class="cal-location">Monday · After school · approximately 2:30–3:30 PM</div><div class="cal-tags"><span class="cal-tag tag-fair">Activity Fair</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Coach-selected representatives</span></div>
-          </article>
-          <article class="cal-event next">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">16</div></div>
-            <div class="cal-info"><div class="cal-name">Debate Team Applications Due</div><div class="cal-location">Wednesday · Submit the online application by the deadline</div><div class="cal-tags"><span class="cal-tag tag-deadline">Deadline</span></div></div>
-            <div class="cal-status"><a class="status-result" href="apply.html" style="font-size:0.9rem;text-decoration:none;">Apply →</a></div>
-          </article>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">22</div></div>
-            <div class="cal-info"><div class="cal-name">Debate Team Tryouts</div><div class="cal-location">Tuesday · 2:30–4:30 PM · Cafeteria</div><div class="cal-tags"><span class="cal-tag tag-tryout">Tryout</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Selection event</span></div>
-          </article>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">23</div></div>
-            <div class="cal-info"><div class="cal-name">Debate Team Tryouts</div><div class="cal-location">Wednesday · 2:30–4:30 PM · Lecture Hall</div><div class="cal-tags"><span class="cal-tag tag-tryout">Tryout</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Selection event</span></div>
-          </article>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Sep</div><div class="cal-day">29</div></div>
-            <div class="cal-info"><div class="cal-name">First Debate Team Meeting</div><div class="cal-location">Tuesday · Team members should keep Tuesday afternoons clear for recurring meetings.</div><div class="cal-tags"><span class="cal-tag tag-meeting">Team Meeting</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Season begins</span></div>
-          </article>
-        </div>
-        <div class="cal-month">
-          <div class="cal-month-title">October 2026 · First Tournament</div>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Oct</div><div class="cal-day">24</div></div>
-            <div class="cal-info"><div class="cal-name">First WASDL PF / Middle School Tournament</div><div class="cal-location">Saturday · Public Forum / Middle School division</div><div class="cal-tags"><span class="cal-tag tag-wasdl">WASDL Tournament</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Tournament day</span></div>
-          </article>
-        </div>
-        <div class="cal-month">
-          <div class="cal-month-title">November 2026 · Cooper Hosts</div>
-          <article class="cal-event">
-            <div class="cal-date"><div class="cal-month-sm">Nov</div><div class="cal-day">14</div></div>
-            <div class="cal-info"><div class="cal-name">Cooper Middle School PF Tournament</div><div class="cal-location">Saturday · Cooper hosts the Middle School Public Forum tournament</div><div class="cal-tags"><span class="cal-tag tag-hosted">Hosted Tournament</span><span class="cal-tag tag-wasdl">WASDL</span></div></div>
-            <div class="cal-status"><span class="status-upcoming">Tournament day</span></div>
-          </article>
-        </div>
-      </div>
+       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. The existing <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a> is the only application needed.</p>
+       <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
+       <div class="public-calendar-legend" aria-label="Calendar legend">
+         <span><i style="background:#991b1b;"></i>Tournament</span>
+         <span><i style="background:#22c55e;"></i>Practice</span>
+         <span><i style="background:#ffd700;"></i>Meeting</span>
+         <span><i style="background:#f97316;"></i>Deadline</span>
+       </div>
+       <div class="public-calendar-shell">
+         <div id="public-calendar" aria-label="Public tournament calendar"></div>
+         <div id="public-calendar-empty" class="public-event-empty" hidden>No public events have been posted for this season yet.</div>
+       </div>
+       <p id="public-calendar-status" class="public-calendar-status" aria-live="polite"></p>
     </div>
 
     <!-- LAST SEASON (populated from Firestore) -->
@@ -1067,6 +1045,15 @@
     </div>
   </div>
 </div>
+<div id="public-event-modal" class="public-event-modal" role="dialog" aria-modal="true" aria-labelledby="public-event-title" aria-hidden="true">
+  <article class="public-event-card">
+    <button id="public-event-close" class="public-event-close" type="button" aria-label="Close event details">&times;</button>
+    <p id="public-event-kind" class="public-event-kind"></p>
+    <h2 id="public-event-title" class="public-event-title"></h2>
+    <p id="public-event-date" class="public-event-detail"></p>
+    <p id="public-event-location" class="public-event-detail"></p>
+  </article>
+</div>
 <script>
 /* ── Firestore REST (no SDK, no auth required) ────────────── */
 const _FS_BASE = 'https://firestore.googleapis.com/v1/projects/cooper-debate-team/databases/(default)/documents';
@@ -1084,6 +1071,7 @@ function showSeason(which) {
   document.getElementById('pane-last-season').style.display = isThis ? 'none' : '';
   document.getElementById('season-picker').value = isThis ? 'this' : 'last';
   document.getElementById('cal-season-label').textContent = isThis ? '2026–2027 Season' : '2025–2026 Season';
+  if (isThis) window.dispatchEvent(new CustomEvent('public-calendar-visible', { detail: { visible: true } }));
   if (!isThis && !_lastSeasonLoaded) loadLastSeason();
 }
 
@@ -1311,6 +1299,7 @@ function renderLastSeason(tourns) {
       panel.classList.toggle('is-active', selected);
       panel.hidden = !selected;
     });
+    window.dispatchEvent(new CustomEvent('public-calendar-visible', { detail: { visible: activeId === 'calendar-results' } }));
     if (options.updateUrl) updateUrl(activeId, false);
     if (options.focus) {
       const activeTab = tabs.find(tab => tab.getAttribute('aria-controls') === activeId);
@@ -1350,6 +1339,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="js/public-calendar.js?v=1"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>

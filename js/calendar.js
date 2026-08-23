@@ -670,12 +670,13 @@ function openEventDetail(fcEvent) {
 
   // Edit + Delete buttons (coaches/captains only)
   const editTargetId = fcEvent.id.replace(/__deadline$/, "");
-  const editBtn = isEditor && !isStaticSchedule
+  const canEditEvent = isEditor && (!t.isPublic || calUserRole === "coach");
+  const editBtn = canEditEvent && !isStaticSchedule
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
   // Deadline chips are synthetic — deleting them would remove the whole parent
   // tournament, which is confusing. Only show Delete on actual events.
-  const deleteBtn = (isEditor && !isDeadline && !isStaticSchedule)
+  const deleteBtn = (canEditEvent && !isDeadline && !isStaticSchedule)
     ? `<button class="det-delete-btn" onclick="deleteEventFromDetail('${calEsc(editTargetId)}','${calEsc(t.title)}')">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
         Delete
@@ -826,6 +827,14 @@ function openPostModal(editId) {
   document.getElementById("evt-start-time").value = existing?.startTime || defaults.start;
   document.getElementById("evt-end-time").value   = existing?.endTime   || defaults.end;
   document.getElementById("evt-virtual").checked  = existing?.isVirtual || false;
+  document.getElementById("evt-public").checked   = existing?.isPublic === true;
+  document.getElementById("evt-public").disabled  = calUserRole !== "coach";
+  const publicGroup = document.getElementById("evt-public-group");
+  if (publicGroup) {
+    publicGroup.title = calUserRole === "coach"
+      ? ""
+      : "Only a coach can change whether an event appears on the public calendar.";
+  }
   document.getElementById("evt-location").value   = existing?.location || "";
   document.getElementById("evt-schedule").value   = existing?.scheduleLink  || "";
   document.getElementById("evt-notes").value      = existing?.notes || "";
@@ -876,6 +885,7 @@ async function saveEvent() {
   const startTime = document.getElementById("evt-start-time").value || "08:00";
   const endTime   = document.getElementById("evt-end-time").value   || "16:30";
   const isVirtual = document.getElementById("evt-virtual").checked;
+  const isPublic  = document.getElementById("evt-public").checked;
   const location  = document.getElementById("evt-location").value.trim();
   const scheduleLink = document.getElementById("evt-schedule").value.trim();
   const notes     = document.getElementById("evt-notes").value.trim();
@@ -899,6 +909,7 @@ async function saveEvent() {
     startTime,
     endTime,
     isVirtual,
+    isPublic,
     location:  location || null,
     scheduleLink: scheduleLink || null,
     notes:     notes || null,

@@ -38,7 +38,24 @@ service cloud.firestore {
     // Write access (coach/captain only) is enforced in app logic
     match /tournaments/{docId} {
       allow read:  if request.auth != null;
-      allow write: if request.auth != null;
+      // Existing private-event editing remains available to signed-in members.
+      // Only a verified coach may create, change, or delete an event once it
+      // is public, preventing a member edit from changing public content.
+      allow create: if request.auth != null &&
+        (isCoach() || request.resource.data.isPublic != true);
+      allow update: if request.auth != null &&
+        (isCoach() || (resource.data.isPublic != true &&
+          request.resource.data.isPublic != true));
+      allow delete: if request.auth != null &&
+        (isCoach() || resource.data.isPublic != true);
+    }
+
+    // Public calendar records are a narrow, server-generated projection of
+    // member calendar events. Browsers may read them, but only Cloud Functions
+    // may create, update, or delete them.
+    match /public_calendar_events/{docId} {
+      allow read:  if true;
+      allow write: if false;
     }
 
     // Tournament stat results — public read (shown on tournaments.html), coach write
