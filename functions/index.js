@@ -814,8 +814,8 @@ exports.manageApplicationReview = onRequest(
       res.status(400).json({ error: "A valid application is required." });
       return;
     }
-    if (!["accepted", "declined"].includes(decision)) {
-      res.status(400).json({ error: "Choose Accept or Decline before saving." });
+    if (!["pending", "accepted", "declined"].includes(decision)) {
+      res.status(400).json({ error: "Choose Accept, Hold, or Decline before saving." });
       return;
     }
 
