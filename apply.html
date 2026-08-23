@@ -448,6 +448,11 @@
     }
     .application-modal-title { color:#fff; font:700 2.1rem/1 'Cormorant Garamond',serif; margin:0 34px 10px 0; }
     .application-modal-intro { color:#cbd9ed; font-size:.94rem; line-height:1.6; margin:0 0 20px; }
+    .application-modal-error {
+      background:rgba(187,44,44,.18); border:1px solid rgba(255,139,139,.5); border-radius:7px;
+      color:#ffe0e0; display:none; font-size:.87rem; line-height:1.5; margin:0 0 16px; padding:11px 13px;
+    }
+    .application-modal-error.visible { display:block; }
     .application-review-list { border:1px solid rgba(126,184,232,.25); border-radius:9px; overflow:hidden; }
     .application-review-item {
       display:grid; gap:14px; grid-template-columns:minmax(150px,34%) 1fr; padding:12px 14px;
@@ -952,6 +957,7 @@
             <p class="application-modal-kicker">Step 2 of 2</p>
             <h2 class="application-modal-title" id="application-review-title">Review your application</h2>
             <p class="application-modal-intro">Please review the information below. Choose <strong>Edit application</strong> to make any changes before your final submission.</p>
+            <div class="application-modal-error" id="application-submit-error" role="alert"></div>
             <div class="application-review-list" id="application-review-list"></div>
             <div class="application-modal-actions">
               <button class="application-modal-btn secondary" type="button" data-close-modal="application-review-modal">Edit application</button>
@@ -968,7 +974,7 @@
             <h2 class="application-modal-title" id="application-confirmation-title">Thank you for applying</h2>
             <p class="application-modal-intro">Coach Konde will review your application and follow up with next steps after the application deadline.</p>
             <div class="application-confirmation-emails">
-              <strong>Application copies are being sent to</strong>
+              <strong>Your application has been submitted. Complete copies are being sent to</strong>
               <span id="application-confirmation-student-email"></span>
               <span id="application-confirmation-parent-email"></span>
             </div>
@@ -1108,9 +1114,8 @@
   const finalSubmitBtn = document.getElementById('final-submit-btn');
   const confirmationStudentEmail = document.getElementById('application-confirmation-student-email');
   const confirmationParentEmail = document.getElementById('application-confirmation-parent-email');
+  const applicationSubmitError = document.getElementById('application-submit-error');
   const confirmationStorageKey = 'cooper_application_confirmation_recipients';
-
-  document.getElementById('next-url').value = window.location.origin + window.location.pathname + '?success=1';
 
   if (window.location.search.includes('success=1')) {
     form.style.display = 'none';
@@ -1139,7 +1144,18 @@
         <div class="application-review-label">${escapeHtml(name)}</div>
         <div class="application-review-value">${escapeHtml(value)}</div>
       </div>`).join('');
+    applicationSubmitError.classList.remove('visible');
     reviewModal.classList.add('is-open');
+  }
+
+  function showSubmissionConfirmation() {
+    confirmationStudentEmail.textContent = studentPersonalEmail.value.trim();
+    confirmationParentEmail.textContent = parentEmail.value.trim();
+    closeApplicationModal(reviewModal);
+    form.style.display = 'none';
+    successDiv.classList.add('visible');
+    successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    confirmationModal.classList.add('is-open');
   }
 
   document.querySelectorAll('[data-close-modal]').forEach(button => {
@@ -1184,14 +1200,33 @@
     openApplicationReview();
   });
 
-  finalSubmitBtn.addEventListener('click', () => {
+  finalSubmitBtn.addEventListener('click', async () => {
     finalSubmitBtn.disabled = true;
     finalSubmitBtn.textContent = 'Submitting…';
-    sessionStorage.setItem(confirmationStorageKey, JSON.stringify({
-      student: studentPersonalEmail.value.trim(),
-      parent: parentEmail.value.trim()
-    }));
-    form.submit();
+    applicationSubmitError.classList.remove('visible');
+
+    const submission = Object.fromEntries(new FormData(form));
+    delete submission._next;
+    try {
+      const response = await fetch(form.action.replace('https://formsubmit.co/', 'https://formsubmit.co/ajax/'), {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(submission)
+      });
+      const result = await response.json();
+      if (!response.ok || result.success === false || result.success === 'false') {
+        throw new Error('FormSubmit did not accept the application.');
+      }
+      showSubmissionConfirmation();
+    } catch (error) {
+      applicationSubmitError.textContent = 'Your application could not be sent yet. Please check your connection and try submitting again.';
+      applicationSubmitError.classList.add('visible');
+      finalSubmitBtn.disabled = false;
+      finalSubmitBtn.textContent = 'Submit application';
+    }
   });
 
   form.querySelectorAll('.form-input, .form-select, .form-textarea').forEach(el => {
