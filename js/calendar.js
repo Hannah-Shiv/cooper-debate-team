@@ -24,12 +24,12 @@ let calUserRole  = "member";
 let calInstance  = null;
 let _tournaments = [];      // raw Firestore docs
 let _editingId   = null;    // doc ID being edited (null = new)
+let _editingStaticSchedule = false; // a kickoff entry being converted into a managed event
 let _countdownInterval = null;
 let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
 // Published Fall 2026 kickoff dates. These remain visible to every approved
-// member even before the regular Firestore event calendar is populated.
-// They are intentionally read-only in the calendar UI.
+// member until a coach saves a managed Firestore version of the same event.
 const FALL_2026_KICKOFF_EVENTS = [
   {
     id: "fall-2026-info-session",
@@ -667,10 +667,12 @@ function openEventDetail(fcEvent) {
   // Google Calendar link
   const gcLink = buildGcalLink(t, start, end);
 
-  // Edit + Delete buttons (coaches/captains only)
+  // Coaches can turn the built-in kickoff dates into managed calendar events.
+  // Regular Firestore events retain the existing coach/captain editing rules.
   const editTargetId = fcEvent.id.replace(/__deadline$/, "");
-  const canEditEvent = isEditor && (!t.isPublic || calUserRole === "coach");
-  const editBtn = canEditEvent && !isStaticSchedule
+  const canEditEvent = isEditor &&
+    (isStaticSchedule ? calUserRole === "coach" : (!t.isPublic || calUserRole === "coach"));
+  const editBtn = canEditEvent
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
   // Deadline chips are synthetic — deleting them would remove the whole parent
@@ -812,8 +814,14 @@ function eventEmailHtml(data) {
 // ── Post / Edit event modal ───────────────────────────────────
 function openPostModal(editId) {
   // Strip __deadline suffix so we always look up the parent tournament
-  _editingId = editId ? editId.replace(/__deadline$/, "") : null;
-  const existing = _editingId ? _tournaments.find(t => t.id === _editingId) : null;
+  const requestedId = editId ? editId.replace(/__deadline$/, "") : null;
+  const savedEvent = requestedId ? _tournaments.find(t => t.id === requestedId) : null;
+  const staticEvent = !savedEvent && requestedId
+    ? FALL_2026_KICKOFF_EVENTS.find(t => t.id === requestedId)
+    : null;
+  _editingId = savedEvent ? requestedId : null;
+  _editingStaticSchedule = Boolean(staticEvent);
+  const existing = savedEvent || staticEvent;
 
   const type = existing?.type || "tournament";
   const defaults = evtDefaultTimes(type);
@@ -826,7 +834,9 @@ function openPostModal(editId) {
   document.getElementById("evt-start-time").value = existing?.startTime || defaults.start;
   document.getElementById("evt-end-time").value   = existing?.endTime   || defaults.end;
   document.getElementById("evt-virtual").checked  = existing?.isVirtual || false;
-  document.getElementById("evt-public").checked   = existing?.isPublic === true;
+  // Kickoff events already appear on the public starter schedule. A coach
+  // editing one keeps that visibility by default when it becomes managed.
+  document.getElementById("evt-public").checked   = _editingStaticSchedule || existing?.isPublic === true;
   document.getElementById("evt-public").disabled  = calUserRole !== "coach";
   const publicGroup = document.getElementById("evt-public-group");
   if (publicGroup) {
@@ -842,7 +852,7 @@ function openPostModal(editId) {
   if (deleteBtn) deleteBtn.style.display = _editingId ? "inline-flex" : "none";
 
   document.getElementById("post-modal-title").textContent =
-    _editingId ? "✎ Edit Event" : "📅 Post Event";
+    (_editingId || _editingStaticSchedule) ? "✎ Edit Event" : "📅 Post Event";
 
   toggleVirtualLabel();
   document.getElementById("post-event-modal").style.display = "flex";
@@ -931,6 +941,7 @@ async function saveEvent() {
       const subject   = `[Cooper Debate] New ${typeLabel}: ${title}`;
       writeCalMailDoc(subject, eventEmailHtml({ ...data, start: startDate, end: endDate, title, type, startTime, endTime, location, notes, scheduleLink }), `New event posted: ${title}\nDate: ${startStr}${endStr ? " – " + endStr : ""}\nView calendar: https://cooperdebateteam.com/members-calendar.html`);
     }
+    _editingStaticSchedule = false;
     closePostModal();
     closeEventDetail();
   } catch (err) {
