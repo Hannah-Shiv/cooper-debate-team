@@ -150,6 +150,10 @@
 
     /* ── FullCalendar overrides ───────────────────────────── */
     #cal-container { border-radius: 10px; overflow: hidden; }
+    /* Timed-event background layers are used in Week/Day views. Month view
+       already receives an exact date-cell fill, so hiding them there prevents
+       a blank spillover cell after a same-day event. */
+    #cal-container .fc-dayGridMonth-view .fc-bg-event { display:none !important; }
 
     .fc { font-family: 'Josefin Sans', sans-serif !important; --fc-bg-event-opacity: 1; }
 
