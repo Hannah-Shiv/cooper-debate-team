@@ -160,7 +160,7 @@
         <div class="vol-empty">
           <span aria-hidden="true">📬</span>
           <h3>No judge openings are posted yet</h3>
-          <p>When a tournament needs parent judges, the signup will appear here. Please check back soon.</p>
+          <p>When a tournament needs volunteer judges, the signup will appear here. Please check back soon.</p>
         </div>`;
       return;
     }
@@ -202,11 +202,11 @@
                 <small>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</small>
               </div>
               <div class="vol-roster-debater" role="cell" data-label="Debater they’re supporting">
-                ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Family volunteer")}</span>
+                ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Not listed")}</span>
               </div>
             </div>`;
         }).join("")
-        : `<div class="vol-roster-empty" role="row">Be the first family to volunteer for this tournament.</div>`;
+        : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
       const availabilityMarkup = choices.map((choice, index) => `
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
@@ -240,7 +240,7 @@
           </div>
           <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
             <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
-            <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Parent signups</small></div>
+            <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
             <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
             <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
             <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
@@ -260,11 +260,11 @@
               <section class="vol-public-assignment"><h4>Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
             </aside>
           </div>
-          <section class="vol-public-roster" aria-label="Families signed up to judge">
+          <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-roster-summary">
               <div class="vol-public-roster-heading">
                 ${modalIcon("users")}
-                <div><h4>Volunteers already signed up</h4><p>Families who have volunteered to judge this tournament.</p></div>
+                <div><h4>Volunteers already signed up</h4><p>People who have volunteered to judge this tournament.</p></div>
               </div>
               <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
                 <div class="vol-roster-progress-copy"><strong>${stats.fillRate}%</strong><div><span>${stats.confirmed} of ${stats.capacity} judge spots filled</span><small>${stats.available} ${stats.available === 1 ? "spot" : "spots"} remaining</small></div></div>
@@ -278,7 +278,7 @@
               </div>
               <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
-            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to tournament families. Contact details and notes remain private.</p>
+            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to the tournament community. Contact details and notes remain private.</p>
           </section>
         </article>`;
     }).join("");
@@ -436,7 +436,7 @@
           <div class="vol-review-detail">${modalIcon("users")}<div><span>Volunteer</span><strong>${escapeHtml(parentName)}</strong></div></div>
           <div class="vol-review-detail">${modalIcon("debate")}<div><span>Debater</span><strong>${escapeHtml(studentName || "Not provided")}</strong></div></div>
         </div>
-        <div class="vol-review-privacy">${modalIcon("info")}<div><strong>What families will see</strong><p>${escapeHtml(parentName)}, ${studentName ? `${studentName}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)}. Your email, phone, and notes remain coach-only.</p></div></div>
+        <div class="vol-review-privacy">${modalIcon("info")}<div><strong>What will be shown publicly</strong><p>${escapeHtml(parentName)}, ${studentName ? `${studentName}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)}. Your email, phone, and notes remain coach-only.</p></div></div>
         <div class="vol-review-contact"><span>Private contact for coaches</span><strong>${escapeHtml($("vol-email").value.trim())} <i>·</i> ${escapeHtml($("vol-phone").value.trim())}</strong></div>
       </section>`;
   }

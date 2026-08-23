@@ -245,7 +245,7 @@
     if (!event) return;
     try {
       const signups = await signupsForEvent(eventId);
-      const rows = [["Event", "Date", "Role", "Judging availability", "Parent / guardian", "Email", "Phone", "Debater", "Notes", "Submitted"]];
+      const rows = [["Event", "Date", "Role", "Judging availability", "Volunteer", "Email", "Phone", "Debater", "Notes", "Submitted"]];
       signups.forEach(signup => rows.push([
         event.title, event.date, signup.roleLabel, [signup.availabilityStart, signup.availabilityEnd].filter(Boolean).join(" – "), signup.parentName, signup.email,
         signup.phone, signup.studentName, signup.notes,
@@ -317,7 +317,7 @@
   async function renderEvents(items) {
     const root = $("vol-event-list");
     if (!items.length) {
-      root.innerHTML = `<div class="tm-empty">No tournaments have been created yet. Add the tournament details below, set judge capacity, then publish when families are ready to sign up.</div>`;
+      root.innerHTML = `<div class="tm-empty">No tournaments have been created yet. Add the tournament details below, set judge capacity, then publish when volunteers are ready to sign up.</div>`;
       return;
     }
     root.innerHTML = items.map(item => {
@@ -336,7 +336,7 @@
           </div>
         </div>
         <div class="tm-role-summary">${roles}</div>
-        <div class="tm-signups"><h4>Private parent signups</h4><div class="signups-body"><p class="tm-no-signups">Loading signups…</p></div></div>
+        <div class="tm-signups"><h4>Private volunteer signups</h4><div class="signups-body"><p class="tm-no-signups">Loading signups…</p></div></div>
       </article>`;
     }).join("");
     root.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => populateForm(events.find(item => item.id === button.dataset.edit))));
@@ -350,7 +350,7 @@
       if (!body) return;
       try {
         const signups = await signupsForEvent(item.id);
-         body.innerHTML = signups.length ? signups.map(signup => `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="tm-no-signups">No parent signups yet.</p>`;
+         body.innerHTML = signups.length ? signups.map(signup => `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}</div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`).join("") : `<p class="tm-no-signups">No volunteer signups yet.</p>`;
         body.querySelectorAll("[data-remove]").forEach(button => {
           const signup = signups.find(item => item.id === button.dataset.remove);
           button.addEventListener("click", () => removeSignup(signup));
@@ -386,7 +386,7 @@
       return;
     }
     if (!isCoach(user.email)) {
-      showAccess("Coach access only", "Volunteer signups contain parent contact details and can only be managed by a coach.", false);
+      showAccess("Coach access only", "Volunteer signups contain private contact details and can only be managed by a coach.", false);
       return;
     }
     currentUser = user;
