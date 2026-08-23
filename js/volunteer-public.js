@@ -43,6 +43,15 @@
     return startLabel && endLabel ? `${startLabel} – ${endLabel}` : "";
   };
 
+  const coverageForSignup = (signup, event) => {
+    const isFullTournament = signup.availabilityStart === event.startTime &&
+      signup.availabilityEnd === event.endTime;
+    if (isFullTournament) return { label: "Full tournament", className: "is-full" };
+    if (signup.availabilityStart === event.startTime) return { label: "Morning", className: "is-morning" };
+    if (signup.availabilityEnd === event.endTime) return { label: "Afternoon", className: "is-afternoon" };
+    return { label: "Custom window", className: "is-custom" };
+  };
+
   const lineItems = value => String(value || "")
     .split(/\r?\n/)
     .map(item => item.trim())
@@ -179,20 +188,26 @@
       const rosterMarkup = publicSignups.length
         ? publicSignups.map(signup => {
           const availability = timeRange(signup.availabilityStart, signup.availabilityEnd) || "Availability shared with coaches";
+          const coverage = coverageForSignup(signup, event);
           return `
-            <li class="vol-roster-person">
-              <span class="vol-roster-avatar" aria-hidden="true">${escapeHtml(signup.parentName.slice(0, 1).toUpperCase())}</span>
-              <div class="vol-roster-person-copy">
+            <div class="vol-roster-row" role="row">
+              <div class="vol-roster-volunteer" role="cell" data-label="Volunteer">
+                <span class="vol-roster-avatar" aria-hidden="true">${escapeHtml(signup.parentName.slice(0, 1).toUpperCase())}</span>
                 <strong>${escapeHtml(signup.parentName)}</strong>
-                ${signup.studentName ? `<span>Debater: ${escapeHtml(signup.studentName)}</span>` : "<span>Family volunteer</span>"}
               </div>
-              <div class="vol-roster-shift">
-                <span>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</span>
-                <small>${escapeHtml(availability)}</small>
+              <div class="vol-roster-availability" role="cell" data-label="Availability">
+                ${modalIcon("clock")}<span>${escapeHtml(availability)}</span>
               </div>
-            </li>`;
+              <div class="vol-roster-coverage" role="cell" data-label="Coverage">
+                <span class="vol-coverage-tag ${coverage.className}">${escapeHtml(coverage.label)}</span>
+                <small>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</small>
+              </div>
+              <div class="vol-roster-debater" role="cell" data-label="Debater they’re supporting">
+                ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Family volunteer")}</span>
+              </div>
+            </div>`;
         }).join("")
-        : `<li class="vol-roster-empty">Be the first family to volunteer for this tournament.</li>`;
+        : `<div class="vol-roster-empty" role="row">Be the first family to volunteer for this tournament.</div>`;
       const availabilityMarkup = choices.map((choice, index) => `
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
@@ -247,13 +262,24 @@
             </aside>
           </div>
           <section class="vol-public-roster" aria-label="Families signed up to judge">
-            <div class="vol-public-roster-heading">
-              ${modalIcon("users")}
-              <div><span>Judge volunteer roster</span><h4>Signed up so far</h4></div>
-              <small>${publicSignups.length} ${publicSignups.length === 1 ? "family" : "families"}</small>
+            <div class="vol-roster-summary">
+              <div class="vol-public-roster-heading">
+                ${modalIcon("users")}
+                <div><h4>Volunteers already signed up</h4><p>Families who have volunteered to judge this tournament.</p></div>
+              </div>
+              <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
+                <div class="vol-roster-progress-copy"><strong>${stats.fillRate}%</strong><div><span>${stats.confirmed} of ${stats.capacity} judge spots filled</span><small>${stats.available} ${stats.available === 1 ? "spot" : "spots"} remaining</small></div></div>
+                <div class="vol-roster-progress"><span style="width:${Math.max(0, Math.min(100, stats.fillRate))}%"></span></div>
+                <div class="vol-roster-progress-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
+              </div>
             </div>
-            <p class="vol-public-roster-note">Names, debaters, roles, and chosen availability are visible to tournament families. Contact details and notes remain private.</p>
-            <ul class="vol-roster-list">${rosterMarkup}</ul>
+            <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
+              <div class="vol-roster-table-head" role="row">
+                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater they’re supporting</span>
+              </div>
+              <div class="vol-roster-table-body">${rosterMarkup}</div>
+            </div>
+            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to tournament families. Contact details and notes remain private.</p>
           </section>
         </article>`;
     }).join("");

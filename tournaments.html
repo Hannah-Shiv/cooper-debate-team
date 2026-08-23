@@ -325,23 +325,42 @@
     .vol-public-sidebar .vol-public-assignment { background:rgba(50,101,190,.16); border-color:rgba(109,157,238,.28); }
     .vol-public-assignment h4 { color:#a9d1ff; }
     .vol-public-sidebar .vol-public-assignment { margin-top:auto; }
-    .vol-public-roster { border-top:1px solid rgba(255,255,255,.12); padding:22px; }
-    .vol-public-roster-heading { align-items:center; display:flex; gap:11px; }
-    .vol-public-roster-heading .vol-modal-icon { color:#7fc3ff; height:32px; width:32px; }
-    .vol-public-roster-heading span { color:#a8caff; display:block; font:700 .56rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; }
-    .vol-public-roster-heading h4 { color:#fff; font:700 1.22rem 'Cormorant Garamond',serif; margin:2px 0 0; }
-    .vol-public-roster-heading small { background:rgba(64,150,237,.15); border:1px solid rgba(108,183,255,.32); border-radius:99px; color:#b9dbff; font:700 .59rem 'Josefin Sans',sans-serif; letter-spacing:.06em; margin-left:auto; padding:7px 9px; text-transform:uppercase; }
-    .vol-public-roster-note { color:#aebfdc; font-size:.72rem; line-height:1.55; margin:11px 0 14px; }
-    .vol-roster-list { display:grid; gap:8px; grid-template-columns:repeat(2,minmax(0,1fr)); list-style:none; margin:0; padding:0; }
-    .vol-roster-person { align-items:center; background:rgba(3,14,38,.54); border:1px solid rgba(138,177,228,.22); border-radius:8px; display:grid; gap:10px; grid-template-columns:34px minmax(0,1fr) auto; padding:10px 11px; }
-    .vol-roster-avatar { align-items:center; background:linear-gradient(145deg,#356ec3,#183b87); border:1px solid rgba(171,209,255,.48); border-radius:50%; color:#fff; display:flex; font:700 .8rem 'Josefin Sans',sans-serif; height:34px; justify-content:center; width:34px; }
-    .vol-roster-person-copy { min-width:0; }
-    .vol-roster-person-copy strong { color:#f0f6ff; display:block; font-size:.77rem; line-height:1.35; }
-    .vol-roster-person-copy span { color:#aabedc; display:block; font-size:.64rem; line-height:1.4; margin-top:2px; }
-    .vol-roster-shift { min-width:100px; text-align:right; }
-    .vol-roster-shift span { color:#f1c95c; display:block; font:700 .56rem 'Josefin Sans',sans-serif; letter-spacing:.05em; text-transform:uppercase; }
-    .vol-roster-shift small { color:#d2e3ff; display:block; font-size:.64rem; line-height:1.4; margin-top:3px; }
-    .vol-roster-empty { background:rgba(3,14,38,.35); border:1px dashed rgba(138,177,228,.28); border-radius:8px; color:#aec3e0; font-size:.74rem; grid-column:1/-1; padding:15px; text-align:center; }
+    .vol-public-roster { background:linear-gradient(135deg,rgba(7,30,71,.72),rgba(2,17,43,.64)); border-top:1px solid rgba(132,181,242,.2); padding:28px; }
+    .vol-roster-summary { align-items:center; display:grid; gap:32px; grid-template-columns:minmax(0,1fr) minmax(330px,.92fr); margin-bottom:21px; }
+    .vol-public-roster-heading { align-items:center; display:flex; gap:15px; }
+    .vol-public-roster-heading .vol-modal-icon { color:#f0b62c; height:52px; width:52px; }
+    .vol-public-roster-heading h4 { color:#fff; font:700 1.18rem 'Josefin Sans',sans-serif; letter-spacing:.025em; margin:0 0 6px; text-transform:uppercase; }
+    .vol-public-roster-heading p { color:#d5e3f9; font-size:.78rem; line-height:1.55; margin:0; max-width:270px; }
+    .vol-roster-progress-wrap { min-width:0; }
+    .vol-roster-progress-copy { align-items:center; display:flex; gap:16px; margin-bottom:10px; }
+    .vol-roster-progress-copy > strong { color:#f0b62c; font:700 2.65rem/1 'Josefin Sans',sans-serif; letter-spacing:-.05em; }
+    .vol-roster-progress-copy span { color:#edf5ff; display:block; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.06em; line-height:1.35; text-transform:uppercase; }
+    .vol-roster-progress-copy small { color:#7adba5; display:block; font:700 .65rem 'Josefin Sans',sans-serif; letter-spacing:.08em; line-height:1.35; margin-top:3px; text-transform:uppercase; }
+    .vol-roster-progress { background:rgba(115,153,210,.27); border-radius:999px; box-shadow:inset 0 1px 3px rgba(0,0,0,.25); height:18px; overflow:hidden; }
+    .vol-roster-progress span { background:linear-gradient(90deg,#f0ad20,#fac83f); border-radius:inherit; display:block; height:100%; min-width:0; }
+    .vol-roster-progress-scale { color:#c8ddfb; display:flex; font:700 .54rem 'Josefin Sans',sans-serif; justify-content:space-between; letter-spacing:.03em; margin-top:5px; }
+    .vol-roster-table { border:1px solid rgba(125,166,220,.35); border-radius:8px; overflow:hidden; }
+    .vol-roster-table-head,.vol-roster-row { display:grid; grid-template-columns:1.05fr 1.15fr 1fr 1.35fr; }
+    .vol-roster-table-head { background:rgba(0,8,27,.26); }
+    .vol-roster-table-head > span { border-right:1px solid rgba(125,166,220,.28); color:#f0b62c; font:700 .62rem 'Josefin Sans',sans-serif; letter-spacing:.06em; padding:14px 12px; text-align:center; text-transform:uppercase; }
+    .vol-roster-table-head > span:last-child { border-right:0; }
+    .vol-roster-row { background:rgba(4,21,52,.35); border-top:1px solid rgba(125,166,220,.24); min-height:63px; }
+    .vol-roster-row:first-child { border-top:0; }
+    .vol-roster-row > div { align-items:center; border-right:1px solid rgba(125,166,220,.24); color:#f2f7ff; display:flex; font-size:.78rem; gap:10px; min-width:0; padding:10px 12px; }
+    .vol-roster-row > div:last-child { border-right:0; }
+    .vol-roster-avatar { align-items:center; background:linear-gradient(145deg,#376dcc,#183a86); border:1px solid rgba(181,213,255,.48); border-radius:50%; color:#fff; display:flex; flex:0 0 auto; font:700 .73rem 'Josefin Sans',sans-serif; height:34px; justify-content:center; width:34px; }
+    .vol-roster-volunteer strong { font-size:.8rem; font-weight:600; overflow-wrap:anywhere; }
+    .vol-roster-availability .vol-modal-icon,.vol-roster-debater .vol-modal-icon { color:#82b8ff; height:27px; width:27px; }
+    .vol-roster-availability span,.vol-roster-debater span { line-height:1.4; }
+    .vol-roster-coverage { align-items:flex-start !important; flex-direction:column; gap:3px !important; justify-content:center; }
+    .vol-coverage-tag { border:1px solid transparent; border-radius:4px; font-size:.68rem; line-height:1.15; padding:5px 7px; white-space:nowrap; }
+    .vol-coverage-tag.is-full { background:rgba(30,164,101,.25); border-color:rgba(80,218,145,.32); color:#a4edc5; }
+    .vol-coverage-tag.is-morning { background:rgba(51,114,204,.26); border-color:rgba(110,165,249,.33); color:#b6d6ff; }
+    .vol-coverage-tag.is-afternoon { background:rgba(113,69,198,.26); border-color:rgba(172,127,248,.33); color:#dfc7ff; }
+    .vol-coverage-tag.is-custom { background:rgba(213,155,27,.2); border-color:rgba(247,193,76,.33); color:#ffe0a1; }
+    .vol-roster-coverage small { color:#9cb9dd; font-size:.59rem; line-height:1.35; }
+    .vol-roster-empty { color:#aec7e8; font-size:.78rem; grid-column:1/-1; padding:22px; text-align:center; }
+    .vol-public-roster-note { color:#9db6d9; font-size:.68rem; line-height:1.55; margin:13px 0 0; text-align:center; }
     .vol-event-fact { border-left:2px solid rgba(232,184,75,.62); padding-left:9px; }
     .vol-event-fact span { color:#a9dfc9; display:block; font-family:'Josefin Sans',sans-serif; font-size:.57rem; font-weight:700; letter-spacing:.08em; margin-bottom:3px; text-transform:uppercase; }
     .vol-event-fact strong { color:#dbf0e7; display:block; font-size:.74rem; font-weight:400; line-height:1.4; }
@@ -597,10 +616,22 @@
       .vol-availability-option{gap:8px;grid-template-columns:auto auto minmax(0,1fr);padding:10px;}
       .vol-availability-duration{grid-column:3;justify-self:start;padding:4px 7px;}
       .vol-availability-copy strong{font-size:.88rem;}
-      .vol-roster-list{grid-template-columns:1fr;}
-      .vol-roster-person{grid-template-columns:34px minmax(0,1fr);}
-      .vol-roster-shift{grid-column:2;min-width:0;text-align:left;}
-      .vol-public-roster{padding:18px;}
+      .vol-public-roster{padding:22px 16px;}
+      .vol-roster-summary{gap:19px;grid-template-columns:1fr;}
+      .vol-public-roster-heading .vol-modal-icon{height:43px;width:43px;}
+      .vol-public-roster-heading h4{font-size:.96rem;}
+      .vol-roster-progress-copy > strong{font-size:2.25rem;}
+      .vol-roster-table{border-radius:7px;}
+      .vol-roster-table-head{display:none;}
+      .vol-roster-row{grid-template-columns:1fr 1fr;}
+      .vol-roster-row > div{border-bottom:1px solid rgba(125,166,220,.24);padding:11px 10px;}
+      .vol-roster-row > div:nth-child(2n){border-right:0;}
+      .vol-roster-row > div:nth-last-child(-n+2){border-bottom:0;}
+      .vol-roster-row > div::before{color:#f0b62c;content:attr(data-label);display:block;font:700 .48rem 'Josefin Sans',sans-serif;letter-spacing:.06em;position:absolute;text-transform:uppercase;top:5px;}
+      .vol-roster-row > div{align-items:flex-end;min-height:71px;position:relative;}
+      .vol-roster-row .vol-roster-coverage{align-items:flex-start !important;padding-top:22px;}
+      .vol-roster-row .vol-roster-availability,.vol-roster-row .vol-roster-debater{padding-top:22px;}
+      .vol-roster-row .vol-roster-volunteer{padding-top:22px;}
       .vol-review-details{grid-template-columns:1fr;}
       .vol-review-detail,.vol-review-detail:last-child{border-bottom:1px solid rgba(255,255,255,.09);border-right:0;min-height:0;}
       .vol-review-detail:last-child{border-bottom:0;}
@@ -1235,7 +1266,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=16"></script>
+<script src="js/volunteer-public.js?v=17"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 </body>
 </html>
