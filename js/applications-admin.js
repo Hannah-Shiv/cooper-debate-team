@@ -98,6 +98,9 @@
       ? '<span class="badge email-ok">Copies accepted</span>'
       : `<span class="badge email-issue">${escapeHtml(item.emailStatus || "Email pending")}</span>`;
   }
+  function initials(firstName, lastName) {
+    return `${String(firstName || "").slice(0, 1)}${String(lastName || "").slice(0, 1)}`.toUpperCase() || "A";
+  }
   function renderList() {
     const list = filteredApplications();
     $("visible-count").textContent = `${list.length} visible`;
@@ -105,9 +108,13 @@
       const student = item.student || {};
       const parent = item.parent || {};
       return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
-        <div class="row-top"><span class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</span><span class="badges">${statusBadge(status(item))}</span></div>
-        <div class="row-meta">${escapeHtml(student.grade || "Grade not listed")} · ${escapeHtml(parent.firstName || "")} ${escapeHtml(parent.lastName || "")}<br>${escapeHtml(formatDate(item.createdAt))}</div>
-        <div class="badges" style="margin-top:8px">${deliveryBadge(item)}</div>
+        <div class="row-main">
+          <span class="applicant-avatar" aria-hidden="true">${escapeHtml(initials(student.firstName, student.lastName))}</span>
+          <div><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade not listed")} · ${escapeHtml([parent.firstName, parent.lastName].filter(Boolean).join(" ") || "Parent / guardian")}</div></div>
+          <div class="row-status">${statusBadge(status(item))}</div>
+        </div>
+        <div class="row-submitted">${escapeHtml(formatDate(item.createdAt))}</div>
+        <div class="row-delivery">${deliveryBadge(item)}</div>
       </button>`;
     }).join("") : '<div class="empty">No applications match these filters.</div>';
     document.querySelectorAll(".application-row").forEach(row => row.addEventListener("click", () => {
@@ -122,6 +129,9 @@
   function answer(label, value) {
     return `<div class="answer-box"><span>${escapeHtml(label)}</span><div class="answer">${escapeHtml(value || "No response provided.")}</div></div>`;
   }
+  function quickTile(label, value) {
+    return `<div class="quick-tile"><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div>`;
+  }
   function renderDetail() {
     const item = applications.find(application => application.id === selectedId);
     if (!item) {
@@ -130,16 +140,17 @@
     }
     const student = item.student || {};
     const parent = item.parent || {};
-    const commitments = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]).map(([, label]) => `<span class="commitment">✓ ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
+    const commitmentEntries = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]);
+    const commitments = commitmentEntries.map(([, label]) => `<span class="commitment">✓ ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
     const decision = status(item);
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="badges" style="margin-bottom:10px">${statusBadge(decision)} ${deliveryBadge(item)}</div><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p>Submitted ${escapeHtml(formatDate(item.createdAt))} · Application ID ${escapeHtml(item.id)}</p></header>
-      <section class="section"><h3>Student contact</h3><div class="detail-grid">${fact("Grade", student.grade)}${fact("Student ID", student.studentId)}${fact("School email", student.schoolEmail)}${fact("Personal email", student.personalEmail)}${fact("Prior debate experience", student.debateExperience)}</div></section>
-      <section class="section"><h3>Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Email", parent.email)}${fact("Phone", parent.phone)}${fact("Signed agreement", item.parentSignature ? `${item.parentSignature}${item.parentAgreement ? " · agreed" : ""}` : "—")}</div></section>
-      <section class="section"><h3>Commitments confirmed</h3><div class="commitments">${commitments}</div></section>
-      <section class="section"><h3>Written answers</h3><div class="answer-wrap">${answer("Why do you want to join?", item.answers?.whyJoin)}${answer("Debate experience", item.answers?.experienceDetail)}${answer("Schedule conflicts", item.answers?.scheduleConflicts)}${answer("Anything else", item.answers?.anythingElse)}</div></section>
-      <section class="section"><h3>Admissions review · internal only</h3><div class="review-card"><div class="review-controls"><div class="field"><label for="review-decision">Decision</label><select id="review-decision"><option value="accepted" ${decision === "accepted" ? "selected" : ""}>Accept</option><option value="declined" ${decision === "declined" ? "selected" : ""}>Decline</option></select></div><div class="field"><label>Current state</label><div class="delivery-row" style="padding:9px 0">${statusBadge(decision)}<p>No applicant email is sent.</p></div></div><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Optional internal note for coaches only">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewing coach, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+      <header class="detail-heading"><div><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p>Submitted ${escapeHtml(formatDate(item.createdAt))} · Application ID ${escapeHtml(item.id)}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)} ${deliveryBadge(item)}</div></div></header>
+      <section class="section"><h3>Quick profile</h3><div class="quick-profile-grid">${quickTile("Grade", student.grade)}${quickTile("Debate experience", student.debateExperience)}${quickTile("Schedule", item.answers?.scheduleConflicts)}${quickTile("Commitments", `${commitmentEntries.length} confirmed`)}${quickTile("Email status", emailAccepted(item) ? "Copies accepted" : item.emailStatus || "Pending")}</div></section>
+      <section class="section"><div class="contact-columns"><div class="info-card"><h3>Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School email", student.schoolEmail)}${fact("Personal email", student.personalEmail)}${fact("Prior debate experience", student.debateExperience)}</div></div><div class="info-card"><h3>Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Email", parent.email)}${fact("Phone", parent.phone)}${fact("Signed agreement", item.parentSignature ? `${item.parentSignature}${item.parentAgreement ? " · agreed" : ""}` : "—")}</div></div></div></section>
+      <section class="section"><div class="commitments-card"><h3>Commitments confirmed</h3><div class="commitments">${commitments}</div></div></section>
+      <section class="section"><h3>Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin)}${answer("Debate experience", item.answers?.experienceDetail)}${answer("Schedule conflicts", item.answers?.scheduleConflicts)}${answer("Anything else", item.answers?.anythingElse)}</div></section>
+      <section class="review-section"><h3>Coach review · internal</h3><div class="review-card"><div class="review-controls"><div class="field"><label for="review-decision">Decision</label><select id="review-decision"><option value="accepted" ${decision === "accepted" ? "selected" : ""}>Accept</option><option value="declined" ${decision === "declined" ? "selected" : ""}>Decline</option></select></div><div class="field"><label>Current state</label><div class="delivery-row">${statusBadge(decision)}<p>No applicant email is sent.</p></div></div><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Optional internal note for coaches only">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewing coach, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
     $("save-decision").addEventListener("click", () => saveDecision(item.id));
   }
