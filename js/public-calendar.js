@@ -29,6 +29,7 @@
   let events = [...KICKOFF_EVENTS];
   let latestPublishedEvents = [];
   let countdownTimer = null;
+  const mobileCalendar = window.matchMedia("(max-width: 700px)");
 
   const byId = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/[&<>"']/g, char => ({
@@ -172,6 +173,7 @@
       start: eventStart(event),
       end: eventEnd(event),
       allDay: !hasSavedTimes(event) && event.allDay !== false,
+      classNames: ["public-cal-event", `public-cal-event--${event.type || "event"}`],
       extendedProps: event
     }));
   }
@@ -277,6 +279,12 @@
     renderCountdown();
   }
 
+  function syncResponsiveCalendarView() {
+    if (!calendar) return;
+    const preferredView = mobileCalendar.matches ? "listMonth" : "dayGridMonth";
+    if (calendar.view.type !== preferredView) calendar.changeView(preferredView);
+  }
+
   function formatEventDate(event) {
     const start = eventStart(event);
     const end = eventEnd(event);
@@ -344,6 +352,11 @@
     window.addEventListener("public-calendar-visible", event => {
       if (event.detail?.visible && calendar) calendar.updateSize();
     });
+    if (typeof mobileCalendar.addEventListener === "function") {
+      mobileCalendar.addEventListener("change", syncResponsiveCalendarView);
+    } else {
+      mobileCalendar.addListener(syncResponsiveCalendarView);
+    }
     updateView(true);
     countdownTimer = window.setInterval(renderCountdown, 60000);
     listenForPublishedEvents();
