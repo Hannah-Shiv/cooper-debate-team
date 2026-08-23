@@ -201,7 +201,7 @@
                 <span class="vol-coverage-tag ${coverage.className}">${escapeHtml(coverage.label)}</span>
                 <small>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</small>
               </div>
-              <div class="vol-roster-debater" role="cell" data-label="Debater they’re supporting">
+              <div class="vol-roster-debater" role="cell" data-label="Debater">
                 ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Not listed")}</span>
               </div>
             </div>`;
@@ -439,6 +439,12 @@
         <div class="vol-review-privacy">${modalIcon("info")}<div><strong>What will be shown publicly</strong><p>${escapeHtml(parentName)}, ${studentName ? `${studentName}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)}. Your email, phone, and notes remain coach-only.</p></div></div>
         <div class="vol-review-contact"><span>Private contact for coaches</span><strong>${escapeHtml($("vol-email").value.trim())} <i>·</i> ${escapeHtml($("vol-phone").value.trim())}</strong></div>
       </section>`;
+    const email = $("vol-email").value.trim();
+    root.insertAdjacentHTML("beforeend", `
+      <aside class="vol-review-email-check" role="note">
+        ${modalIcon("document")}
+        <div><strong>Double-check your email address</strong><p>Your confirmation and calendar invitation will be sent to <b>${escapeHtml(email)}</b>. Please make sure it is correct before you confirm.</p></div>
+      </aside>`);
   }
 
   function showStep(step) {
