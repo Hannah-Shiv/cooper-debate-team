@@ -548,7 +548,7 @@ function renderNextBanner() {
   const dayWord  = days === 1 ? "1 day" : `${days} days`;
   const hourWord = hours === 1 ? "1 hour" : `${hours} hours`;
   const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
-  banner.style.display = "flex";
+  banner.style.display = "grid";
   banner.innerHTML = `
     <span class="next-label">Upcoming Tournament</span>
     <span class="next-name">${calEsc(next.title)}</span>
@@ -561,25 +561,9 @@ function renderNextBanner() {
 // Shrink banner font-size until all children fit within the container
 function fitBannerText(banner) {
   if (!banner) return;
-  if (window.matchMedia("(max-width: 768px)").matches) {
-    banner.style.fontSize = "1rem";
-    return;
-  }
-  setTimeout(() => {
-    let size = 1.0;
-    banner.style.fontSize = size + 'rem';
-
-    function childrenOverflow() {
-      const total = Array.from(banner.children)
-        .reduce((sum, el) => sum + el.getBoundingClientRect().width, 0);
-      return total > banner.getBoundingClientRect().width;
-    }
-
-    while (childrenOverflow() && size > 0.4) {
-      size = Math.round((size - 0.025) * 1000) / 1000;
-      banner.style.fontSize = size + 'rem';
-    }
-  }, 0);
+  // The announcement uses a responsive grid with a wrapping title. Shrinking
+  // every label to fit a single row makes long resolutions unreadable.
+  banner.style.fontSize = "1rem";
 }
 
 // ── Event detail modal ────────────────────────────────────────
