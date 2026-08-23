@@ -218,6 +218,8 @@ function initCalDashboard(email) {
 
   showCalState("dashboard");
   loadTournaments();
+  if (_countdownInterval) clearInterval(_countdownInterval);
+  _countdownInterval = window.setInterval(renderNextBanner, 60000);
 }
 
 // ── Sign out ──────────────────────────────────────────────────

@@ -95,28 +95,27 @@
       align-items:stretch; background:linear-gradient(115deg,#8d0808,#b30000 52%,#850505);
       border:1px solid #ffe58f; border-radius:12px; box-shadow:0 10px 28px rgba(77,0,0,.32);
       color:#fff; display:none; gap:0; margin:0; min-width:0; overflow:hidden;
-      grid-template-areas:"label name date" "label name countdown";
-      grid-template-columns:158px minmax(0,1fr) max-content;
+      grid-template-areas:"label date countdown" "name name name";
+      grid-template-columns:minmax(0,1fr) max-content max-content;
     }
     .next-tournament-banner > span {
-      align-items:center; display:flex; min-height:42px; padding:12px 17px;
+      align-items:center; display:flex; min-height:34px; padding:9px 16px;
     }
     .next-tournament-banner { font-size:1rem; }
     .next-label {
-      background:rgba(0,0,0,.14); border-right:1px solid rgba(255,255,255,.38); color:#ffe58f;
-      font:700 .66em 'Josefin Sans',sans-serif; grid-area:label; justify-content:center;
-      letter-spacing:.13em; text-align:center; text-transform:uppercase;
+      background:rgba(0,0,0,.14); color:#ffe58f; font:700 .64em 'Josefin Sans',sans-serif;
+      grid-area:label; justify-content:flex-start; letter-spacing:.13em; text-transform:uppercase;
     }
     .next-name {
-      align-self:stretch; color:#fff; font:700 1.22em/1.16 'Cormorant Garamond',serif;
-      grid-area:name; min-width:0; padding-right:22px;
+      align-self:stretch; border-top:1px solid rgba(255,255,255,.3); color:#fff;
+      font:700 1.14em/1.14 'Cormorant Garamond',serif; grid-area:name; min-height:43px; min-width:0;
     }
     .next-date, .next-countdown {
       border-left:1px solid rgba(255,255,255,.38); color:#fff;
       font:700 .67em 'Josefin Sans',sans-serif; justify-content:center; letter-spacing:.075em;
       text-transform:uppercase; white-space:nowrap;
     }
-    .next-date { border-bottom:1px solid rgba(255,255,255,.28); grid-area:date; }
+    .next-date { border-left:1px solid rgba(255,255,255,.38); grid-area:date; }
     .next-countdown { background:rgba(0,0,0,.12); grid-area:countdown; }
 
     /* ── Calendar controls / Create Event ───────────────────── */
@@ -788,7 +787,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=34"></script>
+<script src="js/calendar.js?v=35"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
