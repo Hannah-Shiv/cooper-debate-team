@@ -37,12 +37,25 @@
   let unsubscribe = null;
 
   window.memberSignOut = () => auth.signOut().finally(() => { window.location.href = "index.html"; });
+  window.appToggleNotif = () => {
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "granted") return;
+    if (Notification.permission === "denied") {
+      alert("Notifications are blocked. Enable them from your browser settings.");
+      return;
+    }
+    Notification.requestPermission().then(updateNotificationState);
+  };
 
   function show(id) {
     ["auth-loading", "auth-required", "access-denied", "dashboard"].forEach(section => $(section).hidden = section !== id);
   }
   function isCoach(user) {
     return user && typeof getAdminRole === "function" && getAdminRole(user.email) === "coach";
+  }
+  function updateNotificationState() {
+    const indicator = $("app-notif-state");
+    if (indicator && "Notification" in window) indicator.classList.toggle("on", Notification.permission === "granted");
   }
   function setMetrics() {
     const total = applications.length;
@@ -174,10 +187,13 @@
   auth.onAuthStateChanged(user => {
     currentUser = user;
     if (!user) { show("auth-required"); return; }
-    $("top-actions").hidden = false;
-    $("coach-email").textContent = user.email || "";
+    $("app-userbar").classList.add("visible");
+    $("app-name").textContent = user.displayName || (user.email || "").split("@")[0] || "Member";
+    $("app-user-email").textContent = user.email || "";
     if (!isCoach(user)) { show("access-denied"); return; }
+    $("app-role-badge").textContent = "★ Coach";
     show("dashboard");
     beginListening();
   });
+  document.addEventListener("DOMContentLoaded", updateNotificationState);
 })();
