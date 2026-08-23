@@ -92,31 +92,51 @@
     /* ── Tournament announcement ────────────────────────────── */
     .banner-fab-row { margin-bottom:12px; }
     .next-tournament-banner {
-      align-items:stretch; background:linear-gradient(115deg,#8d0808,#b30000 52%,#850505);
-      border:1px solid #ffe58f; border-radius:12px; box-shadow:0 10px 28px rgba(77,0,0,.32);
-      color:#fff; display:none; gap:0; margin:0; min-width:0; overflow:hidden;
-      grid-template-areas:"label date countdown" "name name name";
-      grid-template-columns:minmax(0,1fr) max-content max-content;
+      align-items:stretch; background:linear-gradient(115deg,#7e0707 0%,#b30000 47%,#8b0808 100%);
+      border:2px solid #d9aa3c; border-radius:18px; box-shadow:0 12px 28px rgba(47,0,0,.34),inset 0 0 0 5px rgba(255,218,122,.13);
+      color:#fff; display:none; gap:0; margin:0; min-width:0; overflow:hidden; padding:5px;
+      grid-template-areas:"label name date countdown";
+      grid-template-columns:170px minmax(0,1fr) 126px 142px;
     }
-    .next-tournament-banner > span {
-      align-items:center; display:flex; min-height:34px; padding:9px 16px;
+    .next-tournament-banner > * {
+      align-items:center; display:flex; min-height:104px; padding:14px 18px;
     }
     .next-tournament-banner { font-size:1rem; }
     .next-label {
-      background:rgba(0,0,0,.14); color:#ffe58f; font:700 .64em 'Josefin Sans',sans-serif;
-      grid-area:label; justify-content:flex-start; letter-spacing:.13em; text-transform:uppercase;
+      background:rgba(48,0,0,.19); border-right:1px solid rgba(255,232,159,.56); color:#fff3bf;
+      flex-direction:column; font-family:'Josefin Sans',sans-serif; gap:4px; grid-area:label;
+      justify-content:center; letter-spacing:.15em; text-align:center; text-transform:uppercase;
     }
+    .next-label svg { height:29px; margin-bottom:5px; stroke:#ffe58f; width:29px; }
+    .next-label span { font-size:.58em; font-weight:700; }
+    .next-label strong { color:#fff; font-size:.86em; font-weight:800; }
     .next-name {
-      align-self:stretch; border-top:1px solid rgba(255,255,255,.3); color:#fff;
-      font:700 1.14em/1.14 'Cormorant Garamond',serif; grid-area:name; min-height:43px; min-width:0;
+      align-items:flex-start; flex-direction:column; gap:7px; grid-area:name; justify-content:center;
+      min-width:0; padding-left:24px; padding-right:24px;
+    }
+    .next-name-headline {
+      color:#fff9de; font:700 clamp(1.2rem,2vw,1.85rem)/1.02 'Cormorant Garamond',serif;
+      letter-spacing:.02em;
+    }
+    .next-name-resolution {
+      color:rgba(255,246,215,.88); font:italic .93rem/1.22 'Cormorant Garamond',serif; max-width:760px;
     }
     .next-date, .next-countdown {
-      border-left:1px solid rgba(255,255,255,.38); color:#fff;
-      font:700 .67em 'Josefin Sans',sans-serif; justify-content:center; letter-spacing:.075em;
-      text-transform:uppercase; white-space:nowrap;
+      border-left:1px solid rgba(255,232,159,.48); color:#fff; flex-direction:column;
+      font-family:'Josefin Sans',sans-serif; justify-content:center; text-align:center; text-transform:uppercase;
     }
-    .next-date { border-left:1px solid rgba(255,255,255,.38); grid-area:date; }
-    .next-countdown { background:rgba(0,0,0,.12); grid-area:countdown; }
+    .next-date { gap:2px; grid-area:date; padding:9px!important; }
+    .next-date-weekday { color:#ffe58f; font-size:.55rem; font-weight:800; letter-spacing:.1em; }
+    .next-date-month { color:#fff; font-size:.68rem; font-weight:800; letter-spacing:.14em; }
+    .next-date-day {
+      background:#fff4cf; border-radius:7px; color:#172343; font:800 2rem/.96 'Cormorant Garamond',serif;
+      margin-top:2px; min-width:58px; padding:4px 8px;
+    }
+    .next-countdown { background:rgba(55,0,0,.2); gap:2px; grid-area:countdown; padding:9px!important; }
+    .next-countdown svg { height:19px; stroke:#ffe58f; width:19px; }
+    .next-countdown-value { color:#fff9de; font:800 2.2rem/.9 'Cormorant Garamond',serif; }
+    .next-countdown-unit { color:#fff; font-size:.56rem; font-weight:800; letter-spacing:.18em; }
+    .next-countdown-detail { color:rgba(255,236,175,.88); font-size:.52rem; font-weight:700; letter-spacing:.08em; margin-top:3px; }
 
     /* ── Calendar controls / Create Event ───────────────────── */
     .calendar-tools {
@@ -566,10 +586,12 @@
          display:grid !important; grid-template-areas:"label label" "name name" "date countdown";
          grid-template-columns:1fr auto;
        }
-       .next-tournament-banner > span { min-height:0; padding:10px 12px; }
-       .next-tournament-banner > span:not(:last-child) { border-right:0; }
-       .next-label { display:flex; grid-area:label; border-bottom:1px solid rgba(255,255,255,.48); }
-       .next-name { grid-area:name; border-bottom:1px solid rgba(255,255,255,.48); font-size:1.25em; }
+       .next-tournament-banner > * { min-height:0; padding:11px 13px; }
+       .next-label { border-bottom:1px solid rgba(255,255,255,.48); flex-direction:row; gap:9px; justify-content:flex-start; }
+       .next-label svg { height:22px; margin:0; width:22px; }
+       .next-name { border-bottom:1px solid rgba(255,255,255,.48); }
+       .next-name-headline { font-size:1.35rem; }
+       .next-name-resolution { font-size:.85rem; }
        .next-date { border-left:0; grid-area:date; }
        .next-countdown { grid-area:countdown; }
        .calendar-tools { align-items:center; gap:10px; }
@@ -787,7 +809,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=35"></script>
+<script src="js/calendar.js?v=36"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>

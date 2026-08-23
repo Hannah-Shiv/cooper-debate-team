@@ -546,16 +546,33 @@ function renderNextBanner() {
   const diff    = nextDate - now;
   const days    = Math.floor(diff / 86400000);
   const hours   = Math.floor((diff % 86400000) / 3600000);
-  const dateStr = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"short", month:"short", day:"numeric" });
-  const dayWord  = days === 1 ? "1 day" : `${days} days`;
-  const hourWord = hours === 1 ? "1 hour" : `${hours} hours`;
-  const countdownText = days > 0 ? `${dayWord} ${hourWord} left` : `${hourWord} left`;
+  const titleParts = next.title.split(/:\s*/, 2);
+  const headline = titleParts[0];
+  const resolution = titleParts[1] || "";
+  const weekday = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
+  const month = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", month:"short" });
+  const day = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", day:"numeric" });
   banner.style.display = "grid";
   banner.innerHTML = `
-    <span class="next-label">Upcoming Tournament</span>
-    <span class="next-name">${calEsc(next.title)}</span>
-    <span class="next-date">${dateStr}</span>
-    <span class="next-countdown">${countdownText}</span>
+    <div class="next-label">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg>
+      <span>Upcoming</span><strong>Tournament</strong>
+    </div>
+    <div class="next-name">
+      <span class="next-name-headline">${calEsc(headline)}</span>
+      ${resolution ? `<span class="next-name-resolution">${calEsc(resolution)}</span>` : ""}
+    </div>
+    <div class="next-date">
+      <span class="next-date-weekday">${calEsc(weekday)}</span>
+      <span class="next-date-month">${calEsc(month)}</span>
+      <strong class="next-date-day">${calEsc(day)}</strong>
+    </div>
+    <div class="next-countdown">
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 5V2"/></svg>
+      <strong class="next-countdown-value">${days}</strong>
+      <span class="next-countdown-unit">Days</span>
+      <span class="next-countdown-detail">${hours} hours left</span>
+    </div>
   `;
   fitBannerText(banner);
 }
