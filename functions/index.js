@@ -318,12 +318,13 @@ function normalizeApplication(body) {
   const parentSource = source.parent && typeof source.parent === "object" ? source.parent : {};
   const commitmentSource = source.commitments && typeof source.commitments === "object" ? source.commitments : {};
   const answerSource = source.answers && typeof source.answers === "object" ? source.answers : {};
+  const studentId = cleanText(studentSource.studentId, 64);
   const student = {
     firstName: cleanText(studentSource.firstName, 60),
     lastName: cleanText(studentSource.lastName, 60),
     grade: cleanText(studentSource.grade, 24),
-    studentId: cleanText(studentSource.studentId, 64),
-    schoolEmail: cleanEmail(studentSource.schoolEmail),
+    studentId,
+    schoolEmail: studentId ? `${studentId}@fcpsschools.net` : "",
     personalEmail: cleanEmail(studentSource.personalEmail),
     debateExperience: cleanText(studentSource.debateExperience, 200),
   };

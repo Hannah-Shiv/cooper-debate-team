@@ -716,8 +716,8 @@
 
             <div class="form-row">
               <div class="form-group">
-                <label class="form-label" for="student-school-email">Student School Email <span class="req">*</span></label>
-                <input class="form-input" type="email" id="student-school-email" name="Student School Email" placeholder="student@fcpsschools.net" required autocomplete="email"/>
+                <label class="form-label" for="student-school-email">Student School Email</label>
+                <input class="form-input" type="email" id="student-school-email" name="Student School Email" placeholder="Generated from Student ID" readonly aria-readonly="true" autocomplete="off"/>
               </div>
               <div class="form-group">
                 <label class="form-label" for="student-personal-email">Student Personal Email <span class="req">*</span></label>
@@ -1133,6 +1133,14 @@
     : createSubmissionId();
   let turnstileWidgetId = null;
   let turnstileToken = '';
+  const studentIdInput = document.getElementById('student-id');
+  const studentSchoolEmailInput = document.getElementById('student-school-email');
+
+  function populateStudentSchoolEmail() {
+    const studentId = studentIdInput.value.trim();
+    studentSchoolEmailInput.value = studentId ? `${studentId}@fcpsschools.net` : '';
+  }
+  studentIdInput.addEventListener('blur', populateStudentSchoolEmail);
 
   const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'
@@ -1186,6 +1194,7 @@
   }
 
   function applicationPayload() {
+    populateStudentSchoolEmail();
     const value = id => document.getElementById(id).value.trim();
     const checked = selector => Boolean(form.querySelector(selector).checked);
     return {
@@ -1277,6 +1286,7 @@
 
   if (pendingApplication && pendingApplication.application) {
     restorePendingApplication(pendingApplication.application);
+    populateStudentSchoolEmail();
   }
 
   document.querySelectorAll('[data-close-modal]').forEach(button => {
