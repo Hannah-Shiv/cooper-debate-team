@@ -475,19 +475,22 @@
     .application-modal-btn:hover { filter:brightness(1.1); transform:translateY(-1px); }
     .application-modal-btn.secondary { background:transparent; border:1px solid rgba(255,255,255,.33); color:#e0eaff; }
     .application-modal-btn.primary { background:linear-gradient(135deg,var(--gold),#b8860b); border:1px solid #ffe39a; color:#07152f; }
-    .application-confirmation-mark {
-      align-items:center; background:rgba(74,185,123,.16); border:1px solid rgba(106,222,155,.45); border-radius:50%;
-      color:#a8efbf; display:flex; font-size:1.8rem; height:58px; justify-content:center; margin:0 auto 18px; width:58px;
-    }
     .application-confirmation-card { max-width:560px; text-align:center; }
     .application-confirmation-card .application-modal-title { margin-right:0; }
     .application-confirmation-card .application-modal-intro { margin-left:auto; margin-right:auto; max-width:440px; }
-    .application-confirmation-emails {
-      background:rgba(126,184,232,.09); border:1px solid rgba(126,184,232,.27); border-radius:9px;
-      color:#dceaff; line-height:1.65; margin:20px 0; padding:14px 16px; text-align:left;
+    .application-confirmation-checklist {
+      list-style:none; margin:22px 0; padding:0; text-align:left;
     }
-    .application-confirmation-emails strong { color:#fff; display:block; font:700 .72rem 'Josefin Sans',sans-serif; letter-spacing:.08em; margin-bottom:5px; text-transform:uppercase; }
-    .application-confirmation-emails span { display:block; overflow-wrap:anywhere; }
+    .application-confirmation-checklist li {
+      align-items:flex-start; background:rgba(74,185,123,.08); border:1px solid rgba(106,222,155,.24); border-radius:8px;
+      color:#e2f7e9; display:flex; gap:12px; line-height:1.45; margin-top:9px; padding:12px 14px;
+    }
+    .application-confirmation-check {
+      align-items:center; background:rgba(74,185,123,.18); border:1px solid rgba(106,222,155,.55); border-radius:50%;
+      color:#a8efbf; display:flex; flex:0 0 23px; font-size:1rem; font-weight:700; height:23px; justify-content:center; margin-top:1px;
+    }
+    .application-confirmation-checklist strong { color:#fff; display:block; font:700 .78rem 'Josefin Sans',sans-serif; letter-spacing:.045em; text-transform:uppercase; }
+    .application-confirmation-checklist .confirmation-email { color:#c8dcff; display:block; font-size:.94rem; margin-top:3px; overflow-wrap:anywhere; }
     @media(max-width:600px) {
       .application-modal { padding:12px; }
       .application-modal-card { max-height:calc(100vh - 24px); padding:25px 19px; }
@@ -968,15 +971,14 @@
         <div class="application-modal" id="application-confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="application-confirmation-title">
           <div class="application-modal-card application-confirmation-card">
             <button class="application-modal-close" type="button" data-close-modal="application-confirmation-modal" aria-label="Close confirmation">×</button>
-            <div class="application-confirmation-mark" aria-hidden="true">✓</div>
             <p class="application-modal-kicker">Application submitted</p>
             <h2 class="application-modal-title" id="application-confirmation-title">Thank you for applying</h2>
             <p class="application-modal-intro">Coach Konde will review your application and follow up with next steps after the application deadline.</p>
-            <div class="application-confirmation-emails">
-              <strong>The email service accepted complete copies for delivery to</strong>
-              <span id="application-confirmation-student-email"></span>
-              <span id="application-confirmation-parent-email"></span>
-            </div>
+            <ul class="application-confirmation-checklist">
+              <li><span class="application-confirmation-check" aria-hidden="true">✓</span><span><strong>Application accepted</strong></span></li>
+              <li><span class="application-confirmation-check" aria-hidden="true">✓</span><span><strong>Copy of application sent to student email</strong><span class="confirmation-email" id="application-confirmation-student-email"></span></span></li>
+              <li><span class="application-confirmation-check" aria-hidden="true">✓</span><span><strong>Copy of application sent to parent / guardian email</strong><span class="confirmation-email" id="application-confirmation-parent-email"></span></span></li>
+            </ul>
             <button class="application-modal-btn primary" type="button" data-close-modal="application-confirmation-modal">Done</button>
           </div>
         </div>
