@@ -111,10 +111,27 @@
     .public-event-detail { color:#d7e3f5; font-size:.88rem; line-height:1.65; margin:6px 0; }
     .public-event-empty { color:var(--gray-mid); font-size:.9rem; line-height:1.65; padding:30px 18px; text-align:center; }
     @media(max-width:700px){
-      .public-countdown { display:block; }
-      .public-countdown > span { min-height:0; padding:10px 14px; width:100%; }
-      .public-countdown > span:not(:last-child) { border-bottom:1px solid rgba(255,255,255,.42); border-right:0; }
-      .public-countdown-name { font-size:1.2rem; }
+      /* The renderer sets display:flex inline when a tournament exists.
+         !important intentionally switches that live banner to this phone layout. */
+      .public-countdown {
+        display:grid!important;
+        grid-template-areas:
+          "label label"
+          "name name"
+          "date time";
+        grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      }
+      .public-countdown-label { grid-area:label; }
+      .public-countdown-name { grid-area:name; font-size:1.26rem; text-align:center; }
+      .public-countdown-date { grid-area:date; }
+      .public-countdown-time { grid-area:time; }
+      .public-countdown > span {
+        justify-content:center; min-height:0; min-width:0; padding:10px 14px; text-align:center; width:auto;
+      }
+      .public-countdown-label,
+      .public-countdown-name { border-bottom:1px solid rgba(255,255,255,.42)!important; border-right:0!important; }
+      .public-countdown-date { border-right:1px solid rgba(255,255,255,.42)!important; }
+      .public-countdown-time { border-right:0!important; }
       .public-countdown-time { background:rgba(0,0,0,.16); }
       .public-calendar-intro { font-size:.84rem; line-height:1.6; margin-bottom:16px; }
       .public-calendar-legend { gap:9px; margin-bottom:11px; }
@@ -144,7 +161,7 @@
     }
     @media(max-width:480px){
       .public-countdown > span { padding:10px 13px; }
-      .public-countdown-name { font-size:1.28rem; }
+      .public-countdown-name { font-size:1.2rem; }
       #public-calendar .fc-toolbar-title { font-size:1.2rem!important; }
       #public-calendar .fc-list-event-time { width:66px; }
     }
@@ -1377,7 +1394,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=4"></script>
+<script src="js/public-calendar.js?v=5"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
