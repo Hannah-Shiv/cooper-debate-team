@@ -87,22 +87,17 @@
   }
   function statusBadge(value) {
     const labels = { pending: "Pending", accepted: "Accepted", declined: "Declined" };
-    return `<span class="badge ${value}">${labels[value]}</span>`;
+    return `<span class="badge ${value}">${icon(value, "badge-icon")} ${labels[value]}</span>`;
   }
   function icon(name, className = "") {
-    const icons = {
-      applicants: '<circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5a5 5 0 0 1 10 0V20"/><circle cx="17" cy="8" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-4-3.85"/>',
-      pending: '<path d="M6 3h12M6 21h12M8 3v5a4 4 0 0 0 8 0V3M8 21v-5a4 4 0 0 1 8 0v5"/>',
-      accepted: '<circle cx="12" cy="12" r="9"/><path d="m8 12 2.6 2.6L16.5 9"/>',
-      declined: '<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>',
-      grade: '<path d="m3 10 9-5 9 5-9 5-9-5Z"/><path d="M7 12v4.5c2.8 1.9 7.2 1.9 10 0V12"/><path d="M21 10v5"/>',
-      debate: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4m-4 0h8"/>',
-      calendar: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18"/>',
-      commitments: '<path d="M9 12.5 11 15l4-6"/><circle cx="12" cy="12" r="9"/>',
-      check: '<path d="m5 12 4 4L19 6"/>',
-      hold: '<path d="M9 5v14m6-14v14"/>',
+    const assets = {
+      applicants: "applicants", pending: "pending", accepted: "accepted", declined: "declined",
+      grade: "grade", debate: "debate", calendar: "calendar", commitments: "commitments",
+      check: "accepted", hold: "hold", person: "person", guardian: "guardian", phone: "phone",
+      clipboard: "clipboard", info: "info", lock: "lock", search: "search",
     };
-    return `<svg class="ui-icon ${className}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${icons[name] || ""}</svg>`;
+    const asset = assets[name] || "info";
+    return `<img class="icon-art icon-${asset} ${className}" src="images/application-icons/${asset}.png" alt="" aria-hidden="true">`;
   }
   function renderList() {
     const list = filteredApplications();
@@ -124,11 +119,11 @@
       renderDetail();
     }));
   }
-  function fact(label, value) {
-    return `<div class="fact"><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div>`;
+  function fact(label, value, iconName) {
+    return `<div class="fact"><span>${icon(iconName, "fact-icon")}${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div>`;
   }
-  function answer(label, value) {
-    return `<div class="answer-box"><span>${escapeHtml(label)}</span><div class="answer">${escapeHtml(value || "No response provided.")}</div></div>`;
+  function answer(label, value, iconName) {
+    return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer">${escapeHtml(value || "No response provided.")}</div></div>`;
   }
   function quickTile(iconName, label, value) {
     return `<div class="quick-tile">${icon(iconName)}<div><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div></div>`;
@@ -142,15 +137,15 @@
     const student = item.student || {};
     const parent = item.parent || {};
     const commitmentEntries = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]);
-    const commitments = commitmentEntries.map(([, label]) => `<span class="commitment">${icon("check")} ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
+    const commitments = commitmentEntries.map(([, label]) => `<span class="commitment">${icon("check", "commitment-icon")} ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
     const decision = status(item);
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p>Submitted ${escapeHtml(formatDate(item.createdAt))} · Application ID ${escapeHtml(item.id)}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)}</div></div></header>
-      <section class="section"><h3>Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
-      <section class="section"><div class="contact-columns"><div class="info-card"><h3>Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("Grade", student.grade)}${fact("Prior debate experience", student.debateExperience)}</div></div><div class="info-card"><h3>Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Phone", parent.phone)}${fact("Signed agreement", item.parentSignature ? `${item.parentSignature}${item.parentAgreement ? " · agreed" : ""}` : "—")}</div></div><div class="commitments-card"><h3>Commitments confirmed</h3><div class="commitments">${commitments}</div></div></div></section>
-      <section class="section"><h3>Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin)}${answer("Debate experience", item.answers?.experienceDetail)}${answer("Schedule conflicts", item.answers?.scheduleConflicts)}${answer("Anything else", item.answers?.anythingElse)}</div></section>
-      <section class="review-section"><h3>Coach review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches only">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>Decision</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted">${icon("accepted")}<span>Accept</span><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending">${icon("hold")}<span>Hold</span><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined">${icon("declined")}<span>Decline</span><small>Not a fit</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewing coach, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision ${icon("check")}</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+      <header class="detail-heading"><div><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p>${icon("clipboard", "detail-meta-icon")}Submitted ${escapeHtml(formatDate(item.createdAt))} · Application ID ${escapeHtml(item.id)}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)}</div></div></header>
+      <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
+      <section class="section"><div class="contact-columns"><div class="info-card"><h3>${icon("person", "heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId, "clipboard")}${fact("Grade", student.grade, "grade")}${fact("Prior debate experience", student.debateExperience, "debate")}</div></div><div class="info-card"><h3>${icon("guardian", "heading-icon")}Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "), "guardian")}${fact("Relationship", parent.relationship, "applicants")}${fact("Phone", parent.phone, "phone")}${fact("Signed agreement", item.parentSignature ? `${item.parentSignature}${item.parentAgreement ? " · agreed" : ""}` : "—", "accepted")}</div></div><div class="commitments-card"><h3>${icon("clipboard", "heading-icon")}Commitments confirmed</h3><div class="commitments">${commitments}</div></div></div></section>
+      <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Schedule conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}</div></section>
+      <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Coach review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches only">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>${icon("info", "label-icon")}Decision</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted">${icon("accepted")}<span>Accept</span><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending">${icon("hold")}<span>Hold</span><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined">${icon("declined")}<span>Decline</span><small>Not a fit</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewing coach, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision ${icon("check")}</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
     document.querySelectorAll(".decision-button").forEach(button => button.addEventListener("click", () => {
       $("review-decision").value = button.dataset.decision;
