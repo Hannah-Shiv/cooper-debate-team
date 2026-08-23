@@ -25,6 +25,7 @@ let calInstance  = null;
 let _tournaments = [];      // raw Firestore docs
 let _editingId   = null;    // doc ID being edited (null = new)
 let _editingStaticSchedule = false; // a kickoff entry being converted into a managed event
+let _editingStaticScheduleId = null;
 let _countdownInterval = null;
 let _showPastDeadlines = localStorage.getItem("showPastDeadlines") === "true";  // toggle for past entry-deadline chips
 
@@ -116,11 +117,14 @@ const FALL_2026_KICKOFF_EVENTS = [
 function calendarEventDocs() {
   const dateKey = event => {
     const date = event.start?.toDate ? event.start.toDate() : new Date(event.start);
-    return date.toISOString().slice(0, 10);
+    return date.toLocaleDateString("en-CA", { timeZone:"America/New_York" });
   };
-  const firestoreKeys = new Set(_tournaments.map(event => `${event.title}|${dateKey(event)}`));
+  const managedDates = new Set(_tournaments.map(dateKey));
+  const replacedKickoffIds = new Set(
+    _tournaments.map(event => event.kickoffEventId).filter(Boolean)
+  );
   const unpublishedKickoff = FALL_2026_KICKOFF_EVENTS.filter(event =>
-    !firestoreKeys.has(`${event.title}|${dateKey(event)}`)
+    !replacedKickoffIds.has(event.id) && !managedDates.has(dateKey(event))
   );
   return [..._tournaments, ...unpublishedKickoff];
 }
@@ -825,6 +829,7 @@ function openPostModal(editId) {
     : null;
   _editingId = savedEvent ? requestedId : null;
   _editingStaticSchedule = Boolean(staticEvent);
+  _editingStaticScheduleId = staticEvent?.id || null;
   const existing = savedEvent || staticEvent;
 
   const type = existing?.type || "tournament";
@@ -835,6 +840,7 @@ function openPostModal(editId) {
   document.getElementById("evt-type").value       = type;
   document.getElementById("evt-start").value      = existing?.start ? toInputDate(existing.start) : "";
   document.getElementById("evt-end").value        = existing?.end   ? toInputDate(existing.end)   : "";
+  syncEventDateBounds();
   document.getElementById("evt-start-time").value = existing?.startTime || defaults.start;
   document.getElementById("evt-end-time").value   = existing?.endTime   || defaults.end;
   document.getElementById("evt-virtual").checked  = existing?.isVirtual || false;
@@ -876,6 +882,8 @@ function onTypeChange() {
 function closePostModal() {
   document.getElementById("post-event-modal").style.display = "none";
   _editingId = null;
+  _editingStaticSchedule = false;
+  _editingStaticScheduleId = null;
 }
 
 function toggleVirtualLabel() {
@@ -888,6 +896,14 @@ function toInputDate(ts) {
   const d = ts?.toDate ? ts.toDate() : new Date(ts);
   // Extract the calendar date as seen in America/New_York (en-CA = YYYY-MM-DD)
   return d.toLocaleDateString("en-CA", { timeZone: "America/New_York" });
+}
+
+function syncEventDateBounds() {
+  const start = document.getElementById("evt-start");
+  const end = document.getElementById("evt-end");
+  if (!start || !end || !start.value) return;
+  end.min = start.value;
+  if (!end.value || end.value < start.value) end.value = start.value;
 }
 
 async function saveEvent() {
@@ -905,6 +921,10 @@ async function saveEvent() {
 
   if (!title || !startStr) {
     alert("Event title and start date are required.");
+    return;
+  }
+  if (endStr && endStr < startStr) {
+    alert("End date cannot be earlier than the start date.");
     return;
   }
 
@@ -930,6 +950,12 @@ async function saveEvent() {
     postedByRole: calUserRole,
     updatedAt: firebase.firestore.FieldValue.serverTimestamp(),
   };
+  if (_editingStaticScheduleId) {
+    data.kickoffEventId = _editingStaticScheduleId;
+  } else if (_editingId) {
+    const existing = _tournaments.find(event => event.id === _editingId);
+    if (existing?.kickoffEventId) data.kickoffEventId = existing.kickoffEventId;
+  }
 
   const saveBtn = document.getElementById("evt-save-btn");
   if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = "Saving…"; }
@@ -937,6 +963,9 @@ async function saveEvent() {
   try {
     if (_editingId) {
       await calDb.collection("tournaments").doc(_editingId).update(data);
+    } else if (_editingStaticScheduleId) {
+      data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      await calDb.collection("tournaments").doc(_editingStaticScheduleId).set(data);
     } else {
       data.createdAt = firebase.firestore.FieldValue.serverTimestamp();
       await calDb.collection("tournaments").add(data);

@@ -704,7 +704,7 @@
       <div class="form-row-dt">
         <div class="form-group">
           <label class="form-label" for="evt-start">Start Date *</label>
-          <input class="form-input" id="evt-start" type="date"/>
+          <input class="form-input" id="evt-start" type="date" onchange="syncEventDateBounds()"/>
         </div>
         <div class="form-group">
           <label class="form-label" for="evt-start-time">Start Time <span style="opacity:.45;font-weight:400">(EST)</span></label>
@@ -716,7 +716,7 @@
       <div class="form-row-dt">
         <div class="form-group">
           <label class="form-label" for="evt-end">End Date <span style="opacity:.45;font-weight:400">(multi-day)</span></label>
-          <input class="form-input" id="evt-end" type="date"/>
+          <input class="form-input" id="evt-end" type="date" onfocus="syncEventDateBounds()" onchange="syncEventDateBounds()"/>
         </div>
         <div class="form-group">
           <label class="form-label" for="evt-end-time">End Time <span style="opacity:.45;font-weight:400">(EST)</span></label>
@@ -779,7 +779,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/calendar.js?v=27"></script>
+<script src="js/calendar.js?v=28"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>

@@ -48,10 +48,6 @@
     return date ? date.toLocaleDateString("en-CA", { timeZone:"America/New_York" }) : "";
   }
 
-  function eventKey(event) {
-    return `${String(event.title || "").trim().toLowerCase()}|${nyDateKey(event.start)}`;
-  }
-
   function eventColors(type) {
     if (type === "practice") return { bg:"#166534", text:"#ffffff" };
     if (type === "meeting") return { bg:"#ffd700", text:"#000000" };
@@ -150,8 +146,8 @@
   }
 
   function publicEventsForSeason() {
-    const publishedKeys = new Set(latestPublishedEvents.map(eventKey));
-    const bootstrap = KICKOFF_EVENTS.filter(event => !publishedKeys.has(eventKey(event)));
+    const publishedDates = new Set(latestPublishedEvents.map(event => nyDateKey(event.start)));
+    const bootstrap = KICKOFF_EVENTS.filter(event => !publishedDates.has(nyDateKey(event.start)));
     return [...bootstrap, ...latestPublishedEvents]
       .filter(event => event.season === PUBLIC_SEASON)
       .sort((a, b) => eventStart(a) - eventStart(b));
