@@ -552,6 +552,8 @@ function renderNextBanner() {
   const weekday = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
   const month = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", month:"short" });
   const day = nextDate.toLocaleDateString("en-US", { timeZone:"America/New_York", day:"numeric" });
+  const countdownValue = days > 0 ? days : hours;
+  const countdownUnit = days > 0 ? "Days" : "Hours";
   banner.style.display = "grid";
   banner.innerHTML = `
     <div class="next-label">
@@ -569,9 +571,9 @@ function renderNextBanner() {
     </div>
     <div class="next-countdown">
       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 5V2"/></svg>
-      <strong class="next-countdown-value">${days}</strong>
-      <span class="next-countdown-unit">Days</span>
-      <span class="next-countdown-detail">${hours} hours left</span>
+      <strong class="next-countdown-value">${countdownValue}</strong>
+      <span class="next-countdown-unit">${countdownUnit}</span>
+      <span class="next-countdown-detail">Until tournament</span>
     </div>
   `;
   fitBannerText(banner);

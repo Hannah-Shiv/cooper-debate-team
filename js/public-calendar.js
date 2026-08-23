@@ -301,6 +301,8 @@
     const weekday = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
     const month = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", month:"short" });
     const day = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", day:"numeric" });
+    const countdownValue = days > 0 ? days : hours;
+    const countdownUnit = days > 0 ? "Days" : "Hours";
     banner.innerHTML = `<div class="public-countdown-label">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg>
         <span>Upcoming</span><strong>Tournament</strong>
@@ -316,9 +318,9 @@
       </div>
       <div class="public-countdown-time">
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 5V2"/></svg>
-        <strong class="public-countdown-value">${days}</strong>
-        <span class="public-countdown-unit">Days</span>
-        <span class="public-countdown-detail">${hours} hours left</span>
+        <strong class="public-countdown-value">${countdownValue}</strong>
+        <span class="public-countdown-unit">${countdownUnit}</span>
+        <span class="public-countdown-detail">Until tournament</span>
       </div>`;
     banner.style.display = "grid";
   }
