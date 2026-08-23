@@ -192,7 +192,6 @@
           return `
             <div class="vol-roster-row" role="row">
               <div class="vol-roster-volunteer" role="cell" data-label="Volunteer">
-                <span class="vol-roster-avatar" aria-hidden="true">${escapeHtml(signup.parentName.slice(0, 1).toUpperCase())}</span>
                 <strong>${escapeHtml(signup.parentName)}</strong>
               </div>
               <div class="vol-roster-availability" role="cell" data-label="Availability">
@@ -275,7 +274,7 @@
             </div>
             <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
               <div class="vol-roster-table-head" role="row">
-                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater they’re supporting</span>
+                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater</span>
               </div>
               <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
