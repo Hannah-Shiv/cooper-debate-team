@@ -500,6 +500,20 @@
     wizardStep = 1;
   }
 
+  function openThankYou() {
+    const modal = $("volunteer-thank-you-modal");
+    if (!modal) return;
+    modal.style.display = "flex";
+    document.body.classList.add("vol-modal-open");
+    setTimeout(() => $("vol-thank-you-done")?.focus(), 0);
+  }
+
+  function closeThankYou() {
+    const modal = $("volunteer-thank-you-modal");
+    if (modal) modal.style.display = "none";
+    document.body.classList.remove("vol-modal-open");
+  }
+
   async function submitSignup(event) {
     event.preventDefault();
     if (!selectedEvent || !selectedRole) return;
@@ -546,7 +560,8 @@
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
       setStatus(result.message || "You’re signed up. Thank you!", false);
       await loadVolunteerEvents();
-      setTimeout(closeSignup, 1800);
+      closeSignup();
+      openThankYou();
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
     } finally {
@@ -560,6 +575,9 @@
     $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
       element.addEventListener("click", closeSignup);
+    });
+    document.querySelectorAll("[data-close-volunteer-thank-you]").forEach(element => {
+      element.addEventListener("click", closeThankYou);
     });
     document.querySelectorAll("[data-vol-next]").forEach(button => {
       button.addEventListener("click", () => {
@@ -576,8 +594,13 @@
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") closeSignup();
     });
+    $("volunteer-thank-you-modal")?.addEventListener("click", event => {
+      if (event.target.id === "volunteer-thank-you-modal") closeThankYou();
+    });
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape") closeSignup();
+      if (event.key !== "Escape") return;
+      if ($("volunteer-thank-you-modal")?.style.display === "flex") closeThankYou();
+      else closeSignup();
     });
     renderTurnstile();
   });

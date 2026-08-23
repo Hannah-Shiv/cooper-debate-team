@@ -519,6 +519,15 @@
     .vol-cancel { background:transparent; border:1px solid rgba(255,255,255,.25); color:var(--gray-mid); }
     .vol-submit { background:var(--gold); border:1px solid var(--gold); color:#081833; }
     .vol-submit:disabled { cursor:wait; opacity:.7; }
+    .vol-thank-you-card { max-width:520px; padding:48px 42px 38px; text-align:center; }
+    .vol-thank-you-icon { align-items:center; background:rgba(34,181,132,.14); border:1px solid rgba(100,220,174,.38); border-radius:50%; color:#6de0b7; display:flex; height:76px; justify-content:center; margin:0 auto 22px; width:76px; }
+    .vol-thank-you-icon .vol-modal-icon { height:48px; width:48px; }
+    .vol-thank-you-card h2 { margin:0 32px 12px; }
+    .vol-thank-you-card > p { color:#c9d9ef; font-size:.92rem; line-height:1.65; margin:0 auto; max-width:410px; }
+    .vol-thank-you-email-note { align-items:flex-start; background:rgba(43,104,188,.16); border:1px solid rgba(119,177,251,.28); border-radius:9px; color:#cce2ff; display:flex; font-size:.8rem; gap:11px; line-height:1.55; margin:25px 0 0; padding:14px 15px; text-align:left; }
+    .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
+    .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
+    .vol-thank-you-card .vol-submit { min-width:150px; }
     body.vol-modal-open { overflow:hidden; }
 
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
@@ -573,6 +582,8 @@
       .vol-modal-card{border-radius:12px;margin:auto 0;max-height:none;min-height:calc(100vh - 24px);padding:25px 18px 20px;}
       .vol-modal-close{height:38px;right:14px;top:14px;width:38px;}
       .vol-modal-card h2{font-size:1.9rem;margin-right:42px;}
+      .vol-thank-you-card{min-height:auto;padding:45px 24px 30px;}
+      .vol-thank-you-card h2{margin-left:20px;margin-right:20px;}
       .vol-modal-context{font-size:.82rem;margin-bottom:20px;padding-right:4px;}
       .vol-stepper{margin-bottom:22px;padding:11px 0;}
       .vol-stepper span{font-size:.5rem;gap:5px;letter-spacing:.04em;}
@@ -976,6 +987,22 @@
     </form>
   </div>
 </div>
+<div id="volunteer-thank-you-modal" class="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="vol-thank-you-title" aria-describedby="vol-thank-you-message">
+  <div class="vol-modal-card vol-thank-you-card">
+    <button class="vol-modal-close" type="button" aria-label="Close confirmation" data-close-volunteer-thank-you>&times;</button>
+    <div class="vol-thank-you-icon"><svg class="vol-modal-icon vol-icon-check" aria-hidden="true" focusable="false"><use href="#vol-icon-check"></use></svg></div>
+    <p class="vol-modal-kicker">Signup Confirmed</p>
+    <h2 id="vol-thank-you-title">Thank you for volunteering!</h2>
+    <p id="vol-thank-you-message">Your judge signup has been received. We’re grateful for the time you are giving to the tournament community.</p>
+    <div class="vol-thank-you-email-note">
+      <svg class="vol-modal-icon vol-icon-document" aria-hidden="true" focusable="false"><use href="#vol-icon-document"></use></svg>
+      <span>Please check the email address you provided for your confirmation and calendar invitation. If it does not arrive soon, please check your spam or junk folder.</span>
+    </div>
+    <div class="vol-modal-actions">
+      <button id="vol-thank-you-done" class="vol-submit" type="button" data-close-volunteer-thank-you>Done</button>
+    </div>
+  </div>
+</div>
 <script>
 /* ── Firestore REST (no SDK, no auth required) ────────────── */
 const _FS_BASE = 'https://firestore.googleapis.com/v1/projects/cooper-debate-team/databases/(default)/documents';
@@ -1266,7 +1293,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=20"></script>
+<script src="js/volunteer-public.js?v=21"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 </body>
 </html>
