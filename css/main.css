@@ -1074,28 +1074,28 @@ a { text-decoration: none; color: inherit; }
   .hero-scroll   { display: none; }
 }
 
-/* === IPAD PORTRAIT — use landscape stage image (same as desktop/laptop) ===
-   iPad Air/Pro portrait (769–1024px wide). Landscape is already fine (desktop CSS). */
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: portrait) {
-  /* Hide desktop pseudo-element layers so iPad portrait background-image shows through */
+/* === TABLET PORTRAIT HOMEPAGE ===
+   12-inch iPad portrait is roughly 1024×1366 CSS pixels. Use the dedicated
+   portrait stage and vertical hero treatment, but keep landscape on desktop. */
+@media (min-width: 769px) and (max-width: 1100px) and (min-height: 900px) {
+  /* Hide desktop pseudo-element layers so the portrait background shows through */
   .hero-bg::after,
   .hero-bg::before { display: none; }
 
   .hero-bg {
     background-size: cover;
-    background-position: center center;
+    background-position: center top;
     background-repeat: no-repeat;
     background-image:
       linear-gradient(180deg,
-        rgba(4,8,22,0.80) 0%,
-        rgba(4,8,22,0.40) 14%,
-        rgba(4,8,22,0.10) 26%,
-        rgba(4,8,22,0.04) 36%,
-        rgba(4,8,22,0.18) 50%,
-        rgba(4,8,22,0.55) 66%,
-        rgba(4,8,22,0.72) 80%,
-        rgba(4,8,22,0.65) 100%),
-      url('../images/hero-stage.png?v=3');
+        rgba(4,8,22,0.82) 0%,
+        rgba(4,8,22,0.45) 16%,
+        rgba(4,8,22,0.12) 30%,
+        rgba(4,8,22,0.04) 42%,
+        rgba(4,8,22,0.22) 58%,
+        rgba(4,8,22,0.58) 76%,
+        rgba(4,8,22,0.72) 100%),
+      url('../images/hero-stage-mobile.png?v=3');
   }
   .hero-beams { display: none; }
   .home-hero  {
@@ -1110,18 +1110,18 @@ a { text-decoration: none; color: inherit; }
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: 220px;   /* start Cooper a bit lower on the iPad portrait canvas */
+    padding-top: 176px;
     padding-bottom: 36px;
     max-width: 100%;
     width: 100%;
   }
   .hero-title {
-    font-size: clamp(5.8rem, 11vw, 7.5rem);
+    font-size: clamp(4.8rem, 10vw, 6.5rem);
     line-height: 0.95;
     margin-bottom: 0;
   }
-  .hero-school { margin-top: auto; margin-bottom: 10px; font-size: 0.78rem; }
-  .hero-tagline { font-size: 1.05rem; margin-bottom: 22px; }
+  .hero-school { margin-top: auto; margin-bottom: 10px; font-size: 0.76rem; }
+  .hero-tagline { font-size: 1rem; margin-bottom: 22px; }
   .hero-buttons { gap: 14px; }
   .hero-scroll  { display: none; }
 }
