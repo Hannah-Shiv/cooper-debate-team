@@ -98,16 +98,13 @@
   }
   function renderList() {
     const list = filteredApplications();
-    $("visible-count").textContent = `${list.length} visible`;
+    $("visible-count").textContent = `${list.length} total`;
     $("application-list").innerHTML = list.length ? list.map(item => {
       const student = item.student || {};
-      const parent = item.parent || {};
       return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
         <div class="row-main">
-          <div><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade not listed")} · ${escapeHtml([parent.firstName, parent.lastName].filter(Boolean).join(" ") || "Parent / guardian")}</div></div>
-          <div class="row-status">${statusBadge(status(item))}</div>
+          <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade not listed")} · ${escapeHtml(student.debateExperience || "Debate experience not listed")}</div><div class="row-status">${statusBadge(status(item))}</div></div>
         </div>
-        <div class="row-submitted">${escapeHtml(formatDate(item.createdAt))}</div>
       </button>`;
     }).join("") : '<div class="empty">No applications match these filters.</div>';
     document.querySelectorAll(".application-row").forEach(row => row.addEventListener("click", () => {
