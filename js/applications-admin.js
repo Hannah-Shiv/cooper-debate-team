@@ -124,12 +124,27 @@
     const answerIndex = isLong ? longAnswers.push({ label, text }) - 1 : null;
     return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer">${escapeHtml(snippet)}${isLong ? ` <button type="button" class="answer-full-link" data-answer-index="${answerIndex}">Click here to read the full answer</button>` : ""}</div></div>`;
   }
-  function openAnswerDialog(answerDetail) {
+  function openAnswerDialog(answerDetail, trigger) {
     const dialog = $("answer-dialog");
     $("answer-dialog-title").textContent = answerDetail.label;
     $("answer-dialog-text").textContent = answerDetail.text;
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.hidden = false;
+    requestAnimationFrame(() => {
+      const anchor = trigger.closest(".answer-box") || trigger;
+      const anchorRect = anchor.getBoundingClientRect();
+      const padding = 16;
+      const left = Math.min(
+        Math.max(padding, anchorRect.left + (anchorRect.width - dialog.offsetWidth) / 2),
+        window.innerWidth - dialog.offsetWidth - padding
+      );
+      const top = Math.min(
+        Math.max(padding, anchorRect.top + (anchorRect.height - dialog.offsetHeight) / 2),
+        window.innerHeight - dialog.offsetHeight - padding
+      );
+      dialog.style.left = `${left}px`;
+      dialog.style.top = `${top}px`;
+    });
   }
   function quickTile(iconName, label, value) {
     return `<div class="quick-tile">${icon(iconName)}<div><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div></div>`;
@@ -160,7 +175,7 @@
     }));
     document.querySelectorAll(".answer-full-link").forEach(button => button.addEventListener("click", () => {
       const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
-      if (answerDetail) openAnswerDialog(answerDetail);
+      if (answerDetail) openAnswerDialog(answerDetail, button);
     }));
     $("save-decision").addEventListener("click", () => saveDecision(item.id));
   }
