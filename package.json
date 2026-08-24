@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "playwright test",
+    "test:tablet": "playwright test tests/tablet-layout.spec.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@playwright/test": "^1.62.1",
     "docx": "^9.7.1",
     "google-auth-library": "^10.9.1"
   }
