@@ -61,13 +61,10 @@
     const pending = applications.filter(item => status(item) === "pending").length;
     const accepted = applications.filter(item => status(item) === "accepted").length;
     const declined = applications.filter(item => status(item) === "declined").length;
-    const grade7 = applications.filter(item => item.student?.grade === "7th Grade").length;
-    const grade8 = applications.filter(item => item.student?.grade === "8th Grade").length;
     $("stat-total").textContent = total;
     $("stat-pending").textContent = pending;
     $("stat-accepted").textContent = accepted;
     $("stat-declined").textContent = declined;
-    $("grade-breakdown").textContent = total ? `Grade breakdown: ${grade7} seventh-grade · ${grade8} eighth-grade applicant${total === 1 ? "" : "s"}.` : "No applications have been received yet.";
   }
   function filteredApplications() {
     const query = $("search").value.trim().toLowerCase();
