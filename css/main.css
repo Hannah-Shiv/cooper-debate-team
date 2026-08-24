@@ -1946,3 +1946,237 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .mub-signout:hover { background: #9a1414; }
 .mub-signout svg { stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+/* === CROSS-SITE RESPONSIVE SAFETY NET ===
+   These rules are intentionally last so public pages and the standalone
+   member dashboards share the same small-screen guardrails. Page-specific
+   styles still own their visual treatment and data layouts. */
+img, svg, canvas, video { max-width: 100%; }
+.section-wrap, .dashboard-wrap, .cal-wrap { width: 100%; min-width: 0; }
+.section-wrap > *, .dashboard-wrap > *, .cal-wrap > * { min-width: 0; }
+button, input, select, textarea { max-width: 100%; }
+
+@media (max-width: 900px) {
+  .two-col,
+  .three-col,
+  .wasdl-grid,
+  .coach-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .footer-grid { gap: 28px; }
+  .events-layout { grid-template-columns: minmax(0, 1fr); }
+
+  /* Keep dashboard columns from forcing the document wider than its shell. */
+  .portal-page,
+  .portal-main,
+  .dashboard-wrap,
+  .cal-wrap,
+  .workspace,
+  .review-controls,
+  .content-grid,
+  .member-content {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .dir-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .tourn-grid { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .two-col,
+  .three-col,
+  .wasdl-grid,
+  .coach-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .section-wrap { padding-left: 20px; padding-right: 20px; }
+
+  /* Fixed-width descendants should either wrap or scroll inside their card. */
+  .table-wrap,
+  .lb-table-wrap,
+  .leaderboard-table-wrap,
+  .drill-table-scroll,
+  .heatmap-scroll,
+  .directory-table-wrap,
+  .data-table-wrap {
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Public application form and all member dialogs stay reachable on phones. */
+  .form-card,
+  .application-modal-card,
+  .modal-box,
+  .ann-det-modal-box,
+  .deb-modal-box,
+  .drill-modal-box,
+  .import-modal-box,
+  .answer-dialog-card {
+    max-width: calc(100vw - 32px) !important;
+    min-width: 0 !important;
+  }
+
+  .application-modal-card,
+  .modal-box,
+  .ann-det-modal-box,
+  .deb-modal-box,
+  .drill-modal-box,
+  .import-modal-box,
+  .answer-dialog-card {
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .cal-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .cal-header-right,
+  .cal-header-right-top { width: 100%; }
+  .cal-header-right { align-items: stretch; }
+  .cal-header-right-top { justify-content: space-between; }
+
+  .next-tournament-banner {
+    grid-template-areas: "label" "name" "date" "countdown" !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+  .next-tournament-banner > * {
+    min-height: auto;
+    border-left: 0;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,232,159,.38);
+  }
+  .next-tournament-banner > *:last-child { border-bottom: 0; }
+  .next-name { padding: 18px 16px; }
+  .next-name-headline,
+  .next-name-resolution { overflow-wrap: anywhere; }
+
+  #cal-container { overflow-x: auto; }
+  #cal-container .fc { min-width: 0; }
+  .fc .fc-toolbar { justify-content: center; }
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .fc .fc-toolbar-title {
+    flex: 1 1 100%;
+    min-width: 100%;
+    text-align: center;
+  }
+
+  .tm-page-row,
+  .dir-top-bar,
+  .dir-meta-bar,
+  .controls,
+  .toolbar,
+  .filters {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .dir-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .tourn-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .dir-top-bar,
+  .dir-meta-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .dir-search-box { max-width: none; width: 100%; }
+  .dir-view-toggle { align-self: flex-start; }
+
+  .form-card { padding-left: 20px !important; padding-right: 20px !important; }
+  .application-modal-actions { flex-wrap: wrap; }
+  .application-modal-actions > * { flex: 1 1 140px; }
+
+  .page-title { overflow-wrap: anywhere; }
+  .page-subtitle { line-height: 1.45; }
+}
+
+@media (max-width: 430px) {
+  .dir-grid { grid-template-columns: minmax(0, 1fr) !important; }
+  .section-wrap { padding-left: 16px; padding-right: 16px; }
+
+  .decision-buttons { grid-template-columns: minmax(0, 1fr); }
+  .contact-columns { grid-template-columns: minmax(0, 1fr); }
+  .review-controls { grid-template-columns: minmax(0, 1fr); }
+  .quick-profile-grid { grid-template-columns: minmax(0, 1fr); }
+
+  .modal-box,
+  .ann-det-modal-box,
+  .deb-modal-box,
+  .drill-modal-box,
+  .import-modal-box,
+  .answer-dialog-card,
+  .application-modal-card {
+    max-width: calc(100vw - 20px) !important;
+  }
+
+  .next-label,
+  .next-date,
+  .next-countdown { padding-left: 12px !important; padding-right: 12px !important; }
+}
+
+/* Short landscape Chromebook screens: clear the fixed dome without spending
+   the whole first screen on desktop-sized header padding. */
+@media (min-width: 769px) and (max-height: 850px) {
+  .page-header {
+    padding-top: 96px;
+    padding-bottom: 42px;
+  }
+  body.dome-open .page-header { padding-top: 240px !important; }
+
+  .portal-page,
+  .portal-main {
+    padding-top: 96px !important;
+    padding-bottom: 48px !important;
+  }
+  body.dome-open .portal-page,
+  body.dome-open .portal-main {
+    padding-top: 240px !important;
+  }
+  .section { padding-top: 52px; padding-bottom: 52px; }
+  .page-title { line-height: 1.05; }
+
+  /* The application and member sign-in screens use custom hero blocks rather
+     than .page-header, so compact those blocks independently. */
+  .apply-page { padding-top: 88px !important; }
+  body.dome-open .apply-page { padding-top: 240px !important; }
+  .apply-page .apply-header img { width: 164px !important; }
+  .apply-eyebrow { font-size: .88rem; margin-bottom: 8px; }
+  .apply-title { font-size: 2.3rem; margin-bottom: 8px; }
+  .apply-subtitle { font-size: .94rem; line-height: 1.5; }
+  .apply-header-rule { margin-top: 12px; }
+  .policy-notice { margin-bottom: 28px; }
+
+  .auth-wrap { min-height: calc(100vh - 110px) !important; }
+  .auth-icon { font-size: 2.2rem !important; margin-bottom: 8px !important; }
+  .auth-badge { margin-bottom: 10px !important; padding: 5px 14px !important; }
+  .auth-title { font-size: 2.05rem !important; margin-bottom: 6px !important; }
+  .auth-sub { line-height: 1.5 !important; margin-bottom: 18px !important; }
+  .login-card { padding: 24px !important; }
+  .login-field { margin-bottom: 14px !important; }
+  .login-hint { margin-top: 12px !important; }
+  .btn-send { padding: 11px !important; }
+}
+
+@media (max-width: 768px) {
+  .portal-page,
+  .portal-main {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-top: 96px !important;
+  }
+  body.dome-open .portal-page,
+  body.dome-open .portal-main {
+    padding-top: 196px !important;
+  }
+}
