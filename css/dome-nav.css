@@ -293,15 +293,15 @@ body.dome-open .page-header { padding-top: 240px; }
   #circ-wrap:not(.member-dome) .dn-p5,
   #circ-wrap:not(.member-dome) .dn-p6 { font-size: 8px; }
 
-  /* Positions scaled for 52px circles, R≈118.
+  /* Positions scaled for 52px circles with even ~62px center spacing.
      transform-origin = (wrap_center - circle_top_left)
      wrap_center = (26, 26) for 52px wrap.             */
-  .dn-p1 { left: -104px; top:  -4px; transform-origin: 130px  30px; }
-  .dn-p2 { left:  -83px; top:  54px; transform-origin: 109px -28px; }
-  .dn-p3 { left:  -40px; top:  96px; transform-origin:  66px -70px; }
-  .dn-p4 { left:   28px; top:  96px; transform-origin:  -2px -70px; }
-  .dn-p5 { left:   79px; top:  54px; transform-origin: -53px -28px; }
-  .dn-p6 { left:  100px; top:  -4px; transform-origin: -74px  30px; }
+  .dn-p1 { left: -101px; top:  -4px; transform-origin: 127px  30px; }
+  .dn-p2 { left:  -79px; top:  54px; transform-origin: 105px -28px; }
+  .dn-p3 { left:  -33px; top:  96px; transform-origin:  59px -70px; }
+  .dn-p4 { left:   29px; top:  96px; transform-origin:  -3px -70px; }
+  .dn-p5 { left:   75px; top:  54px; transform-origin: -49px -28px; }
+  .dn-p6 { left:   97px; top:  -4px; transform-origin: -71px  30px; }
 
   body.dome-open .home-hero .hero-content { padding-top: 210px; }
   body.dome-open .page-header { padding-top: 200px; }
