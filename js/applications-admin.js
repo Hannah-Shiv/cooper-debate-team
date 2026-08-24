@@ -103,7 +103,7 @@
       const student = item.student || {};
       return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
         <div class="row-main">
-          <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade not listed")} · ${escapeHtml(student.debateExperience || "Debate experience not listed")}</div><div class="row-status">${statusBadge(status(item))}</div></div>
+          <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-status">${statusBadge(status(item))}</div></div>
         </div>
       </button>`;
     }).join("") : '<div class="empty">No applications match these filters.</div>';
