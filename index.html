@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=26"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=28"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=7"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     /* ── Index page mobile overrides ── */
@@ -180,6 +180,14 @@
 
       /* Bottom section: tighter gap between boxes */
       #idx-bottom-section .section-wrap { gap: 14px !important; }
+    }
+
+    /* Keep dense content comfortable on tall tablet portrait screens without
+       changing the existing desktop or landscape hero composition. */
+    @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+      #idx-stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+      #idx-champ-grid { grid-template-columns: 1fr !important; }
+      .idx-champ-plaque { width: min(300px,60vw); margin-inline: auto; }
     }
 
     /* Short landscape Chromebook viewport: keep the complete hero CTA above the fold. */

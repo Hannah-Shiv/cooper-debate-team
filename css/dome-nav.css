@@ -324,3 +324,24 @@ body.dome-open .page-header { padding-top: 240px; }
   #member-login-btn .mp-arrow { display: none; }
   #member-login-btn::after { display: none; }
 }
+
+/* Medium and large tablets retain the full navigation dome, but the portal
+   entry becomes icon-only so it cannot crowd the centered Cooper badge. */
+@media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+  #member-login-btn {
+    align-items: center;
+    display: flex !important;
+    font-size: 0;
+    gap: 0;
+    height: 44px;
+    min-width: 44px;
+    overflow: hidden;
+    padding: 10px;
+    right: 16px;
+    top: 16px;
+    width: 44px;
+  }
+  #member-login-btn svg { height: 19px; width: 19px; }
+  #member-login-btn .mp-arrow,
+  #member-login-btn::after { display: none; }
+}

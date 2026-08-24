@@ -1077,7 +1077,7 @@ a { text-decoration: none; color: inherit; }
 /* === TABLET PORTRAIT HOMEPAGE ===
    12-inch iPad portrait is roughly 1024×1366 CSS pixels. Use the dedicated
    portrait stage and vertical hero treatment, but keep landscape on desktop. */
-@media (min-width: 769px) and (max-width: 1100px) and (min-height: 900px) {
+@media (min-width: 769px) and (max-width: 1100px) and (min-height: 900px) and (orientation: portrait) {
   /* Hide desktop pseudo-element layers so the portrait background shows through */
   .hero-bg::after,
   .hero-bg::before { display: none; }
@@ -2179,4 +2179,194 @@ button, input, select, textarea { max-width: 100%; }
   body.dome-open .portal-main {
     padding-top: 196px !important;
   }
+}
+
+/* === TABLET PORTRAIT SAFETY NET ===
+   768–1024px portrait screens sit between the phone and desktop layouts.
+   Keep these rules isolated from landscape so Chromebook and desktop layouts
+   retain their existing proportions. */
+@media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+  .section-wrap { padding-left: 28px; padding-right: 28px; }
+  .section { padding-top: 64px; padding-bottom: 64px; }
+
+  .page-header { padding: 112px 28px 52px; }
+  body.dome-open .page-header { padding-top: 240px !important; }
+
+  .portal-page,
+  .portal-main {
+    overflow-x: clip !important;
+    overflow-y: visible !important;
+    padding-left: 28px !important;
+    padding-right: 28px !important;
+    padding-top: 112px !important;
+  }
+  body.dome-open .portal-page,
+  body.dome-open .portal-main { padding-top: 240px !important; }
+
+  .section-wrap > *,
+  .dashboard-wrap > *,
+  .cal-wrap > *,
+  .portal-page > *,
+  .portal-main > * { min-width: 0; }
+
+  .four-col,
+  .three-col,
+  .wasdl-grid,
+  .coach-grid,
+  .stats-grid,
+  .results-grid,
+  .gallery-grid,
+  .dir-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .highlights-grid,
+  .events-layout { grid-template-columns: minmax(0, 1fr) !important; }
+
+  /* Public application form */
+  .apply-page { padding-left: 28px !important; padding-right: 28px !important; }
+  .apply-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .form-card { padding: 30px 28px !important; }
+  .application-review-item {
+    grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+  }
+  .application-review-item > * { overflow-wrap: anywhere; }
+
+  /* Dialogs and fixed-width data remain reachable instead of widening the page. */
+  .application-modal-card,
+  .modal-box,
+  .ann-det-modal-box,
+  .deb-modal-box,
+  .drill-modal-box,
+  .import-modal-box,
+  .answer-dialog-card {
+    max-width: calc(100vw - 48px) !important;
+    min-width: 0 !important;
+    max-height: calc(100vh - 48px);
+    max-height: calc(100dvh - 48px);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .table-wrap,
+  .lb-table-wrap,
+  .leaderboard-table-wrap,
+  .drill-table-scroll,
+  .heatmap-scroll,
+  .directory-table-wrap,
+  .data-table-wrap,
+  .entry-table-wrap,
+  .speak-table-wrap,
+  .profile-table-wrap {
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-wrap table,
+  .lb-table-wrap table,
+  .leaderboard-table-wrap table,
+  .directory-table-wrap table,
+  .data-table-wrap table,
+  .entry-table-wrap table,
+  .speak-table-wrap table,
+  .profile-table-wrap table { min-width: max-content; }
+
+  /* FullCalendar controls and the tournament announcement work as two rows. */
+  .next-tournament-banner {
+    grid-template-areas: "label name" "date countdown" !important;
+    grid-template-columns: minmax(130px, .7fr) minmax(0, 1.3fr) !important;
+  }
+  .next-tournament-banner > * { min-height: 82px; padding: 12px !important; }
+  .next-name-resolution,
+  .next-name-headline { overflow-wrap: anywhere; }
+  .public-countdown {
+    display: grid !important;
+    grid-template-areas: "label label" "name name" "date countdown" !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+  }
+  .public-countdown > * { min-height: 82px; padding: 12px 14px; }
+  .public-countdown-label,
+  .public-countdown-name { border-bottom: 1px solid rgba(255,255,255,.48); }
+  .public-countdown-label {
+    flex-direction: row;
+    gap: 9px;
+    justify-content: flex-start;
+  }
+  .public-countdown-label svg { height: 22px; margin: 0; width: 22px; }
+  .public-countdown-date { border-left: 0; }
+  .public-countdown-resolution,
+  .public-countdown-headline { overflow-wrap: anywhere; }
+
+  #cal-container,
+  .public-calendar-shell { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #public-calendar .fc-dayGridMonth-view .fc-scrollgrid { min-width: 640px; }
+  .fc .fc-toolbar {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+  }
+  .fc .fc-toolbar-chunk {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+  }
+  .fc .fc-toolbar-title {
+    flex: 1 1 100%;
+    min-width: 100%;
+    text-align: center;
+  }
+
+  /* Coach application review workspace */
+  .summary-controls-row { grid-template-columns: minmax(0, 1fr) !important; }
+  .summary-controls-row .summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .summary-controls-row .controls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+  .summary-controls-row .app-search-control { grid-column: 1 / -1; }
+  .workspace { grid-template-columns: minmax(0, 1fr) !important; }
+  .quick-profile-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .responses-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .contact-columns,
+  .detail-grid,
+  .review-controls { grid-template-columns: minmax(0, 1fr) !important; }
+  .review-note { grid-column: auto !important; }
+
+  /* Member directory, resources, and dashboard cards */
+  .dsp2-grid,
+  .portal-cards,
+  .portal-cards-3col,
+  .member-kickoff-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .dsp2-header-left { min-width: 0; }
+  .dsp2-title,
+  .dsp2-subtitle,
+  .dsp2-desc { overflow-wrap: anywhere; }
+  .portal-tabs,
+  .tm-tabs { max-width: 100%; }
+
+  /* Tournament manager turns its fixed sidebar into a horizontal section bar. */
+  .tm-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .tm-sidebar {
+    border-bottom: 1px solid var(--tm-line);
+    border-right: 0;
+    display: flex;
+    overflow-x: auto;
+    padding: 8px;
+  }
+  .tm-side-label { display: none; }
+  .tm-side-link { white-space: nowrap; }
+  .tm-main { padding: 28px 28px 56px; }
+  .tm-page-row { flex-direction: column; }
+  .tm-preview { margin-top: 0; }
+  .tm-summary,
+  .tm-workspace,
+  .tm-side-stack { grid-template-columns: minmax(0, 1fr) !important; }
+  .tm-summary-title { border-bottom: 1px solid var(--tm-line); border-right: 0; }
+  .tm-summary-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tm-event-main { grid-template-columns: minmax(0, 1fr); }
+  .tm-event-actions { justify-content: flex-start; }
+
+  .member-kickoff-footer { align-items: flex-start; flex-direction: column; }
 }
