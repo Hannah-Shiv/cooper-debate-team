@@ -34,6 +34,7 @@
   let applications = [];
   let selectedId = "";
   let unsubscribe = null;
+  let longAnswers = [];
 
   window.memberSignOut = () => auth.signOut().finally(() => { window.location.href = "index.html"; });
   window.appToggleNotif = () => {
@@ -117,7 +118,18 @@
     return `<div class="fact"><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div>`;
   }
   function answer(label, value, iconName) {
-    return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer">${escapeHtml(value || "No response provided.")}</div></div>`;
+    const text = String(value || "No response provided.");
+    const isLong = text.length > 180;
+    const snippet = isLong ? `${text.slice(0, 180).replace(/\s+\S*$/, "").trimEnd()}…` : text;
+    const answerIndex = isLong ? longAnswers.push({ label, text }) - 1 : null;
+    return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer">${escapeHtml(snippet)}${isLong ? ` <button type="button" class="answer-full-link" data-answer-index="${answerIndex}">Click here to read the full answer</button>` : ""}</div></div>`;
+  }
+  function openAnswerDialog(answerDetail) {
+    const dialog = $("answer-dialog");
+    $("answer-dialog-title").textContent = answerDetail.label;
+    $("answer-dialog-text").textContent = answerDetail.text;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.hidden = false;
   }
   function quickTile(iconName, label, value) {
     return `<div class="quick-tile">${icon(iconName)}<div><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div></div>`;
@@ -130,6 +142,7 @@
     }
     const student = item.student || {};
     const parent = item.parent || {};
+    longAnswers = [];
     const commitmentEntries = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]);
     const commitments = commitmentEntries.map(([, label]) => `<span class="commitment">${icon("check", "commitment-icon")} ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
     const decision = status(item);
@@ -144,6 +157,10 @@
     document.querySelectorAll(".decision-button").forEach(button => button.addEventListener("click", () => {
       $("review-decision").value = button.dataset.decision;
       document.querySelectorAll(".decision-button").forEach(control => control.classList.toggle("selected", control === button));
+    }));
+    document.querySelectorAll(".answer-full-link").forEach(button => button.addEventListener("click", () => {
+      const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
+      if (answerDetail) openAnswerDialog(answerDetail);
     }));
     $("save-decision").addEventListener("click", () => saveDecision(item.id));
   }
