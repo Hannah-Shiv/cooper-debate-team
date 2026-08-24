@@ -179,8 +179,8 @@
 .dn-p1, .dn-p2 { font-size: 13px; }
 #circ-wrap:not(.member-dome) .dn-p3 { font-size: 14px; }
 #circ-wrap:not(.member-dome) .dn-p4,
-#circ-wrap:not(.member-dome) .dn-p5,
-#circ-wrap:not(.member-dome) .dn-p6 { font-size: 14px; }
+#circ-wrap:not(.member-dome) .dn-p5 { font-size: 14px; }
+#circ-wrap:not(.member-dome) .dn-p6 { font-size: 12.6px; }
 
 /* Staggered open delays */
 #circ-wrap.open .dn-p1,
