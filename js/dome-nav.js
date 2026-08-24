@@ -128,10 +128,10 @@ document.addEventListener('DOMContentLoaded', function () {
   var activeMap = {
     'about.html':       '.dn-p1',
     'awards.html':      '.dn-p2',
-    'tournaments.html': '.dn-p3',
+    'announcements.html': '.dn-p3',
     'resources.html':   '.dn-p4',
-    'gallery.html':     '.dn-p5',
-    'members.html':     '.dn-p6'
+    'tournaments.html': '.dn-p5',
+    'gallery.html':     '.dn-p6'
   };
   var sel = activeMap[page];
   if (sel) {
