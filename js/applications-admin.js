@@ -119,10 +119,8 @@
   }
   function answer(label, value, iconName) {
     const text = String(value || "No response provided.");
-    const isLong = text.length > 180;
-    const snippet = isLong ? `${text.slice(0, 180).replace(/\s+\S*$/, "").trimEnd()}…` : text;
-    const answerIndex = isLong ? longAnswers.push({ label, text }) - 1 : null;
-    return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer">${escapeHtml(snippet)}${isLong ? ` <button type="button" class="answer-full-link" data-answer-index="${answerIndex}">Click here to read the full answer</button>` : ""}</div></div>`;
+    const answerIndex = longAnswers.push({ label, text }) - 1;
+    return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer"><span class="answer-preview" data-answer-index="${answerIndex}">${escapeHtml(text)}</span><button type="button" class="answer-full-link" data-answer-index="${answerIndex}" hidden>Click here to read more</button></div></div>`;
   }
   function openAnswerDialog(answerDetail, trigger) {
     const dialog = $("answer-dialog");
@@ -172,6 +170,10 @@
     document.querySelectorAll(".decision-button").forEach(button => button.addEventListener("click", () => {
       $("review-decision").value = button.dataset.decision;
       document.querySelectorAll(".decision-button").forEach(control => control.classList.toggle("selected", control === button));
+    }));
+    requestAnimationFrame(() => document.querySelectorAll(".answer-preview").forEach(preview => {
+      const link = preview.nextElementSibling;
+      if (link && preview.scrollWidth > preview.clientWidth + 1) link.hidden = false;
     }));
     document.querySelectorAll(".answer-full-link").forEach(button => button.addEventListener("click", () => {
       const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
