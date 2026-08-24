@@ -291,7 +291,7 @@ body.dome-open .page-header { padding-top: 240px; }
   #circ-wrap:not(.member-dome) .dn-p3,
   #circ-wrap:not(.member-dome) .dn-p4 { font-size: 8px; }
   #circ-wrap:not(.member-dome) .dn-p5,
-  #circ-wrap:not(.member-dome) .dn-p6 { font-size: 7.6px; }
+  #circ-wrap:not(.member-dome) .dn-p6 { font-size: 8px; }
 
   /* Positions scaled for 52px circles with even ~62px center spacing.
      transform-origin = (wrap_center - circle_top_left)
