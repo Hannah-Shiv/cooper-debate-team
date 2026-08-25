@@ -162,19 +162,51 @@
       align-items: center;
       gap: 12px;
       margin-bottom: 18px;
-      padding: 7px 9px 7px 14px;
-      background: rgba(10,29,66,0.72);
-      border: 1px solid rgba(242,209,107,0.42);
-      border-left: 3px solid #F2D16B;
-      border-radius: 10px;
-      box-shadow: 0 5px 14px rgba(0,0,0,0.2);
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
     }
     .awards-page .season-select-label {
-      color: #D4A017;
+      color: #F2D16B;
       font-size: 0.78rem;
       font-weight: 800;
       letter-spacing: 0.16em;
       text-transform: uppercase;
+    }
+    .awards-page .season-toggle {
+      display: inline-flex;
+      gap: 3px;
+      padding: 4px;
+      background: #0a1d42;
+      border: 1px solid rgba(242,209,107,0.62);
+      border-radius: 10px;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.24);
+    }
+    .awards-page .season-toggle-btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 9px 14px;
+      background: transparent;
+      color: rgba(255,255,255,0.74);
+      cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .awards-page .season-toggle-btn:hover {
+      color: #fff;
+    }
+    .awards-page .season-toggle-btn.active {
+      background: var(--gold);
+      box-shadow: 0 2px 8px rgba(212,160,23,0.38);
+      color: #0d1a0a;
+    }
+    .awards-page .season-toggle-select {
+      display: none;
     }
     .awards-page .season-dropdown {
       min-width: 126px;
@@ -233,6 +265,14 @@
       }
       .awards-page .aw-season-highlight-label {
         font-size: 0.59rem;
+      }
+      .awards-page .season-select-wrap {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .awards-page .season-toggle-btn {
+        padding-inline: 10px;
       }
     }
     .awards-page .season-select-wrap {
@@ -835,10 +875,14 @@
     <!-- Season selector -->
     <div class="season-select-wrap">
       <span class="season-select-label">Season</span>
-      <select class="season-dropdown" id="season-dropdown" onchange="onSeasonChange()">
+      <select class="season-dropdown season-toggle-select" id="season-dropdown" onchange="onSeasonChange()" aria-hidden="true" tabindex="-1">
         <option value="2025" selected>2025–26</option>
         <option value="2026">2026–27</option>
       </select>
+      <div class="season-toggle" role="group" aria-label="Choose season">
+        <button type="button" class="season-toggle-btn active" data-season="2025" aria-pressed="true" onclick="chooseSeason(2025)">2025–26</button>
+        <button type="button" class="season-toggle-btn" data-season="2026" aria-pressed="false" onclick="chooseSeason(2026)">2026–27</button>
+      </div>
     </div>
     <div class="aw-results-heading-row">
       <h2 class="section-title">Season Results for <span id="season-label">2025–26</span></h2>
@@ -1739,11 +1783,22 @@ function filterAndRender() {
   renderAwards(filtered);
 }
 
+function chooseSeason(year) {
+  const dropdown = document.getElementById('season-dropdown');
+  dropdown.value = String(year);
+  onSeasonChange();
+}
+
 function onSeasonChange() {
   const sel   = document.getElementById('season-dropdown');
   const year  = parseInt(sel.value, 10);
   const label = sel.options[sel.selectedIndex].text;
   document.getElementById('season-label').textContent = label;
+  document.querySelectorAll('.season-toggle-btn').forEach(btn => {
+    const active = btn.dataset.season === String(year);
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
 
   /* Show loading state while re-rendering */
   document.getElementById('aw-loading').style.display = 'block';
