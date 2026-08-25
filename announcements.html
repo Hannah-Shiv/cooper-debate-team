@@ -14,13 +14,29 @@
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     .ann-card {
-      background: rgba(13,46,86,0.45);
-      border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 12px; overflow: hidden;
+      background: linear-gradient(145deg, rgba(11,32,76,0.94), rgba(6,19,49,0.98));
+      border: 1.5px solid #F2D16B;
+      border-radius: 14px; overflow: hidden;
       margin-bottom: 28px;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
-    .ann-card:hover { border-color: rgba(212,160,23,0.4); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+    .ann-card:hover { border-color: #F2D16B; box-shadow: 0 12px 32px rgba(0,0,0,0.35); transform: translateY(-2px); }
+    .kickoff-schedule-mount .kickoff-schedule {
+      border: 1.5px solid rgba(242,209,107,0.78);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24);
+    }
+    .kickoff-schedule-mount .kickoff-schedule__date-card {
+      border: 1.5px solid rgba(242,209,107,0.66);
+      border-radius: 12px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.18);
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly,
+    .kickoff-schedule-mount .kickoff-schedule__weekly-card,
+    .kickoff-schedule-mount .kickoff-schedule__footer {
+      border-color: rgba(242,209,107,0.58);
+    }
     .ann-card-header {
       display: flex; align-items: center; gap: 16px;
       padding: 28px 32px 0;
