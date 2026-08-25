@@ -64,7 +64,11 @@
     }
     .mission-copy > p,
     .why-debate-copy > p {
-      color: rgba(255,255,255,0.78) !important;
+      color: rgba(255,255,255,0.92) !important;
+    }
+    .mission-copy .benefit-text,
+    .why-debate-copy .benefit-text {
+      color: rgba(255,255,255,0.84) !important;
     }
     .mission-quote {
       background: linear-gradient(135deg, rgba(242,209,107,0.14), rgba(242,209,107,0.04)) !important;
@@ -191,6 +195,25 @@
     }
 
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+    #mission-values-section .two-col,
+    #why-debate-section .two-col { align-items: stretch; }
+    #mission-values-section .mission-copy,
+    #why-debate-section .why-debate-copy,
+    #why-debate-section .about-blue-panel {
+      height: 100%;
+      box-sizing: border-box;
+    }
+    #mission-values-section .values-panel {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+    #mission-values-section .values-panel > div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
     .three-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
      .wasdl-logo {
        display: block;
@@ -275,7 +298,7 @@
 </div>
 
 <!-- MISSION & VISION -->
-<section class="section" style="background:var(--navy-dark);">
+<section id="mission-values-section" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <div class="two-col">
        <div class="mission-copy">
@@ -334,7 +357,7 @@
 </section>
 
 <!-- WHY DEBATE -->
-<section class="section" style="background:var(--navy-dark);">
+<section id="why-debate-section" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <div class="two-col">
       <div class="why-debate-copy">
