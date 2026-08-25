@@ -26,7 +26,52 @@
     .value-icon { width: 54px; height: 54px; flex-shrink: 0; border-radius: 50%; background: rgba(242,209,107,0.08); border: 1.5px solid #F2D16B; display: flex; align-items: center; justify-content: center; }
     .value-icon svg { width: 26px; height: 26px; }
     .value-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; margin-bottom: 5px; color: var(--white); }
-    .value-text { font-size: 0.97rem; color: var(--gray-mid); line-height: 1.7; margin: 0; }
+    .value-text { font-size: 0.97rem; color: rgba(255,255,255,0.76); line-height: 1.7; margin: 0; }
+
+    .about-kicker {
+      color: #F2D16B !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.22em !important;
+      text-shadow: 0 0 16px rgba(242,209,107,0.22);
+    }
+    .about-heading {
+      color: #fff !important;
+      font-size: clamp(2.25rem, 4vw, 3.15rem) !important;
+      line-height: 1 !important;
+      letter-spacing: -0.01em;
+      text-shadow: 0 3px 20px rgba(0,0,0,0.32);
+    }
+    .mission-copy {
+      position: relative;
+      overflow: hidden;
+      padding: 30px 32px 30px 36px;
+      background: linear-gradient(145deg, rgba(11,32,76,0.42), rgba(6,19,49,0.18));
+      border: 1px solid rgba(242,209,107,0.32);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .mission-copy::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 24px;
+      bottom: 24px;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, #F2D16B 18%, #F2D16B 82%, transparent);
+      box-shadow: 0 0 12px rgba(242,209,107,0.35);
+    }
+    .mission-copy > p {
+      color: rgba(255,255,255,0.78) !important;
+    }
+    .mission-quote {
+      background: linear-gradient(135deg, rgba(242,209,107,0.14), rgba(242,209,107,0.04)) !important;
+      border: 1px solid rgba(242,209,107,0.28) !important;
+      border-left: 3px solid #F2D16B !important;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 18px rgba(0,0,0,0.14);
+    }
+    .values-panel > p {
+      color: rgba(255,255,255,0.72) !important;
+    }
 
     .benefit-item {
       display: flex;
@@ -226,18 +271,18 @@
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <div class="two-col">
-      <div>
-        <p class="section-label">Who We Are</p>
-        <h2 class="section-title">Our Mission</h2>
+       <div class="mission-copy">
+         <p class="section-label about-kicker">Who We Are</p>
+         <h2 class="section-title about-heading">Our Mission</h2>
         <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:20px;font-size:1.15rem;">The Cooper Debate Team develops middle school students into confident, critical thinkers and effective communicators. Through the discipline of Public Forum debate, we equip students with skills that extend far beyond the debate round.</p>
         <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:28px;font-size:1.15rem;">We believe every student has something important to say — and the power to say it well. Our team competes at the highest levels while fostering collaboration, curiosity, and mutual respect.</p>
-        <div style="padding:24px;background:rgba(212,160,23,0.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;">
+         <div class="mission-quote" style="padding:24px;background:rgba(212,160,23,0.08);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;">
           <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:1.18rem;color:var(--gold-pale);line-height:1.7;">"The aim of argument, or of discussion, should not be victory, but progress." — Joseph Joubert</p>
         </div>
       </div>
-      <div>
-        <p class="section-label">What We Stand For</p>
-        <h2 class="section-title">Core Values</h2>
+       <div class="values-panel">
+         <p class="section-label about-kicker">What We Stand For</p>
+         <h2 class="section-title about-heading">Core Values</h2>
         <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:24px;">The principles that shape every practice, every round, and every debater who wears the Cooper name.</p>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="value-card fade-up">
