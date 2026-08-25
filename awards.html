@@ -65,12 +65,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 3px;
-      color: #fff;
+      width: fit-content;
+      margin: 0 auto 5px;
+      padding: 5px 18px;
+      background: var(--gold);
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(212,160,23,0.4);
+      color: #0d1a0a;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
+      font-size: 0.84rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       text-align: center;
     }
@@ -78,7 +83,7 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
     .awards-page .aw-season-highlight-item {
       display: flex;
@@ -90,7 +95,7 @@
       text-align: center;
     }
     .awards-page .aw-season-highlight-item + .aw-season-highlight-item {
-      border-left: 1px solid rgba(255,255,255,0.28);
+      border-left: 1px solid rgba(255,255,255,0.68);
     }
     .awards-page .aw-season-highlight-number {
       color: #fff;
@@ -730,6 +735,10 @@
         <div class="aw-season-highlight-item">
           <div id="aw-highlight-undefeated" class="aw-season-highlight-number">10</div>
           <div class="aw-season-highlight-label">Pairs Went<br>Undefeated (4–0)</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <div class="aw-season-highlight-number">NCFL</div>
+          <div class="aw-season-highlight-label">Qualified for<br>Semis</div>
         </div>
         <div class="aw-season-highlight-item">
           <div class="aw-season-highlight-number">2nd</div>
