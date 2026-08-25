@@ -18,8 +18,59 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
   <style>
     /* Awards page font overrides */
-    .page-header-label { font-size: 0.89rem !important; }
-    .page-subtitle     { font-size: 1.21rem !important; }
+    .page-header-label { font-size: clamp(0.9rem, 1.5vw, 1.08rem) !important; }
+    .page-subtitle     { font-size: clamp(1.25rem, 3vw, 1.77rem) !important; }
+
+    /* Match the charcoal public-page treatment */
+    .awards-page .page-header {
+      padding: 118px 24px 44px;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+    }
+    .awards-page .page-header::after {
+      display: none;
+    }
+    .awards-page > section.section {
+      padding-top: 36px;
+    }
+    .awards-page .page-header-label {
+      color: #D4A017;
+      margin-bottom: 16px;
+    }
+    .awards-page .page-subtitle {
+      color: #F2D16B;
+    }
+    .awards-page .trophy-card,
+    .awards-page .speaker-card,
+    .awards-page .aw-stat-box,
+    .awards-page .aw-tourn-card,
+    .awards-page .aw-champ-card,
+    .awards-page .aw-chart-wrap,
+    .awards-page .aw-lb-row,
+    .awards-page .metro-banner,
+    .awards-page .aw-future {
+      background: linear-gradient(145deg, rgba(11,32,76,0.42), rgba(6,19,49,0.18));
+      border-color: rgba(242,209,107,0.32);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .awards-page .trophy-card:hover,
+    .awards-page .speaker-card:hover,
+    .awards-page .aw-stat-box:hover,
+    .awards-page .aw-tourn-card:hover,
+    .awards-page .aw-lb-row:hover {
+      border-color: rgba(242,209,107,0.72);
+    }
+    .awards-page .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-right,
+    .awards-page .aw-champ-summary {
+      border-color: rgba(242,209,107,0.58);
+    }
+    .awards-page .timeline-year,
+    .awards-page .aw-place-tile {
+      border-color: rgba(242,209,107,0.32);
+    }
 
     /* Season dropdown */
     .season-select-wrap {
@@ -467,9 +518,10 @@
     @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
   </style>
 </head>
-<body>
+<body class="awards-page" style="--navy-dark:#3B4147;">
 
 <!-- SITE BADGE (home link) -->
+<div class="mp-topbar" aria-hidden="true"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
