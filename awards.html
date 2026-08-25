@@ -434,6 +434,59 @@
     .awards-page .aw-champ-highlight-right .aw-champ-highlight-stars {
       color: #F2D16B;
     }
+    .awards-page .aw-ncfl-highlight-grid {
+      margin-top: 16px;
+    }
+    .awards-page .aw-ncfl-highlight-icon-large {
+      flex: 0 0 auto;
+      width: 180px;
+      height: 180px;
+      background-image: url('attached_assets/image_1787698158491.png');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-ncfl-highlight-badge-icon {
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-ncfl-highlight-results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .awards-page .aw-ncfl-highlight-result {
+      min-width: 130px;
+      padding: 8px 12px;
+      border: 1px solid rgba(242,209,107,0.38);
+      border-radius: 8px;
+      background: rgba(242,209,107,0.07);
+      text-align: center;
+    }
+    .awards-page .aw-ncfl-highlight-result-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-highlight-result-label {
+      margin-top: 4px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-ncfl-highlight-right-icon {
+      background-image: url('attached_assets/image_1787698158491.png');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+    }
     .awards-page .aw-tourn-card {
       padding: 20px 22px;
     }
@@ -1792,7 +1845,37 @@ function renderAwards(tourns) {
           <div class="aw-champ-highlight-description">These pairs earned their spot among the top in the metro.</div>
           <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
         </div>
-      </div>`;
+       </div>
+       <div class="aw-champ-highlight-grid aw-ncfl-highlight-grid">
+         <div class="aw-champ-highlight-main">
+           <div class="aw-champ-highlight-content">
+             <div class="aw-ncfl-highlight-icon-large" aria-hidden="true"></div>
+             <div class="aw-champ-highlight-details">
+               <div class="aw-champ-highlight-badge"><span class="aw-champ-highlight-badge-icon aw-ncfl-highlight-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
+               <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>NCFL</span> &nbsp;›&nbsp; Octos / Semis</div>
+               <div class="aw-champ-highlight-name">NCFL Championship Results</div>
+               <div class="aw-ncfl-highlight-results">
+                 <div class="aw-ncfl-highlight-result">
+                   <div class="aw-ncfl-highlight-result-number">3</div>
+                   <div class="aw-ncfl-highlight-result-label">Teams Reached<br>Octos</div>
+                 </div>
+                 <div class="aw-ncfl-highlight-result">
+                   <div class="aw-ncfl-highlight-result-number">1</div>
+                   <div class="aw-ncfl-highlight-result-label">Team Reached<br>Semis</div>
+                 </div>
+               </div>
+             </div>
+           </div>
+         </div>
+         <div class="aw-champ-highlight-right">
+           <div class="aw-champ-highlight-icon aw-ncfl-highlight-right-icon" aria-hidden="true"></div>
+           <div class="aw-champ-highlight-number">7</div>
+           <div class="aw-champ-highlight-rule"></div>
+           <div class="aw-champ-highlight-label">Teams<br>Participated</div>
+           <div class="aw-champ-highlight-description">Three teams reached Octos<br>and one reached Semis.</div>
+           <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
+         </div>
+       </div>`;
   } else {
     highlightEl.style.display = 'none';
   }
