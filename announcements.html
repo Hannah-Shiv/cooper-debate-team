@@ -34,21 +34,16 @@
     }
     .ann-card:hover { border-color: rgba(242,209,107,0.72); box-shadow: 0 12px 32px rgba(0,0,0,0.28); transform: translateY(-2px); }
     .announcements-page .page-header {
-      padding: 118px 24px 70px;
+      padding: 118px 24px 44px;
       background:
         radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
         linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
     }
     .announcements-page .page-header::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      bottom: -80px;
-      width: min(700px, 90vw);
-      height: 150px;
-      transform: translateX(-50%);
-      background: radial-gradient(ellipse, rgba(242,209,107,0.1), transparent 68%);
-      pointer-events: none;
+      display: none;
+    }
+    .announcements-page > section.section {
+      padding-top: 36px;
     }
     .announcements-page .page-header-label {
       color: #F2D16B;
