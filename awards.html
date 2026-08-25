@@ -170,7 +170,7 @@
     .awards-page .season-select-label {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 0;
       color: #F2D16B;
       font-size: 0.9rem;
       font-weight: 900;
@@ -179,9 +179,7 @@
       text-transform: uppercase;
     }
     .awards-page .season-select-label::before {
-      width: 24px;
-      background: #F2D16B;
-      opacity: 0.8;
+      display: none;
     }
     .awards-page .season-toggle {
       display: inline-flex;
@@ -899,7 +897,7 @@
 
     <!-- Season selector -->
     <div class="season-select-wrap">
-      <span class="season-select-label">Season</span>
+      <span class="season-select-label">Choose a Season</span>
       <select class="season-dropdown season-toggle-select" id="season-dropdown" onchange="onSeasonChange()" aria-hidden="true" tabindex="-1">
         <option value="2025" selected>2025–26</option>
         <option value="2026">2026–27</option>
