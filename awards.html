@@ -686,6 +686,33 @@
       font-size: 0.48em;
       font-weight: 600;
     }
+    .awards-page .aw-ncfl-award-card .aw-award-badge {
+      font-size: 0.72rem;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-hierarchy {
+      font-size: 0.63rem;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-title {
+      margin-bottom: 5px;
+      font-size: clamp(1.22rem, 2.1vw, 1.58rem);
+    }
+    .awards-page .aw-ncfl-award-achievement {
+      margin-bottom: 7px;
+      color: #FFD700;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.6rem, 5.3vw, 4rem);
+      font-weight: 700;
+      line-height: 0.9;
+      text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+      text-transform: uppercase;
+    }
+    .awards-page .aw-ncfl-award-date {
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+    }
     .awards-page .aw-award-note {
       color: #fff;
       font-family: 'Josefin Sans', sans-serif;
@@ -744,9 +771,15 @@
       .awards-page .aw-award-badge {
         font-size: 0.58rem;
       }
+      .awards-page .aw-ncfl-award-card .aw-award-badge {
+        font-size: 0.62rem;
+      }
       .awards-page .aw-award-badge-icon {
         width: 18px;
         height: 18px;
+      }
+      .awards-page .aw-ncfl-award-achievement {
+        font-size: 2.35rem;
       }
     }
     .awards-page .aw-tourn-card {
@@ -2083,7 +2116,8 @@ function renderAwards(tourns) {
               <div class="aw-award-badge"><span class="aw-award-badge-icon aw-ncfl-award-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
               <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; NCFL &nbsp;›&nbsp; Octos / Semis</div>
               <div class="aw-award-title">NCFL Championship Results</div>
-              <div class="aw-award-note">Outstanding performance on the national stage.</div>
+              <div class="aw-ncfl-award-achievement">Reached<br>Semis</div>
+              <div class="aw-ncfl-award-date">Date · 27th Mar 2026</div>
             </div>
           </div>
           <div class="aw-award-stats">
