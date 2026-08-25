@@ -77,7 +77,13 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 6px 18px rgba(0,0,0,0.14);
     }
     .values-panel > p {
-      color: rgba(255,255,255,0.72) !important;
+      color: rgba(255,255,255,0.9) !important;
+    }
+    .values-panel .value-title {
+      color: #fff !important;
+    }
+    .values-panel .value-text {
+      color: rgba(255,255,255,0.88) !important;
     }
 
     .benefit-item {
@@ -194,6 +200,7 @@
       box-shadow: 0 6px 20px rgba(0,0,0,0.22);
     }
 
+    .section { padding: 56px 0; }
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
     #mission-values-section .two-col,
     #why-debate-section .two-col { align-items: stretch; }
@@ -223,10 +230,12 @@
      }
 
     @media (max-width: 900px) {
+      .section { padding: 48px 0; }
       .two-col { grid-template-columns: 1fr; }
       .three-col { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 600px) {
+      .section { padding: 40px 0; }
       .three-col { grid-template-columns: 1fr; }
       .wasdl-grid { grid-template-columns: 1fr !important; }
       .coach-grid { grid-template-columns: 1fr !important; }
