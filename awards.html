@@ -487,6 +487,66 @@
       background-size: 400% 100%;
       background-position: 100% 50%;
     }
+    .awards-page .aw-ncfl-summary-right {
+      padding: 22px 18px;
+    }
+    .awards-page .aw-ncfl-summary-icon {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 8px;
+      background-image: url('attached_assets/image_1787698158491.png');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-ncfl-summary-badge {
+      margin-bottom: 6px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-ncfl-summary-title {
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-summary-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      margin-top: 14px;
+      border-top: 1px solid rgba(242,209,107,0.42);
+    }
+    .awards-page .aw-ncfl-summary-stat {
+      padding: 9px 4px 0;
+      text-align: center;
+    }
+    .awards-page .aw-ncfl-summary-stat + .aw-ncfl-summary-stat {
+      border-left: 1px solid rgba(242,209,107,0.28);
+    }
+    .awards-page .aw-ncfl-summary-stat-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-summary-stat-label {
+      margin-top: 4px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.57rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
     .awards-page .aw-champ-highlight-grid {
       gap: 0;
       background: #0a1d42;
@@ -508,6 +568,185 @@
       .awards-page .aw-champ-highlight-grid > .aw-champ-highlight-right {
         border-left: 0;
         border-top: 1px solid rgba(242,209,107,0.58);
+      }
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      overflow: visible;
+      box-shadow: none;
+    }
+    .awards-page .aw-award-card {
+      display: flex;
+      min-width: 0;
+      min-height: 330px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #0a1d42;
+      border: 1.5px solid rgba(242,209,107,0.58);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-award-content {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 18px;
+    }
+    .awards-page .aw-award-media {
+      display: flex;
+      flex: 0 0 148px;
+      width: 148px;
+      height: 190px;
+      align-items: center;
+      justify-content: center;
+    }
+    .awards-page .aw-award-media img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .awards-page .aw-metro-award-media img {
+      width: 148px;
+    }
+    .awards-page .aw-ncfl-award-media img {
+      width: 148px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-award-details {
+      min-width: 0;
+      flex: 1;
+    }
+    .awards-page .aw-award-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 7px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-award-badge-icon {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      margin-right: 5px;
+      background-image: url('attached_assets/image_1787698158491.png');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 0 50%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+      vertical-align: middle;
+    }
+    .awards-page .aw-ncfl-award-badge-icon {
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-award-hierarchy {
+      margin-bottom: 6px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-award-title {
+      margin-bottom: 7px;
+      color: rgba(255,255,255,0.94);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.08rem, 1.85vw, 1.38rem);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+    .awards-page .aw-award-place {
+      margin-bottom: 5px;
+      color: #FFD700;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 5.3vw, 4rem);
+      font-weight: 700;
+      line-height: 0.9;
+      text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+    }
+    .awards-page .aw-award-place sup {
+      font-size: 0.45em;
+      vertical-align: super;
+    }
+    .awards-page .aw-award-place-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.48em;
+      font-weight: 600;
+    }
+    .awards-page .aw-award-note {
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem;
+      line-height: 1.45;
+    }
+    .awards-page .aw-award-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border-top: 1px solid rgba(242,209,107,0.42);
+    }
+    .awards-page .aw-award-stat {
+      min-width: 0;
+      padding: 10px 5px 12px;
+      text-align: center;
+    }
+    .awards-page .aw-award-stat + .aw-award-stat {
+      border-left: 1px solid rgba(242,209,107,0.28);
+    }
+    .awards-page .aw-award-stat-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.85rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-award-stat-label {
+      margin-top: 4px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    @media (max-width: 800px) {
+      .awards-page .aw-champ-highlight-grid.aw-two-awards {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 500px) {
+      .awards-page .aw-award-content {
+        gap: 12px;
+        padding: 18px 14px;
+      }
+      .awards-page .aw-award-media {
+        flex-basis: 112px;
+        width: 112px;
+        height: 155px;
+      }
+      .awards-page .aw-metro-award-media img,
+      .awards-page .aw-ncfl-award-media img {
+        width: 112px;
+      }
+      .awards-page .aw-award-badge {
+        font-size: 0.58rem;
+      }
+      .awards-page .aw-award-badge-icon {
+        width: 18px;
+        height: 18px;
       }
     }
     .awards-page .aw-tourn-card {
@@ -1834,71 +2073,63 @@ function renderAwards(tourns) {
 
     highlightEl.style.display = '';
     highlightEl.innerHTML = `
-      <div class="aw-champ-highlight-grid">
-        <div class="aw-champ-highlight-main">
-          <div class="aw-champ-highlight-content">
-            <img class="aw-champ-highlight-plaque" src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque">
-            <div class="aw-champ-highlight-details">
-              <div class="aw-champ-highlight-badge"><span class="aw-champ-highlight-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
-              <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
-              <div class="aw-champ-highlight-name">${bestMetro.tournName}</div>
-              <div class="aw-champ-highlight-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-champ-highlight-place-label">PLACE</span></div>
-              ${champDate ? `<div class="aw-champ-highlight-date">
-                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg>
-                <span class="aw-champ-highlight-date-label">Date</span>
-                <span class="aw-champ-highlight-date-value">${champDate}</span>
-              </div>` : ''}
-              <div class="aw-champ-highlight-foot">
-                <div class="aw-champ-highlight-field">⭐ of ${bestMetro.fieldSize || '—'} teams</div>
-                <div class="aw-champ-highlight-competed">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(212,160,23,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  ${competed} Cooper team${competed === 1 ? '' : 's'} competed
-                </div>
-              </div>
+      <div class="aw-champ-highlight-grid aw-two-awards">
+        <article class="aw-award-card aw-ncfl-award-card">
+          <div class="aw-award-content">
+            <div class="aw-award-media aw-ncfl-award-media">
+              <img src="attached_assets/image_1787700174823.png" alt="NCFL championship trophy">
+            </div>
+            <div class="aw-award-details">
+              <div class="aw-award-badge"><span class="aw-award-badge-icon aw-ncfl-award-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
+              <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; NCFL &nbsp;›&nbsp; Octos / Semis</div>
+              <div class="aw-award-title">NCFL Championship Results</div>
+              <div class="aw-award-note">Outstanding performance on the national stage.</div>
             </div>
           </div>
-        </div>
-        <div class="aw-champ-highlight-right">
-          <div class="aw-champ-highlight-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="aw-award-stats">
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">3</div>
+              <div class="aw-award-stat-label">Teams Reached<br>Octos</div>
+            </div>
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">1</div>
+              <div class="aw-award-stat-label">Team Reached<br>Semis</div>
+            </div>
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">7</div>
+              <div class="aw-award-stat-label">Teams<br>Participated</div>
+            </div>
           </div>
-          <div class="aw-champ-highlight-number">${qualified}</div>
-          <div class="aw-champ-highlight-rule"></div>
-          <div class="aw-champ-highlight-label">Pairs Qualified<br>for Metro Finals</div>
-          <div class="aw-champ-highlight-description">These pairs earned their spot among the top in the metro.</div>
-          <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
-        </div>
-       </div>
-       <div class="aw-champ-highlight-grid aw-ncfl-highlight-grid">
-         <div class="aw-champ-highlight-main">
-           <div class="aw-champ-highlight-content">
-             <div class="aw-ncfl-highlight-icon-large" aria-hidden="true"></div>
-             <div class="aw-champ-highlight-details">
-               <div class="aw-champ-highlight-badge"><span class="aw-champ-highlight-badge-icon aw-ncfl-highlight-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
-               <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>NCFL</span> &nbsp;›&nbsp; Octos / Semis</div>
-               <div class="aw-champ-highlight-name">NCFL Championship Results</div>
-               <div class="aw-ncfl-highlight-results">
-                 <div class="aw-ncfl-highlight-result">
-                   <div class="aw-ncfl-highlight-result-number">3</div>
-                   <div class="aw-ncfl-highlight-result-label">Teams Reached<br>Octos</div>
-                 </div>
-                 <div class="aw-ncfl-highlight-result">
-                   <div class="aw-ncfl-highlight-result-number">1</div>
-                   <div class="aw-ncfl-highlight-result-label">Team Reached<br>Semis</div>
-                 </div>
-               </div>
-             </div>
-           </div>
-         </div>
-         <div class="aw-champ-highlight-right">
-           <div class="aw-champ-highlight-icon aw-ncfl-highlight-right-icon" aria-hidden="true"></div>
-           <div class="aw-champ-highlight-number">7</div>
-           <div class="aw-champ-highlight-rule"></div>
-           <div class="aw-champ-highlight-label">Teams<br>Participated</div>
-           <div class="aw-champ-highlight-description">Three teams reached Octos<br>and one reached Semis.</div>
-           <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
-         </div>
-       </div>`;
+        </article>
+        <article class="aw-award-card aw-metro-award-card">
+          <div class="aw-award-content">
+            <div class="aw-award-media aw-metro-award-media">
+              <img src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque">
+            </div>
+            <div class="aw-award-details">
+              <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
+              <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
+              <div class="aw-award-title">${bestMetro.tournName}</div>
+              <div class="aw-award-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-award-place-label">PLACE</span></div>
+              ${champDate ? `<div class="aw-award-note">Date · ${champDate}</div>` : ''}
+            </div>
+          </div>
+          <div class="aw-award-stats">
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">${bestMetro.fieldSize || '—'}</div>
+              <div class="aw-award-stat-label">Teams<br>in Field</div>
+            </div>
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">${competed}</div>
+              <div class="aw-award-stat-label">Cooper Teams<br>Competed</div>
+            </div>
+            <div class="aw-award-stat">
+              <div class="aw-award-stat-number">${qualified}</div>
+              <div class="aw-award-stat-label">Pairs Qualified<br>for Metro</div>
+            </div>
+          </div>
+        </article>
+      </div>`;
   } else {
     highlightEl.style.display = 'none';
   }
