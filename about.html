@@ -359,15 +359,38 @@
       padding-bottom: 12px !important;
     }
     #join .join-criteria h3 {
-      font-family: 'Josefin Sans', sans-serif !important;
-      font-size: 1.6rem !important;
+      font-family: 'Cormorant Garamond', serif !important;
+      font-size: 1.5rem !important;
       font-weight: 700 !important;
       letter-spacing: 0.22em !important;
       text-transform: uppercase !important;
-      color: #FFD43B !important;
+      color: #F2D16B !important;
       text-align: center !important;
       line-height: 1.2 !important;
-      margin-bottom: 20px !important;
+      margin-bottom: 14px !important;
+    }
+    #join .join-heading-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    #join .join-heading-divider-line {
+      width: 80px;
+      flex-shrink: 0;
+      height: 1.5px;
+      background: linear-gradient(to left, #F2D16B, transparent);
+      box-shadow: 0 0 6px rgba(242,209,107,0.5);
+    }
+    #join .join-heading-divider-line:last-child {
+      background: linear-gradient(to right, #F2D16B, transparent);
+    }
+    #join .join-heading-divider-star {
+      color: #F2D16B;
+      font-size: 1.1rem;
+      line-height: 1;
+      text-shadow: 0 0 8px rgba(242,209,107,0.8);
     }
     #join .join-values-image {
       display: block;
@@ -748,6 +771,11 @@
       <div class="join-side">
          <div class="about-blue-panel join-criteria" style="background:rgba(8,14,46,0.88);border:1px solid rgba(212,160,23,0.30);border-radius:12px;padding:36px;">
           <h3 style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:1.2rem;letter-spacing:0.06em;color:var(--white);margin-bottom:24px;">What We Look For</h3>
+          <div class="join-heading-divider" aria-hidden="true">
+            <span class="join-heading-divider-line"></span>
+            <span class="join-heading-divider-star">✦</span>
+            <span class="join-heading-divider-line"></span>
+          </div>
            <img class="join-values-image" src="attached_assets/image_1787690678104.png" alt="Core qualities Cooper Debate looks for in its team members">
            <a href="apply.html" class="btn btn-gold" style="width:100%;justify-content:center;text-transform:uppercase;letter-spacing:0.12em;font-weight:800;">Apply Now →</a>
         </div>
