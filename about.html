@@ -246,15 +246,31 @@
     }
     .wasdl-intro .section-label {
       color: #F2D16B !important;
-      margin-bottom: 8px;
+      margin-bottom: 18px;
     }
     .wasdl-intro .section-title {
       color: #fff !important;
       margin-bottom: 10px;
     }
-    .wasdl-intro > p:last-child {
+    .wasdl-content {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) minmax(0, 1fr);
+      align-items: center;
+      gap: 48px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    .wasdl-content .wasdl-logo {
+      width: min(100%, 420px);
+      margin: 0 auto;
+    }
+    .wasdl-copy {
+      text-align: left;
+    }
+    .wasdl-copy > p {
       color: #fff !important;
-      margin-bottom: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
     }
 
     @media (max-width: 900px) {
@@ -266,7 +282,15 @@
       .section { padding: 40px 0; }
       #wasdl-section { padding-top: 24px; }
       .wasdl-intro { margin-bottom: 24px; }
-      .wasdl-logo { border-radius: 12px; }
+      .wasdl-content {
+        grid-template-columns: 1fr;
+        gap: 22px;
+      }
+      .wasdl-content .wasdl-logo {
+        width: min(100%, 420px);
+        border-radius: 12px;
+      }
+      .wasdl-copy { text-align: center; }
       .three-col { grid-template-columns: 1fr; }
       .wasdl-grid { grid-template-columns: 1fr !important; }
       .coach-grid { grid-template-columns: 1fr !important; }
@@ -455,8 +479,12 @@
   <div class="section-wrap">
     <div class="wasdl-intro" style="text-align:center;">
       <p class="section-label" style="justify-content:center;">Our Circuit</p>
-      <img class="wasdl-logo" src="attached_assets/image_1787684389386.png" alt="WASDL — Washington Area Speech and Debate League"/>
-      <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:32px;font-size:1.0rem;max-width:820px;margin-left:auto;margin-right:auto;">The Washington Area Speech and Debate League (WASDL), formerly WACFL, is the premier middle and high school debate circuit in the DC/Northern Virginia region. Cooper Debate competes at WASDL tournaments throughout the fall and spring seasons, culminating in the Metro Finals championship.</p>
+      <div class="wasdl-content">
+        <img class="wasdl-logo" src="attached_assets/image_1787684389386.png" alt="WASDL — Washington Area Speech and Debate League"/>
+        <div class="wasdl-copy">
+          <p style="color:var(--gray-mid);line-height:1.8;margin-bottom:32px;font-size:1.0rem;max-width:820px;margin-left:auto;margin-right:auto;">The Washington Area Speech and Debate League (WASDL), formerly WACFL, is the premier middle and high school debate circuit in the DC/Northern Virginia region. Cooper Debate competes at WASDL tournaments throughout the fall and spring seasons, culminating in the Metro Finals championship.</p>
+        </div>
+      </div>
     </div>
     <div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;text-align:center;" class="wasdl-grid">
