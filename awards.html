@@ -143,6 +143,20 @@
       line-height: 1.35;
       text-transform: uppercase;
     }
+    .awards-page .aw-data-source {
+      display: inline-block;
+      margin: 0 0 28px;
+      padding: 8px 16px;
+      background: #0a1d42;
+      border: 1px solid rgba(242,209,107,0.82);
+      border-radius: 9px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.24);
+      color: #F2D16B;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
     @media(max-width:900px) {
       .awards-page .aw-season-highlight-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -776,7 +790,7 @@
       </select>
     </div>
     <h2 class="section-title" style="margin-bottom:10px;">Season Results for <span id="season-label">2025–26</span></h2>
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.06em;color:var(--gold);margin-bottom:28px;opacity:0.85;">Data extracted from Tabroom.com</p>
+    <p class="aw-data-source">Data extracted from Tabroom.com</p>
 
     <!-- Loading -->
     <div id="aw-loading" class="aw-loading">Loading season data…</div>
