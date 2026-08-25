@@ -49,6 +49,143 @@
     .awards-page .page-subtitle {
       color: #F2D16B;
     }
+    .awards-page .aw-season-highlights {
+      position: relative;
+      overflow: hidden;
+      margin: 0 0 34px;
+      padding: 22px 26px 20px;
+      background:
+        radial-gradient(ellipse at 50% 0%, rgba(255,125,88,0.18), transparent 58%),
+        linear-gradient(145deg, #981b1f 0%, #761117 52%, #560b12 100%);
+      border: 1.5px solid rgba(242,209,107,0.82);
+      border-radius: 14px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 12px 30px rgba(37,0,0,0.24);
+    }
+    .awards-page .aw-season-highlights::before,
+    .awards-page .aw-season-highlights::after {
+      content: '❧';
+      position: absolute;
+      top: 48%;
+      color: rgba(242,209,107,0.18);
+      font-family: Georgia, serif;
+      font-size: 5rem;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .awards-page .aw-season-highlights::before {
+      left: 16px;
+      transform: translateY(-50%) rotate(-24deg);
+    }
+    .awards-page .aw-season-highlights::after {
+      right: 16px;
+      transform: translateY(-50%) scaleX(-1) rotate(-24deg);
+    }
+    .awards-page .aw-season-highlight-heading {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+      color: #F2D16B;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .awards-page .aw-season-highlight-heading::before,
+    .awards-page .aw-season-highlight-heading::after {
+      content: '';
+      width: 34px;
+      height: 1px;
+      background: rgba(242,209,107,0.62);
+    }
+    .awards-page .aw-season-highlight-heading-icon {
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+    .awards-page .aw-season-highlight-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .awards-page .aw-season-highlight-item {
+      display: flex;
+      min-height: 124px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 16px 0;
+      text-align: center;
+    }
+    .awards-page .aw-season-highlight-item + .aw-season-highlight-item {
+      border-left: 1px solid rgba(242,209,107,0.28);
+    }
+    .awards-page .aw-season-highlight-icon {
+      display: block;
+      width: 28px;
+      height: 28px;
+      margin-bottom: 5px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3));
+    }
+    .awards-page .aw-season-highlight-icon.is-symbol {
+      width: auto;
+      height: 28px;
+      color: #F2D16B;
+      font-family: Georgia, serif;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+    .awards-page .aw-season-highlight-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.35rem, 4vw, 3.25rem);
+      font-weight: 700;
+      line-height: 0.95;
+      text-shadow: 0 2px 10px rgba(255,211,107,0.3);
+    }
+    .awards-page .aw-season-highlight-label {
+      margin-top: 8px;
+      color: rgba(255,255,255,0.92);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.45;
+      text-transform: uppercase;
+    }
+    @media(max-width:900px) {
+      .awards-page .aw-season-highlight-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        row-gap: 18px;
+      }
+      .awards-page .aw-season-highlight-item:nth-child(4) {
+        border-left: 0;
+      }
+    }
+    @media(max-width:600px) {
+      .awards-page .aw-season-highlights {
+        padding: 20px 12px 16px;
+      }
+      .awards-page .aw-season-highlight-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .awards-page .aw-season-highlight-item {
+        min-height: 112px;
+        padding-inline: 8px;
+      }
+      .awards-page .aw-season-highlight-item:nth-child(odd) {
+        border-left: 0;
+      }
+      .awards-page .aw-season-highlight-label {
+        font-size: 0.59rem;
+      }
+    }
     .awards-page .season-select-wrap {
       margin-bottom: 16px;
     }
@@ -631,6 +768,40 @@
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
 
+    <div id="aw-season-highlights" class="aw-season-highlights" style="display:none;" aria-labelledby="aw-season-highlights-title">
+      <div id="aw-season-highlights-title" class="aw-season-highlight-heading">
+        <span class="aw-season-highlight-heading-icon" aria-hidden="true">🏆</span>
+        <span>2025–26 Season Highlights</span>
+      </div>
+      <div class="aw-season-highlight-grid">
+        <div class="aw-season-highlight-item">
+          <img class="aw-season-highlight-icon" src="images/icons/icon-metro-qualified.png" alt="">
+          <div id="aw-highlight-metro" class="aw-season-highlight-number">22</div>
+          <div class="aw-season-highlight-label">Pairs Qualified<br>for Metro Finals</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <img class="aw-season-highlight-icon" src="images/icons/icon-shield.png" alt="">
+          <div id="aw-highlight-undefeated" class="aw-season-highlight-number">10</div>
+          <div class="aw-season-highlight-label">Pairs Went<br>Undefeated (4–0)</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <img class="aw-season-highlight-icon" src="images/icons/icon-target.png" alt="">
+          <div id="aw-highlight-finishes" class="aw-season-highlight-number">28</div>
+          <div class="aw-season-highlight-label">Pairs Finished<br>3–1 or Better</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <span class="aw-season-highlight-icon is-symbol" aria-hidden="true">✦</span>
+          <div class="aw-season-highlight-number">✓</div>
+          <div class="aw-season-highlight-label">Qualified for<br>Semis in NCFL</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <span class="aw-season-highlight-icon is-symbol" aria-hidden="true">★</span>
+          <div class="aw-season-highlight-number">2nd</div>
+          <div class="aw-season-highlight-label">in Metro<br>Finals</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Season selector -->
     <div class="season-select-wrap">
       <span class="season-select-label">Season</span>
@@ -1034,11 +1205,13 @@ function renderAwards(tourns) {
   const loading = document.getElementById('aw-loading');
   const future  = document.getElementById('aw-future');
   const data    = document.getElementById('aw-data');
+  const seasonHighlights = document.getElementById('aw-season-highlights');
 
   if (tourns.length === 0) {
     loading.style.display = 'none';
     future.style.display  = 'block';
     data.style.display    = 'none';
+    seasonHighlights.style.display = 'none';
     return;
   }
 
@@ -1052,6 +1225,12 @@ function renderAwards(tourns) {
   const metroProgress = metro.filter(p => !p.eligible).length;
   const pairs40 = metro.filter(p => p.c40 >= 1).length;
   const pairs31 = metro.filter(p => p.c31 >= 1).length;
+  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
+
+  seasonHighlights.style.display = 'block';
+  document.getElementById('aw-highlight-metro').textContent = metroElig;
+  document.getElementById('aw-highlight-undefeated').textContent = pairs40;
+  document.getElementById('aw-highlight-finishes').textContent = pairs3plus;
 
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
@@ -1095,7 +1274,6 @@ function renderAwards(tourns) {
     highlights.push({ icon:'images/icons/icon-shield.png', num: pairs40,
       lbl: `pair${pairs40!==1?'s':''} went undefeated (4–0)` });
 
-  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
   if (pairs3plus > 0)
     highlights.push({ icon:'images/icons/icon-target.png', num: pairs3plus,
       lbl: `pair${pairs3plus!==1?'s':''} finished 3–1 or better` });
