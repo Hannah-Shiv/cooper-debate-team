@@ -14,14 +14,59 @@
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     .ann-card {
-      background: linear-gradient(145deg, rgba(11,32,76,0.94), rgba(6,19,49,0.98));
-      border: 1.5px solid #F2D16B;
+      position: relative;
+      background: linear-gradient(145deg, rgba(11,32,76,0.42), rgba(6,19,49,0.18));
+      border: 1px solid rgba(242,209,107,0.32);
       border-radius: 14px; overflow: hidden;
       margin-bottom: 28px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
-    .ann-card:hover { border-color: #F2D16B; box-shadow: 0 12px 32px rgba(0,0,0,0.35); transform: translateY(-2px); }
+    .ann-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 24px;
+      bottom: 24px;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, #F2D16B 18%, #F2D16B 82%, transparent);
+      box-shadow: 0 0 12px rgba(242,209,107,0.35);
+    }
+    .ann-card:hover { border-color: rgba(242,209,107,0.72); box-shadow: 0 12px 32px rgba(0,0,0,0.28); transform: translateY(-2px); }
+    .announcements-page .page-header {
+      padding: 118px 24px 70px;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+    }
+    .announcements-page .page-header::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      bottom: -80px;
+      width: min(700px, 90vw);
+      height: 150px;
+      transform: translateX(-50%);
+      background: radial-gradient(ellipse, rgba(242,209,107,0.1), transparent 68%);
+      pointer-events: none;
+    }
+    .announcements-page .page-header-label {
+      color: #F2D16B;
+      margin-bottom: 16px;
+    }
+    .announcements-page .page-title {
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      letter-spacing: -0.015em;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .announcements-page .page-subtitle {
+      color: #F2D16B;
+      font-size: 1.18rem;
+    }
+    .announcements-page .ann-card-title,
+    .announcements-page .ann-card-body {
+      color: rgba(255,255,255,0.92);
+    }
     .kickoff-schedule-mount .kickoff-schedule {
       border: 1.5px solid rgba(242,209,107,0.78);
       border-radius: 14px;
@@ -68,7 +113,7 @@
     }
   </style>
 </head>
-<body style="--navy-dark:#3B4147;">
+<body class="announcements-page" style="--navy-dark:#3B4147;">
 <div class="mp-topbar" aria-hidden="true"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
