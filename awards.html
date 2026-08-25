@@ -103,7 +103,7 @@
       width: 50px;
       height: 64px;
       margin-bottom: 1px;
-      background-image: url('attached_assets/image_1787694913722.png');
+      background-image: url('attached_assets/image_1787698158491.png');
       background-repeat: no-repeat;
       background-size: 400% 100%;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
@@ -343,6 +343,18 @@
     .awards-page .aw-champ-highlight-plaque {
       filter: contrast(1.06) saturate(1.08);
     }
+    .awards-page .aw-champ-highlight-badge-icon {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      margin-right: 5px;
+      background-image: url('attached_assets/image_1787698158491.png');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 0 50%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+      vertical-align: -3px;
+    }
     .awards-page .aw-champ-highlight-main,
     .awards-page .aw-champ-highlight-right {
       color: #fff;
@@ -384,7 +396,7 @@
       color: #fff;
     }
     .awards-page .aw-champ-highlight-right .aw-champ-highlight-stars {
-      color: #fff;
+      color: #F2D16B;
     }
     .awards-page .aw-tourn-card {
       padding: 20px 22px;
@@ -1707,7 +1719,7 @@ function renderAwards(tourns) {
           <div class="aw-champ-highlight-content">
             <img class="aw-champ-highlight-plaque" src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque">
             <div class="aw-champ-highlight-details">
-              <div class="aw-champ-highlight-badge">🏆 Metro Finals · Elite Championship</div>
+              <div class="aw-champ-highlight-badge"><span class="aw-champ-highlight-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
               <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
               <div class="aw-champ-highlight-name">${bestMetro.tournName}</div>
               <div class="aw-champ-highlight-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-champ-highlight-place-label">PLACE</span></div>
