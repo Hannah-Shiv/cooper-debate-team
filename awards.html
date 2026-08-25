@@ -756,7 +756,19 @@
       padding: 4px 10px;
       background: #850000;
       border: 1px solid rgba(242,209,107,0.72);
+      border-radius: 50px;
       color: #fff;
+    }
+    .awards-page .aw-ncfl-award-achievement,
+    .awards-page .aw-season-highlight-item.aw-ncfl-season-highlight-item .aw-season-highlight-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+    }
+    .awards-page .aw-season-highlight-item.aw-ncfl-season-highlight-item .aw-season-highlight-label {
+      font-size: 0.98rem;
+      letter-spacing: 0.02em;
+      line-height: 1.05;
+      text-transform: none;
     }
     .awards-page .aw-award-stats {
       gap: 8px;
@@ -769,6 +781,9 @@
       border: 1px solid rgba(242,209,107,0.34);
       border-radius: 10px;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 3px 10px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-award-stat-label {
+      font-size: 0.644rem;
     }
     .awards-page .aw-award-stat + .aw-award-stat {
       border-left: 1px solid rgba(242,209,107,0.34);
@@ -1388,7 +1403,7 @@
           <div class="aw-season-highlight-rule" aria-hidden="true"></div>
           <div class="aw-season-highlight-label">in Metro<br>Finals</div>
         </div>
-        <div class="aw-season-highlight-item">
+        <div class="aw-season-highlight-item aw-ncfl-season-highlight-item">
           <span class="aw-season-highlight-art art-ncfl" aria-hidden="true"></span>
           <div class="aw-season-highlight-number">NCFL</div>
           <div class="aw-season-highlight-rule" aria-hidden="true"></div>
