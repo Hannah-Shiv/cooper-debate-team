@@ -54,10 +54,10 @@
       overflow: hidden;
       margin: 0 0 34px;
       padding: 14px 26px 13px;
-      background: linear-gradient(145deg, #174d3a 0%, #103d2f 54%, #09291f 100%);
+      background: linear-gradient(145deg, #4a1d5a 0%, #35133f 54%, #210a2a 100%);
       border: none;
       border-radius: 14px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 30px rgba(0,28,16,0.3);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 12px 30px rgba(28,0,38,0.3);
     }
     .awards-page .aw-season-highlights::before,
     .awards-page .aw-season-highlights::after {
@@ -109,7 +109,7 @@
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
     .awards-page .aw-season-highlight-item {
       display: flex;
@@ -783,11 +783,6 @@
           <div class="aw-season-highlight-label">Pairs Went<br>Undefeated (4–0)</div>
         </div>
         <div class="aw-season-highlight-item">
-          <img class="aw-season-highlight-icon" src="images/icons/icon-target.png" alt="">
-          <div id="aw-highlight-finishes" class="aw-season-highlight-number">28</div>
-          <div class="aw-season-highlight-label">Pairs Finished<br>3–1 or Better</div>
-        </div>
-        <div class="aw-season-highlight-item">
           <span class="aw-season-highlight-icon is-symbol" aria-hidden="true">✦</span>
           <div class="aw-season-highlight-number">✓</div>
           <div class="aw-season-highlight-label">Qualified for<br>Semis in NCFL</div>
@@ -1228,7 +1223,6 @@ function renderAwards(tourns) {
   seasonHighlights.style.display = 'block';
   document.getElementById('aw-highlight-metro').textContent = metroElig;
   document.getElementById('aw-highlight-undefeated').textContent = pairs40;
-  document.getElementById('aw-highlight-finishes').textContent = pairs3plus;
 
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
