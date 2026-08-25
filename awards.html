@@ -749,6 +749,30 @@
       line-height: 1.2;
       text-transform: uppercase;
     }
+    .awards-page .aw-ncfl-award-achievement {
+      font-size: clamp(1.95rem, 3.975vw, 3rem);
+    }
+    .awards-page .aw-award-badge {
+      padding: 4px 10px;
+      background: #850000;
+      border: 1px solid rgba(242,209,107,0.72);
+      color: #fff;
+    }
+    .awards-page .aw-award-stats {
+      gap: 8px;
+      padding: 8px 10px 10px;
+      border-top: 0;
+    }
+    .awards-page .aw-award-stat {
+      padding: 9px 5px 10px;
+      background: linear-gradient(180deg, rgba(242,209,107,0.12), rgba(10,29,66,0.6));
+      border: 1px solid rgba(242,209,107,0.34);
+      border-radius: 10px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), 0 3px 10px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-award-stat + .aw-award-stat {
+      border-left: 1px solid rgba(242,209,107,0.34);
+    }
     @media (max-width: 800px) {
       .awards-page .aw-champ-highlight-grid.aw-two-awards {
         grid-template-columns: 1fr;
@@ -779,7 +803,7 @@
         height: 18px;
       }
       .awards-page .aw-ncfl-award-achievement {
-        font-size: 2.35rem;
+        font-size: 1.76rem;
       }
     }
     .awards-page .aw-tourn-card {
