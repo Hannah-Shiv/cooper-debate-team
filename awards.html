@@ -168,11 +168,20 @@
       box-shadow: none;
     }
     .awards-page .season-select-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
       color: #F2D16B;
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.16em;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 14px rgba(242,209,107,0.24);
       text-transform: uppercase;
+    }
+    .awards-page .season-select-label::before {
+      width: 24px;
+      background: #F2D16B;
+      opacity: 0.8;
     }
     .awards-page .season-toggle {
       display: inline-flex;
@@ -295,7 +304,7 @@
       margin-bottom: 16px;
     }
     .awards-page .season-select-label {
-      color: #D4A017;
+      color: #F2D16B;
     }
     .awards-page .season-dropdown {
       background:
@@ -1305,7 +1314,7 @@ function renderAwards(tourns) {
     loading.style.display = 'none';
     future.style.display  = 'block';
     data.style.display    = 'none';
-    seasonHighlights.style.display = 'none';
+    seasonHighlights.style.display = 'block';
     return;
   }
 
