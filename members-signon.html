@@ -334,18 +334,18 @@
 
      /* ── Reference sign-in composition ─────────────────────── */
      html { font-size: 16px !important; }
-     body { background: #203b5b; }
-     .mp-topbar, #site-badge, #circ-wrap, body > footer { display: none !important; }
+     body { background: #3B4147; }
+     body > footer { display: none !important; }
      .portal-page {
        min-height: 100vh;
        box-sizing: border-box;
        display: block;
-       padding: 30px 20px 16px !important;
+       padding: 112px 20px 16px !important;
        overflow: hidden !important;
        background:
-         radial-gradient(ellipse 74% 46% at 50% 17%, rgba(83, 119, 158, .28), transparent 72%),
-         linear-gradient(135deg, rgba(14, 42, 72, .45), transparent 48%),
-         #203b5b;
+         radial-gradient(ellipse 74% 46% at 50% 17%, rgba(255, 255, 255, .065), transparent 72%),
+         linear-gradient(135deg, rgba(18, 23, 28, .22), transparent 48%),
+         #3B4147;
      }
      .portal-page::before,
      .portal-page::after {
@@ -646,31 +646,8 @@
      }
      .join-mark { width: 24px; height: 24px; }
      .join-arrow { margin-left: auto; font-size: 1.65rem; line-height: .7; }
-     .portal-footer-mark {
-       position: relative;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       gap: 20px;
-       width: 100%;
-       max-width: 644px;
-       margin: 0 auto;
-     }
-     .portal-footer-mark::before,
-     .portal-footer-mark::after {
-       content: "";
-       height: 2px;
-       flex: 1;
-       background: #a82228;
-     }
-     .portal-footer-mark img {
-       width: 62px;
-       height: 90px;
-       object-fit: contain;
-       filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
-     }
      @media (max-width: 600px) {
-       .portal-page { padding: 27px 14px 13px !important; }
+       .portal-page { padding: 91px 14px 13px !important; }
        .portal-mark { width: 206px; }
        .auth-title { font-size: clamp(3rem, 13vw, 4rem); }
        .auth-sub { font-size: .94rem; }
@@ -681,7 +658,6 @@
        .portal-security-note { margin-left: 22px; margin-right: 22px; }
        .portal-join p::before,
        .portal-join p::after { width: 74px; }
-       .portal-footer-mark { margin-top: 13px; }
        .join-pill { width: calc(100% - 28px); }
      }
   </style>
@@ -692,6 +668,14 @@
 <!-- SITE BADGE -->
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
+</a>
+<a id="member-login-btn" href="members-signon.html" aria-label="Member Portal">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <circle cx="9" cy="8" r="3"></circle>
+    <path d="M3.5 19c.3-3.2 2.3-5 5.5-5s5.2 1.8 5.5 5"></path>
+    <path d="M16 7.5h5M18.5 5v5"></path>
+  </svg>
+  <span>Member Portal</span><span class="mp-arrow" aria-hidden="true">→</span>
 </a>
 
 <div id="circ-wrap">
@@ -787,7 +771,6 @@
            <span>Apply to Join the Team</span><span class="join-arrow" aria-hidden="true">→</span>
          </a>
       </div>
-       <div class="portal-footer-mark" aria-hidden="true"><span></span><img src="images/apply-logo.png" alt=""/><span></span></div>
     </div>
   </div>
 
