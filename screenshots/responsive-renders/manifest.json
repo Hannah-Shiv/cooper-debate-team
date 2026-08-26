@@ -1,0 +1,242 @@
+[
+  {
+    "viewport": "mobile",
+    "size": "390x844",
+    "route": "index.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "title": "Cooper Debate Team — Speak · Reason · Lead"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/mobile-index.png"
+  },
+  {
+    "viewport": "mobile",
+    "size": "390x844",
+    "route": "about.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "title": "About — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/mobile-about.png"
+  },
+  {
+    "viewport": "mobile",
+    "size": "390x844",
+    "route": "announcements.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "title": "News & Announcements — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/mobile-announcements.png"
+  },
+  {
+    "viewport": "mobile",
+    "size": "390x844",
+    "route": "awards.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 390,
+      "documentWidth": 390,
+      "bodyWidth": 390,
+      "title": "Awards — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/mobile-awards.png"
+  },
+  {
+    "viewport": "tablet-portrait",
+    "size": "768x1024",
+    "route": "index.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "bodyWidth": 768,
+      "title": "Cooper Debate Team — Speak · Reason · Lead"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-portrait-index.png"
+  },
+  {
+    "viewport": "tablet-portrait",
+    "size": "768x1024",
+    "route": "about.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "bodyWidth": 768,
+      "title": "About — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-portrait-about.png"
+  },
+  {
+    "viewport": "tablet-portrait",
+    "size": "768x1024",
+    "route": "announcements.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "bodyWidth": 768,
+      "title": "News & Announcements — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-portrait-announcements.png"
+  },
+  {
+    "viewport": "tablet-portrait",
+    "size": "768x1024",
+    "route": "awards.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 768,
+      "documentWidth": 768,
+      "bodyWidth": 768,
+      "title": "Awards — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-portrait-awards.png"
+  },
+  {
+    "viewport": "tablet-landscape",
+    "size": "1024x768",
+    "route": "index.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1024,
+      "documentWidth": 1024,
+      "bodyWidth": 1024,
+      "title": "Cooper Debate Team — Speak · Reason · Lead"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-landscape-index.png"
+  },
+  {
+    "viewport": "tablet-landscape",
+    "size": "1024x768",
+    "route": "about.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1024,
+      "documentWidth": 1024,
+      "bodyWidth": 1024,
+      "title": "About — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-landscape-about.png"
+  },
+  {
+    "viewport": "tablet-landscape",
+    "size": "1024x768",
+    "route": "announcements.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1024,
+      "documentWidth": 1024,
+      "bodyWidth": 1024,
+      "title": "News & Announcements — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-landscape-announcements.png"
+  },
+  {
+    "viewport": "tablet-landscape",
+    "size": "1024x768",
+    "route": "awards.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1024,
+      "documentWidth": 1024,
+      "bodyWidth": 1024,
+      "title": "Awards — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/tablet-landscape-awards.png"
+  },
+  {
+    "viewport": "laptop",
+    "size": "1440x900",
+    "route": "index.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "bodyWidth": 1440,
+      "title": "Cooper Debate Team — Speak · Reason · Lead"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/laptop-index.png"
+  },
+  {
+    "viewport": "laptop",
+    "size": "1440x900",
+    "route": "about.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "bodyWidth": 1440,
+      "title": "About — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/laptop-about.png"
+  },
+  {
+    "viewport": "laptop",
+    "size": "1440x900",
+    "route": "announcements.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "bodyWidth": 1440,
+      "title": "News & Announcements — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/laptop-announcements.png"
+  },
+  {
+    "viewport": "laptop",
+    "size": "1440x900",
+    "route": "awards.html",
+    "status": 200,
+    "metrics": {
+      "viewportWidth": 1440,
+      "documentWidth": 1440,
+      "bodyWidth": 1440,
+      "title": "Awards — Cooper Debate Team"
+    },
+    "consoleErrors": [],
+    "pageErrors": [],
+    "screenshot": "screenshots/responsive-renders/laptop-awards.png"
+  }
+]
