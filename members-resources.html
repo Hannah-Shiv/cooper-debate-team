@@ -1362,7 +1362,7 @@
 <script src="data/approved-members.js?v=5"></script>
 <script src="data/admins.js?v=2"></script>
 <script src="js/drive-api.js?v=2"></script>
-<script src="js/members-auth.js?v=8"></script>
+<script src="js/members-auth.js?v=9"></script>
 
 <script>
 /* ── Patch showState for members-resources.html ───────────────
@@ -1372,8 +1372,15 @@
 (function () {
   var _orig = window.showState;
   window.showState = function (state) {
-    if (state === 'login' || state === 'denied' || state === 'completing') {
+    if (state === 'login' || state === 'denied') {
       window.location.href = 'members-signon.html';
+      return;
+    }
+    if (state === 'completing') {
+      var loading = document.getElementById('mp-loading');
+      var content = document.getElementById('mp-content');
+      if (loading) loading.style.display = 'flex';
+      if (content) content.style.display = 'none';
       return;
     }
     if (state === 'dashboard') {
