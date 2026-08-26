@@ -1925,6 +1925,98 @@ body.dome-open .page-header { padding-top: 240px; }
   padding: 0;
 }
 
+/* Role badge artwork and role-specific color treatment. The image files are
+   cropped from the team's four-role artwork so the text stays selectable and
+   can remain readable at every header width. */
+.mub-badge.mub-role-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 5px 11px 5px 6px;
+  border: 1px solid currentColor;
+  border-radius: 9px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.045em;
+  box-sizing: border-box;
+  box-shadow: 0 0 14px rgba(0,0,0,0.16);
+}
+.mub-role-icon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex: 0 0 34px;
+}
+.mub-role-label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  white-space: nowrap;
+}
+.mub-role-badge[data-role="member"] {
+  color: #8ec5ff;
+  background: rgba(38, 112, 216, 0.18);
+}
+.mub-role-badge[data-role="captain"] {
+  color: #ffd166;
+  background: rgba(218, 157, 18, 0.18);
+}
+.mub-role-badge[data-role="coach"] {
+  color: #86efac;
+  background: rgba(32, 150, 83, 0.18);
+}
+.mub-role-badge[data-role="website-admin"] {
+  color: #ff8f8f;
+  background: rgba(179, 35, 35, 0.18);
+}
+
+@media (max-width: 600px) {
+  .role-artwork-userbar {
+    right: 8px;
+    gap: 6px;
+  }
+  .role-artwork-userbar .mub-name,
+  .role-artwork-userbar .mub-email,
+  .role-artwork-userbar .mub-sep {
+    display: none;
+  }
+  .role-artwork-userbar .mub-role-badge {
+    width: 42px;
+    min-height: 42px;
+    padding: 4px;
+    justify-content: center;
+  }
+  .role-artwork-userbar .mub-role-icon {
+    width: 34px;
+    height: 34px;
+    flex-basis: 34px;
+  }
+  .role-artwork-userbar .mub-role-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .role-artwork-userbar .mub-signout {
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    justify-content: center;
+    font-size: 0;
+  }
+  .role-artwork-userbar .mub-signout svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
 /* Sign Out button */
 .mub-signout {
   display: flex;

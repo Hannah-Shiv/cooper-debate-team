@@ -20,6 +20,28 @@ const SIGN_IN_REDIRECT_URL = window.location.origin + "/members-signon.html";
 const STORAGE_KEY = "cooper_signin_email";
 const GOOGLE_REDIRECT_KEY = "cooper_google_redirect_pending";
 const FCPS_GOOGLE_DOMAINS = ["fcps.edu", "fcpsschools.net"];
+const PORTAL_ROLE_PRESENTATION = {
+  member: {
+    label: "Team Member",
+    fallback: "✓ Team Member",
+    icon: "images/role-icons/member.png",
+  },
+  captain: {
+    label: "Captain",
+    fallback: "⭐ Captain",
+    icon: "images/role-icons/captain.png",
+  },
+  coach: {
+    label: "Coach",
+    fallback: "🛡️ Coach",
+    icon: "images/role-icons/coach.png",
+  },
+  "website-admin": {
+    label: "Website Admin",
+    fallback: "🛠️ Website Admin",
+    icon: "images/role-icons/website-admin.png",
+  },
+};
 
 // ── Initialise Firebase ──────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -400,14 +422,15 @@ function showDashboard(email) {
   // Role badge
   const badgeEl = document.getElementById("member-role-badge");
   if (badgeEl) {
-    if (currentUserRole === "coach") {
-      badgeEl.textContent = "🛡️ Coach";
-    } else if (currentUserRole === "website-admin") {
-      badgeEl.textContent = "🛡️ Website Admin";
-    } else if (currentUserRole === "captain") {
-      badgeEl.textContent = "⭐ Captain";
+    const rolePresentation = PORTAL_ROLE_PRESENTATION[currentUserRole] || PORTAL_ROLE_PRESENTATION.member;
+    badgeEl.dataset.role = currentUserRole;
+    const iconEl = badgeEl.querySelector(".mub-role-icon");
+    const labelEl = badgeEl.querySelector(".mub-role-label");
+    if (iconEl && labelEl) {
+      iconEl.src = rolePresentation.icon;
+      labelEl.textContent = rolePresentation.label;
     } else {
-      badgeEl.textContent = "✓ Team Member";
+      badgeEl.textContent = rolePresentation.fallback;
     }
   }
 

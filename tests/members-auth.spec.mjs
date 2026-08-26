@@ -194,6 +194,32 @@ test("normal member-page startup skips the unused redirect-result handshake", as
   assert.match(startup, /persistenceReady\.then\(\(\) => watchForExistingSession\(false\)\)/);
 });
 
+test("resources header maps every portal role to its matching artwork", async () => {
+  const [source, resourcesPage] = await Promise.all([
+    readFile("js/members-auth.js", "utf8"),
+    readFile("members-resources.html", "utf8"),
+  ]);
+  const presentationStart = source.indexOf("const PORTAL_ROLE_PRESENTATION");
+  const presentationEnd = source.indexOf("// ── Initialise Firebase", presentationStart);
+  const context = {};
+
+  vm.createContext(context);
+  vm.runInContext(
+    source.slice(presentationStart, presentationEnd) +
+      "\nthis.rolePresentation = JSON.stringify(PORTAL_ROLE_PRESENTATION);",
+    context
+  );
+  const roles = JSON.parse(context.rolePresentation);
+
+  assert.equal(roles.member.icon, "images/role-icons/member.png");
+  assert.equal(roles.captain.icon, "images/role-icons/captain.png");
+  assert.equal(roles.coach.icon, "images/role-icons/coach.png");
+  assert.equal(roles["website-admin"].icon, "images/role-icons/website-admin.png");
+  assert.match(resourcesPage, /class="mub-badge mub-role-badge"/);
+  assert.match(resourcesPage, /class="mub-role-icon"/);
+  assert.match(resourcesPage, /class="mub-role-label"/);
+});
+
 test("stats recovers a restored Firebase user before redirecting to sign-in", async () => {
   const source = await readFile("members-stats.html", "utf8");
   const overrideStart = source.indexOf("(function () {", source.indexOf("showState override"));
