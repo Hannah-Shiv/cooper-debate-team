@@ -2167,18 +2167,40 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="data/approved-members.js?v=6"></script>
 <script src="data/admins.js?v=4"></script>
-<script src="js/members-auth.js?v=13"></script>
+<script src="js/members-auth.js?v=14"></script>
 
 <script>
 /* ── showState override ─────────────────────────────────────── */
 (function () {
   var _orig = window.showState;
+  var loginRedirectTimer = null;
+
+  function cancelLoginRedirect() {
+    if (!loginRedirectTimer) return;
+    window.clearTimeout(loginRedirectTimer);
+    loginRedirectTimer = null;
+  }
+
   window.showState = function (state) {
-    if (state === 'login' || state === 'denied') {
+    if (state === 'login') {
+      cancelLoginRedirect();
+      loginRedirectTimer = window.setTimeout(function () {
+        loginRedirectTimer = null;
+        if (auth.currentUser) {
+          handleExistingAuthenticatedUser(auth.currentUser);
+          return;
+        }
+        window.location.href = 'members-signon.html';
+      }, 1200);
+      return;
+    }
+    if (state === 'denied') {
+      cancelLoginRedirect();
       window.location.href = 'members-signon.html';
       return;
     }
     if (state === 'completing') {
+      cancelLoginRedirect();
       var loading = document.getElementById('mp-loading');
       var content = document.getElementById('mp-content');
       if (loading) loading.style.display = 'flex';
@@ -2186,6 +2208,7 @@
       return;
     }
     if (state === 'dashboard') {
+      cancelLoginRedirect();
       var loading = document.getElementById('mp-loading');
       var content = document.getElementById('mp-content');
       if (loading) loading.style.display = 'none';

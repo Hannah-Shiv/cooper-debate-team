@@ -53,24 +53,29 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (completingGoogleRedirect) {
     showState("completing");
+    persistenceReady
+      .then(() => auth.getRedirectResult())
+      .then(result => {
+        sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+        if (result && result.user) {
+          handleGoogleAuthenticatedUser(result.user);
+          return;
+        }
+        watchForExistingSession(true);
+      })
+      .catch(err => {
+        sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+        console.error("getRedirectResult error:", err);
+        showState("login");
+        showError(googleAuthErrorMessage(err));
+      });
+    return;
   }
 
-  persistenceReady
-    .then(() => auth.getRedirectResult())
-    .then(result => {
-      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
-      if (result && result.user) {
-        handleGoogleAuthenticatedUser(result.user);
-        return;
-      }
-      watchForExistingSession(completingGoogleRedirect);
-    })
-    .catch(err => {
-      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
-      console.error("getRedirectResult error:", err);
-      showState("login");
-      showError(googleAuthErrorMessage(err));
-    });
+  // Popup sign-in does not use Firebase's redirect-result handshake. Starting
+  // the existing-session listener directly avoids a transient signed-out state
+  // while Firebase restores LOCAL persistence during cross-page navigation.
+  persistenceReady.then(() => watchForExistingSession(false));
 });
 
 function watchForExistingSession(requireFcpsGoogle = false) {

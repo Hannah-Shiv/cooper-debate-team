@@ -182,3 +182,55 @@ test("a stale member directory role cannot downgrade the protected website admin
   assert.equal(access.role, "website-admin");
   assert.equal(access.displayName, "Hannah Shiv");
 });
+
+test("normal member-page startup skips the unused redirect-result handshake", async () => {
+  const source = await readFile("js/members-auth.js", "utf8");
+  const startup = source.slice(
+    source.indexOf('window.addEventListener("DOMContentLoaded"'),
+    source.indexOf("function watchForExistingSession")
+  );
+
+  assert.match(startup, /if \(completingGoogleRedirect\)[\s\S]*?auth\.getRedirectResult\(\)/);
+  assert.match(startup, /persistenceReady\.then\(\(\) => watchForExistingSession\(false\)\)/);
+});
+
+test("stats recovers a restored Firebase user before redirecting to sign-in", async () => {
+  const source = await readFile("members-stats.html", "utf8");
+  const overrideStart = source.indexOf("(function () {", source.indexOf("showState override"));
+  const overrideEnd = source.indexOf("})();", overrideStart) + 5;
+  const user = { email: "member@fcpsschools.net" };
+  let scheduled = null;
+  let recoveredUser = null;
+
+  const context = {
+    auth: { currentUser: user },
+    document: {
+      getElementById: () => ({ style: {} }),
+    },
+    handleExistingAuthenticatedUser(restoredUser) {
+      recoveredUser = restoredUser;
+    },
+    initStats() {},
+    window: {
+      location: { href: "members-stats.html" },
+      showState() {},
+      setTimeout(callback, delay) {
+        scheduled = { callback, delay };
+        return 1;
+      },
+      clearTimeout() {
+        scheduled = null;
+      },
+    },
+  };
+
+  vm.createContext(context);
+  vm.runInContext(source.slice(overrideStart, overrideEnd), context);
+  context.window.showState("login");
+
+  assert.equal(context.window.location.href, "members-stats.html");
+  assert.equal(scheduled.delay, 1200);
+  scheduled.callback();
+  assert.equal(recoveredUser, user);
+  assert.equal(context.window.location.href, "members-stats.html");
+});
