@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=29"/>
+  <link rel="stylesheet" href="css/main.css?v=37"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <style>
     /* ── Auth states ─────────────────────────────────────────── */
@@ -46,7 +46,7 @@
 </a>
 
 <!-- MEMBER USERBAR — fixed vertical column, top-right, shown after auth -->
-<div class="member-userbar" id="member-userbar">
+<div class="member-userbar role-artwork-userbar" id="member-userbar">
   <button class="mub-bell" onclick="mpToggleNotif()" title="Notifications">
     <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
     <span class="mub-notif-state" id="mp-notif-state"></span>
@@ -54,9 +54,10 @@
   <div class="mub-sep"></div>
   <span class="mub-name" id="mp-name"></span>
   <div class="mub-sep"></div>
-  <span class="mub-email" id="mp-user-email"></span>
-  <div class="mub-sep"></div>
-  <span class="mub-badge" id="mp-role-badge">✓ Team Member</span>
+  <img class="mub-role-icon" id="mp-role-icon" src="images/role-icons/member.png" alt="" aria-hidden="true"/>
+  <span class="mub-badge mub-role-badge" id="mp-role-badge" data-role="member">
+    <span class="mub-role-label">Team Member</span>
+  </span>
   <div class="mub-sep"></div>
   <button class="mub-signout" onclick="mpSignOut()">
     <svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -119,6 +120,12 @@ if (!firebase.apps.length) firebase.initializeApp(_MP_CONFIG);
 const _mpAuth = firebase.auth();
 const _mpDb = firebase.firestore();
 _mpAuth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+const MP_ROLE_PRESENTATION = {
+  member: { label: 'Team Member', fallback: '✓ Team Member', icon: 'images/role-icons/member.png' },
+  captain: { label: 'Captain', fallback: '⭐ Captain', icon: 'images/role-icons/captain.png' },
+  coach: { label: 'Coach', fallback: '🛡️ Coach', icon: 'images/role-icons/coach.png' },
+  'website-admin': { label: 'Website Admin', fallback: '🛠️ Website Admin', icon: 'images/role-icons/website-admin.png' }
+};
 
 function mpSignOut() {
   _mpAuth.signOut().then(() => window.location.href = 'members-signon.html');
@@ -145,10 +152,19 @@ _mpAuth.onAuthStateChanged(async function(user) {
     }
     const role = normalizePortalRole(memberAccess.role);
     const badge = document.getElementById('mp-role-badge');
-    const email = document.getElementById('mp-user-email');
     const name  = document.getElementById('mp-name');
-    if (badge) badge.textContent = role === 'website-admin' ? '🛡️ Website Admin' : role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
-    if (email) email.textContent = user.email;
+    if (badge) {
+      const rolePresentation = MP_ROLE_PRESENTATION[role] || MP_ROLE_PRESENTATION.member;
+      const icon = document.getElementById('mp-role-icon');
+      const label = badge.querySelector('.mub-role-label');
+      badge.dataset.role = role;
+      if (icon && label) {
+        icon.src = rolePresentation.icon;
+        label.textContent = rolePresentation.label;
+      } else {
+        badge.textContent = rolePresentation.fallback;
+      }
+    }
     if (name)  name.textContent  = portalWelcomeLabel(
       memberAccess.displayName || (MEMBER_NAMES && MEMBER_NAMES[user.email.toLowerCase()]) || "",
       user.email

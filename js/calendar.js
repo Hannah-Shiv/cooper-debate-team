@@ -11,6 +11,12 @@ const CAL_FIREBASE_CONFIG = {
   messagingSenderId: "112813790184",
   appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
+const CAL_ROLE_PRESENTATION = {
+  member: { label: "Team Member", fallback: "✓ Team Member", icon: "images/role-icons/member.png" },
+  captain: { label: "Captain", fallback: "⭐ Captain", icon: "images/role-icons/captain.png" },
+  coach: { label: "Coach", fallback: "🛡️ Coach", icon: "images/role-icons/coach.png" },
+  "website-admin": { label: "Website Admin", fallback: "🛠️ Website Admin", icon: "images/role-icons/website-admin.png" },
+};
 
 firebase.initializeApp(CAL_FIREBASE_CONFIG);
 const calAuth = firebase.auth();
@@ -194,12 +200,15 @@ function initCalDashboard(email, access) {
 
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {
-    if (calUserRole === "coach") {
-      badgeEl.textContent = "🛡️ Coach";
-    } else if (calUserRole === "website-admin") {
-      badgeEl.textContent = "🛡️ Website Admin";
-    } else if (calUserRole === "captain") {
-      badgeEl.textContent = "⭐ Captain";
+    const rolePresentation = CAL_ROLE_PRESENTATION[calUserRole] || CAL_ROLE_PRESENTATION.member;
+    const iconEl = document.getElementById("cal-role-icon");
+    const labelEl = badgeEl.querySelector(".mub-role-label");
+    badgeEl.dataset.role = calUserRole;
+    if (iconEl && labelEl) {
+      iconEl.src = rolePresentation.icon;
+      labelEl.textContent = rolePresentation.label;
+    } else {
+      badgeEl.textContent = rolePresentation.fallback;
     }
   }
 

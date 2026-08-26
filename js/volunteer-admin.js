@@ -11,6 +11,10 @@
     appId: "1:112813790184:web:ac559cb64747d7fd590a5d",
   };
   const MANAGE_ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/manageVolunteerSignup";
+  const ROLE_PRESENTATION = {
+    coach: { label: "Coach", fallback: "🛡️ Coach", icon: "images/role-icons/coach.png" },
+    "website-admin": { label: "Website Admin", fallback: "🛠️ Website Admin", icon: "images/role-icons/website-admin.png" },
+  };
   firebase.initializeApp(FIREBASE_CONFIG);
   const auth = firebase.auth();
   const db = firebase.firestore();
@@ -431,8 +435,17 @@
       access.displayName || user.displayName || "",
       user.email
     );
-    $("member-email").textContent = user.email;
-    $("member-role-badge").textContent = role === "website-admin" ? "🛡️ Website Admin" : "🛡️ Coach";
+    const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
+    const badge = $("member-role-badge");
+    const icon = $("member-role-icon");
+    const label = badge && badge.querySelector(".mub-role-label");
+    if (badge) badge.dataset.role = role;
+    if (icon && label) {
+      icon.src = rolePresentation.icon;
+      label.textContent = rolePresentation.label;
+    } else if (badge) {
+      badge.textContent = rolePresentation.fallback;
+    }
     $("member-userbar").classList.add("visible");
     resetForm();
     startEvents();

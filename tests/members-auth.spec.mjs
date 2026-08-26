@@ -220,6 +220,26 @@ test("resources header maps every portal role to its matching artwork", async ()
   assert.match(resourcesPage, /class="mub-role-label"/);
 });
 
+test("specified member pages share the role artwork header", async () => {
+  const pageSpecs = [
+    ["members-calendar.html", "cal-role-icon", "cal-role-badge", "cal-user-email"],
+    ["members-directory.html", "member-role-icon", "member-role-badge", "member-email"],
+    ["members-stats.html", "member-role-icon", "member-role-badge", "member-email"],
+    ["members-blog.html", "mp-role-icon", "mp-role-badge", "mp-user-email"],
+    ["members-volunteers.html", "member-role-icon", "member-role-badge", "member-email"],
+  ];
+  const pages = await Promise.all(pageSpecs.map(([file]) => readFile(file, "utf8")));
+
+  pages.forEach((page, index) => {
+    const [file, iconId, badgeId, emailId] = pageSpecs[index];
+    assert.match(page, /class="member-userbar role-artwork-userbar"/, `${file} should use the shared artwork header`);
+    assert.match(page, new RegExp(`id="${iconId}"`), `${file} should include the standalone role icon`);
+    assert.match(page, new RegExp(`id="${badgeId}"`), `${file} should include the role badge`);
+    assert.match(page, /class="mub-role-label"/, `${file} should include a role label`);
+    assert.doesNotMatch(page, new RegExp(`id="${emailId}"`), `${file} should not show an email field`);
+  });
+});
+
 test("stats recovers a restored Firebase user before redirecting to sign-in", async () => {
   const source = await readFile("members-stats.html", "utf8");
   const overrideStart = source.indexOf("(function () {", source.indexOf("showState override"));
