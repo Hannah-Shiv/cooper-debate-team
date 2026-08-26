@@ -169,6 +169,26 @@ test("the approved FCPS student Google identity can read protected member conten
   await assertSucceeds(getDoc(doc(db, "tournaments", "private")));
 });
 
+test("the legacy FCPS student fallback has website-admin permissions", async () => {
+  await testEnv.withSecurityRulesDisabled(async context => {
+    await deleteDoc(doc(context.firestore(), "portal_members", STUDENT_EMAIL));
+  });
+
+  const db = dbFor(STUDENT_EMAIL, "google.com");
+  await assertSucceeds(setDoc(doc(db, "announcements", "legacy-website-admin-post"), {
+    title: "Legacy Website Admin post",
+    postedBy: STUDENT_EMAIL,
+    postedByRole: "website-admin",
+  }));
+  await assertSucceeds(setDoc(doc(db, "members", "legacy-managed-member"), {
+    firstName: "Legacy",
+    lastName: "Managed",
+  }));
+  await assertSucceeds(setDoc(doc(db, "portal_login_status", "legacy-admin-email-hash"), {
+    active: true,
+  }));
+});
+
 test("an approved fcps.edu Google identity can read protected member content", async () => {
   const db = dbFor(COACH_EMAIL, "google.com");
   await assertSucceeds(getDoc(doc(db, "announcements", "existing")));

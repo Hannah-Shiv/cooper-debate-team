@@ -28,6 +28,9 @@ const ADMIN_ROLES = [
   { email: "pgkonde@fcps.edu",         loginEmails: ["pgkonde@fcpsschools.net"], role: "coach" }, // Coach Konde
   { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
 
+  // ── Website Admins ───────────────────────────────────────
+  { email: "1806950@fcpsschools.net",  role: "website-admin" },
+
   // ── Captains ─────────────────────────────────────────────
   // { email: "hannahbshiv@gmail.com", role: "captain" },   // testing captain view
   // { email: "captain@fcps.edu",      role: "captain" },
@@ -57,6 +60,23 @@ function isFullAdminRole(role) {
 
 function canManageMemberContentRole(role) {
   return isFullAdminRole(role) || role === "captain";
+}
+
+// Keep private portal headers readable without exposing a raw student ID as
+// the member's name when a roster record has not been entered yet.
+function portalFirstName(displayName, email) {
+  const name = String(displayName || "").trim();
+  if (name) return name.split(/\s+/)[0];
+
+  const localPart = String(email || "").trim().toLowerCase().split("@")[0];
+  if (!localPart || /^\d+$/.test(localPart)) return "Member";
+
+  const firstPart = localPart.split(/[._-]+/).find(Boolean) || localPart;
+  return firstPart.charAt(0).toUpperCase() + firstPart.slice(1);
+}
+
+function portalWelcomeLabel(displayName, email) {
+  return `Welcome, ${portalFirstName(displayName, email)}`;
 }
 
 function portalRoleLabel(role) {

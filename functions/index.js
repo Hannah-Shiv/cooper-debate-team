@@ -235,6 +235,7 @@ exports.removePublicCalendarOnDelete = onDocumentDeleted(
 const COACH_EMAILS = new Set([
   "pgkonde@fcps.edu",
   "hannahbshiv@gmail.com",
+  "1806950@fcpsschools.net",
 ]);
 
 async function hasFullAdminAccess(email) {

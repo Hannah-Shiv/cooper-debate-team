@@ -427,12 +427,10 @@
     currentUser = user;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
-    const shortName = (access.displayName || user.displayName || user.email.split("@")[0])
-      .split(/[._-]/)
-      .filter(Boolean)
-      .map(part => part.charAt(0).toUpperCase() + part.slice(1))
-      .join(" ");
-    $("member-name").textContent = shortName;
+    $("member-name").textContent = portalWelcomeLabel(
+      access.displayName || user.displayName || "",
+      user.email
+    );
     $("member-email").textContent = user.email;
     $("member-role-badge").textContent = role === "website-admin" ? "🛡️ Website Admin" : "🛡️ Coach";
     $("member-userbar").classList.add("visible");

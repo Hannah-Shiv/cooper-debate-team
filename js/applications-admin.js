@@ -228,12 +228,12 @@
     currentUser = user;
     if (!user) { show("auth-required"); return; }
     $("app-userbar").classList.add("visible");
-    $("app-name").textContent = user.displayName || (user.email || "").split("@")[0] || "Member";
+    $("app-name").textContent = portalWelcomeLabel(user.displayName, user.email);
     $("app-user-email").textContent = user.email || "";
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
     if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
-    $("app-name").textContent = access.displayName || user.displayName || (user.email || "").split("@")[0] || "Member";
+    $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
     $("app-role-badge").textContent = role === "website-admin" ? "★ Website Admin" : "★ Coach";
     show("dashboard");
     beginListening();

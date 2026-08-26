@@ -125,3 +125,21 @@ test("approved non-FCPS adults can request and complete an email-link sign-in", 
   assert.equal(calls[1].email, "approvedadult@example.com");
   assert.equal(context.window.location.href, "members-resources.html");
 });
+
+test("legacy admin fallback provides website-admin access and readable names", async () => {
+  const adminSource = await readFile("data/admins.js", "utf8");
+  const context = { console, TextEncoder };
+  vm.createContext(context);
+  vm.runInContext(
+    adminSource + `
+      this.fallbackRole = getAdminRole("1806950@fcpsschools.net");
+      this.namedWelcome = portalWelcomeLabel("Alex Rivera", "1806950@fcpsschools.net");
+      this.numericWelcome = portalWelcomeLabel("", "1806950@fcpsschools.net");
+    `,
+    context
+  );
+
+  assert.equal(context.fallbackRole, "website-admin");
+  assert.equal(context.namedWelcome, "Welcome, Alex");
+  assert.equal(context.numericWelcome, "Welcome, Member");
+});

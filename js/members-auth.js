@@ -384,10 +384,11 @@ function showDashboard(email) {
   // First name
   const nameEl = document.getElementById("member-name");
   if (nameEl) {
-    nameEl.textContent =
+    const displayName =
       (currentMemberAccess && currentMemberAccess.name) ||
       (typeof MEMBER_NAMES !== "undefined" && MEMBER_NAMES[email.toLowerCase()]) ||
-      email.split('@')[0];
+      "";
+    nameEl.textContent = portalWelcomeLabel(displayName, email);
   }
 
   // Role badge

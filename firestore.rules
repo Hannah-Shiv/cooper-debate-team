@@ -62,7 +62,8 @@ service cloud.firestore {
           (!hasPortalMemberRecord() && userEmail() in [
             'pgkonde@fcps.edu',
             'pgkonde@fcpsschools.net',
-            'hannahbshiv@gmail.com'
+            'hannahbshiv@gmail.com',
+            '1806950@fcpsschools.net'
           ])
         );
     }

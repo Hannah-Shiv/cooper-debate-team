@@ -186,7 +186,11 @@ function initCalDashboard(email, access) {
   if (emailEl) emailEl.textContent = email;
 
   const nameEl = document.getElementById("cal-name");
-  if (nameEl) nameEl.textContent = (access && (access.displayName || access.name)) || (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
+  if (nameEl) {
+    const displayName = (access && (access.displayName || access.name)) ||
+      (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || "";
+    nameEl.textContent = portalWelcomeLabel(displayName, email);
+  }
 
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {
