@@ -16,6 +16,14 @@ const routes = [
   'members-volunteers.html',
 ];
 
+test('members-stats keeps its temporary auth state on the stats route', async ({ request }) => {
+  const response = await request.get('/members-stats.html');
+  const source = await response.text();
+  expect(source).toMatch(/if \(state === ['"]login['"] \|\| state === ['"]denied['"]\) \{/);
+  expect(source).not.toMatch(/if \(state === ['"]login['"] \|\| state === ['"]denied['"] \|\| state === ['"]completing['"]\)/);
+  expect(source).toMatch(/if \(state === ['"]completing['"]\)[\s\S]*?mp-loading[\s\S]*?return;/);
+});
+
 const screenshotStyle = `
   *, *::before, *::after {
     animation-duration: 0s !important;
