@@ -32,7 +32,7 @@ googleProvider.setCustomParameters({
   prompt: "select_account",
 });
 
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+const persistenceReady = auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 // ── Session state ─────────────────────────────────────────────
 let currentUserEmail  = "";
@@ -55,7 +55,8 @@ window.addEventListener("DOMContentLoaded", () => {
     showState("completing");
   }
 
-  auth.getRedirectResult()
+  persistenceReady
+    .then(() => auth.getRedirectResult())
     .then(result => {
       sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
       if (result && result.user) {
@@ -91,10 +92,15 @@ function signInWithFcpsGoogle() {
     btn.textContent = "Connecting to FCPS Google…";
   }
 
-  sessionStorage.setItem(GOOGLE_REDIRECT_KEY, "1");
+  sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
   showState("completing");
 
-  auth.signInWithRedirect(googleProvider)
+  // Popup sign-in is initiated directly by the student's click. Unlike
+  // signInWithRedirect, it does not need Firebase's cross-site redirect
+  // session storage, which managed Chrome policies may block on GitHub Pages.
+  persistenceReady
+    .then(() => auth.signInWithPopup(googleProvider))
+    .then(result => handleGoogleAuthenticatedUser(result.user))
     .catch(err => {
       sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
       resetGoogleButton();
@@ -121,6 +127,12 @@ function googleAuthErrorMessage(err) {
       return "This portal address is not authorized for Google sign-in. Please contact Coach Konde.";
     case "auth/network-request-failed":
       return "Google sign-in could not connect. Check the school network and try again.";
+    case "auth/popup-blocked":
+      return "Your browser blocked the Google sign-in window. Allow pop-ups for this site and try again.";
+    case "auth/popup-closed-by-user":
+      return "The Google sign-in window was closed before sign-in finished.";
+    case "auth/web-storage-unsupported":
+      return "This browser’s privacy settings blocked Google sign-in. Please contact Coach Konde.";
     case "auth/account-exists-with-different-credential":
       return "This account already uses another sign-in method. Please use the adult email-link option.";
     default:
