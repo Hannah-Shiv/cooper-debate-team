@@ -105,14 +105,36 @@
     .benefit-item:last-child { border-bottom: none; }
     .benefit-num {
       font-family: 'Cinzel', serif;
-      font-size: 4rem;
+      font-size: 1.55rem;
       font-weight: 700;
-      color: var(--gold);
+      color: #FFF4D6;
       line-height: 1;
       flex-shrink: 0;
-      width: 64px;
+      width: 56px;
+      height: 56px;
       display: flex;
       align-items: center;
+      justify-content: center;
+      position: relative;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 32% 24%, rgba(255,232,214,0.98) 0 7%, transparent 8%),
+        radial-gradient(circle at 35% 28%, #D86852 0%, #A93636 40%, #741F2B 72%, #3B111C 100%);
+      border: 2px solid #E5A14B;
+      text-shadow: 0 1px 1px rgba(58,12,18,0.55);
+      box-shadow:
+        0 0 0 4px rgba(194,67,57,0.12),
+        0 4px 12px rgba(0,0,0,0.34),
+        inset 0 1px 1px rgba(255,255,255,0.42),
+        inset 0 -3px 5px rgba(54,10,14,0.38);
+    }
+    .benefit-num::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255,244,214,0.5);
+      border-radius: 50%;
+      pointer-events: none;
     }
     .benefit-content {
       border-left: 1.5px solid rgba(212,160,23,0.45);
