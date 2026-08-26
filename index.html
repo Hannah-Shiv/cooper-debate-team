@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-   <link rel="stylesheet" href="css/main.css?v=29"/>
+   <link rel="stylesheet" href="css/main.css?v=30"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
@@ -60,11 +60,18 @@
      .idx-stat-icon {
        border-color: #F2D16B;
      }
-    /* Championship panel two-column layout */
-    #idx-champ-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 760px) {
-      #idx-champ-grid { grid-template-columns: 2fr 1fr; }
-    }
+     /* Homepage championship artwork replacement */
+     #idx-champ-panel.idx-champ-image-panel {
+       margin-top: 8px;
+     }
+     .idx-champ-composite {
+       display: block;
+       width: 100%;
+       height: auto;
+       border: 1px solid rgba(242,209,107,0.72);
+       border-radius: 12px;
+       box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+     }
 
     /* Sparkle background for championship card */
     .idx-champ-main {
@@ -216,9 +223,8 @@
 
     /* Keep dense content comfortable on tall tablet portrait screens without
        changing the existing desktop or landscape hero composition. */
-    @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+     @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
       #idx-stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
-      #idx-champ-grid { grid-template-columns: 1fr !important; }
       .idx-champ-plaque { width: min(300px,60vw); margin-inline: auto; }
     }
 
@@ -453,14 +459,9 @@
         </div>
       </div>
 
-      <!-- Championship panel (hidden until JS populates it) -->
-      <div id="idx-champ-panel" style="display:none;margin-top:8px;">
-        <div id="idx-champ-grid">
-          <!-- main card — JS fills idx-champ-content -->
-          <div id="idx-champ-content" class="idx-champ-main"></div>
-          <!-- right card — JS fills idx-champ-right (hidden if no content) -->
-          <div id="idx-champ-right" style="display:none;" class="idx-metro-card"></div>
-        </div>
+       <!-- Championship panel — supplied composite artwork -->
+       <div id="idx-champ-panel" class="idx-champ-image-panel" style="display:block;">
+         <img class="idx-champ-composite" src="attached_assets/image_1787703980352.png?v=1" alt="Metro Finals second-place and Metro qualification highlights">
       </div>
 
       <div style="text-align:center;margin-top:32px;">
