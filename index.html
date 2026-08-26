@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-   <link rel="stylesheet" href="css/main.css?v=32"/>
+   <link rel="stylesheet" href="css/main.css?v=33"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
@@ -60,14 +60,283 @@
      .idx-stat-icon {
        border-color: #F2D16B;
      }
-     /* Homepage championship artwork replacement */
-     #idx-champ-panel.idx-champ-image-panel {
-       margin-top: 8px;
+     /* Homepage championship cards — match awards.html without using a screenshot */
+     #idx-champ-panel.idx-award-panel {
+       margin-top: 22px;
      }
-     .idx-champ-composite {
+     #idx-champ-grid {
+       display: grid;
+       grid-template-columns: repeat(2, minmax(0, 1fr));
+       gap: 16px;
+     }
+     .idx-award-panel .aw-award-card {
+       display: flex;
+       min-width: 0;
+       min-height: 390px;
+       flex-direction: column;
+       overflow: hidden;
+       background: #0a1d42;
+       border: 1.5px solid rgba(242,209,107,0.58);
+       border-radius: 14px;
+       box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+     }
+     .idx-award-panel .aw-award-content {
+       display: flex;
+       flex: 1;
+       min-width: 0;
+       align-items: center;
+       gap: 16px;
+       padding: 20px 18px;
+     }
+     .idx-award-panel .aw-award-media {
+       display: flex;
+       flex: 0 0 148px;
+       width: 148px;
+       height: 190px;
+       align-items: center;
+       justify-content: center;
+     }
+     .idx-award-panel .aw-award-media img {
        display: block;
-       width: 100%;
-       height: auto;
+       max-width: 100%;
+       max-height: 100%;
+       object-fit: contain;
+     }
+     .idx-award-panel .aw-metro-award-media img,
+     .idx-award-panel .aw-ncfl-award-media img {
+       width: 148px;
+     }
+     .idx-award-panel .aw-award-details {
+       min-width: 0;
+       flex: 1;
+     }
+     .idx-award-panel .aw-award-badge {
+       display: inline-flex;
+       align-items: center;
+       margin-bottom: 7px;
+       padding: 4px 10px;
+       background: #850000;
+       border: 1px solid rgba(242,209,107,0.72);
+       border-radius: 50px;
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.66rem;
+       font-weight: 700;
+       letter-spacing: 0.08em;
+       line-height: 1.2;
+       text-transform: uppercase;
+     }
+     .idx-award-panel .aw-award-badge-icon {
+       display: inline-block;
+       width: 22px;
+       height: 22px;
+       margin-right: 5px;
+       background-image: url('attached_assets/image_1787698158491.png?v=33');
+       background-repeat: no-repeat;
+       background-size: 400% 100%;
+       background-position: 0 50%;
+       filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+     }
+     .idx-award-panel .aw-ncfl-award-badge-icon {
+       background-position: 100% 50%;
+     }
+     .idx-award-panel .aw-award-hierarchy {
+       margin-bottom: 6px;
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.58rem;
+       font-weight: 600;
+       letter-spacing: 0.06em;
+       line-height: 1.35;
+       text-transform: uppercase;
+     }
+     .idx-award-panel .aw-award-title {
+       margin-bottom: 7px;
+       color: rgba(255,255,255,0.94);
+       font-family: 'Cormorant Garamond', serif;
+       font-size: clamp(1.08rem, 1.85vw, 1.38rem);
+       font-weight: 700;
+       line-height: 1.08;
+     }
+     .idx-award-panel .aw-award-place {
+       margin-bottom: 5px;
+       color: #FFD700;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: clamp(2.8rem, 5.3vw, 4rem);
+       font-weight: 700;
+       line-height: 0.9;
+       text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+     }
+     .idx-award-panel .aw-award-place sup {
+       font-size: 0.45em;
+       vertical-align: super;
+     }
+     .idx-award-panel .aw-award-place-label {
+       font-size: 0.48em;
+       font-weight: 600;
+     }
+     .idx-award-panel .aw-ncfl-award-achievement {
+       margin-bottom: 0;
+       color: #FFD700;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: clamp(1.3584375rem, 2.5703203125vw, 1.940625rem);
+       font-weight: 700;
+       line-height: 0.9;
+       text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+       text-transform: uppercase;
+       white-space: nowrap;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-details {
+       display: flex;
+       align-self: stretch;
+       flex-direction: column;
+       align-items: flex-start;
+       justify-content: flex-start;
+       row-gap: 13px;
+       padding-top: 12px;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-content {
+       align-items: stretch;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-media {
+       align-self: center;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-badge,
+     .idx-award-panel .aw-ncfl-award-card .aw-award-hierarchy,
+     .idx-award-panel .aw-ncfl-award-card .aw-award-title {
+       margin-bottom: 0;
+     }
+     .idx-award-panel .aw-award-note {
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.68rem;
+       line-height: 1.45;
+     }
+     .idx-award-panel .aw-award-stats {
+       display: grid;
+       grid-template-columns: repeat(3, minmax(0, 1fr));
+       gap: 10px;
+       margin: 0 10px 10px;
+       padding: 0;
+       background: transparent;
+     }
+     .idx-award-panel .aw-award-stat {
+       display: flex;
+       min-width: 0;
+       min-height: 142px;
+       flex-direction: column;
+       align-items: center;
+       justify-content: flex-start;
+       padding: 12px 6px 14px;
+       background: linear-gradient(180deg, rgba(242,209,107,0.12), rgba(10,29,66,0.46));
+       border: 1px solid rgba(242,209,107,0.72);
+       border-radius: 12px;
+       text-align: center;
+     }
+     .idx-award-panel .aw-award-stat-icon {
+       display: grid;
+       width: 45px;
+       height: 45px;
+       place-items: center;
+       margin-bottom: 7px;
+       border: 1px solid rgba(242,209,107,0.88);
+       border-radius: 50%;
+       color: #F2D16B;
+     }
+     .idx-award-panel .aw-award-stat-icon svg {
+       display: block;
+       width: 25px;
+       height: 25px;
+       fill: none;
+       stroke: currentColor;
+       stroke-linecap: round;
+       stroke-linejoin: round;
+       stroke-width: 1.8;
+     }
+     .idx-award-panel .aw-award-stat-number {
+       color: #F2D16B;
+       font-family: 'Cormorant Garamond', serif;
+       font-size: 2.35rem;
+       font-weight: 700;
+       line-height: 1;
+     }
+     .idx-award-panel .aw-award-stat-divider {
+       position: relative;
+       width: 70px;
+       height: 1px;
+       margin: 8px 0 7px;
+       background: linear-gradient(90deg, transparent, rgba(242,209,107,0.9) 22%, #F2D16B 50%, rgba(242,209,107,0.9) 78%, transparent);
+     }
+     .idx-award-panel .aw-award-stat-divider::after {
+       content: '✦';
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       padding: 0 4px;
+       background: #13274a;
+       color: #F2D16B;
+       font-size: 0.72rem;
+       line-height: 1;
+       transform: translate(-50%, -50%);
+     }
+     .idx-award-panel .aw-award-stat-label {
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.58rem;
+       font-weight: 700;
+       letter-spacing: 0.05em;
+       line-height: 1.3;
+       text-transform: uppercase;
+     }
+     @media (max-width: 800px) {
+       #idx-champ-grid {
+         grid-template-columns: 1fr;
+       }
+     }
+     @media (max-width: 500px) {
+       .idx-award-panel .aw-award-content {
+         gap: 12px;
+         padding: 18px 14px;
+       }
+       .idx-award-panel .aw-award-media {
+         flex-basis: 112px;
+         width: 112px;
+         height: 155px;
+       }
+       .idx-award-panel .aw-metro-award-media img,
+       .idx-award-panel .aw-ncfl-award-media img {
+         width: 112px;
+       }
+       .idx-award-panel .aw-award-badge {
+         font-size: 0.58rem;
+       }
+       .idx-award-panel .aw-award-badge-icon {
+         width: 18px;
+         height: 18px;
+       }
+       .idx-award-panel .aw-award-stat {
+         min-height: 128px;
+         padding-inline: 4px;
+       }
+       .idx-award-panel .aw-award-stat-icon {
+         width: 38px;
+         height: 38px;
+         margin-bottom: 6px;
+       }
+       .idx-award-panel .aw-award-stat-icon svg {
+         width: 21px;
+         height: 21px;
+       }
+       .idx-award-panel .aw-award-stat-number {
+         font-size: 2rem;
+       }
+       .idx-award-panel .aw-award-stat-divider {
+         width: 52px;
+         margin-block: 7px 6px;
+       }
+       .idx-award-panel .aw-award-stat-label {
+         font-size: 0.5rem;
+       }
      }
 
     /* Sparkle background for championship card */
@@ -456,10 +725,91 @@
         </div>
       </div>
 
-       <!-- Championship panel — supplied composite artwork -->
-       <div id="idx-champ-panel" class="idx-champ-image-panel" style="display:block;">
-         <img class="idx-champ-composite" src="attached_assets/image_1787704290719.png?v=1" alt="NCFL and Metro Finals championship highlights">
-      </div>
+       <!-- Championship panel — live HTML cards matching awards.html -->
+       <div id="idx-champ-panel" class="idx-award-panel" style="display:block;">
+         <div id="idx-champ-grid">
+           <article class="aw-award-card aw-ncfl-award-card">
+             <div class="aw-award-content">
+               <div class="aw-award-media aw-ncfl-award-media">
+                 <img src="attached_assets/image_1787700174823.png?v=38" alt="NCFL championship trophy">
+               </div>
+               <div class="aw-award-details">
+                 <div class="aw-award-badge"><span class="aw-award-badge-icon aw-ncfl-award-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
+                 <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; NCFL &nbsp;›&nbsp; Octos / Semis</div>
+                 <div class="aw-award-title">NCFL Championship Results</div>
+                 <div class="aw-award-place aw-ncfl-award-achievement">Semis Qualified</div>
+                 <div class="aw-award-note">Date · 27th Mar 2026</div>
+               </div>
+             </div>
+             <div class="aw-award-stats">
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">3</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Teams Reached<br>Octos</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">1</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Team Reached<br>Semis</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="M5 20V4"/><path d="M6 5h11l-2 4 2 4H6"/><path d="M2 20h6"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">7</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Cooper Teams<br>Participated</div>
+               </div>
+             </div>
+           </article>
+           <article class="aw-award-card aw-metro-award-card">
+             <div class="aw-award-content">
+               <div class="aw-award-media aw-metro-award-media">
+                 <img src="images/icon-metro-finals-spotlight.png?v=38" alt="WASDL Metro Finals second-place plaque">
+               </div>
+               <div class="aw-award-details">
+                 <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
+                 <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; Metro Finals &nbsp;›&nbsp; Regional / Local</div>
+                 <div class="aw-award-title" id="idx-metro-award-title">WASDL Public Forum Policy and Congress Metro Finals</div>
+                 <div class="aw-award-place" id="idx-metro-award-place">2<sup>ND</sup> <span class="aw-award-place-label">PLACE</span></div>
+                 <div class="aw-award-note" id="idx-metro-award-date">Date · 14th Mar 2026</div>
+               </div>
+             </div>
+             <div class="aw-award-stats">
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-field">32</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Teams<br>in Field</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-competed">12</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Cooper Teams<br>Competed</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-qualified">22</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Pairs Qualified<br>for Metro</div>
+               </div>
+             </div>
+           </article>
+         </div>
+       </div>
 
       <div style="text-align:center;margin-top:32px;">
         <a href="awards.html" class="btn btn-gold" style="font-size:0.9rem;padding:12px 32px;letter-spacing:0.08em;">View Full Awards →</a>
@@ -891,6 +1241,20 @@
               var sfx = bestRank===1?'st':bestRank===2?'nd':bestRank===3?'rd':'th';
               var placeLabel = bestRank < 999 ? (bestRank + '<sup style="font-size:0.45em;vertical-align:super;">' + sfx.toUpperCase() + '</sup> <span style="font-size:0.55em;font-weight:600">PLACE</span>') : '';
               var champDate = formatChampDate(t.meta.date);
+               var homeTitle = document.getElementById('idx-metro-award-title');
+               var homePlace = document.getElementById('idx-metro-award-place');
+               var homeDate = document.getElementById('idx-metro-award-date');
+               var homeField = document.getElementById('idx-metro-award-field');
+               var homeCompeted = document.getElementById('idx-metro-award-competed');
+               var homeQualified = document.getElementById('idx-metro-award-qualified');
+               if (homeTitle) homeTitle.textContent = t.meta.name || 'Metro Finals';
+               if (homePlace && bestRank < 999) {
+                 homePlace.innerHTML = bestRank + '<sup>' + sfx.toUpperCase() + '</sup> <span class="aw-award-place-label">PLACE</span>';
+               }
+               if (homeDate && champDate) homeDate.textContent = 'Date · ' + champDate;
+               if (homeField) homeField.textContent = t.entries.length || '—';
+               if (homeCompeted) homeCompeted.textContent = cooperEntries.length;
+               if (homeQualified) homeQualified.textContent = metroElig;
               mainCards.push(
                  '<div style="display:flex;gap:14px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
                   /* Plaque image */
