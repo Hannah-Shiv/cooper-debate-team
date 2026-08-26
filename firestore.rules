@@ -2,51 +2,98 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── Helper: is the caller a known coach? ─────────────────────────────────
-    // The email comes from the verified Firebase Auth token, not from the client.
-    // Update this list whenever coach accounts change (same workflow as admins.js).
-    function isCoach() {
+    // ── Member and role authorization ─────────────────────────────────────────
+    // These checks run on Firebase's servers. Client-side lists only control the
+    // interface and must never be treated as the security boundary.
+    function hasVerifiedEmail() {
       return request.auth != null &&
         request.auth.token.email != null &&
-        request.auth.token.email.lower() in [
+        request.auth.token.email_verified == true;
+    }
+
+    function userEmail() {
+      return request.auth.token.email.lower();
+    }
+
+    function isGoogleSignIn() {
+      return request.auth.token.firebase.sign_in_provider == 'google.com';
+    }
+
+    // Google sign-in is reserved for FCPS student identities. Approved adults
+    // continue to use Firebase email-link authentication.
+    function usesAllowedSignInMethod() {
+      return !isGoogleSignIn() ||
+        userEmail().matches('^[^@]+@fcpsschools[.]net$');
+    }
+
+    // Keep this list synchronized with data/approved-members.js.
+    function isApprovedMember() {
+      return hasVerifiedEmail() &&
+        usesAllowedSignInMethod() &&
+        userEmail() in [
+          'pgkonde@fcps.edu',
+          'hannahbshiv@gmail.com',
+          'cooperdebateteam@gmail.com'
+        ];
+    }
+
+    // Keep coach and captain roles synchronized with data/admins.js.
+    function isCoach() {
+      return isApprovedMember() &&
+        userEmail() in [
           'pgkonde@fcps.edu',        // Coach Konde
           'hannahbshiv@gmail.com'    // temp coach for testing
         ];
     }
 
-    // Announcements — any signed-in member can read
-    // Write access (coach/captain only) is enforced in app logic
+    function isCaptain() {
+      return false; // Add approved captain emails here when needed.
+    }
+
+    function canManageMemberContent() {
+      return isCoach() || isCaptain();
+    }
+
+    // Announcements — approved members read; coaches/captains manage.
     match /announcements/{docId} {
-      allow read:  if request.auth != null;
-      allow write: if request.auth != null;
+      allow read: if isApprovedMember();
+      allow create: if canManageMemberContent() &&
+        request.resource.data.postedBy == userEmail() &&
+        ((isCoach() && request.resource.data.postedByRole == 'coach') ||
+          (isCaptain() && request.resource.data.postedByRole == 'captain'));
+      allow update: if canManageMemberContent() &&
+        request.resource.data.postedBy == resource.data.postedBy &&
+        request.resource.data.postedByRole == resource.data.postedByRole &&
+        (isCoach() || resource.data.postedBy == userEmail());
+      allow delete: if isCoach() ||
+        (isCaptain() && resource.data.postedBy == userEmail());
     }
 
     // FCM push-notification tokens — each user may only write their own token
     match /fcm-tokens/{email} {
-      allow read, write: if request.auth != null
-        && request.auth.token.email.lower() == email;
+      allow read, write: if isApprovedMember() && userEmail() == email;
     }
 
-    // Resource card pins — any signed-in member can read
-    // Write access (coach/captain only) is enforced in app logic
+    // Resource card pins — approved members read; coaches/captains manage.
     match /resource-pins/{cardId} {
-      allow read:  if request.auth != null;
-      allow write: if request.auth != null;
+      allow read:  if isApprovedMember();
+      allow write: if canManageMemberContent();
     }
 
-    // Tournament calendar events — any signed-in member can read
-    // Write access (coach/captain only) is enforced in app logic
+    // Tournament calendar events — approved members can read. Existing private
+    // event editing remains available to approved members; public events remain
+    // coach-controlled.
     match /tournaments/{docId} {
-      allow read:  if request.auth != null;
-      // Existing private-event editing remains available to signed-in members.
+      allow read:  if isApprovedMember();
+      // Existing private-event editing remains available to approved members.
       // Only a verified coach may create, change, or delete an event once it
       // is public, preventing a member edit from changing public content.
-      allow create: if request.auth != null &&
+      allow create: if isApprovedMember() &&
         (isCoach() || request.resource.data.isPublic != true);
-      allow update: if request.auth != null &&
+      allow update: if isApprovedMember() &&
         (isCoach() || (resource.data.isPublic != true &&
           request.resource.data.isPublic != true));
-      allow delete: if request.auth != null &&
+      allow delete: if isApprovedMember() &&
         (isCoach() || resource.data.isPublic != true);
     }
 

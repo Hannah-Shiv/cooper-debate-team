@@ -10,7 +10,9 @@
 // HOW TO REMOVE A STUDENT:
 //   Delete their line.
 //
-// Save the file and push to GitHub — changes are live instantly.
+// SECURITY: Also add or remove the same normalized email in the
+// isApprovedMember() list in firestore.rules, then deploy the rules.
+// The browser list controls the UI; Firestore rules enforce access.
 // ============================================================
 
 const APPROVED_MEMBERS = [
