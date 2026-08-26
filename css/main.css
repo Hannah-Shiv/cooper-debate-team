@@ -1954,6 +1954,7 @@ body.dome-open .page-header { padding-top: 240px; }
   display: block;
   width: 40px;
   height: 40px;
+  margin: 0 10px 0 0;
   object-fit: contain;
   align-self: center;
   flex: 0 0 40px;
