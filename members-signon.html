@@ -355,11 +355,12 @@
      .auth-wrap {
        position: relative;
        z-index: 1;
-       display: block;
+        display: flex;
+        flex-direction: column;
         width: min(100%, 612px);
         min-height: calc(100vh - 112px);
         margin: 0 auto;
-        padding: 30px 27px 45px;
+         padding: 30px 27px 10px;
         box-sizing: border-box;
         background:
           radial-gradient(ellipse 80% 26% at 50% 0%, rgba(91, 143, 198, .34), transparent 75%),
@@ -374,6 +375,11 @@
         max-width: 558px;
        margin: 0 auto;
      }
+      #state-login.auth-wrap .auth-box {
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+      }
      .portal-mark {
        width: 220px;
        margin: 0 auto 14px;
@@ -461,7 +467,8 @@
         align-items: center;
         justify-content: center;
         gap: 10px;
-        width: calc(100% - 30px);
+         width: 100%;
+         box-sizing: border-box;
        margin-left: auto;
        margin-right: auto;
        min-height: 64px;
@@ -502,18 +509,23 @@
        transform: rotate(45deg);
      }
      .google-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
        position: absolute;
-       right: 35px;
+        right: 16px;
        top: 50%;
        color: #18253d;
        font-family: Arial, sans-serif;
-       font-size: 2rem;
+        font-size: 1.65rem;
        font-weight: 300;
        line-height: 1;
-       transform: translateY(-54%);
+        transform: translateY(-52%);
      }
      .access-notice {
        display: flex;
+        width: 100%;
+        box-sizing: border-box;
        gap: 13px;
        align-items: center;
        margin: 18px 0 0;
@@ -601,7 +613,7 @@
      .portal-join {
         width: min(100%, 558px);
        box-sizing: border-box;
-       margin: 27px auto 0;
+        margin: auto auto 0;
        padding: 0;
        border: 0;
      }
@@ -656,10 +668,10 @@
      @media (max-width: 600px) {
         .portal-page { padding: 91px 14px 13px !important; }
         body.dome-open .portal-page { padding-top: 210px !important; }
-        .auth-wrap {
+         .auth-wrap {
           width: 100%;
           min-height: calc(100vh - 91px);
-          padding: 25px 16px 32px;
+           padding: 25px 16px 10px;
         }
         #state-login.auth-wrap { min-height: calc(100vh - 91px) !important; }
         .auth-box { max-width: 100%; }
@@ -669,7 +681,7 @@
        .login-card { padding: 14px 16px 19px; }
          .fcps-logo { width: 36px; height: 36px; }
         .google-login-btn {
-          width: calc(100% - 26px);
+           width: 100%;
            gap: 7px;
            padding: 10px 40px 10px 8px;
            font-size: .68rem;
@@ -722,7 +734,7 @@
 
        <div class="login-card">
         <button class="google-login-btn" id="google-signin-btn" onclick="signInWithFcpsGoogle()">
-           <img class="fcps-logo" src="attached_assets/image_1787767061290.png" alt="" aria-hidden="true"/>
+           <img class="fcps-logo" src="attached_assets/image_1787770585382.png" alt="" aria-hidden="true"/>
           <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
             <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>
