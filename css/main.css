@@ -1887,6 +1887,11 @@ body.dome-open .page-header { padding-top: 240px; }
 
 /* First name */
 .mub-name {
+  display: inline-flex;
+  align-items: center;
+  height: 38.4px;
+  min-height: 38.4px;
+  box-sizing: border-box;
   font-family: 'Josefin Sans', sans-serif;
   font-size: 0.75rem;
   font-weight: 700;
@@ -1932,8 +1937,9 @@ body.dome-open .page-header { padding-top: 240px; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 32px;
-  padding: 4px 11px 4px 6px;
+  height: 38.4px;
+  min-height: 38.4px;
+  padding: 7px 11px 7px 6px;
   border: 0;
   border-radius: 8px;
   color: #ffffff;
@@ -1951,6 +1957,7 @@ body.dome-open .page-header { padding-top: 240px; }
   object-fit: contain;
   align-self: center;
   flex: 0 0 24px;
+  transform: translateY(-1px);
 }
 .mub-role-label {
   display: inline-flex;
@@ -1983,8 +1990,8 @@ body.dome-open .page-header { padding-top: 240px; }
   }
   .role-artwork-userbar .mub-role-badge {
     width: 42px;
-    min-height: 36px;
-    height: 36px;
+    min-height: 38.4px;
+    height: 38.4px;
     padding: 4px;
     justify-content: center;
   }
@@ -2006,7 +2013,8 @@ body.dome-open .page-header { padding-top: 240px; }
   }
   .role-artwork-userbar .mub-signout {
     width: 42px;
-    height: 42px;
+    height: 38.4px;
+    min-height: 38.4px;
     padding: 0;
     justify-content: center;
     font-size: 0;
@@ -2022,7 +2030,9 @@ body.dome-open .page-header { padding-top: 240px; }
   display: flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 15px;
+  height: 38.4px;
+  min-height: 38.4px;
+  padding: 0 15px;
   background: #7a1010;
   border: none;
   border-radius: 8px;
