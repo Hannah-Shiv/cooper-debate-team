@@ -9,37 +9,217 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=25"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=28"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     .ann-card {
-      background: rgba(13,46,86,0.45);
-      border: 1px solid rgba(212,160,23,0.15);
-      border-radius: 12px; overflow: hidden;
+      position: relative;
+      background: linear-gradient(145deg, rgba(11,32,76,0.42), rgba(6,19,49,0.18));
+      border: 1px solid rgba(242,209,107,0.32);
+      border-radius: 14px; overflow: hidden;
       margin-bottom: 28px;
-      transition: border-color 0.25s, box-shadow 0.25s;
+      padding: 30px 32px 30px 36px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
-    .ann-card:hover { border-color: rgba(212,160,23,0.4); box-shadow: 0 12px 32px rgba(0,0,0,0.35); }
+    .ann-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 24px;
+      bottom: 24px;
+      width: 3px;
+      background: linear-gradient(to bottom, transparent, #F2D16B 18%, #F2D16B 82%, transparent);
+      box-shadow: 0 0 12px rgba(242,209,107,0.35);
+    }
+    .ann-card:hover { border-color: rgba(242,209,107,0.72); box-shadow: 0 12px 32px rgba(0,0,0,0.28); transform: translateY(-2px); }
+    .ann-featured {
+      position: relative;
+      display: grid;
+      grid-template-columns: 108px minmax(0, 1fr);
+      align-items: center;
+      gap: 20px;
+      overflow: hidden;
+      margin-bottom: 28px;
+      padding: 24px 32px 24px 20px;
+      color: var(--white);
+      text-decoration: none;
+      background: #650005;
+      border: 1px solid #F2D16B;
+      border-radius: 16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
+      transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    }
+    .ann-featured::after {
+      display: none;
+    }
+    .ann-featured:hover {
+      border-color: #FFE28A;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.34), 0 0 22px rgba(191,23,29,0.2);
+      transform: translateY(-2px);
+    }
+    .ann-featured-icon {
+      position: relative;
+      z-index: 2;
+      display: block;
+      width: 108px;
+      height: 82px;
+      margin: 0 auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 7px rgba(35,0,0,0.32));
+    }
+    .ann-featured-copy { position: relative; z-index: 2; }
+    .ann-featured-label {
+      display: block;
+      margin-bottom: 10px;
+      color: #F2D16B;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .ann-featured-label::first-letter { font-size: 1.15em; }
+    .ann-featured-title {
+      margin-bottom: 6px;
+      color: #FFF8E9;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.7rem, 3.2vw, 2.35rem);
+      font-weight: 600;
+      line-height: 1.08;
+    }
+    .ann-featured-detail {
+      display: flex;
+      align-items: baseline;
+      gap: 22px;
+    }
+    .ann-featured-resolution {
+      flex: 1;
+      margin: 0;
+      color: rgba(255,255,255,0.92);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1rem, 1.7vw, 1.3rem);
+      line-height: 1.35;
+    }
+    .ann-featured-resolution em { color: #FFE43B; font-size: 1.12em; font-style: normal; font-weight: 700; }
+    .ann-featured-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transform: translateY(6px);
+      min-width: 190px;
+      padding: 11px 18px;
+      border-radius: 5px;
+      background: #F2B21B;
+      color: #0C1A42;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .announcements-page .page-header {
+      padding: 118px 24px 22px;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+    }
+    .announcements-page .page-header::after {
+      display: none;
+    }
+    .announcements-page > section.section {
+      padding-top: 18px;
+      padding-bottom: 40px;
+    }
+    .announcements-page #ann-list .ann-card:last-child {
+      margin-bottom: 14px;
+    }
+    .announcements-page .page-header-label {
+      color: #D4A017;
+      font-size: clamp(0.9rem, 1.5vw, 1.08rem);
+      margin-bottom: 16px;
+    }
+    .announcements-page .page-title {
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      letter-spacing: -0.015em;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .announcements-page .page-subtitle {
+      color: #F2D16B;
+      font-size: clamp(1.25rem, 3vw, 1.77rem);
+    }
+    .announcements-page .ann-card-title,
+    .announcements-page .ann-card-body {
+      color: rgba(255,255,255,0.92);
+    }
+    .kickoff-schedule-mount .kickoff-schedule {
+      border: 1.5px solid rgba(242,209,107,0.78);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24);
+    }
+    .kickoff-schedule-mount .kickoff-schedule__date-card {
+      border: 1.5px solid rgba(242,209,107,0.66);
+      border-radius: 12px;
+      box-shadow: 0 5px 18px rgba(0,0,0,0.18);
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly,
+    .kickoff-schedule-mount .kickoff-schedule__weekly-card,
+    .kickoff-schedule-mount .kickoff-schedule__footer {
+      border-color: rgba(242,209,107,0.58);
+    }
     .ann-card-header {
-      display: flex; align-items: center; gap: 16px;
-      padding: 28px 32px 0;
+      display: block;
+      padding: 0;
     }
-    .ann-card-emoji { font-size: 2rem; flex-shrink: 0; }
-    .ann-card-meta { display: flex; flex-direction: column; gap: 6px; }
+    .ann-card-emoji { display: none; }
+    .ann-card-meta { display: flex; flex-direction: column; gap: 8px; }
+    .ann-card .news-card-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      margin-bottom: 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #D4A017;
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      line-height: 1.2;
+    }
+    .ann-card .news-card-tag::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 2px;
+      background: #D4A017;
+      box-shadow: 0 0 8px rgba(212,160,23,0.3);
+    }
     .ann-card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
-      color: var(--white); line-height: 1.35;
+      font-size: clamp(1.85rem, 3.4vw, 2.65rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.24);
     }
     .ann-card-date {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem; color: var(--gray-mid); letter-spacing: 0.06em;
+      font-size: 0.68rem;
+      color: rgba(242,209,107,0.72);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
     .ann-card-body {
-      padding: 20px 32px 28px;
-      font-size: 0.9rem; color: rgba(255,255,255,0.78);
-      line-height: 1.8; white-space: pre-wrap;
+      padding: 22px 0 0;
+      font-size: 1.08rem;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.8;
+      white-space: pre-wrap;
     }
     .ann-empty {
       text-align: center; padding: 64px 24px;
@@ -47,12 +227,27 @@
       font-size: 0.85rem; color: var(--gray-mid); letter-spacing: 0.05em;
     }
     @media(max-width:600px) {
-      .ann-card-header { padding: 20px 20px 0; }
-      .ann-card-body { padding: 16px 20px 20px; }
+      .announcements-page > section.section { padding-bottom: 26px; }
+      .ann-featured {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        padding: 22px 20px 20px;
+        text-align: center;
+      }
+      .ann-featured-icon { width: 96px; height: 66px; }
+      .ann-featured-copy { display: flex; flex-direction: column; align-items: center; }
+      .ann-featured-title { font-size: 1.85rem; }
+      .ann-featured-resolution { font-size: 1.12rem; }
+      .ann-featured-detail { flex-direction: column; align-items: center; gap: 14px; }
+      .ann-card { padding: 24px 20px 24px 28px; }
+      .ann-card-body { padding-top: 18px; font-size: 1rem; }
+      .ann-card-title { font-size: 1.9rem; }
+      .ann-card .news-card-tag { font-size: 0.68rem; letter-spacing: 0.13em; }
     }
   </style>
 </head>
-<body>
+<body class="announcements-page" style="--navy-dark:#3B4147;">
+<div class="mp-topbar" aria-hidden="true"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
@@ -90,6 +285,16 @@
 </div>
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
+    <a class="ann-featured" href="resources.html" aria-label="Research the new hyperscale data centers topic in Resources">
+      <img class="ann-featured-icon" src="attached_assets/image_1787707506447.png" alt=""/>
+      <div class="ann-featured-copy">
+        <div class="ann-featured-title">Tournament Topic Released: Hyperscale Data Centers</div>
+        <div class="ann-featured-detail">
+          <p class="ann-featured-resolution"><em>Resolved:</em> The United States federal government should enact a moratorium on hyperscale data center construction.</p>
+          <span class="ann-featured-cta">Start Researching →</span>
+        </div>
+      </div>
+    </a>
     <div class="kickoff-schedule-mount" style="margin-bottom:28px;"></div>
     <div id="ann-list">
       <div class="ann-empty">Loading announcements…</div>

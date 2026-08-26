@@ -3,13 +3,16 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>
   <meta name="description" content="Cooper Debate Team awards — Metro Finals Champions, NSDA Nationals 4th Place, speaker awards and full results."/>
   <title>Awards — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=25"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=46"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <!-- Firebase compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -18,8 +21,950 @@
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
   <style>
     /* Awards page font overrides */
-    .page-header-label { font-size: 0.89rem !important; }
-    .page-subtitle     { font-size: 1.21rem !important; }
+    .page-header-label { font-size: clamp(0.9rem, 1.5vw, 1.08rem) !important; }
+    .page-subtitle     { font-size: clamp(1.25rem, 3vw, 1.77rem) !important; }
+
+    /* Match the charcoal public-page treatment */
+    .awards-page .page-header {
+      padding: 118px 24px 26px;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+    }
+    .awards-page .page-header::after {
+      display: none;
+    }
+    .awards-page > section.section {
+      padding-top: 18px;
+      padding-bottom: 40px;
+    }
+    .awards-page .aw-chart-grid {
+      margin-bottom: 20px;
+    }
+    .awards-page .page-header-label {
+      color: #D4A017;
+      margin-bottom: 16px;
+    }
+    .awards-page .page-header-content {
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    .awards-page .page-title {
+      letter-spacing: -0.015em;
+      text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+    .awards-page .page-subtitle {
+      color: #F2D16B;
+    }
+    .awards-page .aw-season-highlights {
+      position: relative;
+      overflow: hidden;
+      margin: 0 0 42px;
+      padding: 6px 26px 8px;
+      background: #850000;
+      border: 1px solid #F2D16B;
+      border-top: 0;
+      border-radius: 12px;
+      box-shadow: 0 7px 18px rgba(37,0,0,0.28);
+    }
+    .awards-page .aw-season-highlights-title {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      margin: 0 auto 14px;
+      padding: 5px 20px;
+      background: var(--gold);
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(212,160,23,0.4);
+      color: #0d1a0a;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .awards-page .aw-season-highlight-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .awards-page .aw-season-highlight-item {
+      display: flex;
+      min-height: 108px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 0 16px 2px;
+      text-align: center;
+    }
+    .awards-page .aw-season-highlight-item + .aw-season-highlight-item {
+      border-left: 1px solid rgba(242,209,107,0.76);
+    }
+    .awards-page .aw-season-highlight-art {
+      flex: 0 0 auto;
+      width: 50px;
+      height: 64px;
+      margin-bottom: 1px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-season-highlight-art.art-trophy {
+      background-position: 0 50%;
+    }
+    .awards-page .aw-season-highlight-art.art-star {
+      background-position: 33.3333% 50%;
+    }
+    .awards-page .aw-season-highlight-art.art-second {
+      background-position: 66.6667% 50%;
+    }
+    .awards-page .aw-season-highlight-art.art-ncfl {
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-season-highlight-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.09rem, 3.52vw, 2.8rem);
+      font-weight: 700;
+      line-height: 0.95;
+    }
+    .awards-page .aw-season-highlight-rule {
+      width: 76px;
+      height: 1px;
+      margin: 4px auto 0;
+      background: #F2D16B;
+    }
+    .awards-page .aw-season-highlight-label {
+      margin-top: 5px;
+      color: rgba(255,255,255,0.96);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-data-source {
+      display: inline-block;
+      margin: 0 0 28px;
+      padding: 8px 16px;
+      background: #0a1d42;
+      border: 1px solid rgba(242,209,107,0.82);
+      border-radius: 9px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.24);
+      color: #F2D16B;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+    }
+    .awards-page .season-select-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+    }
+    .awards-page .season-select-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0;
+      color: #F2D16B;
+      font-size: 0.9rem;
+      font-weight: 900;
+      letter-spacing: 0.18em;
+      text-shadow: 0 0 14px rgba(242,209,107,0.24);
+      text-transform: uppercase;
+    }
+    .awards-page .season-select-label::before {
+      display: none;
+    }
+    .awards-page .season-toggle {
+      display: inline-flex;
+      gap: 3px;
+      padding: 4px;
+      background: #0a1d42;
+      border: 1px solid rgba(242,209,107,0.62);
+      border-radius: 10px;
+      box-shadow: 0 5px 14px rgba(0,0,0,0.24);
+    }
+    .awards-page .season-toggle-btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 9px 14px;
+      background: transparent;
+      color: rgba(255,255,255,0.74);
+      cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.86rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .awards-page .season-toggle-btn:hover {
+      color: #fff;
+    }
+    .awards-page .season-toggle-btn.active {
+      background: var(--gold);
+      box-shadow: 0 2px 8px rgba(212,160,23,0.38);
+      color: #0d1a0a;
+    }
+    .awards-page .season-toggle-select {
+      display: none;
+    }
+    .awards-page .season-dropdown {
+      min-width: 126px;
+      padding: 10px 30px 10px 14px;
+      background: linear-gradient(145deg, #173d80, #0a1d42);
+      border-color: rgba(242,209,107,0.82);
+      border-radius: 7px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 4px 10px rgba(0,0,0,0.22);
+      color: #F2D16B;
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+    .awards-page .aw-results-heading-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .awards-page .aw-results-heading-row .section-title {
+      margin-bottom: 0 !important;
+    }
+    .awards-page .aw-results-heading-row .aw-data-source {
+      flex-shrink: 0;
+      margin: 0;
+    }
+    .awards-page .aw-results-content {
+      min-height: 420px;
+      overflow-anchor: none;
+    }
+    .awards-page .aw-results-content #aw-loading,
+    .awards-page .aw-results-content #aw-future,
+    .awards-page .aw-results-content #aw-data {
+      animation: awResultsReveal 0.28s ease both;
+    }
+    @keyframes awResultsReveal {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @media(max-width:760px) {
+      .awards-page .aw-results-heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .awards-page .aw-results-content {
+        min-height: 360px;
+      }
+    }
+    @media(max-width:900px) {
+      .awards-page .aw-season-highlight-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        row-gap: 18px;
+      }
+      .awards-page .aw-season-highlight-item:nth-child(4) {
+        border-left: 0;
+      }
+    }
+    @media(max-width:600px) {
+      .awards-page .aw-season-highlights {
+        padding: 8px 12px 7px;
+      }
+      .awards-page .aw-season-highlight-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .awards-page .aw-season-highlight-item {
+        min-height: 98px;
+        padding-inline: 8px;
+      }
+      .awards-page .aw-season-highlight-item:nth-child(odd) {
+        border-left: 0;
+      }
+      .awards-page .aw-season-highlight-label {
+        font-size: 0.59rem;
+      }
+      .awards-page .season-select-wrap {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .awards-page .season-toggle-btn {
+        padding-inline: 10px;
+      }
+    }
+    .awards-page .season-select-wrap {
+      margin-bottom: 16px;
+    }
+    .awards-page .season-select-label {
+      color: #F2D16B;
+    }
+    .awards-page .season-dropdown {
+      background:
+        linear-gradient(145deg, rgba(24,58,118,0.96), rgba(7,27,66,0.98));
+      border-color: rgba(242,209,107,0.68);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 5px 16px rgba(0,0,0,0.18);
+    }
+    .awards-page .trophy-card,
+    .awards-page .speaker-card,
+    .awards-page .aw-stat-box,
+    .awards-page .aw-tourn-card,
+    .awards-page .aw-champ-card,
+    .awards-page .aw-chart-wrap,
+    .awards-page .aw-lb-row,
+    .awards-page .metro-banner,
+    .awards-page .aw-future {
+      background: #0a1d42;
+      border-color: rgba(242,209,107,0.62);
+      border-width: 1.5px;
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-right,
+    .awards-page .aw-champ-summary,
+    .awards-page .aw-champ-highlight-date {
+      background: #0a1d42;
+    }
+    .awards-page .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-right {
+      min-height: 219px;
+      padding: 22px;
+    }
+    .awards-page .aw-champ-highlight-content {
+      gap: 20px;
+    }
+    .awards-page .aw-champ-highlight-plaque {
+      width: clamp(171px, 22.5vw, 270px);
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 13px;
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-number {
+      margin-bottom: 10px;
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-rule {
+      margin-bottom: 11px;
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-label {
+      margin-bottom: 11px;
+      line-height: 1.4;
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-stars {
+      margin-top: 12px;
+    }
+    .awards-page .aw-champ-highlight-main::before,
+    .awards-page .aw-champ-highlight-main::after {
+      display: none;
+    }
+    .awards-page .aw-champ-highlight-plaque {
+      filter: contrast(1.06) saturate(1.08);
+    }
+    .awards-page .aw-champ-highlight-badge-icon {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      margin-right: 7px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 0 50%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+      vertical-align: -10px;
+    }
+    .awards-page .aw-champ-kicker::before {
+      content: '';
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 0 50%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+      vertical-align: -10px;
+    }
+    .awards-page .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-right {
+      color: #fff;
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-badge {
+      color: #FFD700;
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-hierarchy {
+      color: #fff;
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-hierarchy span {
+      color: #fff;
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-name {
+      color: rgba(255,255,255,0.94);
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-place,
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-place-label {
+      color: #FFD700;
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-date-label,
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-field {
+      color: rgba(255,255,255,0.6);
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-date-value {
+      color: rgba(255,255,255,0.95);
+    }
+    .awards-page .aw-champ-highlight-main .aw-champ-highlight-competed {
+      color: rgba(255,255,255,0.66);
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-number {
+      color: #F2D16B;
+      text-shadow: 0 0 24px rgba(242,209,107,0.58);
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-label {
+      color: rgba(255,255,255,0.65);
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-description {
+      color: #fff;
+    }
+    .awards-page .aw-champ-highlight-right .aw-champ-highlight-stars {
+      color: #F2D16B;
+    }
+    .awards-page .aw-ncfl-highlight-grid {
+      margin-top: 16px;
+    }
+    .awards-page .aw-ncfl-highlight-icon-large {
+      flex: 0 0 auto;
+      width: 180px;
+      height: 180px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-ncfl-highlight-badge-icon {
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-ncfl-highlight-results {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .awards-page .aw-ncfl-highlight-result {
+      min-width: 130px;
+      padding: 8px 12px;
+      border: 1px solid rgba(242,209,107,0.38);
+      border-radius: 8px;
+      background: rgba(242,209,107,0.07);
+      text-align: center;
+    }
+    .awards-page .aw-ncfl-highlight-result-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-highlight-result-label {
+      margin-top: 4px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.64rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-ncfl-highlight-right-icon {
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-ncfl-summary-right {
+      padding: 22px 18px;
+    }
+    .awards-page .aw-ncfl-summary-icon {
+      width: 74px;
+      height: 74px;
+      margin: 0 auto 8px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 100% 50%;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-ncfl-summary-badge {
+      margin-bottom: 6px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-ncfl-summary-title {
+      color: #fff;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.65rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-summary-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      width: 100%;
+      margin-top: 14px;
+      border-top: 1px solid rgba(242,209,107,0.42);
+    }
+    .awards-page .aw-ncfl-summary-stat {
+      padding: 9px 4px 0;
+      text-align: center;
+    }
+    .awards-page .aw-ncfl-summary-stat + .aw-ncfl-summary-stat {
+      border-left: 1px solid rgba(242,209,107,0.28);
+    }
+    .awards-page .aw-ncfl-summary-stat-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-ncfl-summary-stat-label {
+      margin-top: 4px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.57rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-champ-highlight-grid {
+      gap: 0;
+      background: #0a1d42;
+      border: 1.5px solid rgba(242,209,107,0.58);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-champ-highlight-grid > .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-grid > .aw-champ-highlight-right {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .awards-page .aw-champ-highlight-grid > .aw-champ-highlight-right {
+      border-left: 1px solid rgba(242,209,107,0.58);
+    }
+    @media (max-width: 800px) {
+      .awards-page .aw-champ-highlight-grid > .aw-champ-highlight-right {
+        border-left: 0;
+        border-top: 1px solid rgba(242,209,107,0.58);
+      }
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      overflow: visible;
+      box-shadow: none;
+    }
+    .awards-page .aw-award-card {
+      display: flex;
+      min-width: 0;
+      min-height: 330px;
+      flex-direction: column;
+      overflow: hidden;
+      background: #0a1d42;
+      border: 1.5px solid rgba(242,209,107,0.58);
+      border-radius: 14px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+    }
+    .awards-page .aw-award-content {
+      display: flex;
+      flex: 1;
+      min-width: 0;
+      align-items: center;
+      gap: 16px;
+      padding: 20px 18px;
+    }
+    .awards-page .aw-award-media {
+      display: flex;
+      flex: 0 0 148px;
+      width: 148px;
+      height: 190px;
+      align-items: center;
+      justify-content: center;
+    }
+    .awards-page .aw-award-media img {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+    .awards-page .aw-metro-award-media img {
+      width: 148px;
+    }
+    .awards-page .aw-ncfl-award-media img {
+      width: 148px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
+    .awards-page .aw-award-details {
+      min-width: 0;
+      flex: 1;
+    }
+    .awards-page .aw-award-badge {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 7px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.2;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-award-badge-icon {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      margin-right: 5px;
+      background-image: url('attached_assets/image_1787698158491.png?v=38');
+      background-repeat: no-repeat;
+      background-size: 400% 100%;
+      background-position: 0 50%;
+      filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+      vertical-align: middle;
+    }
+    .awards-page .aw-ncfl-award-badge-icon {
+      background-position: 100% 50%;
+    }
+    .awards-page .aw-award-hierarchy {
+      margin-bottom: 6px;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      line-height: 1.35;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-award-title {
+      margin-bottom: 7px;
+      color: rgba(255,255,255,0.94);
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.08rem, 1.85vw, 1.38rem);
+      font-weight: 700;
+      line-height: 1.08;
+    }
+    .awards-page .aw-award-place {
+      margin-bottom: 5px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: clamp(2.8rem, 5.3vw, 4rem);
+      font-weight: 700;
+      line-height: 0.9;
+      text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+    }
+    .awards-page .aw-award-place sup {
+      font-size: 0.45em;
+      vertical-align: super;
+    }
+    .awards-page .aw-award-place-label {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.48em;
+      font-weight: 600;
+    }
+    .awards-page .aw-ncfl-award-achievement {
+      margin-bottom: 5px;
+      color: #FFD700;
+      font-family: 'Josefin Sans', sans-serif !important;
+      font-size: clamp(1.3584375rem, 2.5703203125vw, 1.940625rem);
+      font-weight: 700;
+      line-height: 0.9;
+      text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-content {
+      align-items: stretch;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-media {
+      align-self: center;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-details {
+      display: flex;
+      align-self: stretch;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      row-gap: 13px;
+      padding-top: 12px;
+    }
+    .awards-page .aw-ncfl-award-card .aw-award-badge,
+    .awards-page .aw-ncfl-award-card .aw-award-hierarchy,
+    .awards-page .aw-ncfl-award-card .aw-award-title,
+    .awards-page .aw-ncfl-award-card .aw-ncfl-award-achievement {
+      margin-bottom: 0;
+    }
+    .awards-page .aw-award-note {
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.68rem;
+      line-height: 1.45;
+    }
+    .awards-page .aw-award-stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 10px 10px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      overflow: visible;
+    }
+    .awards-page .aw-award-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-width: 0;
+      min-height: 142px;
+      padding: 12px 6px 14px;
+      background: #0a1d42;
+      border: 1px solid rgba(242,209,107,0.72);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .awards-page .aw-award-stat + .aw-award-stat {
+      border-left: 1px solid rgba(242,209,107,0.72);
+    }
+    .awards-page .aw-award-stat-icon {
+      display: grid;
+      width: 45px;
+      height: 45px;
+      place-items: center;
+      margin-bottom: 7px;
+      border: 1px solid rgba(242,209,107,0.88);
+      border-radius: 50%;
+      color: #F2D16B;
+      filter: drop-shadow(0 0 6px rgba(242,209,107,0.25));
+    }
+    .awards-page .aw-award-stat-icon svg {
+      display: block;
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+    .awards-page .aw-award-stat-number {
+      color: #F2D16B;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.35rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .awards-page .aw-award-stat-divider {
+      position: relative;
+      width: 70px;
+      height: 1px;
+      margin: 8px 0 7px;
+      background: linear-gradient(90deg, transparent, rgba(242,209,107,0.9) 22%, #F2D16B 50%, rgba(242,209,107,0.9) 78%, transparent);
+    }
+    .awards-page .aw-award-stat-divider::after {
+      content: '✦';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      padding: 0 4px;
+      background: #13274a;
+      color: #F2D16B;
+      font-size: 0.72rem;
+      line-height: 1;
+      transform: translate(-50%, -50%);
+    }
+    .awards-page .aw-award-stat-label {
+      margin-top: 0;
+      color: #fff;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.58rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      line-height: 1.3;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-award-badge {
+      padding: 4px 10px;
+      background: #850000;
+      border: 1px solid rgba(242,209,107,0.72);
+      border-radius: 50px;
+      color: #fff;
+    }
+    .awards-page .aw-ncfl-award-achievement,
+    .awards-page .aw-season-highlight-item.aw-ncfl-season-highlight-item .aw-season-highlight-label {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 700;
+    }
+    .awards-page .aw-season-highlight-item.aw-ncfl-season-highlight-item .aw-season-highlight-label {
+      font-size: 0.98rem;
+      letter-spacing: 0.02em;
+      line-height: 1.05;
+      text-transform: none;
+    }
+    .awards-page .aw-award-stats {
+      gap: 10px;
+    }
+    .awards-page .aw-award-stat {
+      position: relative;
+      padding: 12px 6px 14px;
+    }
+    .awards-page .aw-award-stat-label {
+      font-size: 0.58rem;
+    }
+    .awards-page .aw-award-stat + .aw-award-stat {
+      border-left: 1px solid rgba(242,209,107,0.72);
+    }
+    @media (max-width: 800px) {
+      .awards-page .aw-champ-highlight-grid.aw-two-awards {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 500px) {
+      .awards-page .aw-award-content {
+        gap: 12px;
+        padding: 18px 14px;
+      }
+      .awards-page .aw-award-media {
+        flex-basis: 112px;
+        width: 112px;
+        height: 155px;
+      }
+      .awards-page .aw-metro-award-media img,
+      .awards-page .aw-ncfl-award-media img {
+        width: 112px;
+      }
+      .awards-page .aw-award-badge {
+        font-size: 0.58rem;
+      }
+      .awards-page .aw-award-badge-icon {
+        width: 18px;
+        height: 18px;
+      }
+      .awards-page .aw-award-stats {
+        margin-inline: 8px;
+      }
+      .awards-page .aw-award-stat {
+        min-height: 128px;
+        padding-inline: 4px;
+      }
+      .awards-page .aw-award-stat-icon {
+        width: 38px;
+        height: 38px;
+        margin-bottom: 6px;
+      }
+      .awards-page .aw-award-stat-icon svg {
+        width: 21px;
+        height: 21px;
+      }
+      .awards-page .aw-award-stat-number {
+        font-size: 2rem;
+      }
+      .awards-page .aw-award-stat-divider {
+        width: 52px;
+        margin-block: 7px 6px;
+      }
+      .awards-page .aw-award-stat-label {
+        font-size: 0.5rem;
+      }
+    }
+    .awards-page .aw-tourn-card {
+      padding: 20px 22px;
+    }
+    .awards-page .aw-champ-card,
+    .awards-page .aw-chart-wrap {
+      padding: 21px 20px;
+    }
+    .awards-page .aw-stat-strip {
+      gap: 16px;
+      margin-bottom: 34px;
+    }
+    .awards-page .aw-stat-box {
+      position: relative;
+      overflow: hidden;
+      padding: 29px 20px 22px;
+      background: #0a1d42;
+      border-color: rgba(242,209,107,0.78);
+      border-radius: 10px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.28);
+    }
+    .awards-page .aw-stat-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: rgba(242,209,107,0.9);
+    }
+    .awards-page .aw-stat-lbl {
+      color: #fff;
+    }
+    .awards-page .aw-stat-num {
+      padding-bottom: 14px;
+      color: #F2D16B;
+      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(242,209,107,0.35);
+    }
+    .awards-page .aw-stat-divider {
+      width: 58px;
+      background: linear-gradient(90deg, transparent, rgba(242,209,107,0.8) 28%, #F2D16B 50%, rgba(242,209,107,0.8) 72%, transparent);
+    }
+    .awards-page .trophy-card:hover,
+    .awards-page .speaker-card:hover,
+    .awards-page .aw-stat-box:hover,
+    .awards-page .aw-tourn-card:hover,
+    .awards-page .aw-lb-row:hover {
+      border-color: rgba(242,209,107,0.9);
+    }
+    .awards-page .aw-champ-highlight-main,
+    .awards-page .aw-champ-highlight-right,
+    .awards-page .aw-champ-summary {
+      border-color: rgba(242,209,107,0.58);
+      border-width: 1.5px;
+    }
+    .awards-page .timeline-year,
+    .awards-page .aw-place-tile {
+      border-color: rgba(242,209,107,0.32);
+      border-width: 1.5px;
+    }
+    .awards-page footer {
+      padding-top: 32px;
+    }
+    @media (max-width: 900px) {
+      .awards-page #aw-stat-strip {
+        row-gap: 8px;
+      }
+    }
 
     /* Season dropdown */
     .season-select-wrap {
@@ -346,11 +1291,11 @@
       display:grid; grid-template-columns:minmax(0,1.3fr) minmax(250px,0.9fr);
       gap:18px; margin-bottom:14px;
     }
-    .aw-record-bars { display:flex; align-items:flex-end; gap:10px; height:204px; padding:12px 12px 0; border-bottom:1px solid rgba(255,255,255,0.3); }
+    .aw-record-bars { display:flex; align-items:flex-end; gap:10px; height:250px; padding:12px 12px 0; border-bottom:1px solid rgba(255,255,255,0.3); }
     .aw-record-bar-col { flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-width:0; }
     .aw-record-bar-count { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#fff; margin-bottom:5px; }
     .aw-record-bar {
-      width:min(42px,72%); min-height:4px; border-radius:4px 4px 0 0;
+      width:min(56px,72%); min-height:4px; border-radius:4px 4px 0 0;
       background:var(--bar-color,#D4A017); box-shadow:0 0 12px color-mix(in srgb,var(--bar-color,#D4A017) 35%,transparent);
     }
     .aw-record-bar-label { margin-top:8px; font-family:'Josefin Sans',sans-serif; font-size:0.72rem; color:rgba(255,255,255,0.75); white-space:nowrap; }
@@ -387,7 +1332,7 @@
       .aw-champ-metric-value { font-size:2.05rem; }
       .aw-champ-metric-label { font-size:0.59rem; }
       .aw-champ-card { padding:18px 13px; }
-      .aw-record-bars { gap:4px; padding-left:0; padding-right:0; }
+      .aw-record-bars { height:220px; gap:4px; padding-left:0; padding-right:0; }
       .aw-record-bar-label { font-size:0.64rem; }
       .aw-placement-legend { font-size:0.6rem; }
       .aw-champ-highlight-date { min-width:0; width:100%; }
@@ -395,6 +1340,14 @@
       .aw-champ-highlight-plaque { width:min(280px,72vw); margin-inline:auto; }
       .aw-champ-highlight-competed { padding-left:0; border-left:none; }
     }
+
+    /* Championship chart/table type — 25% larger within the red-boxed area */
+    .awards-page .aw-champ-chart-grid .aw-champ-card-title { font-size:1.125rem; }
+    .awards-page .aw-champ-chart-grid .aw-champ-card-subtitle { font-size:0.975rem; }
+    .awards-page .aw-champ-chart-grid .aw-record-bar-count { font-size:1.3125rem; }
+    .awards-page .aw-champ-chart-grid .aw-record-bar-label { font-size:0.9rem; }
+    .awards-page .aw-champ-chart-grid .aw-record-table { font-size:0.975rem; }
+    .awards-page .aw-champ-chart-grid .aw-record-table th { font-size:0.775rem; }
 
     /* Leaderboard */
     .aw-lb-row {
@@ -467,9 +1420,10 @@
     @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
   </style>
 </head>
-<body>
+<body class="awards-page" style="--navy-dark:#3B4147;">
 
 <!-- SITE BADGE (home link) -->
+<div class="mp-topbar" aria-hidden="true"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
@@ -513,19 +1467,56 @@
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
 
+    <div id="aw-season-highlights-title" class="aw-season-highlights-title">2025-26 Season Highlights</div>
+    <div id="aw-season-highlights" class="aw-season-highlights" style="display:none;" aria-labelledby="aw-season-highlights-title">
+      <div class="aw-season-highlight-grid">
+        <div class="aw-season-highlight-item">
+          <span class="aw-season-highlight-art art-trophy" aria-hidden="true"></span>
+          <div id="aw-highlight-metro" class="aw-season-highlight-number">22</div>
+          <div class="aw-season-highlight-rule" aria-hidden="true"></div>
+          <div class="aw-season-highlight-label">Pairs Qualified<br>for Metro Finals</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <span class="aw-season-highlight-art art-star" aria-hidden="true"></span>
+          <div id="aw-highlight-undefeated" class="aw-season-highlight-number">10</div>
+          <div class="aw-season-highlight-rule" aria-hidden="true"></div>
+          <div class="aw-season-highlight-label">Pairs Went<br>Undefeated (4–0)</div>
+        </div>
+        <div class="aw-season-highlight-item">
+          <span class="aw-season-highlight-art art-second" aria-hidden="true"></span>
+          <div class="aw-season-highlight-number">2nd</div>
+          <div class="aw-season-highlight-rule" aria-hidden="true"></div>
+          <div class="aw-season-highlight-label">in Metro<br>Finals</div>
+        </div>
+        <div class="aw-season-highlight-item aw-ncfl-season-highlight-item">
+          <span class="aw-season-highlight-art art-ncfl" aria-hidden="true"></span>
+          <div class="aw-season-highlight-number">NCFL</div>
+          <div class="aw-season-highlight-rule" aria-hidden="true"></div>
+          <div class="aw-season-highlight-label">Qualified for<br>Semis</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Season selector -->
     <div class="season-select-wrap">
-      <span class="season-select-label">Season</span>
-      <select class="season-dropdown" id="season-dropdown" onchange="onSeasonChange()">
+      <span class="season-select-label">Choose a Season</span>
+      <select class="season-dropdown season-toggle-select" id="season-dropdown" onchange="onSeasonChange()" aria-hidden="true" tabindex="-1">
         <option value="2025" selected>2025–26</option>
         <option value="2026">2026–27</option>
       </select>
+      <div class="season-toggle" role="group" aria-label="Choose season">
+        <button type="button" class="season-toggle-btn active" data-season="2025" aria-pressed="true" onclick="chooseSeason(2025)">2025–26</button>
+        <button type="button" class="season-toggle-btn" data-season="2026" aria-pressed="false" onclick="chooseSeason(2026)">2026–27</button>
+      </div>
     </div>
-    <h2 class="section-title" style="margin-bottom:10px;">Season Results for <span id="season-label">2025–26</span></h2>
-    <p style="font-family:'Josefin Sans',sans-serif;font-size:0.95rem;font-weight:700;letter-spacing:0.06em;color:var(--gold);margin-bottom:28px;opacity:0.85;">Data extracted from Tabroom.com</p>
+    <div class="aw-results-heading-row">
+      <h2 class="section-title">Season Results for <span id="season-label">2025–26</span></h2>
+      <p class="aw-data-source">Data extracted from Tabroom.com</p>
+    </div>
 
-    <!-- Loading -->
-    <div id="aw-loading" class="aw-loading">Loading season data…</div>
+    <div id="aw-results-content" class="aw-results-content" aria-live="polite">
+      <!-- Loading -->
+      <div id="aw-loading" class="aw-loading">Loading season data…</div>
 
     <!-- Future season placeholder -->
     <div id="aw-future" class="aw-future" style="display:none;">
@@ -579,7 +1570,8 @@
         <div id="aw-tl-legend"></div>
       </div>
 
-    </div><!-- /aw-data -->
+      </div><!-- /aw-data -->
+    </div><!-- /aw-results-content -->
 
   </div>
 </section>
@@ -916,11 +1908,13 @@ function renderAwards(tourns) {
   const loading = document.getElementById('aw-loading');
   const future  = document.getElementById('aw-future');
   const data    = document.getElementById('aw-data');
+  const seasonHighlights = document.getElementById('aw-season-highlights');
 
   if (tourns.length === 0) {
     loading.style.display = 'none';
     future.style.display  = 'block';
     data.style.display    = 'none';
+    seasonHighlights.style.display = 'block';
     return;
   }
 
@@ -934,6 +1928,11 @@ function renderAwards(tourns) {
   const metroProgress = metro.filter(p => !p.eligible).length;
   const pairs40 = metro.filter(p => p.c40 >= 1).length;
   const pairs31 = metro.filter(p => p.c31 >= 1).length;
+  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
+
+  seasonHighlights.style.display = 'block';
+  document.getElementById('aw-highlight-metro').textContent = metroElig;
+  document.getElementById('aw-highlight-undefeated').textContent = pairs40;
 
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
@@ -977,7 +1976,6 @@ function renderAwards(tourns) {
     highlights.push({ icon:'images/icons/icon-shield.png', num: pairs40,
       lbl: `pair${pairs40!==1?'s':''} went undefeated (4–0)` });
 
-  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
   if (pairs3plus > 0)
     highlights.push({ icon:'images/icons/icon-target.png', num: pairs3plus,
       lbl: `pair${pairs3plus!==1?'s':''} finished 3–1 or better` });
@@ -1015,6 +2013,7 @@ function renderAwards(tourns) {
   const gridColor  = 'rgba(255,255,255,0.05)';
   const tickColor  = 'rgba(255,255,255,0.6)';
   const tickFont   = { size: 13 };
+  const barTickFont = { size: 15 };
   const noLegend   = { legend:{ display:false } };
   const bigLabel   = { display: (c) => c.dataset.data[c.dataIndex] > 0,
                        color:'#fff', font:{ size:22, weight:'bold', family:"'Playfair Display',serif" },
@@ -1022,8 +2021,8 @@ function renderAwards(tourns) {
 
   function barScales(yStep) {
     return {
-      x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
-      y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, stepSize:yStep||1}, beginAtZero:true }
+      x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:barTickFont} },
+      y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:barTickFont, stepSize:yStep||1}, beginAtZero:true }
     };
   }
 
@@ -1036,8 +2035,8 @@ function renderAwards(tourns) {
     data:{
       labels:['0 wins','1 win','2 wins','3 wins','4 wins'],
       datasets:[{ data:[dist[0],dist[1],dist[2],dist[3],dist[4]],
-        backgroundColor:['rgba(239,68,68,0.45)','rgba(251,146,60,0.45)','rgba(212,160,23,0.4)','rgba(34,197,94,0.45)','rgba(34,197,94,0.7)'],
-        borderColor:['rgba(239,68,68,0.8)','rgba(251,146,60,0.8)','rgba(212,160,23,0.9)','rgba(34,197,94,0.8)','rgba(34,197,94,1)'],
+        backgroundColor:['#C91F2B','#E46D0A','#F2B705','#165BC4','#087A42'],
+        borderColor:['#F04A53','#FF9A2E','#FFD34A','#4A8BE8','#24A866'],
         borderWidth:1, borderRadius:4 }]
     },
     options:{ responsive:true, plugins:{...noLegend, datalabels:bigLabel}, scales:barScales(1) }
@@ -1232,40 +2231,87 @@ function renderAwards(tourns) {
 
     highlightEl.style.display = '';
     highlightEl.innerHTML = `
-      <div class="aw-champ-highlight-grid">
-        <div class="aw-champ-highlight-main">
-          <div class="aw-champ-highlight-content">
-            <img class="aw-champ-highlight-plaque" src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque">
-            <div class="aw-champ-highlight-details">
-              <div class="aw-champ-highlight-badge">🏆 Metro Finals · Elite Championship</div>
-              <div class="aw-champ-highlight-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
-              <div class="aw-champ-highlight-name">${bestMetro.tournName}</div>
-              <div class="aw-champ-highlight-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-champ-highlight-place-label">PLACE</span></div>
-              ${champDate ? `<div class="aw-champ-highlight-date">
-                <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg>
-                <span class="aw-champ-highlight-date-label">Date</span>
-                <span class="aw-champ-highlight-date-value">${champDate}</span>
-              </div>` : ''}
-              <div class="aw-champ-highlight-foot">
-                <div class="aw-champ-highlight-field">⭐ of ${bestMetro.fieldSize || '—'} teams</div>
-                <div class="aw-champ-highlight-competed">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(212,160,23,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                  ${competed} Cooper team${competed === 1 ? '' : 's'} competed
-                </div>
-              </div>
+      <div class="aw-champ-highlight-grid aw-two-awards">
+        <article class="aw-award-card aw-ncfl-award-card">
+          <div class="aw-award-content">
+            <div class="aw-award-media aw-ncfl-award-media">
+              <img src="attached_assets/image_1787700174823.png?v=38" alt="NCFL championship trophy">
+            </div>
+            <div class="aw-award-details">
+              <div class="aw-award-badge"><span class="aw-award-badge-icon aw-ncfl-award-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
+              <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; NCFL &nbsp;›&nbsp; Octos / Semis</div>
+              <div class="aw-award-title">NCFL Championship Results</div>
+              <div class="aw-award-place aw-ncfl-award-achievement">Semis Qualified</div>
+              <div class="aw-award-note">Date · 27th Mar 2026</div>
             </div>
           </div>
-        </div>
-        <div class="aw-champ-highlight-right">
-          <div class="aw-champ-highlight-icon">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <div class="aw-award-stats">
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+              </span>
+              <div class="aw-award-stat-number">3</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Teams Reached<br>Octos</div>
+            </div>
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+              </span>
+              <div class="aw-award-stat-number">1</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Team Reached<br>Semis</div>
+            </div>
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="M5 20V4"/><path d="M6 5h11l-2 4 2 4H6"/><path d="M2 20h6"/></svg>
+              </span>
+              <div class="aw-award-stat-number">7</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Cooper Teams<br>Participated</div>
+            </div>
           </div>
-          <div class="aw-champ-highlight-number">${qualified}</div>
-          <div class="aw-champ-highlight-rule"></div>
-          <div class="aw-champ-highlight-label">Pairs Qualified<br>for Metro Finals</div>
-          <div class="aw-champ-highlight-description">These pairs earned their spot among the top in the metro.</div>
-          <div class="aw-champ-highlight-stars">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>
-        </div>
+        </article>
+        <article class="aw-award-card aw-metro-award-card">
+          <div class="aw-award-content">
+            <div class="aw-award-media aw-metro-award-media">
+              <img src="images/icon-metro-finals-spotlight.png?v=38" alt="WASDL Metro Finals second-place plaque">
+            </div>
+            <div class="aw-award-details">
+              <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
+              <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
+              <div class="aw-award-title">${bestMetro.tournName}</div>
+              <div class="aw-award-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-award-place-label">PLACE</span></div>
+              ${champDate ? `<div class="aw-award-note">Date · ${champDate}</div>` : ''}
+            </div>
+          </div>
+          <div class="aw-award-stats">
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+              </span>
+              <div class="aw-award-stat-number">${bestMetro.fieldSize || '—'}</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Teams<br>in Field</div>
+            </div>
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+              </span>
+              <div class="aw-award-stat-number">${competed}</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Cooper Teams<br>Competed</div>
+            </div>
+            <div class="aw-award-stat">
+              <span class="aw-award-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+              </span>
+              <div class="aw-award-stat-number">${qualified}</div>
+              <span class="aw-award-stat-divider" aria-hidden="true"></span>
+              <div class="aw-award-stat-label">Pairs Qualified<br>for Metro</div>
+            </div>
+          </div>
+        </article>
       </div>`;
   } else {
     highlightEl.style.display = 'none';
@@ -1343,7 +2389,7 @@ function renderAwards(tourns) {
               ${recordRows.map(r => `
                 <div class="aw-record-bar-col">
                   <div class="aw-record-bar-count">${r.pairs}</div>
-                  <div class="aw-record-bar" style="--bar-color:${r.color};height:${Math.max(8, Math.round((r.pairs / maxRecordPairs) * 142))}px"></div>
+                  <div class="aw-record-bar" style="--bar-color:${r.color};height:${Math.max(8, Math.round((r.pairs / maxRecordPairs) * 190))}px"></div>
                   <div class="aw-record-bar-label">${r.wins}–${r.losses}</div>
                 </div>`).join('')}
             </div>
@@ -1412,11 +2458,22 @@ function filterAndRender() {
   renderAwards(filtered);
 }
 
+function chooseSeason(year) {
+  const dropdown = document.getElementById('season-dropdown');
+  dropdown.value = String(year);
+  onSeasonChange();
+}
+
 function onSeasonChange() {
   const sel   = document.getElementById('season-dropdown');
   const year  = parseInt(sel.value, 10);
   const label = sel.options[sel.selectedIndex].text;
   document.getElementById('season-label').textContent = label;
+  document.querySelectorAll('.season-toggle-btn').forEach(btn => {
+    const active = btn.dataset.season === String(year);
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  });
 
   /* Show loading state while re-rendering */
   document.getElementById('aw-loading').style.display = 'block';

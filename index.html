@@ -8,14 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=26"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+   <link rel="stylesheet" href="css/main.css?v=35"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
   <style>
     /* ── Index page mobile overrides ── */
 
     /* Base: stats 4-col grid (set here so media queries can override) */
     #idx-stats-grid { grid-template-columns: repeat(4,1fr) !important; }
+     .btn-gold { color: #0C1A42 !important; }
 
     /* Stat card icon circle */
     .idx-stat-icon {
@@ -28,11 +29,361 @@
     }
     .idx-stat-icon svg { display: block; }
 
-    /* Championship panel two-column layout */
-    #idx-champ-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    @media (min-width: 760px) {
-      #idx-champ-grid { grid-template-columns: 2fr 1fr; }
-    }
+     /* Keep gold panel borders crisp against the lighter charcoal page background. */
+     .resolution-card {
+       background: linear-gradient(145deg, rgba(8,28,69,0.96), rgba(4,15,39,0.98)) !important;
+       border-color: #F2D16B !important;
+       box-shadow: 0 8px 22px rgba(0,0,0,0.24);
+     }
+     #idx-news-box,
+     #idx-stats-outer,
+     #idx-phi-box,
+     #idx-join-box {
+       background: linear-gradient(145deg, rgba(11,32,76,0.94), rgba(6,19,49,0.98)) !important;
+       border-color: rgba(242,209,107,0.72) !important;
+     }
+     #idx-stats-grid > div {
+       background: linear-gradient(145deg, rgba(6,20,53,0.98), rgba(3,12,33,0.99)) !important;
+       border-color: #F2D16B !important;
+       box-shadow: 0 5px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+     }
+     #idx-stats-section::before,
+     #idx-stats-section::after {
+       display: none;
+     }
+     #idx-stats-heading {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 24px;
+       padding: 4px 0 6px;
+       margin-bottom: 32px;
+     }
+     #idx-stats-heading #idx-stats-season-label {
+       align-items: center;
+       gap: 10px;
+       color: #F2D16B !important;
+       font-size: 1.05rem !important;
+       letter-spacing: 0.17em;
+       line-height: 1.1;
+       text-shadow: 0 0 12px rgba(242,209,107,0.18);
+       white-space: nowrap;
+     }
+     #idx-stats-heading #idx-stats-season-label::before {
+       width: 30px;
+       height: 1px;
+       background: linear-gradient(90deg, transparent, #F2D16B);
+     }
+     #idx-stats-heading #idx-stats-season-label::after {
+       content: '';
+       display: inline-block;
+       width: 1px;
+       height: 30px;
+       margin-left: 5px;
+       background: linear-gradient(to bottom, transparent, rgba(242,209,107,0.9), transparent);
+     }
+     #idx-stats-heading .section-title {
+       font-size: clamp(2.5rem, 4.8vw, 3.6rem) !important;
+       line-height: 0.95;
+       letter-spacing: -0.015em;
+       text-shadow: 0 3px 18px rgba(0,0,0,0.24);
+       white-space: nowrap;
+     }
+     #idx-stats-heading #idx-stats-season-label,
+     #idx-stats-heading .section-title {
+       margin-bottom: 0 !important;
+     }
+     .idx-champ-main {
+       background: linear-gradient(135deg, rgba(3,14,42,0.99) 0%, rgba(7,26,61,0.98) 58%, rgba(15,39,76,0.98) 100%),
+                  radial-gradient(ellipse at 70% 50%, rgba(212,160,23,0.12) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(212,160,23,0.06) 0%, transparent 50%) !important;
+       border-color: #F2D16B !important;
+     }
+     .idx-metro-card {
+       background: linear-gradient(145deg, rgba(10,30,70,0.98), rgba(4,14,39,0.99)) !important;
+       border-color: #F2D16B !important;
+     }
+     .idx-stat-icon {
+       border-color: #F2D16B;
+     }
+     /* Homepage championship cards — match awards.html without using a screenshot */
+     #idx-champ-panel.idx-award-panel {
+       margin-top: 22px;
+     }
+     #idx-champ-grid {
+       display: grid;
+       grid-template-columns: repeat(2, minmax(0, 1fr));
+       gap: 16px;
+     }
+     .idx-award-panel .aw-award-card {
+       display: flex;
+       min-width: 0;
+       min-height: 390px;
+       flex-direction: column;
+       overflow: hidden;
+       background: linear-gradient(145deg, rgba(6,20,53,0.98), rgba(3,12,33,0.99));
+       border: 1.5px solid #F2D16B;
+       border-radius: 14px;
+       box-shadow: 0 8px 24px rgba(0,0,0,0.16);
+     }
+     .idx-award-panel .aw-award-content {
+       display: flex;
+       flex: 1;
+       min-width: 0;
+       align-items: center;
+       gap: 16px;
+       padding: 20px 18px;
+     }
+     .idx-award-panel .aw-award-media {
+       display: flex;
+       flex: 0 0 148px;
+       width: 148px;
+       height: 190px;
+       align-items: center;
+       justify-content: center;
+     }
+     .idx-award-panel .aw-award-media img {
+       display: block;
+       max-width: 100%;
+       max-height: 100%;
+       object-fit: contain;
+     }
+     .idx-award-panel .aw-metro-award-media img,
+     .idx-award-panel .aw-ncfl-award-media img {
+       width: 148px;
+     }
+     .idx-award-panel .aw-award-details {
+       min-width: 0;
+       flex: 1;
+     }
+     .idx-award-panel .aw-award-badge {
+       display: inline-flex;
+       align-items: center;
+       margin-bottom: 7px;
+       padding: 4px 10px;
+       background: #850000;
+       border: 1px solid rgba(242,209,107,0.72);
+       border-radius: 50px;
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.66rem;
+       font-weight: 700;
+       letter-spacing: 0.08em;
+       line-height: 1.2;
+       text-transform: uppercase;
+     }
+     .idx-award-panel .aw-award-badge-icon {
+       display: inline-block;
+       width: 22px;
+       height: 22px;
+       margin-right: 5px;
+       background-image: url('attached_assets/image_1787698158491.png?v=35');
+       background-repeat: no-repeat;
+       background-size: 400% 100%;
+       background-position: 0 50%;
+       filter: drop-shadow(0 1px 1px rgba(0,0,0,0.35));
+     }
+     .idx-award-panel .aw-ncfl-award-badge-icon {
+       background-position: 100% 50%;
+     }
+     .idx-award-panel .aw-award-hierarchy {
+       margin-bottom: 6px;
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.58rem;
+       font-weight: 600;
+       letter-spacing: 0.06em;
+       line-height: 1.35;
+       text-transform: uppercase;
+     }
+     .idx-award-panel .aw-award-title {
+       margin-bottom: 7px;
+       color: rgba(255,255,255,0.94);
+       font-family: 'Cormorant Garamond', serif;
+       font-size: clamp(1.08rem, 1.85vw, 1.38rem);
+       font-weight: 700;
+       line-height: 1.08;
+     }
+     .idx-award-panel .aw-award-place {
+       margin-bottom: 5px;
+       color: #FFD700;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: clamp(2.8rem, 5.3vw, 4rem);
+       font-weight: 700;
+       line-height: 0.9;
+       text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+     }
+     .idx-award-panel .aw-award-place sup {
+       font-size: 0.45em;
+       vertical-align: super;
+     }
+     .idx-award-panel .aw-award-place-label {
+       font-size: 0.48em;
+       font-weight: 600;
+     }
+     .idx-award-panel .aw-ncfl-award-achievement {
+       margin-bottom: 0;
+       color: #FFD700;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: clamp(1.3584375rem, 2.5703203125vw, 1.940625rem);
+       font-weight: 700;
+       line-height: 0.9;
+       text-shadow: 0 0 24px rgba(255,215,0,0.48), 0 2px 4px rgba(0,0,0,0.55);
+       text-transform: uppercase;
+       white-space: nowrap;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-details {
+       display: flex;
+       align-self: stretch;
+       flex-direction: column;
+       align-items: flex-start;
+       justify-content: flex-start;
+       row-gap: 13px;
+       padding-top: 12px;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-content {
+       align-items: stretch;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-media {
+       align-self: center;
+     }
+     .idx-award-panel .aw-ncfl-award-card .aw-award-badge,
+     .idx-award-panel .aw-ncfl-award-card .aw-award-hierarchy,
+     .idx-award-panel .aw-ncfl-award-card .aw-award-title {
+       margin-bottom: 0;
+     }
+     .idx-award-panel .aw-award-note {
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.68rem;
+       line-height: 1.45;
+     }
+     .idx-award-panel .aw-award-stats {
+       display: grid;
+       grid-template-columns: repeat(3, minmax(0, 1fr));
+       gap: 10px;
+       margin: 0 10px 10px;
+       padding: 0;
+       background: transparent;
+     }
+     .idx-award-panel .aw-award-stat {
+       display: flex;
+       min-width: 0;
+       min-height: 142px;
+       flex-direction: column;
+       align-items: center;
+       justify-content: flex-start;
+       padding: 12px 6px 14px;
+       background: linear-gradient(145deg, rgba(6,20,53,0.98), rgba(3,12,33,0.99));
+       border: 1px solid #F2D16B;
+       border-radius: 12px;
+       text-align: center;
+     }
+     .idx-award-panel .aw-award-stat-icon {
+       display: grid;
+       width: 45px;
+       height: 45px;
+       place-items: center;
+       margin-bottom: 7px;
+       border: 1px solid rgba(242,209,107,0.88);
+       border-radius: 50%;
+       color: #F2D16B;
+     }
+     .idx-award-panel .aw-award-stat-icon svg {
+       display: block;
+       width: 25px;
+       height: 25px;
+       fill: none;
+       stroke: currentColor;
+       stroke-linecap: round;
+       stroke-linejoin: round;
+       stroke-width: 1.8;
+     }
+     .idx-award-panel .aw-award-stat-number {
+       color: #F2D16B;
+       font-family: 'Cormorant Garamond', serif;
+       font-size: 2.35rem;
+       font-weight: 700;
+       line-height: 1;
+     }
+     .idx-award-panel .aw-award-stat-divider {
+       position: relative;
+       width: 70px;
+       height: 1px;
+       margin: 8px 0 7px;
+       background: linear-gradient(90deg, transparent, rgba(242,209,107,0.9) 22%, #F2D16B 50%, rgba(242,209,107,0.9) 78%, transparent);
+     }
+     .idx-award-panel .aw-award-stat-divider::after {
+       content: '✦';
+       position: absolute;
+       top: 50%;
+       left: 50%;
+       padding: 0 4px;
+       background: #13274a;
+       color: #F2D16B;
+       font-size: 0.72rem;
+       line-height: 1;
+       transform: translate(-50%, -50%);
+     }
+     .idx-award-panel .aw-award-stat-label {
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.58rem;
+       font-weight: 700;
+       letter-spacing: 0.05em;
+       line-height: 1.3;
+       text-transform: uppercase;
+     }
+     @media (max-width: 800px) {
+       #idx-champ-grid {
+         grid-template-columns: 1fr;
+       }
+     }
+     @media (max-width: 500px) {
+       .idx-award-panel .aw-award-content {
+         gap: 12px;
+         padding: 18px 14px;
+       }
+       .idx-award-panel .aw-award-media {
+         flex-basis: 112px;
+         width: 112px;
+         height: 155px;
+       }
+       .idx-award-panel .aw-metro-award-media img,
+       .idx-award-panel .aw-ncfl-award-media img {
+         width: 112px;
+       }
+       .idx-award-panel .aw-award-badge {
+         font-size: 0.58rem;
+       }
+       .idx-award-panel .aw-award-badge-icon {
+         width: 18px;
+         height: 18px;
+       }
+       .idx-award-panel .aw-award-stat {
+         min-height: 128px;
+         padding-inline: 4px;
+       }
+       .idx-award-panel .aw-award-stat-icon {
+         width: 38px;
+         height: 38px;
+         margin-bottom: 6px;
+       }
+       .idx-award-panel .aw-award-stat-icon svg {
+         width: 21px;
+         height: 21px;
+       }
+       .idx-award-panel .aw-award-stat-number {
+         font-size: 2rem;
+       }
+       .idx-award-panel .aw-award-stat-divider {
+         width: 52px;
+         margin-block: 7px 6px;
+       }
+       .idx-award-panel .aw-award-stat-label {
+         font-size: 0.5rem;
+       }
+     }
 
     /* Sparkle background for championship card */
     .idx-champ-main {
@@ -43,7 +394,7 @@
                    radial-gradient(ellipse at 20% 80%, rgba(212,160,23,0.08) 0%, transparent 50%);
        border: 1px solid rgba(242,193,66,0.58);
        border-radius: 11px;
-      padding: 28px 28px 28px 24px;
+      padding: 20px;
        box-shadow: 0 16px 34px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .idx-champ-main::before {
@@ -61,7 +412,7 @@
        transform:rotate(-8deg); opacity:0.75;
     }
      .idx-champ-plaque {
-       display:block; width:clamp(190px,25vw,300px); flex-shrink:0;
+        display:block; width:clamp(175px,22vw,250px); flex-shrink:0;
        filter:drop-shadow(0 7px 26px rgba(212,160,23,0.6)) contrast(1.06) saturate(1.08);
      }
 
@@ -80,19 +431,19 @@
        background: linear-gradient(145deg, rgba(16,42,88,0.96), rgba(7,21,53,0.98));
        border: 1px solid rgba(242,193,66,0.42);
        border-radius: 11px;
-      padding: 28px 20px;
+       padding: 20px 14px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center;
        box-shadow: 0 16px 34px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.06);
     }
      .idx-champ-date {
-       display:flex; align-items:center; gap:11px; width:fit-content; min-width:260px;
-       margin:8px 0 16px; padding:9px 14px; border:1px solid rgba(242,193,66,0.65);
+       display:flex; align-items:center; gap:9px; width:fit-content; min-width:230px;
+       margin:6px 0 10px; padding:7px 12px; border:1px solid rgba(242,193,66,0.65);
        border-radius:10px; background:rgba(5,17,48,0.58);
        box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
      }
      .idx-champ-date-label {
-       padding-right:11px; border-right:1px solid rgba(242,193,66,0.34);
+       padding-right:9px; border-right:1px solid rgba(242,193,66,0.34);
        font-family:'Josefin Sans',sans-serif; font-size:0.7rem; font-weight:700;
        letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.6);
      }
@@ -100,13 +451,13 @@
        font-family:'Cormorant Garamond',serif; font-size:1.35rem; font-weight:700;
        color:rgba(255,255,255,0.95); line-height:1;
      }
-     .idx-champ-foot { display:flex; align-items:center; flex-wrap:wrap; gap:12px; }
+      .idx-champ-foot { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
      .idx-champ-field {
        font-family:'Josefin Sans',sans-serif; font-size:0.88rem;
        color:rgba(255,255,255,0.58); letter-spacing:0.04em;
      }
      .idx-champ-competed {
-       display:flex; align-items:center; gap:6px; padding-left:12px;
+        display:flex; align-items:center; gap:6px; padding-left:8px;
        border-left:1px solid rgba(242,193,66,0.28); font-family:'Josefin Sans',sans-serif;
        font-size:0.88rem; color:rgba(255,255,255,0.66);
      }
@@ -180,6 +531,22 @@
 
       /* Bottom section: tighter gap between boxes */
       #idx-bottom-section .section-wrap { gap: 14px !important; }
+      #idx-stats-heading { gap: 8px; padding-inline: 0; }
+      #idx-stats-heading #idx-stats-season-label {
+        gap: 6px;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.09em;
+      }
+      #idx-stats-heading #idx-stats-season-label::before { width: 16px; }
+      #idx-stats-heading #idx-stats-season-label::after { display: none; }
+      #idx-stats-heading .section-title { font-size: 1.8rem !important; }
+    }
+
+    /* Keep dense content comfortable on tall tablet portrait screens without
+       changing the existing desktop or landscape hero composition. */
+     @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+      #idx-stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+      .idx-champ-plaque { width: min(300px,60vw); margin-inline: auto; }
     }
 
     /* Short landscape Chromebook viewport: keep the complete hero CTA above the fold. */
@@ -204,8 +571,10 @@
     }
   </style>
 </head>
-<body>
+<body style="--navy-dark:#3B4147;">
 
+<!-- PUBLIC HEADER BAR — matches the private portal header -->
+<div class="mp-topbar" aria-hidden="true"></div>
 
 <!-- SITE BADGE (home link) -->
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home">
@@ -356,8 +725,10 @@
 <section id="idx-stats-section" class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
     <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
-      <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
-      <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
+      <div id="idx-stats-heading">
+        <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
+      </div>
 
       <!-- 4-stat top row -->
       <div id="idx-stats-grid" style="display:grid;gap:18px;margin-bottom:24px;">
@@ -411,15 +782,91 @@
         </div>
       </div>
 
-      <!-- Championship panel (hidden until JS populates it) -->
-      <div id="idx-champ-panel" style="display:none;margin-top:8px;">
-        <div id="idx-champ-grid">
-          <!-- main card — JS fills idx-champ-content -->
-          <div id="idx-champ-content" class="idx-champ-main"></div>
-          <!-- right card — JS fills idx-champ-right (hidden if no content) -->
-          <div id="idx-champ-right" style="display:none;" class="idx-metro-card"></div>
-        </div>
-      </div>
+       <!-- Championship panel — live HTML cards matching awards.html -->
+       <div id="idx-champ-panel" class="idx-award-panel" style="display:block;">
+         <div id="idx-champ-grid">
+           <article class="aw-award-card aw-ncfl-award-card">
+             <div class="aw-award-content">
+               <div class="aw-award-media aw-ncfl-award-media">
+                 <img src="attached_assets/image_1787700174823.png?v=38" alt="NCFL championship trophy">
+               </div>
+               <div class="aw-award-details">
+                 <div class="aw-award-badge"><span class="aw-award-badge-icon aw-ncfl-award-badge-icon" aria-hidden="true"></span>NCFL · Elite Championship</div>
+                 <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; NCFL &nbsp;›&nbsp; Octos / Semis</div>
+                 <div class="aw-award-title">NCFL Championship Results</div>
+                 <div class="aw-award-place aw-ncfl-award-achievement">Semis Qualified</div>
+                 <div class="aw-award-note">Date · 27th Mar 2026</div>
+               </div>
+             </div>
+             <div class="aw-award-stats">
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">3</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Teams Reached<br>Octos</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">1</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Team Reached<br>Semis</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="M5 20V4"/><path d="M6 5h11l-2 4 2 4H6"/><path d="M2 20h6"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number">7</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Cooper Teams<br>Participated</div>
+               </div>
+             </div>
+           </article>
+           <article class="aw-award-card aw-metro-award-card">
+             <div class="aw-award-content">
+               <div class="aw-award-media aw-metro-award-media">
+                 <img src="images/icon-metro-finals-spotlight.png?v=38" alt="WASDL Metro Finals second-place plaque">
+               </div>
+               <div class="aw-award-details">
+                 <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
+                 <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; Metro Finals &nbsp;›&nbsp; Regional / Local</div>
+                 <div class="aw-award-title" id="idx-metro-award-title">WASDL Public Forum Policy and Congress Metro Finals</div>
+                 <div class="aw-award-place" id="idx-metro-award-place">2<sup>ND</sup> <span class="aw-award-place-label">PLACE</span></div>
+                 <div class="aw-award-note" id="idx-metro-award-date">Date · 14th Mar 2026</div>
+               </div>
+             </div>
+             <div class="aw-award-stats">
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-field">32</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Teams<br>in Field</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-competed">12</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Cooper Teams<br>Competed</div>
+               </div>
+               <div class="aw-award-stat">
+                 <span class="aw-award-stat-icon" aria-hidden="true">
+                   <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
+                 </span>
+                 <div class="aw-award-stat-number" id="idx-metro-award-qualified">22</div>
+                 <span class="aw-award-stat-divider" aria-hidden="true"></span>
+                 <div class="aw-award-stat-label">Pairs Qualified<br>for Metro</div>
+               </div>
+             </div>
+           </article>
+         </div>
+       </div>
 
       <div style="text-align:center;margin-top:32px;">
         <a href="awards.html" class="btn btn-gold" style="font-size:0.9rem;padding:12px 32px;letter-spacing:0.08em;">View Full Awards →</a>
@@ -851,23 +1298,37 @@
               var sfx = bestRank===1?'st':bestRank===2?'nd':bestRank===3?'rd':'th';
               var placeLabel = bestRank < 999 ? (bestRank + '<sup style="font-size:0.45em;vertical-align:super;">' + sfx.toUpperCase() + '</sup> <span style="font-size:0.55em;font-weight:600">PLACE</span>') : '';
               var champDate = formatChampDate(t.meta.date);
+               var homeTitle = document.getElementById('idx-metro-award-title');
+               var homePlace = document.getElementById('idx-metro-award-place');
+               var homeDate = document.getElementById('idx-metro-award-date');
+               var homeField = document.getElementById('idx-metro-award-field');
+               var homeCompeted = document.getElementById('idx-metro-award-competed');
+               var homeQualified = document.getElementById('idx-metro-award-qualified');
+               if (homeTitle) homeTitle.textContent = t.meta.name || 'Metro Finals';
+               if (homePlace && bestRank < 999) {
+                 homePlace.innerHTML = bestRank + '<sup>' + sfx.toUpperCase() + '</sup> <span class="aw-award-place-label">PLACE</span>';
+               }
+               if (homeDate && champDate) homeDate.textContent = 'Date · ' + champDate;
+               if (homeField) homeField.textContent = t.entries.length || '—';
+               if (homeCompeted) homeCompeted.textContent = cooperEntries.length;
+               if (homeQualified) homeQualified.textContent = metroElig;
               mainCards.push(
-                '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
+                 '<div style="display:flex;gap:14px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
                   /* Plaque image */
-                    '<img class="idx-champ-plaque" src="images/icon-metro-finals-spotlight.png" alt="WASDL Metro Finals second-place plaque"/>' +
+                    '<img class="idx-champ-plaque" src="attached_assets/image_1787703857235.png?v=1" alt="WASDL Metro Finals second-place championship artwork"/>' +
                   /* Details */
                   '<div style="flex:1;min-width:180px;">' +
                     /* Badge + hierarchy */
-                    '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">' +
-                      '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#FFD700;background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.4);padding:3px 10px;border-radius:50px;">🏆 Metro Finals · Elite Championship</span>' +
+                   '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">' +
+                     '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#FFD700;background:rgba(212,160,23,0.15);border:1px solid rgba(212,160,23,0.4);padding:2px 8px;border-radius:50px;">🏆 Metro Finals · Elite Championship</span>' +
                     '</div>' +
-                    '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.69rem;font-weight:600;letter-spacing:0.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:8px;">Nationals &nbsp;›&nbsp; <span style="color:rgba(212,160,23,0.7)">Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>' +
+                   '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.69rem;font-weight:600;letter-spacing:0.1em;color:rgba(255,255,255,0.3);text-transform:uppercase;margin-bottom:6px;">Nationals &nbsp;›&nbsp; <span style="color:rgba(212,160,23,0.7)">Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>' +
                     /* Tournament name */
-                    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.18rem,2.5vw,1.48rem);font-weight:700;color:rgba(255,255,255,0.94);margin-bottom:10px;line-height:1.15;">' + (t.meta.name || 'Metro Finals') + '</div>' +
+                   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:clamp(1.18rem,2.5vw,1.48rem);font-weight:700;color:rgba(255,255,255,0.94);margin-bottom:7px;line-height:1.15;">' + (t.meta.name || 'Metro Finals') + '</div>' +
                     /* Place */
-                    (placeLabel ? '<div class="idx-champ-place" style="margin-bottom:6px;">' + placeLabel + '</div>' : '') +
+                   (placeLabel ? '<div class="idx-champ-place" style="margin-bottom:4px;">' + placeLabel + '</div>' : '') +
                     /* Field size */
-                    (champDate ? '<div class="idx-champ-date"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg><span class="idx-champ-date-label">Date</span><span class="idx-champ-date-value">' + champDate + '</span></div>' : '') +
+                   (champDate ? '<div class="idx-champ-date"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01M8 17h.01M12 17h.01"/></svg><span class="idx-champ-date-label">Date</span><span class="idx-champ-date-value">' + champDate + '</span></div>' : '') +
                     '<div class="idx-champ-foot">' +
                     (bestRank < 999 ? '<div class="idx-champ-field">⭐ of ' + t.entries.length + ' teams</div>' : '') +
                     /* Cooper teams */
@@ -882,14 +1343,14 @@
               /* Nationals */
               cooperEntries.forEach(function(e) {
                 mainCards.push(
-                  '<div style="display:flex;gap:22px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
+                   '<div style="display:flex;gap:14px;align-items:center;position:relative;z-index:1;flex-wrap:wrap;">' +
                     '<img src="images/icon-plaque.png" alt="Nationals Plaque" style="width:clamp(90px,18vw,130px);flex-shrink:0;filter:drop-shadow(0 4px 24px rgba(139,92,246,0.5)) hue-rotate(260deg) saturate(0.7);transform:rotate(-3deg)"/>' +
                     '<div style="flex:1;min-width:180px;">' +
-                      '<div style="margin-bottom:10px;">' +
-                        '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);padding:3px 10px;border-radius:50px;">🌟 NSDA Nationals</span>' +
+                     '<div style="margin-bottom:6px;">' +
+                       '<span style="font-family:\'Josefin Sans\',sans-serif;font-size:0.75rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#c4b5fd;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);padding:2px 8px;border-radius:50px;">🌟 NSDA Nationals</span>' +
                       '</div>' +
-                      '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:clamp(0.98rem,2.3vw,1.21rem);font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:10px;line-height:1.3;">' + (t.meta.name || 'Nationals') + '</div>' +
-                      (e.place ? '<div class="idx-champ-place" style="color:#c4b5fd;text-shadow:0 0 30px rgba(139,92,246,0.6);margin-bottom:6px;">' + e.place + '</div>' : '') +
+                     '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:clamp(0.98rem,2.3vw,1.21rem);font-weight:700;color:rgba(255,255,255,0.9);margin-bottom:7px;line-height:1.3;">' + (t.meta.name || 'Nationals') + '</div>' +
+                     (e.place ? '<div class="idx-champ-place" style="color:#c4b5fd;text-shadow:0 0 30px rgba(139,92,246,0.6);margin-bottom:4px;">' + e.place + '</div>' : '') +
                       (e.teamName ? '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.9rem;color:rgba(255,255,255,0.5);">' + e.teamName + '</div>' : '') +
                     '</div>' +
                   '</div>'
@@ -912,14 +1373,14 @@
               if (rightCard) {
                 rightCard.style.display = '';
                 rightCard.innerHTML =
-                  '<div style="width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(212,160,23,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;background:rgba(212,160,23,0.07);">' +
+                   '<div style="width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(212,160,23,0.5);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;background:rgba(212,160,23,0.07);">' +
                     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#F2D16B" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>' +
                   '</div>' +
-                  '<div style="font-family:\'Cormorant Garamond\',serif;font-size:3.4rem;font-weight:700;color:#F2D16B;line-height:1;text-shadow:0 0 24px rgba(242,209,107,0.58);margin-bottom:12px;">' + metroElig + '</div>' +
-                  '<div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 14px;"></div>' +
-                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.86rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);line-height:1.5;margin-bottom:14px;">Pairs Qualified<br>for Metro Finals</div>' +
-                  '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.86rem;color:rgba(255,255,255,0.35);line-height:1.6;">These pairs earned their spot among the top in the metro.</div>' +
-                  '<div style="margin-top:16px;font-size:1rem;letter-spacing:0.15em;color:rgba(212,160,23,0.5);">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>';
+                   '<div style="font-family:\'Cormorant Garamond\',serif;font-size:3rem;font-weight:700;color:#F2D16B;line-height:1;text-shadow:0 0 24px rgba(242,209,107,0.58);margin-bottom:8px;">' + metroElig + '</div>' +
+                   '<div style="width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(242,209,107,0.85) 30%,#F2D16B 50%,rgba(242,209,107,0.85) 70%,transparent);margin:0 auto 10px;"></div>' +
+                   '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.65);line-height:1.4;margin-bottom:10px;">Pairs Qualified<br>for Metro Finals</div>' +
+                   '<div style="font-family:\'Josefin Sans\',sans-serif;font-size:0.8rem;color:rgba(255,255,255,0.35);line-height:1.45;">These pairs earned their spot among the top in the metro.</div>' +
+                   '<div style="margin-top:12px;font-size:0.95rem;letter-spacing:0.15em;color:rgba(212,160,23,0.5);">› › › &nbsp;★&nbsp; ‹ ‹ ‹</div>';
               }
             }
           }
