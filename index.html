@@ -7,7 +7,7 @@
   <title>Cooper Debate Team — Speak · Reason · Lead</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Roboto+Condensed:wght@700;800;900&display=swap" rel="stylesheet"/>
    <link rel="stylesheet" href="css/main.css?v=35"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
@@ -611,15 +611,12 @@
     .index-footer-crown::after {
       background: linear-gradient(90deg, var(--index-footer-gold) 86%, transparent 100%);
     }
-    .index-footer-crown svg {
+    .index-footer-crown-icon {
       display: block;
       width: 94px;
-      height: 56px;
+      height: 64px;
       margin: auto;
-      fill: none;
-      stroke: currentColor;
-      stroke-linecap: round;
-      stroke-linejoin: round;
+      object-fit: contain;
     }
     .index-footer-main {
       display: grid;
@@ -629,7 +626,7 @@
     }
     .index-footer-brand {
       position: relative;
-      overflow: hidden;
+      overflow: visible;
       min-width: 0;
       padding: 0 54px 0 8px;
       text-align: center;
@@ -638,12 +635,12 @@
       content: "";
       position: absolute;
       z-index: 0;
-      left: -100px;
+      left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 24px);
       bottom: -110px;
       width: 520px;
       height: 416px;
       background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
-      opacity: 0.18;
+      opacity: 0.25;
       pointer-events: none;
     }
     .index-footer-brand > * {
@@ -652,7 +649,7 @@
     }
     .index-footer-lockup {
       display: grid;
-      grid-template-columns: 222px minmax(0,1fr);
+      grid-template-columns: clamp(230px,15.05vw,255px) minmax(0,1fr);
       align-items: center;
       gap: 20px;
       max-width: 620px;
@@ -661,20 +658,22 @@
     }
     .index-footer-jaguar {
       display: block;
-      width: 222px;
-      height: 230px;
+      width: clamp(230px,15.05vw,255px);
+      height: clamp(240px,15.65vw,265px);
       object-fit: contain;
+      transform: translateY(-11px);
       filter: drop-shadow(0 5px 14px rgba(0,0,0,0.28));
     }
     .index-footer-brand-title {
       margin: 0;
       color: #fff;
-      font-family: "Arial Narrow","Josefin Sans",sans-serif;
-      font-size: clamp(2.7rem,3.45vw,4.05rem);
-      font-weight: 900;
-      -webkit-text-stroke: 0.35px currentColor;
-      letter-spacing: -0.025em;
-      line-height: 0.96;
+      font-family: "Roboto Condensed","Arial Narrow",sans-serif;
+      font-size: clamp(2.9rem,3.65vw,4.3rem);
+      font-stretch: condensed;
+      font-weight: 800;
+      -webkit-text-stroke: 0.12px currentColor;
+      letter-spacing: -0.015em;
+      line-height: 0.89;
       text-transform: uppercase;
     }
     .index-footer-school {
@@ -934,7 +933,7 @@
         padding: 0 28px 42px;
       }
       .index-footer-brand::after {
-        left: 3%;
+        left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 28px);
         bottom: -110px;
       }
       .index-footer-column {
@@ -963,8 +962,9 @@
       .index-footer-crown {
         grid-template-columns: minmax(0,1fr) 64px minmax(0,1fr);
       }
-      .index-footer-crown svg {
+      .index-footer-crown-icon {
         width: 64px;
+        height: 50px;
       }
       .index-footer-main {
         grid-template-columns: 1fr;
@@ -973,13 +973,19 @@
       .index-footer-brand {
         padding-inline: 8px;
       }
+      .index-footer-brand::after {
+        left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 16px);
+        width: min(520px,100vw);
+        height: min(416px,80vw);
+      }
       .index-footer-lockup {
-        grid-template-columns: 110px minmax(0,1fr);
+        grid-template-columns: 126px minmax(0,1fr);
         gap: 10px;
       }
       .index-footer-jaguar {
-        width: 110px;
-        height: 120px;
+        width: 126px;
+        height: 138px;
+        transform: translateY(-7px);
       }
       .index-footer-brand-title {
         font-size: clamp(1.72rem,9vw,2.4rem);
@@ -1503,11 +1509,7 @@
 <!-- FOOTER -->
 <footer class="index-footer">
   <div class="index-footer-crown" aria-hidden="true">
-    <svg viewBox="0 0 80 48">
-      <path d="M25 7c-6 5-9 11-10 18M19 10l-5-2M17 15l-6-1M15 21l-6 1M55 7c6 5 9 11 10 18M61 10l5-2M63 15l6-1M65 21l6 1"/>
-      <path d="M28 8h24v17c0 8-5 13-12 16-7-3-12-8-12-16V8Z"/>
-      <path d="m40 14 2 4 5 .7-3.5 3.4.8 4.9-4.3-2.3-4.3 2.3.8-4.9-3.5-3.4 5-.7 2-4Z"/>
-    </svg>
+    <img class="index-footer-crown-icon" src="images/index-footer-crown.png?v=1" alt=""/>
   </div>
 
   <div class="section-wrap">
