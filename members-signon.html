@@ -455,6 +455,8 @@
        box-shadow: 0 12px 28px rgba(4, 16, 33, .22), inset 0 1px rgba(255,255,255,.05);
      }
       .fcps-logo {
+        position: relative;
+        left: -16px;
         width: 55px;
         height: 55px;
         object-fit: contain;
@@ -501,6 +503,7 @@
       .google-label {
         flex: 0 1 auto;
         min-width: 0;
+        margin-left: 12px;
         text-align: center;
         white-space: nowrap;
       }
@@ -687,7 +690,7 @@
        .auth-title { font-size: clamp(3rem, 13vw, 4rem); }
        .auth-sub { font-size: .94rem; }
        .login-card { padding: 14px 16px 19px; }
-         .fcps-logo { width: 49px; height: 49px; }
+          .fcps-logo { left: -6px; width: 49px; height: 49px; }
         .google-login-btn {
            width: 100%;
            gap: 4px;
@@ -697,6 +700,7 @@
         }
          .google-label {
            flex: 1 1 auto;
+            margin-left: 8px;
            text-align: left;
            white-space: normal;
            line-height: 1.2;
@@ -710,7 +714,15 @@
         .portal-security-note { white-space: normal; }
        .portal-join p::before,
        .portal-join p::after { width: 74px; }
-        .join-pill { width: min(100%, 290px); }
+         .join-pill {
+           width: min(100%, 290px);
+           padding-left: 40px;
+           padding-right: 40px;
+         }
+         .join-pill > span:not(.join-arrow) {
+           font-size: .76rem;
+           letter-spacing: .08em;
+         }
      }
   </style>
 </head>
