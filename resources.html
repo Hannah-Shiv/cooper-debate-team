@@ -137,8 +137,8 @@
      }
      .research-hub-cta {
        align-self:center;
-       background:linear-gradient(135deg,var(--gold) 0%,#b8860b 100%);
-       border:0;
+       background:var(--gold);
+       border:2px solid var(--gold);
        border-radius:6px;
        box-shadow:0 4px 10px rgba(60,0,0,0.24);
        color:var(--navy-dark);
@@ -159,8 +159,10 @@
        text-transform:none;
      }
      .research-hub-cta:hover {
-       opacity:0.88;
+       background:var(--gold-light);
+       border-color:var(--gold-light);
        transform:translateY(-1px);
+       box-shadow:0 8px 24px rgba(212,160,23,0.35);
      }
 
     /* ── Resource cards ── */
