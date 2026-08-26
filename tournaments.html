@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=25"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=28"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -23,6 +23,100 @@
   </script>
   <style>
     html { font-size:18px !important; }
+
+    /* ── Charcoal public-page treatment ───────────────────────── */
+    .tournaments-page {
+      --tournaments-panel: linear-gradient(145deg, #102b59 0%, #071a3b 100%);
+      --tournaments-panel-deep: linear-gradient(145deg, #0c234d 0%, #05142f 100%);
+      background: #3B4147;
+    }
+    .tournaments-page .page-header {
+      padding: 118px 24px 26px;
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+    }
+    .tournaments-page .page-header::after { display:none; }
+    .tournaments-page .page-header-content { max-width:920px; margin:0 auto; }
+    .tournaments-page .page-header-label {
+      color:#D4A017;
+      font-size:clamp(0.9rem, 1.5vw, 1.08rem) !important;
+      margin-bottom:16px;
+    }
+    .tournaments-page .page-title {
+      letter-spacing:-0.015em;
+      text-shadow:0 4px 24px rgba(0,0,0,0.3);
+    }
+    .tournaments-page .page-subtitle {
+      color:#F2D16B;
+      font-size:clamp(1.25rem, 3vw, 1.77rem);
+    }
+    .tournaments-page > .tourney-tab-panel,
+    .tournaments-page .resolution-banner,
+    .tournaments-page .volunteer-section,
+    .tournaments-page #parent-info {
+      background:#3B4147;
+    }
+    .tournaments-page .resolution-banner {
+      border-top:0;
+    }
+    .tournaments-page .tourney-section-nav {
+      background:transparent;
+      border-bottom:0;
+      backdrop-filter:none;
+    }
+    .tournaments-page .resolution-card,
+    .tournaments-page .public-calendar-shell,
+    .tournaments-page .parent-card,
+    .tournaments-page .public-event-card,
+    .tournaments-page .vol-event-card,
+    .tournaments-page .vol-public-summary,
+    .tournaments-page .vol-unified-card,
+    .tournaments-page .vol-public-roster,
+    .tournaments-page .vol-tournament-brief,
+    .tournaments-page .vol-availability-card,
+    .tournaments-page .vol-side-card,
+    .tournaments-page .last-season-table-shell,
+    .tournaments-page .last-season-empty,
+    .tournaments-page .stats-analytics-card {
+      background:var(--tournaments-panel);
+      border:1px solid rgba(242,209,107,0.62);
+      box-shadow:0 12px 28px rgba(0,0,0,0.25);
+    }
+    .tournaments-page .resolution-card {
+      border-top:1px solid #F2D16B;
+    }
+    .tournaments-page .public-calendar-shell,
+    .tournaments-page .vol-unified-card,
+    .tournaments-page .vol-public-roster {
+      background:var(--tournaments-panel-deep);
+    }
+    .tournaments-page .parent-card {
+      border-radius:10px;
+      background:var(--tournaments-panel-deep);
+    }
+    .tournaments-page .last-season-table-shell,
+    .tournaments-page .last-season-empty,
+    .tournaments-page .stats-analytics-card {
+      border-radius:10px;
+    }
+    .tournaments-page .result-row {
+      border-bottom-color:rgba(242,209,107,0.2);
+    }
+    .tournaments-page .vol-public-info,
+    .tournaments-page .vol-public-metrics {
+      background:rgba(7,25,57,0.7);
+    }
+    .tournaments-page .vol-unified-facts,
+    .tournaments-page .vol-unified-brief,
+    .tournaments-page .vol-unified-metrics {
+      border-color:rgba(242,209,107,0.22);
+    }
+    .tournaments-page .vol-unified-card .vol-role,
+    .tournaments-page .vol-availability-option {
+      background:rgba(7,25,57,0.78);
+      border-color:rgba(126,173,235,0.5);
+    }
 
     /* ── Font +2 overrides for resolution banner + page label ── */
     .page-header-label { font-size:1.0rem !important; }
@@ -58,7 +152,7 @@
     .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:780px;margin:0 0 22px; }
     .public-calendar-shell { border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
     .public-countdown {
-      align-items:stretch; background:linear-gradient(115deg,#7e0707 0%,#b30000 47%,#8b0808 100%);
+      align-items:stretch; background:#850000;
       border:2px solid #d9aa3c; border-radius:18px; box-shadow:0 12px 28px rgba(47,0,0,.34),inset 0 0 0 5px rgba(255,218,122,.13);
       color:#fff; display:none; gap:0; margin:0 0 16px; min-width:0; overflow:hidden; padding:5px;
       grid-template-areas:"label name date countdown";
@@ -793,9 +887,10 @@
     }
   </style>
 </head>
-<body>
+<body class="tournaments-page" style="--navy-dark:#3B4147;">
 
 <!-- SITE BADGE (home link) -->
+<div class="mp-topbar" aria-hidden="true"></div>
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
   <img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"/>
 </a>
@@ -915,7 +1010,7 @@
           <div class="ls-sort-info">Sorted by date ↓</div>
         </div>
         <div class="ls-count" id="ls-count"></div>
-        <div style="background:rgba(11,37,69,0.5);border:1px solid rgba(212,160,23,0.12);border-radius:10px;overflow:hidden;">
+        <div class="last-season-table-shell" style="overflow:hidden;">
           <div class="result-row header ls-row" style="display:grid;">
             <div class="ls-th" onclick="lsSort('date')">Date <span class="sort-chevron active" id="chev-date">↓</span></div>
             <div class="ls-th" onclick="lsSort('name')">Tournament <span class="sort-chevron" id="chev-name"></span></div>
@@ -927,13 +1022,13 @@
         </div>
       </div>
 
-      <div id="last-season-empty" style="display:none;text-align:center;padding:64px 24px;background:rgba(11,37,69,0.4);border:1px solid rgba(212,160,23,0.12);border-radius:10px;">
+      <div id="last-season-empty" class="last-season-empty" style="display:none;text-align:center;padding:64px 24px;">
         <div style="font-size:2.4rem;margin-bottom:16px;">📋</div>
         <div style="font-family:'Josefin Sans',sans-serif;font-weight:700;font-size:0.88rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">No Tournament Data Yet</div>
         <p style="color:var(--gray-mid);font-size:0.88rem;line-height:1.7;max-width:420px;margin:0 auto;">Last season's tournament results will appear here once they have been published by the coaching staff.</p>
       </div>
     <!-- Deep-dive CTA card -->
-    <div style="margin-top:36px;background:#0f2d6e;border:1px solid rgba(212,160,23,0.18);border-radius:16px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+    <div class="stats-analytics-card" style="margin-top:36px;border-radius:16px;padding:32px 36px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;">
       <div style="flex:1;min-width:240px;">
         <p style="font-family:'Josefin Sans',sans-serif;font-size:0.7rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin:0 0 8px;">Stats &amp; Analytics</p>
         <p style="font-size:0.97rem;color:rgba(255,255,255,0.9);line-height:1.7;margin:0;">For detailed results of every tournament extracted from Tabroom.com — win/loss records, speaker points, pair performance, and full data analytics — visit the Stats page in the Member Portal.</p>

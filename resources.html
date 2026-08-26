@@ -8,13 +8,170 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=25"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=28"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <style>
     /* +2px base across all rem values */
     html { font-size: 19px !important; }
     .page-header-label { font-size: 0.84rem; }
     .page-subtitle     { font-size: 1.22rem; }
+
+     /* ── Match the charcoal public-page treatment ── */
+     .resources-page .page-header {
+       padding: 118px 24px 26px;
+       background:
+         radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+         linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+       border-bottom: 1px solid rgba(242,209,107,0.52);
+     }
+     .resources-page .page-header::after { display: none; }
+     .resources-page > section.section {
+       padding-top: 18px;
+       padding-bottom: 40px;
+     }
+     .resources-page .page-header-label {
+       color: #D4A017;
+       font-size: clamp(0.9rem, 1.5vw, 1.08rem);
+       margin-bottom: 16px;
+     }
+     .resources-page .page-title {
+       font-size: clamp(2.5rem, 6vw, 4.2rem);
+       letter-spacing: -0.015em;
+       text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+     }
+     .resources-page .page-subtitle {
+       color: #F2D16B;
+       font-size: clamp(1.25rem, 3vw, 1.77rem);
+     }
+
+     /* Deeper blue panels with the same gold-edged treatment as the other pages */
+     .resources-page .resource-card,
+     .resources-page .topic-box,
+     .resources-page .skills-panel,
+     .resources-page .template-card,
+     .resources-page .train-card,
+     .resources-page .arg-card-pro,
+     .resources-page .arg-card-con {
+       background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99));
+       border: 1px solid rgba(242,209,107,0.5);
+       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+     }
+     .resources-page .resource-card:hover,
+     .resources-page .template-card:hover {
+       border-color: rgba(242,209,107,0.78);
+     }
+     .resources-page .topic-box,
+     .resources-page .skills-panel {
+       border-radius: 16px;
+     }
+     .resources-page .skills-panel {
+       background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99)) !important;
+       border: 1px solid rgba(242,209,107,0.5) !important;
+     }
+     .resources-page .topic-resolution {
+       background: rgba(18,48,94,0.72);
+       border: 1px solid rgba(242,209,107,0.3);
+       border-left: 3px solid var(--gold);
+     }
+     .resources-page .arg-card-pro,
+     .resources-page .arg-card-con {
+       background: rgba(13,42,86,0.8);
+     }
+     .resources-page .skill-tip {
+       background: rgba(18,48,94,0.72);
+       border: 1px solid rgba(242,209,107,0.3);
+     }
+
+     /* ── Research hub red action bar ── */
+     .research-hub-bar {
+       align-items:stretch;
+       background:#850000;
+       border:1px solid rgba(255,215,116,0.82);
+       border-radius:12px;
+       box-shadow:0 10px 26px rgba(54,0,0,0.3), inset 0 1px 0 rgba(255,231,155,0.3);
+       display:grid;
+       gap:0;
+       grid-template-columns:repeat(4,minmax(0,1fr)) auto;
+       margin:0 auto 40px;
+       max-width:1152px;
+       overflow:hidden;
+       padding:16px 14px;
+     }
+     .research-hub-step {
+       align-items:center;
+       border-right:1px solid rgba(255,222,125,0.58);
+       display:flex;
+       gap:10px;
+       min-width:0;
+       padding:8px 16px;
+     }
+     .research-hub-step:last-of-type { border-right:0; }
+     .research-hub-icon-frame {
+       flex:0 0 48px;
+       height:64px;
+       overflow:hidden;
+       width:48px;
+     }
+     .research-hub-step:first-child .research-hub-icon-frame {
+       flex-basis:42px;
+       width:42px;
+     }
+     .research-hub-icon-frame img {
+       display:block;
+       height:64px;
+       max-width:none;
+       width:192px;
+     }
+     .research-hub-step:nth-child(2) img { transform:translateX(-48px); }
+     .research-hub-step:nth-child(3) img { transform:translateX(-96px); }
+     .research-hub-step:nth-child(4) img { transform:translateX(-144px); }
+     .research-hub-copy { min-width:0; }
+     .research-hub-title {
+       color:#fff8dc;
+       display:block;
+       font:700 0.902rem/1.15 'Josefin Sans',sans-serif;
+       letter-spacing:0.01em;
+       margin-bottom:5px;
+     }
+     .research-hub-desc {
+       color:#ffeab0;
+       display:block;
+       font-size:0.77rem;
+       line-height:1.4;
+     }
+     .research-hub-cta {
+       align-self:center;
+       background:var(--gold);
+       border:2px solid var(--gold);
+       border-radius:6px;
+       box-shadow:0 4px 10px rgba(60,0,0,0.24);
+       color:#0C1A42;
+       display:flex;
+       flex-direction:column;
+       gap:3px;
+       font-family:'Josefin Sans',sans-serif;
+       font-size:0.8rem;
+       font-weight:700;
+       line-height:1.2;
+       letter-spacing:0.04em;
+       margin:0 8px 0 18px;
+       padding:14px 16px;
+       text-align:center;
+       text-transform:uppercase;
+       white-space:nowrap;
+     }
+     .research-hub-cta small {
+       color:#0C1A42;
+       font:600 0.704rem/1.2 'Josefin Sans',sans-serif;
+       letter-spacing:0.06em;
+       text-transform:none;
+     }
+     .research-hub-cta:hover {
+       background:var(--gold-light);
+       border-color:var(--gold-light);
+       transform:translateY(-1px);
+       box-shadow:0 8px 24px rgba(212,160,23,0.35);
+     }
 
     /* ── Resource cards ── */
     .resource-card {
@@ -148,10 +305,43 @@
 
       /* Inline hint rows */
       .topic-box p[style] { font-size: 0.85rem; }
+
+      /* Research hub bar */
+      .research-hub-bar {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        margin-bottom:28px;
+        padding:12px 10px;
+      }
+      .research-hub-step {
+        border-bottom:1px solid rgba(255,222,125,0.42);
+        padding:9px 8px;
+      }
+      .research-hub-step:nth-child(2) { border-right:0; }
+      .research-hub-step:nth-child(3),
+      .research-hub-step:nth-child(4) { border-bottom:0; }
+      .research-hub-cta {
+        grid-column:1/-1;
+        margin:13px 8px 3px;
+      }
+    }
+
+    @media(max-width:380px){
+      .research-hub-bar { display:flex; flex-direction:column; }
+      .research-hub-step,
+      .research-hub-step:nth-child(2),
+      .research-hub-step:nth-child(3) {
+        border-bottom:1px solid rgba(255,222,125,0.42);
+        border-right:0;
+      }
+      .research-hub-step:nth-child(4) { border-bottom:0; }
+      .research-hub-cta { margin:13px 8px 3px; }
     }
   </style>
 </head>
-<body>
+<body class="resources-page" style="--navy-dark:#3B4147;">
+
+<!-- PUBLIC HEADER BAR — matches the other public pages -->
+<div class="mp-topbar" aria-hidden="true"></div>
 
 <!-- SITE BADGE (home link) -->
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
@@ -193,8 +383,30 @@
   </div>
 </div>
 
+<div class="section-wrap">
+  <div class="research-hub-bar" aria-label="Research hub">
+    <div class="research-hub-step">
+      <span class="research-hub-icon-frame" aria-hidden="true"><img src="attached_assets/image_1787716535443.png" alt=""></span>
+      <span class="research-hub-copy"><span class="research-hub-title">Evidence</span><span class="research-hub-desc">Find credible evidence</span></span>
+    </div>
+    <div class="research-hub-step">
+      <span class="research-hub-icon-frame" aria-hidden="true"><img src="attached_assets/image_1787716535443.png" alt=""></span>
+      <span class="research-hub-copy"><span class="research-hub-title">Arguments</span><span class="research-hub-desc">Build both sides of the case</span></span>
+    </div>
+    <div class="research-hub-step">
+      <span class="research-hub-icon-frame" aria-hidden="true"><img src="attached_assets/image_1787716535443.png" alt=""></span>
+      <span class="research-hub-copy"><span class="research-hub-title">Sources</span><span class="research-hub-desc">Reliable &amp; authoritative research</span></span>
+    </div>
+    <div class="research-hub-step">
+      <span class="research-hub-icon-frame" aria-hidden="true"><img src="attached_assets/image_1787716535443.png" alt=""></span>
+      <span class="research-hub-copy"><span class="research-hub-title">Case Building</span><span class="research-hub-desc">Organize and develop your case</span></span>
+    </div>
+    <a class="research-hub-cta" href="members-resources.html"><span>Research Hub →</span><small>(Member Login)</small></a>
+  </div>
+</div>
+
 <!-- PF TOPIC CENTER -->
-<section class="section" style="background:var(--navy-dark);">
+<section id="topic-center" class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
     <p class="section-label">Current Resolution</p>
     <h2 class="section-title" style="margin-bottom:32px;">PF Topic Center</h2>

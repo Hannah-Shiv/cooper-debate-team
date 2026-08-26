@@ -8,8 +8,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=25"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=6"/>
+  <link rel="stylesheet" href="css/main.css?v=28"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <style>
 
@@ -171,6 +171,18 @@
     @media (max-width: 600px) {
       .form-step-label { display: none; }
       .form-step-connector { width: 18px; margin: 0 3px; }
+    }
+    @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+      .form-steps { padding: 0 20px; }
+      .form-step { gap: 6px; }
+      .form-step-label {
+        width: 64px;
+        font-size: 0.64rem;
+        letter-spacing: 0.035em;
+        line-height: 1.25;
+        white-space: normal;
+      }
+      .form-step-connector { width: 16px; margin: 0 2px; }
     }
 
     /* ── Two-column layout ── */
