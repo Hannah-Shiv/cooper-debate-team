@@ -638,13 +638,12 @@
       content: "";
       position: absolute;
       z-index: 0;
-      left: -90px;
-      bottom: -160px;
-      width: 380px;
-      height: 390px;
-      background: url("images/index-footer-jaguar.png?v=1") center/contain no-repeat;
-      opacity: 0.045;
-      filter: grayscale(1);
+      left: -100px;
+      bottom: -110px;
+      width: 520px;
+      height: 416px;
+      background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
+      opacity: 0.18;
       pointer-events: none;
     }
     .index-footer-brand > * {
@@ -653,7 +652,7 @@
     }
     .index-footer-lockup {
       display: grid;
-      grid-template-columns: 185px minmax(0,1fr);
+      grid-template-columns: 222px minmax(0,1fr);
       align-items: center;
       gap: 20px;
       max-width: 620px;
@@ -662,8 +661,8 @@
     }
     .index-footer-jaguar {
       display: block;
-      width: 185px;
-      height: 192px;
+      width: 222px;
+      height: 230px;
       object-fit: contain;
       filter: drop-shadow(0 5px 14px rgba(0,0,0,0.28));
     }
@@ -672,7 +671,8 @@
       color: #fff;
       font-family: "Arial Narrow","Josefin Sans",sans-serif;
       font-size: clamp(2.7rem,3.45vw,4.05rem);
-      font-weight: 800;
+      font-weight: 900;
+      -webkit-text-stroke: 0.35px currentColor;
       letter-spacing: -0.025em;
       line-height: 0.96;
       text-transform: uppercase;
@@ -935,7 +935,7 @@
       }
       .index-footer-brand::after {
         left: 3%;
-        bottom: -160px;
+        bottom: -110px;
       }
       .index-footer-column {
         border-top: 1px solid rgba(99,133,178,0.22);
@@ -974,12 +974,12 @@
         padding-inline: 8px;
       }
       .index-footer-lockup {
-        grid-template-columns: 92px minmax(0,1fr);
+        grid-template-columns: 110px minmax(0,1fr);
         gap: 10px;
       }
       .index-footer-jaguar {
-        width: 92px;
-        height: 100px;
+        width: 110px;
+        height: 120px;
       }
       .index-footer-brand-title {
         font-size: clamp(1.72rem,9vw,2.4rem);
