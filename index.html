@@ -667,11 +667,12 @@
     .index-footer-brand-title {
       margin: 0;
       color: #fff;
-      font-family: "Cinzel",serif;
-      font-size: clamp(2.1rem,2.55vw,2.75rem);
-      font-weight: 800;
+      font-family: "Cormorant Garamond",serif;
+      font-size: clamp(2.6rem,3.1vw,3.4rem);
+      font-style: normal;
+      font-weight: 700;
       letter-spacing: -0.025em;
-      line-height: 0.94;
+      line-height: 0.86;
       white-space: nowrap;
       text-transform: uppercase;
     }
@@ -710,6 +711,10 @@
       font-size: 1.3rem;
       font-style: italic;
       letter-spacing: 0.04em;
+    }
+    .index-footer-brand-details {
+      width: calc(100% - clamp(250px,15.05vw,275px));
+      margin-left: clamp(250px,15.05vw,275px);
     }
     .index-footer-motto .star,
     .index-footer-motto .dot {
@@ -940,6 +945,10 @@
         left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 28px);
         bottom: -110px;
       }
+      .index-footer-brand-details {
+        width: 100%;
+        margin-left: 0;
+      }
       .index-footer-column {
         border-top: 1px solid rgba(99,133,178,0.22);
         border-left: 0;
@@ -996,6 +1005,10 @@
       .index-footer-brand-title {
         font-size: clamp(1.65rem,8vw,2.15rem);
         text-align: center;
+      }
+      .index-footer-brand-details {
+        width: 100%;
+        margin-left: 0;
       }
       .index-footer-school {
         font-size: 0.7rem;
@@ -1532,11 +1545,13 @@
             </div>
           </div>
         </div>
-        <div class="index-footer-motto">
-          <span class="star">☆</span><span>Speak</span><span class="dot">•</span><span>Reason</span><span class="dot">•</span><span>Lead</span><span class="star">☆</span>
+        <div class="index-footer-brand-details">
+          <div class="index-footer-motto">
+            <span class="star">☆</span><span>Speak</span><span class="dot">•</span><span>Reason</span><span class="dot">•</span><span>Lead</span><span class="star">☆</span>
+          </div>
+          <div class="index-footer-brand-rule" aria-hidden="true"></div>
+          <p class="index-footer-brand-copy">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals.<br/>Metro Finals Champions.</p>
         </div>
-        <div class="index-footer-brand-rule" aria-hidden="true"></div>
-        <p class="index-footer-brand-copy">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals.<br/>Metro Finals Champions.</p>
       </section>
 
       <nav class="index-footer-column" aria-label="Explore">
