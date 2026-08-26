@@ -95,7 +95,7 @@ async function handleExistingAuthenticatedUser(user, requireFcpsGoogle = false) 
     denyAuthenticatedUser("Your sign-in could not be verified. Please try again.");
   }
 }
-function signInWithFcpsGoogle() {
+async function signInWithFcpsGoogle() {
   const btn = document.getElementById("google-signin-btn");
   clearError();
   if (btn) {
@@ -109,16 +109,17 @@ function signInWithFcpsGoogle() {
   // Popup sign-in is initiated directly by the student's click. Unlike
   // signInWithRedirect, it does not need Firebase's cross-site redirect
   // session storage, which managed Chrome policies may block on GitHub Pages.
-  persistenceReady
-    .then(() => auth.signInWithPopup(googleProvider))
-    .then(result => handleGoogleAuthenticatedUser(result.user))
-    .catch(err => {
-      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
-      resetGoogleButton();
-      showState("login");
-      showError(googleAuthErrorMessage(err));
-      console.error("signInWithRedirect error:", err);
-    });
+  try {
+    await persistenceReady;
+    const result = await auth.signInWithPopup(googleProvider);
+    await handleGoogleAuthenticatedUser(result.user);
+  } catch (err) {
+    sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+    resetGoogleButton();
+    showState("login");
+    showError(googleAuthErrorMessage(err));
+    console.error("signInWithPopup error:", err);
+  }
 }
 
 function handleGoogleAuthenticatedUser(user) {
@@ -156,14 +157,14 @@ function resetGoogleButton() {
   if (!btn) return;
   btn.disabled = false;
   btn.innerHTML = `
+    <img class="fcps-logo" src="images/fcps-google-logo.png" alt="" aria-hidden="true"/>
     <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
       <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
       <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>
       <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
       <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
     </svg>
-     Continue with Google
-     <span class="google-arrow" aria-hidden="true">→</span>`;
+    <span class="google-label">Sign in with FCPS Google Workspace</span>`;
 }
 
 // ── Send magic link ──────────────────────────────────────────
