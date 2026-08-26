@@ -1952,12 +1952,11 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .mub-role-icon {
   display: block;
-  width: 24px;
-  height: 24px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
   align-self: center;
-  flex: 0 0 24px;
-  transform: translateY(-1px);
+  flex: 0 0 40px;
 }
 .mub-role-label {
   display: inline-flex;
@@ -1975,7 +1974,7 @@ body.dome-open .page-header { padding-top: 240px; }
   background: #0f6b4f;
 }
 .mub-role-badge[data-role="website-admin"] {
-  background: #15803d;
+  background: #0b5d2a;
 }
 
 @media (max-width: 600px) {
@@ -1988,17 +1987,13 @@ body.dome-open .page-header { padding-top: 240px; }
   .role-artwork-userbar .mub-sep {
     display: none;
   }
-  .role-artwork-userbar .mub-role-badge {
-    width: 42px;
-    min-height: 38.4px;
-    height: 38.4px;
-    padding: 4px;
-    justify-content: center;
-  }
   .role-artwork-userbar .mub-role-icon {
-    width: 26px;
-    height: 26px;
-    flex-basis: 26px;
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .role-artwork-userbar .mub-role-badge {
+    display: none;
   }
   .role-artwork-userbar .mub-role-label {
     position: absolute;

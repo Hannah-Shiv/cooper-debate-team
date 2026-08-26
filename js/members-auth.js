@@ -424,7 +424,7 @@ function showDashboard(email) {
   if (badgeEl) {
     const rolePresentation = PORTAL_ROLE_PRESENTATION[currentUserRole] || PORTAL_ROLE_PRESENTATION.member;
     badgeEl.dataset.role = currentUserRole;
-    const iconEl = badgeEl.querySelector(".mub-role-icon");
+    const iconEl = document.getElementById("member-role-icon") || badgeEl.querySelector(".mub-role-icon");
     const labelEl = badgeEl.querySelector(".mub-role-label");
     if (iconEl && labelEl) {
       iconEl.src = rolePresentation.icon;
