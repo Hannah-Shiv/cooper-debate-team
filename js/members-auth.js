@@ -1,7 +1,7 @@
 // ============================================================
 // Cooper Debate Team — Members Portal Authentication
-// Google Workspace sign-in for FCPS students plus
-// passwordless email-link sign-in for approved adults.
+// Google Workspace sign-in for approved FCPS identities plus
+// passwordless email-link sign-in for approved non-FCPS adults.
 // ============================================================
 
 const FIREBASE_CONFIG = {
@@ -19,7 +19,7 @@ const VAPID_KEY = "BFwWFUfvb37fGaFBKYNJa29rEKtBHaT4FGnGsAKXTj_M7fxvDjsKgZobBGuKV
 const SIGN_IN_REDIRECT_URL = window.location.origin + "/members-signon.html";
 const STORAGE_KEY = "cooper_signin_email";
 const GOOGLE_REDIRECT_KEY = "cooper_google_redirect_pending";
-const FCPS_STUDENT_DOMAIN = "fcpsschools.net";
+const FCPS_GOOGLE_DOMAINS = ["fcps.edu", "fcpsschools.net"];
 
 // ── Initialise Firebase ──────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
@@ -28,7 +28,6 @@ const db        = firebase.firestore();
 const messaging = firebase.messaging ? firebase.messaging() : null;
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 googleProvider.setCustomParameters({
-  hd: FCPS_STUDENT_DOMAIN,
   prompt: "select_account",
 });
 
@@ -36,7 +35,8 @@ const persistenceReady = auth.setPersistence(firebase.auth.Auth.Persistence.LOCA
 
 // ── Session state ─────────────────────────────────────────────
 let currentUserEmail  = "";
-let currentUserRole   = "member"; // "coach" | "captain" | "member"
+let currentUserRole   = "member"; // "member" | "captain" | "coach" | "website-admin"
+let currentMemberAccess = null;
 let unsubAnnouncements = null;
 let allAnnouncementDocs = [];
 let hidePreviewTimer   = null;
@@ -112,8 +112,8 @@ function signInWithFcpsGoogle() {
 
 function handleGoogleAuthenticatedUser(user) {
   const email = normalizeEmail(user && user.email);
-  if (!isFcpsStudentEmail(email)) {
-    denyAuthenticatedUser("Please use your approved FCPS student Google Workspace account to sign in here.");
+  if (!isFcpsGoogleEmail(email)) {
+    denyAuthenticatedUser("Please use an approved FCPS Google Workspace account ending in @fcps.edu or @fcpsschools.net.");
     return;
   }
   handleAuthenticatedUser(email, { fcpsGoogle: true });
@@ -134,7 +134,7 @@ function googleAuthErrorMessage(err) {
     case "auth/web-storage-unsupported":
       return "This browser’s privacy settings blocked Google sign-in. Please contact Coach Konde.";
     case "auth/account-exists-with-different-credential":
-      return "This account already uses another sign-in method. Please use the adult email-link option.";
+      return "This account already uses another sign-in method. Please use the approved non-FCPS email option.";
     default:
       return "Google sign-in could not be completed. Please try again or contact Coach Konde.";
   }
@@ -155,9 +155,10 @@ function resetGoogleButton() {
 }
 
 // ── Send magic link ──────────────────────────────────────────
-function sendSignInLink() {
+async function sendSignInLink() {
   const emailInput = document.getElementById("email-input");
   const btn        = document.getElementById("send-link-btn");
+  if (!emailInput || !btn) return;
   const email      = (emailInput.value || "").trim().toLowerCase();
 
   clearError();
@@ -167,13 +168,16 @@ function sendSignInLink() {
     return;
   }
 
-  if (isFcpsStudentEmail(email)) {
-    showError("FCPS student accounts cannot receive external email. Use Continue with FCPS Google above.");
+  if (isFcpsGoogleEmail(email)) {
+    showError("FCPS accounts should use Continue with FCPS Google above.");
     return;
   }
 
-  if (!isApprovedMember(email)) {
-    showError("This email is not on the approved members list. Please contact Coach Konde to request access.");
+  const eligibility = await getLoginEligibility(db, email);
+  if (!eligibility.approved) {
+    showError(eligibility.source === "directory" && !eligibility.active
+      ? "This member account is inactive. Please contact Coach Konde or a Website Admin."
+      : "This email is not approved for portal access. Please contact Coach Konde or a Website Admin.");
     return;
   }
 
@@ -188,7 +192,7 @@ function sendSignInLink() {
     })
     .catch(err => {
       btn.disabled    = false;
-      btn.textContent = "Send Adult Sign-In Link";
+      btn.textContent = "Send Sign-In Link";
       if (err.code === "auth/quota-exceeded") {
         showError("Daily sign-in limit reached. Please try again tomorrow, or contact Coach Konde for help.");
       } else {
@@ -222,15 +226,20 @@ function completeMagicLinkSignIn() {
 }
 
 // ── Handle a verified, signed-in user ────────────────────────
-function handleAuthenticatedUser(email, options = {}) {
+async function handleAuthenticatedUser(email, options = {}) {
   const normalizedEmail = normalizeEmail(email);
 
-  if (options.fcpsGoogle && !isFcpsStudentEmail(normalizedEmail)) {
-    denyAuthenticatedUser("Please use your approved FCPS student Google Workspace account to sign in here.");
+  if (options.fcpsGoogle && !isFcpsGoogleEmail(normalizedEmail)) {
+    denyAuthenticatedUser("Please use an approved FCPS Google Workspace account ending in @fcps.edu or @fcpsschools.net.");
     return;
   }
 
-  if (isApprovedMember(normalizedEmail)) {
+  showState("completing");
+  const access = await getMemberAccess(db, normalizedEmail);
+  currentMemberAccess = access;
+  currentUserRole = access.role;
+
+  if (access.approved) {
     // members-signon.html and members.html are auth gateways — redirect to portal home.
     // On any other member page, show the dashboard in place (avoids redirect loop).
     var page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
@@ -240,7 +249,9 @@ function handleAuthenticatedUser(email, options = {}) {
       showDashboard(normalizedEmail);
     }
   } else {
-    denyAuthenticatedUser("Your email is not on the approved members list.");
+    denyAuthenticatedUser(access.source === "directory" && !access.active
+      ? "Your member account is inactive. Contact Coach Konde or a Website Admin if you need access restored."
+      : "Your email is not approved for the Members Portal.");
   }
 }
 
@@ -268,7 +279,9 @@ function showLogin() {
 // ── Show dashboard + role-based UI ───────────────────────────
 function showDashboard(email) {
   currentUserEmail = email.toLowerCase();
-  currentUserRole  = getAdminRole(email); // from data/admins.js
+  currentUserRole  = currentMemberAccess
+    ? normalizePortalRole(currentMemberAccess.role)
+    : normalizePortalRole(getAdminRole(email));
 
   // Email display
   const emailEl = document.getElementById("member-email");
@@ -276,21 +289,30 @@ function showDashboard(email) {
 
   // First name
   const nameEl = document.getElementById("member-name");
-  if (nameEl) nameEl.textContent = (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
+  if (nameEl) {
+    nameEl.textContent =
+      (currentMemberAccess && currentMemberAccess.name) ||
+      (typeof MEMBER_NAMES !== "undefined" && MEMBER_NAMES[email.toLowerCase()]) ||
+      email.split('@')[0];
+  }
 
   // Role badge
   const badgeEl = document.getElementById("member-role-badge");
   if (badgeEl) {
     if (currentUserRole === "coach") {
       badgeEl.textContent = "🛡️ Coach";
+    } else if (currentUserRole === "website-admin") {
+      badgeEl.textContent = "🛡️ Website Admin";
     } else if (currentUserRole === "captain") {
       badgeEl.textContent = "⭐ Captain";
+    } else {
+      badgeEl.textContent = "✓ Team Member";
     }
   }
 
   // Show floating post button for coach + captain (fade in to avoid layout flash)
   const fab = document.getElementById("post-fab");
-  if (fab && (currentUserRole === "coach" || currentUserRole === "captain")) {
+  if (fab && canManageMemberContentRole(currentUserRole)) {
     fab.style.opacity = "0";
     fab.style.display = "flex";
     requestAnimationFrame(() => {
@@ -299,8 +321,8 @@ function showDashboard(email) {
     });
   }
 
-  // Show notification error log for coaches only
-  if (currentUserRole === "coach") {
+  // Show notification error log for coaches and website admins
+  if (isFullAdminRole(currentUserRole)) {
     const panel = document.getElementById("notif-errors-panel");
     if (panel) panel.style.display = "";
     loadNotifErrors();
@@ -597,7 +619,9 @@ function showHoverTip(dotEl, id, data) {
   const bodySnip = bodyRaw.length > 160 ? bodyRaw.slice(0, 160).trimEnd() + "…" : bodyRaw;
   const body     = bodySnip ? `<div class="tip-body">${escHtml(bodySnip)}</div>` : "";
   const drive    = data.driveLink ? `<div class="tip-drive">📎 Drive file attached</div>` : "";
-  const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
+  const byLabel  = data.postedByRole === "website-admin"
+    ? "Website Admin"
+    : data.postedByRole === "coach" ? "Coach" : "Captain";
 
   tip.className = `ann-hover-tip ann-tip-${catKey}`;
   tip.innerHTML = `
@@ -655,9 +679,11 @@ function openAnnDetModal(dotEl, id, data) {
   const timeOnly = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
   const body     = data.details   ? `<div class="ann-det-body">${escHtml(data.details)}</div>` : "";
   const drive    = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" class="ann-det-drive"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Open Drive File</a>` : "";
-  const canDel   = currentUserRole === "coach" || data.postedBy === currentUserEmail;
+  const canDel   = isFullAdminRole(currentUserRole) || data.postedBy === currentUserEmail;
   const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnDetModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
-  const byLabel  = data.postedByRole === "coach" ? "Coach" : "Captain";
+  const byLabel  = data.postedByRole === "website-admin"
+    ? "Website Admin"
+    : data.postedByRole === "coach" ? "Coach" : "Captain";
 
   const catColors = { normal: "163,230,53", important: "179,0,0" };
   m.style.setProperty("--det-ca", catColors[catKey] || "163,230,53");
@@ -802,12 +828,14 @@ function renderAnnouncement(id, data) {
   const driveLink = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" rel="noopener" class="ann-drive-link">📎 Open Drive File →</a>` : "";
 
   // Coach can delete any; captain can delete their own
-  const canDelete = currentUserRole === "coach" || data.postedBy === currentUserEmail;
+  const canDelete = isFullAdminRole(currentUserRole) || data.postedBy === currentUserEmail;
   const deleteBtn = canDelete
     ? `<button class="ann-delete-btn" onclick="deleteAnnouncement('${id}')" title="Delete">✕ Remove</button>`
     : "";
 
-  const posterLabel = data.postedByRole === "coach" ? "Coach" : "Captain";
+  const posterLabel = data.postedByRole === "website-admin"
+    ? "Website Admin"
+    : data.postedByRole === "coach" ? "Coach" : "Captain";
 
   return `
     <div class="announcement-card" id="ann-${id}">
@@ -831,6 +859,7 @@ function renderAnnouncement(id, data) {
 function isApprovedMember(email) {
   const normalizedEmail = normalizeEmail(email);
   return Boolean(normalizedEmail) &&
+    Array.isArray(APPROVED_MEMBERS) &&
     APPROVED_MEMBERS.some(e => e.toLowerCase() === normalizedEmail);
 }
 
@@ -838,8 +867,13 @@ function normalizeEmail(email) {
   return (email || "").trim().toLowerCase();
 }
 
+function isFcpsGoogleEmail(email) {
+  const normalizedEmail = normalizeEmail(email);
+  return FCPS_GOOGLE_DOMAINS.some(domain => normalizedEmail.endsWith("@" + domain));
+}
+
 function isFcpsStudentEmail(email) {
-  return normalizeEmail(email).endsWith("@" + FCPS_STUDENT_DOMAIN);
+  return normalizeEmail(email).endsWith("@fcpsschools.net");
 }
 
 // ── UI state machine ─────────────────────────────────────────
@@ -922,7 +956,7 @@ function loadResourcePins() {
 }
 
 function renderAllPins() {
-  const isEditor = currentUserRole === "coach" || currentUserRole === "captain";
+  const isEditor = canManageMemberContentRole(currentUserRole);
   document.querySelectorAll(".portal-card[id^='drive-']").forEach(card => {
     const cardId  = card.id;
     const pinEl   = card.querySelector(".card-pin");

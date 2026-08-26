@@ -1,18 +1,11 @@
 // ============================================================
 // Cooper Debate Team — Approved Members List
 //
-// Add or remove email addresses here to control who can
-// access the Members Portal.
+// Legacy fallback list for accounts that have not yet been synchronized from
+// the Members Directory. New access changes should be made in the Directory.
 //
-// HOW TO ADD A STUDENT:
-//   "studentemail@fcpsschools.net",
-//
-// HOW TO REMOVE A STUDENT:
-//   Delete their line.
-//
-// SECURITY: Also add or remove the same normalized email in the
-// isApprovedMember() list in firestore.rules, then deploy the rules.
-// The browser list controls the UI; Firestore rules enforce access.
+// SECURITY: Directory-managed portal_members records are authoritative once
+// present. Firestore rules enforce active status and role permissions.
 // ============================================================
 
 const APPROVED_MEMBERS = [

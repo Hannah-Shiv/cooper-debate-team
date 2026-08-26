@@ -401,6 +401,7 @@
 
     .role-badge { display: inline-block; font-size: 0.86rem; font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
     .role-badge.coach   { background: rgba(200,169,110,0.12); color: #c8a96e; border: 1px solid rgba(200,169,110,0.35); }
+    .role-badge.website-admin { background: rgba(45,212,191,0.1); color: #5eead4; border: 1px solid rgba(45,212,191,0.32); }
     .role-badge.captain { background: rgba(112,144,224,0.12); color: #90aeff; border: 1px solid rgba(112,144,224,0.35); }
     .role-badge.member  { background: rgba(42,58,85,0.3); color: #5a7490; border: 1px solid rgba(42,58,85,0.6); }
 
@@ -868,11 +869,11 @@
 
       </div><!-- /dir-section -->
 
-      <!-- ── ROSTER SECTION (coaches only) ─────────────────── -->
+      <!-- ── ROSTER SECTION (coaches and website admins) ───── -->
       <div id="admin-section" style="display:none">
         <div class="admin-section-header">
-          <h2>Roster Manager</h2>
-          <p>Add, edit, or remove team members · Visible to coaches only</p>
+          <h2>Members Directory Manager</h2>
+          <p>Manage profiles, login emails, roles, and active access · Visible to coaches and website admins</p>
         </div>
 
         <div class="admin-toolbar">
@@ -965,8 +966,13 @@
           <input type="text" id="f-last" required autocomplete="family-name" placeholder="Smith">
         </div>
         <div class="form-field full">
-          <label for="f-email">Email <span style="color:#f87171">*</span></label>
-          <input type="email" id="f-email" required autocomplete="email" placeholder="hannah@cooperdebate.org">
+          <label for="f-email">Primary Login Email <span style="color:#f87171">*</span></label>
+          <input type="email" id="f-email" required autocomplete="email" placeholder="student@fcpsschools.net">
+        </div>
+        <div class="form-field full">
+          <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
+          <textarea id="f-login-emails" placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
+          <span class="opt" style="display:block;margin-top:7px;line-height:1.5">One per line or separated by commas. Every address opens this same member profile.</span>
         </div>
         <div class="form-field full">
           <label for="f-phone">Phone <span class="opt">(optional)</span></label>
@@ -980,6 +986,7 @@
             <option value="member">Member</option>
             <option value="captain">Captain</option>
             <option value="coach">Coach</option>
+            <option value="website-admin">Website Admin</option>
           </select>
         </div>
         <div class="form-field">
@@ -1020,14 +1027,14 @@
           </select>
         </div>
         <div class="form-field full">
-          <label>Status</label>
+          <label>Portal Status</label>
           <div class="toggle-row">
             <label class="tog">
               <input type="checkbox" id="f-active" checked
-                     onchange="document.getElementById('active-lbl').textContent=this.checked?'Active member':'Inactive / Alumni'">
+                      onchange="document.getElementById('active-lbl').textContent=this.checked?'Active — portal access allowed':'Inactive — sign-in blocked'">
               <span class="tog-slider"></span>
             </label>
-            <span class="toggle-lbl" id="active-lbl">Active member</span>
+            <span class="toggle-lbl" id="active-lbl">Active — portal access allowed</span>
           </div>
         </div>
       </div>
@@ -1039,18 +1046,18 @@
   </div>
 </div>
 
-<!-- ── Delete Confirm Modal ──────────────────────────────────── -->
+<!-- ── Deactivate Confirm Modal ──────────────────────────────── -->
 <div id="delete-modal" class="modal-backdrop" style="display:none"
      onclick="if(event.target===this)cancelDelete()">
   <div class="confirm-box">
-    <h2 class="confirm-title">Remove Member?</h2>
+    <h2 class="confirm-title">Deactivate Member?</h2>
     <p class="confirm-body">
-      This removes <strong id="delete-name" style="color:#e8f0ff"></strong> from the roster.
-      Their tournament history is not affected.
+      <strong id="delete-name" style="color:#e8f0ff"></strong> will stay in Firebase and in the Members Directory,
+      but all linked login emails will be blocked from the portal.
     </p>
     <div class="confirm-actions">
       <button class="btn-cancel" onclick="cancelDelete()">Cancel</button>
-      <button class="btn-del"    onclick="confirmDelete()">Remove</button>
+      <button class="btn-del"    onclick="confirmDelete()">Deactivate</button>
     </div>
   </div>
 </div>
@@ -1631,10 +1638,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
 <script src="data/approved-members.js?v=3"></script>
-<script src="data/admins.js"></script>
+<script src="data/admins.js?v=2"></script>
 
 <script>window.__NAV_PAGE = "directory";</script>
-<script src="js/members-auth.js?v=5"></script>
+<script src="js/members-auth.js?v=6"></script>
 
 <!-- Auth shim -->
 <script>
@@ -1648,8 +1655,8 @@
     if (state === 'dashboard') {
       document.getElementById('mp-loading').style.display = 'none';
       document.getElementById('mp-content').style.display = 'block';
-      // Show Roster tab for coaches
-      if (currentUserRole === 'coach') {
+      // Show management tabs for coaches and website admins
+      if (isFullAdminRole(currentUserRole)) {
         document.getElementById('tab-roster').style.display = 'inline-flex';
         document.getElementById('tab-applications').style.display = 'inline-flex';
       }
@@ -2071,8 +2078,8 @@ let _dspActiveTab = 'style';
 
 async function renderStyleSection(name, memberDoc) {
   const section = document.getElementById('prof-style-section');
-  const isOwner = memberDoc && (memberDoc.email||'').toLowerCase() === currentUserEmail.toLowerCase();
-  const canSee  = isOwner || currentUserRole==='coach' || currentUserRole==='captain';
+  const isOwner = memberDoc && memberLoginEmails(memberDoc).includes(currentUserEmail.toLowerCase());
+  const canSee  = isOwner || isFullAdminRole(currentUserRole) || currentUserRole==='captain';
   if (!canSee) { section.style.display = 'none'; return; }
   section.style.display = '';
   _dspEditable  = canSee;
@@ -2210,7 +2217,7 @@ let _currentSkills = {};
 
 async function renderSkillSection(name) {
   const section = document.getElementById('prof-skills-section');
-  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  const canEdit = isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
   _currentSkills = {};
 
   try {
@@ -2257,7 +2264,7 @@ function renderSkillRows(canEdit) {
 async function setSkillRating(skillId, level) {
   if (level) _currentSkills[skillId] = level;
   else delete _currentSkills[skillId];
-  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  const canEdit = isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
   renderSkillRows(canEdit);
   try {
     if (level) {
@@ -2277,7 +2284,7 @@ async function setSkillRating(skillId, level) {
 
 async function clearAllSkills() {
   _currentSkills = {};
-  const canEdit = currentUserRole === 'coach' || currentUserRole === 'captain';
+  const canEdit = isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
   renderSkillRows(canEdit);
   try {
     await dirDb.collection('debater_skills').doc(notesDocId(_profName)).delete();
@@ -2293,7 +2300,7 @@ function notesDocId(name) {
 
 async function renderNotesSection(name) {
   const section = document.getElementById('prof-notes-section');
-  if (currentUserRole !== 'coach' && currentUserRole !== 'captain') {
+  if (!isFullAdminRole(currentUserRole) && currentUserRole !== 'captain') {
     section.style.display = 'none';
     return;
   }
@@ -2601,8 +2608,13 @@ function renderProfile(d, memberDoc) {
   applySeasonFilter(d);
 
   /* Show coaches tab only for debater themselves + coaches/captains */
-  const isOwnerProf = memberDoc && (memberDoc.email||'').toLowerCase() === currentUserEmail.toLowerCase();
-  const canSeeCoachTab = isOwnerProf || currentUserRole === 'coach' || currentUserRole === 'captain';
+  const profileEmails = memberDoc
+    ? (Array.isArray(memberDoc.loginEmails) && memberDoc.loginEmails.length
+      ? memberDoc.loginEmails
+      : [memberDoc.email])
+    : [];
+  const isOwnerProf = profileEmails.some(email => (email || '').toLowerCase() === currentUserEmail.toLowerCase());
+  const canSeeCoachTab = isOwnerProf || isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
   document.getElementById('prof-tab-btn-coaches').style.display = canSeeCoachTab ? '' : 'none';
 
   /* Debate Style Profile */
@@ -2680,6 +2692,7 @@ let filteredRoster  = [];
 let rosterLoaded    = false;
 let pendingDeleteId = null;
 let rosterUnsub     = null;
+let rosterAccessSynced = false;
 
 function loadRoster() {
   rosterLoaded = true;
@@ -2688,6 +2701,10 @@ function loadRoster() {
       allRoster      = snap.docs.map(doc => ({ docId: doc.id, ...doc.data() }));
       filteredRoster = applyRosterQuery(document.getElementById('admin-search').value, allRoster);
       renderRoster(filteredRoster);
+      if (!rosterAccessSynced && isFullAdminRole(currentUserRole)) {
+        rosterAccessSynced = true;
+        syncRosterAccessRecords(allRoster).catch(err => console.warn('[Roster] Access sync failed:', err));
+      }
     }, err => {
       document.getElementById('admin-tbody').innerHTML =
         '<tr><td colspan="6" style="text-align:center;padding:28px;color:#f87171;font-family:\'Josefin Sans\',sans-serif;font-size:.82rem">Error: ' + esc(err.message) + '</td></tr>';
@@ -2707,7 +2724,8 @@ function renderRoster(list) {
   }
   tbody.innerHTML = list.map(m => {
     const name   = esc(((m.firstName||'') + ' ' + (m.lastName||'')).trim()) || '—';
-    const email  = esc(m.email || '—');
+    const loginEmails = memberLoginEmails(m);
+    const email  = esc(loginEmails[0] || m.email || '—');
     const role   = m.role || 'member';
     const events = (m.events||[]).join(', ') || '—';
     const active = m.active !== false;
@@ -2720,7 +2738,7 @@ function renderRoster(list) {
       <td style="white-space:nowrap"><span class="status-dot ${active?'active':'inactive'}"></span><span style="font-size:.8rem;color:${active?'#4ade80':'#2a3545'}">${active?'Active':'Inactive'}</span></td>
       <td class="td-actions">
         <button class="btn-edit"   onclick="openEditModal('${esc(m.docId)}')">Edit</button>
-        <button class="btn-remove" onclick="openDeleteModal('${esc(m.docId)}','${name}')">Remove</button>
+        ${active ? `<button class="btn-remove" onclick="openDeleteModal('${esc(m.docId)}','${name}')">Deactivate</button>` : ''}
       </td>
     </tr>`;
   }).join('');
@@ -2744,7 +2762,8 @@ function openAddModal() {
   document.getElementById('member-form').reset();
   document.getElementById('ev-pf').checked = true;
   document.getElementById('f-active').checked = true;
-  document.getElementById('active-lbl').textContent = 'Active member';
+  document.getElementById('active-lbl').textContent = 'Active — portal access allowed';
+  document.getElementById('f-login-emails').value = '';
   document.getElementById('f-grade').value = '';
   renderPhotoUploadEmpty();
   clearFormStatus();
@@ -2762,13 +2781,14 @@ function openEditModal(docId) {
   document.getElementById('f-first').value = m.firstName || '';
   document.getElementById('f-last').value  = m.lastName  || '';
   document.getElementById('f-email').value = m.email     || '';
+  document.getElementById('f-login-emails').value = memberLoginEmails(m).filter(email => email !== (m.email || '').toLowerCase()).join('\n');
   document.getElementById('f-phone').value = m.phone     || '';
   document.getElementById('f-role').value  = m.role      || 'member';
   document.getElementById('f-grad').value  = m.gradYear  || '';
   document.getElementById('f-notes').value = m.notes     || '';
   const active = m.active !== false;
   document.getElementById('f-active').checked = active;
-  document.getElementById('active-lbl').textContent = active ? 'Active member' : 'Inactive / Alumni';
+  document.getElementById('active-lbl').textContent = active ? 'Active — portal access allowed' : 'Inactive — sign-in blocked';
   document.getElementById('f-grade').value = m.grade    || '';
   if (m.photoUrl) renderPhotoPreview(m.photoUrl, 'Current photo');
   else renderPhotoUploadEmpty();
@@ -2784,6 +2804,7 @@ async function saveMember(e) {
   const firstName = document.getElementById('f-first').value.trim();
   const lastName  = document.getElementById('f-last').value.trim();
   const email     = document.getElementById('f-email').value.trim().toLowerCase();
+  const loginEmails = uniqueEmails([email, ...parseLoginEmails(document.getElementById('f-login-emails').value)]);
   const phone     = document.getElementById('f-phone').value.trim();
   const role      = document.getElementById('f-role').value;
   const gradYear  = parseInt(document.getElementById('f-grad').value) || null;
@@ -2799,10 +2820,46 @@ async function saveMember(e) {
   btn.disabled = true; btn.textContent = 'Saving…';
   const photoUrl = document.getElementById('f-photo').value.trim();
   const grade    = document.getElementById('f-grade').value;
-  const data = { firstName, lastName, email, phone, role, gradYear: gradYear||null, events, active, notes, photoUrl: photoUrl||null, grade: grade||null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  const data = { firstName, lastName, email, loginEmails, phone, role, gradYear: gradYear||null, events, active, notes, photoUrl: photoUrl||null, grade: grade||null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
   try {
-    if (docId) { await dirDb.collection('members').doc(docId).update(data); }
-    else { data.addedAt = firebase.firestore.FieldValue.serverTimestamp(); await dirDb.collection('members').add(data); }
+    const existing = docId ? allRoster.find(member => member.docId === docId) : null;
+    const memberRef = docId ? dirDb.collection('members').doc(docId) : dirDb.collection('members').doc();
+    if (!docId) data.addedAt = firebase.firestore.FieldValue.serverTimestamp();
+    const removedEmails = existing
+      ? memberLoginEmails(existing).filter(oldEmail => !loginEmails.includes(oldEmail))
+      : [];
+    const accessRefs = await portalAccessRefs(loginEmails);
+    const removedRefs = await portalAccessRefs(removedEmails);
+    await dirDb.runTransaction(async transaction => {
+      const accessSnapshots = await Promise.all(accessRefs.map(refs => transaction.get(refs.member)));
+      const removedSnapshots = await Promise.all(removedRefs.map(refs => transaction.get(refs.member)));
+      const conflictIndex = accessSnapshots.findIndex(snapshot =>
+        snapshot.exists &&
+        snapshot.data().profileId &&
+        snapshot.data().profileId !== memberRef.id
+      );
+      if (conflictIndex >= 0) {
+        throw new Error(`${accessRefs[conflictIndex].email} is already linked to another member profile.`);
+      }
+
+      transaction.set(memberRef, data, { merge: true });
+      writePortalAccess(transaction, accessRefs, memberRef.id, data);
+      removedRefs.forEach((refs, index) => {
+        const snapshot = removedSnapshots[index];
+        if (!snapshot.exists || snapshot.data().profileId === memberRef.id) {
+          transaction.set(refs.member, {
+            active: false,
+            role: 'member',
+            profileId: memberRef.id,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          transaction.set(refs.status, {
+            active: false,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        }
+      });
+    });
     closeModal();
   } catch (err) {
     showFormErr('Save failed: ' + err.message);
@@ -2816,8 +2873,96 @@ function cancelDelete() { pendingDeleteId = null; hideModal('delete-modal'); }
 async function confirmDelete() {
   if (!pendingDeleteId) return;
   const id = pendingDeleteId; cancelDelete();
-  try { await dirDb.collection('members').doc(id).delete(); }
-  catch (err) { alert('Delete failed: ' + err.message); }
+  const member = allRoster.find(item => item.docId === id);
+  if (!member) return;
+  try {
+    const accessRefs = await portalAccessRefs(memberLoginEmails(member));
+    await dirDb.runTransaction(async transaction => {
+      const accessSnapshots = await Promise.all(accessRefs.map(refs => transaction.get(refs.member)));
+      transaction.update(dirDb.collection('members').doc(id), {
+        active: false,
+        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      accessRefs.forEach((refs, index) => {
+        const snapshot = accessSnapshots[index];
+        if (!snapshot.exists || snapshot.data().profileId === id) {
+          transaction.set(refs.member, {
+            active: false,
+            role: normalizePortalRole(member.role),
+            profileId: id,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          transaction.set(refs.status, {
+            active: false,
+            updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+        }
+      });
+    });
+  }
+  catch (err) { alert('Deactivation failed: ' + err.message); }
+}
+
+function parseLoginEmails(value) {
+  return String(value || '').split(/[\s,;]+/).map(email => email.trim().toLowerCase()).filter(Boolean);
+}
+
+function uniqueEmails(emails) {
+  return [...new Set(emails.map(email => String(email || '').trim().toLowerCase()).filter(email => email.includes('@')))];
+}
+
+function memberLoginEmails(member) {
+  return uniqueEmails([
+    member && member.email,
+    ...(member && Array.isArray(member.loginEmails) ? member.loginEmails : [])
+  ]);
+}
+
+async function portalAccessRefs(emails) {
+  return Promise.all(uniqueEmails(emails).map(async email => ({
+    email,
+    member: dirDb.collection('portal_members').doc(email),
+    status: dirDb.collection('portal_login_status').doc(await portalEmailHash(email))
+  })));
+}
+
+function writePortalAccess(writer, refsList, profileId, member) {
+  const loginEmails = memberLoginEmails(member);
+  const access = {
+    active: member.active !== false,
+    role: normalizePortalRole(member.role),
+    profileId,
+    name: `${member.firstName || ''} ${member.lastName || ''}`.trim(),
+    loginEmails,
+    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  };
+  refsList.forEach(refs => {
+    writer.set(refs.member, access, { merge: true });
+    writer.set(refs.status, {
+      active: access.active,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge: true });
+  });
+}
+
+async function syncRosterAccessRecords(roster) {
+  const entries = roster.filter(member => memberLoginEmails(member).length);
+  for (const member of entries) {
+    const accessRefs = await portalAccessRefs(memberLoginEmails(member));
+    await dirDb.runTransaction(async transaction => {
+      const snapshots = await Promise.all(accessRefs.map(refs => transaction.get(refs.member)));
+      const conflict = snapshots.findIndex(snapshot =>
+        snapshot.exists &&
+        snapshot.data().profileId &&
+        snapshot.data().profileId !== member.docId
+      );
+      if (conflict >= 0) {
+        console.warn(`[Roster] ${accessRefs[conflict].email} is already linked to another profile; skipped.`);
+        return;
+      }
+      writePortalAccess(transaction, accessRefs, member.docId, member);
+    });
+  }
 }
 
 /* ── Modal helpers ───────────────────────────────────── */

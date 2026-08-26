@@ -144,21 +144,18 @@ function calendarEventDocs() {
   return [...managedEvents, ...unpublishedKickoff];
 }
 
-// ── Auth helpers (mirrors members-auth.js; members-auth.js is not loaded here) ──
-function isApprovedMember(email) {
-  return Array.isArray(APPROVED_MEMBERS) &&
-    APPROVED_MEMBERS.some(m => m.toLowerCase() === email.toLowerCase());
-}
-
 // ── On page load ─────────────────────────────────────────────
-calAuth.onAuthStateChanged(user => {
+calAuth.onAuthStateChanged(async user => {
   try {
-    if (user && isApprovedMember(user.email)) {
+    if (user) {
       showCalState("loading");
-      initCalDashboard(user.email);
-    } else if (user) {
-      calAuth.signOut();
-      window.location.href = "members-signon.html";
+      const access = await getMemberAccess(calDb, user.email);
+      if (!access.approved) {
+        await calAuth.signOut();
+        window.location.href = "members-signon.html";
+        return;
+      }
+      initCalDashboard(user.email, access);
     } else {
       window.location.href = "members-signon.html";
     }
@@ -181,27 +178,29 @@ function calEsc(str) {
 }
 
 // ── Initialise dashboard ──────────────────────────────────────
-function initCalDashboard(email) {
+function initCalDashboard(email, access) {
   calUserEmail = email.toLowerCase();
-  calUserRole  = getAdminRole(email);
+  calUserRole  = access ? normalizePortalRole(access.role) : normalizePortalRole(getAdminRole(email));
 
   const emailEl = document.getElementById("cal-user-email");
   if (emailEl) emailEl.textContent = email;
 
   const nameEl = document.getElementById("cal-name");
-  if (nameEl) nameEl.textContent = (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
+  if (nameEl) nameEl.textContent = (access && access.name) || (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
 
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {
     if (calUserRole === "coach") {
       badgeEl.textContent = "🛡️ Coach";
+    } else if (calUserRole === "website-admin") {
+      badgeEl.textContent = "🛡️ Website Admin";
     } else if (calUserRole === "captain") {
       badgeEl.textContent = "⭐ Captain";
     }
   }
 
   // Show post-event button for coach/captain
-  const isEditor = calUserRole === "coach" || calUserRole === "captain";
+  const isEditor = canManageMemberContentRole(calUserRole);
   const postBtn = document.getElementById("post-fab");
   if (postBtn && isEditor) {
     postBtn.style.opacity = "0";
@@ -590,7 +589,7 @@ function fitBannerText(banner) {
 // ── Event detail modal ────────────────────────────────────────
 function openEventDetail(fcEvent) {
   const t = fcEvent.extendedProps;
-  const isEditor = calUserRole === "coach" || calUserRole === "captain";
+  const isEditor = canManageMemberContentRole(calUserRole);
   const isStaticSchedule = t._staticSchedule === true;
   // Deadline chips have id ending in __deadline; extendedProps point to the parent tournament
   const isDeadline = fcEvent.id.endsWith("__deadline");
@@ -706,7 +705,7 @@ function openEventDetail(fcEvent) {
   // Regular Firestore events retain the existing coach/captain editing rules.
   const editTargetId = fcEvent.id.replace(/__deadline$/, "");
   const canEditEvent = isEditor &&
-    (isStaticSchedule ? calUserRole === "coach" : (!t.isPublic || calUserRole === "coach"));
+    (isStaticSchedule ? isFullAdminRole(calUserRole) : (!t.isPublic || isFullAdminRole(calUserRole)));
   const editBtn = canEditEvent
     ? `<button class="det-edit-btn" onclick="openPostModal('${calEsc(editTargetId)}')">✎ Edit</button>`
     : "";
@@ -874,12 +873,12 @@ function openPostModal(editId) {
   // Kickoff events already appear on the public starter schedule. A coach
   // editing one keeps that visibility by default when it becomes managed.
   document.getElementById("evt-public").checked   = _editingStaticSchedule || existing?.isPublic === true;
-  document.getElementById("evt-public").disabled  = calUserRole !== "coach";
+  document.getElementById("evt-public").disabled  = !isFullAdminRole(calUserRole);
   const publicGroup = document.getElementById("evt-public-group");
   if (publicGroup) {
-    publicGroup.title = calUserRole === "coach"
+    publicGroup.title = isFullAdminRole(calUserRole)
       ? ""
-      : "Only a coach can change whether an event appears on the public calendar.";
+      : "Only a coach or website admin can change whether an event appears on the public calendar.";
   }
   document.getElementById("evt-location").value   = existing?.location || "";
   document.getElementById("evt-schedule").value   = existing?.scheduleLink  || "";

@@ -50,9 +50,6 @@
   function show(id) {
     ["auth-loading", "auth-required", "access-denied", "dashboard"].forEach(section => $(section).hidden = section !== id);
   }
-  function isCoach(user) {
-    return user && typeof getAdminRole === "function" && getAdminRole(user.email) === "coach";
-  }
   function updateNotificationState() {
     const indicator = $("app-notif-state");
     if (indicator && "Notification" in window) indicator.classList.toggle("on", Notification.permission === "granted");
@@ -227,14 +224,16 @@
     const visible = filteredApplications();
     if (selectedId && !visible.some(item => item.id === selectedId)) { selectedId = visible[0]?.id || ""; renderDetail(); }
   }));
-  auth.onAuthStateChanged(user => {
+  auth.onAuthStateChanged(async user => {
     currentUser = user;
     if (!user) { show("auth-required"); return; }
     $("app-userbar").classList.add("visible");
     $("app-name").textContent = user.displayName || (user.email || "").split("@")[0] || "Member";
     $("app-user-email").textContent = user.email || "";
-    if (!isCoach(user)) { show("access-denied"); return; }
-    $("app-role-badge").textContent = "★ Coach";
+    const access = await getMemberAccess(db, user.email);
+    if (!access.approved || !isFullAdminRole(access.role)) { show("access-denied"); return; }
+    $("app-name").textContent = access.name || user.displayName || (user.email || "").split("@")[0] || "Member";
+    $("app-role-badge").textContent = access.role === "website-admin" ? "★ Website Admin" : "★ Coach";
     show("dashboard");
     beginListening();
   });

@@ -41,14 +41,6 @@
     return `${hour % 12 || 12}:${String(minute).padStart(2, "0")} ${hour >= 12 ? "PM" : "AM"}`;
   };
 
-  function isApproved(email) {
-    return typeof APPROVED_MEMBERS !== "undefined" &&
-      Array.isArray(APPROVED_MEMBERS) &&
-      APPROVED_MEMBERS.some(member => member.toLowerCase() === String(email || "").toLowerCase());
-  }
-  function isCoach(email) {
-    return typeof getAdminRole === "function" && getAdminRole(email) === "coach";
-  }
   function message(text, kind) {
     const el = $("vol-form-msg");
     el.textContent = text || "";
@@ -417,30 +409,31 @@
     $("vol-auth").innerHTML = `<div class="tm-auth-box"><div class="tm-auth-mark">◆</div><h1>${esc(title)}</h1><p>${esc(text)}</p>${login ? `<a class="tm-login" href="members.html">Sign in to Member Portal</a>` : ""}</div>`;
   }
 
-  auth.onAuthStateChanged(user => {
+  auth.onAuthStateChanged(async user => {
     if (!user) {
-      showAccess("Coach access required", "Sign in through the Member Portal to manage tournament volunteer opportunities.", true);
+      showAccess("Coach or Website Admin access required", "Sign in through the Member Portal to manage tournament volunteer opportunities.", true);
       return;
     }
-    if (!isApproved(user.email)) {
+    const access = await getMemberAccess(db, user.email);
+    if (!access.approved) {
       showAccess("Membership not approved", "This account is not approved for the Cooper Debate Member Portal.", false);
       return;
     }
-    if (!isCoach(user.email)) {
-      showAccess("Coach access only", "Volunteer signups contain private contact details and can only be managed by a coach.", false);
+    if (!isFullAdminRole(access.role)) {
+      showAccess("Full admin access only", "Volunteer signups contain private contact details and can only be managed by a coach or website admin.", false);
       return;
     }
     currentUser = user;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
-    const shortName = (user.displayName || user.email.split("@")[0])
+    const shortName = (access.name || user.displayName || user.email.split("@")[0])
       .split(/[._-]/)
       .filter(Boolean)
       .map(part => part.charAt(0).toUpperCase() + part.slice(1))
       .join(" ");
     $("member-name").textContent = shortName;
     $("member-email").textContent = user.email;
-    $("member-role-badge").textContent = "🛡️ Coach";
+    $("member-role-badge").textContent = access.role === "website-admin" ? "🛡️ Website Admin" : "🛡️ Coach";
     $("member-userbar").classList.add("visible");
     resetForm();
     startEvents();

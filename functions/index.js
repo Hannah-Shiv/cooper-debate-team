@@ -236,6 +236,15 @@ const COACH_EMAILS = new Set([
   "pgkonde@fcps.edu",
   "hannahbshiv@gmail.com",
 ]);
+
+async function hasFullAdminAccess(email) {
+  const normalizedEmail = cleanEmail(email);
+  if (!normalizedEmail) return false;
+  const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
+  if (!membership.exists) return COACH_EMAILS.has(normalizedEmail);
+  const data = membership.data() || {};
+  return data.active === true && ["coach", "website-admin"].includes(data.role);
+}
 const turnstileSecret = defineSecret("TURNSTILE_SECRET_KEY");
 const resendSecret = defineSecret("RESEND_API_KEY");
 const TURNSTILE_HOSTNAMES = new Set([
@@ -800,8 +809,8 @@ exports.manageApplicationReview = onRequest(
     }
 
     const reviewerEmail = cleanEmail(decoded.email);
-    if (!COACH_EMAILS.has(reviewerEmail)) {
-      res.status(403).json({ error: "Only coaches can review applications." });
+    if (!await hasFullAdminAccess(reviewerEmail)) {
+      res.status(403).json({ error: "Only coaches and website admins can review applications." });
       return;
     }
 
@@ -1038,8 +1047,8 @@ exports.manageVolunteerSignup = onRequest(
       return;
     }
 
-    if (!COACH_EMAILS.has((decoded.email || "").toLowerCase())) {
-      res.status(403).json({ error: "Only coaches can manage volunteer signups." });
+    if (!await hasFullAdminAccess(decoded.email)) {
+      res.status(403).json({ error: "Only coaches and website admins can manage volunteer signups." });
       return;
     }
 

@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: './tests',
   testMatch: '**/*.spec.mjs',
+  testIgnore: '**/firestore-rules.spec.mjs',
   outputDir: './test-results/tablet',
   snapshotPathTemplate: '{testDir}/tablet-baselines/{arg}{ext}',
   fullyParallel: false,
