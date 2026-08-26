@@ -481,7 +481,23 @@
        letter-spacing: 0;
        text-transform: none;
        white-space: nowrap;
+         box-shadow: 0 4px 0 rgba(7, 20, 43, .3), 0 8px 18px rgba(0, 0, 0, .16);
+         transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
      }
+      .google-login-btn:hover:not(:disabled) {
+        background: linear-gradient(180deg, #fff 0%, #f1f4f8 100%);
+        border-color: #f0c34f;
+        box-shadow: 0 7px 0 rgba(7, 20, 43, .28), 0 13px 24px rgba(0, 0, 0, .22);
+        transform: translateY(-2px);
+      }
+      .google-login-btn:active:not(:disabled) {
+        box-shadow: 0 2px 0 rgba(7, 20, 43, .3), 0 4px 10px rgba(0, 0, 0, .18);
+        transform: translateY(1px);
+      }
+      .google-login-btn:focus-visible {
+        outline: 3px solid #f7cf55;
+        outline-offset: 3px;
+      }
       .google-label {
         flex: 0 1 auto;
         min-width: 0;
@@ -740,7 +756,7 @@
             <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
             <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
           </svg>
-             <span class="google-label">Continue with FCPS Google Workspace</span>
+             <span class="google-label">Sign in with FCPS Google Workspace</span>
         </button>
 
          <div class="card-diamond-divider" aria-hidden="true"><span></span></div>
