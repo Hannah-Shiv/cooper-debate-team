@@ -350,22 +350,7 @@
       body.dome-open .portal-page { padding-top: 240px !important; }
      .portal-page::before,
      .portal-page::after {
-       content: "";
-       position: absolute;
-       pointer-events: none;
-       opacity: .13;
-       border: 2px solid rgba(112, 151, 190, .8);
-       border-radius: 48%;
-       transform: rotate(-28deg);
-     }
-     .portal-page::before {
-       width: 260px; height: 680px; left: -128px; top: 72px;
-       box-shadow: 35px 28px 0 -5px rgba(112, 151, 190, .6), 68px 58px 0 -12px rgba(112, 151, 190, .5);
-     }
-     .portal-page::after {
-       width: 210px; height: 570px; right: -94px; top: 122px;
-       transform: rotate(27deg);
-       box-shadow: -32px 30px 0 -5px rgba(112, 151, 190, .55), -60px 64px 0 -12px rgba(112, 151, 190, .45);
+        display: none !important;
      }
      .auth-wrap {
        position: relative;
@@ -379,6 +364,7 @@
         background:
           radial-gradient(ellipse 80% 26% at 50% 0%, rgba(91, 143, 198, .34), transparent 75%),
           linear-gradient(180deg, #294f76 0%, #1b3a5d 100%);
+        border: 2px solid #F0BC28;
         box-shadow: 0 0 55px rgba(11, 29, 49, .16);
      }
       #state-login.auth-wrap { min-height: calc(100vh - 112px) !important; }
@@ -448,7 +434,7 @@
         max-width: 620px;
        margin: 0 auto 17px !important;
        color: rgba(247, 249, 253, .92);
-       font-size: 1rem;
+        font-size: 1rem;
        line-height: 1.55;
      }
      .login-card {
@@ -476,15 +462,15 @@
        text-transform: uppercase;
      }
       .fcps-logo {
-        width: 38px;
-        height: 38px;
+        width: 57px;
+        height: 57px;
         object-fit: contain;
         border-radius: 4px;
        flex: 0 0 auto;
      }
      .google-login-btn {
        position: relative;
-       width: calc(100% - 50px);
+        width: calc(100% - 30px);
        margin-left: auto;
        margin-right: auto;
        min-height: 64px;
@@ -492,11 +478,11 @@
        border: 1px solid rgba(255,255,255,.85);
        border-radius: 7px;
        color: #101a31;
-       font-size: 1rem;
+       font-size: 1.15rem;
        letter-spacing: 0;
        text-transform: none;
      }
-     .google-login-btn .google-mark { width: 31px; height: 31px; }
+      .google-login-btn .google-mark { width: 47px; height: 47px; }
      .card-diamond-divider {
        display: flex;
        align-items: center;
@@ -539,7 +525,7 @@
        border: 1px solid rgba(239, 73, 74, .82);
        border-radius: 9px;
        box-shadow: inset 0 1px rgba(255,255,255,.06);
-       font-size: .83rem;
+        font-size: .95rem;
        line-height: 1.35;
      }
      .access-notice-icon {
@@ -561,7 +547,7 @@
        margin-bottom: 3px;
        color: #fff;
        font-family: 'Josefin Sans', sans-serif;
-       font-size: .83rem;
+        font-size: .95rem;
        letter-spacing: .08em;
        text-transform: uppercase;
      }
@@ -673,7 +659,8 @@
        .login-card { padding: 14px 16px 19px; }
        .google-login-btn { width: calc(100% - 26px); }
        .card-diamond-divider { margin-left: 13px; margin-right: 13px; }
-       .access-notice { font-size: .77rem; }
+        .access-notice { font-size: .885rem; }
+        .access-notice strong { font-size: .885rem; }
        .portal-security-note { margin-left: 22px; margin-right: 22px; }
         .portal-security-note { white-space: normal; }
        .portal-join p::before,
