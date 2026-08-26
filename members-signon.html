@@ -369,7 +369,7 @@
         border-radius: 20px;
         box-shadow: 0 0 32px rgba(86, 160, 218, .2), 0 0 55px rgba(11, 29, 49, .16);
      }
-      #state-login.auth-wrap { min-height: calc(100vh - 112px) !important; }
+      #state-login.auth-wrap { min-height: 0 !important; }
      .auth-box {
        width: 100%;
         max-width: 558px;
@@ -377,7 +377,7 @@
      }
       #state-login.auth-wrap .auth-box {
         display: flex;
-        flex: 1 1 auto;
+        flex: 0 0 auto;
         flex-direction: column;
       }
      .portal-mark {
@@ -455,8 +455,8 @@
        box-shadow: 0 12px 28px rgba(4, 16, 33, .22), inset 0 1px rgba(255,255,255,.05);
      }
       .fcps-logo {
-        width: 60px;
-        height: 60px;
+        width: 81px;
+        height: 81px;
         object-fit: contain;
         border-radius: 3px;
         flex: 0 0 auto;
@@ -476,12 +476,18 @@
        border: 1px solid rgba(255,255,255,.85);
        border-radius: 7px;
        color: #101a31;
-        font-size: 1rem;
+         font-size: 1.15rem;
         font-weight: 700;
        letter-spacing: 0;
        text-transform: none;
        white-space: nowrap;
      }
+      .google-label {
+        flex: 0 1 auto;
+        min-width: 0;
+        text-align: center;
+        white-space: nowrap;
+      }
       .google-login-btn .google-mark {
         position: static;
         width: 38px;
@@ -599,7 +605,7 @@
      .portal-join {
         width: min(100%, 558px);
        box-sizing: border-box;
-        margin: auto auto 0;
+        margin: 0 auto;
        padding: 0;
        border: 0;
      }
@@ -656,22 +662,29 @@
         body.dome-open .portal-page { padding-top: 210px !important; }
          .auth-wrap {
           width: 100%;
-          min-height: calc(100vh - 91px);
+           min-height: 0;
            padding: 25px 16px 0;
         }
-        #state-login.auth-wrap { min-height: calc(100vh - 91px) !important; }
+       #state-login.auth-wrap { min-height: 0 !important; }
         .auth-box { max-width: 100%; }
         .portal-mark { width: 206px; }
        .auth-title { font-size: clamp(3rem, 13vw, 4rem); }
        .auth-sub { font-size: .94rem; }
        .login-card { padding: 14px 16px 19px; }
-         .fcps-logo { width: 54px; height: 54px; }
+         .fcps-logo { width: 73px; height: 73px; }
         .google-login-btn {
            width: 100%;
            gap: 4px;
            padding: 6px;
-           font-size: .60rem;
+           font-size: .69rem;
+           white-space: normal;
         }
+         .google-label {
+           flex: 1 1 auto;
+           text-align: left;
+           white-space: normal;
+           line-height: 1.2;
+         }
          .google-login-btn .google-mark { width: 34px; height: 34px; }
        .card-diamond-divider { margin-left: 13px; margin-right: 13px; }
         .access-notice { font-size: .885rem; }
@@ -727,7 +740,7 @@
             <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
             <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
           </svg>
-             Continue with FCPS Google Workspace
+             <span class="google-label">Continue with FCPS Google Workspace</span>
         </button>
 
          <div class="card-diamond-divider" aria-hidden="true"><span></span></div>
