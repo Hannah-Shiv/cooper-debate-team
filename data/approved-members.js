@@ -24,6 +24,7 @@ const APPROVED_MEMBERS = [
 
   // ── Team Members ────────────────────────────────────────
   // Add student emails below, one per line:
+  "1806950@fcpsschools.net",
   // "student1@fcpsschools.net",
   // "student2@fcpsschools.net",
 

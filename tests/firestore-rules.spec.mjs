@@ -15,6 +15,7 @@ import {
 const PROJECT_ID = "cooper-debate-team";
 const COACH_EMAIL = "pgkonde@fcps.edu";
 const MEMBER_EMAIL = "cooperdebateteam@gmail.com";
+const STUDENT_EMAIL = "1806950@fcpsschools.net";
 
 let testEnv;
 
@@ -75,6 +76,13 @@ test("unapproved FCPS Google users cannot read protected member content", async 
   await assertFails(getDoc(doc(db, "announcements", "existing")));
   await assertFails(getDoc(doc(db, "resource-pins", "existing")));
   await assertFails(getDoc(doc(db, "tournaments", "private")));
+});
+
+test("the approved FCPS student Google identity can read protected member content", async () => {
+  const db = dbFor(STUDENT_EMAIL, "google.com");
+  await assertSucceeds(getDoc(doc(db, "announcements", "existing")));
+  await assertSucceeds(getDoc(doc(db, "resource-pins", "existing")));
+  await assertSucceeds(getDoc(doc(db, "tournaments", "private")));
 });
 
 test("non-FCPS Google users are denied even when their email is approved", async () => {

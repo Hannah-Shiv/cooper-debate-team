@@ -33,7 +33,8 @@ service cloud.firestore {
         userEmail() in [
           'pgkonde@fcps.edu',
           'hannahbshiv@gmail.com',
-          'cooperdebateteam@gmail.com'
+          'cooperdebateteam@gmail.com',
+          '1806950@fcpsschools.net'
         ];
     }
 
