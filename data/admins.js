@@ -4,6 +4,8 @@
 // Defines the legacy role fallback for the Members Portal.
 // Current membership, active status, and roles are managed from the
 // Members Directory and mirrored to Firestore portal_members records.
+// Protected legacy full-admin identities retain their configured role when
+// an older directory record still contains a lower role.
 //
 // ROLES:
 //   "member"        — Standard member access
@@ -62,21 +64,31 @@ function canManageMemberContentRole(role) {
   return isFullAdminRole(role) || role === "captain";
 }
 
-// Keep private portal headers readable without exposing a raw student ID as
-// the member's name when a roster record has not been entered yet.
-function portalFirstName(displayName, email) {
+function resolvePortalRole(directoryRole, email) {
+  const legacyRole = normalizePortalRole(getAdminRole(email));
+  return isFullAdminRole(legacyRole)
+    ? legacyRole
+    : normalizePortalRole(directoryRole);
+}
+
+// Show the member's full stored/Google name. Keep a readable fallback without
+// exposing a raw numeric student ID when no name is available yet.
+function portalMemberName(displayName, email) {
   const name = String(displayName || "").trim();
-  if (name) return name.split(/\s+/)[0];
+  if (name) return name;
 
   const localPart = String(email || "").trim().toLowerCase().split("@")[0];
   if (!localPart || /^\d+$/.test(localPart)) return "Member";
 
-  const firstPart = localPart.split(/[._-]+/).find(Boolean) || localPart;
-  return firstPart.charAt(0).toUpperCase() + firstPart.slice(1);
+  return localPart
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map(part => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
 }
 
 function portalWelcomeLabel(displayName, email) {
-  return `Welcome, ${portalFirstName(displayName, email)}`;
+  return portalMemberName(displayName, email);
 }
 
 function portalRoleLabel(role) {
@@ -144,7 +156,7 @@ async function getMemberAccess(firestoreDb, email) {
       approved: data.active === true,
       active: data.active === true,
       email: normalizedEmail,
-      role: normalizePortalRole(data.role),
+      role: resolvePortalRole(data.role, normalizedEmail),
       name: String(data.name || "").trim(),
       profileId: String(data.profileId || "").trim(),
       source: "directory",

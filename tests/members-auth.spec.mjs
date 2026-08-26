@@ -133,6 +133,7 @@ test("legacy admin fallback provides website-admin access and readable names", a
   vm.runInContext(
     adminSource + `
       this.fallbackRole = getAdminRole("1806950@fcpsschools.net");
+      this.directoryOverrideRole = resolvePortalRole("member", "1806950@fcpsschools.net");
       this.namedWelcome = portalWelcomeLabel("Alex Rivera", "1806950@fcpsschools.net");
       this.numericWelcome = portalWelcomeLabel("", "1806950@fcpsschools.net");
     `,
@@ -140,6 +141,44 @@ test("legacy admin fallback provides website-admin access and readable names", a
   );
 
   assert.equal(context.fallbackRole, "website-admin");
-  assert.equal(context.namedWelcome, "Welcome, Alex");
-  assert.equal(context.numericWelcome, "Welcome, Member");
+  assert.equal(context.directoryOverrideRole, "website-admin");
+  assert.equal(context.namedWelcome, "Alex Rivera");
+  assert.equal(context.numericWelcome, "Member");
+});
+
+test("a stale member directory role cannot downgrade the protected website admin", async () => {
+  const [approvedSource, adminSource] = await Promise.all([
+    readFile("data/approved-members.js", "utf8"),
+    readFile("data/admins.js", "utf8"),
+  ]);
+  const context = {
+    console,
+    TextEncoder,
+    APPROVED_MEMBERS: ["1806950@fcpsschools.net"],
+    MEMBER_NAMES: {},
+  };
+  vm.createContext(context);
+  vm.runInContext(
+    approvedSource + "\n" + adminSource + "\nthis.getAccess = getPortalMemberAccess;",
+    context
+  );
+
+  const access = await context.getAccess({
+    email: "1806950@fcpsschools.net",
+    displayName: "Hannah Shiv",
+    getIdTokenResult: async () => ({ signInProvider: "google.com" }),
+  }, {
+    collection: () => ({
+      doc: () => ({
+        get: async () => ({
+          exists: true,
+          data: () => ({ active: true, role: "member", name: "" }),
+        }),
+      }),
+    }),
+  });
+
+  assert.equal(access.approved, true);
+  assert.equal(access.role, "website-admin");
+  assert.equal(access.displayName, "Hannah Shiv");
 });

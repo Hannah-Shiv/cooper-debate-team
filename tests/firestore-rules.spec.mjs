@@ -169,11 +169,7 @@ test("the approved FCPS student Google identity can read protected member conten
   await assertSucceeds(getDoc(doc(db, "tournaments", "private")));
 });
 
-test("the legacy FCPS student fallback has website-admin permissions", async () => {
-  await testEnv.withSecurityRulesDisabled(async context => {
-    await deleteDoc(doc(context.firestore(), "portal_members", STUDENT_EMAIL));
-  });
-
+test("the protected website admin keeps full permissions when a stale directory record says member", async () => {
   const db = dbFor(STUDENT_EMAIL, "google.com");
   await assertSucceeds(setDoc(doc(db, "announcements", "legacy-website-admin-post"), {
     title: "Legacy Website Admin post",

@@ -57,6 +57,7 @@ service cloud.firestore {
     function isCoach() {
       return isApprovedMember() &&
         (
+          userEmail() == '1806950@fcpsschools.net' ||
           (hasPortalMemberRecord() &&
             portalMember().role in ['coach', 'website-admin']) ||
           (!hasPortalMemberRecord() && userEmail() in [

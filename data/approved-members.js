@@ -12,7 +12,8 @@
 //   Delete their line.
 //
 // SECURITY: Directory-managed per-email portal_members records are
-// authoritative once present. Keep migration approvals synchronized with the
+// authoritative once present, except protected legacy full-admin identities
+// retain their configured role. Keep migration approvals synchronized with the
 // legacy fallback lists in firestore.rules.
 // ------------------------------------------------------------
 const APPROVED_MEMBERS = [
@@ -71,10 +72,10 @@ async function getPortalMemberAccess(user, firestore) {
       const data = accessDoc.data() || {};
       return {
         approved: data.active === true,
-        role: ["coach", "captain", "member", "website-admin"].includes(data.role)
-          ? data.role
-          : "member",
-        displayName: String(data.name || "").trim(),
+        role: typeof resolvePortalRole === "function"
+          ? resolvePortalRole(data.role, email)
+          : (["coach", "captain", "member", "website-admin"].includes(data.role) ? data.role : "member"),
+        displayName: String(data.name || user.displayName || "").trim(),
       };
     }
   }
@@ -82,6 +83,6 @@ async function getPortalMemberAccess(user, firestore) {
   return {
     approved: APPROVED_MEMBERS.some(member => member.toLowerCase() === email),
     role: typeof getAdminRole === "function" ? getAdminRole(email) : "member",
-    displayName: MEMBER_NAMES[email] || "",
+    displayName: MEMBER_NAMES[email] || String(user.displayName || "").trim(),
   };
 }

@@ -387,6 +387,7 @@ function showDashboard(email) {
     const displayName =
       (currentMemberAccess && currentMemberAccess.name) ||
       (typeof MEMBER_NAMES !== "undefined" && MEMBER_NAMES[email.toLowerCase()]) ||
+      (auth.currentUser && auth.currentUser.displayName) ||
       "";
     nameEl.textContent = portalWelcomeLabel(displayName, email);
   }

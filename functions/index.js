@@ -244,7 +244,8 @@ async function hasFullAdminAccess(email) {
   const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
   if (!membership.exists) return COACH_EMAILS.has(normalizedEmail);
   const data = membership.data() || {};
-  return data.active === true && ["coach", "website-admin"].includes(data.role);
+  return data.active === true &&
+    (COACH_EMAILS.has(normalizedEmail) || ["coach", "website-admin"].includes(data.role));
 }
 const turnstileSecret = defineSecret("TURNSTILE_SECRET_KEY");
 const resendSecret = defineSecret("RESEND_API_KEY");
