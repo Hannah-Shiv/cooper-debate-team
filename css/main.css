@@ -1932,44 +1932,43 @@ body.dome-open .page-header { padding-top: 240px; }
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-height: 42px;
-  padding: 5px 11px 5px 6px;
-  border: 1px solid currentColor;
-  border-radius: 9px;
-  font-size: 0.84rem;
+  min-height: 32px;
+  padding: 4px 11px 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 0.78rem;
   font-weight: 700;
-  line-height: 1.3;
+  line-height: 1.15;
   letter-spacing: 0.045em;
   box-sizing: border-box;
   box-shadow: 0 0 14px rgba(0,0,0,0.16);
 }
 .mub-role-icon {
-  width: 34px;
-  height: 34px;
+  display: block;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
-  flex: 0 0 34px;
+  align-self: center;
+  flex: 0 0 24px;
 }
 .mub-role-label {
   display: inline-flex;
   align-items: center;
-  min-height: 30px;
+  min-height: 24px;
   white-space: nowrap;
 }
 .mub-role-badge[data-role="member"] {
-  color: #8ec5ff;
-  background: rgba(38, 112, 216, 0.18);
+  background: #174ea6;
 }
 .mub-role-badge[data-role="captain"] {
-  color: #ffd166;
-  background: rgba(218, 157, 18, 0.18);
+  background: #8a5a00;
 }
 .mub-role-badge[data-role="coach"] {
-  color: #86efac;
-  background: rgba(32, 150, 83, 0.18);
+  background: #0f6b4f;
 }
 .mub-role-badge[data-role="website-admin"] {
-  color: #ff8f8f;
-  background: rgba(179, 35, 35, 0.18);
+  background: #633f9f;
 }
 
 @media (max-width: 600px) {
@@ -1984,14 +1983,15 @@ body.dome-open .page-header { padding-top: 240px; }
   }
   .role-artwork-userbar .mub-role-badge {
     width: 42px;
-    min-height: 42px;
+    min-height: 36px;
+    height: 36px;
     padding: 4px;
     justify-content: center;
   }
   .role-artwork-userbar .mub-role-icon {
-    width: 34px;
-    height: 34px;
-    flex-basis: 34px;
+    width: 26px;
+    height: 26px;
+    flex-basis: 26px;
   }
   .role-artwork-userbar .mub-role-label {
     position: absolute;
