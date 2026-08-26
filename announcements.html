@@ -19,6 +19,7 @@
       border: 1px solid rgba(242,209,107,0.32);
       border-radius: 14px; overflow: hidden;
       margin-bottom: 28px;
+      padding: 30px 32px 30px 36px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.16);
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
@@ -165,24 +166,56 @@
       border-color: rgba(242,209,107,0.58);
     }
     .ann-card-header {
-      display: flex; align-items: center; gap: 16px;
-      padding: 28px 32px 0;
+      display: block;
+      padding: 0;
     }
-    .ann-card-emoji { font-size: 2rem; flex-shrink: 0; }
-    .ann-card-meta { display: flex; flex-direction: column; gap: 6px; }
+    .ann-card-emoji { display: none; }
+    .ann-card-meta { display: flex; flex-direction: column; gap: 8px; }
+    .ann-card .news-card-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: fit-content;
+      margin-bottom: 4px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: #D4A017;
+      font-size: 0.76rem;
+      letter-spacing: 0.18em;
+      line-height: 1.2;
+    }
+    .ann-card .news-card-tag::before {
+      content: '';
+      display: inline-block;
+      width: 28px;
+      height: 2px;
+      background: #D4A017;
+      box-shadow: 0 0 8px rgba(212,160,23,0.3);
+    }
     .ann-card-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.15rem, 2.5vw, 1.45rem);
-      color: var(--white); line-height: 1.35;
+      font-size: clamp(1.85rem, 3.4vw, 2.65rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.08;
+      letter-spacing: -0.01em;
+      text-shadow: 0 3px 18px rgba(0,0,0,0.24);
     }
     .ann-card-date {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.68rem; color: var(--gray-mid); letter-spacing: 0.06em;
+      font-size: 0.68rem;
+      color: rgba(242,209,107,0.72);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
     .ann-card-body {
-      padding: 20px 32px 28px;
-      font-size: 0.9rem; color: rgba(255,255,255,0.78);
-      line-height: 1.8; white-space: pre-wrap;
+      padding: 22px 0 0;
+      font-size: 1.08rem;
+      color: rgba(255,255,255,0.92);
+      line-height: 1.8;
+      white-space: pre-wrap;
     }
     .ann-empty {
       text-align: center; padding: 64px 24px;
@@ -201,8 +234,10 @@
       .ann-featured-title { font-size: 1.85rem; }
       .ann-featured-resolution { font-size: 1.12rem; }
       .ann-featured-detail { flex-direction: column; align-items: center; gap: 14px; }
-      .ann-card-header { padding: 20px 20px 0; }
-      .ann-card-body { padding: 16px 20px 20px; }
+      .ann-card { padding: 24px 20px 24px 28px; }
+      .ann-card-body { padding-top: 18px; font-size: 1rem; }
+      .ann-card-title { font-size: 1.9rem; }
+      .ann-card .news-card-tag { font-size: 0.68rem; letter-spacing: 0.13em; }
     }
   </style>
 </head>
