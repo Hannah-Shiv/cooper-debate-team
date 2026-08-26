@@ -1958,6 +1958,7 @@ body.dome-open .page-header { padding-top: 240px; }
   object-fit: contain;
   align-self: center;
   flex: 0 0 40px;
+  transform: translateY(-10%);
 }
 .mub-role-label {
   display: inline-flex;
