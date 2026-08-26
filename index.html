@@ -569,6 +569,458 @@
       .hero-scroll-label { font-size: 0.56rem; }
       .hero-scroll-chevron { height: 18px; width: 18px; }
     }
+
+    /* ── Index footer — reference layout ─────────────────────── */
+    .index-footer {
+      --index-footer-gold: #f2b41f;
+      --index-footer-line: rgba(242,180,31,0.78);
+      --index-footer-muted: rgba(242,244,249,0.78);
+      position: relative;
+      overflow: hidden;
+      padding: 88px 0 0;
+      border-top: 0;
+      background: #021327;
+      color: #fff;
+    }
+    .index-footer .section-wrap {
+      position: relative;
+      z-index: 2;
+      width: calc(100% - 64px);
+      max-width: 1600px;
+    }
+    .index-footer-crown {
+      position: absolute;
+      top: 13px;
+      left: 50%;
+      z-index: 3;
+      width: min(calc(100% - 44px), 1640px);
+      padding: 0;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: minmax(0,1fr) 94px minmax(0,1fr);
+      align-items: center;
+      gap: 16px;
+      color: var(--index-footer-gold);
+    }
+    .index-footer-crown::before,
+    .index-footer-crown::after {
+      content: "";
+      height: 2px;
+      background: linear-gradient(90deg, transparent 0%, var(--index-footer-gold) 14%);
+    }
+    .index-footer-crown::after {
+      background: linear-gradient(90deg, var(--index-footer-gold) 86%, transparent 100%);
+    }
+    .index-footer-crown svg {
+      display: block;
+      width: 94px;
+      height: 56px;
+      margin: auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .index-footer-main {
+      display: grid;
+      grid-template-columns: 38.5% 23.5% 31%;
+      align-items: stretch;
+      padding: 45px 0 78px;
+    }
+    .index-footer-brand {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      padding: 0 54px 0 8px;
+      text-align: center;
+    }
+    .index-footer-brand::after {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      left: -90px;
+      bottom: -160px;
+      width: 380px;
+      height: 390px;
+      background: url("images/index-footer-jaguar.png?v=1") center/contain no-repeat;
+      opacity: 0.045;
+      filter: grayscale(1);
+      pointer-events: none;
+    }
+    .index-footer-brand > * {
+      position: relative;
+      z-index: 1;
+    }
+    .index-footer-lockup {
+      display: grid;
+      grid-template-columns: 185px minmax(0,1fr);
+      align-items: center;
+      gap: 20px;
+      max-width: 620px;
+      margin: 0 auto 22px;
+      text-align: left;
+    }
+    .index-footer-jaguar {
+      display: block;
+      width: 185px;
+      height: 192px;
+      object-fit: contain;
+      filter: drop-shadow(0 5px 14px rgba(0,0,0,0.28));
+    }
+    .index-footer-brand-title {
+      margin: 0;
+      color: #fff;
+      font-family: "Arial Narrow","Josefin Sans",sans-serif;
+      font-size: clamp(2.7rem,3.45vw,4.05rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 0.96;
+      text-transform: uppercase;
+    }
+    .index-footer-school {
+      margin-top: 13px;
+      color: var(--index-footer-gold);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.98rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      line-height: 1.55;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .index-footer-location {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 13px;
+    }
+    .index-footer-location::before,
+    .index-footer-location::after {
+      content: "";
+      width: 28px;
+      height: 1px;
+      background: var(--index-footer-gold);
+    }
+    .index-footer-motto {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 4px 0 22px;
+      color: rgba(255,255,255,0.84);
+      font-family: "Cormorant Garamond",serif;
+      font-size: 1.3rem;
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+    .index-footer-motto .star,
+    .index-footer-motto .dot {
+      color: var(--index-footer-gold);
+      font-style: normal;
+    }
+    .index-footer-brand-rule {
+      width: 88px;
+      height: 1px;
+      margin: 0 auto 21px;
+      background: var(--index-footer-gold);
+    }
+    .index-footer-brand-copy {
+      max-width: 430px;
+      margin: 0 auto;
+      color: var(--index-footer-muted);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.03em;
+      line-height: 1.72;
+    }
+    .index-footer-column {
+      min-width: 0;
+      padding: 5px 38px 0;
+      border-left: 0;
+    }
+    .index-footer-column + .index-footer-column {
+      border-left: 1px solid rgba(99,133,178,0.22);
+    }
+    .index-footer-heading {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 8px;
+      color: var(--index-footer-gold);
+      font-family: "Arial Narrow","Josefin Sans",sans-serif;
+      font-size: 1.14rem;
+      font-weight: 800;
+      letter-spacing: 0.035em;
+      text-transform: uppercase;
+    }
+    .index-footer-heading svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.7;
+    }
+    .index-footer-nav {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .index-footer-nav li {
+      border-bottom: 1px solid rgba(99,133,178,0.20);
+    }
+    .index-footer-link {
+      display: grid;
+      grid-template-columns: 12px minmax(0,1fr) auto;
+      align-items: center;
+      gap: 10px;
+      min-height: 65px;
+      color: rgba(255,255,255,0.90);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.96rem;
+      line-height: 1.25;
+      text-decoration: none;
+      transition: color .2s ease, padding-left .2s ease;
+    }
+    .index-footer-link:hover,
+    .index-footer-link:focus-visible {
+      padding-left: 4px;
+      color: var(--index-footer-gold);
+    }
+    .index-footer-chevron {
+      color: var(--index-footer-gold);
+      font-size: 1.38rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .index-footer-external {
+      width: 15px;
+      height: 15px;
+      fill: none;
+      stroke: var(--index-footer-gold);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+    .index-footer-action {
+      display: grid;
+      grid-template-columns: 22px minmax(0,1fr) 22px;
+      align-items: center;
+      gap: 10px;
+      min-height: 61px;
+      margin: 9px 0;
+      padding: 0 15px;
+      border: 1.5px solid var(--index-footer-gold);
+      border-radius: 6px;
+      color: var(--index-footer-gold);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 0.015em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: background .2s ease, color .2s ease;
+    }
+    .index-footer-action:hover,
+    .index-footer-action:focus-visible {
+      background: var(--index-footer-gold);
+      color: #06152a;
+    }
+    .index-footer-action svg {
+      width: 21px;
+      height: 21px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+    .index-footer-action .action-arrow {
+      justify-self: end;
+      font-size: 1.45rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+    .index-footer-email {
+      grid-template-columns: 23px minmax(0,1fr);
+      margin-top: 10px;
+      text-transform: none;
+    }
+    .index-footer-email span {
+      overflow-wrap: anywhere;
+    }
+    .index-footer-bottom {
+      border-top: 2px solid var(--index-footer-line);
+      background: rgba(0,8,20,0.18);
+    }
+    .index-footer-bottom-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 1.1fr;
+      align-items: center;
+      padding: 31px 0 34px;
+    }
+    .index-footer-bottom-cell {
+      display: grid;
+      grid-template-columns: 26px minmax(0,1fr);
+      align-items: start;
+      gap: 12px;
+      min-height: 60px;
+      padding: 0 34px;
+    }
+    .index-footer-bottom-cell + .index-footer-bottom-cell {
+      border-left: 1px solid rgba(99,133,178,0.24);
+    }
+    .index-footer-bottom-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 25px;
+      height: 25px;
+      color: var(--index-footer-gold);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .index-footer-bottom-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.7;
+    }
+    .index-footer-bottom-strong,
+    .index-footer-bottom-links,
+    .index-footer-credit-line {
+      color: rgba(255,255,255,0.94);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+    .index-footer-bottom-sub {
+      margin-top: 2px;
+      color: var(--index-footer-muted);
+      font-family: "Josefin Sans",sans-serif;
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+    .index-footer-bottom-links {
+      align-self: center;
+    }
+    .index-footer-bottom-links a {
+      color: rgba(255,255,255,0.94);
+      text-decoration: none;
+    }
+    .index-footer-bottom-links a:hover,
+    .index-footer-bottom-links a:focus-visible {
+      color: var(--index-footer-gold);
+    }
+    .index-footer-bottom-links .dot {
+      padding: 0 10px;
+      color: var(--index-footer-gold);
+    }
+    .index-footer-credit-line strong {
+      color: var(--index-footer-gold);
+      font-weight: 700;
+    }
+    @media (max-width: 1040px) {
+      .index-footer-main {
+        grid-template-columns: minmax(0,1fr) minmax(240px,0.72fr);
+      }
+      .index-footer-brand {
+        grid-column: 1 / -1;
+        padding: 0 28px 42px;
+      }
+      .index-footer-brand::after {
+        left: 3%;
+        bottom: -160px;
+      }
+      .index-footer-column {
+        border-top: 1px solid rgba(99,133,178,0.22);
+        border-left: 0;
+        padding-top: 32px;
+      }
+      .index-footer-column + .index-footer-column {
+        border-left: 1px solid rgba(99,133,178,0.22);
+      }
+      .index-footer-bottom-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .index-footer-bottom-cell:last-child {
+        grid-column: 1 / -1;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(99,133,178,0.24);
+        border-left: 0;
+      }
+    }
+    @media (max-width: 640px) {
+      .index-footer {
+        padding-top: 72px;
+      }
+      .index-footer-crown {
+        grid-template-columns: minmax(0,1fr) 64px minmax(0,1fr);
+      }
+      .index-footer-crown svg {
+        width: 64px;
+      }
+      .index-footer-main {
+        grid-template-columns: 1fr;
+        padding-bottom: 34px;
+      }
+      .index-footer-brand {
+        padding-inline: 8px;
+      }
+      .index-footer-lockup {
+        grid-template-columns: 92px minmax(0,1fr);
+        gap: 10px;
+      }
+      .index-footer-jaguar {
+        width: 92px;
+        height: 100px;
+      }
+      .index-footer-brand-title {
+        font-size: clamp(1.72rem,9vw,2.4rem);
+      }
+      .index-footer-school {
+        font-size: 0.7rem;
+        letter-spacing: 0.09em;
+      }
+      .index-footer-motto {
+        gap: 7px;
+        font-size: 1rem;
+      }
+      .index-footer-column {
+        padding: 28px 8px 0;
+      }
+      .index-footer-link {
+        min-height: 52px;
+      }
+      .index-footer-action {
+        min-height: 54px;
+      }
+      .index-footer-column + .index-footer-column {
+        margin-top: 22px;
+        border-left: 0;
+      }
+      .index-footer-bottom-grid {
+        grid-template-columns: 1fr;
+        padding: 8px 0 18px;
+      }
+      .index-footer-bottom-cell {
+        padding: 18px 8px;
+      }
+      .index-footer-bottom-cell + .index-footer-bottom-cell,
+      .index-footer-bottom-cell:last-child {
+        grid-column: auto;
+        margin-top: 0;
+        padding-top: 18px;
+        border-top: 1px solid rgba(99,133,178,0.24);
+        border-left: 0;
+      }
+    }
   </style>
 </head>
 <body style="--navy-dark:#1c2030;">
@@ -1049,50 +1501,107 @@
 </section>
 
 <!-- FOOTER -->
-<footer>
+<footer class="index-footer">
+  <div class="index-footer-crown" aria-hidden="true">
+    <svg viewBox="0 0 80 48">
+      <path d="M25 7c-6 5-9 11-10 18M19 10l-5-2M17 15l-6-1M15 21l-6 1M55 7c6 5 9 11 10 18M61 10l5-2M63 15l6-1M65 21l6 1"/>
+      <path d="M28 8h24v17c0 8-5 13-12 16-7-3-12-8-12-16V8Z"/>
+      <path d="m40 14 2 4 5 .7-3.5 3.4.8 4.9-4.3-2.3-4.3 2.3.8-4.9-3.5-3.4 5-.7 2-4Z"/>
+    </svg>
+  </div>
+
   <div class="section-wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-brand-name">Cooper Debate Team</div>
-        <div class="footer-brand-school">Cooper Middle School · McLean, VA</div>
-        <p class="footer-tagline">"Speak · Reason · Lead"</p>
-        <p style="font-size:0.78rem;color:var(--gray-mid);line-height:1.7;">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals. Metro Finals Champions.</p>
-      </div>
-      <div>
-        <div class="footer-col-title">Navigate</div>
-        <ul class="footer-links">
-          <li><a href="about.html">About</a></li>
-          <li><a href="awards.html">Awards</a></li>
-          <li><a href="tournaments.html">Tournaments</a></li>
-          <li><a href="resources.html">Resources</a></li>
-          <li><a href="gallery.html">Gallery</a></li>
-          <li><a href="announcements.html">Announcements</a></li>
+    <div class="index-footer-main">
+      <section class="index-footer-brand" aria-label="Cooper Debate Team">
+        <div class="index-footer-lockup">
+          <img class="index-footer-jaguar" src="images/index-footer-jaguar.png?v=1" alt="Cooper C with jaguar"/>
+          <div>
+            <h2 class="index-footer-brand-title">Cooper<br/>Debate Team</h2>
+            <div class="index-footer-school">
+              <span>Cooper Middle School</span>
+              <span class="index-footer-location">McLean, VA</span>
+            </div>
+          </div>
+        </div>
+        <div class="index-footer-motto">
+          <span class="star">☆</span><span>Speak</span><span class="dot">•</span><span>Reason</span><span class="dot">•</span><span>Lead</span><span class="star">☆</span>
+        </div>
+        <div class="index-footer-brand-rule" aria-hidden="true"></div>
+        <p class="index-footer-brand-copy">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals.<br/>Metro Finals Champions.</p>
+      </section>
+
+      <nav class="index-footer-column" aria-label="Explore">
+        <h2 class="index-footer-heading">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 4.9-4.9 2.1 2.1-4.9 4.9-2.1Z"/></svg>
+          Explore
+        </h2>
+        <ul class="index-footer-nav">
+          <li><a class="index-footer-link" href="about.html"><span class="index-footer-chevron">›</span><span>About</span></a></li>
+          <li><a class="index-footer-link" href="awards.html"><span class="index-footer-chevron">›</span><span>Awards &amp; Achievements</span></a></li>
+          <li><a class="index-footer-link" href="tournaments.html"><span class="index-footer-chevron">›</span><span>Tournaments</span></a></li>
+          <li><a class="index-footer-link" href="resources.html"><span class="index-footer-chevron">›</span><span>Resources</span></a></li>
+          <li><a class="index-footer-link" href="gallery.html"><span class="index-footer-chevron">›</span><span>Gallery</span></a></li>
+          <li><a class="index-footer-link" href="announcements.html"><span class="index-footer-chevron">›</span><span>News &amp; Announcements</span></a></li>
         </ul>
-      </div>
-      <div>
-        <div class="footer-col-title">Quick Links</div>
-        <ul class="footer-links">
-          <li><a href="apply.html">Apply Now</a></li>
-          <li><a href="about.html#join">How to Join</a></li>
-          <li><a href="tournaments.html#parent-info">Parent Information</a></li>
-          <li><a href="resources.html">PF Topic Center</a></li>
-          <li><a href="members-signon.html">Member Portal</a></li>
-          <li><a href="members-blog.html">Team Blog</a></li>
+      </nav>
+
+      <nav class="index-footer-column" aria-label="Connect">
+        <h2 class="index-footer-heading">
+          <svg viewBox="0 0 28 24" aria-hidden="true"><circle cx="10" cy="7" r="3.5"/><circle cx="20" cy="8" r="3"/><path d="M3 20v-2c0-4 3-6 7-6s7 2 7 6v2M17 13c4 0 8 1.6 8 5v2"/></svg>
+          Connect
+        </h2>
+        <ul class="index-footer-nav">
+          <li><a class="index-footer-link" href="apply.html"><span class="index-footer-chevron">›</span><span>Apply Now</span></a></li>
+          <li><a class="index-footer-link" href="about.html#join"><span class="index-footer-chevron">›</span><span>How to Join</span></a></li>
+          <li>
+            <a class="index-footer-link" href="tournaments.html#parent-info">
+              <span class="index-footer-chevron">›</span><span>Parent Information</span>
+              <svg class="index-footer-external" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M8 2h6v6M14 2 7 9"/></svg>
+            </a>
+          </li>
         </ul>
-      </div>
-      <div>
-        <div class="footer-col-title">Contact</div>
-        <ul class="footer-links">
-          <li><a href="https://cooperms.fcps.edu" target="_blank" rel="noopener">Cooper Middle School</a></li>
-          <li><a href="mailto:CooperDebateTeam@gmail.com">CooperDebateTeam@gmail.com</a></li>
-          <li><a href="tournaments.html">Tournament Schedule</a></li>
-          <li><a href="privacy.html">Privacy Policy</a></li>
+        <a class="index-footer-action" href="members-signon.html">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>
+          <span>Member Portal</span><span class="action-arrow">→</span>
+        </a>
+        <ul class="index-footer-nav">
+          <li><a class="index-footer-link" href="members-blog.html"><span class="index-footer-chevron">›</span><span>Team Blog</span></a></li>
+          <li><a class="index-footer-link" href="mailto:CooperDebateTeam@gmail.com"><span class="index-footer-chevron">›</span><span>Contact</span></a></li>
         </ul>
-      </div>
+        <a class="index-footer-action index-footer-email" href="mailto:CooperDebateTeam@gmail.com">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>
+          <span>CooperDebateTeam@gmail.com</span>
+        </a>
+      </nav>
     </div>
-    <div class="footer-bottom">
-      <p class="footer-sig"><em>Cooper Debate Team</em></p>
-      <p class="footer-credit">Designed &amp; developed by <span>Hannah Shiv</span> &nbsp;·&nbsp; A volunteer community-service initiative. &nbsp;·&nbsp; © 2026 Cooper Middle School, McLean VA · FCPS</p>
+  </div>
+
+  <div class="index-footer-bottom">
+    <div class="section-wrap index-footer-bottom-grid">
+      <div class="index-footer-bottom-cell">
+        <span class="index-footer-bottom-icon" aria-hidden="true">©</span>
+        <div>
+          <div class="index-footer-bottom-strong">2026 Cooper Debate Team</div>
+          <div class="index-footer-bottom-sub">Cooper Middle School &nbsp;•&nbsp; McLean, VA &nbsp;•&nbsp; FCPS</div>
+        </div>
+      </div>
+      <div class="index-footer-bottom-cell">
+        <span class="index-footer-bottom-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 2 4.5 5v6c0 5 3 8.5 7.5 11 4.5-2.5 7.5-6 7.5-11V5L12 2Z"/><path d="M9 8h6M9 12h6M12 8v8"/></svg>
+        </span>
+        <div class="index-footer-bottom-links">
+          <a href="privacy.html">Privacy Policy</a><span class="dot">•</span><a href="privacy.html#accessibility">Accessibility</a>
+        </div>
+      </div>
+      <div class="index-footer-bottom-cell">
+        <span class="index-footer-bottom-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 21S4 16.2 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16.2 12 21 12 21Z"/></svg>
+        </span>
+        <div>
+          <div class="index-footer-credit-line">Designed &amp; developed by <strong>Hannah Shiv</strong></div>
+          <div class="index-footer-bottom-sub">A volunteer community-service initiative.</div>
+        </div>
+      </div>
     </div>
   </div>
 </footer>
