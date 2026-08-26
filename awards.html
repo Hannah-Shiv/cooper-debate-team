@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=42"/>
+  <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <!-- Firebase compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -2013,6 +2013,7 @@ function renderAwards(tourns) {
   const gridColor  = 'rgba(255,255,255,0.05)';
   const tickColor  = 'rgba(255,255,255,0.6)';
   const tickFont   = { size: 13 };
+  const barTickFont = { size: 20 };
   const noLegend   = { legend:{ display:false } };
   const bigLabel   = { display: (c) => c.dataset.data[c.dataIndex] > 0,
                        color:'#fff', font:{ size:22, weight:'bold', family:"'Playfair Display',serif" },
@@ -2020,8 +2021,8 @@ function renderAwards(tourns) {
 
   function barScales(yStep) {
     return {
-      x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont} },
-      y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:tickFont, stepSize:yStep||1}, beginAtZero:true }
+      x:{ grid:{color:gridColor}, ticks:{color:tickColor, font:barTickFont} },
+      y:{ grid:{color:gridColor}, ticks:{color:tickColor, font:barTickFont, stepSize:yStep||1}, beginAtZero:true }
     };
   }
 
@@ -2034,8 +2035,8 @@ function renderAwards(tourns) {
     data:{
       labels:['0 wins','1 win','2 wins','3 wins','4 wins'],
       datasets:[{ data:[dist[0],dist[1],dist[2],dist[3],dist[4]],
-        backgroundColor:['rgba(239,68,68,0.45)','rgba(251,146,60,0.45)','rgba(212,160,23,0.4)','rgba(34,197,94,0.45)','rgba(34,197,94,0.7)'],
-        borderColor:['rgba(239,68,68,0.8)','rgba(251,146,60,0.8)','rgba(212,160,23,0.9)','rgba(34,197,94,0.8)','rgba(34,197,94,1)'],
+        backgroundColor:['#8B2635','#7A4B2A','#75601E','#126B4F','#0D8A4A'],
+        borderColor:['#B83A4D','#A66A43','#B99A32','#27956D','#20B663'],
         borderWidth:1, borderRadius:4 }]
     },
     options:{ responsive:true, plugins:{...noLegend, datalabels:bigLabel}, scales:barScales(1) }
