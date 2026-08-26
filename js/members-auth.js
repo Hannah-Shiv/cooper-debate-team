@@ -162,7 +162,8 @@ function resetGoogleButton() {
       <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
       <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
     </svg>
-    Continue with FCPS Google`;
+     Continue with Google
+     <span class="google-arrow" aria-hidden="true">→</span>`;
 }
 
 // ── Send magic link ──────────────────────────────────────────

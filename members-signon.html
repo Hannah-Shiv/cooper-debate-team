@@ -331,6 +331,362 @@
       .auth-sub br { display: none; }
       .portal-mark { width: 116px; }
     }
+
+     /* ── Reference sign-in composition ─────────────────────── */
+     html { font-size: 16px !important; }
+     body { background: #203b5b; }
+     .mp-topbar, #site-badge, #circ-wrap, body > footer { display: none !important; }
+     .portal-page {
+       min-height: 100vh;
+       box-sizing: border-box;
+       display: block;
+       padding: 30px 20px 16px !important;
+       overflow: hidden !important;
+       background:
+         radial-gradient(ellipse 74% 46% at 50% 17%, rgba(83, 119, 158, .28), transparent 72%),
+         linear-gradient(135deg, rgba(14, 42, 72, .45), transparent 48%),
+         #203b5b;
+     }
+     .portal-page::before,
+     .portal-page::after {
+       content: "";
+       position: absolute;
+       pointer-events: none;
+       opacity: .13;
+       border: 2px solid rgba(112, 151, 190, .8);
+       border-radius: 48%;
+       transform: rotate(-28deg);
+     }
+     .portal-page::before {
+       width: 260px; height: 680px; left: -128px; top: 72px;
+       box-shadow: 35px 28px 0 -5px rgba(112, 151, 190, .6), 68px 58px 0 -12px rgba(112, 151, 190, .5);
+     }
+     .portal-page::after {
+       width: 210px; height: 570px; right: -94px; top: 122px;
+       transform: rotate(27deg);
+       box-shadow: -32px 30px 0 -5px rgba(112, 151, 190, .55), -60px 64px 0 -12px rgba(112, 151, 190, .45);
+     }
+     .auth-wrap {
+       position: relative;
+       z-index: 1;
+       display: block;
+       width: 100%;
+       min-height: 0;
+     }
+     #state-login.auth-wrap {
+       display: block !important;
+       min-height: 0 !important;
+     }
+     .auth-box {
+       width: 100%;
+       max-width: 600px;
+       margin: 0 auto;
+     }
+     .portal-mark {
+       width: 220px;
+       margin: 0 auto 14px;
+       filter: drop-shadow(0 11px 18px rgba(0,0,0,.25));
+     }
+     .auth-badge {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 16px;
+       width: min(100%, 315px);
+       margin: 0 auto 27px !important;
+       padding: 0 !important;
+       background: none;
+       border: 0;
+       color: #e9b83d;
+       font-size: .78rem;
+       letter-spacing: .23em;
+       line-height: 1.2;
+     }
+     .auth-badge::before,
+     .auth-badge::after {
+       content: "";
+       display: block;
+       flex: 1;
+       height: 1px;
+       background: #d39f2f;
+       opacity: .9;
+     }
+     .auth-title {
+       margin: 0 !important;
+       color: #fbfbfd;
+       font-size: clamp(3.2rem, 9vw, 4.25rem) !important;
+       line-height: .92;
+       letter-spacing: -.025em;
+     }
+     .portal-diamond-divider {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 10px;
+       width: 154px;
+       margin: 17px auto 17px;
+     }
+     .portal-diamond-divider::before,
+     .portal-diamond-divider::after {
+       content: "";
+       flex: 1;
+       height: 1px;
+       background: #d39f2f;
+     }
+     .portal-diamond-divider span {
+       width: 8px;
+       height: 8px;
+       background: #e9b83d;
+       transform: rotate(45deg);
+     }
+     .auth-sub {
+       max-width: 470px;
+       margin: 0 auto 17px !important;
+       color: rgba(247, 249, 253, .92);
+       font-size: 1rem;
+       line-height: 1.55;
+     }
+     .login-card {
+       width: min(100%, 458px);
+       box-sizing: border-box;
+       margin: 0 auto;
+       padding: 15px 17px 43px !important;
+       background: rgba(5, 23, 47, .78);
+       border: 1px solid rgba(222, 194, 125, .72);
+       border-radius: 14px;
+       box-shadow: 0 12px 28px rgba(4, 16, 33, .22), inset 0 1px rgba(255,255,255,.05);
+     }
+     .login-lead {
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       justify-content: center;
+       gap: 8px;
+       margin: 0 0 23px;
+       color: #f8f7fb;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: .93rem;
+       font-weight: 700;
+       letter-spacing: .08em;
+       text-transform: uppercase;
+     }
+     .login-lead-icon {
+       width: 43px;
+       height: 48px;
+       color: #6f9df2;
+       flex: 0 0 auto;
+     }
+     .google-login-btn {
+       position: relative;
+       width: calc(100% - 50px);
+       margin-left: auto;
+       margin-right: auto;
+       min-height: 64px;
+       padding: 12px 54px 12px 44px;
+       border: 1px solid rgba(255,255,255,.85);
+       border-radius: 7px;
+       color: #101a31;
+       font-size: 1rem;
+       letter-spacing: 0;
+       text-transform: none;
+     }
+     .google-login-btn .google-mark { width: 31px; height: 31px; }
+     .card-diamond-divider {
+       display: flex;
+       align-items: center;
+       gap: 8px;
+       height: 8px;
+       margin: 8px 25px;
+     }
+     .card-diamond-divider::before,
+     .card-diamond-divider::after {
+       content: "";
+       flex: 1;
+       height: 1px;
+       background: rgba(218, 174, 57, .38);
+     }
+     .card-diamond-divider span {
+       width: 7px;
+       height: 7px;
+       background: #e3af31;
+       transform: rotate(45deg);
+     }
+     .google-arrow {
+       position: absolute;
+       right: 35px;
+       top: 50%;
+       color: #18253d;
+       font-family: Arial, sans-serif;
+       font-size: 2rem;
+       font-weight: 300;
+       line-height: 1;
+       transform: translateY(-54%);
+     }
+     .access-notice {
+       display: flex;
+       gap: 13px;
+       align-items: center;
+       margin: 18px 0 0;
+       padding: 13px 16px;
+       color: #fff6f1;
+       background: rgba(129, 11, 21, .82);
+       border: 1px solid rgba(239, 73, 74, .82);
+       border-radius: 9px;
+       box-shadow: inset 0 1px rgba(255,255,255,.06);
+       font-size: .83rem;
+       line-height: 1.35;
+     }
+     .access-notice-icon {
+       display: grid;
+       place-items: center;
+       width: 33px;
+       height: 33px;
+       flex: 0 0 33px;
+       border-radius: 50%;
+       background: #fff;
+       color: #971725;
+       font-family: Georgia, serif;
+       font-size: 1.5rem;
+       font-weight: 700;
+       line-height: 1;
+     }
+     .access-notice strong {
+       display: block;
+       margin-bottom: 3px;
+       color: #fff;
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: .83rem;
+       letter-spacing: .08em;
+       text-transform: uppercase;
+     }
+     .access-notice em {
+       color: #f7cf55;
+       font-style: normal;
+       font-weight: 700;
+     }
+     .email-fallback {
+       margin-top: 19px;
+       padding-top: 0;
+       border-top: 0;
+     }
+     .email-fallback > summary {
+       list-style: none;
+       text-transform: none;
+     }
+     .email-fallback > summary::after { content: "" !important; }
+     .email-fallback > summary.portal-security-note {
+       color: #f4f4f8;
+       font-size: .95rem;
+       font-weight: 400;
+       letter-spacing: 0;
+       text-align: left;
+       text-transform: none;
+     }
+     .portal-security-note {
+       display: flex;
+       align-items: center;
+       gap: 13px;
+       margin: 0 47px;
+       color: #f4f4f8;
+       font-size: .95rem;
+       line-height: 1.45;
+       text-align: left;
+     }
+     .portal-lock-icon {
+       display: grid;
+       place-items: center;
+       width: 45px;
+       height: 45px;
+       flex: 0 0 45px;
+       border: 1px solid #dda936;
+       border-radius: 50%;
+       color: #e8b638;
+       font-size: 1.55rem;
+     }
+     .portal-lock-icon svg { width: 24px; height: 26px; }
+     .email-fallback[open] .portal-security-note {
+       margin-bottom: 13px;
+     }
+     .portal-join {
+       width: min(100%, 458px);
+       box-sizing: border-box;
+       margin: 27px auto 0;
+       padding: 0;
+       border: 0;
+     }
+     .portal-join p {
+       display: flex;
+       align-items: center;
+       gap: 17px;
+       margin: 0 0 14px;
+       color: #f0bd3b;
+       font-size: .92rem;
+       justify-content: center;
+     }
+     .portal-join p::before,
+     .portal-join p::after {
+       content: "";
+       width: 106px;
+       height: 1px;
+       background: #d6a42d;
+     }
+     .join-pill {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 14px;
+       width: calc(100% - 54px);
+       margin-left: auto;
+       margin-right: auto;
+       box-sizing: border-box;
+       padding: 11px 16px;
+       border: 1px solid #e0b33d;
+       border-radius: 6px;
+       background: rgba(5, 22, 45, .18);
+       color: #efbd3e;
+       font-size: .88rem;
+       letter-spacing: .11em;
+     }
+     .join-mark { width: 24px; height: 24px; }
+     .join-arrow { margin-left: auto; font-size: 1.65rem; line-height: .7; }
+     .portal-footer-mark {
+       position: relative;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 20px;
+       width: 100%;
+       max-width: 644px;
+       margin: 0 auto;
+     }
+     .portal-footer-mark::before,
+     .portal-footer-mark::after {
+       content: "";
+       height: 2px;
+       flex: 1;
+       background: #a82228;
+     }
+     .portal-footer-mark img {
+       width: 62px;
+       height: 90px;
+       object-fit: contain;
+       filter: drop-shadow(0 2px 2px rgba(0,0,0,.25));
+     }
+     @media (max-width: 600px) {
+       .portal-page { padding: 27px 14px 13px !important; }
+       .portal-mark { width: 206px; }
+       .auth-title { font-size: clamp(3rem, 13vw, 4rem); }
+       .auth-sub { font-size: .94rem; }
+       .login-card { padding: 14px 16px 19px; }
+       .google-login-btn { width: calc(100% - 26px); }
+       .card-diamond-divider { margin-left: 13px; margin-right: 13px; }
+       .access-notice { font-size: .77rem; }
+       .portal-security-note { margin-left: 22px; margin-right: 22px; }
+       .portal-join p::before,
+       .portal-join p::after { width: 74px; }
+       .portal-footer-mark { margin-top: 13px; }
+       .join-pill { width: calc(100% - 28px); }
+     }
   </style>
 </head>
 <body>
@@ -364,10 +720,19 @@
     <div class="auth-box">
       <img class="portal-mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true"/>
       <div class="auth-badge">Members Only</div>
-      <h1 class="auth-title">Members Portal</h1>
-      <p class="auth-sub">Sign in with either approved FCPS Google Workspace address connected to your member profile.</p>
+       <h1 class="auth-title">Members Portal</h1>
+       <div class="portal-diamond-divider" aria-hidden="true"><span></span></div>
+       <p class="auth-sub">Sign in with your FCPS Google Workspace account<br/>to access exclusive resources, files, schedules,<br/>and team updates.</p>
 
       <div class="login-card">
+         <div class="login-lead">
+           <svg class="login-lead-icon" viewBox="0 0 48 54" aria-hidden="true">
+             <path d="M24 2 43 9v16c0 13-8 22-19 27C13 47 5 38 5 25V9L24 2Z" fill="none" stroke="currentColor" stroke-width="1.8"/>
+             <circle cx="24" cy="20" r="5" fill="none" stroke="currentColor" stroke-width="1.8"/>
+             <path d="M14 37c1.8-6 6-9 10-9s8.2 3 10 9" fill="none" stroke="currentColor" stroke-width="1.8"/>
+           </svg>
+           <span>Continue with FCPS Google</span>
+         </div>
         <button class="google-login-btn" id="google-signin-btn" onclick="signInWithFcpsGoogle()">
           <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
@@ -375,16 +740,28 @@
             <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
             <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
           </svg>
-          Continue with FCPS Google
+           Continue with Google
+           <span class="google-arrow" aria-hidden="true">→</span>
         </button>
 
+         <div class="card-diamond-divider" aria-hidden="true"><span></span></div>
+
         <div class="access-notice">
-          <span class="access-notice-icon" aria-hidden="true">ⓘ</span>
-          <span>Your exact Google address must be listed as <strong>Active</strong> in the Members Directory. Contact Coach Konde or a Website Admin if access has not been set up.</span>
+           <span class="access-notice-icon" aria-hidden="true">!</span>
+           <span><strong>Access Required</strong>Coach / Website Admin must add your <em>fcps.edu</em> or <em>fcpsschools.net</em> email address to the Members Directory before you can sign in.</span>
         </div>
 
         <details class="email-fallback">
-          <summary>Use an approved non-FCPS email</summary>
+           <summary class="portal-security-note" title="Use an approved non-FCPS email">
+             <span class="portal-lock-icon" aria-hidden="true">
+               <svg viewBox="0 0 24 26">
+                 <rect x="5" y="10" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/>
+                 <path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/>
+                 <circle cx="12" cy="16" r="1.2" fill="currentColor"/>
+               </svg>
+             </span>
+             <span>Authorized Cooper Debate<br/>members and staff only.</span>
+           </summary>
           <div class="email-fallback-body">
             <div class="login-field">
               <label class="login-label" for="email-input">Approved Email Address</label>
@@ -404,9 +781,16 @@
       </div>
 
       <div class="portal-join">
-        <p>Don't have a member account?</p>
-        <a href="apply.html" class="join-pill">Apply to Join the Team</a>
+         <p>Not a member yet?</p>
+         <a href="apply.html" class="join-pill">
+           <svg class="join-mark" viewBox="0 0 32 28" aria-hidden="true">
+             <circle cx="10" cy="8" r="4" fill="currentColor"/><circle cx="22" cy="8" r="4" fill="currentColor"/>
+             <path d="M2 25c.4-6 3.4-9 8-9s7.6 3 8 9M14 25c.4-6 3.4-9 8-9s7.6 3 8 9" fill="none" stroke="currentColor" stroke-width="2"/>
+           </svg>
+           <span>Apply to Join the Team</span><span class="join-arrow" aria-hidden="true">→</span>
+         </a>
       </div>
+       <div class="portal-footer-mark" aria-hidden="true"><span></span><img src="images/apply-logo.png" alt=""/><span></span></div>
     </div>
   </div>
 
@@ -465,7 +849,7 @@
 
 <script src="data/approved-members.js?v=5"></script>
 <script src="data/admins.js?v=2"></script>
-<script src="js/members-auth.js?v=8"></script>
+<script src="js/members-auth.js?v=9"></script>
 
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
