@@ -109,17 +109,92 @@ async function signInWithFcpsGoogle() {
   // Popup sign-in is initiated directly by the student's click. Unlike
   // signInWithRedirect, it does not need Firebase's cross-site redirect
   // session storage, which managed Chrome policies may block on GitHub Pages.
+  let popupWindow = null;
+  let popupCloseTimer = null;
+  let windowOpenRestoreTimer = null;
+  const originalWindowOpen = window.open;
+
+  // Firebase opens the account chooser internally, so briefly wrap window.open
+  // to retain its window handle and detect a user closing it immediately.
+  function restoreWindowOpen() {
+    if (window.open === capturePopupOpen) window.open = originalWindowOpen;
+    if (windowOpenRestoreTimer) {
+      window.clearTimeout(windowOpenRestoreTimer);
+      windowOpenRestoreTimer = null;
+    }
+  }
+  function capturePopupOpen(...args) {
+    popupWindow = originalWindowOpen.apply(window, args);
+    restoreWindowOpen();
+    return popupWindow;
+  }
+  window.open = capturePopupOpen;
+
+  let popupPromise;
   try {
     await persistenceReady;
-    const result = await auth.signInWithPopup(googleProvider);
-    await handleGoogleAuthenticatedUser(result.user);
+    popupPromise = auth.signInWithPopup(googleProvider);
   } catch (err) {
-    sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
-    resetGoogleButton();
-    showState("login");
-    showError(googleAuthErrorMessage(err));
-    console.error("signInWithPopup error:", err);
+    restoreWindowOpen();
+    restoreLoginAfterGoogleCancel();
+    if (!err || err.code !== "auth/popup-closed-by-user") {
+      showError(googleAuthErrorMessage(err));
+      console.error("signInWithPopup error:", err);
+    }
+    return;
   }
+  if (window.open === capturePopupOpen) {
+    windowOpenRestoreTimer = window.setTimeout(restoreWindowOpen, 2000);
+  }
+
+  // Consume a later Firebase rejection if the user closes the popup before
+  // Firebase's own polling loop notices it.
+  popupPromise.catch(() => {});
+
+  try {
+    const popupClosed = new Promise(resolve => {
+      const checkPopup = () => {
+        if (popupWindow && popupWindow.closed) {
+          resolve({ closed: true });
+          return;
+        }
+        popupCloseTimer = window.setTimeout(checkPopup, 50);
+      };
+      checkPopup();
+    });
+    const outcome = await Promise.race([
+      popupPromise.then(result => ({ result })),
+      popupClosed,
+    ]);
+
+    if (outcome.closed) {
+      restoreLoginAfterGoogleCancel();
+      return;
+    }
+
+    await handleGoogleAuthenticatedUser(outcome.result.user);
+  } catch (err) {
+    if (err && err.code === "auth/popup-closed-by-user") {
+      restoreLoginAfterGoogleCancel();
+      return;
+    } else {
+      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+      resetGoogleButton();
+      showState("login");
+      showError(googleAuthErrorMessage(err));
+    }
+    console.error("signInWithPopup error:", err);
+  } finally {
+    restoreWindowOpen();
+    if (popupCloseTimer) window.clearTimeout(popupCloseTimer);
+  }
+}
+
+function restoreLoginAfterGoogleCancel() {
+  sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+  resetGoogleButton();
+  clearError();
+  showState("login");
 }
 
 function handleGoogleAuthenticatedUser(user) {
