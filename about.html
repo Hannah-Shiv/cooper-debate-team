@@ -182,18 +182,45 @@
     }
     .join-step-num {
       flex-shrink: 0;
-      width: 44px;
-      height: 44px;
+      position: relative;
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
-      background: rgba(212,160,23,0.15);
-      border: 1.5px solid rgba(212,160,23,0.4);
+      background:
+        radial-gradient(circle at 32% 24%, rgba(255,246,194,0.98) 0 7%, transparent 8%),
+        radial-gradient(circle at 35% 28%, #F2D16B 0%, #D4A017 38%, #91640C 72%, #4A3108 100%);
+      border: 2px solid #F2D16B;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Cormorant Garamond', serif;
-      font-size: 1.1rem;
+      font-size: 1.35rem;
       font-weight: 700;
-      color: var(--gold);
+      color: #FFF9DF;
+      text-shadow: 0 1px 2px rgba(48,29,0,0.7);
+      box-shadow:
+        0 0 0 4px rgba(242,209,107,0.10),
+        0 4px 12px rgba(0,0,0,0.34),
+        inset 0 1px 1px rgba(255,255,255,0.45),
+        inset 0 -3px 5px rgba(54,31,0,0.32);
+    }
+    .join-step-num::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255,247,202,0.48);
+      border-radius: 50%;
+    }
+    .join-step:not(:last-child) .join-step-num::after {
+      content: '';
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 50%;
+      width: 1px;
+      height: 20px;
+      background: linear-gradient(to bottom, rgba(242,209,107,0.7), rgba(242,209,107,0));
+      transform: translateX(-50%);
+      pointer-events: none;
     }
     .join-step-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 1.0rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--white); margin-bottom: 4px; }
     .join-step-desc { font-size: 0.97rem; color: var(--gray-mid); line-height: 1.6; }
@@ -333,9 +360,9 @@
       padding: 14px 0;
     }
     #join .join-copy .join-step-num {
-      width: 40px;
-      height: 40px;
-      font-size: 1rem;
+      width: 44px;
+      height: 44px;
+      font-size: 1.2rem;
     }
     #join .join-copy .join-step-title {
       font-size: 0.9rem;
