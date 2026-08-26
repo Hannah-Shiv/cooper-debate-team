@@ -414,26 +414,27 @@
       showAccess("Coach or Website Admin access required", "Sign in through the Member Portal to manage tournament volunteer opportunities.", true);
       return;
     }
-    const access = await getMemberAccess(db, user.email);
+    const access = await getPortalMemberAccess(user, db);
+    const role = normalizePortalRole(access.role);
     if (!access.approved) {
       showAccess("Membership not approved", "This account is not approved for the Cooper Debate Member Portal.", false);
       return;
     }
-    if (!isFullAdminRole(access.role)) {
+    if (!isFullAdminRole(role)) {
       showAccess("Full admin access only", "Volunteer signups contain private contact details and can only be managed by a coach or website admin.", false);
       return;
     }
     currentUser = user;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
-    const shortName = (access.name || user.displayName || user.email.split("@")[0])
+    const shortName = (access.displayName || user.displayName || user.email.split("@")[0])
       .split(/[._-]/)
       .filter(Boolean)
       .map(part => part.charAt(0).toUpperCase() + part.slice(1))
       .join(" ");
     $("member-name").textContent = shortName;
     $("member-email").textContent = user.email;
-    $("member-role-badge").textContent = access.role === "website-admin" ? "🛡️ Website Admin" : "🛡️ Coach";
+    $("member-role-badge").textContent = role === "website-admin" ? "🛡️ Website Admin" : "🛡️ Coach";
     $("member-userbar").classList.add("visible");
     resetForm();
     startEvents();

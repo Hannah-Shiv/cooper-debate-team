@@ -97,12 +97,12 @@
 
 </div><!-- /mp-content -->
 
-<!-- Firebase SDKs (auth only) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script src="data/approved-members.js?v=3"></script>
+<script src="data/approved-members.js?v=5"></script>
 <script src="data/admins.js?v=2"></script>
 <script src="data/announcements.js"></script>
 
@@ -137,19 +137,19 @@ function mpToggleNotif() {
 
 _mpAuth.onAuthStateChanged(async function(user) {
   if (user) {
-    const access = await getMemberAccess(_mpDb, user.email);
-    if (!access.approved) {
+    const memberAccess = await getPortalMemberAccess(user, _mpDb);
+    if (!memberAccess.approved) {
       await _mpAuth.signOut();
       window.location.href = 'members-signon.html';
       return;
     }
-    const role = normalizePortalRole(access.role);
+    const role = normalizePortalRole(memberAccess.role);
     const badge = document.getElementById('mp-role-badge');
     const email = document.getElementById('mp-user-email');
     const name  = document.getElementById('mp-name');
     if (badge) badge.textContent = role === 'website-admin' ? '🛡️ Website Admin' : role === 'coach' ? '🛡️ Coach' : role === 'captain' ? '⭐ Captain' : '✓ Team Member';
     if (email) email.textContent = user.email;
-    if (name)  name.textContent  = access.name || (MEMBER_NAMES && MEMBER_NAMES[user.email.toLowerCase()]) || user.email.split('@')[0];
+    if (name)  name.textContent  = memberAccess.displayName || (MEMBER_NAMES && MEMBER_NAMES[user.email.toLowerCase()]) || user.email.split('@')[0];
     document.getElementById('member-userbar').classList.add('visible');
     document.getElementById('mp-loading').style.display = 'none';
     document.getElementById('mp-content').style.display = 'block';

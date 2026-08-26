@@ -17,6 +17,7 @@ import {
 
 const PROJECT_ID = "cooper-debate-team";
 const COACH_EMAIL = "pgkonde@fcps.edu";
+const COACH_ALTERNATE_EMAIL = "pgkonde@fcpsschools.net";
 const MEMBER_EMAIL = "cooperdebateteam@gmail.com";
 const STUDENT_EMAIL = "1806950@fcpsschools.net";
 const WEBSITE_ADMIN_FCPS_EMAIL = "site-admin@fcps.edu";
@@ -98,11 +99,67 @@ test("approved email-link members can read protected member content", async () =
   await assertSucceeds(getDoc(doc(db, "tournaments", "private")));
 });
 
-test("unapproved FCPS Google users cannot read protected member content", async () => {
-  const db = dbFor("unapproved-student@fcpsschools.net", "google.com");
-  await assertFails(getDoc(doc(db, "announcements", "existing")));
-  await assertFails(getDoc(doc(db, "resource-pins", "existing")));
-  await assertFails(getDoc(doc(db, "tournaments", "private")));
+test("unapproved identities from either FCPS Google domain cannot read protected member content", async () => {
+  for (const email of [
+    "unapproved-student@fcpsschools.net",
+    "unapproved-coach@fcps.edu",
+  ]) {
+    const db = dbFor(email, "google.com");
+    await assertFails(getDoc(doc(db, "announcements", "existing")));
+    await assertFails(getDoc(doc(db, "resource-pins", "existing")));
+    await assertFails(getDoc(doc(db, "tournaments", "private")));
+  }
+});
+
+test("approved FCPS coach Google identities share coach permissions", async () => {
+  for (const [email, suffix] of [
+    [COACH_EMAIL, "edu"],
+    [COACH_ALTERNATE_EMAIL, "schools"],
+  ]) {
+    const db = dbFor(email, "google.com");
+    await assertSucceeds(getDoc(doc(db, "announcements", "existing")));
+    await assertSucceeds(setDoc(doc(db, "announcements", `google-coach-${suffix}`), {
+      title: "Google coach post",
+      postedBy: email,
+      postedByRole: "coach",
+    }));
+    await assertSucceeds(setDoc(doc(db, "resource-pins", `google-coach-${suffix}`), {
+      pinned: true,
+    }));
+  }
+});
+
+test("directory access records can approve one new FCPS identity", async () => {
+  const newEmail = "approved-later@fcps.edu";
+  const coachDb = dbFor(COACH_EMAIL, "google.com");
+  await assertSucceeds(setDoc(doc(coachDb, "portal_members", newEmail), {
+    active: true,
+    role: "member",
+    profileId: "approved-later-profile",
+    name: "Approved Later",
+  }));
+
+  const newMemberDb = dbFor(newEmail, "google.com");
+  await assertSucceeds(getDoc(doc(newMemberDb, "announcements", "existing")));
+});
+
+test("revoking one coach login blocks only that identity", async () => {
+  const coachDb = dbFor(COACH_EMAIL, "google.com");
+  await assertSucceeds(setDoc(doc(coachDb, "portal_members", COACH_ALTERNATE_EMAIL), {
+    active: false,
+    role: "coach",
+    profileId: "coach-profile",
+    name: "Coach Konde",
+  }));
+
+  const revokedDb = dbFor(COACH_ALTERNATE_EMAIL, "google.com");
+  await assertFails(getDoc(doc(revokedDb, "announcements", "existing")));
+
+  const remainingDb = dbFor(COACH_EMAIL, "google.com");
+  await assertSucceeds(getDoc(doc(remainingDb, "announcements", "existing")));
+  await assertSucceeds(setDoc(doc(remainingDb, "resource-pins", "remaining-coach"), {
+    pinned: true,
+  }));
 });
 
 test("the approved FCPS student Google identity can read protected member content", async () => {

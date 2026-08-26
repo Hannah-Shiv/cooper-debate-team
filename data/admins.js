@@ -12,7 +12,7 @@
 //   "website-admin" — Same full access as coach
 //
 // HOW TO ADD:
-//   { email: "email@example.com", role: "captain" },
+//   { email: "email@example.com", loginEmails: ["other@example.com"], role: "captain" },
 //
 // HOW TO REMOVE:
 //   Delete their line.
@@ -25,7 +25,7 @@
 const ADMIN_ROLES = [
 
   // ── Coach ────────────────────────────────────────────────
-  { email: "pgkonde@fcps.edu",         role: "coach" },      // Coach Konde
+  { email: "pgkonde@fcps.edu",         loginEmails: ["pgkonde@fcpsschools.net"], role: "coach" }, // Coach Konde
   { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
 
   // ── Captains ─────────────────────────────────────────────
@@ -37,7 +37,11 @@ const ADMIN_ROLES = [
 function getAdminRole(email) {
   if (!email) return "member";
   const normalized = email.toLowerCase();
-  const found = ADMIN_ROLES.find(r => r.email.toLowerCase() === normalized);
+  const found = ADMIN_ROLES.find(r =>
+    [r.email, ...(r.loginEmails || [])]
+      .filter(Boolean)
+      .some(loginEmail => loginEmail.toLowerCase() === normalized)
+  );
   return found ? found.role : "member";
 }
 

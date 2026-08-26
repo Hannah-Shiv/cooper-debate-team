@@ -87,6 +87,18 @@
     }
     .google-login-btn:disabled { cursor: wait; opacity: 0.65; transform: none; }
     .google-mark { width: 20px; height: 20px; flex-shrink: 0; }
+    .adult-login-toggle {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      border: 1px solid rgba(212,160,23,0.35);
+      background: rgba(212,160,23,0.08); color: var(--gold-pale);
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.76rem;
+      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .adult-login-toggle:hover {
+      background: rgba(212,160,23,0.16);
+      border-color: rgba(212,160,23,0.6);
+    }
     .auth-divider {
       display: flex; align-items: center; gap: 12px; margin: 25px 0 22px;
       color: rgba(255,255,255,0.34); font-size: 0.72rem;
@@ -451,9 +463,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script src="data/approved-members.js?v=3"></script>
+<script src="data/approved-members.js?v=5"></script>
 <script src="data/admins.js?v=2"></script>
-<script src="js/members-auth.js?v=6"></script>
+<script src="js/members-auth.js?v=8"></script>
 
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>

@@ -35,9 +35,9 @@ service cloud.firestore {
       return get(/databases/$(database)/documents/portal_members/$(userEmail())).data;
     }
 
-    // Directory-managed records are authoritative. The small fallback list keeps
-    // existing accounts working until a coach or website admin opens the roster
-    // and synchronizes those people into portal_members.
+    // Directory-managed records are authoritative per email identity. The small
+    // fallback list keeps existing accounts working until a coach or website admin
+    // opens the roster and synchronizes those people into portal_members.
     function isApprovedMember() {
       return hasVerifiedEmail() &&
         usesAllowedSignInMethod() &&
@@ -45,6 +45,7 @@ service cloud.firestore {
           (hasPortalMemberRecord() && portalMember().active == true) ||
           (!hasPortalMemberRecord() && userEmail() in [
             'pgkonde@fcps.edu',
+            'pgkonde@fcpsschools.net',
             'hannahbshiv@gmail.com',
             'cooperdebateteam@gmail.com',
             '1806950@fcpsschools.net'
@@ -60,6 +61,7 @@ service cloud.firestore {
             portalMember().role in ['coach', 'website-admin']) ||
           (!hasPortalMemberRecord() && userEmail() in [
             'pgkonde@fcps.edu',
+            'pgkonde@fcpsschools.net',
             'hannahbshiv@gmail.com'
           ])
         );

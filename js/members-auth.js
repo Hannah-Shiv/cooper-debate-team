@@ -1,8 +1,8 @@
-// ============================================================
+// ------------------------------------------------------------
 // Cooper Debate Team — Members Portal Authentication
 // Google Workspace sign-in for approved FCPS identities plus
 // passwordless email-link sign-in for approved non-FCPS adults.
-// ============================================================
+// ------------------------------------------------------------
 
 const FIREBASE_CONFIG = {
   apiKey: "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
@@ -76,14 +76,25 @@ window.addEventListener("DOMContentLoaded", () => {
 function watchForExistingSession(requireFcpsGoogle = false) {
   auth.onAuthStateChanged(user => {
     if (user) {
-      handleAuthenticatedUser(user.email, { fcpsGoogle: requireFcpsGoogle });
+      handleExistingAuthenticatedUser(user, requireFcpsGoogle);
     } else {
       showState("login");
     }
   });
 }
 
-// ── FCPS Google Workspace sign-in ────────────────────────────
+async function handleExistingAuthenticatedUser(user, requireFcpsGoogle = false) {
+  try {
+    const tokenResult = await user.getIdTokenResult();
+    const provider = tokenResult && tokenResult.signInProvider;
+    return await handleAuthenticatedUser(user.email, {
+      fcpsGoogle: requireFcpsGoogle || provider === "google.com",
+    });
+  } catch (err) {
+    console.error("Could not verify sign-in provider:", err);
+    denyAuthenticatedUser("Your sign-in could not be verified. Please try again.");
+  }
+}
 function signInWithFcpsGoogle() {
   const btn = document.getElementById("google-signin-btn");
   clearError();
@@ -184,7 +195,7 @@ async function sendSignInLink() {
   btn.disabled    = true;
   btn.textContent = "Sending…";
 
-  auth.sendSignInLinkToEmail(email, { url: SIGN_IN_REDIRECT_URL, handleCodeInApp: true })
+  return auth.sendSignInLinkToEmail(email, { url: SIGN_IN_REDIRECT_URL, handleCodeInApp: true })
     .then(() => {
       localStorage.setItem(STORAGE_KEY, email);
       document.getElementById("pending-email").textContent = email;
@@ -210,13 +221,13 @@ function completeMagicLinkSignIn() {
   if (!email) {
     email = window.prompt("Please re-enter your email address to complete sign-in:");
   }
-  if (!email) { showState("login"); return; }
+  if (!email) { showState("login"); return Promise.resolve(); }
 
-  auth.signInWithEmailLink(email.trim().toLowerCase(), window.location.href)
+  return auth.signInWithEmailLink(email.trim().toLowerCase(), window.location.href)
     .then(result => {
       localStorage.removeItem(STORAGE_KEY);
       window.history.replaceState({}, document.title, window.location.pathname);
-      handleAuthenticatedUser(result.user.email);
+      return handleAuthenticatedUser(result.user.email);
     })
     .catch(err => {
       console.error("signInWithEmailLink error:", err);
@@ -254,7 +265,6 @@ async function handleAuthenticatedUser(email, options = {}) {
       : "Your email is not approved for the Members Portal.");
   }
 }
-
 function denyAuthenticatedUser(message) {
   const deniedMessage = document.getElementById("denied-message");
   if (deniedMessage) deniedMessage.textContent = message;
@@ -276,7 +286,14 @@ function showLogin() {
   showState("login");
 }
 
-// ── Show dashboard + role-based UI ───────────────────────────
+function showAdultEmailLogin() {
+  const panel = document.getElementById("adult-email-panel");
+  const toggle = document.getElementById("adult-email-toggle");
+  if (panel) panel.style.display = "block";
+  if (toggle) toggle.style.display = "none";
+  const input = document.getElementById("email-input");
+  if (input) input.focus();
+}
 function showDashboard(email) {
   currentUserEmail = email.toLowerCase();
   currentUserRole  = currentMemberAccess
@@ -872,11 +889,6 @@ function isFcpsGoogleEmail(email) {
   return FCPS_GOOGLE_DOMAINS.some(domain => normalizedEmail.endsWith("@" + domain));
 }
 
-function isFcpsStudentEmail(email) {
-  return normalizeEmail(email).endsWith("@fcpsschools.net");
-}
-
-// ── UI state machine ─────────────────────────────────────────
 function showState(state) {
   ["login","pending","completing","dashboard","denied"].forEach(s => {
     const el = document.getElementById("state-" + s);

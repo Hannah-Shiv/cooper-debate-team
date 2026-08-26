@@ -1,7 +1,7 @@
-// ============================================================
+// ------------------------------------------------------------
 // Cooper Debate Team — Tournament Calendar
 // Auth-gated, Firestore-backed, FullCalendar v6
-// ============================================================
+// ------------------------------------------------------------
 
 const CAL_FIREBASE_CONFIG = {
   apiKey:            "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
@@ -149,7 +149,7 @@ calAuth.onAuthStateChanged(async user => {
   try {
     if (user) {
       showCalState("loading");
-      const access = await getMemberAccess(calDb, user.email);
+      const access = await getPortalMemberAccess(user, calDb);
       if (!access.approved) {
         await calAuth.signOut();
         window.location.href = "members-signon.html";
@@ -186,7 +186,7 @@ function initCalDashboard(email, access) {
   if (emailEl) emailEl.textContent = email;
 
   const nameEl = document.getElementById("cal-name");
-  if (nameEl) nameEl.textContent = (access && access.name) || (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
+  if (nameEl) nameEl.textContent = (access && (access.displayName || access.name)) || (MEMBER_NAMES && MEMBER_NAMES[email.toLowerCase()]) || email.split('@')[0];
 
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {

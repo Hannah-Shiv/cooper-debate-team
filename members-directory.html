@@ -887,7 +887,7 @@
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead><tr>
-              <th>Name</th><th>Role</th><th>Email</th>
+              <th>Name</th><th>Role</th><th>Google Login Emails</th>
               <th>Events</th><th>Status</th>
               <th style="text-align:right">Actions</th>
             </tr></thead>
@@ -971,8 +971,11 @@
         </div>
         <div class="form-field full">
           <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
-          <textarea id="f-login-emails" placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
-          <span class="opt" style="display:block;margin-top:7px;line-height:1.5">One per line or separated by commas. Every address opens this same member profile.</span>
+          <textarea id="f-login-emails" rows="3"
+            placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
+          <p style="margin:7px 0 0;color:#4b6688;font-size:.76rem;line-height:1.5">
+            One per line or separated by commas. Every address opens this same member profile; removing one blocks only that login.
+          </p>
         </div>
         <div class="form-field full">
           <label for="f-phone">Phone <span class="opt">(optional)</span></label>
@@ -1637,11 +1640,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 
-<script src="data/approved-members.js?v=3"></script>
+<script src="data/approved-members.js?v=5"></script>
 <script src="data/admins.js?v=2"></script>
 
 <script>window.__NAV_PAGE = "directory";</script>
-<script src="js/members-auth.js?v=6"></script>
+<script src="js/members-auth.js?v=8"></script>
 
 <!-- Auth shim -->
 <script>
@@ -2078,7 +2081,7 @@ let _dspActiveTab = 'style';
 
 async function renderStyleSection(name, memberDoc) {
   const section = document.getElementById('prof-style-section');
-  const isOwner = memberDoc && memberLoginEmails(memberDoc).includes(currentUserEmail.toLowerCase());
+  const isOwner = memberDoc && getMemberLoginEmails(memberDoc).includes(currentUserEmail.toLowerCase());
   const canSee  = isOwner || isFullAdminRole(currentUserRole) || currentUserRole==='captain';
   if (!canSee) { section.style.display = 'none'; return; }
   section.style.display = '';
@@ -2608,11 +2611,7 @@ function renderProfile(d, memberDoc) {
   applySeasonFilter(d);
 
   /* Show coaches tab only for debater themselves + coaches/captains */
-  const profileEmails = memberDoc
-    ? (Array.isArray(memberDoc.loginEmails) && memberDoc.loginEmails.length
-      ? memberDoc.loginEmails
-      : [memberDoc.email])
-    : [];
+  const profileEmails = getMemberLoginEmails(memberDoc);
   const isOwnerProf = profileEmails.some(email => (email || '').toLowerCase() === currentUserEmail.toLowerCase());
   const canSeeCoachTab = isOwnerProf || isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
   document.getElementById('prof-tab-btn-coaches').style.display = canSeeCoachTab ? '' : 'none';
@@ -2724,8 +2723,10 @@ function renderRoster(list) {
   }
   tbody.innerHTML = list.map(m => {
     const name   = esc(((m.firstName||'') + ' ' + (m.lastName||'')).trim()) || '—';
-    const loginEmails = memberLoginEmails(m);
-    const email  = esc(loginEmails[0] || m.email || '—');
+    const loginEmails = getMemberLoginEmails(m);
+    const email  = loginEmails.length
+      ? loginEmails.map(loginEmail => esc(loginEmail)).join('<br>')
+      : '—';
     const role   = m.role || 'member';
     const events = (m.events||[]).join(', ') || '—';
     const active = m.active !== false;
@@ -2749,7 +2750,10 @@ function applyRosterQuery(raw, list) {
   if (!q) return list;
   return list.filter(m => {
     const full = ((m.firstName||'') + ' ' + (m.lastName||'')).toLowerCase();
-    return full.includes(q) || (m.email||'').toLowerCase().includes(q) || (m.role||'').toLowerCase().includes(q) || (m.events||[]).some(e=>e.toLowerCase().includes(q));
+    return full.includes(q) ||
+      getMemberLoginEmails(m).some(email => email.includes(q)) ||
+      (m.role||'').toLowerCase().includes(q) ||
+      (m.events||[]).some(e=>e.toLowerCase().includes(q));
   });
 }
 function filterRoster(val) { filteredRoster = applyRosterQuery(val, allRoster); renderRoster(filteredRoster); }
@@ -2781,7 +2785,7 @@ function openEditModal(docId) {
   document.getElementById('f-first').value = m.firstName || '';
   document.getElementById('f-last').value  = m.lastName  || '';
   document.getElementById('f-email').value = m.email     || '';
-  document.getElementById('f-login-emails').value = memberLoginEmails(m).filter(email => email !== (m.email || '').toLowerCase()).join('\n');
+  document.getElementById('f-login-emails').value = getMemberLoginEmails(m).filter(email => email !== (m.email || '').toLowerCase()).join('\n');
   document.getElementById('f-phone').value = m.phone     || '';
   document.getElementById('f-role').value  = m.role      || 'member';
   document.getElementById('f-grad').value  = m.gradYear  || '';
@@ -2815,7 +2819,21 @@ async function saveMember(e) {
   if (!firstName) { showFormErr('First name is required.'); return; }
   if (!lastName)  { showFormErr('Last name is required.'); return; }
   if (!email || !email.includes('@')) { showFormErr('Enter a valid email.'); return; }
+  if (parseLoginEmails(document.getElementById('f-login-emails').value).some(loginEmail => !loginEmail.includes('@'))) {
+    showFormErr('Every additional login email must be valid.');
+    return;
+  }
   if (!role)      { showFormErr('Please select a role.'); return; }
+  const duplicateOwner = allRoster.find(member =>
+    member.docId !== docId &&
+    getMemberLoginEmails(member).some(loginEmail => loginEmails.includes(loginEmail))
+  );
+  if (duplicateOwner) {
+    const duplicateEmail = getMemberLoginEmails(duplicateOwner)
+      .find(loginEmail => loginEmails.includes(loginEmail));
+    showFormErr(`${duplicateEmail} is already assigned to another member.`);
+    return;
+  }
   const btn = document.getElementById('btn-save');
   btn.disabled = true; btn.textContent = 'Saving…';
   const photoUrl = document.getElementById('f-photo').value.trim();
@@ -2826,7 +2844,7 @@ async function saveMember(e) {
     const memberRef = docId ? dirDb.collection('members').doc(docId) : dirDb.collection('members').doc();
     if (!docId) data.addedAt = firebase.firestore.FieldValue.serverTimestamp();
     const removedEmails = existing
-      ? memberLoginEmails(existing).filter(oldEmail => !loginEmails.includes(oldEmail))
+      ? getMemberLoginEmails(existing).filter(oldEmail => !loginEmails.includes(oldEmail))
       : [];
     const accessRefs = await portalAccessRefs(loginEmails);
     const removedRefs = await portalAccessRefs(removedEmails);
@@ -2876,7 +2894,7 @@ async function confirmDelete() {
   const member = allRoster.find(item => item.docId === id);
   if (!member) return;
   try {
-    const accessRefs = await portalAccessRefs(memberLoginEmails(member));
+    const accessRefs = await portalAccessRefs(getMemberLoginEmails(member));
     await dirDb.runTransaction(async transaction => {
       const accessSnapshots = await Promise.all(accessRefs.map(refs => transaction.get(refs.member)));
       transaction.update(dirDb.collection('members').doc(id), {
@@ -2911,13 +2929,6 @@ function uniqueEmails(emails) {
   return [...new Set(emails.map(email => String(email || '').trim().toLowerCase()).filter(email => email.includes('@')))];
 }
 
-function memberLoginEmails(member) {
-  return uniqueEmails([
-    member && member.email,
-    ...(member && Array.isArray(member.loginEmails) ? member.loginEmails : [])
-  ]);
-}
-
 async function portalAccessRefs(emails) {
   return Promise.all(uniqueEmails(emails).map(async email => ({
     email,
@@ -2927,7 +2938,7 @@ async function portalAccessRefs(emails) {
 }
 
 function writePortalAccess(writer, refsList, profileId, member) {
-  const loginEmails = memberLoginEmails(member);
+  const loginEmails = getMemberLoginEmails(member);
   const access = {
     active: member.active !== false,
     role: normalizePortalRole(member.role),
@@ -2946,9 +2957,9 @@ function writePortalAccess(writer, refsList, profileId, member) {
 }
 
 async function syncRosterAccessRecords(roster) {
-  const entries = roster.filter(member => memberLoginEmails(member).length);
+  const entries = roster.filter(member => getMemberLoginEmails(member).length);
   for (const member of entries) {
-    const accessRefs = await portalAccessRefs(memberLoginEmails(member));
+    const accessRefs = await portalAccessRefs(getMemberLoginEmails(member));
     await dirDb.runTransaction(async transaction => {
       const snapshots = await Promise.all(accessRefs.map(refs => transaction.get(refs.member)));
       const conflict = snapshots.findIndex(snapshot =>
@@ -2975,6 +2986,14 @@ document.addEventListener('keydown', e => { if (e.key==='Escape') { closeModal()
 /* ── Shared helpers ──────────────────────────────────── */
 function nameToSlug(n) { return n.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
 function slugToName(s) { return s.split('-').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' '); }
+function getMemberLoginEmails(member) {
+  if (!member) return [];
+  const emails = Array.isArray(member.loginEmails) ? member.loginEmails : [];
+  return [...new Set([member.email, ...emails]
+    .filter(Boolean)
+    .map(email => String(email).trim().toLowerCase())
+    .filter(email => email.includes('@')))];
+}
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function escJs(s)   { return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'"); }
 function esc(s)     { return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }

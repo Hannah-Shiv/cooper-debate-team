@@ -230,10 +230,11 @@
     $("app-userbar").classList.add("visible");
     $("app-name").textContent = user.displayName || (user.email || "").split("@")[0] || "Member";
     $("app-user-email").textContent = user.email || "";
-    const access = await getMemberAccess(db, user.email);
-    if (!access.approved || !isFullAdminRole(access.role)) { show("access-denied"); return; }
-    $("app-name").textContent = access.name || user.displayName || (user.email || "").split("@")[0] || "Member";
-    $("app-role-badge").textContent = access.role === "website-admin" ? "★ Website Admin" : "★ Coach";
+    const access = await getPortalMemberAccess(user, db);
+    const role = normalizePortalRole(access.role);
+    if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
+    $("app-name").textContent = access.displayName || user.displayName || (user.email || "").split("@")[0] || "Member";
+    $("app-role-badge").textContent = role === "website-admin" ? "★ Website Admin" : "★ Coach";
     show("dashboard");
     beginListening();
   });
