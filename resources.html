@@ -142,6 +142,9 @@
        border-radius:6px;
        box-shadow:0 4px 10px rgba(60,0,0,0.24);
        color:var(--navy-dark);
+       display:flex;
+       flex-direction:column;
+       gap:3px;
        font:700 0.68rem/1.2 'Josefin Sans',sans-serif;
        letter-spacing:0.04em;
        margin:0 8px 0 18px;
@@ -149,6 +152,11 @@
        text-align:center;
        text-transform:uppercase;
        white-space:nowrap;
+     }
+     .research-hub-cta small {
+       font:600 0.58rem/1.2 'Josefin Sans',sans-serif;
+       letter-spacing:0.06em;
+       text-transform:none;
      }
      .research-hub-cta:hover {
        opacity:0.88;
@@ -383,7 +391,7 @@
       <span class="research-hub-icon-frame" aria-hidden="true"><img src="attached_assets/image_1787715621787.png" alt=""></span>
       <span class="research-hub-copy"><span class="research-hub-title">Case Building</span><span class="research-hub-desc">Organize and develop your case</span></span>
     </div>
-    <a class="research-hub-cta" href="members-resources.html">Member Login →</a>
+    <a class="research-hub-cta" href="members-resources.html"><span>Research Hub →</span><small>(Member Login)</small></a>
   </div>
 </div>
 
