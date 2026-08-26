@@ -53,10 +53,41 @@
      }
      #idx-stats-heading {
        display: flex;
-       align-items: baseline;
+       align-items: center;
        justify-content: center;
-       gap: 18px;
+       gap: 24px;
+       padding: 4px 0 6px;
        margin-bottom: 32px;
+     }
+     #idx-stats-heading #idx-stats-season-label {
+       align-items: center;
+       gap: 10px;
+       color: #F2D16B !important;
+       font-size: 1.05rem !important;
+       letter-spacing: 0.17em;
+       line-height: 1.1;
+       text-shadow: 0 0 12px rgba(242,209,107,0.18);
+       white-space: nowrap;
+     }
+     #idx-stats-heading #idx-stats-season-label::before {
+       width: 30px;
+       height: 1px;
+       background: linear-gradient(90deg, transparent, #F2D16B);
+     }
+     #idx-stats-heading #idx-stats-season-label::after {
+       content: '';
+       display: inline-block;
+       width: 1px;
+       height: 30px;
+       margin-left: 5px;
+       background: linear-gradient(to bottom, transparent, rgba(242,209,107,0.9), transparent);
+     }
+     #idx-stats-heading .section-title {
+       font-size: clamp(2.5rem, 4.8vw, 3.6rem) !important;
+       line-height: 0.95;
+       letter-spacing: -0.015em;
+       text-shadow: 0 3px 18px rgba(0,0,0,0.24);
+       white-space: nowrap;
      }
      #idx-stats-heading #idx-stats-season-label,
      #idx-stats-heading .section-title {
@@ -500,12 +531,15 @@
 
       /* Bottom section: tighter gap between boxes */
       #idx-bottom-section .section-wrap { gap: 14px !important; }
-      #idx-stats-heading { gap: 10px; }
+      #idx-stats-heading { gap: 8px; padding-inline: 0; }
       #idx-stats-heading #idx-stats-season-label {
-        font-size: 1.05rem !important;
-        letter-spacing: 0.1em;
+        gap: 6px;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.09em;
       }
-      #idx-stats-heading .section-title { font-size: 2rem !important; }
+      #idx-stats-heading #idx-stats-season-label::before { width: 16px; }
+      #idx-stats-heading #idx-stats-season-label::after { display: none; }
+      #idx-stats-heading .section-title { font-size: 1.8rem !important; }
     }
 
     /* Keep dense content comfortable on tall tablet portrait screens without
