@@ -448,47 +448,38 @@
        border-radius: 14px;
        box-shadow: 0 12px 28px rgba(4, 16, 33, .22), inset 0 1px rgba(255,255,255,.05);
      }
-     .login-lead {
-       display: flex;
-        flex-direction: row;
-       align-items: center;
-       justify-content: center;
-        gap: 14px;
-       margin: 0 0 23px;
-        color: #f7cf55;
-        font-family: 'Cormorant Garamond', serif;
-        font-size: 1.35rem;
-        font-weight: 600;
-        letter-spacing: .035em;
-        white-space: nowrap;
-     }
       .fcps-logo {
-        width: 66px;
-        height: 66px;
+        width: 40px;
+        height: 40px;
         object-fit: contain;
-        border-radius: 4px;
-       flex: 0 0 auto;
-     }
+        border-radius: 3px;
+        flex: 0 0 auto;
+      }
      .google-login-btn {
-       position: relative;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
         width: calc(100% - 30px);
        margin-left: auto;
        margin-right: auto;
        min-height: 64px;
-       padding: 12px 54px 12px 44px;
+        padding: 10px 48px 10px 16px;
        border: 1px solid rgba(255,255,255,.85);
        border-radius: 7px;
        color: #101a31;
-       font-size: 1.15rem;
+        font-size: 1rem;
+        font-weight: 700;
        letter-spacing: 0;
        text-transform: none;
        white-space: nowrap;
      }
       .google-login-btn .google-mark {
-        position: absolute;
-        left: 20px;
-        width: 47px;
-        height: 47px;
+        position: static;
+        width: 38px;
+        height: 38px;
+        flex: 0 0 auto;
       }
      .card-diamond-divider {
        display: flex;
@@ -676,15 +667,14 @@
        .auth-title { font-size: clamp(3rem, 13vw, 4rem); }
        .auth-sub { font-size: .94rem; }
        .login-card { padding: 14px 16px 19px; }
-        .login-lead { font-size: 1.2rem; gap: 14px; }
-        .fcps-logo { width: 66px; height: 66px; }
+         .fcps-logo { width: 36px; height: 36px; }
         .google-login-btn {
           width: calc(100% - 26px);
-          padding-left: 46px;
-          padding-right: 42px;
-          font-size: .78rem;
+           gap: 7px;
+           padding: 10px 40px 10px 8px;
+           font-size: .68rem;
         }
-        .google-login-btn .google-mark { left: 14px; }
+         .google-login-btn .google-mark { width: 34px; height: 34px; }
        .card-diamond-divider { margin-left: 13px; margin-right: 13px; }
         .access-notice { font-size: .885rem; }
         .access-notice strong { font-size: .885rem; }
@@ -730,19 +720,16 @@
        <div class="portal-diamond-divider" aria-hidden="true"><span></span></div>
         <p class="auth-sub">Sign in with your FCPS Google Workspace account to access exclusive resources, files, schedules, and team updates.</p>
 
-      <div class="login-card">
-         <div class="login-lead">
-           <img class="fcps-logo" src="attached_assets/image_1787767061290.png" alt="FCPS"/>
-           <span>Continue with FCPS Google</span>
-         </div>
+       <div class="login-card">
         <button class="google-login-btn" id="google-signin-btn" onclick="signInWithFcpsGoogle()">
+           <img class="fcps-logo" src="attached_assets/image_1787767061290.png" alt="" aria-hidden="true"/>
           <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
             <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
             <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>
             <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
             <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
           </svg>
-           Continue with Google Workspace
+            Continue with FCPS Google Workspace
            <span class="google-arrow" aria-hidden="true">→</span>
         </button>
 
@@ -750,7 +737,7 @@
 
         <div class="access-notice">
            <span class="access-notice-icon" aria-hidden="true">!</span>
-           <span><strong>Access Required:</strong> Coach / Website Admin must add your <em>fcps.edu</em> or <em>fcpsschools.net</em> email address to the Members Directory before you can sign in.</span>
+           <span><strong>Access Required:</strong> Coach or Website Admin must add your <em>fcps.edu</em> or <em>fcpsschools.net</em> email address to the Members Directory before you can sign in.</span>
         </div>
 
         <details class="email-fallback">
