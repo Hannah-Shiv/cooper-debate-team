@@ -4,15 +4,18 @@
   "main": "index.js",
   "scripts": {
     "test": "playwright test",
-    "test:tablet": "playwright test tests/tablet-layout.spec.mjs"
+    "test:tablet": "playwright test tests/tablet-layout.spec.mjs",
+    "test:firestore-rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.spec.mjs\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@playwright/test": "^1.62.1",
     "docx": "^9.7.1",
+    "firebase": "^12.18.0",
     "google-auth-library": "^10.9.1"
   }
 }

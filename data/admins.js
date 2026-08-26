@@ -15,7 +15,9 @@
 // HOW TO REMOVE:
 //   Delete their line.
 //
-// Save and push to GitHub — changes are live instantly.
+// SECURITY: Also add or remove the same role in firestore.rules,
+// then deploy the rules. The browser list controls the UI;
+// Firestore rules enforce write permissions.
 // ============================================================
 
 const ADMIN_ROLES = [
