@@ -11,7 +11,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=40"/>
+  <link rel="stylesheet" href="css/main.css?v=41"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <!-- Firebase compat -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -1287,11 +1287,11 @@
       display:grid; grid-template-columns:minmax(0,1.3fr) minmax(250px,0.9fr);
       gap:18px; margin-bottom:14px;
     }
-    .aw-record-bars { display:flex; align-items:flex-end; gap:10px; height:204px; padding:12px 12px 0; border-bottom:1px solid rgba(255,255,255,0.3); }
+    .aw-record-bars { display:flex; align-items:flex-end; gap:10px; height:250px; padding:12px 12px 0; border-bottom:1px solid rgba(255,255,255,0.3); }
     .aw-record-bar-col { flex:1; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; min-width:0; }
     .aw-record-bar-count { font-family:'Cormorant Garamond',serif; font-size:1.05rem; color:#fff; margin-bottom:5px; }
     .aw-record-bar {
-      width:min(42px,72%); min-height:4px; border-radius:4px 4px 0 0;
+      width:min(56px,72%); min-height:4px; border-radius:4px 4px 0 0;
       background:var(--bar-color,#D4A017); box-shadow:0 0 12px color-mix(in srgb,var(--bar-color,#D4A017) 35%,transparent);
     }
     .aw-record-bar-label { margin-top:8px; font-family:'Josefin Sans',sans-serif; font-size:0.72rem; color:rgba(255,255,255,0.75); white-space:nowrap; }
@@ -1328,7 +1328,7 @@
       .aw-champ-metric-value { font-size:2.05rem; }
       .aw-champ-metric-label { font-size:0.59rem; }
       .aw-champ-card { padding:18px 13px; }
-      .aw-record-bars { gap:4px; padding-left:0; padding-right:0; }
+      .aw-record-bars { height:220px; gap:4px; padding-left:0; padding-right:0; }
       .aw-record-bar-label { font-size:0.64rem; }
       .aw-placement-legend { font-size:0.6rem; }
       .aw-champ-highlight-date { min-width:0; width:100%; }
@@ -2384,7 +2384,7 @@ function renderAwards(tourns) {
               ${recordRows.map(r => `
                 <div class="aw-record-bar-col">
                   <div class="aw-record-bar-count">${r.pairs}</div>
-                  <div class="aw-record-bar" style="--bar-color:${r.color};height:${Math.max(8, Math.round((r.pairs / maxRecordPairs) * 142))}px"></div>
+                  <div class="aw-record-bar" style="--bar-color:${r.color};height:${Math.max(8, Math.round((r.pairs / maxRecordPairs) * 190))}px"></div>
                   <div class="aw-record-bar-label">${r.wins}–${r.losses}</div>
                 </div>`).join('')}
             </div>
