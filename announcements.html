@@ -44,24 +44,14 @@
       padding: 24px 32px 24px 20px;
       color: var(--white);
       text-decoration: none;
-      background:
-        radial-gradient(circle at 100% 50%, rgba(205,25,34,0.42), transparent 28%),
-        linear-gradient(135deg, #8D0006 0%, #650005 58%, #420004 100%);
+      background: #650005;
       border: 1px solid #F2D16B;
       border-radius: 16px;
       box-shadow: 0 10px 28px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.08);
       transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
     }
     .ann-featured::after {
-      content: '';
-      position: absolute;
-      right: -46px;
-      bottom: -78px;
-      width: 240px;
-      height: 170px;
-      border-radius: 50%;
-      background: radial-gradient(ellipse, rgba(255,63,56,0.24), transparent 68%);
-      pointer-events: none;
+      display: none;
     }
     .ann-featured:hover {
       border-color: #FFE28A;
@@ -98,14 +88,20 @@
       font-weight: 600;
       line-height: 1.08;
     }
+    .ann-featured-detail {
+      display: flex;
+      align-items: baseline;
+      gap: 22px;
+    }
     .ann-featured-resolution {
-      margin: 0 0 18px;
+      flex: 1;
+      margin: 0;
       color: rgba(255,255,255,0.92);
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1rem, 1.7vw, 1.3rem);
       line-height: 1.35;
     }
-    .ann-featured-resolution em { color: #F2D16B; font-size: 1.12em; }
+    .ann-featured-resolution em { color: #FFE43B; font-size: 1.12em; font-style: normal; font-weight: 700; }
     .ann-featured-cta {
       display: inline-flex;
       align-items: center;
@@ -203,6 +199,7 @@
       .ann-featured-copy { display: flex; flex-direction: column; align-items: center; }
       .ann-featured-title { font-size: 1.85rem; }
       .ann-featured-resolution { font-size: 1.12rem; }
+      .ann-featured-detail { flex-direction: column; align-items: center; gap: 14px; }
       .ann-card-header { padding: 20px 20px 0; }
       .ann-card-body { padding: 16px 20px 20px; }
     }
@@ -251,8 +248,10 @@
       <img class="ann-featured-icon" src="attached_assets/image_1787707506447.png" alt=""/>
       <div class="ann-featured-copy">
         <div class="ann-featured-title">Tournament Topic Released: Hyperscale Data Centers</div>
-        <p class="ann-featured-resolution"><em>Resolved:</em> The United States federal government should enact a moratorium on hyperscale data center construction.</p>
-        <span class="ann-featured-cta">Start Researching →</span>
+        <div class="ann-featured-detail">
+          <p class="ann-featured-resolution"><em>Resolved:</em> The United States federal government should enact a moratorium on hyperscale data center construction.</p>
+          <span class="ann-featured-cta">Start Researching →</span>
+        </div>
       </div>
     </a>
     <div class="kickoff-schedule-mount" style="margin-bottom:28px;"></div>
