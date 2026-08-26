@@ -16,6 +16,69 @@
     .page-header-label { font-size: 0.84rem; }
     .page-subtitle     { font-size: 1.22rem; }
 
+     /* ── Match the charcoal public-page treatment ── */
+     .resources-page .page-header {
+       padding: 118px 24px 26px;
+       background:
+         radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
+         linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #3B4147 100%);
+     }
+     .resources-page .page-header::after { display: none; }
+     .resources-page > section.section {
+       padding-top: 18px;
+       padding-bottom: 40px;
+     }
+     .resources-page .page-header-label {
+       color: #D4A017;
+       font-size: clamp(0.9rem, 1.5vw, 1.08rem);
+       margin-bottom: 16px;
+     }
+     .resources-page .page-title {
+       font-size: clamp(2.5rem, 6vw, 4.2rem);
+       letter-spacing: -0.015em;
+       text-shadow: 0 4px 24px rgba(0,0,0,0.3);
+     }
+     .resources-page .page-subtitle {
+       color: #F2D16B;
+       font-size: clamp(1.25rem, 3vw, 1.77rem);
+     }
+
+     /* Deeper blue panels with the same gold-edged treatment as the other pages */
+     .resources-page .resource-card,
+     .resources-page .topic-box,
+     .resources-page .skills-panel,
+     .resources-page .template-card,
+     .resources-page .train-card {
+       background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99));
+       border: 1px solid rgba(242,209,107,0.38);
+       box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+     }
+     .resources-page .resource-card:hover,
+     .resources-page .template-card:hover {
+       border-color: rgba(242,209,107,0.78);
+     }
+     .resources-page .topic-box,
+     .resources-page .skills-panel {
+       border-radius: 16px;
+     }
+     .resources-page .skills-panel {
+       background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99)) !important;
+       border: 1px solid rgba(242,209,107,0.38) !important;
+     }
+     .resources-page .topic-resolution {
+       background: rgba(18,48,94,0.72);
+       border: 1px solid rgba(242,209,107,0.16);
+       border-left: 3px solid var(--gold);
+     }
+     .resources-page .arg-card-pro,
+     .resources-page .arg-card-con {
+       background: rgba(13,42,86,0.8);
+     }
+     .resources-page .skill-tip {
+       background: rgba(18,48,94,0.72);
+       border: 1px solid rgba(242,209,107,0.16);
+     }
+
     /* ── Resource cards ── */
     .resource-card {
       background: rgba(13,46,86,0.5); border: 1px solid rgba(212,160,23,0.2);
@@ -151,7 +214,7 @@
     }
   </style>
 </head>
-<body>
+<body class="resources-page" style="--navy-dark:#3B4147;">
 
 <!-- SITE BADGE (home link) -->
 <a id="site-badge" href="index.html" aria-label="Cooper Debate Team 2014 Home">
