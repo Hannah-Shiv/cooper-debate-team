@@ -73,6 +73,34 @@
       text-align: center;
       box-shadow: 0 4px 32px rgba(0,0,0,0.4);
     }
+    .google-login-btn {
+      width: 100%; display: flex; align-items: center; justify-content: center;
+      gap: 12px; padding: 14px 18px; border-radius: 8px;
+      background: #ffffff; border: 1px solid rgba(255,255,255,0.85);
+      color: #1f2937; font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 700; letter-spacing: 0.06em;
+      cursor: pointer; transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .google-login-btn:hover {
+      background: #f3f4f6; box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+      transform: translateY(-1px);
+    }
+    .google-login-btn:disabled { cursor: wait; opacity: 0.65; transform: none; }
+    .google-mark { width: 20px; height: 20px; flex-shrink: 0; }
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px; margin: 25px 0 22px;
+      color: rgba(255,255,255,0.34); font-size: 0.72rem;
+      font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .auth-divider::before, .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.14);
+    }
+    .email-login-label {
+      margin: 0 0 20px; color: rgba(255,255,255,0.78);
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.78rem;
+      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+    }
     .login-field   { margin-bottom: 22px; }
     .login-label   {
       display: block;
@@ -199,23 +227,36 @@
       <span class="auth-icon">🔐</span>
       <div class="auth-badge">Members Only</div>
       <h1 class="auth-title">Members Portal</h1>
-      <p class="auth-sub">Enter your email to receive a secure sign-in link.<br/>No password needed — ever.</p>
+      <p class="auth-sub">Students: sign in with your FCPS Google Workspace account.<br/>Coaches and approved adults can use an email sign-in link.</p>
 
       <div class="login-card">
+        <button class="google-login-btn" id="google-signin-btn" onclick="signInWithFcpsGoogle()">
+          <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
+            <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>
+            <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
+            <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
+          </svg>
+          Continue with FCPS Google
+        </button>
+
+        <div class="auth-divider"><span>or</span></div>
+        <p class="email-login-label">Coach or approved adult sign-in</p>
+
         <div class="login-field">
-          <label class="login-label" for="email-input">Email Address</label>
+          <label class="login-label" for="email-input">Adult Email Address</label>
           <input class="login-input" id="email-input" type="email"
-                 placeholder="my_email  @fcps.edu  @gmail  @yahoo"
+                 placeholder="coach@example.com"
                  autocomplete="email"
                  onkeydown="if(event.key==='Enter') sendSignInLink()"/>
           <ul class="login-hint" style="text-align:center;padding-left:0;margin:0.9em 0 0 0;list-style:none;">
-  <li><strong style="color:rgba(255,255,255,0.7);">email@fcpsschools.net will NOT work.</strong></li>
-  <li><span style="color:rgba(255,255,255,0.72);">Use a school email @fcps.edu or personal email @gmail.com, @yahoo.com, etc. that can send and receive external emails.</span></li>
+  <li><strong style="color:rgba(255,255,255,0.7);">FCPS student accounts should use the Google button above.</strong></li>
+  <li><span style="color:rgba(255,255,255,0.72);">Email links are for approved coaches and adults with an inbox that can receive external email.</span></li>
 </ul>
         </div>
 
         <button class="btn btn-gold btn-send" id="send-link-btn" onclick="sendSignInLink()">
-          Send Sign-On Link by Email
+          Send Adult Sign-In Link
         </button>
 
         <div class="login-error" id="login-error"></div>
@@ -262,7 +303,7 @@
     <div class="auth-box">
       <span class="auth-icon">🚫</span>
       <h1 class="auth-title">Access Not Approved</h1>
-      <p class="auth-sub">Your email is not on the approved members list.</p>
+      <p class="auth-sub" id="denied-message">Your email is not on the approved members list.</p>
 
       <div class="denied-card">
         <p>If you believe this is an error, contact <strong style="color:var(--white);">Coach Konde</strong> and ask to be added to the portal access list.</p>
@@ -283,7 +324,7 @@
 
 <script src="data/approved-members.js?v=2"></script>
 <script src="data/admins.js"></script>
-<script src="js/members-auth.js?v=3"></script>
+<script src="js/members-auth.js?v=4"></script>
 
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>

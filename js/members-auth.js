@@ -1,7 +1,7 @@
 // ============================================================
 // Cooper Debate Team — Members Portal Authentication
-// Passwordless sign-in via Firebase Email Link
-// No passwords are ever stored.
+// Google Workspace sign-in for FCPS students plus
+// passwordless email-link sign-in for approved adults.
 // ============================================================
 
 const FIREBASE_CONFIG = {
@@ -18,12 +18,19 @@ const VAPID_KEY = "BFwWFUfvb37fGaFBKYNJa29rEKtBHaT4FGnGsAKXTj_M7fxvDjsKgZobBGuKV
 
 const SIGN_IN_REDIRECT_URL = window.location.origin + "/members-signon.html";
 const STORAGE_KEY = "cooper_signin_email";
+const GOOGLE_REDIRECT_KEY = "cooper_google_redirect_pending";
+const FCPS_STUDENT_DOMAIN = "fcpsschools.net";
 
 // ── Initialise Firebase ──────────────────────────────────────
 firebase.initializeApp(FIREBASE_CONFIG);
 const auth      = firebase.auth();
 const db        = firebase.firestore();
 const messaging = firebase.messaging ? firebase.messaging() : null;
+const googleProvider = new firebase.auth.GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  hd: FCPS_STUDENT_DOMAIN,
+  prompt: "select_account",
+});
 
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
@@ -40,14 +47,100 @@ window.addEventListener("DOMContentLoaded", () => {
     completeMagicLinkSignIn();
     return;
   }
+
+  const completingGoogleRedirect =
+    sessionStorage.getItem(GOOGLE_REDIRECT_KEY) === "1";
+
+  if (completingGoogleRedirect) {
+    showState("completing");
+  }
+
+  auth.getRedirectResult()
+    .then(result => {
+      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+      if (result && result.user) {
+        handleGoogleAuthenticatedUser(result.user);
+        return;
+      }
+      watchForExistingSession(completingGoogleRedirect);
+    })
+    .catch(err => {
+      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+      console.error("getRedirectResult error:", err);
+      showState("login");
+      showError(googleAuthErrorMessage(err));
+    });
+});
+
+function watchForExistingSession(requireFcpsGoogle = false) {
   auth.onAuthStateChanged(user => {
     if (user) {
-      handleAuthenticatedUser(user.email);
+      handleAuthenticatedUser(user.email, { fcpsGoogle: requireFcpsGoogle });
     } else {
       showState("login");
     }
   });
-});
+}
+
+// ── FCPS Google Workspace sign-in ────────────────────────────
+function signInWithFcpsGoogle() {
+  const btn = document.getElementById("google-signin-btn");
+  clearError();
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = "Connecting to FCPS Google…";
+  }
+
+  sessionStorage.setItem(GOOGLE_REDIRECT_KEY, "1");
+  showState("completing");
+
+  auth.signInWithRedirect(googleProvider)
+    .catch(err => {
+      sessionStorage.removeItem(GOOGLE_REDIRECT_KEY);
+      resetGoogleButton();
+      showState("login");
+      showError(googleAuthErrorMessage(err));
+      console.error("signInWithRedirect error:", err);
+    });
+}
+
+function handleGoogleAuthenticatedUser(user) {
+  const email = normalizeEmail(user && user.email);
+  if (!isFcpsStudentEmail(email)) {
+    denyAuthenticatedUser("Please use your approved FCPS student Google Workspace account to sign in here.");
+    return;
+  }
+  handleAuthenticatedUser(email, { fcpsGoogle: true });
+}
+
+function googleAuthErrorMessage(err) {
+  switch (err && err.code) {
+    case "auth/operation-not-allowed":
+      return "FCPS Google sign-in is not available yet. Please contact Coach Konde.";
+    case "auth/unauthorized-domain":
+      return "This portal address is not authorized for Google sign-in. Please contact Coach Konde.";
+    case "auth/network-request-failed":
+      return "Google sign-in could not connect. Check the school network and try again.";
+    case "auth/account-exists-with-different-credential":
+      return "This account already uses another sign-in method. Please use the adult email-link option.";
+    default:
+      return "Google sign-in could not be completed. Please try again or contact Coach Konde.";
+  }
+}
+
+function resetGoogleButton() {
+  const btn = document.getElementById("google-signin-btn");
+  if (!btn) return;
+  btn.disabled = false;
+  btn.innerHTML = `
+    <svg class="google-mark" viewBox="0 0 24 24" aria-hidden="true">
+      <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
+      <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>
+      <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>
+      <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>
+    </svg>
+    Continue with FCPS Google`;
+}
 
 // ── Send magic link ──────────────────────────────────────────
 function sendSignInLink() {
@@ -59,6 +152,11 @@ function sendSignInLink() {
 
   if (!email || !email.includes("@")) {
     showError("Please enter a valid email address.");
+    return;
+  }
+
+  if (isFcpsStudentEmail(email)) {
+    showError("FCPS student accounts cannot receive external email. Use Continue with FCPS Google above.");
     return;
   }
 
@@ -78,7 +176,7 @@ function sendSignInLink() {
     })
     .catch(err => {
       btn.disabled    = false;
-      btn.textContent = "Send Sign-In Link →";
+      btn.textContent = "Send Adult Sign-In Link";
       if (err.code === "auth/quota-exceeded") {
         showError("Daily sign-in limit reached. Please try again tomorrow, or contact Coach Konde for help.");
       } else {
@@ -112,20 +210,32 @@ function completeMagicLinkSignIn() {
 }
 
 // ── Handle a verified, signed-in user ────────────────────────
-function handleAuthenticatedUser(email) {
-  if (isApprovedMember(email)) {
+function handleAuthenticatedUser(email, options = {}) {
+  const normalizedEmail = normalizeEmail(email);
+
+  if (options.fcpsGoogle && !isFcpsStudentEmail(normalizedEmail)) {
+    denyAuthenticatedUser("Please use your approved FCPS student Google Workspace account to sign in here.");
+    return;
+  }
+
+  if (isApprovedMember(normalizedEmail)) {
     // members-signon.html and members.html are auth gateways — redirect to portal home.
     // On any other member page, show the dashboard in place (avoids redirect loop).
     var page = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
     if (page === 'members-signon.html' || page === 'members.html' || page === '') {
       window.location.href = 'members-resources.html';
     } else {
-      showDashboard(email);
+      showDashboard(normalizedEmail);
     }
   } else {
-    auth.signOut();
-    showState("denied");
+    denyAuthenticatedUser("Your email is not on the approved members list.");
   }
+}
+
+function denyAuthenticatedUser(message) {
+  const deniedMessage = document.getElementById("denied-message");
+  if (deniedMessage) deniedMessage.textContent = message;
+  auth.signOut().finally(() => showState("denied"));
 }
 
 // ── Sign out ──────────────────────────────────────────────────
@@ -137,6 +247,7 @@ function handleSignOut() {
 // ── Go back to login ──────────────────────────────────────────
 function showLogin() {
   clearError();
+  resetGoogleButton();
   const input = document.getElementById("email-input");
   if (input) input.value = "";
   showState("login");
@@ -706,7 +817,17 @@ function renderAnnouncement(id, data) {
 
 // ── Whitelist check ───────────────────────────────────────────
 function isApprovedMember(email) {
-  return APPROVED_MEMBERS.some(e => e.toLowerCase() === email.toLowerCase());
+  const normalizedEmail = normalizeEmail(email);
+  return Boolean(normalizedEmail) &&
+    APPROVED_MEMBERS.some(e => e.toLowerCase() === normalizedEmail);
+}
+
+function normalizeEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+function isFcpsStudentEmail(email) {
+  return normalizeEmail(email).endsWith("@" + FCPS_STUDENT_DOMAIN);
 }
 
 // ── UI state machine ─────────────────────────────────────────
