@@ -51,6 +51,17 @@
      #idx-stats-section::after {
        display: none;
      }
+     #idx-stats-heading {
+       display: flex;
+       align-items: baseline;
+       justify-content: center;
+       gap: 18px;
+       margin-bottom: 32px;
+     }
+     #idx-stats-heading #idx-stats-season-label,
+     #idx-stats-heading .section-title {
+       margin-bottom: 0 !important;
+     }
      .idx-champ-main {
        background: linear-gradient(135deg, rgba(3,14,42,0.99) 0%, rgba(7,26,61,0.98) 58%, rgba(15,39,76,0.98) 100%),
                   radial-gradient(ellipse at 70% 50%, rgba(212,160,23,0.12) 0%, transparent 65%),
@@ -489,6 +500,12 @@
 
       /* Bottom section: tighter gap between boxes */
       #idx-bottom-section .section-wrap { gap: 14px !important; }
+      #idx-stats-heading { gap: 10px; }
+      #idx-stats-heading #idx-stats-season-label {
+        font-size: 1.05rem !important;
+        letter-spacing: 0.1em;
+      }
+      #idx-stats-heading .section-title { font-size: 2rem !important; }
     }
 
     /* Keep dense content comfortable on tall tablet portrait screens without
@@ -674,8 +691,10 @@
 <section id="idx-stats-section" class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
   <div class="section-wrap">
     <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:48px 32px 40px;">
-      <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
-      <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
+      <div id="idx-stats-heading">
+        <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
+        <h2 class="section-title" style="text-align:center;margin-bottom:32px;">By the Numbers</h2>
+      </div>
 
       <!-- 4-stat top row -->
       <div id="idx-stats-grid" style="display:grid;gap:18px;margin-bottom:24px;">
