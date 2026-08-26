@@ -131,6 +131,10 @@
     }
     .announcements-page > section.section {
       padding-top: 18px;
+      padding-bottom: 40px;
+    }
+    .announcements-page #ann-list .ann-card:last-child {
+      margin-bottom: 14px;
     }
     .announcements-page .page-header-label {
       color: #D4A017;
@@ -223,6 +227,7 @@
       font-size: 0.85rem; color: var(--gray-mid); letter-spacing: 0.05em;
     }
     @media(max-width:600px) {
+      .announcements-page > section.section { padding-bottom: 26px; }
       .ann-featured {
         grid-template-columns: 1fr;
         gap: 18px;
