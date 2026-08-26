@@ -5,6 +5,7 @@
   "scripts": {
     "test": "playwright test",
     "test:tablet": "playwright test tests/tablet-layout.spec.mjs",
+    "test:members-auth": "node --test tests/members-auth.spec.mjs",
     "test:firestore-rules": "firebase emulators:exec --only firestore \"node --test tests/firestore-rules.spec.mjs\""
   },
   "keywords": [],

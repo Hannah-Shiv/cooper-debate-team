@@ -87,6 +87,18 @@
     }
     .google-login-btn:disabled { cursor: wait; opacity: 0.65; transform: none; }
     .google-mark { width: 20px; height: 20px; flex-shrink: 0; }
+    .adult-login-toggle {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      border: 1px solid rgba(212,160,23,0.35);
+      background: rgba(212,160,23,0.08); color: var(--gold-pale);
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.76rem;
+      font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s, border-color 0.2s;
+    }
+    .adult-login-toggle:hover {
+      background: rgba(212,160,23,0.16);
+      border-color: rgba(212,160,23,0.6);
+    }
     .auth-divider {
       display: flex; align-items: center; gap: 12px; margin: 25px 0 22px;
       color: rgba(255,255,255,0.34); font-size: 0.72rem;
@@ -193,6 +205,132 @@
     @media(max-width:600px){
       .portal-page { padding: 90px 16px 60px; }
     }
+
+    /* ── 2026 member access design ─────────────────────────── */
+    body { background: #06101f; }
+    .portal-page {
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 132px 24px 90px;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(31, 66, 126, 0.22), transparent 34rem),
+        linear-gradient(180deg, #081426 0%, #030914 100%);
+    }
+    .auth-wrap {
+      width: min(100%, 620px);
+      min-height: calc(100vh - 220px);
+    }
+    .auth-box { max-width: 620px; }
+    .portal-mark {
+      display: block;
+      width: clamp(118px, 18vw, 162px);
+      height: auto;
+      margin: 0 auto 18px;
+      filter: drop-shadow(0 18px 34px rgba(0,0,0,.32));
+    }
+    .auth-badge {
+      margin-bottom: 15px;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      color: #d6b45a;
+      letter-spacing: .22em;
+      font-size: .72rem;
+    }
+    .auth-title {
+      margin-bottom: 11px;
+      font-size: clamp(2.6rem, 7vw, 4rem);
+      line-height: .95;
+      color: #fff;
+    }
+    .auth-sub {
+      max-width: 520px;
+      margin: 0 auto 28px;
+      color: rgba(231,239,255,.62);
+      font-size: .86rem;
+      line-height: 1.8;
+    }
+    .login-card {
+      padding: 30px;
+      background: linear-gradient(150deg, rgba(16,37,72,.96), rgba(7,20,43,.98));
+      border: 1px solid rgba(215,180,90,.55);
+      border-radius: 18px;
+      box-shadow: 0 24px 70px rgba(0,0,0,.4), inset 0 1px rgba(255,255,255,.035);
+    }
+    .google-login-btn {
+      min-height: 56px;
+      border-radius: 7px;
+      font-size: .82rem;
+      letter-spacing: .04em;
+    }
+    .access-notice {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+      margin: 18px 0 0;
+      padding: 14px 15px;
+      color: #e9c86e;
+      background: rgba(212,160,23,.075);
+      border: 1px solid rgba(212,160,23,.24);
+      border-radius: 8px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: .70rem;
+      line-height: 1.6;
+      text-align: left;
+    }
+    .access-notice strong { color: #f6dc91; }
+    .access-notice-icon { color: #e2ba50; font-size: 1rem; line-height: 1.2; }
+    .email-fallback {
+      margin-top: 19px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.08);
+      text-align: left;
+    }
+    .email-fallback summary {
+      color: rgba(225,233,248,.6);
+      cursor: pointer;
+      list-style: none;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: .70rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .email-fallback summary::-webkit-details-marker { display: none; }
+    .email-fallback summary::after { content: '  +'; color: #d6b45a; }
+    .email-fallback[open] summary::after { content: '  −'; }
+    .email-fallback-body { margin-top: 18px; }
+    .login-label { color: #d6b45a; }
+    .portal-join {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .portal-join p {
+      margin: 0 0 13px;
+      color: rgba(225,233,248,.46);
+      font-size: .74rem;
+    }
+    .join-pill {
+      padding: 12px 22px;
+      border-radius: 6px;
+      border-color: rgba(255,255,255,.2);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.78);
+    }
+    .login-error {
+      margin-top: 16px;
+      text-align: left;
+    }
+    @media(max-width:600px){
+      .portal-page { padding: 104px 14px 60px; }
+      .login-card { padding: 22px 18px; }
+      .auth-sub br { display: none; }
+      .portal-mark { width: 116px; }
+    }
   </style>
 </head>
 <body>
@@ -224,10 +362,10 @@
   <!-- ── STATE: login ──────────────────────────────────── -->
   <div id="state-login" class="auth-wrap" style="display:none;">
     <div class="auth-box">
-      <span class="auth-icon">🔐</span>
+      <img class="portal-mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true"/>
       <div class="auth-badge">Members Only</div>
       <h1 class="auth-title">Members Portal</h1>
-      <p class="auth-sub">Students: sign in with your FCPS Google Workspace account.<br/>Coaches and approved adults can use an email sign-in link.</p>
+      <p class="auth-sub">Sign in with either approved FCPS Google Workspace address connected to your member profile.</p>
 
       <div class="login-card">
         <button class="google-login-btn" id="google-signin-btn" onclick="signInWithFcpsGoogle()">
@@ -240,31 +378,34 @@
           Continue with FCPS Google
         </button>
 
-        <div class="auth-divider"><span>or</span></div>
-        <p class="email-login-label">Coach or approved adult sign-in</p>
-
-        <div class="login-field">
-          <label class="login-label" for="email-input">Adult Email Address</label>
-          <input class="login-input" id="email-input" type="email"
-                 placeholder="coach@example.com"
-                 autocomplete="email"
-                 onkeydown="if(event.key==='Enter') sendSignInLink()"/>
-          <ul class="login-hint" style="text-align:center;padding-left:0;margin:0.9em 0 0 0;list-style:none;">
-  <li><strong style="color:rgba(255,255,255,0.7);">FCPS student accounts should use the Google button above.</strong></li>
-  <li><span style="color:rgba(255,255,255,0.72);">Email links are for approved coaches and adults with an inbox that can receive external email.</span></li>
-</ul>
+        <div class="access-notice">
+          <span class="access-notice-icon" aria-hidden="true">ⓘ</span>
+          <span>Your exact Google address must be listed as <strong>Active</strong> in the Members Directory. Contact Coach Konde or a Website Admin if access has not been set up.</span>
         </div>
 
-        <button class="btn btn-gold btn-send" id="send-link-btn" onclick="sendSignInLink()">
-          Send Adult Sign-In Link
-        </button>
+        <details class="email-fallback">
+          <summary>Use an approved non-FCPS email</summary>
+          <div class="email-fallback-body">
+            <div class="login-field">
+              <label class="login-label" for="email-input">Approved Email Address</label>
+              <input class="login-input" id="email-input" type="email"
+                     placeholder="coach@example.com"
+                     autocomplete="email"
+                     onkeydown="if(event.key==='Enter') sendSignInLink()"/>
+              <p class="login-hint">For approved adults whose portal email is not an FCPS Google Workspace address.</p>
+            </div>
+            <button class="btn btn-gold btn-send" id="send-link-btn" onclick="sendSignInLink()">
+              Send Sign-In Link
+            </button>
+          </div>
+        </details>
 
         <div class="login-error" id="login-error"></div>
       </div>
 
-      <div style="margin-top:28px;text-align:center;">
-        <p style="font-size:0.87rem;color:var(--gray-mid);margin-bottom:14px;">Not a member yet?</p>
-        <a href="apply.html" class="join-pill">Apply to join the team →</a>
+      <div class="portal-join">
+        <p>Don't have a member account?</p>
+        <a href="apply.html" class="join-pill">Apply to Join the Team</a>
       </div>
     </div>
   </div>
@@ -322,9 +463,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
-<script src="data/approved-members.js?v=3"></script>
-<script src="data/admins.js"></script>
-<script src="js/members-auth.js?v=5"></script>
+<script src="data/approved-members.js?v=5"></script>
+<script src="data/admins.js?v=2"></script>
+<script src="js/members-auth.js?v=8"></script>
 
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>

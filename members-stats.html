@@ -2165,9 +2165,9 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
-<script src="data/approved-members.js?v=3"></script>
-<script src="data/admins.js"></script>
-<script src="js/members-auth.js?v=5"></script>
+<script src="data/approved-members.js?v=5"></script>
+<script src="data/admins.js?v=2"></script>
+<script src="js/members-auth.js?v=8"></script>
 
 <script>
 /* ── showState override ─────────────────────────────────────── */
@@ -2580,7 +2580,7 @@ async function initStats() {
   });
 
   initXFilters();
-  if (typeof currentUserRole !== 'undefined' && currentUserRole === 'coach') {
+  if (typeof currentUserRole !== 'undefined' && isFullAdminRole(currentUserRole)) {
     document.getElementById('import-toggle-btn').style.display = '';
   }
   await loadTournaments();
@@ -3712,7 +3712,7 @@ function _paintLeaderboard(data) {
 
 function renderTournaments(tourns) {
   const grid = document.getElementById('tourn-grid');
-  const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
+  const isCoach = typeof currentUserRole !== 'undefined' && isFullAdminRole(currentUserRole);
   function parseTournDate(str) {
     if (!str) return 0;
     // Strip ordinal suffixes: "10th" → "10", "1st" → "1", etc.
@@ -5354,7 +5354,7 @@ function closeTournDetail() {
 
 function renderTournamentDetail(t, metroMap) {
   const panel = document.getElementById('tourn-detail-panel');
-  const isCoach = typeof currentUserRole !== 'undefined' && currentUserRole === 'coach';
+  const isCoach = typeof currentUserRole !== 'undefined' && isFullAdminRole(currentUserRole);
 
   // Build header meta
   const metaParts = [t.meta.date, t.meta.school, t.meta.location].filter(Boolean);

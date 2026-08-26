@@ -19,36 +19,58 @@ service cloud.firestore {
       return request.auth.token.firebase.sign_in_provider == 'google.com';
     }
 
-    // Google sign-in is reserved for FCPS student identities. Approved adults
-    // continue to use Firebase email-link authentication.
+    // Google sign-in is reserved for approved FCPS Workspace identities.
+    // Approved non-FCPS adults continue to use Firebase email-link authentication.
     function usesAllowedSignInMethod() {
       return !isGoogleSignIn() ||
-        userEmail().matches('^[^@]+@fcpsschools[.]net$');
+        userEmail().matches('^[^@]+@(fcps[.]edu|fcpsschools[.]net)$');
     }
 
-    // Keep this list synchronized with data/approved-members.js.
+    function hasPortalMemberRecord() {
+      return hasVerifiedEmail() &&
+        exists(/databases/$(database)/documents/portal_members/$(userEmail()));
+    }
+
+    function portalMember() {
+      return get(/databases/$(database)/documents/portal_members/$(userEmail())).data;
+    }
+
+    // Directory-managed records are authoritative per email identity. The small
+    // fallback list keeps existing accounts working until a coach or website admin
+    // opens the roster and synchronizes those people into portal_members.
     function isApprovedMember() {
       return hasVerifiedEmail() &&
         usesAllowedSignInMethod() &&
-        userEmail() in [
-          'pgkonde@fcps.edu',
-          'hannahbshiv@gmail.com',
-          'cooperdebateteam@gmail.com',
-          '1806950@fcpsschools.net'
-        ];
+        (
+          (hasPortalMemberRecord() && portalMember().active == true) ||
+          (!hasPortalMemberRecord() && userEmail() in [
+            'pgkonde@fcps.edu',
+            'pgkonde@fcpsschools.net',
+            'hannahbshiv@gmail.com',
+            'cooperdebateteam@gmail.com',
+            '1806950@fcpsschools.net'
+          ])
+        );
     }
 
-    // Keep coach and captain roles synchronized with data/admins.js.
+    // Coach and Website Admin deliberately share the same full permission set.
     function isCoach() {
       return isApprovedMember() &&
-        userEmail() in [
-          'pgkonde@fcps.edu',        // Coach Konde
-          'hannahbshiv@gmail.com'    // temp coach for testing
-        ];
+        (
+          (hasPortalMemberRecord() &&
+            portalMember().role in ['coach', 'website-admin']) ||
+          (!hasPortalMemberRecord() && userEmail() in [
+            'pgkonde@fcps.edu',
+            'pgkonde@fcpsschools.net',
+            'hannahbshiv@gmail.com'
+          ])
+        );
     }
 
     function isCaptain() {
-      return false; // Add approved captain emails here when needed.
+      return isApprovedMember() &&
+        hasPortalMemberRecord() &&
+        portalMember().role == 'captain';
     }
 
     function canManageMemberContent() {
@@ -60,7 +82,7 @@ service cloud.firestore {
       allow read: if isApprovedMember();
       allow create: if canManageMemberContent() &&
         request.resource.data.postedBy == userEmail() &&
-        ((isCoach() && request.resource.data.postedByRole == 'coach') ||
+        ((isCoach() && request.resource.data.postedByRole in ['coach', 'website-admin']) ||
           (isCaptain() && request.resource.data.postedByRole == 'captain'));
       allow update: if canManageMemberContent() &&
         request.resource.data.postedBy == resource.data.postedBy &&
@@ -73,6 +95,25 @@ service cloud.firestore {
     // FCM push-notification tokens — each user may only write their own token
     match /fcm-tokens/{email} {
       allow read, write: if isApprovedMember() && userEmail() == email;
+    }
+
+    // Pre-authentication email-link checks use only a SHA-256 document ID and
+    // expose one boolean. Exact document reads are public; enumeration is not.
+    match /portal_login_status/{emailHash} {
+      allow get: if true;
+      allow list: if false;
+      allow create, update: if isCoach();
+      allow delete: if false;
+    }
+
+    // Each signed-in person can read only their own access record, including an
+    // inactive record needed to show a clear denial. Full admins manage all
+    // records through the Members Directory.
+    match /portal_members/{email} {
+      allow get: if hasVerifiedEmail() && (userEmail() == email || isCoach());
+      allow list: if isCoach();
+      allow create, update: if isCoach();
+      allow delete: if false;
     }
 
     // Resource card pins — approved members read; coaches/captains manage.
