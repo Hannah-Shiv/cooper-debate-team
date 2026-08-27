@@ -24,14 +24,17 @@
 // remain the security boundary.
 // ============================================================
 
+// Temporary role override for Hannah's linked identities while testing the
+// shared member-header badge. This intentionally lowers access from admin.
+const PORTAL_ROLE_OVERRIDES = {
+  "hannahbshiv@gmail.com": "member",
+  "1806950@fcpsschools.net": "member",
+};
+
 const ADMIN_ROLES = [
 
   // ── Coach ────────────────────────────────────────────────
   { email: "pgkonde@fcps.edu",         loginEmails: ["pgkonde@fcpsschools.net"], role: "coach" }, // Coach Konde
-  { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
-
-  // ── Website Admins ───────────────────────────────────────
-  { email: "1806950@fcpsschools.net",  role: "captain" },    // temporary header preview
 
   // ── Captains ─────────────────────────────────────────────
   // { email: "hannahbshiv@gmail.com", role: "captain" },   // testing captain view
@@ -65,10 +68,10 @@ function canManageMemberContentRole(role) {
 }
 
 function resolvePortalRole(directoryRole, email) {
+  const normalizedEmail = String(email || "").trim().toLowerCase();
+  const roleOverride = PORTAL_ROLE_OVERRIDES[normalizedEmail];
+  if (roleOverride) return normalizePortalRole(roleOverride);
   const legacyRole = normalizePortalRole(getAdminRole(email));
-  // A configured Captain mapping is a deliberate lower-privilege override for
-  // testing or demoting a stale directory-admin record.
-  if (legacyRole === "captain") return legacyRole;
   return isFullAdminRole(legacyRole)
     ? legacyRole
     : normalizePortalRole(directoryRole);

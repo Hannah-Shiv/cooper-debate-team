@@ -18,6 +18,7 @@
     teamFee: "Team fees",
   };
   const ROLE_PRESENTATION = {
+    member: { label: "Team Member", icon: "images/role-icons/member.png" },
     captain: { label: "Captain", icon: "images/role-icons/captain.png" },
     coach: { label: "Coach", icon: "images/role-icons/coach.png" },
     "website-admin": { label: "Website Admin", icon: "images/role-icons/website-admin.png" },
@@ -237,7 +238,7 @@
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
-    const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
+    const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.member;
     $("app-role-icon").src = rolePresentation.icon;
     $("app-role-badge").dataset.role = role;
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;

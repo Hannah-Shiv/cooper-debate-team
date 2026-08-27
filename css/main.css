@@ -1941,6 +1941,8 @@ body.dome-open .page-header { padding-top: 240px; }
   gap: 8px;
   height: 38.4px;
   min-height: 38.4px;
+  width: 118.765625px;
+  justify-content: center;
   padding: 7px 11px 7px 6px;
   border: 0;
   border-radius: 8px;
