@@ -43,8 +43,10 @@
 
     /* ── Page header ─────────────────────────────────────────── */
     .hub-header {
-      margin-bottom: 32px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      gap: 24px; flex-wrap: wrap; margin-bottom: 32px;
     }
+    .hub-heading { min-width: 260px; }
     .hub-title {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(2.25rem, 4.05vw, 3.48rem);
@@ -55,12 +57,12 @@
     .hub-sub {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
-      color: rgba(255,255,255,0.35); margin: 0;
+      color: rgba(255,255,255,0.68); margin: 0;
     }
 
     /* ── Tab bar ─────────────────────────────────────────────── */
     .tab-bar {
-      display: flex; gap: 6px; margin-bottom: 28px;
+      display: flex; gap: 6px; margin: 0 0 2px; flex-shrink: 0;
     }
     .tab-btn {
       display: inline-flex; align-items: center; gap: 7px;
@@ -502,6 +504,8 @@
       .profile-stat-strip { grid-template-columns: repeat(2,1fr); }
       .form-grid { grid-template-columns: 1fr; }
       .form-field.full { grid-column: 1; }
+      .hub-header { align-items: flex-start; flex-direction: column; gap: 18px; }
+      .tab-bar { flex-wrap: wrap; margin: 0; }
       .admin-table thead th:nth-child(3),
       .admin-table tbody td:nth-child(3),
       .admin-table thead th:nth-child(4),
@@ -555,26 +559,27 @@
 
       <!-- Header -->
       <div class="hub-header">
-        <h1 class="hub-title">Member Hub</h1>
-        <p class="hub-sub">Cooper Debate Team · All Debaters</p>
+        <div class="hub-heading">
+          <h1 class="hub-title">Member Hub</h1>
+          <p class="hub-sub">Cooper Debate Team · All Debaters</p>
+        </div>
+        <div class="tab-bar">
+          <button class="tab-btn active" id="tab-dir" onclick="switchTab('directory')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/></svg>
+            Debaters
+          </button>
+          <button class="tab-btn" id="tab-roster" onclick="switchTab('roster')" style="display:none">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Roster Manager
+          </button>
+          <a class="tab-btn" id="tab-applications" href="members-applications.html" style="display:none">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17h4"/><path d="M7.2 9.1l.8.8 1.3-1.6"/></svg>
+            Applications
+          </a>
+        </div>
       </div>
 
       <!-- Tab bar -->
-      <div class="tab-bar">
-        <button class="tab-btn active" id="tab-dir" onclick="switchTab('directory')">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/></svg>
-          Debaters
-        </button>
-        <button class="tab-btn" id="tab-roster" onclick="switchTab('roster')" style="display:none">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Roster Manager
-        </button>
-        <a class="tab-btn" id="tab-applications" href="members-applications.html" style="display:none">
-          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17h4"/><path d="M7.2 9.1l.8.8 1.3-1.6"/></svg>
-          Applications
-        </a>
-      </div>
-
       <!-- ── DIRECTORY SECTION ──────────────────────────────── -->
       <div id="dir-section">
 
