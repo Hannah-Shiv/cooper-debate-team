@@ -1325,8 +1325,10 @@ footer {
   opacity: 0;
   pointer-events: none;
   transform: translateY(12px);
-  transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
-  box-shadow: 0 4px 18px rgba(184,26,26,0.45);
+  transition: opacity 0.16s ease, transform 0.16s ease, background 0.2s ease;
+  outline: 1px solid rgba(232,168,40,0.62);
+  outline-offset: -1px;
+  box-shadow: 0 2px 7px rgba(0,0,0,0.34);
 }
 
 #scroll-top.visible {
