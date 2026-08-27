@@ -7,7 +7,7 @@
   <title>Apply — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
@@ -345,7 +345,14 @@
       box-shadow: 0 14px 36px rgba(0,0,0,0.32), 0 0 20px rgba(242,209,107,0.06), inset 0 1px 0 rgba(255,255,255,0.05);
     }
     .form-card:last-child { margin-bottom: 0; }
-    @media (max-width: 640px) { .form-card { padding: 26px 20px; } }
+    @media (max-width: 640px) {
+      .form-card { padding: 26px 20px; }
+      .form-column .form-card .card-num {
+        height: 48px !important;
+        margin-right: 10px !important;
+        width: 48px !important;
+      }
+    }
 
     /* Section color accents */
     .card-blue  { border-top-color: rgba(126,184,232,0.5); }
@@ -420,9 +427,30 @@
     .form-column .form-card.card-teal .card-num,
     .form-column .form-card.card-purple .card-num,
     .form-column .form-card.card-amber .card-num {
-      background: rgba(248,228,154,0.16);
-      border-color: rgba(248,228,154,0.55);
-      color: #F8E49A;
+      background: radial-gradient(circle at 65% 28%, #D86852 0%, #A93636 40%, #741F2B 72%, #3B111C 100%);
+      border: 2px solid #E5A14B;
+      box-shadow:
+        0 0 0 4px rgba(194,67,57,0.12),
+        0 4px 12px rgba(0,0,0,0.34),
+        inset 0 1px 1px rgba(255,255,255,0.42),
+        inset 0 -3px 5px rgba(54,10,14,0.38);
+      color: #FFF4D6;
+      font-family: 'Cinzel', serif !important;
+      font-size: 1.55rem;
+      font-weight: 700;
+      height: 56px;
+      margin-right: 12px;
+      position: relative;
+      text-shadow: 0 1px 1px rgba(58,12,18,0.55);
+      width: 56px;
+    }
+    .form-column .form-card .card-num::before {
+      content: '';
+      position: absolute;
+      inset: 5px;
+      border: 1px solid rgba(255,244,214,0.5);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     /* ── Anchor scroll offset (clears fixed header) ── */
@@ -438,6 +466,8 @@
     .card-amber  .form-card-title { color: #E8C47C; }
 
     .form-card-title {
+      align-items: center;
+      display: flex;
       font-family: 'Cormorant Garamond', serif;
       font-size: 1.55rem;
       font-weight: 700;
