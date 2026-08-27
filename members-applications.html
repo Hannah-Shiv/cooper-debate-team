@@ -59,10 +59,22 @@
      #search{background-image:none;background-size:auto;border-bottom:1px solid rgba(125,211,252,.68);padding-left:48px}
      #search:focus{border-bottom:1px solid rgba(125,211,252,.68)}
      .app-control input,.app-control select{color:#a9bdd7;font-size:.9rem}
+     .controls{grid-template-columns:minmax(160px,.9fr) minmax(243px,1.3fr) minmax(135px,.75fr)}
      .app-filter-control{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}
      .app-filter-control select{color:#4ade80;font-size:.85rem}
      .app-sort-control select{color:#c4b5fd}
      .app-control select option{background:#091d3a;color:#eaf2ff}
+     .app-search-icon{height:24px;width:24px}
+     .metric strong{font-size:1.58rem}
+     .metric-icon{transform:translateY(3px)}
+     .tab-bar{display:flex;gap:6px;flex:0 0 auto;margin:0 0 2px;white-space:nowrap}
+     .tab-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 22px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:50px;color:rgba(255,215,0,.82);cursor:pointer;font-family:"Josefin Sans",sans-serif;font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:all .2s}
+     .tab-btn svg{opacity:.78;transition:opacity .2s}
+     .tab-btn:hover{border-color:rgba(255,215,0,.65);color:#ffe66d;background:rgba(255,215,0,.07)}
+     .tab-btn.active{background:rgba(255,215,0,.16);border-color:rgba(255,215,0,.75);color:#ffe66d}
+     .tab-btn.active svg{opacity:1}
+     @media(min-width:761px){.metric strong{font-size:1.71rem}}
+     @media(max-width:760px){.tab-bar{flex-wrap:wrap;margin:0}}
     @media(max-width:760px){.controls{grid-template-columns:1fr}.app-control{min-height:46px}.app-filter-control{grid-template-columns:1fr 1fr}}
     /* Applicant queue — a focused navy list with a clear cobalt selected state. */
     .queue-panel{background:linear-gradient(155deg,#0a2246,#06152e);border-color:rgba(82,149,238,.34);box-shadow:0 12px 28px rgba(2,10,28,.2)}.queue-panel .list-head{border-bottom-color:rgba(92,151,228,.3);padding:13px 14px}.queue-panel .list-head h2{color:#dce9fb;font-family:"Josefin Sans",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.queue-panel .count{background:rgba(91,145,218,.18);border:1px solid rgba(125,181,255,.16);color:#cfe2ff;font-size:.61rem;padding:5px 10px}.queue-panel .application-list{display:flex;flex-direction:column;gap:6px;padding:6px}.queue-panel .application-row{background:rgba(4,18,43,.54);border:1px solid rgba(133,177,235,.13);border-radius:7px;color:inherit;padding:12px 13px;transition:background .16s,border-color .16s,box-shadow .16s;white-space:normal}.queue-panel .application-row:hover{background:rgba(24,72,137,.35);border-color:rgba(94,167,255,.5)}.queue-panel .application-row.active{background:linear-gradient(120deg,#123d7e,#0a2b5b);border:1px solid #3387eb;box-shadow:inset 0 1px 0 rgba(179,218,255,.16),0 0 0 1px rgba(40,130,235,.12);padding:12px 13px}.queue-panel .row-main{display:block}.queue-panel .row-name{color:#f2f7ff;font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:700;line-height:1.05}.queue-panel .row-context{color:#b7cce8;font-size:.66rem;line-height:1.35;margin-top:4px}.queue-panel .row-status{margin:7px 0 0}.queue-panel .badge{background:#174d9e;color:#dcebff;font-size:.52rem;letter-spacing:.08em;padding:4px 7px}.queue-panel .badge.accepted{background:rgba(24,151,91,.26);color:#a8efc8}.queue-panel .badge.declined{background:rgba(190,61,70,.28);color:#ffc0c2}
@@ -97,16 +109,16 @@
             <h1 class="hub-title">Member Hub</h1>
             <p class="hub-sub">Cooper Debate Team · All Debaters</p>
           </div>
-          <nav class="member-section-tabs" aria-label="Member workspace sections">
-            <a class="member-section-tab" href="members-directory.html">
+           <nav class="tab-bar" aria-label="Member workspace sections">
+             <a class="tab-btn" href="members-directory.html">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="7" r="3"/><path d="M3 21v-2a5 5 0 0 1 10 0v2"/><circle cx="17" cy="7" r="2.5"/><path d="M21 21v-1.5a4 4 0 0 0-5-3.86"/></svg>
               Debaters
             </a>
-            <a class="member-section-tab" href="members-directory.html?tab=roster">
+             <a class="tab-btn" href="members-directory.html?tab=roster">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               Roster Manager
             </a>
-            <a class="member-section-tab active" href="members-applications.html" aria-current="page">
+             <a class="tab-btn active" href="members-applications.html" aria-current="page">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17h4"/><path d="M7.2 9.1l.8.8 1.3-1.6"/></svg>
               Track applications
             </a>
