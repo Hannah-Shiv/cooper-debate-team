@@ -1002,6 +1002,16 @@
       color: rgba(255,255,255,0.92) !important;
       line-height: 1.55 !important;
     }
+    .entry-choice { max-width:960px; margin:0 auto 28px; padding:22px; border:1px solid rgba(242,209,107,.55); border-radius:12px; background:linear-gradient(135deg,rgba(8,27,63,.98),rgba(11,37,69,.9)); box-shadow:0 10px 26px rgba(0,0,0,.22); }
+    .entry-choice h2 { margin:0 0 5px; color:#F8E49A; font-family:'Cormorant Garamond',serif; font-size:1.55rem; }
+    .entry-choice > p { color:#dbe7f5; margin:0 0 16px; font-size:.96rem; }
+    .entry-choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .entry-choice-card { display:flex; flex-direction:column; gap:5px; padding:18px; border:1px solid rgba(126,184,232,.4); border-radius:8px; background:rgba(3,13,35,.55); transition:transform .2s,border-color .2s,background .2s; }
+    .entry-choice-card:hover { transform:translateY(-2px); border-color:#F2D16B; background:rgba(13,46,86,.8); }
+    .entry-choice-card strong { color:#fff; font-family:'Cormorant Garamond',serif; font-size:1.25rem; }
+    .entry-choice-card span { color:#b8c9dc; font-size:.86rem; line-height:1.5; }
+    .entry-choice-card .entry-link { color:#F2D16B; font:700 .7rem 'Josefin Sans',sans-serif; letter-spacing:.12em; text-transform:uppercase; margin-top:7px; }
+    @media(max-width:640px){.entry-choice-grid{grid-template-columns:1fr;}}
 
   </style>
 </head>
@@ -1062,6 +1072,15 @@
 <!-- MAIN CONTENT -->
 <main class="apply-page">
   <div class="container">
+
+    <section class="entry-choice" aria-labelledby="entry-choice-title">
+      <h2 id="entry-choice-title">Choose your Cooper Debate path</h2>
+      <p>Applying to join the team and preparing a position paper are related, but they are not the same step.</p>
+      <div class="entry-choice-grid">
+        <a class="entry-choice-card" href="#application-steps"><strong>Team Application</strong><span>Complete the five-step application for the 2026–2027 team.</span><span class="entry-link">Continue to application →</span></a>
+        <a class="entry-choice-card" href="debate-prep.html"><strong>Debate Prep / Position Paper</strong><span>Choose a guided case route or write your essay only, with local draft recovery.</span><span class="entry-link">Open prep studio →</span></a>
+      </div>
+    </section>
 
     <!-- POLICY NOTICE -->
     <div class="policy-notice" role="alert">
