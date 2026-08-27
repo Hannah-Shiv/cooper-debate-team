@@ -122,11 +122,36 @@
 
     /* ── Steps indicator ── */
     .form-steps {
+      position: relative;
+      isolation: isolate;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 48px;
+      gap: 0;
+      padding: 13px 20px;
+      margin: 0 auto 44px;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 999px;
+      background: linear-gradient(105deg,
+        rgba(242,209,107,0.95) 0%,
+        rgba(255,190,109,0.92) 22%,
+        rgba(117,222,194,0.92) 50%,
+        rgba(149,205,244,0.92) 69%,
+        rgba(198,168,255,0.94) 100%);
+      box-shadow:
+        0 10px 35px rgba(0,0,0,0.28),
+        0 0 0 5px rgba(242,209,107,0.06),
+        0 0 35px rgba(109,216,184,0.2);
+      overflow: hidden;
       scroll-margin-top: 105px;
+    }
+    .form-steps::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(115deg, rgba(255,255,255,0.42), transparent 35%, rgba(255,255,255,0.14) 72%, rgba(255,255,255,0.38));
+      pointer-events: none;
+      z-index: -1;
     }
     .form-step {
       background: transparent;
@@ -141,23 +166,29 @@
     }
     .form-step:hover { opacity: 1; transform: translateY(-1px); }
     .form-step[aria-current="step"] { opacity: 1; }
-    .form-step[aria-current="step"] .form-step-num { box-shadow: 0 0 18px rgba(242,209,107,0.28); transform: scale(1.08); }
+    .form-step[aria-current="step"] .form-step-num {
+      background: #07152C !important;
+      border-color: #FFFFFF !important;
+      color: #F8E49A !important;
+      box-shadow: 0 4px 14px rgba(7,21,44,0.38), 0 0 0 4px rgba(255,255,255,0.28);
+      transform: scale(1.1);
+    }
     .form-step.is-complete .form-step-num { background: rgba(109,216,184,0.22) !important; border-color: rgba(109,216,184,0.85) !important; color: #6DD8B8 !important; }
-    .form-step.is-complete .form-step-label { color: #6DD8B8 !important; }
+    .form-step.is-complete .form-step-label { color: #073D3B !important; }
     .form-step-num {
-      width: 34px;
-      height: 34px;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
-      background: rgba(242,209,107,0.18);
-      border: 1.5px solid rgba(242,209,107,0.75);
+      background: rgba(255,255,255,0.48) !important;
+      border: 2px solid rgba(7,21,44,0.24) !important;
       display: flex;
       align-items: center;
       justify-content: center;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.92rem;
       font-weight: 700;
-      color: #F2D16B;
-      text-shadow: 0 0 8px rgba(242,209,107,0.5);
+      color: #07152C !important;
+      text-shadow: none;
       flex-shrink: 0;
     }
     .form-step-label {
@@ -166,19 +197,25 @@
       font-weight: 600;
       letter-spacing: 0.07em;
       text-transform: uppercase;
-      color: rgba(242,209,107,0.92);
+      color: #07152C !important;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.3);
       white-space: nowrap;
     }
     .form-step-connector {
       width: 36px;
-      height: 1px;
-      background: rgba(242,209,107,0.38);
+      height: 2px;
+      background: rgba(7,21,44,0.3);
       margin: 0 6px;
       flex-shrink: 0;
     }
+    .form-step-connector.is-complete {
+      background: linear-gradient(90deg, #087D71, #07152C);
+    }
     @media (max-width: 600px) {
       .form-step-label { display: none; }
-      .form-step-connector { width: 18px; margin: 0 3px; }
+      .form-steps { padding: 10px 12px; margin-bottom: 38px; }
+      .form-step-connector { width: 20px; margin: 0 3px; }
+      .form-step-num { width: 36px; height: 36px; }
     }
     @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
       .form-steps { padding: 0 20px; }
@@ -364,12 +401,18 @@
       margin: -2px 0 0;
     }
     .wizard-status {
-      color: var(--gray-mid);
+      display: table;
+      color: #F8E49A;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.76rem;
+      font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.1em;
-      margin: -28px 0 14px;
+      margin: -24px auto 14px;
+      padding: 7px 14px;
+      border: 1px solid rgba(242,209,107,0.42);
+      border-radius: 999px;
+      background: rgba(242,209,107,0.09);
+      box-shadow: 0 0 18px rgba(242,209,107,0.1);
       text-align: center;
       text-transform: uppercase;
     }
