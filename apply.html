@@ -126,8 +126,11 @@
       align-items: center;
       justify-content: center;
       margin-bottom: 48px;
+      scroll-margin-top: 105px;
     }
     .form-step {
+      background: transparent;
+      border: 0;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -137,6 +140,10 @@
       transition: opacity 0.2s ease, transform 0.15s ease;
     }
     .form-step:hover { opacity: 1; transform: translateY(-1px); }
+    .form-step[aria-current="step"] { opacity: 1; }
+    .form-step[aria-current="step"] .form-step-num { box-shadow: 0 0 18px rgba(242,209,107,0.28); transform: scale(1.08); }
+    .form-step.is-complete .form-step-num { background: rgba(109,216,184,0.22) !important; border-color: rgba(109,216,184,0.85) !important; color: #6DD8B8 !important; }
+    .form-step.is-complete .form-step-label { color: #6DD8B8 !important; }
     .form-step-num {
       width: 34px;
       height: 34px;
@@ -355,6 +362,54 @@
       font-size: 0.82rem;
       line-height: 1.45;
       margin: -2px 0 0;
+    }
+    .wizard-status {
+      color: var(--gray-mid);
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      margin: -28px 0 14px;
+      text-align: center;
+      text-transform: uppercase;
+    }
+    .wizard-panel { display: none; }
+    .wizard-panel.is-active { display: block; animation: wizard-panel-in 0.24s ease both; }
+    @keyframes wizard-panel-in {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .wizard-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      margin: 0 0 20px;
+    }
+    .wizard-actions .wizard-next:first-child { margin-left: auto; }
+    .wizard-btn {
+      background: rgba(126,184,232,0.1);
+      border: 1px solid rgba(126,184,232,0.38);
+      border-radius: 6px;
+      color: #cfe7ff;
+      cursor: pointer;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      padding: 11px 18px;
+      text-transform: uppercase;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    }
+    .wizard-btn:hover { background: rgba(126,184,232,0.18); border-color: rgba(126,184,232,0.7); transform: translateY(-1px); }
+    .wizard-btn.primary { background: linear-gradient(135deg, rgba(242,209,107,0.95), rgba(184,134,11,0.95)); border-color: #F8E49A; color: var(--navy-dark); }
+    .wizard-btn.primary:hover { background: linear-gradient(135deg, #F8E49A, #c99717); }
+    .wizard-btn[disabled] { cursor: default; opacity: 0.45; transform: none; }
+    .wizard-status { scroll-margin-top: 110px; }
+    .form-step:disabled { cursor: default; opacity: 0.55; transform: none; }
+    @media (max-width: 640px) {
+      .wizard-status { margin-top: -28px; }
+      .wizard-actions { margin-bottom: 16px; }
+      .wizard-btn { flex: 1; padding: 11px 10px; }
     }
     .email-delivery-note {
       align-items:flex-start; background:rgba(126,184,232,.08); border:1px solid rgba(126,184,232,.24);
@@ -670,36 +725,31 @@
     </div>
 
     <!-- STEPS -->
-    <div class="form-steps" aria-label="Application steps">
-      <a class="form-step" href="#section-1">
+    <div class="form-steps" id="application-steps" aria-label="Application steps">
+      <button class="form-step" type="button" data-wizard-target="1" aria-current="step">
         <div class="form-step-num" style="color:#F2D16B;border-color:rgba(242,209,107,0.75);background:rgba(242,209,107,0.18);">1</div>
         <span class="form-step-label" style="color:#F2D16B;">Student Info</span>
-      </a>
+      </button>
       <div class="form-step-connector"></div>
-      <a class="form-step" href="#section-2">
+      <button class="form-step" type="button" data-wizard-target="2">
         <div class="form-step-num" style="color:#7EB8E8;border-color:rgba(126,184,232,0.75);background:rgba(126,184,232,0.18);">2</div>
         <span class="form-step-label" style="color:#7EB8E8;">Parent Info</span>
-      </a>
+      </button>
       <div class="form-step-connector"></div>
-      <a class="form-step" href="#section-3">
+      <button class="form-step" type="button" data-wizard-target="3">
         <div class="form-step-num" style="color:#6DD8B8;border-color:rgba(109,216,184,0.75);background:rgba(109,216,184,0.18);">3</div>
         <span class="form-step-label" style="color:#6DD8B8;">Event Details</span>
-      </a>
+      </button>
       <div class="form-step-connector"></div>
-      <a class="form-step" href="#section-4">
+      <button class="form-step" type="button" data-wizard-target="4">
         <div class="form-step-num" style="color:#C4AAFF;border-color:rgba(196,168,255,0.75);background:rgba(196,168,255,0.18);">4</div>
         <span class="form-step-label" style="color:#C4AAFF;">Commitments</span>
-      </a>
+      </button>
       <div class="form-step-connector"></div>
-      <a class="form-step" href="#section-5">
+      <button class="form-step" type="button" data-wizard-target="5">
         <div class="form-step-num" style="color:#E8C47C;border-color:rgba(232,196,124,0.75);background:rgba(232,196,124,0.18);">5</div>
-        <span class="form-step-label" style="color:#E8C47C;">Short Answers</span>
-      </a>
-      <div class="form-step-connector"></div>
-      <a class="form-step" href="#section-6">
-        <div class="form-step-num" style="color:#F2D16B;border-color:rgba(242,209,107,0.75);background:rgba(242,209,107,0.18);">6</div>
-        <span class="form-step-label" style="color:#F2D16B;">Agreement</span>
-      </a>
+        <span class="form-step-label" style="color:#E8C47C;">Answers &amp; Agreement</span>
+      </button>
     </div>
 
     <!-- TWO-COLUMN LAYOUT -->
@@ -707,10 +757,12 @@
 
       <!-- LEFT: THE FORM -->
       <div>
+        <p class="wizard-status" id="wizard-status">Step 1 of 5 · Student information</p>
         <form id="apply-form" novalidate>
           <input type="text" id="application-honey" name="honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
-          <!-- ── SECTION 1: Student Information ── -->
+          <!-- ── STEP 1: Student Information ── -->
+          <div class="wizard-panel is-active" data-wizard-step="1">
           <div id="section-1" class="form-card card-gold">
             <div class="form-card-title"><span class="card-num">1</span>Student Information</div>
             <div class="form-card-subtitle">Please use your official school name as it appears on your FCPS records.</div>
@@ -769,7 +821,13 @@
             </div>
           </div>
 
-          <!-- ── SECTION 2: Parent / Guardian Information ── -->
+          <div class="wizard-actions">
+            <button class="wizard-btn primary wizard-next" type="button" data-wizard-next="2">Continue →</button>
+          </div>
+          </div>
+
+          <!-- ── STEP 2: Parent / Guardian Information ── -->
+          <div class="wizard-panel" data-wizard-step="2" hidden>
           <div id="section-2" class="form-card card-blue">
             <div class="form-card-title"><span class="card-num">2</span>Parent / Guardian Information</div>
             <div class="form-card-subtitle">The coach will use this contact information for all team communications.</div>
@@ -814,7 +872,14 @@
             </div>
           </div>
 
-          <!-- ── SECTION 3: Event Details ── -->
+          <div class="wizard-actions">
+            <button class="wizard-btn wizard-prev" type="button" data-wizard-prev="1">← Back</button>
+            <button class="wizard-btn primary wizard-next" type="button" data-wizard-next="3">Continue →</button>
+          </div>
+          </div>
+
+          <!-- ── STEP 3: Event Details ── -->
+          <div class="wizard-panel" data-wizard-step="3" hidden>
           <div id="section-3" class="form-card card-teal">
             <div class="form-card-title"><span class="card-num">3</span>Event Details &amp; Partner</div>
             <div class="form-card-subtitle">Please tell the coach about your partner and your availability for the fall kickoff events and tournaments.</div>
@@ -886,7 +951,14 @@
             </div>
           </div>
 
-          <!-- ── SECTION 4: Commitment Acknowledgments ── -->
+          <div class="wizard-actions">
+            <button class="wizard-btn wizard-prev" type="button" data-wizard-prev="2">← Back</button>
+            <button class="wizard-btn primary wizard-next" type="button" data-wizard-next="4">Continue →</button>
+          </div>
+          </div>
+
+          <!-- ── STEP 4: Commitment Acknowledgments ── -->
+          <div class="wizard-panel" data-wizard-step="4" hidden>
           <div id="section-4" class="form-card card-purple">
             <div class="form-card-title"><span class="card-num">4</span>Commitment Acknowledgments</div>
             <div class="form-card-subtitle">This is a Cooper team, not a club. Please read each commitment carefully and check the box only if your student can genuinely fulfill it.</div>
@@ -1006,7 +1078,15 @@
             </div>
           </div>
 
-          <!-- ── SECTION 5: Short Answer Questions ── -->
+          <div class="wizard-actions">
+            <button class="wizard-btn wizard-prev" type="button" data-wizard-prev="3">← Back</button>
+            <button class="wizard-btn primary wizard-next" type="button" data-wizard-next="5">Continue →</button>
+          </div>
+          </div>
+
+          <!-- ── STEP 5: Short Answers and Agreement ── -->
+          <div class="wizard-panel" data-wizard-step="5" hidden>
+          <div id="section-5" class="form-card card-amber">
           <div id="section-5" class="form-card card-amber">
             <div class="form-card-title"><span class="card-num">5</span>Short Answer Questions</div>
             <div class="form-card-subtitle">Answer honestly and in your own words. There are no right or wrong answers — the coach wants to hear your voice.</div>
@@ -1055,7 +1135,7 @@
             </div>
           </div>
 
-          <!-- ── SECTION 6: Parent Agreement & Submit ── -->
+          <!-- ── Parent Agreement & Submit ── -->
           <div id="section-6" class="form-card card-gold">
             <div class="form-card-title"><span class="card-num">6</span>Parent / Guardian Agreement</div>
             <div class="form-card-subtitle">
@@ -1090,6 +1170,10 @@
                 A complete copy will also be sent to the student's personal email and the parent/guardian email.
               </p>
             </div>
+          </div>
+          <div class="wizard-actions">
+            <button class="wizard-btn wizard-prev" type="button" data-wizard-prev="4">← Back</button>
+          </div>
           </div>
 
         </form>
@@ -1256,6 +1340,14 @@
   const parentEmail = document.getElementById('parent-email');
   const tournamentDateOptions = Array.from(document.querySelectorAll('.tournament-date-option'));
   const tournamentAvailabilityError = document.getElementById('tournament-availability-error');
+  const wizardPanels = Array.from(document.querySelectorAll('.wizard-panel'));
+  const wizardSteps = Array.from(document.querySelectorAll('[data-wizard-target]'));
+  const wizardStepper = document.getElementById('application-steps');
+  const wizardStatus = document.getElementById('wizard-status');
+  const wizardStepLabels = ['Student information', 'Parent / guardian information', 'Event details and partner', 'Team commitments', 'Short answers and agreement'];
+  let currentWizardStep = 1;
+  let highestWizardStep = 1;
+  const completedWizardSteps = new Set();
   const reviewModal = document.getElementById('application-review-modal');
   const confirmationModal = document.getElementById('application-confirmation-modal');
   const reviewList = document.getElementById('application-review-list');
@@ -1327,6 +1419,85 @@
         : '';
     });
     return valid;
+  }
+
+  function updateWizardIndicator() {
+    wizardSteps.forEach(stepButton => {
+      const step = Number(stepButton.dataset.wizardTarget);
+      stepButton.classList.toggle('is-complete', completedWizardSteps.has(step));
+      stepButton.setAttribute('aria-current', step === currentWizardStep ? 'step' : 'false');
+      stepButton.disabled = step > highestWizardStep;
+    });
+    document.querySelectorAll('.form-step-connector').forEach((connector, index) => {
+      connector.classList.toggle('is-complete', index < highestWizardStep - 1);
+    });
+    wizardStatus.textContent = `Step ${currentWizardStep} of ${wizardPanels.length} · ${wizardStepLabels[currentWizardStep - 1]}`;
+  }
+
+  function setWizardStep(step, { scroll = true } = {}) {
+    const nextStep = Number(step);
+    if (!wizardPanels.some(panel => Number(panel.dataset.wizardStep) === nextStep)) return;
+    currentWizardStep = nextStep;
+    highestWizardStep = Math.max(highestWizardStep, currentWizardStep);
+    wizardPanels.forEach(panel => {
+      const active = Number(panel.dataset.wizardStep) === currentWizardStep;
+      panel.hidden = !active;
+      panel.classList.toggle('is-active', active);
+    });
+    updateWizardIndicator();
+    if (scroll) wizardStepper.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function validateWizardContainer(container) {
+    const required = container.querySelectorAll('[required]');
+    let valid = true;
+    required.forEach(el => {
+      if (el.type === 'checkbox' && !el.checked) {
+        el.closest('.check-item').style.borderColor = 'rgba(220,60,60,0.6)';
+        valid = false;
+      } else if (el.type !== 'checkbox' && (!el.value.trim() || !el.checkValidity())) {
+        el.style.borderColor = 'rgba(220,60,60,0.6)';
+        valid = false;
+      }
+    });
+    const includesTournamentDates = container.contains(document.getElementById('tournament-availability-group'));
+    const tournamentDatesValid = includesTournamentDates
+      ? (tournamentValidationActive = true, updateTournamentAvailabilityState())
+      : true;
+    if (!tournamentDatesValid) valid = false;
+    if (container.contains(studentPersonalEmail)) {
+      if (/@fcpsschools\.net$/i.test(studentPersonalEmail.value.trim())) {
+        studentPersonalEmail.style.borderColor = 'rgba(220,60,60,0.8)';
+        studentPersonalEmail.setCustomValidity('Use a personal email address that can receive external email.');
+        valid = false;
+      } else {
+        studentPersonalEmail.setCustomValidity('');
+      }
+    }
+    if (!valid) {
+      const firstError = container.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else if (!tournamentDatesValid) document.getElementById('tournament-availability-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return valid;
+  }
+
+  function advanceWizardTo(targetStep) {
+    const target = Number(targetStep);
+    if (target <= currentWizardStep) {
+      setWizardStep(target);
+      return;
+    }
+    for (let step = currentWizardStep; step < target; step += 1) {
+      const panel = wizardPanels.find(candidate => Number(candidate.dataset.wizardStep) === step);
+      if (!validateWizardContainer(panel)) {
+        completedWizardSteps.delete(step);
+        updateWizardIndicator();
+        return;
+      }
+      completedWizardSteps.add(step);
+    }
+    setWizardStep(target);
   }
 
   function renderTurnstile() {
@@ -1479,6 +1650,21 @@
     restorePendingApplication(pendingApplication.application);
     populateStudentSchoolEmail();
   }
+  setWizardStep(1, { scroll: false });
+
+  wizardSteps.forEach(stepButton => {
+    stepButton.addEventListener('click', () => {
+      const targetStep = Number(stepButton.dataset.wizardTarget);
+      if (targetStep <= currentWizardStep) setWizardStep(targetStep);
+      else advanceWizardTo(targetStep);
+    });
+  });
+  form.querySelectorAll('[data-wizard-next]').forEach(button => {
+    button.addEventListener('click', () => advanceWizardTo(button.dataset.wizardNext));
+  });
+  form.querySelectorAll('[data-wizard-prev]').forEach(button => {
+    button.addEventListener('click', () => setWizardStep(button.dataset.wizardPrev));
+  });
 
   document.querySelectorAll('[data-close-modal]').forEach(button => {
     button.addEventListener('click', () => closeApplicationModal(document.getElementById(button.dataset.closeModal)));
@@ -1491,34 +1677,16 @@
 
   form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const required = form.querySelectorAll('[required]');
-    let valid = true;
-    required.forEach(el => {
-      if (el.type === 'checkbox' && !el.checked) {
-        el.closest('.check-item').style.borderColor = 'rgba(220,60,60,0.6)';
-        valid = false;
-      } else if (el.type !== 'checkbox' && (!el.value.trim() || !el.checkValidity())) {
-        el.style.borderColor = 'rgba(220,60,60,0.6)';
-        valid = false;
+    for (const panel of wizardPanels) {
+      const step = Number(panel.dataset.wizardStep);
+      if (!validateWizardContainer(panel)) {
+        completedWizardSteps.delete(step);
+        setWizardStep(step);
+        return;
       }
-    });
-    tournamentValidationActive = true;
-    const tournamentDatesValid = updateTournamentAvailabilityState();
-    if (!tournamentDatesValid) valid = false;
-    if (/@fcpsschools\.net$/i.test(studentPersonalEmail.value.trim())) {
-      studentPersonalEmail.style.borderColor = 'rgba(220,60,60,0.8)';
-      studentPersonalEmail.setCustomValidity('Use a personal email address that can receive external email.');
-      valid = false;
-    } else {
-      studentPersonalEmail.setCustomValidity('');
+      completedWizardSteps.add(step);
     }
-    if (!valid) {
-      e.preventDefault();
-      const firstError = form.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      else if (!tournamentDatesValid) document.getElementById('tournament-availability-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      return;
-    }
+    setWizardStep(5, { scroll: false });
     openApplicationReview();
   });
 
