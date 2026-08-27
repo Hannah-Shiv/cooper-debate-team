@@ -426,11 +426,11 @@ function showDashboard(email) {
     badgeEl.dataset.role = currentUserRole;
     const iconEl = document.getElementById("member-role-icon") || badgeEl.querySelector(".mub-role-icon");
     const labelEl = badgeEl.querySelector(".mub-role-label");
-    if (iconEl && labelEl) {
-      iconEl.src = rolePresentation.icon;
+    if (iconEl) iconEl.src = rolePresentation.icon;
+    if (labelEl) {
       labelEl.textContent = rolePresentation.label;
     } else {
-      badgeEl.textContent = rolePresentation.fallback;
+      badgeEl.textContent = rolePresentation.label;
     }
   }
 

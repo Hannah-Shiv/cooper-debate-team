@@ -54,7 +54,6 @@
   <div class="mub-sep"></div>
   <span class="mub-name" id="mp-name"></span>
   <div class="mub-sep"></div>
-  <img class="mub-role-icon" id="mp-role-icon" src="images/role-icons/member.png" alt="" aria-hidden="true"/>
   <span class="mub-badge mub-role-badge" id="mp-role-badge" data-role="member">
     <span class="mub-role-label">Team Member</span>
   </span>
@@ -155,14 +154,12 @@ _mpAuth.onAuthStateChanged(async function(user) {
     const name  = document.getElementById('mp-name');
     if (badge) {
       const rolePresentation = MP_ROLE_PRESENTATION[role] || MP_ROLE_PRESENTATION.member;
-      const icon = document.getElementById('mp-role-icon');
       const label = badge.querySelector('.mub-role-label');
       badge.dataset.role = role;
-      if (icon && label) {
-        icon.src = rolePresentation.icon;
+      if (label) {
         label.textContent = rolePresentation.label;
       } else {
-        badge.textContent = rolePresentation.fallback;
+        badge.textContent = rolePresentation.label;
       }
     }
     if (name)  name.textContent  = portalWelcomeLabel(

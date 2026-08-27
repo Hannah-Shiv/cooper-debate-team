@@ -201,14 +201,12 @@ function initCalDashboard(email, access) {
   const badgeEl = document.getElementById("cal-role-badge");
   if (badgeEl) {
     const rolePresentation = CAL_ROLE_PRESENTATION[calUserRole] || CAL_ROLE_PRESENTATION.member;
-    const iconEl = document.getElementById("cal-role-icon");
     const labelEl = badgeEl.querySelector(".mub-role-label");
     badgeEl.dataset.role = calUserRole;
-    if (iconEl && labelEl) {
-      iconEl.src = rolePresentation.icon;
+    if (labelEl) {
       labelEl.textContent = rolePresentation.label;
     } else {
-      badgeEl.textContent = rolePresentation.fallback;
+      badgeEl.textContent = rolePresentation.label;
     }
   }
 

@@ -239,7 +239,6 @@
     const role = normalizePortalRole(access.role);
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.member;
-    $("app-role-icon").src = rolePresentation.icon;
     $("app-role-badge").dataset.role = role;
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
     if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }

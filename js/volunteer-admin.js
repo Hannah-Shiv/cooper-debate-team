@@ -437,14 +437,12 @@
     );
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
     const badge = $("member-role-badge");
-    const icon = $("member-role-icon");
     const label = badge && badge.querySelector(".mub-role-label");
     if (badge) badge.dataset.role = role;
-    if (icon && label) {
-      icon.src = rolePresentation.icon;
+    if (label) {
       label.textContent = rolePresentation.label;
     } else if (badge) {
-      badge.textContent = rolePresentation.fallback;
+      badge.textContent = rolePresentation.label;
     }
     $("member-userbar").classList.add("visible");
     resetForm();
