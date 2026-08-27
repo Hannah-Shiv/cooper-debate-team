@@ -291,7 +291,7 @@
     /* ── Balanced three-column layout ── */
     .apply-layout {
       display: grid;
-      grid-template-columns: minmax(190px, 291px) minmax(0, 1fr) minmax(190px, 291px);
+      grid-template-columns: minmax(190px, 335px) minmax(0, 1fr) minmax(190px, 335px);
       gap: 24px;
       align-items: start;
     }
@@ -303,6 +303,16 @@
     }
     .sidebar-left { grid-column: 1; grid-row: 1; }
     .sidebar-right { grid-column: 3; grid-row: 1; }
+    @media (min-width: 1101px) {
+      .sidebar-column {
+        align-self: stretch;
+        justify-content: space-between;
+      }
+      .sidebar-column > .deadline-card,
+      .sidebar-column > .sidebar-card {
+        margin-bottom: 0;
+      }
+    }
     @media (max-width: 1100px) {
       .apply-layout { grid-template-columns: 1fr; }
       .form-column { grid-column: 1; grid-row: 1; }
@@ -1683,11 +1693,6 @@
         studentPersonalEmail.setCustomValidity('');
       }
     }
-    if (!valid) {
-      const firstError = container.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
-      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      else if (!tournamentDatesValid) document.getElementById('tournament-availability-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
     return valid;
   }
 
@@ -1883,6 +1888,7 @@
         setWizardStep(step);
         wizardStatus.textContent = `Step ${step} of ${wizardPanels.length} · Please complete the highlighted ${wizardStepLabels[step - 1].toLowerCase()} fields`;
         wizardStatus.classList.add('has-error');
+        scrollToWizardFormTop(step);
         return;
       }
       completedWizardSteps.add(step);
