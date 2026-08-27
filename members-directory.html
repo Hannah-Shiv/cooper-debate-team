@@ -71,18 +71,19 @@
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.80rem; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
-      color: rgba(255,215,0,0.45);
+      color: rgba(255,215,0,0.82);
       cursor: pointer; transition: all 0.2s;
     }
-    .tab-btn svg { opacity: 0.5; transition: opacity 0.2s; }
+    .tab-btn svg { opacity: 0.78; transition: opacity 0.2s; }
     .tab-btn:hover {
-      border-color: rgba(255,215,0,0.35);
-      color: rgba(255,215,0,0.8);
+      border-color: rgba(255,215,0,0.65);
+      color: #ffe66d;
+      background: rgba(255,215,0,0.07);
     }
     .tab-btn.active {
-      background: rgba(255,215,0,0.1);
-      border-color: rgba(255,215,0,0.45);
-      color: #FFD700;
+      background: rgba(255,215,0,0.16);
+      border-color: rgba(255,215,0,0.75);
+      color: #ffe66d;
     }
     .tab-btn.active svg { opacity: 1; }
 
@@ -354,21 +355,21 @@
     .admin-section-header { margin-bottom: 20px; }
     .admin-section-header h2 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: 2.15rem; font-weight: 600; color: #c8a96e; margin: 0 0 4px;
+      font-size: 2.15rem; font-weight: 600; color: #f0cf7a; margin: 0 0 4px;
     }
-    .admin-section-header p { color: #5a7090; font-size: 1.04rem; font-family: 'Josefin Sans', sans-serif; margin: 0; }
+    .admin-section-header p { color: #a9c2e2; font-size: 1.04rem; font-family: 'Josefin Sans', sans-serif; margin: 0; }
 
     .admin-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
     .admin-search {
       flex: 1; min-width: 180px;
-      background: rgba(8,18,55,0.8); border: 1px solid #1e3060;
-      border-radius: 8px; color: #c8d8f0;
+      background: rgba(12,27,72,0.95); border: 1px solid #4265a0;
+      border-radius: 8px; color: #eef5ff;
       padding: 10px 14px; font-size: 1.11rem;
       font-family: 'Josefin Sans', sans-serif; outline: none;
       transition: border-color 0.2s;
     }
-    .admin-search:focus { border-color: #c8a96e; }
-    .admin-search::placeholder { color: #2a4060; }
+    .admin-search:focus { border-color: #f0cf7a; box-shadow: 0 0 0 2px rgba(240,207,122,0.15); }
+    .admin-search::placeholder { color: #87a4d0; }
     .btn-add {
       background: #c8a96e; color: #0a1128; border: none;
       border-radius: 8px; padding: 10px 20px;
@@ -377,26 +378,28 @@
       cursor: pointer; transition: opacity 0.2s; white-space: nowrap;
     }
     .btn-add:hover { opacity: 0.85; }
-    .admin-count { color: #3a5080; font-size: 0.99rem; font-family: 'Josefin Sans', sans-serif; margin-bottom: 14px; }
+    .admin-count { color: #91add6; font-size: 0.99rem; font-family: 'Josefin Sans', sans-serif; margin-bottom: 14px; }
 
     .admin-table-wrap {
-      background: #0a1433; border: 1px solid #1a2d58;
+      background: #0d1b43; border: 1px solid #35558e;
       border-radius: 12px; overflow: hidden;
     }
     .admin-table { width: 100%; border-collapse: collapse; font-size: 1.11rem; }
     .admin-table thead th {
-      background: rgba(4,10,35,0.98); color: #6a8ab0;
+      background: rgba(8,18,55,0.98); color: #b7cbed;
       font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
       letter-spacing: 0.09em; text-transform: uppercase;
       padding: 12px 16px; text-align: left;
-      border-bottom: 1px solid #1a2d58;
+      border-bottom: 1px solid #35558e;
     }
-    .admin-table tbody tr { border-bottom: 1px solid #142250; transition: background 0.15s; }
+    .admin-table tbody tr { border-bottom: 1px solid #233d73; transition: background 0.15s; }
     .admin-table tbody tr:last-child { border-bottom: none; }
-    .admin-table tbody tr:hover { background: rgba(20,40,90,0.5); }
-    .admin-table td { padding: 12px 16px; color: #c8d8f0; vertical-align: middle; }
-    .td-name { font-weight: 600; color: #e8f0ff; }
-    .td-email { color: #4a6890; font-size: 1.03rem; }
+    .admin-table tbody tr:hover { background: rgba(38,72,140,0.42); }
+    .admin-table td { padding: 12px 16px; color: #dbe8fb; vertical-align: middle; }
+    .td-name { font-weight: 600; color: #f4f7ff; }
+    .td-email { color: #a9c4e8; font-size: 1.03rem; }
+    .td-events { color: #c8d9f4; font-size: 0.97rem; line-height: 1.5; }
+    .td-events span { display: block; }
     .td-actions { white-space: nowrap; text-align: right; }
 
     .role-badge { display: inline-block; font-size: 0.86rem; font-family: 'Josefin Sans', sans-serif; letter-spacing: 0.07em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
@@ -415,9 +418,10 @@
       letter-spacing: 0.04em; font-weight: 700; cursor: pointer;
       transition: opacity 0.2s; text-transform: uppercase;
     }
-    .btn-edit   { background: #1a2d58; color: #8fa8d0; margin-right: 5px; }
+    .btn-edit   { background: #ffd21f; color: #111827; margin-right: 5px; }
     .btn-remove { background: rgba(45,21,21,0.8); color: #f87171; }
-    .btn-edit:hover, .btn-remove:hover { opacity: 0.75; }
+    .btn-edit:hover { background: #ffe66d; opacity: 1; }
+    .btn-remove:hover { opacity: 0.75; }
 
     .admin-empty { text-align: center; padding: 55px 24px; color: #2a4060; }
     .admin-empty .ei { font-size: 2.53rem; display: block; margin-bottom: 10px; }
@@ -888,7 +892,7 @@
         <div class="admin-table-wrap">
           <table class="admin-table">
             <thead><tr>
-              <th>Name</th><th>Role</th><th>Google Login Emails</th>
+              <th>Name</th><th>Role</th><th>FCPS Login Emails</th>
               <th>Events</th><th>Status</th>
               <th style="text-align:right">Actions</th>
             </tr></thead>
@@ -2694,6 +2698,18 @@ let pendingDeleteId = null;
 let rosterUnsub     = null;
 let rosterAccessSynced = false;
 
+const ROSTER_EVENT_LABELS = {
+  LD: 'Lincoln-Douglas',
+  PF: 'Public Forum',
+  CX: 'Cross-Examination',
+  Congress: 'Congressional Debate',
+  Parli: 'Parliamentary Debate'
+};
+
+function rosterEventLabel(event) {
+  return ROSTER_EVENT_LABELS[event] || event;
+}
+
 function loadRoster() {
   rosterLoaded = true;
   rosterUnsub = dirDb.collection('members').orderBy('lastName')
@@ -2729,14 +2745,17 @@ function renderRoster(list) {
       ? loginEmails.map(loginEmail => esc(loginEmail)).join('<br>')
       : '—';
     const role   = m.role || 'member';
-    const events = (m.events||[]).join(', ') || '—';
+    const eventNames = (m.events||[]).map(rosterEventLabel).filter(Boolean);
+    const events = eventNames.length
+      ? eventNames.map(event => `<span>${esc(event)}</span>`).join('')
+      : '—';
     const active = m.active !== false;
     const grad   = m.gradYear ? ` <span style="color:#2a4060;font-size:.76rem">'${String(m.gradYear).slice(-2)}</span>` : '';
     return `<tr>
       <td class="td-name">${name}${grad}</td>
       <td><span class="role-badge ${esc(role)}">${esc(role)}</span></td>
       <td class="td-email">${email}</td>
-      <td style="color:#3a5070;font-size:.8rem">${esc(events)}</td>
+      <td class="td-events">${events}</td>
       <td style="white-space:nowrap"><span class="status-dot ${active?'active':'inactive'}"></span><span style="font-size:.8rem;color:${active?'#4ade80':'#2a3545'}">${active?'Active':'Inactive'}</span></td>
       <td class="td-actions">
         <button class="btn-edit"   onclick="openEditModal('${esc(m.docId)}')">Edit</button>
@@ -2751,10 +2770,14 @@ function applyRosterQuery(raw, list) {
   if (!q) return list;
   return list.filter(m => {
     const full = ((m.firstName||'') + ' ' + (m.lastName||'')).toLowerCase();
+    const eventText = (m.events||[])
+      .map(event => `${event} ${rosterEventLabel(event)}`)
+      .join(' ')
+      .toLowerCase();
     return full.includes(q) ||
       getMemberLoginEmails(m).some(email => email.includes(q)) ||
       (m.role||'').toLowerCase().includes(q) ||
-      (m.events||[]).some(e=>e.toLowerCase().includes(q));
+      eventText.includes(q);
   });
 }
 function filterRoster(val) { filteredRoster = applyRosterQuery(val, allRoster); renderRoster(filteredRoster); }
