@@ -31,7 +31,7 @@ const ADMIN_ROLES = [
   { email: "hannahbshiv@gmail.com",   role: "coach" },      // temp coach for testing
 
   // ── Website Admins ───────────────────────────────────────
-  { email: "1806950@fcpsschools.net",  role: "coach" },      // temporary header preview
+  { email: "1806950@fcpsschools.net",  role: "captain" },    // temporary header preview
 
   // ── Captains ─────────────────────────────────────────────
   // { email: "hannahbshiv@gmail.com", role: "captain" },   // testing captain view

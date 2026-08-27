@@ -18,6 +18,7 @@
     teamFee: "Team fees",
   };
   const ROLE_PRESENTATION = {
+    captain: { label: "Captain", icon: "images/role-icons/captain.png" },
     coach: { label: "Coach", icon: "images/role-icons/coach.png" },
     "website-admin": { label: "Website Admin", icon: "images/role-icons/website-admin.png" },
   };
@@ -235,12 +236,12 @@
     $("app-name").textContent = portalWelcomeLabel(user.displayName, user.email);
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
-    if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
     $("app-role-icon").src = rolePresentation.icon;
     $("app-role-badge").dataset.role = role;
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
+    if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
     show("dashboard");
     beginListening();
   });
