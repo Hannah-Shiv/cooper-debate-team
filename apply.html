@@ -326,15 +326,15 @@
 
     /* ── Form cards ── */
     .form-card {
-      background: #123d64;
+      background: linear-gradient(145deg, rgba(8,27,63,0.99), rgba(3,12,31,0.99));
       border: 1px solid rgba(242,209,107,0.78);
       border-top: 2px solid rgba(242,209,107,0.96);
       border-radius: 14px;
-      padding: 36px 52px 34px;
+      padding: 36px 38px 32px;
       margin-bottom: 20px;
       box-shadow:
         0 10px 28px rgba(0,0,0,0.26),
-        0 0 24px rgba(126,184,232,0.18),
+        0 0 24px rgba(126,184,232,0.1),
         inset 0 1px 0 rgba(255,255,255,0.16),
         inset 0 0 0 1px rgba(143,211,255,0.05);
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
@@ -379,12 +379,12 @@
     .form-column .form-card.card-teal,
     .form-column .form-card.card-purple,
     .form-column .form-card.card-amber {
-      background: #123d64;
+      background: linear-gradient(145deg, rgba(8,27,63,0.99), rgba(3,12,31,0.99));
       border-color: rgba(242,209,107,0.78);
       border-top-color: rgba(242,209,107,0.96);
       box-shadow:
         0 10px 28px rgba(0,0,0,0.26),
-        0 0 24px rgba(126,184,232,0.18),
+        0 0 24px rgba(126,184,232,0.1),
         inset 0 1px 0 rgba(255,255,255,0.16),
         inset 0 0 0 1px rgba(143,211,255,0.05);
     }
@@ -403,7 +403,7 @@
     .form-column .form-card.card-teal .form-card-title,
     .form-column .form-card.card-purple .form-card-title,
     .form-column .form-card.card-amber .form-card-title {
-      color: #F2D16B;
+      color: #F8E49A;
     }
     .form-column .form-card .form-label,
     .form-column .form-card.card-gold .form-label,
@@ -411,7 +411,7 @@
     .form-column .form-card.card-teal .form-label,
     .form-column .form-card.card-purple .form-label,
     .form-column .form-card.card-amber .form-label {
-      color: rgba(242,209,107,0.78);
+      color: rgba(248,228,154,0.95);
     }
     .form-column .form-card .card-num,
     .form-column .form-card.card-gold .card-num,
@@ -419,9 +419,9 @@
     .form-column .form-card.card-teal .card-num,
     .form-column .form-card.card-purple .card-num,
     .form-column .form-card.card-amber .card-num {
-      background: rgba(242,209,107,0.12);
-      border-color: rgba(242,209,107,0.3);
-      color: #F2D16B;
+      background: rgba(248,228,154,0.16);
+      border-color: rgba(248,228,154,0.55);
+      color: #F8E49A;
     }
 
     /* ── Anchor scroll offset (clears fixed header) ── */
@@ -445,7 +445,7 @@
     }
     .form-card-subtitle {
       font-size: 1.08rem;
-      color: rgba(255,255,255,0.94);
+      color: #FFFFFF;
       margin-bottom: 26px;
       line-height: 1.65;
     }
@@ -613,13 +613,13 @@
     .email-delivery-note {
       align-items:flex-start; background:linear-gradient(145deg,rgba(54,62,77,.96),rgba(27,33,47,.98)); border:1px solid rgba(184,199,219,.48);
       border-left:3px solid #A8B8CC; border-radius:7px; color:#EEF3F8; display:flex;
-      font-size:.84rem; gap:11px; line-height:1.55; margin:-3px 0 16px; padding:10px 13px;
+      font-size:.97rem; gap:11px; line-height:1.55; margin:-3px 0 16px; padding:10px 13px;
     }
     .email-delivery-note::before {
       background:rgba(168,184,204,.14); border:1px solid rgba(168,184,204,.72); border-radius:50%; color:#EEF3F8; content:"i";
       flex:0 0 18px; font:700 .76rem/17px Georgia,serif; margin-top:1px; text-align:center;
     }
-    .email-delivery-note strong { color:#DDE7F2; }
+    .email-delivery-note strong { color:#FFFFFF; }
 
     /* ── Commitment schedule note ── */
     .schedule-note {
@@ -629,10 +629,10 @@
       padding: 16px 20px;
       margin-bottom: 20px;
       font-size: 0.98rem;
-      color: rgba(255,255,255,0.92);
+      color: #FFFFFF;
       line-height: 1.7;
     }
-    .schedule-note strong { color: rgba(242,209,107,0.85); }
+    .schedule-note strong { color: #F8E49A; }
 
     /* ── Checkboxes ── */
     .check-group { display: flex; flex-direction: column; gap: 10px; }
@@ -669,7 +669,7 @@
     }
     .check-item-label {
       font-size: 0.99rem;
-      color: rgba(255,255,255,0.92);
+      color: #FFFFFF;
       line-height: 1.65;
     }
     .check-item-label strong { color: var(--white); display: block; margin-bottom: 1px; }
@@ -693,8 +693,8 @@
     .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
     .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
     .form-note {
-      font-size: 0.87rem;
-      color: var(--gray-mid);
+      font-size: 1rem;
+      color: rgba(255,255,255,0.9);
       margin-top: 14px;
       line-height: 1.65;
     }
