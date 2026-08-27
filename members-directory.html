@@ -102,7 +102,7 @@
     }
     /* View toggle */
     .dir-view-toggle {
-      display: flex; border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; overflow: hidden;
+      display: flex; margin-left: auto; border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; overflow: hidden;
     }
     .dir-view-btn {
       display: flex; align-items: center; gap: 6px;
@@ -1202,7 +1202,9 @@
 /* Sort box — violet theme */
 .dir-sort-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-  padding:0; position:relative;
+  padding:0 8px; border-radius:11px;
+  background:rgba(4,8,28,0.88); border:1px solid rgba(167,139,250,0.65);
+  position:relative; min-height:44px;
 }
 .dir-sort-box::before {
   content:'↕ SORT'; position:absolute; top:-10px; left:8px;
@@ -1213,7 +1215,9 @@
 /* Filter box — amber/gold theme */
 .dir-filter-box {
   display:flex; align-items:center; gap:6px; flex-wrap:wrap;
-  padding:0; position:relative;
+  padding:0 8px; border-radius:11px;
+  background:rgba(4,8,28,0.88); border:1px solid rgba(34,197,94,0.65);
+  position:relative; min-height:44px;
 }
 .dir-filter-box::before {
   content:'⊟ FILTER'; position:absolute; top:-10px; left:8px;
@@ -1245,20 +1249,20 @@
 .dir-season-select option { background:#0f1221; color:#f7f8ff; }
 /* Shared pill button */
 .dir-ctl-btn {
-  min-height:44px; padding:8px 14px; border-radius:11px; cursor:pointer; transition:all 0.18s;
+  min-height:42px; padding:8px 12px; border:0; border-radius:8px; cursor:pointer; transition:all 0.18s;
   font-family:'Josefin Sans',sans-serif; font-size:1.13rem; font-weight:700; letter-spacing:0.04em;
-  background:rgba(4,8,28,0.75); border:1px solid rgba(255,255,255,0.16); color:rgba(255,255,255,0.45);
+  background:transparent; color:rgba(255,255,255,0.45);
   white-space:nowrap;
 }
 /* Sort box active pill — violet */
-.dir-sort-box .dir-ctl-btn:hover  { border-color:rgba(167,139,250,0.55); color:rgba(196,181,253,0.9); background:rgba(167,139,250,0.10); }
+.dir-sort-box .dir-ctl-btn:hover  { color:rgba(196,181,253,0.9); background:rgba(167,139,250,0.10); }
 .dir-sort-box .dir-ctl-btn.active {
-  background:rgba(167,139,250,0.18); border-color:rgba(167,139,250,0.75); color:#c4b5fd;
+  background:rgba(167,139,250,0.18); color:#c4b5fd;
 }
 /* Filter box active pill — green */
-.dir-filter-box .dir-ctl-btn:hover  { border-color:rgba(34,197,94,0.55); color:rgba(74,222,128,0.9); background:rgba(34,197,94,0.10); }
+.dir-filter-box .dir-ctl-btn:hover  { color:rgba(74,222,128,0.9); background:rgba(34,197,94,0.10); }
 .dir-filter-box .dir-ctl-btn.active {
-  background:rgba(34,197,94,0.15); border-color:rgba(34,197,94,0.75); color:#4ade80;
+  background:rgba(34,197,94,0.15); color:#4ade80;
 }
 
 /* ── Table view ──────────────────────────────────────── */
