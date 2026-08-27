@@ -1239,24 +1239,26 @@
 
 /* ── Table view ──────────────────────────────────────── */
 #dir-table-wrap {
-  overflow-x: auto;
-  border-radius: 14px; overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.07);
-  box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+  overflow-x: auto; overflow-y: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(96,130,224,0.46);
+  background: linear-gradient(145deg, rgba(18, 40, 86, 0.98), rgba(7, 22, 53, 0.99));
+  box-shadow: 0 16px 42px rgba(0,0,0,0.38), 0 0 0 1px rgba(125,211,252,0.06), inset 0 1px 0 rgba(255,255,255,0.07);
 }
 .dir-tbl {
-  width: 100%; border-collapse: collapse;
+  width: 100%; border-collapse: separate; border-spacing: 0;
   font-family: 'Josefin Sans', sans-serif;
 }
 /* Header band */
 .dir-tbl thead th {
   padding: 15px 16px 13px; text-align: left;
   font-size: 0.76rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
-  color: rgba(255,255,255,0.48);
-  background: rgba(8,14,50,0.98);
+  color: #b8c9ef;
+  background: linear-gradient(180deg, rgba(24,48,102,0.98), rgba(10,27,67,0.99));
   /* gradient accent strip across top of every th */
   border-top: 2px solid transparent;
-  border-bottom: 1px solid rgba(255,255,255,0.10);
+  border-bottom: 1px solid rgba(125,211,252,0.24);
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,0.03);
   white-space: nowrap; user-select: none;
   transition: color 0.15s, background 0.15s;
 }
@@ -1278,37 +1280,48 @@
 .dir-tbl thead th.th-speaks:hover   { color: #7dd3fc; background: rgba(59,130,246,0.07); }
 .dir-tbl thead th.th-tourns:hover   { color: #fbbf24; background: rgba(251,191,36,0.06); }
 .dir-tbl tbody tr {
-  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: rgba(18,40,82,0.72);
+  border-bottom: 1px solid rgba(121,159,220,0.16);
   cursor: pointer; transition: background 0.14s;
 }
-.dir-tbl tbody tr:hover { background: rgba(139,92,246,0.07); }
-.dir-tbl tbody td { padding: 13px 16px; font-size: 1.0rem; color: rgba(255,255,255,0.68); }
+.dir-tbl tbody tr:nth-child(even) { background: rgba(10,29,64,0.88); }
+.dir-tbl tbody tr:hover {
+  background: linear-gradient(90deg, rgba(62,103,197,0.30), rgba(34,67,139,0.20));
+  box-shadow: inset 3px 0 0 rgba(125,211,252,0.75), inset 0 1px 0 rgba(255,255,255,0.04);
+}
+.dir-tbl tbody tr:last-child td { border-bottom: 0; }
+.dir-tbl tbody td {
+  padding: 14px 16px; font-size: 1.0rem; color: #d5e2f5;
+  border-left: 1px solid rgba(125,159,220,0.07);
+}
+.dir-tbl tbody td:first-child { border-left: 0; }
 .dir-tbl .td-rank {
   font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem; font-weight: 700;
-  color: rgba(255,255,255,0.28); width: 52px;
+  color: #8298bd; width: 52px;
 }
-.dir-tbl .td-rank.gold { color: #FFD700; font-size: 1.1rem; }
+.dir-tbl .td-rank.gold { color: #ffd75a; font-size: 1.1rem; text-shadow: 0 0 12px rgba(255,215,0,0.26); }
 .dir-tbl .td-name {
   font-family: 'Cormorant Garamond', serif; font-size: 1.22rem; font-weight: 700;
-  color: #c8a96e; white-space: nowrap;
+  color: #f3d477; white-space: nowrap; text-shadow: 0 1px 10px rgba(243,212,119,0.10);
 }
-.dir-tbl .td-partner { color: rgba(255,255,255,0.45); white-space: nowrap; }
-.dir-tbl .td-record { white-space: nowrap; }
+.dir-tbl .td-partner { color: #a9bdd8; white-space: nowrap; }
+.dir-tbl .td-record { color: #e1ebfa; font-weight: 600; white-space: nowrap; }
 .dir-tbl .td-wr { font-weight: 700; white-space: nowrap; }
 .dir-tbl .td-metro { text-align: center; }
 .dir-tbl .td-action {
-  color: rgba(125,211,252,0.75); font-weight: 700; white-space: nowrap;
+  color: #7dd3fc; font-weight: 700; white-space: nowrap;
   letter-spacing: 0.04em;
 }
 .dir-tbl tbody tr:hover .td-action { color: #7dd3fc; }
 /* Pagination */
 .dir-pagination {
   display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
-  margin-top: 20px; gap: 12px;
+  margin-top: 0; padding: 14px 16px; gap: 12px;
+  background: rgba(6,20,48,0.78); border-top: 1px solid rgba(125,159,220,0.18);
 }
 .dir-pg-info {
   font-family: 'Josefin Sans', sans-serif; font-size: 0.88rem;
-  color: rgba(255,255,255,0.3); letter-spacing: 0.06em;
+  color: #9db4d6; letter-spacing: 0.06em;
 }
 .dir-pg-nav { display: flex; align-items: center; gap: 4px; }
 .dir-pg-btn {
