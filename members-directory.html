@@ -456,8 +456,7 @@
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
     .form-field.half { grid-column: span 1; }
-    .additional-login-field { grid-row: span 3; display: flex; flex-direction: column; }
-    .additional-login-field textarea { flex: 1; min-height: 92px; }
+    .additional-login-field textarea { min-height: 0; height: 40px; resize: none; }
     .portal-status-field .toggle-row { flex-direction: column; align-items: flex-start; gap: 7px; }
     .portal-status-field .toggle-lbl { line-height: 1.25; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
@@ -516,8 +515,6 @@
       .form-grid { grid-template-columns: 1fr; }
       .form-field.full { grid-column: 1; }
       .form-field.half { grid-column: 1; }
-      .additional-login-field { grid-row: auto; display: block; }
-      .additional-login-field textarea { min-height: 92px; }
       .hub-header { align-items: flex-start; flex-direction: column; gap: 18px; }
       .tab-bar { flex-wrap: wrap; margin: 0; }
       .admin-table thead th:nth-child(3),
@@ -1005,10 +1002,10 @@
         </div>
         <div class="form-field half additional-login-field">
           <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
-          <textarea id="f-login-emails" rows="3"
-            placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
+          <textarea id="f-login-emails" rows="1"
+            placeholder="coach@fcps.edu, coach@fcpsschools.net"></textarea>
           <p style="margin:7px 0 0;color:#4b6688;font-size:.76rem;line-height:1.5">
-            One per line or separated by commas. Every address opens this same member profile; removing one blocks only that login.
+            Enter additional addresses separated by commas. Every address opens this same member profile; removing one blocks only that login.
           </p>
         </div>
         <div class="form-field">
