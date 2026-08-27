@@ -453,10 +453,9 @@
     .form-status.error   { background: rgba(45,21,21,0.8); color: #f87171; border: 1px solid rgba(127,29,29,0.6); }
     .form-status.success { background: rgba(20,41,26,0.8); color: #86efac; border: 1px solid rgba(22,101,52,0.6); }
 
-    .form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
-    .form-field.half { grid-column: span 2; }
-    .form-field.half { grid-column: span 2; }
+    .form-field.half { grid-column: span 1; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
     .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .form-field input, .form-field select, .form-field textarea {
@@ -512,7 +511,6 @@
       .profile-stat-strip { grid-template-columns: repeat(2,1fr); }
       .form-grid { grid-template-columns: 1fr; }
       .form-field.full { grid-column: 1; }
-      .form-field.half { grid-column: 1; }
       .form-field.half { grid-column: 1; }
       .hub-header { align-items: flex-start; flex-direction: column; gap: 18px; }
       .tab-bar { flex-wrap: wrap; margin: 0; }
@@ -1025,17 +1023,6 @@
               <span class="tog-slider"></span>
             </label>
             <span class="toggle-lbl" id="active-lbl">Active — portal access allowed</span>
-          </div>
-        </div>
-        <hr class="form-divider">
-        <div class="form-field full">
-          <label>Events <span class="opt">(select all that apply)</span></label>
-          <div class="events-row">
-            <span class="ev-chip"><input type="checkbox" id="ev-ld"    value="LD">    <label for="ev-ld">Lincoln-Douglas</label></span>
-            <span class="ev-chip"><input type="checkbox" id="ev-pf"    value="PF">    <label for="ev-pf">Public Forum</label></span>
-            <span class="ev-chip"><input type="checkbox" id="ev-cx"    value="CX">    <label for="ev-cx">Cross-Examination</label></span>
-            <span class="ev-chip"><input type="checkbox" id="ev-cong"  value="Congress"><label for="ev-cong">Congressional Debate</label></span>
-            <span class="ev-chip"><input type="checkbox" id="ev-parli" value="Parli"> <label for="ev-parli">Parliamentary Debate</label></span>
           </div>
         </div>
         <hr class="form-divider">
@@ -2812,7 +2799,6 @@ function openAddModal() {
   document.getElementById('btn-save').disabled       = false;
   document.getElementById('form-doc-id').value = '';
   document.getElementById('member-form').reset();
-  document.getElementById('ev-pf').checked = true;
   document.getElementById('f-active').checked = true;
   document.getElementById('active-lbl').textContent = 'Active — portal access allowed';
   document.getElementById('f-login-emails').value = '';
@@ -2843,7 +2829,6 @@ function openEditModal(docId) {
   document.getElementById('f-grade').value = m.grade    || '';
   if (m.photoUrl) renderPhotoPreview(m.photoUrl, 'Current photo');
   else renderPhotoUploadEmpty();
-  ['ld','pf','cx','cong','parli'].forEach(id => { const el=document.getElementById('ev-'+id); if (el) el.checked=(m.events||[]).includes(el.value); });
   clearFormStatus();
   showModal('member-modal');
 }
@@ -2860,7 +2845,7 @@ async function saveMember(e) {
   const notes     = document.getElementById('f-notes').value.trim();
   const active    = document.getElementById('f-active').checked;
   const docId     = document.getElementById('form-doc-id').value;
-  const events    = ['ld','pf','cx','cong','parli'].map(id=>document.getElementById('ev-'+id)).filter(el=>el&&el.checked).map(el=>el.value);
+  const events    = ['PF'];
   if (!firstName) { showFormErr('First name is required.'); return; }
   if (!lastName)  { showFormErr('Last name is required.'); return; }
   if (!email || !email.includes('@')) { showFormErr('Enter a valid email.'); return; }
