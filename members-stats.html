@@ -1390,6 +1390,155 @@
     .speak-table tbody tr { border-top:1px solid rgba(255,255,255,0.04); }
     .speak-table td { padding:11px 14px; font-size:0.86rem; color:rgba(255,255,255,0.82); }
     .speak-table td.num { text-align:right; font-variant-numeric:tabular-nums; }
+
+    /* ── Narrow phone refinements ─────────────────────────── */
+    @media (max-width: 620px) {
+      .portal-main { padding:100px 14px 54px; }
+      body.dome-open .portal-main { padding-top:200px; }
+
+      .stats-tab-bar {
+        align-items:stretch;
+        flex-direction:column;
+        gap:10px;
+        padding-bottom:10px;
+      }
+      .stats-tabs { width:100%; flex-wrap:wrap; }
+      .stats-tab {
+        flex:1 1 140px;
+        justify-content:center;
+        padding-left:12px;
+        padding-right:12px;
+      }
+      .stats-tab-bar-right {
+        align-items:stretch;
+        flex-direction:column;
+        padding-bottom:0;
+      }
+      .stats-time-filter { width:100%; }
+      .tf-btn {
+        flex:1 1 0;
+        min-width:0;
+        padding-left:8px;
+        padding-right:8px;
+      }
+      .import-header-btn { width:100%; justify-content:center; }
+      .import-btn-text { flex:1; justify-content:center; }
+
+      .overview-grid,
+      .season-strip,
+      .ov-widgets-grid,
+      .tourn-grid {
+        grid-template-columns:minmax(0, 1fr);
+      }
+      .chart-card { padding:16px; }
+      .chart-card-title {
+        margin:-16px -16px 18px -16px;
+        padding-left:16px;
+        padding-right:16px;
+        line-height:1.3;
+      }
+      .chart-canvas-wrap { height:280px; }
+
+      .import-form-grid { grid-template-columns:minmax(0, 1fr); gap:14px; }
+      .import-form-grid .import-field { grid-column:1 !important; }
+      .main-paste-btns {
+        display:grid;
+        grid-template-columns:minmax(0, 1fr);
+      }
+      .parse-btn {
+        justify-content:center;
+        white-space:normal;
+      }
+      .import-file-row { grid-template-columns:minmax(0, 1fr); }
+      .file-drop {
+        align-items:flex-start;
+        flex-direction:column;
+        padding:18px;
+      }
+      .file-drop-text { min-width:0; }
+      .tourn-type-row {
+        display:grid;
+        grid-template-columns:minmax(0, 1fr);
+      }
+      .tourn-type-opt { min-width:0; width:100%; }
+      .import-actions {
+        align-items:stretch;
+        flex-direction:column;
+      }
+      .import-actions .btn { width:100%; }
+
+      .deb-cards-row { grid-template-columns:minmax(0, 1fr); }
+      .deb-content-body { padding:12px; }
+      .tourn-season-bar {
+        align-items:stretch;
+        flex-direction:column;
+      }
+      .tourn-season-sel { width:100%; }
+      .tourn-detail-panel { padding:18px 14px; }
+      .drill-header-left { min-width:0; }
+      .drill-close-btn { width:100%; }
+      .drill-controls { align-items:stretch; }
+      .drill-search { min-width:0; width:100%; }
+      .drill-filter-btn { flex:1 1 120px; }
+
+      .round-bars {
+        gap:4px;
+        min-height:200px;
+        overflow-x:auto;
+        padding-bottom:4px;
+      }
+      .round-bar-col {
+        min-width:48px;
+        padding-left:3px;
+        padding-right:3px;
+      }
+      .round-bar-pct { font-size:1.8rem; }
+      .round-bar-label { font-size:1rem; }
+      .round-bar-record { font-size:0.72rem; white-space:nowrap; }
+
+      #metro-toast-container {
+        left:10px;
+        right:10px;
+        max-width:none;
+      }
+      .import-modal-header,
+      .import-modal-scroll {
+        padding-left:16px;
+        padding-right:16px;
+      }
+      .drill-modal-header,
+      #drill-modal-body {
+        padding-left:16px;
+        padding-right:16px;
+      }
+      .drill-table-scroll {
+        overflow-x:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      .drill-table-scroll .lb-table { min-width:640px; }
+      .deb-modal-header,
+      .deb-modal-body {
+        padding-left:16px;
+        padding-right:16px;
+      }
+      .deb-modal-stats {
+        gap:18px;
+        padding-left:16px;
+        padding-right:16px;
+      }
+
+      #del-confirm-box {
+        padding:24px 18px !important;
+        width:calc(100% - 24px) !important;
+      }
+      #del-confirm-box > div:last-child {
+        flex-wrap:wrap;
+        justify-content:stretch !important;
+      }
+      #del-confirm-box > div:last-child > button {
+        flex:1 1 120px;
+      }
+    }
   </style>
 </head>
 <body>

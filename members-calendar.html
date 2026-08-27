@@ -597,6 +597,59 @@
        .calendar-tools { align-items:center; gap:10px; }
        .cal-legend { margin-bottom:0; }
     }
+
+     @media (max-width: 600px) {
+       .calendar-tools { padding-left:0; padding-right:0; }
+       .cal-legend { width:100%; gap:8px 14px; justify-content:space-between; }
+       .leg-item { gap:5px; font-size:0.68rem; letter-spacing:0.05em; }
+       .leg-dot { width:10px; height:10px; }
+
+       /* Give each FullCalendar toolbar row the full phone width so the
+          navigation and view buttons wrap predictably instead of shrinking
+          the title into an unusable sliver. */
+       .fc .fc-toolbar {
+         align-items:stretch;
+         display:flex;
+         flex-direction:column;
+         padding:9px 10px;
+       }
+       .fc .fc-toolbar-chunk {
+         align-items:center;
+         justify-content:center;
+         width:100%;
+       }
+       .fc .fc-toolbar-title {
+         font-size:1.1rem !important;
+         min-width:0;
+         width:100%;
+       }
+       .fc .fc-button {
+         min-height:36px;
+         padding:7px 8px !important;
+       }
+       .fc .fc-daygrid-day-frame { min-height:64px !important; }
+       .fc .fc-daygrid-day-number {
+         font-size:0.8rem !important;
+         padding:4px 5px !important;
+       }
+       .fc .fc-event { padding:2px 3px !important; }
+       .fc .fc-event-title,
+       .cal-evt-title {
+         font-size:0.7rem !important;
+         line-height:1.15 !important;
+       }
+       .fc .fc-list-event-title { font-size:0.8rem !important; }
+
+       .modal-overlay { padding:12px 10px; }
+       .modal-box {
+         max-height:calc(100dvh - 24px);
+         padding:18px 16px 22px;
+       }
+       #post-event-modal .modal-box { padding:18px 16px 22px; }
+       .form-footer { justify-content:stretch; }
+       .form-footer > button { flex:1 1 110px; }
+       .btn-delete { margin-right:0; }
+     }
   </style>
 </head>
 <body>
