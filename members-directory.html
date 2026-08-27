@@ -1715,6 +1715,10 @@ function switchTab(tab) {
 /* ── Boot ─────────────────────────────────────────────── */
 async function onDashboardReady() {
   await loadTournaments();
+  if (new URLSearchParams(window.location.search).get('tab') === 'roster' && isFullAdminRole(currentUserRole)) {
+    switchTab('roster');
+    return;
+  }
   checkUrlProfile();
 }
 
