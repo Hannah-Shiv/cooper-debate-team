@@ -326,9 +326,9 @@
 
     /* ── Form cards ── */
     .form-card {
-      background: linear-gradient(145deg, rgba(11,32,76,0.98), rgba(6,19,49,0.99));
-      border: 1px solid rgba(242,209,107,0.68);
-      border-top: 2px solid rgba(242,209,107,0.9);
+      background: linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
+      border: 1px solid rgba(242,209,107,0.78);
+      border-top: 2px solid rgba(242,209,107,0.96);
       border-radius: 14px;
       padding: 36px 38px 32px;
       margin-bottom: 20px;
@@ -375,9 +375,9 @@
     .form-column .form-card.card-teal,
     .form-column .form-card.card-purple,
     .form-column .form-card.card-amber {
-      background: linear-gradient(145deg, rgba(11,32,76,0.98), rgba(6,19,49,0.99));
-      border-color: rgba(242,209,107,0.68);
-      border-top-color: rgba(242,209,107,0.9);
+      background: linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
+      border-color: rgba(242,209,107,0.78);
+      border-top-color: rgba(242,209,107,0.96);
     }
     .form-column .form-card:hover,
     .form-column .form-card.card-gold:hover,
@@ -821,7 +821,7 @@
       background: var(--info-accent);
     }
     .sidebar-card-title {
-      font-family: 'Josefin Sans', sans-serif;
+      font-family: 'Cormorant Garamond', serif;
       font-size: 0.78rem;
       font-weight: 700;
       letter-spacing: 0.14em;
@@ -835,7 +835,8 @@
       display: flex;
       gap: 11px;
       margin-bottom: 12px;
-      font-size: 0.95rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
       color: rgba(255,255,255,0.76);
       line-height: 1.55;
     }
@@ -867,7 +868,7 @@
       border-top-color: #F2D16B;
     }
     .deadline-label {
-      font-family: 'Josefin Sans', sans-serif;
+      font-family: 'Cormorant Garamond', serif;
       font-size: 0.75rem;
       font-weight: 700;
       letter-spacing: 0.16em;
@@ -882,7 +883,17 @@
       color: var(--white);
       margin-bottom: 6px;
     }
-    .deadline-note { font-size: 0.9rem; color: rgba(255,255,255,0.76); line-height: 1.55; }
+    .deadline-note {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+      color: rgba(255,255,255,0.76);
+      line-height: 1.55;
+    }
+    .sidebar-card.info-card > p {
+      font-family: 'Cormorant Garamond', serif !important;
+      font-size: 1.08rem !important;
+      line-height: 1.55 !important;
+    }
 
   </style>
 </head>
