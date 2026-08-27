@@ -265,14 +265,27 @@
       .form-step-connector { width: 16px; margin: 0 2px; }
     }
 
-    /* ── Two-column layout ── */
+    /* ── Balanced three-column layout ── */
     .apply-layout {
       display: grid;
-      grid-template-columns: 1fr 300px;
-      gap: 36px;
+      grid-template-columns: minmax(190px, 220px) minmax(0, 1fr) minmax(190px, 220px);
+      gap: 24px;
       align-items: start;
     }
-    @media (max-width: 960px) { .apply-layout { grid-template-columns: 1fr; } }
+    .form-column { min-width: 0; grid-column: 2; grid-row: 1; }
+    .sidebar-column {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-left { grid-column: 1; grid-row: 1; }
+    .sidebar-right { grid-column: 3; grid-row: 1; }
+    @media (max-width: 1100px) {
+      .apply-layout { grid-template-columns: 1fr; }
+      .form-column { grid-column: 1; grid-row: 1; }
+      .sidebar-left { grid-column: 1; grid-row: 2; }
+      .sidebar-right { grid-column: 1; grid-row: 3; }
+    }
 
     /* ── Form cards ── */
     .form-card {
@@ -317,6 +330,53 @@
     .card-amber:hover  { border-top-color: rgba(232,196,124,0.9); box-shadow: 0 8px 32px rgba(0,0,0,0.25), 0 0 20px rgba(232,196,124,0.07); }
     .card-amber  .card-num { background: rgba(232,196,124,0.12); border-color: rgba(232,196,124,0.4); color: #E8C47C; }
     .card-amber  .form-label { color: rgba(232,196,124,0.8); }
+
+    /* Keep the application itself as one calm navy/blue surface. */
+    .form-column .form-card,
+    .form-column .form-card.card-gold,
+    .form-column .form-card.card-blue,
+    .form-column .form-card.card-teal,
+    .form-column .form-card.card-purple,
+    .form-column .form-card.card-amber {
+      background: linear-gradient(145deg, rgba(11,32,76,0.98), rgba(6,19,49,0.99));
+      border-color: rgba(242,209,107,0.68);
+      border-top-color: rgba(242,209,107,0.9);
+    }
+    .form-column .form-card:hover,
+    .form-column .form-card.card-gold:hover,
+    .form-column .form-card.card-blue:hover,
+    .form-column .form-card.card-teal:hover,
+    .form-column .form-card.card-purple:hover,
+    .form-column .form-card.card-amber:hover {
+      border-color: #F2D16B;
+      border-top-color: #F2D16B;
+    }
+    .form-column .form-card .form-card-title,
+    .form-column .form-card.card-gold .form-card-title,
+    .form-column .form-card.card-blue .form-card-title,
+    .form-column .form-card.card-teal .form-card-title,
+    .form-column .form-card.card-purple .form-card-title,
+    .form-column .form-card.card-amber .form-card-title {
+      color: #F2D16B;
+    }
+    .form-column .form-card .form-label,
+    .form-column .form-card.card-gold .form-label,
+    .form-column .form-card.card-blue .form-label,
+    .form-column .form-card.card-teal .form-label,
+    .form-column .form-card.card-purple .form-label,
+    .form-column .form-card.card-amber .form-label {
+      color: rgba(242,209,107,0.78);
+    }
+    .form-column .form-card .card-num,
+    .form-column .form-card.card-gold .card-num,
+    .form-column .form-card.card-blue .card-num,
+    .form-column .form-card.card-teal .card-num,
+    .form-column .form-card.card-purple .card-num,
+    .form-column .form-card.card-amber .card-num {
+      background: rgba(242,209,107,0.12);
+      border-color: rgba(242,209,107,0.3);
+      color: #F2D16B;
+    }
 
     /* ── Anchor scroll offset (clears fixed header) ── */
     #section-1, #section-2, #section-3, #section-4, #section-5, #section-6 {
@@ -458,10 +518,10 @@
       box-shadow: 0 0 18px rgba(184,26,26,0.18);
     }
     .wizard-panel { display: none; }
-    .wizard-panel.is-active { display: block; animation: wizard-panel-in 0.24s ease both; }
+    .wizard-panel.is-active { display: block; animation: wizard-panel-in 0.18s ease both; }
     @keyframes wizard-panel-in {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .wizard-actions {
       display: flex;
@@ -668,6 +728,41 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.035);
     }
     .sidebar-card:last-child { margin-bottom: 0; }
+    .sidebar-card.info-card {
+      border-top-width: 2px;
+      border-top-style: solid;
+    }
+    .info-card--timeline {
+      --info-accent: #8FD3FF;
+      background: linear-gradient(145deg, rgba(19,48,79,0.98), rgba(14,27,52,0.99));
+      border-color: rgba(143,211,255,0.6);
+      border-top-color: #8FD3FF;
+    }
+    .info-card--student {
+      --info-accent: #79E3C1;
+      background: linear-gradient(145deg, rgba(17,63,60,0.98), rgba(14,34,49,0.99));
+      border-color: rgba(121,227,193,0.58);
+      border-top-color: #79E3C1;
+    }
+    .info-card--parent {
+      --info-accent: #FFAA98;
+      background: linear-gradient(145deg, rgba(79,43,43,0.98), rgba(43,29,43,0.99));
+      border-color: rgba(255,170,152,0.58);
+      border-top-color: #FFAA98;
+    }
+    .info-card--questions {
+      --info-accent: #D9BDFF;
+      background: linear-gradient(145deg, rgba(57,39,78,0.98), rgba(29,28,53,0.99));
+      border-color: rgba(217,189,255,0.58);
+      border-top-color: #D9BDFF;
+    }
+    .sidebar-card.info-card .sidebar-card-title {
+      color: var(--info-accent);
+      border-bottom-color: color-mix(in srgb, var(--info-accent) 42%, transparent);
+    }
+    .sidebar-card.info-card .sidebar-dot {
+      background: var(--info-accent);
+    }
     .sidebar-card-title {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 0.78rem;
@@ -701,12 +796,18 @@
     /* ── Deadline card (sidebar) ── */
     .deadline-card {
       background: linear-gradient(145deg, rgba(16,42,91,0.98), rgba(6,19,49,0.99));
-      border: 1px solid #F2D16B;
+      border: 1px solid #E8C47C;
+      border-top: 2px solid #F2D16B;
       border-radius: 14px;
       padding: 22px;
       text-align: center;
       margin-bottom: 16px;
       box-shadow: 0 8px 24px rgba(0,0,0,0.26), 0 0 18px rgba(242,209,107,0.06);
+    }
+    .sidebar-column .deadline-card {
+      background: linear-gradient(145deg, rgba(88,67,29,0.98), rgba(39,31,35,0.99));
+      border-color: rgba(232,196,124,0.76);
+      border-top-color: #F2D16B;
     }
     .deadline-label {
       font-family: 'Josefin Sans', sans-serif;
@@ -847,8 +948,8 @@
     <!-- TWO-COLUMN LAYOUT -->
     <div class="apply-layout">
 
-      <!-- LEFT: THE FORM -->
-      <div>
+      <!-- CENTER: THE FORM -->
+      <div class="form-column">
         <form id="apply-form" novalidate>
           <input type="text" id="application-honey" name="honey" style="display:none" tabindex="-1" autocomplete="off"/>
 
@@ -1316,8 +1417,8 @@
 
       </div>
 
-      <!-- RIGHT: SIDEBAR -->
-      <aside>
+      <!-- LEFT: INFORMATION CARDS -->
+      <aside class="sidebar-column sidebar-left" aria-label="Application information">
 
         <!-- KEY DATES -->
         <div class="deadline-card">
@@ -1327,7 +1428,7 @@
         </div>
 
         <!-- TIMELINE -->
-        <div class="sidebar-card">
+        <div class="sidebar-card info-card info-card--timeline">
           <div class="sidebar-card-title">Selection Timeline</div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Sept. 10</strong>QST Debate Info Session · Lecture Hall</div></div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Sept. 14</strong>Activity Fair · A Session</div></div>
@@ -1336,9 +1437,12 @@
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Sept. 29</strong>First Debate Team Meeting</div></div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>After Sept. 29</strong>Keep Tuesday afternoons clear for team meetings</div></div>
         </div>
+      </aside>
 
+      <!-- RIGHT: INFORMATION CARDS -->
+      <aside class="sidebar-column sidebar-right" aria-label="Team commitments and contact">
         <!-- STUDENT COMMITMENT -->
-        <div class="sidebar-card">
+        <div class="sidebar-card info-card info-card--student">
           <div class="sidebar-card-title">Student Commitment</div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Tuesday team meetings</strong>Keep Tuesday afternoons clear; meeting details are shared with the team</div></div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>3 of 5 Saturday tournaments</strong>required (~1 per month)</div></div>
@@ -1347,7 +1451,7 @@
         </div>
 
         <!-- PARENT COMMITMENT -->
-        <div class="sidebar-card">
+        <div class="sidebar-card info-card info-card--parent">
           <div class="sidebar-card-title">Parent Commitment</div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>$15/year</strong>team fee (waivers available)</div></div>
           <div class="sidebar-item"><div class="sidebar-dot"></div><div><strong>Judge at 1 tournament</strong>free WASDL training in October</div></div>
@@ -1357,7 +1461,7 @@
         </div>
 
         <!-- QUESTIONS -->
-        <div class="sidebar-card">
+        <div class="sidebar-card info-card info-card--questions">
           <div class="sidebar-card-title">Questions?</div>
           <p style="font-size:0.83rem;color:var(--gray-mid);line-height:1.7;margin:0;">
             Email Coach Konde at
@@ -1524,7 +1628,7 @@
     wizardStatus.textContent = `Step ${currentWizardStep} of ${wizardPanels.length} · ${wizardStepLabels[currentWizardStep - 1]}`;
   }
 
-  function setWizardStep(step, { scroll = true } = {}) {
+  function setWizardStep(step, { scroll = false } = {}) {
     const nextStep = Number(step);
     if (!wizardPanels.some(panel => Number(panel.dataset.wizardStep) === nextStep)) return;
     currentWizardStep = nextStep;
