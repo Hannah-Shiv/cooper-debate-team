@@ -102,15 +102,17 @@
     }
     /* View toggle */
     .dir-view-toggle {
-      display: flex; margin-left: auto; border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; overflow: hidden;
+      display: flex; margin-left: auto; min-height: 44px; padding: 0 6px;
+      background: rgba(4,8,28,0.88); border: 1px solid rgba(167,139,250,0.65);
+      border-radius: 11px; overflow: hidden;
     }
     .dir-view-btn {
       display: flex; align-items: center; gap: 6px;
-      padding: 7px 16px; background: rgba(4,8,28,0.85); cursor: pointer;
+      min-height: 42px; padding: 8px 14px; background: transparent; cursor: pointer;
       font-family: 'Josefin Sans', sans-serif; font-size: 0.83rem; font-weight: 700; letter-spacing: 0.05em;
       color: rgba(255,255,255,0.35); border: none; transition: all 0.18s; white-space: nowrap;
     }
-    .dir-view-btn + .dir-view-btn { border-left: 1px solid rgba(255,255,255,0.12); }
+    .dir-view-btn + .dir-view-btn { border-left: none; margin-left: 2px; }
     .dir-view-btn:hover { background: rgba(20,30,80,0.9); color: rgba(255,255,255,0.65); }
     .dir-view-btn.active { background: rgba(139,92,246,0.14); color: #c4b5fd; }
     .dir-search-box {
@@ -592,7 +594,7 @@
           </button>
           <a class="tab-btn" id="tab-applications" href="members-applications.html" style="display:none">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17h4"/><path d="M7.2 9.1l.8.8 1.3-1.6"/></svg>
-            Debate Applications
+            Track applications
           </a>
         </div>
       </div>
