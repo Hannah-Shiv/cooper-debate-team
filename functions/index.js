@@ -359,15 +359,17 @@ function normalizeApplication(body) {
     googleMeets: commitmentSource.googleMeets === true,
     etiquette: commitmentSource.etiquette === true,
   };
-  const allowedTournamentDates = new Set([
-    "October 24th",
-    "November 14th",
-    "December 5th",
-    "January 30th",
-    "February 20th",
+  const tournamentDateLabels = new Map([
+    ["October 24th", "October 24th, 2026"],
+    ["November 14th", "November 14th, 2026"],
+    ["December 5th", "December 5th, 2026"],
+    ["January 30th", "January 30th, 2027"],
+    ["February 20th", "February 20th, 2027"],
   ]);
+  const allowedTournamentDates = new Set(tournamentDateLabels.values());
   const tournamentDates = [...new Set((Array.isArray(eventSource.tournamentDates) ? eventSource.tournamentDates : [])
     .map(value => cleanText(value, 40))
+    .map(value => tournamentDateLabels.get(value) || value)
     .filter(value => allowedTournamentDates.has(value)))];
   const eventDetails = {
     qstSession: cleanText(eventSource.qstSession, 40),
@@ -410,6 +412,7 @@ function normalizeApplication(body) {
     !["Yes", "No", "I don't have a home or personal email", "I already have one"].includes(eventDetails.tabroomAccount) ||
     !["Yes", "No"].includes(eventDetails.contractAgreement) ||
     !["Yes", "No"].includes(eventDetails.contractReturn) ||
+    (student.debateExperience === "Other experience" && !answers.experienceDetail) ||
     !answers.whyJoin || !answers.questionsForCoach || !application.parentSignature || !application.parentAgreement ||
     Object.values(commitments).some(confirmed => !confirmed)
   ) {
