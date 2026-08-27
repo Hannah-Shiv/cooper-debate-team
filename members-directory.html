@@ -456,6 +456,7 @@
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
     .form-field.half { grid-column: span 1; }
+    .additional-login-field { grid-row: span 3; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
     .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .form-field input, .form-field select, .form-field textarea {
@@ -512,6 +513,7 @@
       .form-grid { grid-template-columns: 1fr; }
       .form-field.full { grid-column: 1; }
       .form-field.half { grid-column: 1; }
+      .additional-login-field { grid-row: auto; }
       .hub-header { align-items: flex-start; flex-direction: column; gap: 18px; }
       .tab-bar { flex-wrap: wrap; margin: 0; }
       .admin-table thead th:nth-child(3),
@@ -997,7 +999,7 @@
             <option value="website-admin">Website Admin</option>
           </select>
         </div>
-        <div class="form-field half">
+        <div class="form-field half additional-login-field">
           <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
           <textarea id="f-login-emails" rows="3"
             placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
