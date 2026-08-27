@@ -435,12 +435,12 @@
       position: fixed; top: 88px; left: 0; right: 0; bottom: 0;
       background: rgba(4,8,20,0.78); z-index: 500;
       display: flex; align-items: flex-start; justify-content: center;
-      padding: 24px 20px; overflow-y: auto;
+      padding: 12px 20px; overflow-y: auto;
     }
     .modal-box {
       background: #0d1c3a; border: 1px solid #1e3060;
-      border-radius: 14px; width: 100%; max-width: 540px;
-      max-height: 90vh; overflow-y: auto; padding: 26px 28px 22px;
+      border-radius: 14px; width: 100%; max-width: 900px;
+      max-height: calc(100vh - 112px); overflow-y: auto; padding: 24px 30px 20px;
       position: relative;
     }
     .modal-box::-webkit-scrollbar { width: 4px; }
@@ -453,7 +453,7 @@
     .form-status.error   { background: rgba(45,21,21,0.8); color: #f87171; border: 1px solid rgba(127,29,29,0.6); }
     .form-status.success { background: rgba(20,41,26,0.8); color: #86efac; border: 1px solid rgba(22,101,52,0.6); }
 
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px 15px; }
+    .form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
     .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
@@ -497,6 +497,11 @@
     .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
     .btn-del { background: rgba(127,29,29,0.6); color: #f87171; border: 1px solid rgba(61,21,21,0.7); border-radius: 8px; padding: 9px 20px; font-family: 'Josefin Sans', sans-serif; font-size: 0.99rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; transition: opacity 0.2s; }
     .btn-del:hover { opacity: 0.8; }
+
+    @media (max-width: 900px) {
+      .modal-box { max-width: 760px; }
+      .form-grid { grid-template-columns: 1fr 1fr; }
+    }
 
     /* ── Mobile ──────────────────────────────────────────────── */
     @media (max-width: 620px) {
@@ -976,7 +981,7 @@
           <label for="f-last">Last Name <span style="color:#f87171">*</span></label>
           <input type="text" id="f-last" required autocomplete="family-name" placeholder="Smith">
         </div>
-        <div class="form-field full">
+        <div class="form-field">
           <label for="f-email">Primary Login Email <span style="color:#f87171">*</span></label>
           <input type="email" id="f-email" required autocomplete="email" placeholder="student@fcpsschools.net">
         </div>
@@ -988,7 +993,7 @@
             One per line or separated by commas. Every address opens this same member profile; removing one blocks only that login.
           </p>
         </div>
-        <div class="form-field full">
+        <div class="form-field">
           <label for="f-phone">Phone <span class="opt">(optional)</span></label>
           <input type="tel" id="f-phone" autocomplete="tel" placeholder="(555) 123-4567">
         </div>
@@ -1040,7 +1045,7 @@
             <option value="Alumni">Alumni</option>
           </select>
         </div>
-        <div class="form-field full">
+        <div class="form-field">
           <label>Portal Status</label>
           <div class="toggle-row">
             <label class="tog">
