@@ -624,16 +624,16 @@
       display: grid;
       grid-template-columns: 38.5% 23.5% 31%;
       align-items: stretch;
-      padding: 45px 0 0;
+      padding: 45px 0 16px;
     }
     .index-footer-main::before {
       content: "";
       position: absolute;
       z-index: 0;
       top: -200px;
-      left: 60%;
-      width: min(1300px, 90vw);
-      height: min(1040px, 72vw);
+      left: 66%;
+      width: min(1040px, 72vw);
+      height: min(832px, 57.6vw);
       background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
       opacity: 0.25;
       transform: translateX(-50%);
@@ -680,9 +680,16 @@
       font-weight: 400;
       -webkit-text-stroke: 0.35px currentColor;
       letter-spacing: 0.025em;
-      line-height: 0.82;
+      line-height: 1;
       white-space: nowrap;
       text-transform: uppercase;
+    }
+    .index-footer-brand-title-line {
+      display: block;
+    }
+    .index-footer-brand-title-line + .index-footer-brand-title-line {
+      margin-top: 0.12em;
+      word-spacing: 0.14em;
     }
     .index-footer-school {
       margin-top: 13px;
@@ -751,7 +758,7 @@
       border-left: 0;
     }
     .index-footer-column + .index-footer-column {
-      border-left: 1px solid rgba(99,133,178,0.22);
+      border-left: 1px solid rgba(255,255,255,0.38);
     }
     .index-footer-heading {
       display: flex;
@@ -901,7 +908,7 @@
       padding: 0 34px;
     }
     .index-footer-bottom-cell + .index-footer-bottom-cell {
-      border-left: 1px solid rgba(99,133,178,0.24);
+      border-left: 1px solid rgba(255,255,255,0.46);
     }
     .index-footer-bottom-icon {
       display: flex;
@@ -978,9 +985,9 @@
       }
       .index-footer-main::before {
         top: -180px;
-        left: 60%;
-        width: min(1000px, 110vw);
-        height: min(800px, 88vw);
+        left: 66%;
+        width: min(800px, 88vw);
+        height: min(640px, 70.4vw);
       }
       .index-footer-brand-details {
         width: 100%;
@@ -992,7 +999,7 @@
         padding-top: 32px;
       }
       .index-footer-column + .index-footer-column {
-        border-left: 1px solid rgba(99,133,178,0.22);
+        border-left: 1px solid rgba(255,255,255,0.38);
       }
       .index-footer-bottom-grid {
         grid-template-columns: 1fr 1fr;
@@ -1018,15 +1025,15 @@
       }
       .index-footer-main {
         grid-template-columns: 1fr;
-        padding-bottom: 0;
+        padding-bottom: 16px;
       }
       .index-footer-brand {
         padding-inline: 8px;
       }
       .index-footer-main::before {
         top: -120px;
-        width: min(760px,140vw);
-        height: min(610px,112vw);
+        width: min(610px,112vw);
+        height: min(488px,89.6vw);
         transform: translateX(-50%);
       }
       .index-footer-lockup {
@@ -1081,7 +1088,7 @@
         grid-column: auto;
         margin-top: 0;
         padding-top: 18px;
-        border-top: 1px solid rgba(99,133,178,0.24);
+        border-top: 1px solid rgba(255,255,255,0.42);
         border-left: 0;
       }
       .index-footer-bottom-cell:last-child {
@@ -1579,7 +1586,10 @@
         <div class="index-footer-lockup">
           <img class="index-footer-jaguar" src="images/index-footer-jaguar.png?v=1" alt="Cooper C with jaguar"/>
           <div>
-            <h2 class="index-footer-brand-title">Cooper<br/>Debate Team</h2>
+            <h2 class="index-footer-brand-title">
+              <span class="index-footer-brand-title-line">Cooper</span>
+              <span class="index-footer-brand-title-line">Debate Team</span>
+            </h2>
             <div class="index-footer-school">
               <span>Cooper Middle School</span>
               <span class="index-footer-location">McLean, VA</span>
