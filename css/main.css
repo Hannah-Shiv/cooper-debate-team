@@ -1970,17 +1970,11 @@ body.dome-open .page-header { padding-top: 240px; }
   min-height: 24px;
   white-space: nowrap;
 }
-.mub-role-badge[data-role="member"] {
-  background: #174ea6;
-}
-.mub-role-badge[data-role="captain"] {
-  background: #8a5a00;
-}
-.mub-role-badge[data-role="coach"] {
-  background: #0f6b4f;
-}
+.mub-role-badge[data-role="member"],
+.mub-role-badge[data-role="captain"],
+.mub-role-badge[data-role="coach"],
 .mub-role-badge[data-role="website-admin"] {
-  background: #0b5d2a;
+  background: #8a5a00;
 }
 
 @media (max-width: 600px) {
