@@ -1,0 +1,17 @@
+- [Season calendar navigation](season-calendar-navigation.md) — Current season opens by default; keep prior seasons accessible in an explicit selector.
+- [Firebase deploy lessons](firebase-deploy-lessons.md) — Never commit Replit-generated package-lock.json; Gen2 needs 3 extra IAM bindings; deploy via Cloud Shell when project is owned by another account.
+- [Fixed-child containing block trap](fixed-in-transformed-parent.md) — CSS transform on a fixed ancestor breaks position:fixed children; use calc() centering instead.
+- [CSS cache-busting chain](css-cache-busting.md) — Must bump version on BOTH the CSS <link> href AND image URLs inside CSS together, or the browser serves the stale half.
+- [Mobile hero pseudo-element trap](mobile-hero-pseudo-elements.md) — Desktop ::after/::before on .hero-bg block mobile background-image; must display:none both pseudo-elements in mobile media queries.
+- [Git push workflow](git-push-workflow.md) — gitPush({}) only pushes existing commits; must `git add -A && git commit` via shell first.
+- [GitHub Pages asset releases](github-pages-asset-releases.md) — Public pages must reference tracked assets; wait for the Pages build to complete before judging live results.
+- [WASDL naming](wasdl-naming.md) — Use WASDL for current branding; retain WACFL only for dated historical records or functioning legacy URLs.
+- [Public volunteer roster](public-volunteer-roster.md) — Families may see volunteer, debater, role, and availability; coach contact and notes remain private.
+- [Public calendar day fills](public-calendar-day-fills.md) — Use original New York event dates for all-day cell backgrounds, not FullCalendar’s normalized internal start.
+- [Bootstrap schedule overrides](bootstrap-schedule-overrides.md) — Match starter calendar events by stable identity/date, never mutable titles, so edits replace rather than duplicate them.
+- [Private calendar month backgrounds](private-calendar-month-backgrounds.md) — Keep timed background layers out of Month view; its explicit day-cell fills are the source of truth.
+- [Public calendar projection deployment](public-calendar-projection-deployment.md) — Rules enable reads; deployed Firestore triggers sync future writes, while existing events need a backfill or re-save.
+- [Tablet portrait homepage](tablet-portrait-homepage.md) — Tall tablet portrait layouts need a width-plus-height breakpoint and the dedicated portrait hero asset.
+- [Firebase Google sign-in](firebase-google-popup-auth.md) — On GitHub Pages with managed Chrome, use a click-initiated popup; redirect sessions can be lost across the Firebase auth domain.
+- [Member access model](member-access-model.md) — One person may have multiple login emails; deactivate instead of deleting; Coach and Website Admin share full permissions.
+- [Member header consistency](member-header-consistency.md) — Authenticated member pages must share the role-artwork user bar; keep role badge width/color stable and change only label/icon.
