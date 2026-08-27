@@ -27,8 +27,8 @@
 // Temporary role override for Hannah's linked identities while testing the
 // shared member-header badge. This intentionally lowers access from admin.
 const PORTAL_ROLE_OVERRIDES = {
-  "hannahbshiv@gmail.com": "member",
-  "1806950@fcpsschools.net": "member",
+  "hannahbshiv@gmail.com": "website-admin",
+  "1806950@fcpsschools.net": "website-admin",
 };
 
 const ADMIN_ROLES = [
