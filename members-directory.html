@@ -2763,6 +2763,7 @@ function filterRoster(val) { filteredRoster = applyRosterQuery(val, allRoster); 
 function openAddModal() {
   document.getElementById('modal-title').textContent = 'Add Member';
   document.getElementById('btn-save').textContent    = 'Add Member';
+  document.getElementById('btn-save').disabled       = false;
   document.getElementById('form-doc-id').value = '';
   document.getElementById('member-form').reset();
   document.getElementById('ev-pf').checked = true;
@@ -2782,6 +2783,7 @@ function openEditModal(docId) {
   if (!m) return;
   document.getElementById('modal-title').textContent = 'Edit Member';
   document.getElementById('btn-save').textContent    = 'Save Changes';
+  document.getElementById('btn-save').disabled       = false;
   document.getElementById('form-doc-id').value = docId;
   document.getElementById('f-first').value = m.firstName || '';
   document.getElementById('f-last').value  = m.lastName  || '';
