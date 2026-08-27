@@ -1,0 +1,74 @@
+/* Hydrate the shared footer on the public pages that keep their body HTML static. */
+(function () {
+  const footer = document.querySelector('footer[data-public-footer]');
+  if (!footer) return;
+
+  footer.className = 'index-footer';
+  footer.innerHTML = `
+    <div class="index-footer-crown" aria-hidden="true">
+      <img class="index-footer-crown-icon" src="images/index-footer-crown.png?v=1" alt="">
+    </div>
+    <div class="section-wrap">
+      <div class="index-footer-main">
+        <section class="index-footer-brand" aria-label="Cooper Debate Team">
+          <div class="index-footer-lockup">
+            <img class="index-footer-jaguar" src="images/index-footer-jaguar.png?v=1" alt="Cooper C with jaguar">
+            <div>
+              <h2 class="index-footer-brand-title">
+                <span class="index-footer-brand-title-line">Cooper</span>
+                <span class="index-footer-brand-title-line">Debate Team</span>
+              </h2>
+              <div class="index-footer-school">
+                <span>Cooper Middle School</span>
+                <span class="index-footer-location">McLean, VA</span>
+              </div>
+            </div>
+          </div>
+          <div class="index-footer-brand-details">
+            <div class="index-footer-motto">
+              <span class="star">☆</span><span>Speak</span><span class="dot">•</span><span>Reason</span><span class="dot">•</span><span>Lead</span><span class="star">☆</span>
+            </div>
+            <div class="index-footer-brand-rule" aria-hidden="true"></div>
+            <p class="index-footer-brand-copy">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals.<br>Metro Finals Champions.</p>
+          </div>
+        </section>
+        <nav class="index-footer-column" aria-label="Explore">
+          <h2 class="index-footer-heading">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 4.9-4.9 2.1 2.1-4.9 4.9-2.1Z"/></svg>
+            Explore
+          </h2>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="about.html"><span class="index-footer-chevron">›</span><span>About</span></a></li>
+            <li><a class="index-footer-link" href="awards.html"><span class="index-footer-chevron">›</span><span>Awards &amp; Achievements</span></a></li>
+            <li><a class="index-footer-link" href="tournaments.html"><span class="index-footer-chevron">›</span><span>Tournaments</span></a></li>
+            <li><a class="index-footer-link" href="resources.html"><span class="index-footer-chevron">›</span><span>Resources</span></a></li>
+            <li><a class="index-footer-link" href="gallery.html"><span class="index-footer-chevron">›</span><span>Gallery</span></a></li>
+            <li><a class="index-footer-link" href="announcements.html"><span class="index-footer-chevron">›</span><span>News &amp; Announcements</span></a></li>
+          </ul>
+        </nav>
+        <nav class="index-footer-column" aria-label="Connect">
+          <h2 class="index-footer-heading">
+            <svg viewBox="0 0 28 24" aria-hidden="true"><circle cx="10" cy="7" r="3.5"/><circle cx="20" cy="8" r="3"/><path d="M3 20v-2c0-4 3-6 7-6s7 2 7 6v2M17 13c4 0 8 1.6 8 5v2"/></svg>
+            Connect
+          </h2>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="apply.html"><span class="index-footer-chevron">›</span><span>Apply Now</span></a></li>
+            <li><a class="index-footer-link" href="about.html#join"><span class="index-footer-chevron">›</span><span>How to Join</span></a></li>
+            <li><a class="index-footer-link" href="tournaments.html#parent-info"><span class="index-footer-chevron">›</span><span>Parent Information</span><svg class="index-footer-external" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M8 2h6v6M14 2 7 9"/></svg></a></li>
+          </ul>
+          <a class="index-footer-action" href="members-signon.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg><span>Member Portal</span><span class="action-arrow">→</span></a>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="members-blog.html"><span class="index-footer-chevron">›</span><span>Team Blog</span></a></li>
+          </ul>
+          <a class="index-footer-action index-footer-email" href="mailto:CooperDebateTeam@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg><span class="index-footer-email-copy"><span class="index-footer-email-label">Contact</span><span class="index-footer-email-address">CooperDebateTeam@gmail.com</span></span></a>
+        </nav>
+      </div>
+    </div>
+    <div class="index-footer-bottom">
+      <div class="section-wrap index-footer-bottom-grid">
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21S4 16.2 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16.2 12 21 12 21Z"/></svg></span><div><div class="index-footer-credit-line">Designed &amp; developed by <strong>Hannah Shiv</strong></div><div class="index-footer-bottom-sub">A volunteer community-service initiative.</div></div></div>
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 4.5 5v6c0 5 3 8.5 7.5 11 4.5-2.5 7.5-6 7.5-11V5L12 2Z"/><path d="M9 8h6M9 12h6M12 8v8"/></svg></span><div class="index-footer-bottom-links"><a href="privacy.html">Privacy Policy</a><span class="dot">•</span><a href="privacy.html#accessibility">Accessibility</a></div></div>
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true">©</span><div><div class="index-footer-bottom-strong">2026 Cooper Debate Team</div><div class="index-footer-bottom-sub">Cooper Middle School &nbsp;•&nbsp; McLean, VA &nbsp;•&nbsp; FCPS</div></div></div>
+      </div>
+    </div>`;
+})();
