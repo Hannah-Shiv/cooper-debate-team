@@ -1025,12 +1025,7 @@
             <span class="toggle-lbl" id="active-lbl">Active — portal access allowed</span>
           </div>
         </div>
-        <hr class="form-divider">
-        <div class="form-field full">
-          <label for="f-notes">Coach Notes <span class="opt">(private)</span></label>
-          <textarea id="f-notes" placeholder="Strengths, goals, context…"></textarea>
-        </div>
-        <div class="form-field full">
+        <div class="form-field">
           <label>Photo <span class="opt">(optional)</span></label>
           <input type="hidden" id="f-photo">
           <input type="file" id="f-photo-file" accept="image/*" style="display:none"
@@ -1038,6 +1033,11 @@
           <div class="photo-upload-area" id="photo-upload-area">
             <!-- states injected by JS -->
           </div>
+        </div>
+        <hr class="form-divider">
+        <div class="form-field full">
+          <label for="f-notes">Coach Notes <span class="opt">(private)</span></label>
+          <textarea id="f-notes" placeholder="Strengths, goals, context…"></textarea>
         </div>
       </div>
       <div class="form-actions">
@@ -1361,11 +1361,11 @@
 .photo-upload-area { margin-top:4px; }
 .photo-upload-btn {
   display:inline-flex; align-items:center; gap:8px;
-  padding:9px 18px; border-radius:8px;
+  padding:8px 14px; border-radius:8px;
   border:1.5px dashed rgba(255,255,255,0.2); background:rgba(255,255,255,0.03);
   font-family:'Josefin Sans',sans-serif; font-size:0.84rem; font-weight:700;
   letter-spacing:0.06em; text-transform:uppercase; color:rgba(255,255,255,0.45);
-  cursor:pointer; transition:all 0.18s; width:100%; box-sizing:border-box;
+  cursor:pointer; transition:all 0.18s; width:auto; box-sizing:border-box;
   justify-content:center;
 }
 .photo-upload-btn:hover { border-color:rgba(200,169,110,0.5); color:rgba(200,169,110,0.8); background:rgba(200,169,110,0.05); }
