@@ -619,10 +619,29 @@
       object-fit: contain;
     }
     .index-footer-main {
+      position: relative;
+      isolation: isolate;
       display: grid;
       grid-template-columns: 38.5% 23.5% 31%;
       align-items: stretch;
       padding: 45px 0 0;
+    }
+    .index-footer-main::before {
+      content: "";
+      position: absolute;
+      z-index: 0;
+      top: -250px;
+      left: 50%;
+      width: min(1500px, 100vw);
+      height: min(1200px, 80vw);
+      background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
+      opacity: 0.25;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+    .index-footer-main > * {
+      position: relative;
+      z-index: 1;
     }
     .index-footer-brand {
       position: relative;
@@ -630,19 +649,6 @@
       min-width: 0;
       padding: 0 0 0 8px;
       text-align: center;
-    }
-    .index-footer-brand::after {
-      content: "";
-      position: absolute;
-      z-index: 0;
-      left: 50%;
-      bottom: -140px;
-      width: 760px;
-      height: 610px;
-      background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
-      opacity: 0.25;
-      transform: translateX(-50%);
-      pointer-events: none;
     }
     .index-footer-brand > * {
       position: relative;
@@ -854,6 +860,25 @@
       margin: 0;
       text-transform: none;
     }
+    .index-footer-email-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+      line-height: 1.2;
+    }
+    .index-footer-email-label {
+      color: var(--index-footer-gold);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .index-footer-email-address {
+      color: rgba(255,255,255,0.94);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
     .index-footer-email span {
       overflow-wrap: anywhere;
     }
@@ -951,12 +976,10 @@
         grid-column: 1 / -1;
         padding: 0 28px 42px;
       }
-      .index-footer-brand::after {
-        left: 50%;
-        bottom: -140px;
-        width: min(760px, 120vw);
-        height: min(610px, 96vw);
-        transform: translateX(-50%);
+      .index-footer-main::before {
+        top: -220px;
+        width: min(1200px, 100vw);
+        height: min(960px, 80vw);
       }
       .index-footer-brand-details {
         width: 100%;
@@ -999,8 +1022,8 @@
       .index-footer-brand {
         padding-inline: 8px;
       }
-      .index-footer-brand::after {
-        left: 50%;
+      .index-footer-main::before {
+        top: -120px;
         width: min(760px,140vw);
         height: min(610px,112vw);
         transform: translateX(-50%);
@@ -1604,11 +1627,13 @@
         </a>
         <ul class="index-footer-nav">
           <li><a class="index-footer-link" href="members-blog.html"><span class="index-footer-chevron">›</span><span>Team Blog</span></a></li>
-          <li><a class="index-footer-link" href="mailto:CooperDebateTeam@gmail.com"><span class="index-footer-chevron">›</span><span>Contact</span></a></li>
         </ul>
         <a class="index-footer-action index-footer-email" href="mailto:CooperDebateTeam@gmail.com">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>
-          <span>CooperDebateTeam@gmail.com</span>
+          <span class="index-footer-email-copy">
+            <span class="index-footer-email-label">Contact</span>
+            <span class="index-footer-email-address">CooperDebateTeam@gmail.com</span>
+          </span>
         </a>
       </nav>
     </div>
