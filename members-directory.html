@@ -107,7 +107,7 @@
     .dir-view-btn {
       display: flex; align-items: center; gap: 6px;
       padding: 7px 16px; background: rgba(4,8,28,0.85); cursor: pointer;
-      font-family: 'Josefin Sans', sans-serif; font-size: 0.92rem; font-weight: 700; letter-spacing: 0.05em;
+      font-family: 'Josefin Sans', sans-serif; font-size: 0.83rem; font-weight: 700; letter-spacing: 0.05em;
       color: rgba(255,255,255,0.35); border: none; transition: all 0.18s; white-space: nowrap;
     }
     .dir-view-btn + .dir-view-btn { border-left: 1px solid rgba(255,255,255,0.12); }
@@ -1240,17 +1240,28 @@
   width:100%; min-height:44px; padding:8px 30px 8px 14px;
   border:1px solid rgba(251,191,36,0.7); border-radius:11px;
   background:rgba(4,8,28,0.88); color:#ffe28a;
-  font-family:'Josefin Sans',sans-serif; font-size:1.02rem; font-weight:700;
+  font-family:'Josefin Sans',sans-serif; font-size:0.92rem; font-weight:700;
   letter-spacing:0.04em; cursor:pointer; outline:none;
 }
 .dir-season-select:hover,.dir-season-select:focus {
   border-color:rgba(251,191,36,0.95); box-shadow:0 0 0 2px rgba(251,191,36,0.12);
 }
 .dir-season-select option { background:#0f1221; color:#f7f8ff; }
+@media (min-width:960px) {
+  .dir-top-bar {
+    display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1.65fr) minmax(150px,.65fr) minmax(154px,.65fr);
+    align-items:stretch; width:100%;
+  }
+  .dir-search-box,.dir-sort-box,.dir-filter-box,.dir-season-box {
+    width:100%; max-width:none; min-width:0;
+  }
+  .dir-sort-box .dir-ctl-btn { flex:1 1 0; min-width:0; padding-left:8px; padding-right:8px; }
+  .dir-filter-box .dir-ctl-btn { width:100%; }
+}
 /* Shared pill button */
 .dir-ctl-btn {
   min-height:42px; padding:8px 12px; border:0; border-radius:8px; cursor:pointer; transition:all 0.18s;
-  font-family:'Josefin Sans',sans-serif; font-size:1.13rem; font-weight:700; letter-spacing:0.04em;
+  font-family:'Josefin Sans',sans-serif; font-size:1.02rem; font-weight:700; letter-spacing:0.04em;
   background:transparent; color:rgba(255,255,255,0.45);
   white-space:nowrap;
 }
