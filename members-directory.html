@@ -620,6 +620,13 @@
             <div class="dir-filter-box">
               <button class="dir-ctl-btn" id="filter-metro" onclick="toggleMetroFilter()">✓ Metro Eligible</button>
             </div>
+            <div class="dir-season-box">
+              <label for="dir-season">Season</label>
+              <select class="dir-season-select" id="dir-season" onchange="setDirectorySeason(this.value)" aria-label="Debater stats season">
+                <option value="2025–26" selected>2025–26</option>
+                <option value="2026–27">2026–27</option>
+              </select>
+            </div>
           </div>
           <!-- Meta bar: count left, view toggle right -->
           <div class="dir-meta-bar">
@@ -1218,6 +1225,28 @@
   letter-spacing:0.16em; color:#4ade80; background:#0f1221; line-height:1;
   pointer-events:none; user-select:none;
 }
+/* Season selector — gold theme */
+.dir-season-box {
+  display:flex; align-items:center; padding:10px 12px; border-radius:11px;
+  background:rgba(4,8,28,0.88); border:1px solid rgba(251,191,36,0.7);
+  position:relative; min-width:154px; flex:0 0 auto;
+}
+.dir-season-box > label {
+  position:absolute; top:-10px; left:12px; padding:0 6px;
+  font-family:'Josefin Sans',sans-serif; font-size:0.95rem; font-weight:700;
+  letter-spacing:0.16em; color:#fbbf24; background:#0f1221; line-height:1;
+  pointer-events:none; user-select:none; text-transform:uppercase;
+}
+.dir-season-select {
+  width:100%; padding:6px 28px 6px 12px; border:1px solid rgba(251,191,36,0.36);
+  border-radius:50px; background:rgba(12,20,52,0.92); color:#ffe28a;
+  font-family:'Josefin Sans',sans-serif; font-size:1.02rem; font-weight:700;
+  letter-spacing:0.04em; cursor:pointer; outline:none;
+}
+.dir-season-select:hover,.dir-season-select:focus {
+  border-color:rgba(251,191,36,0.85); box-shadow:0 0 0 2px rgba(251,191,36,0.12);
+}
+.dir-season-select option { background:#0f1221; color:#f7f8ff; }
 /* Shared pill button */
 .dir-ctl-btn {
   padding:6px 16px; border-radius:50px; cursor:pointer; transition:all 0.18s;
@@ -1747,6 +1776,8 @@ let allTournaments = [];
 let leaderboard    = [];
 let currentQuery   = '';
 let profileChart   = null;
+const DIRECTORY_SEASONS = ['2025\u201326', '2026\u201327'];
+let currentDirectorySeason = DIRECTORY_SEASONS[0];
 let currentSeason  = 'all';
 let _profName      = '';
 let currentSort    = 'name';
@@ -1761,7 +1792,7 @@ async function loadTournaments() {
     const snap = await dirDb.collection('stat_results').orderBy('meta.date','desc').get();
     allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   } catch (e) { console.error('loadTournaments:', e); }
-  leaderboard = computeLeaderboard(allTournaments);
+  leaderboard = computeLeaderboard(getDirectorySeasonTournaments());
   updateSortButtons();
   renderDirectory();
 }
@@ -1915,7 +1946,7 @@ function renderDirectory() {
   }
 
   if (!list.length) {
-    grid.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match.'}</div>`;
+    grid.innerHTML = `<div class="dir-empty">${directoryEmptyMessage()}</div>`;
     return;
   }
   grid.innerHTML = list.map(d => {
@@ -1941,7 +1972,21 @@ function renderDirectory() {
   }).join('');
 }
 
+function directoryEmptyMessage() {
+  if (allTournaments.length === 0) return 'No tournament data imported yet.';
+  if (leaderboard.length === 0) return `No tournament data for ${currentDirectorySeason} yet.`;
+  return 'No debaters match.';
+}
+
 function filterDirectory(q) { currentQuery = q; tablePage = 1; renderDirectory(); }
+
+function setDirectorySeason(season) {
+  if (!DIRECTORY_SEASONS.includes(season)) return;
+  currentDirectorySeason = season;
+  tablePage = 1;
+  leaderboard = computeLeaderboard(getDirectorySeasonTournaments());
+  renderDirectory();
+}
 
 function setView(v) {
   currentView = v;
@@ -1962,7 +2007,7 @@ function winRateColor(wr) {
 function renderTableView(list) {
   const wrap = document.getElementById('dir-table-wrap');
   if (!list.length) {
-    wrap.innerHTML = `<div class="dir-empty">${allTournaments.length === 0 ? 'No tournament data imported yet.' : 'No debaters match.'}</div>`;
+    wrap.innerHTML = `<div class="dir-empty">${directoryEmptyMessage()}</div>`;
     return;
   }
   const total = list.length;
@@ -2420,6 +2465,9 @@ function getTournSeason(dateStr) {
   if (isNaN(dt)) return null;
   const startYear = dt.getMonth() >= 7 ? dt.getFullYear() : dt.getFullYear() - 1;
   return startYear + '\u2013' + String(startYear + 1).slice(-2);
+}
+function getDirectorySeasonTournaments() {
+  return allTournaments.filter(t => getTournSeason(t.meta?.date) === currentDirectorySeason);
 }
 function filterTournsBySeason(details, season) {
   if (!season || season === 'all') return details;
