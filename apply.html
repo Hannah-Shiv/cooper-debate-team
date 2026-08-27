@@ -445,6 +445,15 @@
       background: rgba(242,209,107,0.1);
       margin: 22px 0;
     }
+    #apply-form {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+    }
+    #apply-form .form-label,
+    #apply-form .wizard-btn,
+    #apply-form .wizard-status {
+      font-family: 'Josefin Sans', sans-serif;
+    }
 
     /* ── Section number badge ── */
     .card-num {
@@ -495,8 +504,8 @@
       border: 1px solid rgba(242,209,107,0.3);
       border-radius: 7px;
       padding: 11px 15px;
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 1.01rem;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.12rem;
       color: var(--white);
       transition: border-color 0.2s, box-shadow 0.2s;
       width: 100%;
@@ -597,15 +606,15 @@
       .wizard-btn { flex: 1; padding: 11px 10px; }
     }
     .email-delivery-note {
-      align-items:flex-start; background:linear-gradient(145deg,rgba(86,61,24,.94),rgba(47,34,28,.97)); border:1px solid rgba(232,196,124,.58);
-      border-left:3px solid #E8C47C; border-radius:7px; color:#FFF4D6; display:flex;
+      align-items:flex-start; background:linear-gradient(145deg,rgba(54,62,77,.96),rgba(27,33,47,.98)); border:1px solid rgba(184,199,219,.48);
+      border-left:3px solid #A8B8CC; border-radius:7px; color:#EEF3F8; display:flex;
       font-size:.84rem; gap:11px; line-height:1.55; margin:-3px 0 16px; padding:10px 13px;
     }
     .email-delivery-note::before {
-      background:rgba(232,196,124,.14); border:1px solid rgba(232,196,124,.72); border-radius:50%; color:#FFF4D6; content:"i";
+      background:rgba(168,184,204,.14); border:1px solid rgba(168,184,204,.72); border-radius:50%; color:#EEF3F8; content:"i";
       flex:0 0 18px; font:700 .76rem/17px Georgia,serif; margin-top:1px; text-align:center;
     }
-    .email-delivery-note strong { color:#F8E49A; }
+    .email-delivery-note strong { color:#DDE7F2; }
 
     /* ── Commitment schedule note ── */
     .schedule-note {
@@ -634,6 +643,17 @@
       transition: border-color 0.2s, background 0.2s;
     }
     .check-item:hover { border-color: rgba(242,209,107,0.62); background: linear-gradient(145deg, rgba(5,18,46,0.98), rgba(10,32,73,0.96)); }
+    .check-item.is-selected {
+      background: linear-gradient(145deg, rgba(21,91,82,0.92), rgba(8,53,55,0.96));
+      border-color: rgba(109,216,184,0.9);
+      box-shadow: inset 0 0 0 1px rgba(109,216,184,0.12), 0 5px 16px rgba(12,75,67,0.18);
+    }
+    .check-item.is-selected:hover {
+      background: linear-gradient(145deg, rgba(27,111,98,0.95), rgba(10,66,64,0.98));
+      border-color: #8CEBD0;
+    }
+    .check-item.is-selected .check-item-label { color: #F1FFFB; }
+    .check-item.is-selected input[type="checkbox"] { accent-color: #6DD8B8; }
     .check-item input[type="checkbox"] {
       width: 17px;
       height: 17px;
@@ -1652,7 +1672,9 @@
     const valid = selectedTournamentDates().length >= 3;
     tournamentAvailabilityError.hidden = valid || !tournamentValidationActive;
     tournamentDateOptions.forEach(option => {
-      option.closest('.check-item').style.borderColor = !valid && tournamentValidationActive
+      const row = option.closest('.check-item');
+      row.classList.toggle('is-selected', option.checked);
+      row.style.borderColor = !valid && tournamentValidationActive && !option.checked
         ? 'rgba(220,60,60,0.6)'
         : '';
     });
