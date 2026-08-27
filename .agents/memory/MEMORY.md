@@ -14,4 +14,4 @@
 - [Tablet portrait homepage](tablet-portrait-homepage.md) — Tall tablet portrait layouts need a width-plus-height breakpoint and the dedicated portrait hero asset.
 - [Firebase Google sign-in](firebase-google-popup-auth.md) — On GitHub Pages with managed Chrome, use a click-initiated popup; redirect sessions can be lost across the Firebase auth domain.
 - [Member access model](member-access-model.md) — One person may have multiple login emails; deactivate instead of deleting; Coach and Website Admin share full permissions.
-- [Member header consistency](member-header-consistency.md) — Authenticated member pages must share the role-artwork user bar; keep role badge width/color stable and change only label/icon.
+- [Member header consistency](member-header-consistency.md) — Use notification, full name, role text, and sign-out; no role artwork; keep badge width/color stable.
