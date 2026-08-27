@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=37"/>
+  <link rel="stylesheet" href="css/main.css?v=38"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
@@ -65,17 +65,17 @@
         gap: 12px;
        color: #F2D16B !important;
         font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(1.3rem, 2.15vw, 1.7rem) !important;
-        font-style: italic;
+        font-size: clamp(1.18rem, 1.95vw, 1.5rem) !important;
+        font-style: normal;
         font-weight: 600;
-        letter-spacing: 0.045em;
+        letter-spacing: 0.065em;
         line-height: 1;
         text-shadow: 0 0 14px rgba(242,209,107,0.22);
        white-space: nowrap;
         text-transform: none;
      }
      #idx-stats-heading #idx-stats-season-label::before {
-        width: clamp(22px, 3vw, 38px);
+        width: clamp(28px, 3.4vw, 46px);
        height: 1px;
         background: linear-gradient(90deg, transparent, #F2D16B 72%);
      }
@@ -83,20 +83,30 @@
        content: '';
        display: inline-block;
        width: 1px;
-        height: 42px;
+        height: 40px;
         margin-left: 8px;
        background: linear-gradient(to bottom, transparent, rgba(242,209,107,0.9), transparent);
      }
      #idx-stats-heading .section-title {
+        display: flex;
+        align-items: center;
+        gap: clamp(18px, 2.2vw, 30px);
         color: rgba(255,255,255,0.98);
         font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(2.55rem, 5vw, 3.8rem) !important;
-        font-weight: 600;
+        font-size: clamp(2.8rem, 5.2vw, 4.1rem) !important;
+        font-weight: 700;
         line-height: 0.96;
-        letter-spacing: 0.01em;
+        letter-spacing: 0.005em;
         text-shadow: 0 3px 18px rgba(0,0,0,0.24);
        white-space: nowrap;
      }
+      #idx-stats-heading .section-title::after {
+        content: '';
+        display: inline-block;
+        width: clamp(28px, 3.4vw, 46px);
+        height: 1px;
+        background: linear-gradient(90deg, #F2D16B, transparent);
+      }
      #idx-stats-heading #idx-stats-season-label,
      #idx-stats-heading .section-title {
        margin-bottom: 0 !important;
@@ -551,7 +561,11 @@
       }
        #idx-stats-heading #idx-stats-season-label::before { width: 20px; }
       #idx-stats-heading #idx-stats-season-label::after { display: none; }
-       #idx-stats-heading .section-title { font-size: 2.15rem !important; }
+       #idx-stats-heading .section-title {
+         gap: 0;
+         font-size: 2.15rem !important;
+       }
+       #idx-stats-heading .section-title::after { display: none; }
     }
 
     /* Keep dense content comfortable on tall tablet portrait screens without
