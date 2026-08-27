@@ -328,6 +328,7 @@ function normalizeApplication(body) {
   const studentSource = source.student && typeof source.student === "object" ? source.student : {};
   const parentSource = source.parent && typeof source.parent === "object" ? source.parent : {};
   const commitmentSource = source.commitments && typeof source.commitments === "object" ? source.commitments : {};
+  const eventSource = source.eventDetails && typeof source.eventDetails === "object" ? source.eventDetails : {};
   const answerSource = source.answers && typeof source.answers === "object" ? source.answers : {};
   const studentId = cleanText(studentSource.studentId, 64);
   const student = {
@@ -338,6 +339,7 @@ function normalizeApplication(body) {
     schoolEmail: studentId ? `${studentId}@fcpsschools.net` : "",
     personalEmail: cleanEmail(studentSource.personalEmail),
     debateExperience: cleanText(studentSource.debateExperience, 200),
+    partner: cleanText(studentSource.partner, 180),
   };
   const parent = {
     firstName: cleanText(parentSource.firstName, 60),
@@ -355,31 +357,60 @@ function normalizeApplication(body) {
     judgeVolunteer: commitmentSource.judgeVolunteer === true,
     transportation: commitmentSource.transportation === true,
     googleMeets: commitmentSource.googleMeets === true,
+    etiquette: commitmentSource.etiquette === true,
+  };
+  const allowedTournamentDates = new Set([
+    "October 24th",
+    "November 14th",
+    "December 5th",
+    "January 30th",
+    "February 20th",
+  ]);
+  const tournamentDates = [...new Set((Array.isArray(eventSource.tournamentDates) ? eventSource.tournamentDates : [])
+    .map(value => cleanText(value, 40))
+    .filter(value => allowedTournamentDates.has(value)))];
+  const eventDetails = {
+    qstSession: cleanText(eventSource.qstSession, 40),
+    september22Attendance: cleanText(eventSource.september22Attendance, 8),
+    september23Attendance: cleanText(eventSource.september23Attendance, 8),
+    tournamentDates,
+    tabroomAccount: cleanText(eventSource.tabroomAccount, 80),
+    contractAgreement: cleanText(eventSource.contractAgreement, 8),
+    contractReturn: cleanText(eventSource.contractReturn, 8),
   };
   const answers = {
     whyJoin: cleanText(answerSource.whyJoin, 2500),
     experienceDetail: cleanText(answerSource.experienceDetail, 1800),
     scheduleConflicts: cleanText(answerSource.scheduleConflicts, 1800),
     anythingElse: cleanText(answerSource.anythingElse, 1600),
+    questionsForCoach: cleanText(answerSource.questionsForCoach, 1800),
   };
   const application = {
     season: "2026-2027",
     student,
     parent,
     commitments,
+    eventDetails,
     answers,
     parentAgreement: source.parentAgreement === true,
     parentSignature: cleanText(source.parentSignature, 120),
   };
 
   if (
-    !student.firstName || !student.lastName || !student.studentId ||
+    !student.firstName || !student.lastName || !student.studentId || !student.partner ||
     !["7th Grade", "8th Grade"].includes(student.grade) ||
     !validEmail(student.schoolEmail) || !student.schoolEmail.endsWith("@fcpsschools.net") ||
     !validEmail(student.personalEmail) || student.personalEmail.endsWith("@fcpsschools.net") ||
     !parent.firstName || !parent.lastName || !validEmail(parent.email) || !parent.phone ||
     !["Mother", "Father", "Guardian", "Other"].includes(parent.relationship) ||
-    !answers.whyJoin || !application.parentSignature || !application.parentAgreement ||
+    !["Yes", "No / Already Passed"].includes(eventDetails.qstSession) ||
+    !["Yes", "No"].includes(eventDetails.september22Attendance) ||
+    !["Yes", "No"].includes(eventDetails.september23Attendance) ||
+    eventDetails.tournamentDates.length < 3 ||
+    !["Yes", "No", "I don't have a home or personal email", "I already have one"].includes(eventDetails.tabroomAccount) ||
+    !["Yes", "No"].includes(eventDetails.contractAgreement) ||
+    !["Yes", "No"].includes(eventDetails.contractReturn) ||
+    !answers.whyJoin || !answers.questionsForCoach || !application.parentSignature || !application.parentAgreement ||
     Object.values(commitments).some(confirmed => !confirmed)
   ) {
     throw new Error("Please complete every required application field before submitting.");

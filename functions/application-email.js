@@ -25,6 +25,7 @@ function applicationRows(application) {
   const student = application.student || {};
   const parent = application.parent || {};
   const commitments = application.commitments || {};
+  const eventDetails = application.eventDetails || {};
   const answers = application.answers || {};
 
   return [
@@ -34,6 +35,7 @@ function applicationRows(application) {
     row("Student school email", student.schoolEmail),
     row("Student personal email", student.personalEmail),
     row("Prior debate experience", student.debateExperience),
+    row("Debate partner", student.partner),
     row("Parent / guardian", `${parent.firstName || ""} ${parent.lastName || ""}`.trim()),
     row("Relationship to student", parent.relationship),
     row("Parent email", parent.email),
@@ -42,6 +44,14 @@ function applicationRows(application) {
     row("At least 3 of 5 Saturday tournaments", commitments.saturdayTournaments ? "Agreed" : ""),
     row("Partner commitment", commitments.partnerCommitment ? "Agreed" : ""),
     row("Independent research and preparation", commitments.researchPreparation ? "Agreed" : ""),
+    row("Debate etiquette", commitments.etiquette ? "Agreed" : ""),
+    row("QST interactive info session", eventDetails.qstSession),
+    row("September 22 attendance", eventDetails.september22Attendance),
+    row("September 23 attendance", eventDetails.september23Attendance),
+    row("Tournament dates available", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : ""),
+    row("Tabroom account status", eventDetails.tabroomAccount),
+    row("Debate Team Contract agreement", eventDetails.contractAgreement),
+    row("Contract return by October 2nd", eventDetails.contractReturn),
     row("Parent aware of team fee", commitments.teamFee ? "Agreed" : ""),
     row("Parent judge volunteer commitment", commitments.judgeVolunteer ? "Agreed" : ""),
     row("Parent transportation commitment", commitments.transportation ? "Agreed" : ""),
@@ -50,6 +60,7 @@ function applicationRows(application) {
     row("Debate or public speaking experience", answers.experienceDetail),
     row("Schedule conflicts", answers.scheduleConflicts),
     row("Additional notes", answers.anythingElse),
+    row("Questions for the coach", answers.questionsForCoach),
     row("Parent agreement", application.parentAgreement ? "Agreed" : ""),
     row("Parent typed signature", application.parentSignature),
   ].filter(Boolean);

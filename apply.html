@@ -240,7 +240,7 @@
     .card-amber  .form-label { color: rgba(232,196,124,0.8); }
 
     /* ── Anchor scroll offset (clears fixed header) ── */
-    #section-1, #section-2, #section-3, #section-4, #section-5 {
+    #section-1, #section-2, #section-3, #section-4, #section-5, #section-6 {
       scroll-margin-top: 100px;
     }
 
@@ -350,6 +350,12 @@
     }
     .form-select option { background: #0B2545; color: #fff; }
     .form-textarea { resize: vertical; min-height: 100px; line-height: 1.65; }
+    .field-error {
+      color: #ffb5b5;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      margin: -2px 0 0;
+    }
     .email-delivery-note {
       align-items:flex-start; background:rgba(126,184,232,.08); border:1px solid rgba(126,184,232,.24);
       border-left:3px solid #7EB8E8; border-radius:7px; color:rgba(255,255,255,.92); display:flex;
@@ -677,17 +683,22 @@
       <div class="form-step-connector"></div>
       <a class="form-step" href="#section-3">
         <div class="form-step-num" style="color:#6DD8B8;border-color:rgba(109,216,184,0.75);background:rgba(109,216,184,0.18);">3</div>
-        <span class="form-step-label" style="color:#6DD8B8;">Commitments</span>
+        <span class="form-step-label" style="color:#6DD8B8;">Event Details</span>
       </a>
       <div class="form-step-connector"></div>
       <a class="form-step" href="#section-4">
         <div class="form-step-num" style="color:#C4AAFF;border-color:rgba(196,168,255,0.75);background:rgba(196,168,255,0.18);">4</div>
-        <span class="form-step-label" style="color:#C4AAFF;">Short Answers</span>
+        <span class="form-step-label" style="color:#C4AAFF;">Commitments</span>
       </a>
       <div class="form-step-connector"></div>
       <a class="form-step" href="#section-5">
         <div class="form-step-num" style="color:#E8C47C;border-color:rgba(232,196,124,0.75);background:rgba(232,196,124,0.18);">5</div>
-        <span class="form-step-label" style="color:#E8C47C;">Agreement</span>
+        <span class="form-step-label" style="color:#E8C47C;">Short Answers</span>
+      </a>
+      <div class="form-step-connector"></div>
+      <a class="form-step" href="#section-6">
+        <div class="form-step-num" style="color:#F2D16B;border-color:rgba(242,209,107,0.75);background:rgba(242,209,107,0.18);">6</div>
+        <span class="form-step-label" style="color:#F2D16B;">Agreement</span>
       </a>
     </div>
 
@@ -803,9 +814,81 @@
             </div>
           </div>
 
-          <!-- ── SECTION 3: Commitment Acknowledgments ── -->
+          <!-- ── SECTION 3: Event Details ── -->
           <div id="section-3" class="form-card card-teal">
-            <div class="form-card-title"><span class="card-num">3</span>Commitment Acknowledgments</div>
+            <div class="form-card-title"><span class="card-num">3</span>Event Details &amp; Partner</div>
+            <div class="form-card-subtitle">Please tell the coach about your partner and your availability for the fall kickoff events and tournaments.</div>
+
+            <div class="schedule-note">
+              <strong>QST interactive info session:</strong> The September 2nd session introduces Public Forum Debate and its parts, including the case, rebuttal, and Crossfire.
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="qst-session">QST Interactive Info Session <span class="req">*</span></label>
+                <select class="form-select" id="qst-session" name="QST interactive info session attendance" required>
+                  <option value="" disabled selected>Select one</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No / Already Passed">No / Already Passed</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="partner-info">Debate Partner <span class="req">*</span></label>
+                <input class="form-input" type="text" id="partner-info" name="Debate partner information" placeholder="Name of partner, or write “I need a partner”" required/>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="sept-22-attendance">Tuesday, September 22 · 2:30–4:30 p.m. <span class="req">*</span></label>
+                <select class="form-select" id="sept-22-attendance" name="September 22, 2026 attendance" required>
+                  <option value="" disabled selected>Select one</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="sept-23-attendance">Wednesday, September 23 · 2:30–4:30 p.m. <span class="req">*</span></label>
+                <select class="form-select" id="sept-23-attendance" name="September 23, 2026 attendance" required>
+                  <option value="" disabled selected>Select one</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-card-rule"></div>
+            <div class="form-group">
+              <label class="form-label">Tournament availability — select at least 3 <span class="req">*</span></label>
+              <div class="check-group" id="tournament-availability-group">
+                <label class="check-item">
+                  <input class="tournament-date-option" type="checkbox" name="Tournament availability" value="October 24th"/>
+                  <span class="check-item-label">October 24th</span>
+                </label>
+                <label class="check-item">
+                  <input class="tournament-date-option" type="checkbox" name="Tournament availability" value="November 14th"/>
+                  <span class="check-item-label">November 14th</span>
+                </label>
+                <label class="check-item">
+                  <input class="tournament-date-option" type="checkbox" name="Tournament availability" value="December 5th"/>
+                  <span class="check-item-label">December 5th</span>
+                </label>
+                <label class="check-item">
+                  <input class="tournament-date-option" type="checkbox" name="Tournament availability" value="January 30th"/>
+                  <span class="check-item-label">January 30th</span>
+                </label>
+                <label class="check-item">
+                  <input class="tournament-date-option" type="checkbox" name="Tournament availability" value="February 20th"/>
+                  <span class="check-item-label">February 20th</span>
+                </label>
+              </div>
+              <p class="field-error" id="tournament-availability-error" hidden>Please select at least 3 tournaments you can attend.</p>
+            </div>
+          </div>
+
+          <!-- ── SECTION 4: Commitment Acknowledgments ── -->
+          <div id="section-4" class="form-card card-purple">
+            <div class="form-card-title"><span class="card-num">4</span>Commitment Acknowledgments</div>
             <div class="form-card-subtitle">This is a Cooper team, not a club. Please read each commitment carefully and check the box only if your student can genuinely fulfill it.</div>
 
             <div class="schedule-note">
@@ -845,9 +928,49 @@
                 <input type="checkbox" name="Student commits to independent research and speech prep" value="Yes" required/>
                 <span class="check-item-label">
                   <strong>Research &amp; Prep</strong>
-                  I understand debate requires independent research, writing 4+ minute speeches, preparing Crossfire questions, and staying current as topics change every 1–2 months.
+                  I am willing to research, prepare, and collaborate with my partner for the September 22nd and 23rd debates.
                 </span>
               </label>
+
+              <label class="check-item">
+                <input type="checkbox" name="Student understands basic debate etiquette" value="Yes" required/>
+                <span class="check-item-label">
+                  <strong>Debate Etiquette</strong>
+                  I understand that my partner and I must be polite, respectful, and maintain basic etiquette during the debate.
+                </span>
+              </label>
+
+              <div class="form-row full" style="margin-top:6px;">
+                <div class="form-group">
+                  <label class="form-label" for="tabroom-account">Tabroom Account <span class="req">*</span></label>
+                  <select class="form-select" id="tabroom-account" name="Tabroom account status" required>
+                    <option value="" disabled selected>Select one</option>
+                    <option value="Yes">Yes, I will make one using my home or personal email</option>
+                    <option value="No">No</option>
+                    <option value="I don't have a home or personal email">I don't have a home or personal email</option>
+                    <option value="I already have one">I already have one</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-row" style="margin-top:6px;">
+                <div class="form-group">
+                  <label class="form-label" for="contract-agreement">I fully agree to every term on the Debate Team Contract <span class="req">*</span></label>
+                  <select class="form-select" id="contract-agreement" name="Agreement to every term on the Debate Team Contract" required>
+                    <option value="" disabled selected>Select one</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="contract-return">I will return the completed contract by October 2nd <span class="req">*</span></label>
+                  <select class="form-select" id="contract-return" name="Contract completion and return by October 2nd" required>
+                    <option value="" disabled selected>Select one</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
 
               <label class="check-item">
                 <input type="checkbox" name="Parent is aware of the $15 per student team fee" value="Yes" required/>
@@ -883,9 +1006,9 @@
             </div>
           </div>
 
-          <!-- ── SECTION 4: Short Answer Questions ── -->
-          <div id="section-4" class="form-card card-purple">
-            <div class="form-card-title"><span class="card-num">4</span>Short Answer Questions</div>
+          <!-- ── SECTION 5: Short Answer Questions ── -->
+          <div id="section-5" class="form-card card-amber">
+            <div class="form-card-title"><span class="card-num">5</span>Short Answer Questions</div>
             <div class="form-card-subtitle">Answer honestly and in your own words. There are no right or wrong answers — the coach wants to hear your voice.</div>
 
             <div class="form-row full">
@@ -921,11 +1044,20 @@
                 <textarea class="form-textarea" id="anything-else" name="Anything else you would like Coach Konde to know?" placeholder="Optional — share anything relevant." style="min-height:80px;"></textarea>
               </div>
             </div>
+
+            <div class="form-card-rule"></div>
+
+            <div class="form-row full">
+              <div class="form-group">
+                <label class="form-label" for="questions-for-coach">Any questions for the coach? <span class="req">*</span></label>
+                <textarea class="form-textarea" id="questions-for-coach" name="Questions for the coach" placeholder="If you have no questions, write “No questions.” Someone will email you the answer." required style="min-height:90px;"></textarea>
+              </div>
+            </div>
           </div>
 
-          <!-- ── SECTION 5: Parent Agreement & Submit ── -->
-          <div id="section-5" class="form-card card-amber">
-            <div class="form-card-title"><span class="card-num">5</span>Parent / Guardian Agreement</div>
+          <!-- ── SECTION 6: Parent Agreement & Submit ── -->
+          <div id="section-6" class="form-card card-gold">
+            <div class="form-card-title"><span class="card-num">6</span>Parent / Guardian Agreement</div>
             <div class="form-card-subtitle">
               By submitting this application, the parent or guardian listed above confirms they have
               read and agree to all commitments outlined in this form and on the
@@ -1122,6 +1254,8 @@
   const submitBtn = document.getElementById('submit-btn');
   const studentPersonalEmail = document.getElementById('student-personal-email');
   const parentEmail = document.getElementById('parent-email');
+  const tournamentDateOptions = Array.from(document.querySelectorAll('.tournament-date-option'));
+  const tournamentAvailabilityError = document.getElementById('tournament-availability-error');
   const reviewModal = document.getElementById('application-review-modal');
   const confirmationModal = document.getElementById('application-confirmation-modal');
   const reviewList = document.getElementById('application-review-list');
@@ -1149,6 +1283,7 @@
     : createSubmissionId();
   let turnstileWidgetId = null;
   let turnstileToken = '';
+  let tournamentValidationActive = false;
   const studentIdInput = document.getElementById('student-id');
   const studentSchoolEmailInput = document.getElementById('student-school-email');
 
@@ -1177,6 +1312,21 @@
     applicationSubmitError.classList.remove('visible');
     reviewModal.classList.add('is-open');
     renderTurnstile();
+  }
+
+  function selectedTournamentDates() {
+    return tournamentDateOptions.filter(option => option.checked).map(option => option.value);
+  }
+
+  function updateTournamentAvailabilityState() {
+    const valid = selectedTournamentDates().length >= 3;
+    tournamentAvailabilityError.hidden = valid || !tournamentValidationActive;
+    tournamentDateOptions.forEach(option => {
+      option.closest('.check-item').style.borderColor = !valid && tournamentValidationActive
+        ? 'rgba(220,60,60,0.6)'
+        : '';
+    });
+    return valid;
   }
 
   function renderTurnstile() {
@@ -1225,7 +1375,8 @@
           studentId: value('student-id'),
           schoolEmail: value('student-school-email'),
           personalEmail: value('student-personal-email'),
-          debateExperience: value('debate-exp')
+          debateExperience: value('debate-exp'),
+          partner: value('partner-info')
         },
         parent: {
           firstName: value('parent-first'),
@@ -1242,13 +1393,24 @@
           teamFee: checked('[name="Parent is aware of the $15 per student team fee"]'),
           judgeVolunteer: checked('[name="Parent will volunteer as a tournament judge for at least 1 tournament"]'),
           transportation: checked('[name="Parent will arrange driving or carpooling to tournaments"]'),
-          googleMeets: checked('[name="Parent will attend the required team Google Meet sessions"]')
+          googleMeets: checked('[name="Parent will attend the required team Google Meet sessions"]'),
+          etiquette: checked('[name="Student understands basic debate etiquette"]')
+        },
+        eventDetails: {
+          qstSession: value('qst-session'),
+          september22Attendance: value('sept-22-attendance'),
+          september23Attendance: value('sept-23-attendance'),
+          tournamentDates: selectedTournamentDates(),
+          tabroomAccount: value('tabroom-account'),
+          contractAgreement: value('contract-agreement'),
+          contractReturn: value('contract-return')
         },
         answers: {
           whyJoin: value('why-join'),
           experienceDetail: value('experience-detail'),
           scheduleConflicts: value('schedule-conflicts'),
-          anythingElse: value('anything-else')
+          anythingElse: value('anything-else'),
+          questionsForCoach: value('questions-for-coach')
         },
         parentAgreement: checked('[name="Parent/Guardian has read and agrees to all commitments above"]'),
         parentSignature: value('parent-sig')
@@ -1261,6 +1423,7 @@
     const student = application.student || {};
     const parent = application.parent || {};
     const commitments = application.commitments || {};
+    const eventDetails = application.eventDetails || {};
     const answers = application.answers || {};
     const values = {
       'first-name': student.firstName,
@@ -1270,6 +1433,7 @@
       'student-school-email': student.schoolEmail,
       'student-personal-email': student.personalEmail,
       'debate-exp': student.debateExperience,
+      'partner-info': student.partner,
       'parent-first': parent.firstName,
       'parent-last': parent.lastName,
       'parent-email': parent.email,
@@ -1279,6 +1443,7 @@
       'experience-detail': answers.experienceDetail,
       'schedule-conflicts': answers.scheduleConflicts,
       'anything-else': answers.anythingElse,
+      'questions-for-coach': answers.questionsForCoach,
       'parent-sig': application.parentSignature
     };
     Object.entries(values).forEach(([id, value]) => {
@@ -1293,11 +1458,21 @@
       ['Parent will volunteer as a tournament judge for at least 1 tournament', commitments.judgeVolunteer],
       ['Parent will arrange driving or carpooling to tournaments', commitments.transportation],
       ['Parent will attend the required team Google Meet sessions', commitments.googleMeets],
+      ['Student understands basic debate etiquette', commitments.etiquette],
       ['Parent/Guardian has read and agrees to all commitments above', application.parentAgreement]
     ];
     checks.forEach(([name, checked]) => {
       form.querySelector(`[name="${name}"]`).checked = checked === true;
     });
+    if (typeof eventDetails.qstSession === 'string') document.getElementById('qst-session').value = eventDetails.qstSession;
+    if (typeof eventDetails.september22Attendance === 'string') document.getElementById('sept-22-attendance').value = eventDetails.september22Attendance;
+    if (typeof eventDetails.september23Attendance === 'string') document.getElementById('sept-23-attendance').value = eventDetails.september23Attendance;
+    if (typeof eventDetails.tabroomAccount === 'string') document.getElementById('tabroom-account').value = eventDetails.tabroomAccount;
+    if (typeof eventDetails.contractAgreement === 'string') document.getElementById('contract-agreement').value = eventDetails.contractAgreement;
+    if (typeof eventDetails.contractReturn === 'string') document.getElementById('contract-return').value = eventDetails.contractReturn;
+    const savedTournamentDates = Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates : [];
+    tournamentDateOptions.forEach(option => { option.checked = savedTournamentDates.includes(option.value); });
+    updateTournamentAvailabilityState();
   }
 
   if (pendingApplication && pendingApplication.application) {
@@ -1327,6 +1502,9 @@
         valid = false;
       }
     });
+    tournamentValidationActive = true;
+    const tournamentDatesValid = updateTournamentAvailabilityState();
+    if (!tournamentDatesValid) valid = false;
     if (/@fcpsschools\.net$/i.test(studentPersonalEmail.value.trim())) {
       studentPersonalEmail.style.borderColor = 'rgba(220,60,60,0.8)';
       studentPersonalEmail.setCustomValidity('Use a personal email address that can receive external email.');
@@ -1338,6 +1516,7 @@
       e.preventDefault();
       const firstError = form.querySelector('[required]:invalid, .check-item[style*="rgb(220"]');
       if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      else if (!tournamentDatesValid) document.getElementById('tournament-availability-group').scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
     }
     openApplicationReview();
@@ -1389,8 +1568,10 @@
   form.querySelectorAll('input[type="checkbox"]').forEach(el => {
     el.addEventListener('change', () => {
       el.closest('.check-item').style.borderColor = '';
+      if (el.classList.contains('tournament-date-option')) updateTournamentAvailabilityState();
     });
   });
+  updateTournamentAvailabilityState();
 </script>
 </body>
 </html>

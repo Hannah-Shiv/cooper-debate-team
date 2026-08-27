@@ -15,3 +15,4 @@
 - [Firebase Google sign-in](firebase-google-popup-auth.md) — On GitHub Pages with managed Chrome, use a click-initiated popup; redirect sessions can be lost across the Firebase auth domain.
 - [Member access model](member-access-model.md) — One person may have multiple login emails; deactivate instead of deleting; Coach and Website Admin share full permissions.
 - [Member header consistency](member-header-consistency.md) — Use notification, full name, role text, and sign-out; no role artwork; keep badge width/color stable.
+- [Development-first releases](development-first-releases.md) — Verify application changes in development and deploy only after explicit production approval.
