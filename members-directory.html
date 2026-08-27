@@ -455,6 +455,8 @@
 
     .form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
+    .form-field.half { grid-column: span 2; }
+    .form-field.half { grid-column: span 2; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
     .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .form-field input, .form-field select, .form-field textarea {
@@ -510,6 +512,8 @@
       .profile-stat-strip { grid-template-columns: repeat(2,1fr); }
       .form-grid { grid-template-columns: 1fr; }
       .form-field.full { grid-column: 1; }
+      .form-field.half { grid-column: 1; }
+      .form-field.half { grid-column: 1; }
       .hub-header { align-items: flex-start; flex-direction: column; gap: 18px; }
       .tab-bar { flex-wrap: wrap; margin: 0; }
       .admin-table thead th:nth-child(3),
@@ -985,19 +989,6 @@
           <label for="f-email">Primary Login Email <span style="color:#f87171">*</span></label>
           <input type="email" id="f-email" required autocomplete="email" placeholder="student@fcpsschools.net">
         </div>
-        <div class="form-field full">
-          <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
-          <textarea id="f-login-emails" rows="3"
-            placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
-          <p style="margin:7px 0 0;color:#4b6688;font-size:.76rem;line-height:1.5">
-            One per line or separated by commas. Every address opens this same member profile; removing one blocks only that login.
-          </p>
-        </div>
-        <div class="form-field">
-          <label for="f-phone">Phone <span class="opt">(optional)</span></label>
-          <input type="tel" id="f-phone" autocomplete="tel" placeholder="(555) 123-4567">
-        </div>
-        <hr class="form-divider">
         <div class="form-field">
           <label for="f-role">Role <span style="color:#f87171">*</span></label>
           <select id="f-role" required>
@@ -1008,10 +999,35 @@
             <option value="website-admin">Website Admin</option>
           </select>
         </div>
-        <div class="form-field">
-          <label for="f-grad">Grad Year <span class="opt">(optional)</span></label>
-          <input type="number" id="f-grad" min="2020" max="2040" step="1" placeholder="2026">
+        <div class="form-field half">
+          <label for="f-login-emails">Additional Login Emails <span class="opt">(optional)</span></label>
+          <textarea id="f-login-emails" rows="3"
+            placeholder="coach@fcps.edu&#10;coach@fcpsschools.net"></textarea>
+          <p style="margin:7px 0 0;color:#4b6688;font-size:.76rem;line-height:1.5">
+            One per line or separated by commas. Every address opens this same member profile; removing one blocks only that login.
+          </p>
         </div>
+        <div class="form-field">
+          <label for="f-grade">Grade <span class="opt">(optional)</span></label>
+          <select id="f-grade">
+            <option value="">Select…</option>
+            <option value="7th Grade">7th Grade</option>
+            <option value="8th Grade">8th Grade</option>
+            <option value="Alumni">Alumni</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Portal Status</label>
+          <div class="toggle-row">
+            <label class="tog">
+              <input type="checkbox" id="f-active" checked
+                      onchange="document.getElementById('active-lbl').textContent=this.checked?'Active — portal access allowed':'Inactive — sign-in blocked'">
+              <span class="tog-slider"></span>
+            </label>
+            <span class="toggle-lbl" id="active-lbl">Active — portal access allowed</span>
+          </div>
+        </div>
+        <hr class="form-divider">
         <div class="form-field full">
           <label>Events <span class="opt">(select all that apply)</span></label>
           <div class="events-row">
@@ -1034,26 +1050,6 @@
                  onchange="handlePhotoUpload(this.files[0])">
           <div class="photo-upload-area" id="photo-upload-area">
             <!-- states injected by JS -->
-          </div>
-        </div>
-        <div class="form-field">
-          <label for="f-grade">Grade <span class="opt">(optional)</span></label>
-          <select id="f-grade">
-            <option value="">Select…</option>
-            <option value="7th Grade">7th Grade</option>
-            <option value="8th Grade">8th Grade</option>
-            <option value="Alumni">Alumni</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label>Portal Status</label>
-          <div class="toggle-row">
-            <label class="tog">
-              <input type="checkbox" id="f-active" checked
-                      onchange="document.getElementById('active-lbl').textContent=this.checked?'Active — portal access allowed':'Inactive — sign-in blocked'">
-              <span class="tog-slider"></span>
-            </label>
-            <span class="toggle-lbl" id="active-lbl">Active — portal access allowed</span>
           </div>
         </div>
       </div>
@@ -2778,9 +2774,8 @@ function renderRoster(list) {
       ? eventNames.map(event => `<span>${esc(event)}</span>`).join('')
       : '—';
     const active = m.active !== false;
-    const grad   = m.gradYear ? ` <span style="color:#2a4060;font-size:.76rem">'${String(m.gradYear).slice(-2)}</span>` : '';
     return `<tr>
-      <td class="td-name">${name}${grad}</td>
+      <td class="td-name">${name}</td>
       <td><span class="role-badge ${esc(role)}">${esc(role)}</span></td>
       <td class="td-email">${email}</td>
       <td class="td-events">${events}</td>
@@ -2840,9 +2835,7 @@ function openEditModal(docId) {
   document.getElementById('f-last').value  = m.lastName  || '';
   document.getElementById('f-email').value = m.email     || '';
   document.getElementById('f-login-emails').value = getMemberLoginEmails(m).filter(email => email !== (m.email || '').toLowerCase()).join('\n');
-  document.getElementById('f-phone').value = m.phone     || '';
   document.getElementById('f-role').value  = m.role      || 'member';
-  document.getElementById('f-grad').value  = m.gradYear  || '';
   document.getElementById('f-notes').value = m.notes     || '';
   const active = m.active !== false;
   document.getElementById('f-active').checked = active;
@@ -2863,9 +2856,7 @@ async function saveMember(e) {
   const lastName  = document.getElementById('f-last').value.trim();
   const email     = document.getElementById('f-email').value.trim().toLowerCase();
   const loginEmails = uniqueEmails([email, ...parseLoginEmails(document.getElementById('f-login-emails').value)]);
-  const phone     = document.getElementById('f-phone').value.trim();
   const role      = document.getElementById('f-role').value;
-  const gradYear  = parseInt(document.getElementById('f-grad').value) || null;
   const notes     = document.getElementById('f-notes').value.trim();
   const active    = document.getElementById('f-active').checked;
   const docId     = document.getElementById('form-doc-id').value;
@@ -2892,7 +2883,7 @@ async function saveMember(e) {
   btn.disabled = true; btn.textContent = 'Saving…';
   const photoUrl = document.getElementById('f-photo').value.trim();
   const grade    = document.getElementById('f-grade').value;
-  const data = { firstName, lastName, email, loginEmails, phone, role, gradYear: gradYear||null, events, active, notes, photoUrl: photoUrl||null, grade: grade||null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
+  const data = { firstName, lastName, email, loginEmails, role, events, active, notes, photoUrl: photoUrl||null, grade: grade||null, updatedAt: firebase.firestore.FieldValue.serverTimestamp() };
   try {
     const existing = docId ? allRoster.find(member => member.docId === docId) : null;
     const memberRef = docId ? dirDb.collection('members').doc(docId) : dirDb.collection('members').doc();
