@@ -326,13 +326,20 @@
 
     /* ── Form cards ── */
     .form-card {
-      background: linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
+      background:
+        radial-gradient(circle at 16% 0%, rgba(143,211,255,0.16), transparent 38%),
+        radial-gradient(circle at 92% 100%, rgba(242,209,107,0.08), transparent 32%),
+        linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
       border: 1px solid rgba(242,209,107,0.78);
       border-top: 2px solid rgba(242,209,107,0.96);
       border-radius: 14px;
       padding: 36px 38px 32px;
       margin-bottom: 20px;
-      box-shadow: 0 10px 28px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.035);
+      box-shadow:
+        0 10px 28px rgba(0,0,0,0.26),
+        0 0 28px rgba(126,184,232,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(143,211,255,0.04);
       transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
     }
     .form-card:hover {
@@ -375,9 +382,17 @@
     .form-column .form-card.card-teal,
     .form-column .form-card.card-purple,
     .form-column .form-card.card-amber {
-      background: linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
+      background:
+        radial-gradient(circle at 16% 0%, rgba(143,211,255,0.16), transparent 38%),
+        radial-gradient(circle at 92% 100%, rgba(242,209,107,0.08), transparent 32%),
+        linear-gradient(145deg, rgba(18,47,98,0.99), rgba(9,27,64,0.99));
       border-color: rgba(242,209,107,0.78);
       border-top-color: rgba(242,209,107,0.96);
+      box-shadow:
+        0 10px 28px rgba(0,0,0,0.26),
+        0 0 28px rgba(126,184,232,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(143,211,255,0.04);
     }
     .form-column .form-card:hover,
     .form-column .form-card.card-gold:hover,
@@ -435,7 +450,7 @@
       margin-bottom: 4px;
     }
     .form-card-subtitle {
-      font-size: 0.97rem;
+      font-size: 1.08rem;
       color: rgba(255,255,255,0.76);
       margin-bottom: 26px;
       line-height: 1.65;
@@ -782,7 +797,11 @@
       border-radius: 14px;
       padding: 24px 22px;
       margin-bottom: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.035);
+      box-shadow:
+        0 8px 24px rgba(0,0,0,0.24),
+        0 0 24px rgba(242,209,107,0.12),
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        inset 0 0 0 1px rgba(255,255,255,0.035);
     }
     .sidebar-card:last-child { margin-bottom: 0; }
     .sidebar-card.info-card {
@@ -791,27 +810,39 @@
     }
     .info-card--timeline {
       --info-accent: #8FD3FF;
-      background: linear-gradient(145deg, rgba(19,48,79,0.98), rgba(14,27,52,0.99));
+      background:
+        radial-gradient(circle at 18% 0%, rgba(143,211,255,0.18), transparent 40%),
+        linear-gradient(145deg, rgba(19,48,79,0.98), rgba(14,27,52,0.99));
       border-color: rgba(143,211,255,0.6);
       border-top-color: #8FD3FF;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24), 0 0 24px rgba(143,211,255,0.18), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(143,211,255,0.05);
     }
     .info-card--student {
       --info-accent: #79E3C1;
-      background: linear-gradient(145deg, rgba(17,63,60,0.98), rgba(14,34,49,0.99));
+      background:
+        radial-gradient(circle at 18% 0%, rgba(121,227,193,0.18), transparent 40%),
+        linear-gradient(145deg, rgba(17,63,60,0.98), rgba(14,34,49,0.99));
       border-color: rgba(121,227,193,0.58);
       border-top-color: #79E3C1;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24), 0 0 24px rgba(121,227,193,0.18), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(121,227,193,0.05);
     }
     .info-card--parent {
       --info-accent: #FFAA98;
-      background: linear-gradient(145deg, rgba(79,43,43,0.98), rgba(43,29,43,0.99));
+      background:
+        radial-gradient(circle at 18% 0%, rgba(255,170,152,0.18), transparent 40%),
+        linear-gradient(145deg, rgba(79,43,43,0.98), rgba(43,29,43,0.99));
       border-color: rgba(255,170,152,0.58);
       border-top-color: #FFAA98;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24), 0 0 24px rgba(255,170,152,0.18), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(255,170,152,0.05);
     }
     .info-card--questions {
       --info-accent: #D9BDFF;
-      background: linear-gradient(145deg, rgba(57,39,78,0.98), rgba(29,28,53,0.99));
+      background:
+        radial-gradient(circle at 18% 0%, rgba(217,189,255,0.18), transparent 40%),
+        linear-gradient(145deg, rgba(57,39,78,0.98), rgba(29,28,53,0.99));
       border-color: rgba(217,189,255,0.58);
       border-top-color: #D9BDFF;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24), 0 0 24px rgba(217,189,255,0.18), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(217,189,255,0.05);
     }
     .sidebar-card.info-card .sidebar-card-title {
       color: var(--info-accent);
@@ -863,9 +894,12 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.26), 0 0 18px rgba(242,209,107,0.06);
     }
     .sidebar-column .deadline-card {
-      background: linear-gradient(145deg, rgba(88,67,29,0.98), rgba(39,31,35,0.99));
+      background:
+        radial-gradient(circle at 18% 0%, rgba(242,209,107,0.2), transparent 40%),
+        linear-gradient(145deg, rgba(88,67,29,0.98), rgba(39,31,35,0.99));
       border-color: rgba(232,196,124,0.76);
       border-top-color: #F2D16B;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.24), 0 0 24px rgba(242,209,107,0.2), inset 0 1px 0 rgba(255,255,255,0.12), inset 0 0 0 1px rgba(242,209,107,0.05);
     }
     .deadline-label {
       font-family: 'Cormorant Garamond', serif;
@@ -889,6 +923,11 @@
       color: rgba(255,255,255,0.76);
       line-height: 1.55;
     }
+    .sidebar-column {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.08rem;
+    }
+    .sidebar-column * { font-family: 'Cormorant Garamond', serif; }
     .sidebar-card.info-card > p {
       font-family: 'Cormorant Garamond', serif !important;
       font-size: 1.08rem !important;
