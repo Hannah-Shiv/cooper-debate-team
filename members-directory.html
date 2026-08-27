@@ -456,8 +456,8 @@
     .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 14px; }
     .form-field.full { grid-column: 1 / -1; }
     .form-field.half { grid-column: span 1; }
-    .portal-status-field .toggle-row { flex-direction: column; align-items: flex-start; gap: 7px; }
-    .portal-status-field .toggle-lbl { line-height: 1.25; }
+    .portal-status-field .toggle-row { flex-direction: row; align-items: center; gap: 12px; }
+    .portal-status-field .toggle-lbl { line-height: 1.25; flex: 1; }
     .form-field label { display: block; font-family: 'Josefin Sans', sans-serif; font-size: 0.86rem; letter-spacing: 0.09em; text-transform: uppercase; color: #7090b0; margin-bottom: 5px; }
     .form-field label .opt { opacity: 0.45; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .form-field input, .form-field select, .form-field textarea {
@@ -479,12 +479,14 @@
     .ev-chip input:checked + label { background: rgba(200,169,110,0.1); border-color: rgba(200,169,110,0.5); color: #c8a96e; }
 
     .toggle-row { display: flex; align-items: center; gap: 10px; }
-    .tog { position: relative; width: 46px; height: 26px; flex-shrink: 0; cursor: pointer; }
+    .tog { position: relative; width: 116px; height: 36px; flex-shrink: 0; cursor: pointer; }
     .tog input { display: none; }
-    .tog-slider { position: absolute; inset: 0; background: #17284d; border: 1px solid #2b4678; border-radius: 22px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2); transition: all 0.2s; }
-    .tog-slider::before { content: ''; position: absolute; width: 20px; height: 20px; left: 2px; top: 2px; background: #6b84a8; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.28); transition: all 0.2s; }
-    .tog input:checked ~ .tog-slider { background: #167446; border-color: #34d477; box-shadow: 0 0 0 3px rgba(52,212,119,0.12), inset 0 1px 2px rgba(0,0,0,0.18); }
-    .tog input:checked ~ .tog-slider::before { background: #b7ffd2; transform: translateX(20px); }
+    .tog-slider { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: #991b1b; border: 1px solid #ef4444; border-radius: 8px; box-shadow: inset 0 1px 2px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.16); color: #fff1f2; transition: all 0.2s; }
+    .tog-slider::before { content: ''; position: absolute; width: 28px; height: 28px; left: 3px; top: 3px; background: #ffe4e6; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.28); transition: all 0.2s; }
+    .tog-slider::after { content: 'INACTIVE'; position: relative; z-index: 1; font-family: 'Josefin Sans', sans-serif; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.1em; }
+    .tog input:checked ~ .tog-slider { background: #15803d; border-color: #4ade80; box-shadow: 0 0 0 3px rgba(52,212,119,0.12), inset 0 1px 2px rgba(0,0,0,0.18), 0 3px 8px rgba(0,0,0,0.16); color: #f0fdf4; }
+    .tog input:checked ~ .tog-slider::before { background: #dcfce7; transform: translateX(80px); }
+    .tog input:checked ~ .tog-slider::after { content: 'ACTIVE'; }
     .toggle-lbl { font-family: 'Josefin Sans', sans-serif; font-size: 1.08rem; color: #7090b0; }
     .photo-field .photo-upload-area { min-height: 26px; display: flex; align-items: center; }
 
@@ -1025,10 +1027,11 @@
           <div class="toggle-row">
             <label class="tog">
               <input type="checkbox" id="f-active" checked
-                      onchange="document.getElementById('active-lbl').textContent=this.checked?'Active. Portal access allowed.':'Inactive. Not allowed.'">
+                      aria-label="Portal access status"
+                      onchange="document.getElementById('active-lbl').textContent=this.checked?'Portal access allowed.':'Not allowed.'">
               <span class="tog-slider"></span>
             </label>
-            <span class="toggle-lbl" id="active-lbl">Active. Portal access allowed.</span>
+            <span class="toggle-lbl" id="active-lbl" aria-live="polite">Portal access allowed.</span>
           </div>
         </div>
         <div class="form-field photo-field">
@@ -2806,7 +2809,7 @@ function openAddModal() {
   document.getElementById('form-doc-id').value = '';
   document.getElementById('member-form').reset();
   document.getElementById('f-active').checked = true;
-  document.getElementById('active-lbl').textContent = 'Active. Portal access allowed.';
+  document.getElementById('active-lbl').textContent = 'Portal access allowed.';
   document.getElementById('f-login-emails').value = '';
   document.getElementById('f-grade').value = '';
   renderPhotoUploadEmpty();
@@ -2831,7 +2834,7 @@ function openEditModal(docId) {
   document.getElementById('f-notes').value = m.notes     || '';
   const active = m.active !== false;
   document.getElementById('f-active').checked = active;
-  document.getElementById('active-lbl').textContent = active ? 'Active. Portal access allowed.' : 'Inactive. Not allowed.';
+  document.getElementById('active-lbl').textContent = active ? 'Portal access allowed.' : 'Not allowed.';
   document.getElementById('f-grade').value = m.grade    || '';
   if (m.photoUrl) renderPhotoPreview(m.photoUrl, 'Current photo');
   else renderPhotoUploadEmpty();
