@@ -291,7 +291,7 @@
     /* ── Balanced three-column layout ── */
     .apply-layout {
       display: grid;
-      grid-template-columns: minmax(190px, 253px) minmax(0, 1fr) minmax(190px, 253px);
+      grid-template-columns: minmax(190px, 291px) minmax(0, 1fr) minmax(190px, 291px);
       gap: 24px;
       align-items: start;
     }
@@ -459,6 +459,8 @@
       margin-bottom: 16px;
     }
     .form-row.full { grid-template-columns: 1fr; }
+    .debate-experience-row { grid-template-columns: minmax(0, 1fr); }
+    #debate-exp { min-width: 100%; }
     @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } }
     .form-group { display: flex; flex-direction: column; gap: 7px; }
 
@@ -579,15 +581,15 @@
       .wizard-btn { flex: 1; padding: 11px 10px; }
     }
     .email-delivery-note {
-      align-items:flex-start; background:linear-gradient(145deg,rgba(7,26,61,.86),rgba(3,13,35,.92)); border:1px solid rgba(126,184,232,.42);
-      border-left:3px solid #7EB8E8; border-radius:7px; color:rgba(255,255,255,.92); display:flex;
+      align-items:flex-start; background:linear-gradient(145deg,rgba(86,61,24,.94),rgba(47,34,28,.97)); border:1px solid rgba(232,196,124,.58);
+      border-left:3px solid #E8C47C; border-radius:7px; color:#FFF4D6; display:flex;
       font-size:.84rem; gap:11px; line-height:1.55; margin:-3px 0 16px; padding:10px 13px;
     }
     .email-delivery-note::before {
-      border:1px solid rgba(126,184,232,.65); border-radius:50%; color:#d9f0ff; content:"i";
+      background:rgba(232,196,124,.14); border:1px solid rgba(232,196,124,.72); border-radius:50%; color:#FFF4D6; content:"i";
       flex:0 0 18px; font:700 .76rem/17px Georgia,serif; margin-top:1px; text-align:center;
     }
-    .email-delivery-note strong { color:#fff; }
+    .email-delivery-note strong { color:#F8E49A; }
 
     /* ── Commitment schedule note ── */
     .schedule-note {
@@ -1006,7 +1008,7 @@
               <span><strong>Note: Email delivery:</strong> <strong>@fcpsschools.net</strong> emails will <strong>NOT</strong> work because FCPS addresses cannot receive these application confirmations. Use a personal <strong>@gmail.com</strong>, <strong>@yahoo.com</strong>, or other external email address.</span>
             </div>
 
-            <div class="form-row">
+            <div class="form-row debate-experience-row">
               <div class="form-group">
                 <label class="form-label" for="debate-exp">Prior Debate Experience</label>
                 <select class="form-select" id="debate-exp" name="Prior Debate Experience">
@@ -1016,7 +1018,6 @@
                   <option value="Other experience">Other experience</option>
                 </select>
               </div>
-              <div></div>
             </div>
           </div>
 
@@ -1650,6 +1651,12 @@
     if (scroll) wizardStepper.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  function scrollToWizardFormTop(step) {
+    const panel = wizardPanels.find(item => Number(item.dataset.wizardStep) === Number(step));
+    const formCard = panel && panel.querySelector('.form-card');
+    if (formCard) formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
   function validateWizardContainer(container) {
     const required = container.querySelectorAll('[required]');
     let valid = true;
@@ -1687,6 +1694,7 @@
   function advanceWizardTo(targetStep) {
     const target = Number(targetStep);
     setWizardStep(target);
+    scrollToWizardFormTop(target);
   }
 
   function renderTurnstile() {
@@ -1851,7 +1859,10 @@
     button.addEventListener('click', () => advanceWizardTo(button.dataset.wizardNext));
   });
   form.querySelectorAll('[data-wizard-prev]').forEach(button => {
-    button.addEventListener('click', () => setWizardStep(button.dataset.wizardPrev));
+    button.addEventListener('click', () => {
+      setWizardStep(button.dataset.wizardPrev);
+      scrollToWizardFormTop(button.dataset.wizardPrev);
+    });
   });
 
   document.querySelectorAll('[data-close-modal]').forEach(button => {
