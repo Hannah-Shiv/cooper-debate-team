@@ -428,25 +428,22 @@
     .form-column .form-card.card-teal .card-num,
     .form-column .form-card.card-purple .card-num,
     .form-column .form-card.card-amber .card-num {
-      background: radial-gradient(circle at 65% 28%, #D86852 0%, #A93636 40%, #741F2B 72%, #3B111C 100%);
-      border: 2px solid #E5A14B;
-      box-shadow:
-        0 0 0 3px rgba(194,67,57,0.12),
-        0 3px 10px rgba(0,0,0,0.34),
-        inset 0 1px 1px rgba(255,255,255,0.42),
-        inset 0 -2px 4px rgba(54,10,14,0.38);
-      color: #FFF4D6;
+      background: #F2D16B;
+      border: 2px solid #F2D16B;
+      box-shadow: none;
+      color: #080808;
       font-family: 'Cinzel', serif !important;
       font-size: 1.25rem;
       font-weight: 700;
       height: 45px;
       margin-right: 10px;
       position: relative;
-      text-shadow: 0 1px 1px rgba(58,12,18,0.55);
+      text-shadow: none;
       width: 45px;
     }
     .form-column .form-card .card-num::before {
       content: '';
+      display: none;
       position: absolute;
       inset: 4px;
       border: 1px solid rgba(255,244,214,0.5);
@@ -1003,164 +1000,6 @@
       line-height: 1.55 !important;
     }
 
-    /* ── Active wizard step color themes ── */
-    .apply-page > .container[data-active-step="1"] {
-      --step-accent: #FFD966;
-      --step-rgb: 255, 217, 102;
-      --step-button-hover: #FFE58F;
-      --step-button-border: #FFF0B5;
-      --step-button-ink: #211A05;
-      --step-button-shadow: #765208;
-      --step-badge-bg: radial-gradient(circle at 65% 28%, #FFF1AD 0%, #E8BC3E 40%, #A87312 72%, #503406 100%);
-      --step-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFD966' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    }
-    .apply-page > .container[data-active-step="2"] {
-      --step-accent: #8FD3FF;
-      --step-rgb: 143, 211, 255;
-      --step-button-hover: #B8E5FF;
-      --step-button-border: #D7F0FF;
-      --step-button-ink: #071827;
-      --step-button-shadow: #315F7C;
-      --step-badge-bg: radial-gradient(circle at 65% 28%, #D8F2FF 0%, #78BEEA 40%, #356E9F 72%, #172E50 100%);
-      --step-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238FD3FF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    }
-    .apply-page > .container[data-active-step="3"] {
-      --step-accent: #79E3C1;
-      --step-rgb: 121, 227, 193;
-      --step-button-hover: #A0EFD6;
-      --step-button-border: #C6F7E7;
-      --step-button-ink: #06251D;
-      --step-button-shadow: #286957;
-      --step-badge-bg: radial-gradient(circle at 65% 28%, #C9F8E8 0%, #64D4B1 40%, #2C806C 72%, #103B39 100%);
-      --step-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2379E3C1' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    }
-    .apply-page > .container[data-active-step="4"] {
-      --step-accent: #D9BDFF;
-      --step-rgb: 217, 189, 255;
-      --step-button-hover: #E8D8FF;
-      --step-button-border: #F2E8FF;
-      --step-button-ink: #211334;
-      --step-button-shadow: #624A84;
-      --step-badge-bg: radial-gradient(circle at 65% 28%, #F0E5FF 0%, #B994EB 40%, #6D4EA0 72%, #2A1B49 100%);
-      --step-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D9BDFF' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    }
-    .apply-page > .container[data-active-step="5"] {
-      --step-accent: #FFAA98;
-      --step-rgb: 255, 170, 152;
-      --step-button-hover: #FFC3B7;
-      --step-button-border: #FFE0D9;
-      --step-button-ink: #2A1110;
-      --step-button-shadow: #87483F;
-      --step-badge-bg: radial-gradient(circle at 65% 28%, #FFD8CF 0%, #EB927E 40%, #A94F51 72%, #481F2D 100%);
-      --step-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FFAA98' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    }
-    .wizard-status:not(.has-error) {
-      color: var(--step-accent);
-      border-color: rgba(var(--step-rgb), 0.56);
-      background: rgba(var(--step-rgb), 0.09);
-      box-shadow: 0 0 18px rgba(var(--step-rgb), 0.13);
-    }
-    .wizard-panel.is-active .form-card {
-      border-color: rgba(var(--step-rgb), 0.76);
-      border-top-color: var(--step-accent);
-      box-shadow:
-        0 10px 28px rgba(0,0,0,0.26),
-        0 0 24px rgba(var(--step-rgb), 0.16),
-        inset 0 1px 0 rgba(255,255,255,0.16),
-        inset 0 0 0 1px rgba(var(--step-rgb), 0.06);
-    }
-    .wizard-panel.is-active .form-card:hover {
-      border-color: var(--step-accent);
-      border-top-color: var(--step-accent);
-      box-shadow:
-        0 14px 36px rgba(0,0,0,0.32),
-        0 0 24px rgba(var(--step-rgb), 0.18),
-        inset 0 1px 0 rgba(255,255,255,0.08);
-    }
-    .wizard-panel.is-active .form-card .form-card-title,
-    .wizard-panel.is-active .form-card .form-label,
-    .wizard-panel.is-active .form-card .schedule-note strong,
-    .wizard-panel.is-active .form-card .check-item-label strong,
-    .wizard-panel.is-active .form-card .email-delivery-note strong {
-      color: var(--step-accent);
-    }
-    .wizard-panel.is-active .form-card .card-num {
-      background: var(--step-badge-bg);
-      border-color: var(--step-accent);
-      color: #FFFFFF;
-      box-shadow:
-        0 0 0 3px rgba(var(--step-rgb), 0.12),
-        0 3px 10px rgba(0,0,0,0.34),
-        inset 0 1px 1px rgba(255,255,255,0.44),
-        inset 0 -2px 4px rgba(0,0,0,0.34);
-    }
-    .wizard-panel.is-active .form-card .form-card-rule {
-      background: rgba(var(--step-rgb), 0.25);
-    }
-    .wizard-panel.is-active .form-card .form-input,
-    .wizard-panel.is-active .form-card .form-select,
-    .wizard-panel.is-active .form-card .form-textarea {
-      border-color: rgba(var(--step-rgb), 0.42);
-      caret-color: var(--step-accent);
-      color: var(--step-accent);
-    }
-    .wizard-panel.is-active .form-card .form-input::placeholder,
-    .wizard-panel.is-active .form-card .form-textarea::placeholder {
-      color: rgba(var(--step-rgb), 0.48);
-    }
-    .wizard-panel.is-active .form-card .form-input:hover,
-    .wizard-panel.is-active .form-card .form-select:hover,
-    .wizard-panel.is-active .form-card .form-textarea:hover {
-      border-color: rgba(var(--step-rgb), 0.68);
-      box-shadow: 0 0 10px rgba(var(--step-rgb), 0.14), 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .wizard-panel.is-active .form-card .form-input:focus,
-    .wizard-panel.is-active .form-card .form-select:focus,
-    .wizard-panel.is-active .form-card .form-textarea:focus {
-      border-color: var(--step-accent);
-      box-shadow: 0 0 0 3px rgba(var(--step-rgb), 0.14), 0 0 16px rgba(var(--step-rgb), 0.2);
-    }
-    .wizard-panel.is-active .form-card .form-select {
-      background-image: var(--step-chevron);
-    }
-    .wizard-panel.is-active .form-card .form-select option {
-      color: var(--step-accent);
-    }
-    .wizard-panel.is-active .form-card .schedule-note,
-    .wizard-panel.is-active .form-card .check-item {
-      border-color: rgba(var(--step-rgb), 0.3);
-      background: rgba(var(--step-rgb), 0.055);
-    }
-    .wizard-panel.is-active .form-card .check-item:hover {
-      border-color: rgba(var(--step-rgb), 0.68);
-      background: rgba(var(--step-rgb), 0.1);
-    }
-    .wizard-panel.is-active .form-card .check-item.is-selected {
-      border-color: var(--step-accent);
-      background: rgba(var(--step-rgb), 0.16);
-      box-shadow: inset 0 0 0 1px rgba(var(--step-rgb), 0.14), 0 5px 16px rgba(var(--step-rgb), 0.14);
-    }
-    .wizard-panel.is-active .form-card input[type="checkbox"] {
-      accent-color: var(--step-accent);
-    }
-    .wizard-panel.is-active .form-card .email-delivery-note {
-      border-left-color: var(--step-accent);
-    }
-    .wizard-panel.is-active .wizard-btn.primary,
-    .wizard-panel.is-active .btn-submit {
-      background: var(--step-accent);
-      border-color: var(--step-button-border);
-      color: var(--step-button-ink);
-      box-shadow: 0 3px 0 var(--step-button-shadow), 0 7px 14px rgba(0,0,0,0.28);
-    }
-    .wizard-panel.is-active .wizard-btn.primary:hover,
-    .wizard-panel.is-active .btn-submit:hover {
-      background: var(--step-button-hover);
-      border-color: #FFFFFF;
-      color: var(--step-button-ink);
-      box-shadow: 0 4px 0 var(--step-button-shadow), 0 8px 16px rgba(0,0,0,0.3);
-    }
-
   </style>
 </head>
 <body class="apply-body" style="--navy-dark:#1c2030;">
@@ -1219,7 +1058,7 @@
 
 <!-- MAIN CONTENT -->
 <main class="apply-page">
-  <div class="container" data-active-step="1">
+  <div class="container">
 
     <!-- POLICY NOTICE -->
     <div class="policy-notice" role="alert">
@@ -1860,7 +1699,6 @@
   const wizardPanels = Array.from(document.querySelectorAll('.wizard-panel'));
   const wizardSteps = Array.from(document.querySelectorAll('[data-wizard-target]'));
   const wizardStepper = document.getElementById('application-steps');
-  const wizardThemeContainer = wizardStepper.closest('.container');
   const wizardStatus = document.getElementById('wizard-status');
   const wizardStepLabels = ['Student information', 'Parent / guardian information', 'Event details and partner', 'Team commitments', 'Short answers and agreement'];
   let currentWizardStep = 1;
@@ -1972,7 +1810,6 @@
     const nextStep = Number(step);
     if (!wizardPanels.some(panel => Number(panel.dataset.wizardStep) === nextStep)) return;
     currentWizardStep = nextStep;
-    wizardThemeContainer.dataset.activeStep = String(currentWizardStep);
     highestWizardStep = Math.max(highestWizardStep, currentWizardStep);
     wizardPanels.forEach(panel => {
       const active = Number(panel.dataset.wizardStep) === currentWizardStep;
