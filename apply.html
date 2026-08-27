@@ -18,14 +18,15 @@
     .apply-page, .apply-page * { --gold: #F2D16B; --gold-pale: #F8E49A; }
 
     /* ── Page ── */
+    .apply-body,
+    .apply-page-header,
+    .apply-page {
+      background: #121827;
+    }
     .apply-page {
       position: relative;
       min-height: 100vh;
       padding: 28px 0 100px;
-      background:
-        radial-gradient(circle at 14% 18%, rgba(21,49,96,0.18), transparent 30%),
-        radial-gradient(circle at 88% 42%, rgba(242,209,107,0.055), transparent 24%),
-        #121827;
     }
     .apply-page > .container {
       width: min(1290px, calc(100% - 48px));
@@ -159,7 +160,7 @@
       padding: 22px 28px 20px;
       overflow: hidden;
       text-align: center;
-      background: linear-gradient(145deg, rgba(11,32,76,0.98), rgba(6,19,49,0.99));
+      background: #061331;
       border: 1px solid rgba(242,209,107,0.72);
       border-radius: 14px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04);
@@ -600,8 +601,28 @@
       transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
     .wizard-btn:hover { background: rgba(126,184,232,0.18); border-color: rgba(126,184,232,0.7); transform: translateY(-1px); }
-    .wizard-btn.primary { background: #E8A828; border-color: #F2C04F; color: #0D1A0A; box-shadow: 0 3px 0 rgba(0,0,0,0.25); }
-    .wizard-btn.primary:hover { background: #F0B83A; border-color: #F8D16A; color: #0D1A0A; box-shadow: 0 4px 0 rgba(0,0,0,0.28); }
+    .wizard-btn.primary {
+      background: #E8A828;
+      border-color: #F6C85A;
+      border-width: 2px;
+      color: #050505;
+      box-shadow: 0 3px 0 #765208, 0 7px 14px rgba(0,0,0,0.28);
+      font-family: 'Josefin Sans', sans-serif !important;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      padding: 11px 22px 10px;
+    }
+    .wizard-btn.primary:hover {
+      background: #F0B83A;
+      border-color: #F8D16A;
+      color: #050505;
+      box-shadow: 0 4px 0 #765208, 0 8px 16px rgba(0,0,0,0.3);
+    }
+    .wizard-btn.primary:focus-visible {
+      outline: 3px solid #FFFFFF;
+      outline-offset: 3px;
+    }
     .wizard-btn[disabled] { cursor: default; opacity: 0.45; transform: none; }
     .wizard-status { scroll-margin-top: 110px; }
     .form-step:disabled { cursor: default; opacity: 0.55; transform: none; }
