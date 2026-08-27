@@ -622,7 +622,7 @@
       display: grid;
       grid-template-columns: 38.5% 23.5% 31%;
       align-items: stretch;
-      padding: 45px 0 78px;
+      padding: 45px 0 0;
     }
     .index-footer-brand {
       position: relative;
@@ -635,12 +635,13 @@
       content: "";
       position: absolute;
       z-index: 0;
-      left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 24px);
-      bottom: -110px;
-      width: 520px;
-      height: 416px;
+      left: 50%;
+      bottom: -140px;
+      width: 760px;
+      height: 610px;
       background: url("images/index-footer-background-jaguar.png?v=1") center/contain no-repeat;
       opacity: 0.25;
+      transform: translateX(-50%);
       pointer-events: none;
     }
     .index-footer-brand > * {
@@ -653,7 +654,7 @@
       align-items: start;
       gap: 20px;
       max-width: 620px;
-      margin: 0 auto 22px;
+      margin: 0 auto;
       text-align: left;
     }
     .index-footer-jaguar {
@@ -849,7 +850,8 @@
     }
     .index-footer-email {
       grid-template-columns: 23px minmax(0,1fr);
-      margin-top: 10px;
+      width: 100%;
+      margin: 0;
       text-transform: none;
     }
     .index-footer-email span {
@@ -935,6 +937,12 @@
         grid-template-columns: 48% 20% 26%;
       }
     }
+    @media (min-width: 1041px) {
+      .index-footer-lockup,
+      .index-footer-brand-details {
+        transform: translateX(-32px);
+      }
+    }
     @media (max-width: 1040px) {
       .index-footer-main {
         grid-template-columns: minmax(0,1fr) minmax(240px,0.72fr);
@@ -944,8 +952,11 @@
         padding: 0 28px 42px;
       }
       .index-footer-brand::after {
-        left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 28px);
-        bottom: -110px;
+        left: 50%;
+        bottom: -140px;
+        width: min(760px, 120vw);
+        height: min(610px, 96vw);
+        transform: translateX(-50%);
       }
       .index-footer-brand-details {
         width: 100%;
@@ -983,15 +994,16 @@
       }
       .index-footer-main {
         grid-template-columns: 1fr;
-        padding-bottom: 34px;
+        padding-bottom: 0;
       }
       .index-footer-brand {
         padding-inline: 8px;
       }
       .index-footer-brand::after {
-        left: calc((min(1600px, 100vw - 64px) - 100vw) / 2 - 16px);
-        width: min(520px,100vw);
-        height: min(416px,80vw);
+        left: 50%;
+        width: min(760px,140vw);
+        height: min(610px,112vw);
+        transform: translateX(-50%);
       }
       .index-footer-lockup {
         display: flex;
