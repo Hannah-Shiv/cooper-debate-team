@@ -66,6 +66,9 @@ function canManageMemberContentRole(role) {
 
 function resolvePortalRole(directoryRole, email) {
   const legacyRole = normalizePortalRole(getAdminRole(email));
+  // A configured Captain mapping is a deliberate lower-privilege override for
+  // testing or demoting a stale directory-admin record.
+  if (legacyRole === "captain") return legacyRole;
   return isFullAdminRole(legacyRole)
     ? legacyRole
     : normalizePortalRole(directoryRole);
