@@ -44,25 +44,26 @@
     /* ── Page header ─────────────────────────────────────────── */
     .hub-header {
       display: flex; align-items: center; justify-content: space-between;
-      gap: 24px; flex-wrap: wrap; min-height: 72px; margin-bottom: 32px;
+      gap: 24px; flex-wrap: nowrap; min-height: 72px; margin-bottom: 32px;
     }
-    .hub-heading { min-width: 260px; }
+    .hub-heading { flex: 1 1 auto; min-width: 0; }
     .hub-title {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.25rem, 4.05vw, 3.48rem);
+      font-size: clamp(32.4px, 4.05vw, 50.1px);
       font-weight: 700; color: #FFD700;
       text-shadow: 0 0 60px rgba(255,215,0,0.2);
       margin: 0 0 6px; line-height: 1;
     }
     .hub-sub {
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase;
+      font-size: 11.8px; letter-spacing: 0.14em; text-transform: uppercase;
       color: rgba(255,255,255,0.68); margin: 0;
     }
 
     /* ── Tab bar ─────────────────────────────────────────────── */
     .tab-bar {
-      display: flex; gap: 6px; margin: 0 0 2px; flex-shrink: 0;
+      display: flex; gap: 6px; flex: 0 0 auto; margin: 0 0 2px;
+      white-space: nowrap;
     }
     .tab-btn {
       display: inline-flex; align-items: center; gap: 7px;
@@ -71,7 +72,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 50px;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.80rem; font-weight: 700;
+      font-size: 11.5px; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
       color: rgba(255,215,0,0.82);
       cursor: pointer; transition: all 0.2s;
