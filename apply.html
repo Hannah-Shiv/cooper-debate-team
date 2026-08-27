@@ -619,7 +619,28 @@
       color: #050505;
       box-shadow: 0 4px 0 #765208, 0 8px 16px rgba(0,0,0,0.3);
     }
+    .wizard-btn.wizard-prev {
+      background: #707780;
+      border: 2px solid #AEB6BE;
+      color: #050505;
+      box-shadow: 0 3px 0 #3F464D, 0 7px 14px rgba(0,0,0,0.26);
+      font-family: 'Josefin Sans', sans-serif !important;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      padding: 11px 22px 10px;
+    }
+    .wizard-btn.wizard-prev:hover {
+      background: #858D95;
+      border-color: #D4DAE0;
+      color: #050505;
+      box-shadow: 0 4px 0 #3F464D, 0 8px 16px rgba(0,0,0,0.3);
+    }
     .wizard-btn.primary:focus-visible {
+      outline: 3px solid #FFFFFF;
+      outline-offset: 3px;
+    }
+    .wizard-btn.wizard-prev:focus-visible {
       outline: 3px solid #FFFFFF;
       outline-offset: 3px;
     }
@@ -698,20 +719,31 @@
     /* ── Submit ── */
     .form-submit-wrap { text-align: center; margin-top: 30px; }
     .btn-submit {
-      background: linear-gradient(135deg, var(--gold) 0%, #b8860b 100%);
-      color: var(--navy-dark);
-      font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.94rem;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 15px 52px;
-      border: none;
+      background: #E8A828;
+      border: 2px solid #F6C85A;
       border-radius: 6px;
+      box-shadow: 0 3px 0 #765208, 0 7px 14px rgba(0,0,0,0.28);
+      color: #050505;
+      font-family: 'Josefin Sans', sans-serif !important;
+      font-size: 0.88rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 11px 22px 10px;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.2s;
+      transition: background 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s;
     }
-    .btn-submit:hover { opacity: 0.88; transform: translateY(-1px); }
+    .btn-submit:hover {
+      background: #F0B83A;
+      border-color: #F8D16A;
+      color: #050505;
+      box-shadow: 0 4px 0 #765208, 0 8px 16px rgba(0,0,0,0.3);
+      transform: translateY(-1px);
+    }
+    .btn-submit:focus-visible {
+      outline: 3px solid #FFFFFF;
+      outline-offset: 3px;
+    }
     .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; transform: none; }
     .form-note {
       font-size: 1rem;
