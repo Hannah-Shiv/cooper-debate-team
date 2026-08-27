@@ -89,14 +89,19 @@
     <div class="mp-topbar"></div>
     <a id="site-badge" href="index.html" aria-label="Cooper Debate Team — Home"><img src="images/cooper-debate-badge.png" alt="Cooper Debate Team"></a>
     <div id="dome-nav-root"></div>
-    <div class="member-userbar" id="app-userbar">
+    <div class="member-userbar role-artwork-userbar" id="app-userbar">
       <button class="mub-bell" id="app-notif-btn" onclick="appToggleNotif()" title="Notifications">
         <svg viewBox="0 0 24 24" width="16" height="16"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
         <span class="mub-notif-state" id="app-notif-state"></span>
       </button>
-      <div class="mub-sep"></div><span class="mub-name" id="app-name"></span><div class="mub-sep"></div>
-      <span class="mub-email" id="app-user-email"></span><div class="mub-sep"></div>
-      <span class="mub-badge" id="app-role-badge">✓ Team Member</span><div class="mub-sep"></div>
+      <div class="mub-sep"></div>
+      <span class="mub-name" id="app-name"></span>
+      <div class="mub-sep"></div>
+      <img class="mub-role-icon" id="app-role-icon" src="images/role-icons/member.png" alt="" aria-hidden="true"/>
+      <span class="mub-badge mub-role-badge" id="app-role-badge" data-role="member">
+        <span class="mub-role-label">Team Member</span>
+      </span>
+      <div class="mub-sep"></div>
       <button class="mub-signout" type="button" onclick="memberSignOut()"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
     </div>
     <main class="portal-page">
@@ -157,7 +162,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=6"></script>
   <script src="data/admins.js?v=4"></script>
-  <script src="js/applications-admin.js?v=21"></script>
+  <script src="js/applications-admin.js?v=22"></script>
   <script src="js/members-nav.js?v=9"></script>
   <script src="js/dome-nav.js"></script>
 </body>

@@ -17,6 +17,10 @@
     judgeVolunteer: "Judge courtesy", transportation: "Transportation", googleMeets: "Google Meets",
     teamFee: "Team fees",
   };
+  const ROLE_PRESENTATION = {
+    coach: { label: "Coach", icon: "images/role-icons/coach.png" },
+    "website-admin": { label: "Website Admin", icon: "images/role-icons/website-admin.png" },
+  };
   firebase.initializeApp(FIREBASE_CONFIG);
   const auth = firebase.auth();
   const db = firebase.firestore();
@@ -229,12 +233,14 @@
     if (!user) { show("auth-required"); return; }
     $("app-userbar").classList.add("visible");
     $("app-name").textContent = portalWelcomeLabel(user.displayName, user.email);
-    $("app-user-email").textContent = user.email || "";
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
     if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
-    $("app-role-badge").textContent = role === "website-admin" ? "★ Website Admin" : "★ Coach";
+    const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
+    $("app-role-icon").src = rolePresentation.icon;
+    $("app-role-badge").dataset.role = role;
+    $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
     show("dashboard");
     beginListening();
   });
