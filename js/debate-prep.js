@@ -247,7 +247,7 @@
     });
   });
 
-  gateForm.addEventListener('submit', function (event) {
+  function continueFromGate(event) {
     event.preventDefault();
     var email = gateEmail.value.trim();
     if (!validEmail(email)) {
@@ -259,7 +259,10 @@
     openStudio(email);
     renderStats();
     syncStanceCards();
-  });
+  }
+
+  gateForm.addEventListener('submit', continueFromGate);
+  $('prepGateOpen').addEventListener('click', continueFromGate);
 
   document.querySelectorAll('input[name="stance"]').forEach(function (input) {
     input.addEventListener('change', function () {

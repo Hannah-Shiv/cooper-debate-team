@@ -122,6 +122,7 @@
     .dev-banner strong { color:#fff; }
     .text-link { color:var(--studio-gold); text-decoration:none; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; white-space:nowrap; }
     .prep-gate { min-height:calc(100vh - 88px); display:grid; place-items:center; padding:120px 20px 70px; background:#1c2030; }
+    .prep-gate[hidden] { display:none; }
     .prep-gate-card { width:min(100%,520px); padding:34px; border:1px solid rgba(242,209,107,.55); border-top:3px solid var(--studio-gold); border-radius:12px; background:#102B52; box-shadow:0 22px 55px rgba(0,0,0,.3); }
     .prep-gate-card h1 { margin:8px 0 8px; color:#fff; font-size:clamp(2rem,5vw,3.2rem); line-height:1; }
     .prep-gate-card p { color:#c6d2e2; line-height:1.55; margin:0 0 20px; }
@@ -148,10 +149,10 @@
       <div class="eyebrow">Before you begin</div>
       <h1 id="prepGateTitle">Save your place</h1>
       <p>Enter your email before opening the Prep Studio. It identifies your draft so cloud save and secure resume links can be added later.</p>
-      <form class="prep-gate-form" id="prepGateForm">
+      <form class="prep-gate-form" id="prepGateForm" novalidate>
         <label for="prepGateEmail">Email address</label>
         <input id="prepGateEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
-        <button class="studio-btn primary" type="submit">Open Prep Studio <span aria-hidden="true">→</span></button>
+        <button class="studio-btn primary" id="prepGateOpen" type="submit">Open Prep Studio <span aria-hidden="true">→</span></button>
         <p class="prep-gate-error" id="prepGateError" role="alert" hidden>Enter a valid email address to continue.</p>
       </form>
       <p class="prep-gate-note">Development preview: your draft remains saved privately on this device.</p>
@@ -169,6 +170,6 @@
     <section class="studio-card checklist-card" aria-labelledby="checkTitle"><div><div class="eyebrow">Before you share</div><h2 id="checkTitle">Readiness checklist</h2><div class="checks"><label><input type="checkbox"> I clearly stated my position.</label><label><input type="checkbox"> I explained my reasoning.</label><label><input type="checkbox"> I proofread my paper.</label><label><input type="checkbox"> This work is my own.</label><label class="guided-check"><input type="checkbox"> I supported my arguments with evidence.</label><label class="guided-check"><input type="checkbox"> I cited my sources.</label></div></div><div><button class="studio-btn primary" id="finalBtn" type="button">Development preview</button><p class="studio-note" id="finalMessage">You can review before the final handoff.</p></div></section>
   </main>
   <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button">Close</button><div class="eyebrow">Cooper Debate · Position Paper</div><h2 id="previewHeading">Your paper</h2><div class="preview-meta" id="previewMeta"></div><div class="preview-copy" id="previewCopy"></div></article></div>
-  <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=2"></script>
+  <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=3"></script>
 </body>
 </html>
