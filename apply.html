@@ -23,6 +23,21 @@
     .apply-page {
       background: #121827;
     }
+    html { scroll-behavior: smooth; }
+    @view-transition { navigation: auto; }
+    ::view-transition-old(root) { animation: application-page-out 180ms ease both; }
+    ::view-transition-new(root) { animation: application-page-in 260ms ease both; }
+    @keyframes application-page-out {
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+    @keyframes application-page-in {
+      from { opacity: 0; transform: translateY(8px); }
+    }
+    html.page-leaving body {
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
     .apply-page {
       position: relative;
       min-height: 100vh;
@@ -1074,6 +1089,7 @@
     .entry-flow-arrow strong { font-size:2.2rem; font-weight:400; line-height:1; }
     @media(max-width:640px){.entry-choice{padding:24px 18px 22px}.entry-choice-grid{grid-template-columns:1fr;gap:8px}.entry-choice-card{min-height:197px}.entry-flow-arrow{flex-direction:row;justify-content:center}.entry-flow-arrow strong{transform:rotate(90deg)}}
     @media(max-width:600px){.application-switcher{width:100%;margin-bottom:20px}.application-switcher-label{display:none}.application-switcher a{flex:1;justify-content:center;padding:0 8px;font-size:.64rem;letter-spacing:.04em}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}::view-transition-old(root),::view-transition-new(root){animation:none!important}html.page-leaving body{transition:none}}
 
   </style>
 </head>
@@ -2209,5 +2225,6 @@
   });
   updateTournamentAvailabilityState();
 </script>
+<script src="js/application-switcher.js?v=1"></script>
 </body>
 </html>
