@@ -37,16 +37,50 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
+  function isRichTextField(field) {
+    return field && field.getAttribute && field.getAttribute('contenteditable') === 'true';
+  }
+
+  function sanitizeRichText(html) {
+    var template = document.createElement('template');
+    var allowedTags = ['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'P', 'BR', 'DIV'];
+    template.innerHTML = html;
+    Array.from(template.content.querySelectorAll('*')).forEach(function (node) {
+      if (allowedTags.indexOf(node.tagName) === -1) {
+        node.replaceWith(document.createTextNode(node.textContent || ''));
+        return;
+      }
+      Array.from(node.attributes).forEach(function (attribute) {
+        node.removeAttribute(attribute.name);
+      });
+    });
+    return template.innerHTML;
+  }
+
   function valueOf(field) {
-    return typeof field.value === 'string'
-      ? field.value
-      : (field.dataset.value || '');
+    if (typeof field.value === 'string') return field.value;
+    if (isRichTextField(field)) return sanitizeRichText(field.innerHTML);
+    return field.dataset.value || '';
+  }
+
+  function textValueOf(field) {
+    if (typeof field.value === 'string') return field.value;
+    if (isRichTextField(field)) return (field.innerText || '').replace(/\u00a0/g, ' ');
+    return field.dataset.value || '';
   }
 
   function setValue(field, value) {
     var nextValue = typeof value === 'string' ? value : '';
     if (typeof field.value === 'string') {
       field.value = nextValue;
+      return;
+    }
+    if (isRichTextField(field)) {
+      if (/<(?:b|strong|i|em|u|ul|ol|li|p|br|div)\b/i.test(nextValue)) {
+        field.innerHTML = sanitizeRichText(nextValue);
+      } else {
+        field.textContent = nextValue;
+      }
       return;
     }
     field.dataset.value = nextValue;
@@ -109,7 +143,7 @@
       studentId: valueOf(fields.studentId),
       email: valueOf(fields.email),
       title: fields.title.value,
-      essay: fields.essay.value,
+      essay: valueOf(fields.essay),
       contentions: fields.contentions.value,
       reasoning: fields.reasoning.value,
       evidence: fields.evidence.value,
@@ -124,8 +158,9 @@
   }
 
   function renderStats() {
-    var words = wordCount(fields.essay.value);
-    var characters = fields.essay.value.replace(/\s/g, '').length;
+    var essayText = textValueOf(fields.essay);
+    var words = wordCount(essayText);
+    var characters = essayText.replace(/\s/g, '').length;
     $('wordCount').textContent = words.toLocaleString();
     $('pageCount').textContent = (words ? Math.max(1, Math.ceil(words / 500)) : 0) + ' / 2';
     $('sourceCount').textContent = sources.length;
@@ -281,7 +316,7 @@
 
   Object.keys(fields).forEach(function (key) {
     fields[key].addEventListener('input', function () {
-      if (typeof fields[key].value !== 'string') return;
+      if (typeof fields[key].value !== 'string' && !isRichTextField(fields[key])) return;
       renderStats();
       markDirty();
       if (key === 'email') gateEmail.value = valueOf(fields.email);
@@ -328,6 +363,23 @@
     input.addEventListener('change', markDirty);
   });
 
+  document.querySelectorAll('[data-editor-command]').forEach(function (button) {
+    button.addEventListener('mousedown', function (event) {
+      event.preventDefault();
+    });
+    button.addEventListener('click', function () {
+      fields.essay.focus();
+      document.execCommand(button.dataset.editorCommand, false, null);
+      fields.essay.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  fields.essay.addEventListener('paste', function (event) {
+    event.preventDefault();
+    var plainText = event.clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, plainText);
+  });
+
   $('addSource').addEventListener('click', function () {
     var value = $('sourceInput').value.trim();
     if (!value) return;
@@ -353,8 +405,11 @@
     $('previewMeta').textContent = (valueOf(fields.name) || 'Unnamed student') + ' · ' +
       (fields.title.value || 'Untitled position paper') + ' · ' +
       document.querySelector('input[name="stance"]:checked').value;
-    $('previewCopy').textContent = fields.essay.value ||
-      'Your essay preview will appear here once you begin writing.';
+    if (textValueOf(fields.essay).trim()) {
+      $('previewCopy').innerHTML = valueOf(fields.essay);
+    } else {
+      $('previewCopy').textContent = 'Your essay preview will appear here once you begin writing.';
+    }
     $('previewPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
     $('closePreview').focus();
@@ -378,7 +433,7 @@
     var visibleChecks = Array.from(document.querySelectorAll('.checks label:not([hidden]) input'));
     var identityReady = valueOf(fields.name).trim() && valueOf(fields.studentId).trim() &&
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueOf(fields.email).trim());
-    var essayReady = wordCount(fields.essay.value) >= 50;
+    var essayReady = wordCount(textValueOf(fields.essay)) >= 50;
     var checksReady = visibleChecks.every(function (box) { return box.checked; });
     var ready = identityReady && essayReady && checksReady;
     $('finalMessage').textContent = ready
