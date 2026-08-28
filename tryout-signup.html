@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Sign up for Cooper Debate Team tryouts on September 22 or 23, 2026."/>
   <title>Tryout Sign-up — Cooper Debate Team</title>
+  <script>
+    (function () {
+      var host = window.location.hostname;
+      var developmentHost = host === "localhost" || host === "127.0.0.1" || host.endsWith(".replit.dev");
+      var coachReview = developmentHost && new URLSearchParams(window.location.search).has("coach");
+      if (!coachReview) window.location.replace("tournaments.html?tab=tryout-signup");
+    }());
+  </script>
   <link rel="icon" href="images/cooper-debate-badge.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
