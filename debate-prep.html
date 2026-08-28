@@ -275,11 +275,11 @@
      .studio-access-form input { width:260px; max-width:100%; min-width:0; color:#fff; background:transparent; border:0; border-bottom:1px solid rgba(164,200,236,.55); border-radius:0; padding:5px 2px 4px; font:1rem 'Josefin Sans',sans-serif; }
      .studio-access-form input:focus { background:rgba(19,43,73,.18); border-bottom-color:var(--studio-mint); outline:2px solid rgba(143,201,255,.42); outline-offset:2px; }
      .studio-access-field:nth-of-type(-n+2) { grid-column:1 / -1; }
-     .studio-access-field:nth-of-type(3) { grid-column:1; grid-template-columns:108px 128px; }
-     .studio-access-field:nth-of-type(3) input { width:128px; }
+     .studio-access-field:nth-of-type(3) { grid-column:1 / -1; grid-template-columns:108px minmax(0,260px); }
+     .studio-access-field:nth-of-type(3) input { width:260px; }
      .studio-access-form button { grid-column:1 / -1; grid-row:auto; align-self:end; justify-self:end; margin:0; padding:8px 13px; font-size:.68rem; white-space:nowrap; }
     .studio-access-form .prep-gate-error,.studio-access-form .prep-gate-note { grid-column:1 / -1; margin:0!important; }
-     .prep-gate-note { color:#f5f8fc!important; font-size:.64rem; font-weight:600; line-height:1.25; margin:0!important; white-space:normal; text-shadow:0 1px 8px rgba(255,255,255,.08); }
+     .prep-gate-note { grid-row:1; color:#ffe34f!important; font-size:.66rem; font-weight:700; line-height:1.25; margin:0!important; text-align:left; white-space:normal; text-shadow:0 1px 8px rgba(255,227,79,.12); }
     .prep-gate-error { color:#ffb2b2!important; font-size:.8rem; margin:3px 0 0!important; }
     .stance-panel > .eyebrow { text-align:center; }
      @media (max-width:980px) { .paper-grid{grid-template-columns:1fr}.paper-compose #essay{min-height:330px} }
@@ -302,12 +302,12 @@
     <header class="studio-mast" id="prepGate">
       <div class="studio-mast-copy"><div class="studio-kicker">Cooper Debate · 2026–2027</div><h1>Debate Prep Studio</h1><p class="studio-mast-intro">A place to find your position, build your thinking, and write a paper you are proud to share.</p></div>
       <form class="studio-access-form" id="prepGateForm" novalidate>
+        <p class="prep-gate-note">Enter all fields to unlock the prep sections below.</p>
         <div class="studio-access-field"><label for="prepGateName">Full name</label><input id="prepGateName" type="text" autocomplete="name" placeholder="Your full name" required></div>
         <div class="studio-access-field"><label for="prepGateEmail">Email address</label><input id="prepGateEmail" type="email" autocomplete="email" placeholder="you@example.com" required></div>
         <div class="studio-access-field"><label for="prepGateStudentId">Student ID</label><input id="prepGateStudentId" type="text" inputmode="numeric" placeholder="FCPS student ID" required></div>
         <button class="studio-btn primary" id="prepGateOpen" type="submit">Continue <span aria-hidden="true">→</span></button>
         <p class="prep-gate-error" id="prepGateError" role="alert" hidden>Enter your full name, a valid email address, and your student ID to continue.</p>
-        <p class="prep-gate-note">Enter all fields to unlock the prep sections below.</p>
       </form>
     </header>
      <div class="prep-draft-status" id="prepDraftStatus" role="status" aria-live="polite"><div class="save-copy"><span class="save-state" id="saveState">Autosave ready</span><span class="saved-time" id="savedTime">Nothing saved yet</span></div><div class="save-actions"><button class="studio-btn" id="saveBtn" type="button">Save draft</button><button class="studio-btn quiet" id="clearDraftBtn" type="button">Clear draft</button></div></div>
