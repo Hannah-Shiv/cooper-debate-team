@@ -196,10 +196,10 @@
     updateRequirement('requirementEvidence', evidenceReady ? 'Added' : 'In progress', evidenceReady);
     updateRequirement('requirementReasoning', reasoningReady ? 'Added' : 'In progress', reasoningReady);
 
-    ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
+    ['contentions', 'reasoning', 'evidence', 'impacts', 'sources'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
-      var started = Boolean(fields[key].value.trim());
-      status.textContent = started ? 'Notes added' : 'Optional';
+      var started = key === 'sources' ? sources.length > 0 : Boolean(fields[key].value.trim());
+      status.textContent = started ? (key === 'sources' ? 'Sources added' : 'Notes added') : 'Optional';
       status.classList.toggle('done', started);
     });
   }
@@ -446,16 +446,13 @@
     document.querySelector('.route-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 
-  $('viewGuidedSteps').addEventListener('click', function () {
-    setRoute('guided');
-    markDirty();
-    $('caseSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-
   function openPreview() {
+    var essayWords = wordCount(textValueOf(fields.essay));
+    $('previewHeading').textContent = fields.title.value || 'Untitled position paper';
     $('previewMeta').textContent = (valueOf(fields.name) || 'Unnamed student') + ' · ' +
-      (fields.title.value || 'Untitled position paper') + ' · ' +
-      document.querySelector('input[name="stance"]:checked').value;
+      document.querySelector('input[name="stance"]:checked').value + ' · ' +
+      essayWords.toLocaleString() + (essayWords === 1 ? ' word' : ' words') + ' · ' +
+      sources.length + (sources.length === 1 ? ' source' : ' sources');
     if (textValueOf(fields.essay).trim()) {
       $('previewCopy').innerHTML = valueOf(fields.essay);
     } else {
