@@ -39,6 +39,11 @@
     .choice:has(input:focus-visible) { outline:3px solid var(--studio-blue); outline-offset:3px; }
     .studio-btn.primary { background:var(--studio-gold); color:var(--studio-ink); box-shadow:0 3px 0 #896c1f; }
     .studio-btn.quiet { border-color:var(--studio-line); color:var(--studio-muted); }
+    .application-switcher { display:flex; align-items:center; justify-content:center; gap:4px; width:fit-content; max-width:100%; margin:0 auto 20px; padding:5px; border:1px solid rgba(242,209,107,.36); border-radius:999px; background:#101d35; box-shadow:0 6px 18px rgba(0,0,0,.2); }
+    .application-switcher-label { padding:0 10px; color:rgba(255,255,255,.7); font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; white-space:nowrap; }
+    .application-switcher a { display:inline-flex; align-items:center; min-height:34px; padding:0 14px; border:1px solid transparent; border-radius:999px; color:#9fb6d4; font:700 .72rem 'Josefin Sans',sans-serif; letter-spacing:.06em; text-decoration:none; text-transform:uppercase; white-space:nowrap; transition:color .2s ease,background .2s ease,border-color .2s ease; }
+    .application-switcher a:hover,.application-switcher a:focus-visible { color:#fff; border-color:rgba(242,209,107,.58); outline:none; }
+    .application-switcher a.is-active { color:#07152c; background:#f2d16b; border-color:#f8e49a; }
     .studio-card { background:#102B52; border:1px solid var(--studio-line); border-radius:10px; box-shadow:0 18px 38px rgba(0,0,0,.18); }
     .brief-card { display:grid; grid-template-columns:1.42fr 1fr 1fr; padding:24px 25px; gap:24px; margin-bottom:18px; background:#0D2B54; background-image:none; border-color:rgba(143,201,255,.34); box-shadow:0 18px 44px rgba(0,0,0,.25); }
     .brief-card > div:not(:first-child) { border-left:1px solid rgba(164,200,236,.3); padding-left:24px; }
@@ -280,6 +285,7 @@
      @media (max-width:800px) { .paper-top-grid { --paper-top-height:343px; } }
     @media (max-width:800px) { .studio-access-form{grid-template-columns:1fr 1fr}.studio-access-form button{grid-column:1 / -1;justify-self:start}.brief-resolution-mark{transform:translateY(-12px)}.essay-head{grid-template-columns:1fr}.essay-head-tools{justify-items:stretch}.essay-stats{justify-content:flex-start}.essay-stat{flex:1 1 86px}.essay-stats .studio-btn{flex:1 1 100%}.identity-grid{grid-template-columns:1fr 1fr}.editor-label-row{align-items:flex-start;flex-direction:column;gap:4px}.editor-toolbar{gap:6px} }
     @media (max-width:480px) { .studio-access-form,.identity-grid{grid-template-columns:1fr}.preview-panel{padding:82px 12px 16px}.preview-sheet{max-height:calc(100dvh - 98px)}.preview-header{padding:24px 20px 18px}.preview-header::after{left:20px}.preview-sheet h2{margin-right:42px}.preview-sheet .preview-copy{padding:22px 20px 34px}.preview-close{top:15px;right:15px} }
+     @media (max-width:600px) { .application-switcher { width:100%; margin-bottom:16px; } .application-switcher-label { display:none; } .application-switcher a { flex:1; justify-content:center; padding:0 8px; font-size:.64rem; letter-spacing:.04em; } }
   </style>
 </head>
 <body class="studio-body">
@@ -290,6 +296,11 @@
     <a class="dn-item dn-p1" href="about.html">About</a><a class="dn-item dn-p2" href="awards.html">Awards</a><a class="dn-item dn-p3" href="announcements.html">News</a><a class="dn-item dn-p4" href="resources.html">Guides</a><a class="dn-item dn-p5" href="tournaments.html">Events</a><a class="dn-item dn-p6" href="gallery.html">Gallery</a>
   </div>
   <main class="studio-shell is-locked">
+    <nav class="application-switcher" aria-label="Application sections">
+      <span class="application-switcher-label">Application sections</span>
+      <a href="apply.html#application-steps">Team Application</a>
+      <a class="is-active" href="debate-prep.html#essayTitle" aria-current="page">Debate Prep Essay</a>
+    </nav>
     <header class="studio-mast" id="prepGate">
       <div class="studio-mast-copy"><div class="studio-kicker">Cooper Debate · 2026–2027</div><h1>Debate Prep Studio</h1><p>A calm place to find your position, build your thinking, and write a paper you are proud to share.</p></div>
       <form class="studio-access-form" id="prepGateForm" novalidate>
