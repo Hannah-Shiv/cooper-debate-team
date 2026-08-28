@@ -87,6 +87,16 @@
     .tournaments-page .resolution-card {
       border-top:1px solid #F2D16B;
     }
+    .tournaments-page .resolution-card .tryout-cta {
+      color:#07162d;
+      background:linear-gradient(100deg,#6ce0c8,#a2f0d1);
+      box-shadow:0 4px 14px rgba(108,224,200,0.2);
+    }
+    .tournaments-page .resolution-card .tryout-cta:hover,
+    .tournaments-page .resolution-card .tryout-cta:focus-visible {
+      color:#07162d;
+      background:#9af0d8;
+    }
     .tournaments-page .public-calendar-shell,
     .tournaments-page .vol-unified-card,
     .tournaments-page .vol-public-roster {
@@ -954,7 +964,10 @@
         <span class="dot"></span>
         <span>530 coaches · 2,401 students voted</span>
       </div>
-      <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+      <div class="resolution-actions">
+        <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+        <a href="tryout-signup.html" class="btn tryout-cta" style="font-size:0.75rem;padding:10px 22px;">Sign up for tryouts →</a>
+      </div>
     </div>
   </div>
 </section>
