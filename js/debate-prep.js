@@ -2,6 +2,7 @@
   'use strict';
 
   var storageKey = 'cooper-debate-prep-draft-v2';
+  var emailKey = 'cooper-debate-prep-email-v1';
   var $ = function (id) { return document.getElementById(id); };
   var fields = {
     name: $('studentName'),
@@ -19,9 +20,54 @@
   var autosaveTimer = null;
   var state = $('saveState');
   var time = $('savedTime');
+  var gate = $('prepGate');
+  var gateForm = $('prepGateForm');
+  var gateEmail = $('prepGateEmail');
+  var gateError = $('prepGateError');
+  var studio = document.querySelector('.studio-shell');
 
   function wordCount(value) {
     return value.trim() ? value.trim().split(/\s+/).length : 0;
+  }
+
+  function validEmail(value) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  }
+
+  function openStudio(email) {
+    fields.email.value = email;
+    try {
+      localStorage.setItem(emailKey, email);
+    } catch (error) {
+      // The draft save path reports local storage failures when it saves.
+    }
+    gate.hidden = true;
+    studio.hidden = false;
+    document.body.classList.remove('prep-gated');
+  }
+
+  function initializeGate() {
+    var rememberedEmail = '';
+    try {
+      rememberedEmail = localStorage.getItem(emailKey) || fields.email.value || '';
+    } catch (error) {
+      rememberedEmail = fields.email.value || '';
+    }
+    gateEmail.value = rememberedEmail;
+    if (validEmail(rememberedEmail)) {
+      openStudio(rememberedEmail);
+      return;
+    }
+    document.body.classList.add('prep-gated');
+    gateEmail.focus();
+  }
+
+  function updateDaysRemaining() {
+    var dueDate = new Date('2026-09-16T15:00:00-04:00');
+    var days = Math.ceil((dueDate.getTime() - Date.now()) / 86400000);
+    $('daysLeft').textContent = days > 0
+      ? '· ' + days + (days === 1 ? ' day left' : ' days left')
+      : '· Deadline passed';
   }
 
   function collect() {
@@ -191,7 +237,28 @@
     fields[key].addEventListener('input', function () {
       renderStats();
       markDirty();
+      if (key === 'email' && validEmail(fields.email.value)) {
+        try {
+          localStorage.setItem(emailKey, fields.email.value.trim());
+        } catch (error) {
+          // The draft save path reports local storage failures when it saves.
+        }
+      }
     });
+  });
+
+  gateForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var email = gateEmail.value.trim();
+    if (!validEmail(email)) {
+      gateError.hidden = false;
+      gateEmail.focus();
+      return;
+    }
+    gateError.hidden = true;
+    openStudio(email);
+    renderStats();
+    syncStanceCards();
   });
 
   document.querySelectorAll('input[name="stance"]').forEach(function (input) {
@@ -272,4 +339,6 @@
   load();
   syncStanceCards();
   renderStats();
+  updateDaysRemaining();
+  initializeGate();
 })();
