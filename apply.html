@@ -1025,7 +1025,7 @@
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
   </style>
-  <link id="unified-application-styles" rel="stylesheet" href="css/unified-application.css?v=2"/>
+  <link id="unified-application-styles" rel="stylesheet" href="css/unified-application.css?v=3"/>
 </head>
 <body class="apply-body" style="--navy-dark:#1c2030;">
 
@@ -1094,13 +1094,40 @@
     </div>
 
     <section class="entry-choice application-workspace-switcher" aria-labelledby="entry-choice-title">
-      <h2 id="entry-choice-title">Welcome to Cooper Debate</h2>
+      <h2 id="entry-choice-title">Welcome to <span>Cooper Debate</span></h2>
+      <div class="entry-choice-divider" aria-hidden="true"><span></span><i>•••</i><span></span></div>
       <p>Ready to join the team? Complete both parts of your 2026–2027 application below.</p>
       <div class="entry-choice-grid" role="tablist" aria-label="Choose an application section">
-        <button class="entry-choice-card entry-team" id="team-application-tab" type="button" role="tab" aria-controls="team-application-panel" aria-selected="true" aria-pressed="true" data-application-section="team"><strong>Team Application</strong><span>Tell us about yourself, your interests, and your experience through our five-step application.</span><span class="entry-link">Team application open</span></button>
-        <button class="entry-choice-card entry-paper" id="debate-prep-tab" type="button" role="tab" aria-controls="debate-prep-panel" aria-selected="false" aria-pressed="false" data-application-section="debate-prep"><strong>Debate Prep (Essay Writing)</strong><span>Show us how you think and write. Build a guided debate case or go straight to the essay.</span><span class="entry-link">Open prep studio →</span></button>
+        <button class="entry-choice-card entry-team" id="team-application-tab" type="button" role="tab" aria-controls="team-application-panel" aria-selected="true" aria-pressed="true" data-application-section="team">
+          <span class="entry-card-heading">
+            <span class="entry-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M23 14h18v7H23z"/><path d="M19 18h-4a5 5 0 0 0-5 5v31h44V23a5 5 0 0 0-5-5h-4"/><path d="m19 31 4 4 7-8M19 44l4 4 7-8M35 31h10M35 44h10"/></svg>
+            </span>
+            <span class="entry-card-heading-copy"><strong>Team Application</strong><span class="entry-kicker">Your Cooper Debate Team Application</span></span>
+          </span>
+          <span class="entry-card-description">Complete the five-step application to join the 2026–2027 Cooper Debate Team.</span>
+          <span class="entry-link">Continue to application <span aria-hidden="true">→</span></span>
+        </button>
+        <button class="entry-choice-card entry-paper" id="debate-prep-tab" type="button" role="tab" aria-controls="debate-prep-panel" aria-selected="false" aria-pressed="false" data-application-section="debate-prep">
+          <span class="entry-card-heading">
+            <span class="entry-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64"><path d="M38 14H15v40h34V31"/><path d="m25 42 4-11 16-16 8 8-16 16-12 3zM41 19l8 8"/></svg>
+            </span>
+            <span class="entry-card-heading-copy"><strong>Debate Prep</strong><span class="entry-kicker">Essay Writing &amp; Debate Preparation</span></span>
+          </span>
+          <span class="entry-card-description">Show us how you think and write. Build a guided debate case or go straight to the essay.</span>
+          <span class="entry-link">Open prep studio <span aria-hidden="true">→</span></span>
+        </button>
+        <span class="entry-choice-swap" aria-hidden="true">
+          <svg viewBox="0 0 64 64"><path d="M14 23h34M41 15l8 8-8 8M50 41H16M23 49l-8-8 8-8"/></svg>
+        </span>
       </div>
-      <p class="entry-choice-note">Please complete both forms to finish your application.</p>
+      <div class="entry-choice-note">
+        <span class="entry-note-line" aria-hidden="true"></span>
+        <span class="entry-note-shield" aria-hidden="true"><svg viewBox="0 0 40 48"><path d="M20 3 36 10v12c0 11-6 19-16 23C10 41 4 33 4 22V10z"/><path d="m13 23 5 5 10-12"/></svg></span>
+        <span>Please complete <strong>both forms</strong> to finish your application.</span>
+        <span class="entry-note-line" aria-hidden="true"></span>
+      </div>
     </section>
 
     <section class="application-content-panel" id="team-application-panel" role="tabpanel" aria-labelledby="team-application-tab" aria-hidden="false">

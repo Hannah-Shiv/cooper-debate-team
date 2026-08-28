@@ -36,9 +36,10 @@
       var selected = button.dataset.applicationSection === section;
       button.setAttribute('aria-selected', selected ? 'true' : 'false');
       button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-      button.querySelector('.entry-link').textContent = selected
-        ? (section === 'team' ? 'Team application open' : 'Prep studio open')
-        : (button.dataset.applicationSection === 'team' ? 'Open team application →' : 'Open prep studio →');
+      button.querySelector('.entry-link').textContent =
+        button.dataset.applicationSection === 'team'
+          ? 'Continue to application →'
+          : 'Open prep studio →';
     });
   }
 
