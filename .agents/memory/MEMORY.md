@@ -18,3 +18,4 @@
 - [Development-first releases](development-first-releases.md) — Verify application changes in development and deploy only after explicit production approval.
 - [Application section switcher](application-section-switcher.md) — Preserve the approved two-way Team Application / Debate Prep toggle and smooth page transition.
 - [Application draft persistence](application-draft-persistence.md) — Both application forms autosave only in the current browser; keep Team and Debate Prep drafts isolated.
+- [Debate Prep gate hierarchy](debate-prep-gate-hierarchy.md) — Keep unlock guidance above aligned identity fields with gold guidance, mint labels, and stacked Continue.
