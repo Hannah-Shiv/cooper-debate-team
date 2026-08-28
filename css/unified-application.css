@@ -1,18 +1,40 @@
 .application-workspace-switcher {
   position: relative;
+  width: 100%;
+  max-width: none;
+  padding: 30px 32px 26px;
+  border-radius: 42px;
+}
+
+.application-progress {
+  width: 100%;
+  max-width: none;
 }
 
 .entry-choice-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 8px;
+  padding: 7px;
+  border: 1px solid rgba(143, 201, 255, 0.3);
+  border-radius: 999px;
+  background: #061331;
 }
 
 .entry-choice-card {
   width: 100%;
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 4px 18px;
   appearance: none;
   cursor: pointer;
   color: inherit;
   font: inherit;
+  padding: 15px 24px;
+  border-radius: 999px;
+  text-align: left;
 }
 
 .entry-choice-card:focus-visible {
@@ -21,7 +43,7 @@
 }
 
 .entry-choice-card[aria-selected="true"] {
-  transform: translateY(-2px);
+  transform: translateY(0);
 }
 
 .entry-choice-card.entry-team[aria-selected="true"] {
@@ -38,6 +60,25 @@
     0 12px 28px rgba(0, 0, 0, 0.32),
     0 0 0 2px rgba(121, 227, 193, 0.3),
     0 0 32px rgba(121, 227, 193, 0.18);
+}
+
+.entry-choice-card > span:not(.entry-link) {
+  grid-column: 1;
+  grid-row: 2;
+  text-align: left;
+}
+
+.entry-choice-card > strong {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.entry-choice-card .entry-link {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  margin-top: 0;
+  white-space: nowrap;
 }
 
 .entry-choice-card[aria-selected="true"] .entry-link::before {
@@ -128,12 +169,40 @@
 }
 
 @media (max-width: 640px) {
+  .application-workspace-switcher {
+    padding: 24px 18px 22px;
+    border-radius: 28px;
+  }
+
   .entry-choice-grid {
     grid-template-columns: 1fr;
+    border-radius: 26px;
   }
 
   .entry-choice-card {
     min-height: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 6px;
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .entry-choice-card > span:not(.entry-link) {
+    grid-column: 1;
+    grid-row: 2;
+    text-align: center;
+  }
+
+  .entry-choice-card > strong {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .entry-choice-card .entry-link {
+    grid-column: 1;
+    grid-row: 3;
+    white-space: normal;
   }
 }
 
