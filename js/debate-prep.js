@@ -98,12 +98,6 @@
     $('paperSavedTime').textContent = detail;
   }
 
-  function updateRequirement(id, value, complete) {
-    var item = $(id);
-    item.textContent = value;
-    item.classList.toggle('is-complete', complete);
-  }
-
   function openStudio(email, name, studentId) {
     setValue(fields.name, name);
     setValue(fields.studentId, studentId);
@@ -177,8 +171,6 @@
     var words = wordCount(essayText);
     var characters = essayText.replace(/\s/g, '').length;
     var pages = words ? Math.max(1, Math.ceil(words / 500)) : 0;
-    var evidenceReady = Boolean(fields.evidence.value.trim());
-    var reasoningReady = Boolean(fields.reasoning.value.trim() && fields.impacts.value.trim());
     $('wordCount').textContent = words.toLocaleString();
     $('editorWordCount').textContent = words.toLocaleString();
     $('pageCount').textContent = pages;
@@ -186,12 +178,6 @@
     $('statSources').textContent = sources.length;
     $('characterCount').textContent = characters.toLocaleString();
     $('wordProgressBar').style.width = Math.min(100, (words / 750) * 100) + '%';
-    updateRequirement('requirementWords', words.toLocaleString() + ' / 750–1,000', words >= 750 && words <= 1000);
-    updateRequirement('requirementPages', pages + ' / 2', pages === 2);
-    updateRequirement('requirementSources', sources.length + ' / 5', sources.length >= 5);
-    updateRequirement('requirementEvidence', evidenceReady ? 'Added' : 'In progress', evidenceReady);
-    updateRequirement('requirementReasoning', reasoningReady ? 'Added' : 'In progress', reasoningReady);
-
     ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
       var started = Boolean(fields[key].value.trim());
