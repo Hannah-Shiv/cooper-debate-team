@@ -66,8 +66,8 @@
     var dueDate = new Date('2026-09-16T15:00:00-04:00');
     var days = Math.ceil((dueDate.getTime() - Date.now()) / 86400000);
     $('daysLeft').textContent = days > 0
-      ? '· ' + days + (days === 1 ? ' day left' : ' days left')
-      : '· Deadline passed';
+      ? days + (days === 1 ? ' day left' : ' days left')
+      : 'Deadline passed';
   }
 
   function collect() {
