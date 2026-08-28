@@ -25,6 +25,7 @@
   var gateEmail = $('prepGateEmail');
   var gateError = $('prepGateError');
   var studio = document.querySelector('.studio-shell');
+  var studioContent = $('studioContent');
 
   function wordCount(value) {
     return value.trim() ? value.trim().split(/\s+/).length : 0;
@@ -41,8 +42,10 @@
     } catch (error) {
       // The draft save path reports local storage failures when it saves.
     }
-    gate.hidden = true;
-    studio.hidden = false;
+    studio.classList.remove('is-locked');
+    studioContent.inert = false;
+    studioContent.removeAttribute('aria-disabled');
+    gate.classList.add('is-complete');
     document.body.classList.remove('prep-gated');
   }
 
@@ -54,6 +57,9 @@
       rememberedEmail = fields.email.value || '';
     }
     gateEmail.value = rememberedEmail;
+    studio.classList.add('is-locked');
+    studioContent.inert = true;
+    studioContent.setAttribute('aria-disabled', 'true');
     if (validEmail(rememberedEmail)) {
       openStudio(rememberedEmail);
       return;

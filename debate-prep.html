@@ -74,9 +74,9 @@
     .route-area { padding:22px; margin-bottom:18px; }
     .route-area h2 { font-size:1.6rem; margin:4px 0 5px; }
     .route-intro { color:var(--studio-muted); margin-bottom:17px; }
-    .route-grid { position:relative; display:grid; grid-template-columns:1.25fr 1fr; gap:14px; }
-    .route-grid::before { content:""; position:absolute; z-index:2; left:55.5%; top:50%; width:9px; height:1px; background:#ffe34f; transform:translate(-50%,-50%); }
-    .route-grid::after { content:"or"; position:absolute; z-index:3; left:55.5%; top:50%; padding:3px 4px 2px; color:#ffe34f; background:#102b52; font:700 .68rem/1 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:lowercase; transform:translate(-50%,-50%); }
+    .route-grid { position:relative; display:grid; grid-template-columns:1.25fr 1fr; gap:42px; }
+    .route-grid::before { content:""; position:absolute; z-index:2; left:55.5%; top:50%; width:28px; height:5px; border-radius:999px; background:linear-gradient(90deg,rgba(255,227,79,.28),#ffe34f,rgba(255,227,79,.28)); box-shadow:0 0 12px rgba(255,227,79,.3); transform:translate(-50%,-50%); }
+    .route-grid::after { content:"OR"; position:absolute; z-index:3; left:55.5%; top:calc(50% - 18px); padding:5px 10px 4px; color:#ffe34f; background:#102b52; border:1px solid rgba(255,227,79,.72); border-radius:999px; font:700 1rem/1 'Josefin Sans',sans-serif; letter-spacing:.14em; transform:translate(-50%,-50%); }
     .route-card { position:relative; border:1px solid var(--studio-line); border-radius:8px; padding:20px; cursor:pointer; background:#0B2344; transition:border-color .2s,transform .2s,background .2s; }
     .route-card:hover { transform:translateY(-2px); border-color:rgba(242,209,107,.65); }
     .route-card.active { border-color:var(--studio-mint); background:#164B49; }
@@ -142,11 +142,12 @@
     .dev-banner { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; padding:11px 14px; border:1px solid rgba(143,201,255,.28); border-radius:7px; background:rgba(143,201,255,.07); color:#cfe5fa; font-size:.8rem; }
     .dev-banner strong { color:#fff; }
     .text-link { color:var(--studio-gold); text-decoration:none; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; white-space:nowrap; }
-    .prep-gate { min-height:calc(100vh - 88px); display:grid; place-items:center; padding:120px 20px 70px; background:#1c2030; }
-    .prep-gate[hidden] { display:none; }
-    .prep-gate-card { width:min(100%,520px); padding:34px; border:1px solid rgba(242,209,107,.55); border-top:3px solid var(--studio-gold); border-radius:12px; background:#102B52; box-shadow:0 22px 55px rgba(0,0,0,.3); }
-    .prep-gate-card h1 { margin:8px 0 8px; color:#fff; font-size:clamp(2rem,5vw,3.2rem); line-height:1; }
-    .prep-gate-card p { color:#c6d2e2; line-height:1.55; margin:0 0 20px; }
+    .studio-shell.is-locked .studio-content { filter:grayscale(.82) saturate(.28) brightness(.62); opacity:.68; pointer-events:none; user-select:none; }
+    .studio-content[inert] { cursor:not-allowed; }
+    .prep-inline-gate { display:grid; grid-template-columns:minmax(0,1fr) minmax(300px,430px); align-items:end; gap:28px; margin-bottom:18px; padding:24px 26px; border:1px solid rgba(242,209,107,.72); border-top:3px solid #ffe34f; border-radius:12px; background:#102b52; box-shadow:0 18px 38px rgba(0,0,0,.24); }
+    .prep-inline-gate.is-complete { border-color:rgba(105,215,181,.48); border-top-color:#69d7b5; }
+    .prep-inline-gate h1 { margin:8px 0 8px; color:#fff; font-size:clamp(1.8rem,4vw,2.8rem); line-height:1; }
+    .prep-inline-gate > div:first-child p { color:#c6d2e2; line-height:1.55; margin:0; }
     .prep-gate-form { display:grid; gap:9px; }
     .prep-gate-form label { color:var(--studio-gold); font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.11em; text-transform:uppercase; }
     .prep-gate-form input { width:100%; color:#fff; background:#061936; border:1px solid var(--studio-line); border-radius:5px; padding:13px 12px; font:1rem 'Josefin Sans',sans-serif; }
@@ -155,7 +156,7 @@
     .prep-gate-note { color:var(--studio-muted)!important; font-size:.78rem; margin:15px 0 0!important; }
     .prep-gate-error { color:#ffb2b2!important; font-size:.8rem; margin:3px 0 0!important; }
     .stance-panel > .eyebrow { text-align:center; }
-    @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.brief-card,.route-grid,.workspace{grid-template-columns:1fr}.route-grid::before{left:50%;top:50%;width:9px}.route-grid::after{left:50%;top:50%}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.brief-resolution-mark img{width:103px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.checklist-card{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column} }
+    @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace{grid-template-columns:1fr}.route-grid::before{left:50%;top:50%;width:28px}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.brief-resolution-mark img{width:103px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.checklist-card{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column} }
     @media (max-width:480px) { .identity-grid{grid-template-columns:1fr}.preview-sheet{padding:28px 22px} }
   </style>
 </head>
@@ -166,21 +167,22 @@
   <div id="circ-wrap"><button id="circ-btn" onclick="toggleMenu()" aria-label="Open navigation"><span class="dn-hamburger" aria-hidden="true"><span></span><span></span><span></span></button>
     <a class="dn-item dn-p1" href="about.html">About</a><a class="dn-item dn-p2" href="awards.html">Awards</a><a class="dn-item dn-p3" href="announcements.html">News</a><a class="dn-item dn-p4" href="resources.html">Guides</a><a class="dn-item dn-p5" href="tournaments.html">Events</a><a class="dn-item dn-p6" href="gallery.html">Gallery</a>
   </div>
-  <section class="prep-gate" id="prepGate" aria-labelledby="prepGateTitle">
-    <div class="prep-gate-card">
-      <div class="eyebrow">Before you begin</div>
-      <h1 id="prepGateTitle">Save your place</h1>
-      <p>Enter your email before opening the Prep Studio. It identifies your draft so cloud save and secure resume links can be added later.</p>
+  <main class="studio-shell is-locked">
+    <section class="prep-inline-gate" id="prepGate" aria-labelledby="prepGateTitle">
+      <div>
+        <div class="eyebrow">Before you begin</div>
+        <h1 id="prepGateTitle">Open Debate Prep Studio</h1>
+        <p>Enter your email to light up the Studio and keep your draft connected to you.</p>
+      </div>
       <form class="prep-gate-form" id="prepGateForm" novalidate>
         <label for="prepGateEmail">Email address</label>
         <input id="prepGateEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
-        <button class="studio-btn primary" id="prepGateOpen" type="submit">Open Prep Studio <span aria-hidden="true">→</span></button>
+        <button class="studio-btn primary" id="prepGateOpen" type="submit">Okay <span aria-hidden="true">→</span></button>
         <p class="prep-gate-error" id="prepGateError" role="alert" hidden>Enter a valid email address to continue.</p>
+        <p class="prep-gate-note">Development preview: your draft remains saved privately on this device.</p>
       </form>
-      <p class="prep-gate-note">Development preview: your draft remains saved privately on this device.</p>
-    </div>
-  </section>
-  <main class="studio-shell" hidden>
+    </section>
+    <div class="studio-content" id="studioContent" aria-disabled="true" inert>
     <div class="dev-banner"><span><strong>Development preview:</strong> drafts are saved privately in this browser so you can test leaving and returning. Cloud retrieval and final submission are not connected yet.</span><a class="text-link" href="apply.html">Back to Apply</a></div>
     <header class="studio-mast"><div><div class="studio-kicker">Cooper Debate · 2026–2027</div><h1>Debate Prep Studio</h1><p>A calm place to find your position, build your thinking, and write a paper you are proud to share.</p></div><div class="save-cluster"><div class="save-state" id="saveState">Draft ready</div><div class="saved-time" id="savedTime">Nothing saved yet</div><button class="studio-btn" id="saveBtn" type="button">Save draft</button></div></header>
     <section class="studio-card brief-card" aria-labelledby="brief-title"><div class="brief-resolution-block"><div class="brief-resolution-mark" aria-hidden="true"><img src="attached_assets/image_1787879550696.png" alt=""></div><div><div class="eyebrow resolution-heading" id="brief-title">Current PF resolution <span class="resolution-status">Resolved</span></div><div class="resolution">The United States federal government should enact a moratorium on hyperscale data center construction.</div></div></div><div class="stance-panel"><div class="eyebrow">Choose your position</div><div class="choice-row" role="group" aria-label="Choose your position"><label class="choice choice-pro"><input type="radio" name="stance" value="Pro" checked><span class="choice-icon choice-icon-pro" aria-hidden="true"></span><span><b>PRO</b><small>Support the resolution</small></span></label><label class="choice choice-con"><input type="radio" name="stance" value="Con"><span class="choice-icon choice-icon-con" aria-hidden="true"></span><span><b>CON</b><small>Oppose the resolution</small></span></label></div></div><div><div class="eyebrow">Assignment details</div><div class="meta-list"><div><b>Due date <span class="days-left" id="daysLeft" aria-live="polite"></span></b><small>September 16, 2026 at 3:00 PM</small></div><div><b>Length</b><small>Two pages · 750–1,000 words</small></div><div><b>Sources</b><small>At least 5 for a guided case</small></div></div></div></section>
@@ -190,6 +192,7 @@
       <section class="studio-card essay-card" aria-labelledby="essayTitle"><div class="section-head"><div><div class="eyebrow">Your paper</div><h2 id="essayTitle">Write your essay</h2></div><p id="essayHint">Option A or Option B</p></div><div class="identity-grid"><div class="field"><label for="studentName">Student name</label><input id="studentName" type="text" placeholder="Your full name" autocomplete="name"></div><div class="field"><label for="studentId">FCPS student ID</label><input id="studentId" type="text" inputmode="numeric" placeholder="Student ID"></div><div class="field"><label for="studentEmail">Personal email</label><input id="studentEmail" type="email" placeholder="student@gmail.com" autocomplete="email"></div><div class="field"><label for="paperTitle">Paper title <span aria-hidden="true">(optional)</span></label><input id="paperTitle" type="text" placeholder="Give your paper a title"></div></div><div class="field"><label for="essay">Essay editor</label><textarea id="essay" placeholder="Start with what you believe. You do not need perfect words—just your first honest draft." spellcheck="true"></textarea></div><p class="studio-note">Development autosave keeps this draft on this device. The production version will use the student's secure email resume link.</p></section>
     </div><aside><section class="studio-card sources-card"><div class="side-title">Sources <span id="sourceCount">0</span></div><div class="source-row"><input id="sourceInput" type="text" placeholder="Paste a link or source title" aria-label="New source"><button class="studio-btn" id="addSource" type="button">Add</button></div><div class="source-list" id="sourceList"><p class="studio-note">Add sources as you find them.</p></div></section><section class="studio-card stats-card" style="padding:22px"><div class="side-title">Writing stats</div><div class="stat"><span>Word count</span><strong id="wordCount">0</strong></div><div class="stat"><span>Pages</span><strong id="pageCount">0 / 2</strong></div><div class="stat"><span>Sources</span><strong id="statSources">0</strong></div><button class="studio-btn" id="previewBtn" type="button" style="width:100%;margin-top:17px">Preview paper</button></section></aside></div>
     <section class="studio-card checklist-card" aria-labelledby="checkTitle"><div><div class="eyebrow">Before you share</div><h2 id="checkTitle">Readiness checklist</h2><div class="checks"><label><input type="checkbox"> I clearly stated my position.</label><label><input type="checkbox"> I explained my reasoning.</label><label><input type="checkbox"> I proofread my paper.</label><label><input type="checkbox"> This work is my own.</label><label class="guided-check"><input type="checkbox"> I supported my arguments with evidence.</label><label class="guided-check"><input type="checkbox"> I cited my sources.</label></div></div><div><button class="studio-btn primary" id="finalBtn" type="button">Development preview</button><p class="studio-note" id="finalMessage">You can review before the final handoff.</p></div></section>
+    </div>
   </main>
   <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button">Close</button><div class="eyebrow">Cooper Debate · Position Paper</div><h2 id="previewHeading">Your paper</h2><div class="preview-meta" id="previewMeta"></div><div class="preview-copy" id="previewCopy"></div></article></div>
   <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=3"></script>
