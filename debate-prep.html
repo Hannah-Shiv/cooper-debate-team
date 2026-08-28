@@ -186,24 +186,24 @@
     .paper-compose #essay { min-height:360px; }
     .editor-count { padding:7px 12px; color:#c7d5e5; background:#061936; text-align:right; font-size:.7rem; }
     .editor-count strong { color:#fff; }
-    .paper-sidebar { display:grid; align-content:start; gap:10px; min-width:0; }
-    .paper-side-card { padding:14px; }
-    .paper-side-card h3 { margin:0 0 13px; }
-    .progress-metrics { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); }
-    .progress-metrics > div { min-width:0; padding:0 8px; border-left:1px solid rgba(143,201,255,.2); text-align:center; }
-    .progress-metrics > div:first-child { padding-left:0; border-left:0; }
-    .progress-metrics > div:last-child { padding-right:0; }
-    .progress-metrics span { display:block; color:#b9c7d8; font:700 .53rem 'Josefin Sans',sans-serif; letter-spacing:.06em; text-transform:uppercase; }
-    .progress-metrics strong { display:block; margin:7px 0 5px; color:#fff; font:700 1rem 'Josefin Sans',sans-serif; }
-    .progress-metrics small { display:block; color:#b9c7d8; font-size:.55rem; line-height:1.3; }
-    .progress-track { height:8px; margin-top:15px; overflow:hidden; border-radius:999px; background:#1d3657; }
+    .paper-sidebar { display:grid; grid-template-rows:minmax(0,1fr) minmax(0,1fr); align-self:stretch; gap:12px; min-width:0; }
+    .paper-side-card { min-height:0; padding:20px; }
+    .paper-side-card h3 { margin:0 0 17px; font-size:.8rem; }
+    .progress-metrics { display:grid; grid-template-columns:1fr 1fr; border:1px solid rgba(143,201,255,.2); border-radius:7px; overflow:hidden; }
+    .progress-metrics > div { min-width:0; min-height:74px; padding:13px 10px; border-left:1px solid rgba(143,201,255,.2); border-top:1px solid rgba(143,201,255,.2); text-align:center; }
+    .progress-metrics > div:nth-child(odd) { border-left:0; }
+    .progress-metrics > div:nth-child(-n+2) { border-top:0; }
+    .progress-metrics span { display:block; color:#b9c7d8; font:700 .61rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+    .progress-metrics strong { display:block; margin:8px 0 5px; color:#fff; font:700 1.45rem 'Josefin Sans',sans-serif; line-height:1; }
+    .progress-metrics small { display:block; color:#b9c7d8; font-size:.64rem; line-height:1.3; }
+    .progress-track { height:10px; margin-top:22px; overflow:hidden; border-radius:999px; background:#1d3657; }
     .progress-track span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6bbcff,#866eff); transition:width .25s ease; }
-    .progress-scale { display:flex; justify-content:space-between; margin-top:5px; color:#8294a9; font-size:.55rem; }
-    .requirement-list { display:grid; gap:10px; }
-    .requirement-list > div { display:grid; grid-template-columns:18px minmax(0,1fr) auto; align-items:center; gap:8px; color:#dce7f4; font-size:.7rem; }
-    .requirement-list strong { color:#dce7f4; font:600 .66rem 'Josefin Sans',sans-serif; text-align:right; }
+    .progress-scale { display:flex; justify-content:space-between; margin-top:7px; color:#8294a9; font-size:.61rem; }
+    .requirement-list { display:grid; gap:15px; }
+    .requirement-list > div { display:grid; grid-template-columns:26px minmax(0,1fr) auto; align-items:center; gap:10px; color:#dce7f4; font-size:.81rem; line-height:1.3; }
+    .requirement-list strong { color:#dce7f4; font:600 .73rem 'Josefin Sans',sans-serif; text-align:right; }
     .requirement-list strong.is-complete { color:var(--studio-pro); }
-    .requirement-icon { font-size:.95rem; line-height:1; }
+    .requirement-icon { font-size:1.35rem; line-height:1; text-align:center; }
     .requirement-icon.blue { color:#59a8ff; }.requirement-icon.purple { color:#a879ff; }.requirement-icon.gold { color:#ffd54b; }.requirement-icon.red { color:#ff6363; }.requirement-icon.green { color:#4fd28b; }
     .paper-footer { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:20px; padding:14px 24px 20px; }
     .save-paper-btn { min-width:142px; color:#8fc9ff; border-color:#4b9fff; }
@@ -268,6 +268,7 @@
     @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace,.essay-row{grid-template-columns:1fr}.workspace .case-card,.workspace .sources-card,.workspace .essay-card,.workspace .stats-card{grid-column:auto;grid-row:auto}.workspace .case-card{order:1}.workspace .sources-card{order:2}.workspace .essay-card{order:3}.workspace .stats-card{order:4}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.justice-icon{background-size:415px auto;background-position:-97px -11px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.checklist-card{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column}.paper-hero{grid-template-columns:1fr;padding:22px 20px 16px}.paper-hero-actions{justify-content:space-between;flex-wrap:wrap}.paper-context{align-items:flex-start;flex-direction:column;margin:0 18px 10px}.paper-grid{padding:0 18px}.paper-sidebar{grid-template-columns:1fr}.paper-footer{grid-template-columns:1fr;gap:12px;padding:14px 18px 20px}.footer-save-status{justify-self:start}.save-paper-btn,.footer-preview-btn{width:100%;min-width:0} }
     @media (max-width:800px) { .source-case-step .source-case-content{grid-column:1 / -1}.source-case-step .source-list{grid-template-columns:1fr} }
     @media (max-width:800px) { .studio-access-form{grid-template-columns:1fr 1fr}.studio-access-form button{grid-column:1 / -1;justify-self:start}.brief-resolution-mark{transform:translateY(-12px)}.source-step-head{grid-template-columns:38px minmax(0,1fr)}.source-step-card .source-list{grid-template-columns:1fr}.essay-head{grid-template-columns:1fr}.essay-head-tools{justify-items:stretch}.essay-stats{justify-content:flex-start}.essay-stat{flex:1 1 86px}.essay-stats .studio-btn{flex:1 1 100%}.identity-grid{grid-template-columns:1fr 1fr}.editor-label-row{align-items:flex-start;flex-direction:column;gap:4px}.editor-toolbar{gap:6px} }
+    @media (max-width:980px) { .paper-sidebar{grid-template-rows:auto;align-self:auto} }
     @media (max-width:480px) { .studio-access-form,.identity-grid{grid-template-columns:1fr}.preview-sheet{padding:42px 22px 32px}.preview-close{top:13px;right:14px} }
   </style>
 </head>
