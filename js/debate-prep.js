@@ -37,10 +37,26 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
+  function valueOf(field) {
+    return typeof field.value === 'string'
+      ? field.value
+      : (field.dataset.value || '');
+  }
+
+  function setValue(field, value) {
+    var nextValue = typeof value === 'string' ? value : '';
+    if (typeof field.value === 'string') {
+      field.value = nextValue;
+      return;
+    }
+    field.dataset.value = nextValue;
+    field.textContent = nextValue || '—';
+  }
+
   function openStudio(email, name, studentId) {
-    fields.name.value = name;
-    fields.studentId.value = studentId;
-    fields.email.value = email;
+    setValue(fields.name, name);
+    setValue(fields.studentId, studentId);
+    setValue(fields.email, email);
     gateName.value = name;
     gateStudentId.value = studentId;
     gateEmail.value = email;
@@ -59,13 +75,13 @@
   function initializeGate() {
     var rememberedEmail = '';
     try {
-      rememberedEmail = localStorage.getItem(emailKey) || fields.email.value || '';
+      rememberedEmail = localStorage.getItem(emailKey) || valueOf(fields.email) || '';
     } catch (error) {
-      rememberedEmail = fields.email.value || '';
+      rememberedEmail = valueOf(fields.email) || '';
     }
-    gateName.value = fields.name.value;
+    gateName.value = valueOf(fields.name);
     gateEmail.value = rememberedEmail;
-    gateStudentId.value = fields.studentId.value;
+    gateStudentId.value = valueOf(fields.studentId);
     studio.classList.add('is-locked');
     studioContent.inert = true;
     studioContent.setAttribute('aria-disabled', 'true');
@@ -89,9 +105,9 @@
     return {
       version: 2,
       updatedAt: new Date().toISOString(),
-      name: fields.name.value,
-      studentId: fields.studentId.value,
-      email: fields.email.value,
+      name: valueOf(fields.name),
+      studentId: valueOf(fields.studentId),
+      email: valueOf(fields.email),
       title: fields.title.value,
       essay: fields.essay.value,
       contentions: fields.contentions.value,
@@ -196,7 +212,7 @@
   }
 
   function restoreValue(data, key) {
-    if (typeof data[key] === 'string') fields[key].value = data[key];
+    if (typeof data[key] === 'string') setValue(fields[key], data[key]);
   }
 
   function load() {
@@ -265,14 +281,13 @@
 
   Object.keys(fields).forEach(function (key) {
     fields[key].addEventListener('input', function () {
+      if (typeof fields[key].value !== 'string') return;
       renderStats();
       markDirty();
-      if (key === 'name') gateName.value = fields.name.value;
-      if (key === 'studentId') gateStudentId.value = fields.studentId.value;
-      if (key === 'email') gateEmail.value = fields.email.value;
-      if (key === 'email' && validEmail(fields.email.value)) {
+      if (key === 'email') gateEmail.value = valueOf(fields.email);
+      if (key === 'email' && validEmail(valueOf(fields.email))) {
         try {
-          localStorage.setItem(emailKey, fields.email.value.trim());
+          localStorage.setItem(emailKey, valueOf(fields.email).trim());
         } catch (error) {
           // The draft save path reports local storage failures when it saves.
         }
@@ -335,7 +350,7 @@
   });
 
   $('previewBtn').addEventListener('click', function () {
-    $('previewMeta').textContent = (fields.name.value || 'Unnamed student') + ' · ' +
+    $('previewMeta').textContent = (valueOf(fields.name) || 'Unnamed student') + ' · ' +
       (fields.title.value || 'Untitled position paper') + ' · ' +
       document.querySelector('input[name="stance"]:checked').value;
     $('previewCopy').textContent = fields.essay.value ||
@@ -361,8 +376,8 @@
 
   $('finalBtn').addEventListener('click', function () {
     var visibleChecks = Array.from(document.querySelectorAll('.checks label:not([hidden]) input'));
-    var identityReady = fields.name.value.trim() && fields.studentId.value.trim() &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.email.value.trim());
+    var identityReady = valueOf(fields.name).trim() && valueOf(fields.studentId).trim() &&
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueOf(fields.email).trim());
     var essayReady = wordCount(fields.essay.value) >= 50;
     var checksReady = visibleChecks.every(function (box) { return box.checked; });
     var ready = identityReady && essayReady && checksReady;
