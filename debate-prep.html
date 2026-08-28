@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css?v=28">
+  <link rel="stylesheet" href="css/public-footer.css?v=1">
   <link rel="stylesheet" href="css/dome-nav.css?v=10">
   <style>
     :root { --studio-ink:#1c2030; --studio-panel:#0d2345; --studio-panel-2:#102b52; --studio-line:rgba(164,200,236,.22); --studio-gold:#f2d16b; --studio-mint:#69d7b5; --studio-blue:#8fc9ff; --studio-pro:#3fce83; --studio-con:#e75858; --studio-text:#f4f7fb; --studio-muted:#a8b8cc; }
@@ -96,7 +97,7 @@
     .workspace > div,.workspace > aside,.essay-row { display:contents; }
     .workspace .case-card { grid-column:1; grid-row:1; }
     .workspace .essay-card { grid-column:1; grid-row:2; }
-    .case-card,.essay-card,.checklist-card { padding:22px; margin-bottom:18px; }
+    .case-card,.essay-card { padding:22px; margin-bottom:18px; }
     .essay-row .essay-card { margin-bottom:18px; }
     .case-card,.essay-card { border-radius:12px; box-shadow:0 18px 38px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.04); }
     .case-card { border-top:3px solid #F2D16B; background:linear-gradient(145deg,rgba(11,32,76,.94),rgba(6,19,49,.98)); }
@@ -157,9 +158,9 @@
     .paper-hero-copy h2 { margin:5px 0 5px; color:#fff; font-size:clamp(2rem,3.4vw,3rem); line-height:1; letter-spacing:-.025em; }
      .paper-hero-copy p { margin:0; color:#bfc5cf; font-size:.9rem; }
     .paper-hero-actions { display:flex; align-items:center; gap:22px; }
-    .paper-save-indicator,.footer-save-status { display:flex; align-items:flex-start; gap:9px; color:#fff; }
-    .paper-save-indicator strong,.footer-save-status strong { display:block; font:600 .76rem 'Josefin Sans',sans-serif; }
-    .paper-save-indicator small,.footer-save-status small { display:block; margin-top:4px; color:var(--studio-muted); font-size:.68rem; }
+    .paper-save-indicator { display:flex; align-items:flex-start; gap:9px; color:#fff; }
+    .paper-save-indicator strong { display:block; font:600 .76rem 'Josefin Sans',sans-serif; }
+    .paper-save-indicator small { display:block; margin-top:4px; color:var(--studio-muted); font-size:.68rem; }
     .save-check { display:grid; place-items:center; width:18px; height:18px; border:1px solid var(--studio-pro); border-radius:50%; color:var(--studio-pro); font-size:.68rem; line-height:1; }
     .paper-preview-btn { min-height:48px; padding:11px 21px; border-width:2px; }
      .paper-context { display:flex; align-items:center; justify-content:space-between; gap:18px; margin:0 24px 10px; padding:10px 13px; border:1px solid rgba(220,226,234,.2); border-radius:7px; background:#242936; }
@@ -220,10 +221,6 @@
     .requirement-list strong.is-complete { color:var(--studio-pro); }
     .requirement-icon { font-size:1.55rem; line-height:1; text-align:center; }
     .requirement-icon.blue,.requirement-icon.purple,.requirement-icon.gold,.requirement-icon.red,.requirement-icon.green { color:#D4A017; }
-    .paper-footer { display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:20px; padding:14px 24px 20px; }
-     .save-paper-btn { min-width:142px; color:#dce2ea; border-color:rgba(220,226,234,.42); }
-    .footer-save-status { justify-self:start; }
-    .footer-preview-btn { min-width:285px; min-height:48px; font-size:.8rem; }
     .identity-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:15px; border:1px solid rgba(143,201,255,.25); border-radius:9px; background:rgba(4,18,40,.25); }
     .identity-field { display:grid; gap:7px; min-width:0; margin-bottom:0; }
     .identity-label { color:var(--studio-gold); font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.11em; text-transform:uppercase; }
@@ -244,10 +241,6 @@
     a.source-label { text-decoration:none; }
     a.source-label:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
     .remove-source { align-self:start; width:24px; height:24px; padding:0; border:1px solid rgba(244,166,166,.42); border-radius:50%; background:rgba(244,166,166,.08); color:#ffb5b5; cursor:pointer; font-size:1rem; line-height:1; }
-    .checklist-card { display:grid; grid-template-columns:1fr auto; gap:22px; align-items:center; }
-    .checks { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; }
-    .checks label { color:var(--studio-muted); font-size:.82rem; display:flex; gap:8px; align-items:flex-start; }
-    .checks input { accent-color:var(--studio-mint); margin-top:3px; }
     .preview-panel { display:none; position:fixed; inset:0; z-index:50; background:rgba(3,10,23,.86); backdrop-filter:blur(7px); padding:clamp(22px,5vh,60px) 20px; }
     .preview-panel.open { display:grid; place-items:center; }
     .preview-sheet { position:relative; width:min(860px,100%); max-height:90vh; overflow:auto; background:#f8f1df; color:#1a2434; padding:48px clamp(24px,6vw,72px) 58px; border:1px solid #d2b65e; border-radius:12px; box-shadow:0 28px 100px rgba(0,0,0,.72),0 0 0 5px rgba(242,209,107,.1); }
@@ -280,7 +273,7 @@
     .prep-gate-error { color:#ffb2b2!important; font-size:.8rem; margin:3px 0 0!important; }
     .stance-panel > .eyebrow { text-align:center; }
     @media (max-width:980px) { .paper-grid{grid-template-columns:1fr}.paper-sidebar{grid-template-columns:1fr 1fr}.paper-compose #essay{min-height:330px} }
-    @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace,.essay-row{grid-template-columns:1fr}.workspace .case-card,.workspace .sources-card,.workspace .essay-card,.workspace .stats-card{grid-column:auto;grid-row:auto}.workspace .case-card{order:1}.workspace .sources-card{order:2}.workspace .essay-card{order:3}.workspace .stats-card{order:4}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.justice-icon{background-size:415px auto;background-position:-97px -11px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.checklist-card{grid-template-columns:1fr}.checks{grid-template-columns:1fr}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column}.paper-hero{grid-template-columns:1fr;padding:22px 20px 16px}.paper-hero-actions{justify-content:space-between;flex-wrap:wrap}.paper-context{align-items:flex-start;flex-direction:column;margin:0 18px 10px}.paper-grid{padding:0 18px}.paper-sidebar{grid-template-columns:1fr}.paper-footer{grid-template-columns:1fr;gap:12px;padding:14px 18px 20px}.footer-save-status{justify-self:start}.save-paper-btn,.footer-preview-btn{width:100%;min-width:0} }
+    @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace,.essay-row{grid-template-columns:1fr}.workspace .case-card,.workspace .sources-card,.workspace .essay-card,.workspace .stats-card{grid-column:auto;grid-row:auto}.workspace .case-card{order:1}.workspace .sources-card{order:2}.workspace .essay-card{order:3}.workspace .stats-card{order:4}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.justice-icon{background-size:415px auto;background-position:-97px -11px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column}.paper-hero{grid-template-columns:1fr;padding:22px 20px 16px}.paper-hero-actions{justify-content:space-between;flex-wrap:wrap}.paper-context{align-items:flex-start;flex-direction:column;margin:0 18px 10px}.paper-grid{padding:0 18px}.paper-sidebar{grid-template-columns:1fr} }
     @media (max-width:800px) { .paper-sources-head{flex-direction:column}.paper-sources .source-list{grid-template-columns:1fr} }
     @media (max-width:800px) { .studio-access-form{grid-template-columns:1fr 1fr}.studio-access-form button{grid-column:1 / -1;justify-self:start}.brief-resolution-mark{transform:translateY(-12px)}.essay-head{grid-template-columns:1fr}.essay-head-tools{justify-items:stretch}.essay-stats{justify-content:flex-start}.essay-stat{flex:1 1 86px}.essay-stats .studio-btn{flex:1 1 100%}.identity-grid{grid-template-columns:1fr 1fr}.editor-label-row{align-items:flex-start;flex-direction:column;gap:4px}.editor-toolbar{gap:6px} }
     @media (max-width:980px) { .paper-sidebar{grid-template-rows:auto;align-self:auto} }
@@ -334,13 +327,79 @@
                <section class="paper-side-card requirements-card"><h3>Requirements</h3><div class="requirement-list"><div><span class="requirement-icon blue" aria-hidden="true">▤</span><span>750–1,000 words</span><strong id="requirementWords">0 / 750–1,000</strong></div><div><span class="requirement-icon purple" aria-hidden="true">▧</span><span>Two (2) pages</span><strong id="requirementPages">0 / 2</strong></div><div><span class="requirement-icon gold" aria-hidden="true">▱</span><span>Minimum 5 sources</span><strong id="requirementSources">0 / 5</strong></div><div><span class="requirement-icon red" aria-hidden="true">“</span><span>Support claims with evidence</span><strong id="requirementEvidence">In progress</strong></div><div><span class="requirement-icon green" aria-hidden="true">⚖</span><span>Clear reasoning and impacts</span><strong id="requirementReasoning">In progress</strong></div></div></section>
              </aside>
            </div>
-           <footer class="paper-footer"><button class="studio-btn save-paper-btn" id="saveEssayBtn" type="button">▣ Save draft</button><div class="footer-save-status"><span class="save-check" aria-hidden="true">✓</span><span><strong>Saved automatically</strong><small id="paperFooterSavedTime">Not saved yet</small></span></div><button class="studio-btn primary footer-preview-btn" id="previewBtnFooter" type="button">Preview paper <span aria-hidden="true">→</span></button></footer>
          </section>
        </div>
      </div></div>
-    <section class="studio-card checklist-card" aria-labelledby="checkTitle"><div><div class="eyebrow">Before you share</div><h2 id="checkTitle">Readiness checklist</h2><div class="checks"><label><input type="checkbox"> I clearly stated my position.</label><label><input type="checkbox"> I explained my reasoning.</label><label><input type="checkbox"> I proofread my paper.</label><label><input type="checkbox"> This work is my own.</label><label class="guided-check"><input type="checkbox"> I supported my arguments with evidence.</label><label class="guided-check"><input type="checkbox"> I cited my sources.</label></div></div><div><button class="studio-btn primary" id="finalBtn" type="button">Development preview</button><p class="studio-note" id="finalMessage">You can review before the final handoff.</p></div></section>
     </div>
   </main>
+  <footer class="index-footer">
+    <div class="index-footer-crown" aria-hidden="true">
+      <img class="index-footer-crown-icon" src="images/index-footer-crown.png?v=1" alt=""/>
+    </div>
+    <div class="section-wrap">
+      <div class="index-footer-main">
+        <section class="index-footer-brand" aria-label="Cooper Debate Team">
+          <div class="index-footer-lockup">
+            <img class="index-footer-jaguar" src="images/index-footer-jaguar.png?v=1" alt="Cooper C with jaguar"/>
+            <div>
+              <h2 class="index-footer-brand-title">
+                <span class="index-footer-brand-title-line">Cooper</span>
+                <span class="index-footer-brand-title-line">Debate Team</span>
+              </h2>
+              <div class="index-footer-school">
+                <span>Cooper Middle School</span>
+                <span class="index-footer-location">McLean, VA</span>
+              </div>
+            </div>
+          </div>
+          <div class="index-footer-brand-details">
+            <div class="index-footer-motto">
+              <span class="star">☆</span><span>Speak</span><span class="dot">•</span><span>Reason</span><span class="dot">•</span><span>Lead</span><span class="star">☆</span>
+            </div>
+            <div class="index-footer-brand-rule" aria-hidden="true"></div>
+            <p class="index-footer-brand-copy">Competing in Public Forum debate at WASDL tournaments and NSDA Nationals.<br/>Metro Finals Champions.</p>
+          </div>
+        </section>
+        <nav class="index-footer-column" aria-label="Explore">
+          <h2 class="index-footer-heading">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2.1 4.9-4.9 2.1 2.1-4.9 4.9-2.1Z"/></svg>
+            Explore
+          </h2>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="about.html"><span class="index-footer-chevron">›</span><span>About</span></a></li>
+            <li><a class="index-footer-link" href="awards.html"><span class="index-footer-chevron">›</span><span>Awards &amp; Achievements</span></a></li>
+            <li><a class="index-footer-link" href="tournaments.html"><span class="index-footer-chevron">›</span><span>Tournaments</span></a></li>
+            <li><a class="index-footer-link" href="resources.html"><span class="index-footer-chevron">›</span><span>Resources</span></a></li>
+            <li><a class="index-footer-link" href="gallery.html"><span class="index-footer-chevron">›</span><span>Gallery</span></a></li>
+            <li><a class="index-footer-link" href="announcements.html"><span class="index-footer-chevron">›</span><span>News &amp; Announcements</span></a></li>
+          </ul>
+        </nav>
+        <nav class="index-footer-column" aria-label="Connect">
+          <h2 class="index-footer-heading">
+            <svg viewBox="0 0 28 24" aria-hidden="true"><circle cx="10" cy="7" r="3.5"/><circle cx="20" cy="8" r="3"/><path d="M3 20v-2c0-4 3-6 7-6s7 2 7 6v2M17 13c4 0 8 1.6 8 5v2"/></svg>
+            Connect
+          </h2>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="apply.html"><span class="index-footer-chevron">›</span><span>Apply Now</span></a></li>
+            <li><a class="index-footer-link" href="about.html#join"><span class="index-footer-chevron">›</span><span>How to Join</span></a></li>
+            <li><a class="index-footer-link" href="tournaments.html#parent-info"><span class="index-footer-chevron">›</span><span>Parent Information</span><svg class="index-footer-external" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3H3v10h10v-3M8 2h6v6M14 2 7 9"/></svg></a></li>
+          </ul>
+          <a class="index-footer-action" href="members-signon.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg><span>Member Portal</span><span class="action-arrow">→</span></a>
+          <ul class="index-footer-nav">
+            <li><a class="index-footer-link" href="members-blog.html"><span class="index-footer-chevron">›</span><span>Team Blog</span></a></li>
+          </ul>
+          <a class="index-footer-action index-footer-email" href="mailto:CooperDebateTeam@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg><span class="index-footer-email-copy"><span class="index-footer-email-label">Contact</span><span class="index-footer-email-address">CooperDebateTeam@gmail.com</span></span></a>
+        </nav>
+      </div>
+    </div>
+    <div class="index-footer-bottom">
+      <div class="section-wrap index-footer-bottom-grid">
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 21S4 16.2 4 9.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 3.5C20 16.2 12 21 12 21Z"/></svg></span><div><div class="index-footer-credit-line">Designed &amp; developed by <strong>Hannah Shiv</strong></div><div class="index-footer-bottom-sub">A volunteer community-service initiative.</div></div></div>
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2 4.5 5v6c0 5 3 8.5 7.5 11 4.5-2.5 7.5-6 7.5-11V5L12 2Z"/><path d="M9 8h6M9 12h6M12 8v8"/></svg></span><div class="index-footer-bottom-links"><a href="privacy.html">Privacy Policy</a><span class="dot">•</span><a href="privacy.html#accessibility">Accessibility</a></div></div>
+        <div class="index-footer-bottom-cell"><span class="index-footer-bottom-icon" aria-hidden="true">©</span><div><div class="index-footer-bottom-strong">2026 Cooper Debate Team</div><div class="index-footer-bottom-sub">Cooper Middle School &nbsp;•&nbsp; McLean, VA &nbsp;•&nbsp; FCPS</div></div></div>
+      </div>
+    </div>
+  </footer>
   <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button" aria-label="Close paper preview">×</button><div class="eyebrow">Cooper Debate · Essay preview</div><h2 id="previewHeading">Untitled position paper</h2><div class="preview-meta" id="previewMeta"></div><div class="preview-copy" id="previewCopy"></div></article></div>
   <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=3"></script>
 </body>

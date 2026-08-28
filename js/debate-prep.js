@@ -96,7 +96,6 @@
   function updatePaperSaveState(label, detail) {
     $('paperSaveState').textContent = label;
     $('paperSavedTime').textContent = detail;
-    $('paperFooterSavedTime').textContent = detail;
   }
 
   function updateRequirement(id, value, complete) {
@@ -168,11 +167,8 @@
       evidence: fields.evidence.value,
       impacts: fields.impacts.value,
       stance: document.querySelector('input[name="stance"]:checked').value,
-      route: route,
-      sources: sources,
-      checks: Array.from(document.querySelectorAll('.checks input')).map(function (box) {
-        return box.checked;
-      })
+       route: route,
+       sources: sources
     };
   }
 
@@ -297,10 +293,6 @@
       }).slice(0, 20) : [];
       var stance = document.querySelector('input[name="stance"][value="' + (data.stance || 'Pro') + '"]');
       if (stance) stance.checked = true;
-      (Array.isArray(data.checks) ? data.checks : []).forEach(function (checked, index) {
-        var box = document.querySelectorAll('.checks input')[index];
-        if (box) box.checked = checked === true;
-      });
       setRoute(route);
       renderSources();
       renderStats();
@@ -396,10 +388,6 @@
     });
   });
 
-  document.querySelectorAll('.checks input').forEach(function (input) {
-    input.addEventListener('change', markDirty);
-  });
-
   document.querySelectorAll('[data-editor-command]').forEach(function (button) {
     button.addEventListener('mousedown', function (event) {
       event.preventDefault();
@@ -438,10 +426,6 @@
     save({ quiet: false });
   });
 
-  $('saveEssayBtn').addEventListener('click', function () {
-    save({ quiet: false });
-  });
-
   $('changeRouteBtn').addEventListener('click', function () {
     document.querySelector('.route-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
@@ -464,7 +448,6 @@
   }
 
   $('previewBtn').addEventListener('click', openPreview);
-  $('previewBtnFooter').addEventListener('click', openPreview);
 
   function closePreview() {
     $('previewPanel').classList.remove('open');
@@ -478,20 +461,6 @@
   });
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape' && $('previewPanel').classList.contains('open')) closePreview();
-  });
-
-  $('finalBtn').addEventListener('click', function () {
-    var visibleChecks = Array.from(document.querySelectorAll('.checks label:not([hidden]) input'));
-    var identityReady = valueOf(fields.name).trim() && valueOf(fields.studentId).trim() &&
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valueOf(fields.email).trim());
-    var essayReady = wordCount(textValueOf(fields.essay)) >= 50;
-    var checksReady = visibleChecks.every(function (box) { return box.checked; });
-    var ready = identityReady && essayReady && checksReady;
-    $('finalMessage').textContent = ready
-      ? 'Ready for review in development. No submission was sent.'
-      : 'Add your name, student ID, valid personal email, at least 50 essay words, and complete the visible checklist.';
-    $('finalMessage').style.color = ready ? 'var(--studio-mint)' : '#f2d16b';
-    save({ quiet: true });
   });
 
   window.addEventListener('beforeunload', function () {
