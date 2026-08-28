@@ -126,6 +126,7 @@
 
 .entry-choice-card:hover {
   transform: translateY(-3px);
+  border-color: #f2d16b;
 }
 
 .entry-choice-card:focus-visible {
@@ -147,6 +148,11 @@
     0 14px 32px rgba(0, 0, 0, 0.28),
     0 0 0 2px rgba(81, 198, 139, 0.2),
     inset 0 0 52px rgba(28, 130, 82, 0.18);
+}
+
+.entry-choice-card.entry-team:hover,
+.entry-choice-card.entry-paper:hover {
+  border-color: #f2d16b !important;
 }
 
 .entry-card-heading {
