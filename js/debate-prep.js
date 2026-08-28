@@ -445,7 +445,8 @@
   });
 
   $('changeRouteBtn').addEventListener('click', function () {
-    document.querySelector('.route-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    gate.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    gateName.focus({ preventScroll: true });
   });
 
   function openPreview() {
