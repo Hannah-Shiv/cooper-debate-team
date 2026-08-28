@@ -100,10 +100,12 @@
 
   function renderStats() {
     var words = wordCount(fields.essay.value);
+    var characters = fields.essay.value.replace(/\s/g, '').length;
     $('wordCount').textContent = words.toLocaleString();
     $('pageCount').textContent = (words ? Math.max(1, Math.ceil(words / 500)) : 0) + ' / 2';
     $('sourceCount').textContent = sources.length;
     $('statSources').textContent = sources.length;
+    $('characterCount').textContent = characters.toLocaleString();
 
     ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
