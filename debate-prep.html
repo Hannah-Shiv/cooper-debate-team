@@ -182,9 +182,10 @@
     .paper-title-field input:focus { outline:3px solid rgba(143,201,255,.3); border-color:var(--studio-blue); }
      .paper-sources { margin-bottom:14px; padding:15px; border:1px solid rgba(220,226,234,.2); border-radius:7px; background:#2a303a; }
     .paper-sources-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:12px; }
-    .paper-sources-head h3 { margin:0 0 4px; color:#f2d16b; font:700 .84rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
-     .paper-sources-head p { margin:0; color:#c5cbd4; font-size:.8rem; line-height:1.4; }
-    .source-required { flex:0 0 auto; padding:5px 8px; border:1px solid rgba(242,209,107,.7); border-radius:999px; color:#f2d16b; font:700 .64rem 'Josefin Sans',sans-serif; letter-spacing:.06em; text-transform:uppercase; }
+     .paper-sources-head > div { display:flex; align-items:baseline; flex-wrap:wrap; gap:7px; min-width:0; }
+     .paper-sources-head h3 { margin:0; color:#f2d16b; font:700 .84rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+      .paper-sources-head p { margin:0; color:#c5cbd4; font-size:.8rem; line-height:1.4; }
+     .source-required { flex:0 0 auto; padding:6px 10px; border:1px solid rgba(255,227,79,.85); border-radius:999px; color:#ffe34f; background:rgba(255,227,79,.1); font:700 .78rem 'Josefin Sans',sans-serif; letter-spacing:.06em; text-transform:uppercase; }
     .paper-sources .source-row { margin-bottom:8px; }
     .paper-sources .source-list { grid-template-columns:repeat(2,minmax(0,1fr)); }
     .paper-sources .source-count-note { margin-top:9px; }
@@ -208,9 +209,10 @@
      .progress-card h3 { color:#8fc9ff; font-size:1rem; }
      .requirements-card { border-top:3px solid #79E3C1; background:linear-gradient(145deg,rgba(121,227,193,.11),#242936 38%); }
      .requirements-card h3 { color:#79E3C1; font-size:1rem; }
-     .progress-metrics { display:grid; grid-template-columns:1fr; flex:1; align-content:space-between; gap:0; border:0; border-radius:0; overflow:visible; }
-     .progress-metrics > div { display:flex; align-items:baseline; justify-content:space-between; gap:14px; min-width:0; min-height:0; padding:11px 0; border:0; border-bottom:1px solid rgba(220,226,234,.18); text-align:left; }
-     .progress-metrics > div:last-child { border-bottom:0; }
+     .progress-metrics { display:grid; grid-template-columns:1fr 1fr; flex:none; gap:0; border:1px solid rgba(220,226,234,.2); border-radius:7px; overflow:hidden; }
+     .progress-metrics > div { display:block; min-width:0; min-height:92px; padding:18px 12px; border-left:1px solid rgba(220,226,234,.16); border-top:1px solid rgba(220,226,234,.16); text-align:center; }
+     .progress-metrics > div:nth-child(odd) { border-left:0; }
+     .progress-metrics > div:nth-child(-n+2) { border-top:0; }
      .progress-metrics > div > span { display:block; color:#b9c7d8; font:700 .78rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
      .progress-metrics strong { display:block; margin:0; color:#fff; font:700 1.3rem/1.15 'Josefin Sans',sans-serif; white-space:nowrap; }
      .progress-metrics small { display:inline; color:inherit; font:inherit; font-size:1rem; letter-spacing:0; line-height:inherit; text-transform:none; }
@@ -261,9 +263,9 @@
      .preview-sheet { position:relative; display:flex; flex-direction:column; width:min(900px,100%); max-height:calc(100dvh - 124px); overflow:hidden; background:#182230; color:#f4f7fb; border:1px solid rgba(143,201,255,.42); border-top:3px solid #F2D16B; border-radius:14px; box-shadow:0 28px 100px rgba(0,0,0,.78),0 0 0 5px rgba(143,201,255,.08); }
      .preview-header { position:relative; padding:27px clamp(24px,5vw,62px) 21px; background:linear-gradient(135deg,#102a4c,#1e2b3b); border-bottom:1px solid rgba(143,201,255,.25); }
      .preview-header::after { content:""; position:absolute; left:clamp(24px,5vw,62px); bottom:-2px; width:120px; height:3px; background:#79E3C1; }
-     .preview-sheet h2 { margin:8px 58px 9px 0; color:#fff; font-size:clamp(2rem,4vw,3.2rem); line-height:1; }
-     .preview-sheet .eyebrow { position:relative; color:#F2D16B; }
-     .preview-sheet .preview-meta { font:700 .78rem 'Josefin Sans',sans-serif; text-transform:uppercase; letter-spacing:.1em; color:#b9d8f2; }
+     .preview-sheet h2 { margin:0 58px 15px 0; color:#fff; font-size:clamp(2rem,4vw,3.2rem); line-height:1; }
+     .preview-sheet .eyebrow { position:relative; display:block; margin-bottom:15px; color:#F2D16B; }
+     .preview-sheet .preview-meta { padding-top:12px; border-top:1px solid rgba(143,201,255,.22); font:700 .78rem 'Josefin Sans',sans-serif; text-transform:uppercase; letter-spacing:.1em; color:#b9d8f2; }
      .preview-sheet .preview-copy { overflow:auto; padding:28px clamp(24px,5vw,62px) 46px; background:#111a27; white-space:normal; font:1.18rem/1.72 'Cormorant Garamond',serif; }
      .preview-sheet .preview-copy p { margin:0 0 1em; }
      .preview-sheet .preview-copy ul,.preview-sheet .preview-copy ol { margin:.25em 0 1em 1.35em; padding:0; }
@@ -335,7 +337,7 @@
            <div class="paper-grid">
              <div class="paper-compose">
                 <div class="paper-title-field"><label for="paperTitle">Paper title</label><input id="paperTitle" type="text" placeholder="Enter a title for your position paper…"></div>
-                <section class="paper-sources" aria-labelledby="sourcesTitle"><div class="paper-sources-head"><div><h3 id="sourcesTitle">Sources</h3><p>Add the research, articles, and evidence that support your position.</p></div><span class="source-required">Minimum 5</span></div><div class="source-row"><input id="sourceInput" type="text" placeholder="Paste a link or source title" aria-label="New source"><button class="studio-btn" id="addSource" type="button">Add</button></div><div class="source-list" id="sourceList"><p class="studio-note">Add sources as you find them.</p></div><div class="source-count-note"><span id="sourceCount">0</span> sources added</div></section>
+                 <section class="paper-sources" aria-labelledby="sourcesTitle"><div class="paper-sources-head"><div><h3 id="sourcesTitle">Sources:</h3><p>Add the research, articles, and evidence that support your position.</p></div><span class="source-required">Minimum 5</span></div><div class="source-row"><input id="sourceInput" type="text" placeholder="Paste a link or source title" aria-label="New source"><button class="studio-btn" id="addSource" type="button">Add</button></div><div class="source-list" id="sourceList"><p class="studio-note">Add sources as you find them.</p></div><div class="source-count-note"><span id="sourceCount">0</span> sources added</div></section>
                 <div class="field essay-editor-field"><div class="editor-label-row"><span class="identity-label" id="essayEditorLabel">Your essay</span><span class="editor-hint">Formatting is saved with your draft</span></div><div class="editor-shell"><div class="editor-toolbar" role="toolbar" aria-label="Essay formatting"><button class="editor-tool" type="button" data-editor-command="bold" aria-label="Bold" title="Bold"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h6.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 12h7.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 5v14"/></svg></button><button class="editor-tool" type="button" data-editor-command="italic" aria-label="Italic" title="Italic"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5h9M5 19h9M13 5 9 19"/></svg></button><button class="editor-tool" type="button" data-editor-command="underline" aria-label="Underline" title="Underline"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v6a6 6 0 0 0 12 0V5M4 20h16"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="6" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="5" cy="18" r="1.2"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><button class="editor-tool" type="button" data-editor-command="insertOrderedList" aria-label="Numbered list" title="Numbered list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2v4M4 9h3M4 12h2v4M4 16h3M4 19h3"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="undo" aria-label="Undo" title="Undo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5"/><path d="M4 12h9a6 6 0 0 1 6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="redo" aria-label="Redo" title="Redo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"/><path d="M20 12h-9a6 6 0 0 0-6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="removeFormat" aria-label="Clear formatting" title="Clear formatting"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 5 12 12-4 4H7l-4-4L7 5Z"/><path d="m8 16 4-4"/></svg></button></div><div class="essay-editor" id="essay" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="essayEditorLabel" spellcheck="true" data-placeholder="Start your argument here… Introduce your position, develop your strongest reasons, support your claims with evidence, and explain why your arguments matter."></div><div class="editor-count">Words: <strong id="editorWordCount">0</strong></div></div></div>
              </div>
              <aside class="paper-sidebar" aria-label="Paper progress">
