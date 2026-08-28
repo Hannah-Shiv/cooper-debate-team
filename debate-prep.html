@@ -142,11 +142,11 @@
     .editor-hint { color:var(--studio-muted); font-size:.72rem; }
     .editor-shell { overflow:hidden; border:1px solid rgba(143,201,255,.34); border-radius:7px; background:#061936; box-shadow:inset 0 1px 0 rgba(255,255,255,.04); }
     .editor-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:5px; padding:8px; border-bottom:1px solid rgba(143,201,255,.25); background:rgba(20,52,95,.82); }
-    .editor-tool { min-width:32px; height:31px; padding:0 8px; border:1px solid rgba(143,201,255,.28); border-radius:4px; color:#ddecff; background:rgba(4,18,40,.45); cursor:pointer; font:700 .75rem 'Josefin Sans',sans-serif; }
+     .editor-tool { display:inline-flex; align-items:center; justify-content:center; min-width:32px; height:31px; padding:0 8px; border:1px solid rgba(143,201,255,.28); border-radius:4px; color:#ddecff; background:rgba(4,18,40,.45); cursor:pointer; font:700 .75rem 'Josefin Sans',sans-serif; }
     .editor-tool:hover,.editor-tool:focus-visible { color:#fff; border-color:var(--studio-gold); background:rgba(242,209,107,.12); outline:none; }
-    .editor-tool strong { font-size:.95rem; }
-    .editor-tool em { font-family:Georgia,serif; font-size:1rem; }
-    .editor-tool u { text-underline-offset:2px; }
+     .editor-tool .editor-icon { width:16px; height:16px; fill:none; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; }
+     .editor-tool[data-editor-command="bold"] .editor-icon { width:17px; height:17px; }
+     .editor-tool[data-editor-command="insertOrderedList"] .editor-icon { width:18px; }
     .editor-divider { width:1px; height:22px; margin:0 3px; background:rgba(164,200,236,.25); }
     #essay { min-height:330px; max-height:620px; overflow:auto; padding:16px 14px; color:#fff; background:#061936; outline:none; font:1.2rem/1.7 'Cormorant Garamond',serif; white-space:pre-wrap; }
     #essay:focus { box-shadow:inset 0 0 0 2px rgba(143,201,255,.35); }
@@ -201,8 +201,12 @@
     .editor-count { padding:7px 12px; color:#c7d5e5; background:#061936; text-align:right; font-size:.7rem; }
     .editor-count strong { color:#fff; }
     .paper-sidebar { display:grid; grid-template-rows:minmax(0,1fr) minmax(0,1fr); align-self:stretch; gap:12px; min-width:0; }
-    .paper-side-card { min-height:0; padding:20px; }
-    .paper-side-card h3 { margin:0 0 17px; font-size:.8rem; }
+     .paper-side-card { min-height:0; padding:20px; }
+     .paper-side-card h3 { margin:0 0 17px; font-size:.8rem; }
+     .progress-card { border-top:3px solid #8fc9ff; background:linear-gradient(145deg,rgba(143,201,255,.12),#242936 38%); }
+     .progress-card h3 { color:#8fc9ff; }
+     .requirements-card { border-top:3px solid #79E3C1; background:linear-gradient(145deg,rgba(121,227,193,.11),#242936 38%); }
+     .requirements-card h3 { color:#79E3C1; }
      .progress-metrics { display:grid; grid-template-columns:1fr 1fr; border:1px solid rgba(220,226,234,.2); border-radius:7px; overflow:hidden; }
      .progress-metrics > div { min-width:0; min-height:74px; padding:13px 10px; border-left:1px solid rgba(220,226,234,.16); border-top:1px solid rgba(220,226,234,.16); text-align:center; }
     .progress-metrics > div:nth-child(odd) { border-left:0; }
@@ -210,17 +214,28 @@
     .progress-metrics span { display:block; color:#b9c7d8; font:700 .64rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
     .progress-metrics strong { display:block; margin:8px 0 5px; color:#fff; font:700 1.6rem 'Josefin Sans',sans-serif; line-height:1; }
     .progress-metrics small { display:block; color:#b9c7d8; font-size:.64rem; line-height:1.3; }
-    .progress-metrics .metric-words span,.progress-metrics .metric-pages span,.progress-metrics .metric-sources span,.progress-metrics .metric-characters span { color:#bfc5cf; }
-    .progress-metrics .metric-words strong,.progress-metrics .metric-pages strong,.progress-metrics .metric-sources strong,.progress-metrics .metric-characters strong { color:#fff; }
+      .progress-metrics .metric-words span,.progress-metrics .metric-words strong { color:#8fc9ff; }
+      .progress-metrics .metric-pages span,.progress-metrics .metric-pages strong { color:#c4a8ff; }
+      .progress-metrics .metric-sources span,.progress-metrics .metric-sources strong { color:#F2D16B; }
+      .progress-metrics .metric-characters span,.progress-metrics .metric-characters strong { color:#79E3C1; }
     .progress-track { height:10px; margin-top:22px; overflow:hidden; border-radius:999px; background:#111725; }
     .progress-track span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6bbcff,#F2D16B); transition:width .25s ease; }
      .progress-scale { display:flex; justify-content:space-between; margin-top:7px; color:#aab2be; font-size:.61rem; }
     .requirement-list { display:grid; gap:18px; }
-     .requirement-list > div { display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:11px; color:#e3e6eb; font-size:.9rem; line-height:1.35; }
+      .requirement-list > div { display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:11px; padding:6px 7px; border-left:2px solid rgba(255,255,255,.12); border-radius:4px; color:#e3e6eb; font-size:.9rem; line-height:1.35; }
+      .requirement-list > div:nth-child(1) { border-left-color:#8fc9ff; background:rgba(143,201,255,.05); }
+      .requirement-list > div:nth-child(2) { border-left-color:#c4a8ff; background:rgba(196,168,255,.05); }
+      .requirement-list > div:nth-child(3) { border-left-color:#F2D16B; background:rgba(242,209,107,.05); }
+      .requirement-list > div:nth-child(4) { border-left-color:#ff8c8c; background:rgba(255,140,140,.05); }
+      .requirement-list > div:nth-child(5) { border-left-color:#79E3C1; background:rgba(121,227,193,.05); }
      .requirement-list strong { color:#e3e6eb; font:600 .8rem 'Josefin Sans',sans-serif; text-align:right; }
     .requirement-list strong.is-complete { color:var(--studio-pro); }
     .requirement-icon { font-size:1.55rem; line-height:1; text-align:center; }
-    .requirement-icon.blue,.requirement-icon.purple,.requirement-icon.gold,.requirement-icon.red,.requirement-icon.green { color:#D4A017; }
+     .requirement-icon.blue { color:#8fc9ff; }
+     .requirement-icon.purple { color:#c4a8ff; }
+     .requirement-icon.gold { color:#F2D16B; }
+     .requirement-icon.red { color:#ff8c8c; }
+     .requirement-icon.green { color:#79E3C1; }
     .identity-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:15px; border:1px solid rgba(143,201,255,.25); border-radius:9px; background:rgba(4,18,40,.25); }
     .identity-field { display:grid; gap:7px; min-width:0; margin-bottom:0; }
     .identity-label { color:var(--studio-gold); font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.11em; text-transform:uppercase; }
@@ -320,7 +335,7 @@
              <div class="paper-compose">
                 <div class="paper-title-field"><label for="paperTitle">Paper title</label><input id="paperTitle" type="text" placeholder="Enter a title for your position paper…"></div>
                 <section class="paper-sources" aria-labelledby="sourcesTitle"><div class="paper-sources-head"><div><h3 id="sourcesTitle">Sources</h3><p>Add the research, articles, and evidence that support your position.</p></div><span class="source-required">Minimum 5</span></div><div class="source-row"><input id="sourceInput" type="text" placeholder="Paste a link or source title" aria-label="New source"><button class="studio-btn" id="addSource" type="button">Add</button></div><div class="source-list" id="sourceList"><p class="studio-note">Add sources as you find them.</p></div><div class="source-count-note"><span id="sourceCount">0</span> sources added</div></section>
-               <div class="field essay-editor-field"><div class="editor-label-row"><span class="identity-label" id="essayEditorLabel">Your essay</span><span class="editor-hint">Formatting is saved with your draft</span></div><div class="editor-shell"><div class="editor-toolbar" role="toolbar" aria-label="Essay formatting"><button class="editor-tool" type="button" data-editor-command="bold" aria-label="Bold"><strong>B</strong></button><button class="editor-tool" type="button" data-editor-command="italic" aria-label="Italic"><em>I</em></button><button class="editor-tool" type="button" data-editor-command="underline" aria-label="Underline"><u>U</u></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list">• List</button><button class="editor-tool" type="button" data-editor-command="insertOrderedList" aria-label="Numbered list">1. List</button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="undo" aria-label="Undo">Undo</button><button class="editor-tool" type="button" data-editor-command="redo" aria-label="Redo">Redo</button><button class="editor-tool" type="button" data-editor-command="removeFormat" aria-label="Clear formatting">Clear</button></div><div class="essay-editor" id="essay" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="essayEditorLabel" spellcheck="true" data-placeholder="Start your argument here… Introduce your position, develop your strongest reasons, support your claims with evidence, and explain why your arguments matter."></div><div class="editor-count">Words: <strong id="editorWordCount">0</strong></div></div></div>
+                <div class="field essay-editor-field"><div class="editor-label-row"><span class="identity-label" id="essayEditorLabel">Your essay</span><span class="editor-hint">Formatting is saved with your draft</span></div><div class="editor-shell"><div class="editor-toolbar" role="toolbar" aria-label="Essay formatting"><button class="editor-tool" type="button" data-editor-command="bold" aria-label="Bold" title="Bold"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h6.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 12h7.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 5v14"/></svg></button><button class="editor-tool" type="button" data-editor-command="italic" aria-label="Italic" title="Italic"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5h9M5 19h9M13 5 9 19"/></svg></button><button class="editor-tool" type="button" data-editor-command="underline" aria-label="Underline" title="Underline"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v6a6 6 0 0 0 12 0V5M4 20h16"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="6" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="5" cy="18" r="1.2"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><button class="editor-tool" type="button" data-editor-command="insertOrderedList" aria-label="Numbered list" title="Numbered list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2v4M4 9h3M4 12h2v4M4 16h3M4 19h3"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="undo" aria-label="Undo" title="Undo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5"/><path d="M4 12h9a6 6 0 0 1 6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="redo" aria-label="Redo" title="Redo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"/><path d="M20 12h-9a6 6 0 0 0-6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="removeFormat" aria-label="Clear formatting" title="Clear formatting"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 5 12 12-4 4H7l-4-4L7 5Z"/><path d="m8 16 4-4"/></svg></button></div><div class="essay-editor" id="essay" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="essayEditorLabel" spellcheck="true" data-placeholder="Start your argument here… Introduce your position, develop your strongest reasons, support your claims with evidence, and explain why your arguments matter."></div><div class="editor-count">Words: <strong id="editorWordCount">0</strong></div></div></div>
              </div>
              <aside class="paper-sidebar" aria-label="Paper progress">
                 <section class="paper-side-card progress-card"><h3>Writing progress</h3><div class="progress-metrics"><div class="metric-words"><span>Words</span><strong id="wordCount">0</strong><small>/ 750–1,000</small></div><div class="metric-pages"><span>Pages</span><strong id="pageCount">0</strong><small>/ 2</small></div><div class="metric-sources"><span>Sources</span><strong id="statSources">0</strong><small>/ 5 min</small></div><div class="metric-characters"><span>Characters</span><strong id="characterCount">0</strong><small>(no spaces)</small></div></div><div class="progress-track" aria-hidden="true"><span id="wordProgressBar"></span></div><div class="progress-scale"><span>0%</span><span>50%</span><span>100%</span></div></section>
