@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@600;700;800&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
-  <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
+  <link rel="stylesheet" href="css/dome-nav.css?v=10"/>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" defer></script>
   <style>
 
@@ -1002,16 +1002,28 @@
       color: rgba(255,255,255,0.92) !important;
       line-height: 1.55 !important;
     }
-    .entry-choice { max-width:960px; margin:0 auto 28px; padding:22px; border:1px solid rgba(242,209,107,.55); border-radius:12px; background:linear-gradient(135deg,rgba(8,27,63,.98),rgba(11,37,69,.9)); box-shadow:0 10px 26px rgba(0,0,0,.22); }
+    .entry-choice { max-width:1040px; margin:0 auto 28px; padding:22px; border:1px solid rgba(242,209,107,.55); border-radius:12px; background:linear-gradient(135deg,rgba(8,27,63,.98),rgba(11,37,69,.9)); box-shadow:0 10px 26px rgba(0,0,0,.22); }
     .entry-choice h2 { margin:0 0 5px; color:#F8E49A; font-family:'Cormorant Garamond',serif; font-size:1.55rem; }
     .entry-choice > p { color:#dbe7f5; margin:0 0 16px; font-size:.96rem; }
-    .entry-choice-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-    .entry-choice-card { display:flex; flex-direction:column; gap:5px; padding:18px; border:1px solid rgba(126,184,232,.4); border-radius:8px; background:rgba(3,13,35,.55); transition:transform .2s,border-color .2s,background .2s; }
-    .entry-choice-card:hover { transform:translateY(-2px); border-color:#F2D16B; background:rgba(13,46,86,.8); }
-    .entry-choice-card strong { color:#fff; font-family:'Cormorant Garamond',serif; font-size:1.25rem; }
-    .entry-choice-card span { color:#b8c9dc; font-size:.86rem; line-height:1.5; }
-    .entry-choice-card .entry-link { color:#F2D16B; font:700 .7rem 'Josefin Sans',sans-serif; letter-spacing:.12em; text-transform:uppercase; margin-top:7px; }
-    @media(max-width:640px){.entry-choice-grid{grid-template-columns:1fr;}}
+    .entry-choice-grid { display:grid; grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr); gap:12px; align-items:stretch; }
+    .entry-choice-card { display:flex; flex-direction:column; gap:6px; min-height:164px; padding:20px; border:1px solid transparent; border-radius:9px; transition:transform .2s,border-color .2s,background .2s,box-shadow .2s; }
+    .entry-choice-card:hover { transform:translateY(-3px); }
+    .entry-choice-card.entry-team { background:linear-gradient(145deg,rgba(19,83,145,.8),rgba(5,29,67,.95)); border-color:rgba(104,190,255,.72); box-shadow:inset 0 1px 0 rgba(255,255,255,.12); }
+    .entry-choice-card.entry-team:hover { border-color:#8fd3ff; box-shadow:0 10px 26px rgba(44,143,229,.18); }
+    .entry-choice-card.entry-paper { background:linear-gradient(145deg,rgba(111,73,22,.82),rgba(50,26,12,.96)); border-color:rgba(246,193,76,.78); box-shadow:inset 0 1px 0 rgba(255,255,255,.12); }
+    .entry-choice-card.entry-paper:hover { border-color:#ffe28a; box-shadow:0 10px 26px rgba(230,166,34,.18); }
+    .entry-choice-card strong { color:#fff; font-family:'Cormorant Garamond',serif; font-size:1.42rem; line-height:1.05; }
+    .entry-choice-card span { color:#e1edf9; font-size:.86rem; line-height:1.5; }
+    .entry-choice-card .entry-kicker { font:700 .66rem 'Josefin Sans',sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+    .entry-team .entry-kicker { color:#8fd3ff; }
+    .entry-paper .entry-kicker { color:#ffe28a; }
+    .entry-choice-card .entry-link { margin-top:auto; font:700 .7rem 'Josefin Sans',sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+    .entry-team .entry-link { color:#8fd3ff; }
+    .entry-paper .entry-link { color:#ffe28a; }
+    .entry-flow-arrow { align-self:center; display:flex; flex-direction:column; align-items:center; gap:5px; color:#F2D16B; font-family:'Josefin Sans',sans-serif; text-align:center; text-transform:uppercase; }
+    .entry-flow-arrow span { font-size:.6rem; font-weight:700; letter-spacing:.12em; }
+    .entry-flow-arrow strong { font-size:2.2rem; font-weight:400; line-height:1; }
+    @media(max-width:640px){.entry-choice-grid{grid-template-columns:1fr;gap:8px}.entry-choice-card{min-height:140px}.entry-flow-arrow{flex-direction:row;justify-content:center}.entry-flow-arrow strong{transform:rotate(90deg)}}
 
   </style>
 </head>
@@ -1075,10 +1087,11 @@
 
     <section class="entry-choice" aria-labelledby="entry-choice-title">
       <h2 id="entry-choice-title">Choose your Cooper Debate path</h2>
-      <p>Applying to join the team and preparing a position paper are related, but they are not the same step.</p>
+      <p>These are two independent paths. Complete either one first, then return for the other when you are ready.</p>
       <div class="entry-choice-grid">
-        <a class="entry-choice-card" href="#application-steps"><strong>Team Application</strong><span>Complete the five-step application for the 2026–2027 team.</span><span class="entry-link">Continue to application →</span></a>
-        <a class="entry-choice-card" href="debate-prep.html"><strong>Debate Prep / Position Paper</strong><span>Choose a guided case route or write your essay only, with local draft recovery.</span><span class="entry-link">Open prep studio →</span></a>
+        <a class="entry-choice-card entry-team" href="#application-steps"><span class="entry-kicker">Path 1 · Join the team</span><strong>Team Application</strong><span>Complete the five-step application for the 2026–2027 team.</span><span class="entry-link">Continue to application →</span></a>
+        <div class="entry-flow-arrow" aria-hidden="true"><span>or</span><strong>→</strong></div>
+        <a class="entry-choice-card entry-paper" href="debate-prep.html"><span class="entry-kicker">Path 2 · Make your case</span><strong>Debate Prep / Position Paper</strong><span>Choose a guided case route or write your essay only, with local draft recovery.</span><span class="entry-link">Open prep studio →</span></a>
       </div>
     </section>
 
@@ -1704,7 +1717,7 @@
   </div>
 </footer>
 
-<script src="js/dome-nav.js?v=2"></script>
+<script src="js/dome-nav.js?v=3"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=1"></script>
 <script>

@@ -45,6 +45,26 @@
 #circ-btn:hover { background: #900000; }
 #circ-btn.open  { transform: none; }
 
+/* Keep the menu control visible even when a page does not provide inline
+   styling for the hamburger spans. */
+#circ-btn .dn-hamburger {
+  display: flex;
+  width: 24px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  pointer-events: none;
+  transition: transform 0.3s ease;
+}
+#circ-btn .dn-hamburger span {
+  display: block;
+  width: 22px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: #fff;
+}
+
 /* Pulse rings */
 #circ-btn::before,
 #circ-btn::after {
@@ -265,6 +285,10 @@
 /* === HERO / PAGE HEADER PUSH === */
 body.dome-open .home-hero .hero-content { padding-top: 250px; }
 body.dome-open .page-header { padding-top: 240px; }
+body.dome-open .studio-shell {
+  padding-top: 270px;
+  transition: padding-top 0.35s ease;
+}
 
 /* === MEMBER PORTAL NAV — font-size overrides ===
    Long labels (Resources, Calendar, Directory) need smaller text.
@@ -305,6 +329,7 @@ body.dome-open .page-header { padding-top: 240px; }
 
   body.dome-open .home-hero .hero-content { padding-top: 210px; }
   body.dome-open .page-header { padding-top: 200px; }
+  body.dome-open .studio-shell { padding-top: 228px; }
   /* Compact icon-only circle on mobile */
   #member-login-btn {
     display: flex !important;

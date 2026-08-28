@@ -5,14 +5,21 @@
    ============================================================ */
 
 /* ── Global toggle (called from onclick="toggleMenu()") ───── */
+function setDomeState(wrap, isOpen) {
+  var btn = document.getElementById('circ-btn');
+  wrap.classList.toggle('open', isOpen);
+  document.body.classList.toggle('dome-open', isOpen);
+  if (btn) {
+    btn.classList.toggle('open', isOpen);
+    btn.setAttribute('aria-expanded', String(isOpen));
+    btn.setAttribute('aria-label', isOpen ? 'Close navigation' : 'Open navigation');
+  }
+}
+
 window.toggleMenu = function () {
   var wrap = document.getElementById('circ-wrap');
-  var btn  = document.getElementById('circ-btn');
   if (!wrap) return;
-  var opening = !wrap.classList.contains('open');
-  wrap.classList.toggle('open', opening);
-  document.body.classList.toggle('dome-open', opening);
-  if (btn) btn.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
+  setDomeState(wrap, !wrap.classList.contains('open'));
 };
 
 /* ── Intel Threads — quadratic bezier arcs + glow dots ──── */
@@ -145,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
   /* Close on outside click */
   document.addEventListener('click', function (e) {
     if (!wrap.contains(e.target)) {
-      wrap.classList.remove('open');
+      setDomeState(wrap, false);
     }
   });
 
@@ -153,13 +160,13 @@ document.addEventListener('DOMContentLoaded', function () {
   wrap.addEventListener('click', function (e) {
     var item = e.target.closest('.dn-item');
     if (item && item.tagName === 'A') {
-      wrap.classList.remove('open');
+      setDomeState(wrap, false);
     }
   });
 
   /* Close on Escape */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') wrap.classList.remove('open');
+    if (e.key === 'Escape') setDomeState(wrap, false);
   });
 
   /* Intel-thread arcs disabled */

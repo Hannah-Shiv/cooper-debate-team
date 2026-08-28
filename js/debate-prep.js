@@ -170,6 +170,12 @@
       : 'Use as many coaching notes as you find helpful. You can still begin the essay at any time.';
   }
 
+  function syncStanceCards() {
+    document.querySelectorAll('.choice').forEach(function (card) {
+      card.classList.toggle('is-selected', card.querySelector('input').checked);
+    });
+  }
+
   document.querySelectorAll('input[name="route"]').forEach(function (input) {
     input.addEventListener('change', function () {
       setRoute(input.value);
@@ -188,7 +194,14 @@
     });
   });
 
-  document.querySelectorAll('input[name="stance"], .checks input').forEach(function (input) {
+  document.querySelectorAll('input[name="stance"]').forEach(function (input) {
+    input.addEventListener('change', function () {
+      syncStanceCards();
+      markDirty();
+    });
+  });
+
+  document.querySelectorAll('.checks input').forEach(function (input) {
     input.addEventListener('change', markDirty);
   });
 
@@ -257,5 +270,6 @@
   });
 
   load();
+  syncStanceCards();
   renderStats();
 })();
