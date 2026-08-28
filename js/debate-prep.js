@@ -7,7 +7,7 @@
   var fields = {
     name: $('studentName'),
     studentId: $('studentId'),
-    email: $('studentEmail'),
+    email: $('prepGateEmail'),
     title: $('paperTitle'),
     essay: $('essay'),
     contentions: $('contentions'),
