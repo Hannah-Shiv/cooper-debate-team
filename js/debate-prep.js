@@ -122,10 +122,23 @@
     }
     sources.forEach(function (source, index) {
       var row = document.createElement('div');
+      var number = document.createElement('span');
       var label = document.createElement('span');
       var remove = document.createElement('button');
       row.className = 'source-item';
+      number.className = 'source-index';
+      number.textContent = String(index + 1).padStart(2, '0');
+      label.className = 'source-label';
       label.textContent = source;
+      if (/^https?:\/\//i.test(source)) {
+        var link = document.createElement('a');
+        link.className = 'source-label';
+        link.href = source;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = source;
+        label = link;
+      }
       remove.className = 'remove-source';
       remove.type = 'button';
       remove.setAttribute('aria-label', 'Remove source ' + (index + 1));
@@ -136,7 +149,7 @@
         renderStats();
         markDirty();
       });
-      row.append(label, remove);
+      row.append(number, label, remove);
       list.appendChild(row);
     });
   }
