@@ -97,6 +97,27 @@
   function updatePaperSaveState(label, detail) {
     $('paperSaveState').textContent = label;
     $('paperSavedTime').textContent = detail;
+    var editorSaveState = $('paperEditorSaveState');
+    var editorSavedTime = $('paperEditorSavedTime');
+    if (editorSaveState) editorSaveState.textContent = label;
+    if (editorSavedTime) editorSavedTime.textContent = detail;
+  }
+
+  function initializePaperSaveHint() {
+    var hint = document.querySelector('.editor-hint');
+    if (!hint) return;
+    hint.classList.add('editor-save-hint');
+    hint.setAttribute('aria-live', 'polite');
+    var editorSaveState = document.createElement('strong');
+    var divider = document.createElement('span');
+    var editorSavedTime = document.createElement('span');
+    editorSaveState.id = 'paperEditorSaveState';
+    editorSaveState.textContent = 'Saved automatically';
+    divider.setAttribute('aria-hidden', 'true');
+    divider.textContent = '·';
+    editorSavedTime.id = 'paperEditorSavedTime';
+    editorSavedTime.textContent = 'Not saved yet';
+    hint.replaceChildren(editorSaveState, divider, editorSavedTime);
   }
 
   function openStudio(email, name, studentId) {
@@ -524,6 +545,7 @@
   window.addEventListener('pagehide', flushPendingDraft);
   window.addEventListener('beforeunload', flushPendingDraft);
 
+  initializePaperSaveHint();
   load();
   syncStanceCards();
   renderStats();

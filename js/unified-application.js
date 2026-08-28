@@ -103,7 +103,7 @@
 
         return new Promise(function (resolve, reject) {
           var script = document.createElement('script');
-          script.src = 'js/debate-prep.js?v=7';
+           script.src = 'js/debate-prep.js?v=9';
           script.onload = resolve;
           script.onerror = function () {
             reject(new Error('The Debate Prep Studio controls could not be loaded.'));
