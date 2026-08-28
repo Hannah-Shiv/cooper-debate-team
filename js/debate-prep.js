@@ -232,7 +232,7 @@
   }
 
   function savedLabel(date) {
-    return 'Saved ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + ' · on this device';
+    return 'Last saved ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   }
 
   function save(options) {
@@ -242,7 +242,7 @@
       var draft = collect();
       localStorage.setItem(storageKey, JSON.stringify(draft));
       var savedAt = new Date(draft.updatedAt);
-      state.textContent = quiet ? 'Autosaved' : 'Draft saved';
+       state.textContent = 'Autosaved';
       state.style.color = '';
       time.textContent = savedLabel(savedAt);
       updatePaperSaveState(quiet ? 'Saved automatically' : 'Draft saved',
@@ -286,7 +286,7 @@
       setRoute(route);
       renderSources();
       renderStats();
-      state.textContent = 'Draft recovered';
+       state.textContent = 'Autosaved';
       state.style.color = '';
       time.textContent = data.updatedAt ? savedLabel(new Date(data.updatedAt)) : 'Recovered from this device';
       updatePaperSaveState('Draft recovered', data.updatedAt

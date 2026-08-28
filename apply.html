@@ -652,25 +652,55 @@
       gap: 14px;
       max-width: 980px;
       margin: -4px auto 18px;
-      padding: 9px 13px;
-      border: 1px solid rgba(126,184,232,0.24);
-      border-radius: 7px;
-      background: rgba(126,184,232,0.07);
-      color: #BFD7EF;
+      padding: 3px 2px;
+      color: #69D7B5;
       font-family: 'Josefin Sans', sans-serif;
-      font-size: 0.72rem;
+      font-size: 0.66rem;
       line-height: 1.4;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .draft-save-copy {
+      display: inline-flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+      min-width: 0;
+    }
+    .draft-save-label,
+    .draft-save-time {
+      color: #69D7B5;
+    }
+    .draft-save-label {
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .draft-save-label::before {
+      content: "";
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin: 0 7px 1px 0;
+      border-radius: 50%;
+      background: currentColor;
+    }
+    .draft-save-time {
+      opacity: 0.9;
       letter-spacing: 0.04em;
     }
     .application-draft-status.is-saving {
       color: #F8E49A;
-      border-color: rgba(242,209,107,0.42);
-      background: rgba(242,209,107,0.08);
+    }
+    .application-draft-status.is-saving .draft-save-label,
+    .application-draft-status.is-saving .draft-save-time {
+      color: #F8E49A;
     }
     .application-draft-status.is-error {
       color: #FFD1D1;
-      border-color: rgba(255,132,132,0.5);
-      background: rgba(184,26,26,0.16);
+    }
+    .application-draft-status.is-error .draft-save-label,
+    .application-draft-status.is-error .draft-save-time {
+      color: #FFD1D1;
     }
     .application-draft-status button {
       flex: 0 0 auto;
@@ -1257,7 +1287,7 @@
 
     <p class="wizard-status" id="wizard-status">Step 1 of 5 · Student information</p>
     <div class="application-draft-status" id="application-draft-status" role="status" aria-live="polite">
-      <span id="application-draft-status-text">Drafts save privately on this device as you type.</span>
+      <span class="draft-save-copy"><span class="draft-save-label" id="application-draft-status-label">Autosave ready</span><span class="draft-save-time" id="application-draft-status-time">Nothing saved yet</span></span>
       <button type="button" id="clear-application-draft" hidden>Clear saved draft</button>
     </div>
 
@@ -1882,7 +1912,8 @@
   const pendingApplicationStorageKey = 'cooper_pending_application';
   const teamDraftStorageKey = 'cooper-team-application-draft-v1';
   const teamDraftStatus = document.getElementById('application-draft-status');
-  const teamDraftStatusText = document.getElementById('application-draft-status-text');
+  const teamDraftStatusLabel = document.getElementById('application-draft-status-label');
+  const teamDraftStatusTime = document.getElementById('application-draft-status-time');
   const clearTeamDraftButton = document.getElementById('clear-application-draft');
   const turnstileSiteKey = '0x4AAAAAAEYjkCMHr8iQrfbK';
   const turnstileWidget = document.getElementById('application-turnstile-widget');
@@ -1919,8 +1950,9 @@
     scheduleTeamDraftSave();
   });
 
-  function setTeamDraftStatus(message, { saving = false, error = false, showClear = false } = {}) {
-    teamDraftStatusText.textContent = message;
+  function setTeamDraftStatus(label, time, { saving = false, error = false, showClear = false } = {}) {
+    teamDraftStatusLabel.textContent = label;
+    teamDraftStatusTime.textContent = time;
     teamDraftStatus.classList.toggle('is-saving', saving);
     teamDraftStatus.classList.toggle('is-error', error);
     clearTeamDraftButton.hidden = !showClear;
@@ -1962,12 +1994,14 @@
       teamDraftDirty = false;
       const savedTime = formatTeamDraftTime(draft.savedAt);
       setTeamDraftStatus(
-        quiet ? `Draft autosaved on this device${savedTime ? ` · ${savedTime}` : ''}` : `Draft saved on this device${savedTime ? ` · ${savedTime}` : ''}`,
+        'Autosaved',
+        savedTime ? `Last saved ${savedTime}` : 'Saved just now',
         { showClear: true }
       );
     } catch (_) {
       setTeamDraftStatus(
-        'This browser could not save the draft. Your entries are still here while this page is open.',
+        'Autosave unavailable',
+        'Entries stay here while this page is open',
         { error: true }
       );
     }
@@ -1976,7 +2010,7 @@
   function scheduleTeamDraftSave() {
     if (!teamDraftReady || teamDraftDisabled) return;
     teamDraftDirty = true;
-    setTeamDraftStatus('Saving draft on this device…', { saving: true, showClear: true });
+    setTeamDraftStatus('Saving…', 'Autosave in progress', { saving: true, showClear: true });
     clearTimeout(teamDraftSaveTimer);
     teamDraftSaveTimer = setTimeout(() => saveTeamDraft({ quiet: true }), 650);
   }
@@ -2289,7 +2323,8 @@
     restoredWizardStep = Math.min(5, Math.max(1, Number(storedTeamDraft.wizardStep) || 1));
     const savedTime = formatTeamDraftTime(storedTeamDraft.savedAt);
     setTeamDraftStatus(
-      `Draft restored from this device${savedTime ? ` · ${savedTime}` : ''}`,
+      'Autosaved',
+      savedTime ? `Last saved ${savedTime}` : 'Saved draft restored',
       { showClear: true }
     );
   } else if (pendingApplication && pendingApplication.application) {
