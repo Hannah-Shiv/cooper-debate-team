@@ -43,21 +43,35 @@
     });
   }
 
-  function focusSectionEntry(section) {
-    var target = section === 'team'
-      ? document.getElementById('first-name')
-      : document.getElementById('prepGateName');
+  function sectionEntryHeading(section) {
     var sectionHeading = section === 'team'
       ? document.getElementById('application-progress-title')
       : document.querySelector('#debate-prep-panel .studio-mast h1');
+    return sectionHeading;
+  }
 
-    if (!target) return;
+  function scrollSectionEntry(section) {
+    var scrollTarget = sectionEntryHeading(section);
+    if (!scrollTarget) {
+      scrollTarget = section === 'team'
+        ? document.getElementById('first-name')
+        : document.getElementById('prepGateName');
+    }
+    if (!scrollTarget) return;
 
-    var scrollTarget = sectionHeading || target;
     scrollTarget.scrollIntoView({
       behavior: reducedMotion.matches ? 'auto' : 'smooth',
       block: 'center'
     });
+  }
+
+  function focusSectionEntry(section) {
+    var target = section === 'team'
+      ? document.getElementById('first-name')
+      : document.getElementById('prepGateName');
+    if (!target) return;
+
+    scrollSectionEntry(section);
     target.focus({ preventScroll: true });
   }
 
@@ -65,7 +79,7 @@
     if (prepLoadPromise) return prepLoadPromise;
 
     var panel = panels['debate-prep'];
-    prepLoadPromise = fetch('debate-prep.html?v=4', { credentials: 'same-origin' })
+    prepLoadPromise = fetch('debate-prep.html?v=5', { credentials: 'same-origin' })
       .then(function (response) {
         if (!response.ok) throw new Error('The Debate Prep Studio could not be loaded.');
         return response.text();
@@ -208,6 +222,11 @@
     panels[key].setAttribute('aria-hidden', key === initialSection ? 'false' : 'true');
   });
   if (initialSection === 'debate-prep') loadDebatePrep().catch(function () {});
+  if (initialSection === 'debate-prep') {
+    loadDebatePrep().then(function () {
+      if (currentSection === 'debate-prep') scrollSectionEntry('debate-prep');
+    }).catch(function () {});
+  }
 
   window.setTimeout(loadDebatePrep, 0);
 })();
