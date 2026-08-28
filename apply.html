@@ -645,6 +645,51 @@
       background: rgba(184,26,26,0.2);
       box-shadow: 0 0 18px rgba(184,26,26,0.18);
     }
+    .application-draft-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      max-width: 980px;
+      margin: -4px auto 18px;
+      padding: 9px 13px;
+      border: 1px solid rgba(126,184,232,0.24);
+      border-radius: 7px;
+      background: rgba(126,184,232,0.07);
+      color: #BFD7EF;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.72rem;
+      line-height: 1.4;
+      letter-spacing: 0.04em;
+    }
+    .application-draft-status.is-saving {
+      color: #F8E49A;
+      border-color: rgba(242,209,107,0.42);
+      background: rgba(242,209,107,0.08);
+    }
+    .application-draft-status.is-error {
+      color: #FFD1D1;
+      border-color: rgba(255,132,132,0.5);
+      background: rgba(184,26,26,0.16);
+    }
+    .application-draft-status button {
+      flex: 0 0 auto;
+      padding: 5px 9px;
+      border: 1px solid rgba(242,209,107,0.58);
+      border-radius: 5px;
+      background: transparent;
+      color: #F8E49A;
+      cursor: pointer;
+      font: 700 0.66rem 'Josefin Sans', sans-serif;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .application-draft-status button:hover,
+    .application-draft-status button:focus-visible {
+      background: rgba(242,209,107,0.13);
+      outline: 2px solid #F2D16B;
+      outline-offset: 2px;
+    }
     .wizard-panel { display: none; }
     .wizard-panel.is-active { display: block; animation: wizard-panel-in 0.18s ease both; }
     @keyframes wizard-panel-in {
@@ -723,6 +768,12 @@
       .wizard-status { margin-top: -28px; }
       .wizard-actions { margin-bottom: 16px; }
       .wizard-btn { flex: 1; padding: 11px 10px; }
+      .application-draft-status {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+        margin-bottom: 14px;
+      }
     }
     .email-delivery-note {
       align-items:flex-start; background:linear-gradient(145deg,rgba(54,62,77,.96),rgba(27,33,47,.98)); border:1px solid rgba(184,199,219,.48);
@@ -1205,6 +1256,10 @@
     </section>
 
     <p class="wizard-status" id="wizard-status">Step 1 of 5 · Student information</p>
+    <div class="application-draft-status" id="application-draft-status" role="status" aria-live="polite">
+      <span id="application-draft-status-text">Drafts save privately on this device as you type.</span>
+      <button type="button" id="clear-application-draft" hidden>Clear saved draft</button>
+    </div>
 
     <!-- TWO-COLUMN LAYOUT -->
     <div class="apply-layout">
@@ -1825,6 +1880,10 @@
   const applicationSubmitError = document.getElementById('application-submit-error');
   const applicationEndpoint = 'https://us-central1-cooper-debate-team.cloudfunctions.net/submitApplication';
   const pendingApplicationStorageKey = 'cooper_pending_application';
+  const teamDraftStorageKey = 'cooper-team-application-draft-v1';
+  const teamDraftStatus = document.getElementById('application-draft-status');
+  const teamDraftStatusText = document.getElementById('application-draft-status-text');
+  const clearTeamDraftButton = document.getElementById('clear-application-draft');
   const turnstileSiteKey = '0x4AAAAAAEYjkCMHr8iQrfbK';
   const turnstileWidget = document.getElementById('application-turnstile-widget');
   const createSubmissionId = () => window.crypto && window.crypto.randomUUID
@@ -1844,6 +1903,10 @@
   let turnstileWidgetId = null;
   let turnstileToken = '';
   let tournamentValidationActive = false;
+  let teamDraftSaveTimer = null;
+  let teamDraftReady = false;
+  let teamDraftDirty = false;
+  let teamDraftDisabled = false;
   const studentIdInput = document.getElementById('student-id');
   const studentSchoolEmailInput = document.getElementById('student-school-email');
 
@@ -1851,7 +1914,85 @@
     const studentId = studentIdInput.value.trim();
     studentSchoolEmailInput.value = studentId ? `${studentId}@fcpsschools.net` : '';
   }
-  studentIdInput.addEventListener('blur', populateStudentSchoolEmail);
+  studentIdInput.addEventListener('blur', () => {
+    populateStudentSchoolEmail();
+    scheduleTeamDraftSave();
+  });
+
+  function setTeamDraftStatus(message, { saving = false, error = false, showClear = false } = {}) {
+    teamDraftStatusText.textContent = message;
+    teamDraftStatus.classList.toggle('is-saving', saving);
+    teamDraftStatus.classList.toggle('is-error', error);
+    clearTeamDraftButton.hidden = !showClear;
+  }
+
+  function formatTeamDraftTime(value) {
+    const savedAt = new Date(value);
+    return Number.isNaN(savedAt.getTime())
+      ? ''
+      : savedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  }
+
+  function readTeamDraft() {
+    try {
+      const draft = JSON.parse(localStorage.getItem(teamDraftStorageKey) || 'null');
+      if (!draft || draft.version !== 1 || !draft.application || typeof draft.application !== 'object') return null;
+      return draft;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function saveTeamDraft({ quiet = false, force = false } = {}) {
+    if (teamDraftDisabled || (!teamDraftDirty && !force)) return;
+    clearTimeout(teamDraftSaveTimer);
+    teamDraftSaveTimer = null;
+    try {
+      const payload = applicationPayload();
+      const draft = {
+        version: 1,
+        savedAt: new Date().toISOString(),
+        wizardStep: currentWizardStep,
+        application: payload.application,
+        formState: {
+          debateExperienceOther: debateExperienceOther.value.trim()
+        }
+      };
+      localStorage.setItem(teamDraftStorageKey, JSON.stringify(draft));
+      teamDraftDirty = false;
+      const savedTime = formatTeamDraftTime(draft.savedAt);
+      setTeamDraftStatus(
+        quiet ? `Draft autosaved on this device${savedTime ? ` · ${savedTime}` : ''}` : `Draft saved on this device${savedTime ? ` · ${savedTime}` : ''}`,
+        { showClear: true }
+      );
+    } catch (_) {
+      setTeamDraftStatus(
+        'This browser could not save the draft. Your entries are still here while this page is open.',
+        { error: true }
+      );
+    }
+  }
+
+  function scheduleTeamDraftSave() {
+    if (!teamDraftReady || teamDraftDisabled) return;
+    teamDraftDirty = true;
+    setTeamDraftStatus('Saving draft on this device…', { saving: true, showClear: true });
+    clearTimeout(teamDraftSaveTimer);
+    teamDraftSaveTimer = setTimeout(() => saveTeamDraft({ quiet: true }), 650);
+  }
+
+  function clearTeamDraft() {
+    if (!window.confirm('Clear the saved Team Application draft from this device?')) return;
+    teamDraftDisabled = true;
+    clearTimeout(teamDraftSaveTimer);
+    try {
+      localStorage.removeItem(teamDraftStorageKey);
+      sessionStorage.removeItem(pendingApplicationStorageKey);
+    } catch (_) {
+      // The page can still reset even when browser storage is unavailable.
+    }
+    window.location.reload();
+  }
 
   function updateDebateExperienceDetails({ clearWhenHidden = false } = {}) {
     const isOtherExperience = debateExperienceSelect.value === 'Other experience';
@@ -1865,6 +2006,7 @@
   }
   debateExperienceSelect.addEventListener('change', () => {
     updateDebateExperienceDetails({ clearWhenHidden: true });
+    scheduleTeamDraftSave();
   });
 
   const escapeHtml = value => String(value).replace(/[&<>"']/g, char => ({
@@ -2002,6 +2144,14 @@
     successDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
     confirmationModal.classList.add('is-open');
     sessionStorage.removeItem(pendingApplicationStorageKey);
+    teamDraftDisabled = true;
+    clearTimeout(teamDraftSaveTimer);
+    try {
+      localStorage.removeItem(teamDraftStorageKey);
+    } catch (_) {
+      // A successful submission should not be blocked by unavailable storage.
+    }
+    teamDraftStatus.hidden = true;
   }
 
   function applicationPayload() {
@@ -2064,7 +2214,7 @@
     };
   }
 
-  function restorePendingApplication(application) {
+  function restorePendingApplication(application, formState = {}) {
     if (!application || typeof application !== 'object') return;
     const student = application.student || {};
     const parent = application.parent || {};
@@ -2095,8 +2245,11 @@
     Object.entries(values).forEach(([id, value]) => {
       if (typeof value === 'string') document.getElementById(id).value = value;
     });
-    if (student.debateExperience === 'Other experience' && typeof answers.experienceDetail === 'string') {
-      debateExperienceOther.value = answers.experienceDetail;
+    if (student.debateExperience === 'Other experience') {
+      const savedOtherExperience = typeof formState.debateExperienceOther === 'string'
+        ? formState.debateExperienceOther
+        : answers.experienceDetail;
+      if (typeof savedOtherExperience === 'string') debateExperienceOther.value = savedOtherExperience;
     }
     updateDebateExperienceDetails();
     const checks = [
@@ -2128,26 +2281,43 @@
     updateTournamentAvailabilityState();
   }
 
-  if (pendingApplication && pendingApplication.application) {
+  const storedTeamDraft = readTeamDraft();
+  let restoredWizardStep = 1;
+  if (storedTeamDraft) {
+    restorePendingApplication(storedTeamDraft.application, storedTeamDraft.formState);
+    populateStudentSchoolEmail();
+    restoredWizardStep = Math.min(5, Math.max(1, Number(storedTeamDraft.wizardStep) || 1));
+    const savedTime = formatTeamDraftTime(storedTeamDraft.savedAt);
+    setTeamDraftStatus(
+      `Draft restored from this device${savedTime ? ` · ${savedTime}` : ''}`,
+      { showClear: true }
+    );
+  } else if (pendingApplication && pendingApplication.application) {
     restorePendingApplication(pendingApplication.application);
     populateStudentSchoolEmail();
   }
   updateDebateExperienceDetails();
-  setWizardStep(1, { scroll: false });
+  setWizardStep(restoredWizardStep, { scroll: false });
+  clearTeamDraftButton.addEventListener('click', clearTeamDraft);
 
   wizardSteps.forEach(stepButton => {
     stepButton.addEventListener('click', () => {
       const targetStep = Number(stepButton.dataset.wizardTarget);
       setWizardStep(targetStep);
+      scheduleTeamDraftSave();
     });
   });
   form.querySelectorAll('[data-wizard-next]').forEach(button => {
-    button.addEventListener('click', () => advanceWizardTo(button.dataset.wizardNext));
+    button.addEventListener('click', () => {
+      advanceWizardTo(button.dataset.wizardNext);
+      scheduleTeamDraftSave();
+    });
   });
   form.querySelectorAll('[data-wizard-prev]').forEach(button => {
     button.addEventListener('click', () => {
       setWizardStep(button.dataset.wizardPrev);
       scrollToWizardFormTop(button.dataset.wizardPrev);
+      scheduleTeamDraftSave();
     });
   });
 
@@ -2175,6 +2345,7 @@
       completedWizardSteps.add(step);
     }
     setWizardStep(5, { scroll: false });
+    saveTeamDraft({ quiet: true, force: true });
     openApplicationReview();
   });
 
@@ -2219,16 +2390,24 @@
     el.addEventListener('input', () => {
       el.style.borderColor = '';
       if (el === studentPersonalEmail) studentPersonalEmail.setCustomValidity('');
+      scheduleTeamDraftSave();
     });
   });
   form.querySelectorAll('input[type="checkbox"]').forEach(el => {
     el.addEventListener('change', () => {
       el.closest('.check-item').style.borderColor = '';
       if (el.classList.contains('tournament-date-option')) updateTournamentAvailabilityState();
+      scheduleTeamDraftSave();
     });
   });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') saveTeamDraft({ quiet: true });
+  });
+  window.addEventListener('pagehide', () => saveTeamDraft({ quiet: true }));
+  window.addEventListener('beforeunload', () => saveTeamDraft({ quiet: true }));
+  teamDraftReady = true;
   updateTournamentAvailabilityState();
 </script>
-<script src="js/unified-application.js?v=2"></script>
+<script src="js/unified-application.js?v=3"></script>
 </body>
 </html>

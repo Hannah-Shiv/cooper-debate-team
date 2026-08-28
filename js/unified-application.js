@@ -79,7 +79,7 @@
     if (prepLoadPromise) return prepLoadPromise;
 
     var panel = panels['debate-prep'];
-    prepLoadPromise = fetch('debate-prep.html?v=6', { credentials: 'same-origin' })
+    prepLoadPromise = fetch('debate-prep.html?v=7', { credentials: 'same-origin' })
       .then(function (response) {
         if (!response.ok) throw new Error('The Debate Prep Studio could not be loaded.');
         return response.text();
@@ -103,7 +103,7 @@
 
         return new Promise(function (resolve, reject) {
           var script = document.createElement('script');
-          script.src = 'js/debate-prep.js?v=4';
+          script.src = 'js/debate-prep.js?v=5';
           script.onload = resolve;
           script.onerror = function () {
             reject(new Error('The Debate Prep Studio controls could not be loaded.'));

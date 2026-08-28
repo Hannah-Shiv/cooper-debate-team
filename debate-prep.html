@@ -35,6 +35,7 @@
     .studio-mast .studio-btn { border-color:#ffe34f; color:#ffe34f; }
     .studio-mast .studio-btn:hover { background:rgba(255,227,79,.12); }
     .save-cluster { grid-column:2; grid-row:1 / span 2; align-self:stretch; display:flex; flex-direction:column; align-items:flex-end; justify-content:center; min-width:178px; padding-left:25px; border-left:1px solid rgba(164,200,236,.23); text-align:right; }
+     .save-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:8px; }
     .save-state { color:var(--studio-mint); font:700 .72rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
     .save-state::before { content:""; display:inline-block; width:7px; height:7px; border-radius:50%; background:currentColor; margin:0 8px 1px 0; }
     .saved-time { color:var(--studio-muted); font-size:.76rem; margin:7px 0 12px; }
@@ -268,7 +269,7 @@
     .dev-banner strong { color:#fff; }
     .text-link { color:var(--studio-gold); text-decoration:none; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; white-space:nowrap; }
     .studio-shell.is-locked .studio-content { filter:grayscale(.82) saturate(.28) brightness(.62); opacity:.68; pointer-events:none; user-select:none; }
-    .studio-shell.is-locked .save-cluster { filter:grayscale(.82) saturate(.28) brightness(.62); opacity:.5; pointer-events:none; }
+    .studio-shell.is-locked .save-cluster { filter:grayscale(.72) saturate(.42) brightness(.74); opacity:.72; }
     .studio-content[inert] { cursor:not-allowed; }
     .studio-access-form { grid-column:1; grid-row:2; display:grid; grid-template-columns:1.2fr 1fr 1fr auto; align-items:end; gap:9px 10px; padding-top:17px; border-top:1px solid rgba(164,200,236,.22); }
     .studio-access-field { display:grid; gap:7px; min-width:0; }
@@ -281,7 +282,7 @@
     .prep-gate-error { color:#ffb2b2!important; font-size:.8rem; margin:3px 0 0!important; }
     .stance-panel > .eyebrow { text-align:center; }
      @media (max-width:980px) { .paper-grid{grid-template-columns:1fr}.paper-compose #essay{min-height:330px} }
-     @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace,.essay-row{grid-template-columns:1fr}.workspace .case-card,.workspace .sources-card,.workspace .essay-card,.workspace .stats-card{grid-column:auto;grid-row:auto}.workspace .case-card{order:1}.workspace .sources-card{order:2}.workspace .essay-card{order:3}.workspace .stats-card{order:4}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.justice-icon{background-size:415px auto;background-position:-97px -11px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px;bottom:-12px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column}.paper-hero{grid-template-columns:1fr;padding:22px 20px 16px}.paper-hero-actions{justify-content:space-between;flex-wrap:wrap}.paper-context{align-items:flex-start;flex-direction:column;margin:0 18px 10px}.paper-grid{padding:0 18px}.paper-top-grid{grid-template-columns:1fr} }
+     @media (max-width:800px) { .studio-shell{padding:94px 16px 44px}.studio-mast{display:block;padding:24px 22px 26px}.studio-mast::after{left:22px}.save-cluster{text-align:left;align-items:flex-start;border-left:0;padding-left:0;margin-top:18px}.save-actions{justify-content:flex-start}.prep-inline-gate{grid-template-columns:1fr;gap:18px;padding:22px}.brief-card,.route-grid,.workspace,.essay-row{grid-template-columns:1fr}.workspace .case-card,.workspace .sources-card,.workspace .essay-card,.workspace .stats-card{grid-column:auto;grid-row:auto}.workspace .case-card{order:1}.workspace .sources-card{order:2}.workspace .essay-card{order:3}.workspace .stats-card{order:4}.route-grid::after{left:50%;top:calc(50% - 18px)}.brief-card>div:not(:first-child){border-left:0;border-top:1px solid var(--studio-line);padding:15px 0 0}.brief-resolution-block{grid-template-columns:103px minmax(0,1fr);gap:11px}.brief-resolution-mark{width:103px;height:103px;margin-top:0;transform:translateY(-22px)}.justice-icon{background-size:415px auto;background-position:-97px -11px}.resolution-heading{font-size:.46rem;letter-spacing:.07em;gap:4px}.resolution-status{font-size:.46rem;letter-spacing:.05em}.case-step{grid-template-columns:38px 1fr}.case-step:not(:last-child)::before{left:18px;top:38px;bottom:-12px}.case-num{width:38px;height:38px;font-size:1.1rem}.case-step textarea{grid-column:1 / -1}.status-pill{grid-column:2;justify-self:start}.dev-banner{align-items:flex-start;flex-direction:column}.paper-hero{grid-template-columns:1fr;padding:22px 20px 16px}.paper-hero-actions{justify-content:space-between;flex-wrap:wrap}.paper-context{align-items:flex-start;flex-direction:column;margin:0 18px 10px}.paper-grid{padding:0 18px}.paper-top-grid{grid-template-columns:1fr} }
     @media (max-width:800px) { .paper-sources-head{flex-direction:column}.paper-sources .source-list{grid-template-columns:1fr} }
      @media (max-width:800px) { .paper-top-grid { --paper-top-height:343px; } }
       @media (max-width:800px) { .studio-access-form{grid-template-columns:1fr 1fr}.studio-access-form button{grid-column:1 / -1;justify-self:start}.brief-resolution-mark{transform:translateY(-12px)}.essay-head{grid-template-columns:1fr}.essay-head-tools{justify-items:stretch}.essay-stats{justify-content:flex-start}.essay-stat{flex:1 1 86px}.essay-stats .studio-btn{flex:1 1 100%}.identity-grid{grid-template-columns:1fr 1fr}.editor-label-row{align-items:flex-start;flex-direction:column;gap:4px}.editor-toolbar{gap:6px} }
@@ -307,7 +308,7 @@
         <p class="prep-gate-error" id="prepGateError" role="alert" hidden>Enter your full name, a valid email address, and your student ID to continue.</p>
         <p class="prep-gate-note">Your details will also appear in the essay section below.</p>
       </form>
-      <div class="save-cluster"><div class="save-state" id="saveState">Draft ready</div><div class="saved-time" id="savedTime">Nothing saved yet</div><button class="studio-btn" id="saveBtn" type="button">Save draft</button></div>
+      <div class="save-cluster"><div class="save-state" id="saveState">Draft ready</div><div class="saved-time" id="savedTime">Nothing saved yet</div><div class="save-actions"><button class="studio-btn" id="saveBtn" type="button">Save draft</button><button class="studio-btn quiet" id="clearDraftBtn" type="button">Clear draft</button></div></div>
     </header>
     <div class="studio-content" id="studioContent" aria-disabled="true" inert>
     <div class="dev-banner"><span><strong>Development preview:</strong> drafts are saved privately in this browser so you can test leaving and returning. Cloud retrieval and final submission are not connected yet.</span><a class="text-link" href="apply.html">Back to Apply</a></div>
@@ -411,6 +412,6 @@
     </div>
   </footer>
   <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button" aria-label="Close paper preview" title="Close preview">×</button><header class="preview-header"><div class="eyebrow">Cooper Debate</div><h2 id="previewHeading">Untitled position paper</h2><div class="preview-meta" id="previewMeta"></div></header><div class="preview-copy" id="previewCopy"></div></article></div>
-  <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=4"></script>
+  <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=5"></script>
 </body>
 </html>

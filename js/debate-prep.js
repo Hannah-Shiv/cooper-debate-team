@@ -149,12 +149,15 @@
   }
 
   function collect() {
+    var savedName = valueOf(fields.name).trim() || gateName.value.trim();
+    var savedStudentId = valueOf(fields.studentId).trim() || gateStudentId.value.trim();
+    var savedEmail = valueOf(fields.email).trim() || gateEmail.value.trim();
     return {
       version: 2,
       updatedAt: new Date().toISOString(),
-      name: valueOf(fields.name),
-      studentId: valueOf(fields.studentId),
-      email: valueOf(fields.email),
+      name: savedName,
+      studentId: savedStudentId,
+      email: savedEmail,
       title: fields.title.value,
       essay: valueOf(fields.essay),
       contentions: fields.contentions.value,
@@ -345,6 +348,19 @@
     });
   });
 
+  [gateName, gateEmail, gateStudentId].forEach(function (input) {
+    input.addEventListener('input', function () {
+      markDirty();
+      if (input === gateEmail && validEmail(input.value)) {
+        try {
+          localStorage.setItem(emailKey, input.value.trim());
+        } catch (error) {
+          // The draft save path reports local storage failures when it saves.
+        }
+      }
+    });
+  });
+
   function continueFromGate(event) {
     event.preventDefault();
     var name = gateName.value.trim();
@@ -410,6 +426,22 @@
 
   $('saveBtn').addEventListener('click', function () {
     save({ quiet: false });
+  });
+
+  $('clearDraftBtn').addEventListener('click', function () {
+    if (!window.confirm('Clear the saved Debate Prep draft from this device?')) return;
+    clearTimeout(autosaveTimer);
+    state.textContent = 'Draft cleared';
+    try {
+      localStorage.removeItem(storageKey);
+      localStorage.removeItem(emailKey);
+      window.location.reload();
+    } catch (error) {
+      state.textContent = 'Draft could not be cleared';
+      state.style.color = '#f4a6a6';
+      time.textContent = 'Browser storage is unavailable';
+      updatePaperSaveState('Draft could not be cleared', 'Browser storage is unavailable');
+    }
   });
 
   $('changeRouteBtn').addEventListener('click', function () {
@@ -481,9 +513,15 @@
     }
   });
 
-  window.addEventListener('beforeunload', function () {
+  function flushPendingDraft() {
     if (state.textContent === 'Saving changes') save({ quiet: true });
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') flushPendingDraft();
   });
+  window.addEventListener('pagehide', flushPendingDraft);
+  window.addEventListener('beforeunload', flushPendingDraft);
 
   load();
   syncStanceCards();
