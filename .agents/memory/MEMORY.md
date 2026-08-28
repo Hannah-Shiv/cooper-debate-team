@@ -20,3 +20,4 @@
 - [Application draft persistence](application-draft-persistence.md) — Both application forms autosave only in the current browser; keep Team and Debate Prep drafts isolated.
 - [Debate Prep gate hierarchy](debate-prep-gate-hierarchy.md) — Keep unlock guidance above aligned identity fields with gold guidance, mint labels, and stacked Continue.
 - [Debate Prep resolution hierarchy](debate-prep-resolution-hierarchy.md) — Treat the PF label as a title, keep Resolved secondary, and wrap within its column.
+- [Local pairing storage consistency](local-pairing-storage-consistency.md) — Reload and revalidate browser-only reciprocal records before every write.

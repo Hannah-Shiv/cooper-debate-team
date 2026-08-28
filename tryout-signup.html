@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Sign up for Cooper Debate Team tryouts on September 22 or 23, 2026."/>
+  <title>Tryout Sign-up — Cooper Debate Team</title>
+  <link rel="icon" href="images/cooper-debate-badge.png"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Josefin+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="css/tryout-signup.css?v=1"/>
+</head>
+<body class="tryout-page">
+  <main class="tryout-shell">
+    <header class="tryout-brandbar">
+      <a class="tryout-brand" href="index.html" aria-label="Cooper Debate Team home">
+        <span class="tryout-brand-mark" aria-hidden="true">C</span>
+        <span>Cooper <strong>Debate Team</strong></span>
+      </a>
+      <span class="tryout-deadline"><span aria-hidden="true">◷</span> Sign up by Sept 18</span>
+    </header>
+
+    <nav class="tryout-utility-nav" aria-label="Tryout page links">
+      <a href="index.html">← Back to Cooper Debate</a>
+      <a href="tournaments.html#calendar-results">View the calendar</a>
+    </nav>
+
+    <section class="tryout-hero" aria-labelledby="tryout-title">
+      <p class="tryout-eyebrow"><span aria-hidden="true">✦</span> Fall 2026 team selection</p>
+      <h1 id="tryout-title">Tryout sign-up</h1>
+      <p class="tryout-intro">Choose your date and tell us how you want to partner. You can request someone who has also opted in—or let Coach make the match.</p>
+
+      <div class="tryout-progress" aria-label="Sign-up steps">
+        <span class="tryout-progress-step is-active"><b>1</b>Choose your date</span>
+        <span class="tryout-progress-step"><b>2</b>Choose your partner</span>
+      </div>
+    </section>
+
+    <div id="tryout-status" class="tryout-status" role="status" aria-live="polite" hidden></div>
+
+    <section class="tryout-panel tryout-date-panel" aria-labelledby="date-heading">
+      <div class="tryout-section-heading">
+        <span class="tryout-heading-icon" aria-hidden="true">▦</span>
+        <div>
+          <h2 id="date-heading">Select your tryout date</h2>
+          <p>Both sessions run after school from 2:30–4:30 PM.</p>
+        </div>
+      </div>
+      <div class="tryout-date-options" id="date-options"></div>
+    </section>
+
+    <section class="tryout-panel tryout-pairing-panel" aria-labelledby="pairing-heading">
+      <div class="tryout-section-heading">
+        <span class="tryout-heading-icon" aria-hidden="true">♧</span>
+        <div>
+          <h2 id="pairing-heading">Choose your partner</h2>
+          <p>Partners are confirmed only when both students choose each other.</p>
+        </div>
+      </div>
+
+      <form id="tryout-form" novalidate>
+      <div class="tryout-mode-toggle" role="group" aria-label="Pairing preference">
+        <button class="tryout-mode-button is-active" id="mode-partner" type="button" aria-pressed="true">
+          <span class="tryout-mode-icon" aria-hidden="true">＋</span>
+          <span><strong>Pick a partner</strong><small>Choose from students who opted in</small></span>
+        </button>
+        <button class="tryout-mode-button" id="mode-assign" type="button" aria-pressed="false">
+          <span class="tryout-mode-icon" aria-hidden="true">✦</span>
+          <span><strong>Let Coach pair me</strong><small>Stay open for an assignment</small></span>
+        </button>
+      </div>
+
+      <div id="partner-picker"></div>
+
+      <div class="tryout-details">
+        <div class="tryout-field">
+          <label for="student-name">Your name</label>
+          <input id="student-name" name="studentName" autocomplete="name" maxlength="80" placeholder="First and last name"/>
+        </div>
+        <div class="tryout-field">
+          <label for="student-grade">Grade</label>
+          <select id="student-grade" name="grade">
+            <option value="">Select</option>
+            <option value="6">6th</option>
+            <option value="7">7th</option>
+            <option value="8">8th</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="selection-summary" class="tryout-selection-strip" aria-live="polite"></div>
+      <div id="form-error" class="tryout-form-message is-error" role="alert" tabindex="-1" hidden></div>
+      <div id="form-message" class="tryout-form-message is-success" role="status" aria-live="polite" hidden></div>
+      <button class="tryout-submit" id="submit-signup" type="submit">Submit my sign-up <span aria-hidden="true">→</span></button>
+      <p class="tryout-privacy"><span aria-hidden="true">♢</span> This development demo stays in this browser. The public list shows only first name, last initial, grade, and availability.</p>
+      </form>
+    </section>
+
+    <section id="student-status" class="tryout-status-card" aria-labelledby="student-status-heading" hidden></section>
+
+    <p class="tryout-footer-note"><span aria-hidden="true">✦</span> Team membership will be determined later that week. Tuesday practices begin September 29.</p>
+
+    <aside class="tryout-coach-link" id="coach-link" aria-label="Development tools" hidden>
+      <span>Development-only tools</span>
+      <a href="?coach=1">Open Coach review</a>
+    </aside>
+
+    <section class="tryout-coach-panel" id="coach-panel" aria-labelledby="coach-heading" hidden>
+      <div class="tryout-coach-header">
+        <div>
+          <p class="tryout-eyebrow">Development-only view</p>
+          <h2 id="coach-heading">Coach review</h2>
+          <p>Local browser data only. This view is not connected to Firebase or production.</p>
+        </div>
+        <button id="reset-demo" class="tryout-secondary-button" type="button">Reset demo data</button>
+      </div>
+      <div id="coach-summary" class="tryout-coach-summary"></div>
+      <div id="coach-queues" class="tryout-coach-queues"></div>
+    </section>
+  </main>
+
+  <footer class="tryout-site-footer">
+    <p><a href="index.html">Cooper Debate Team</a> · Cooper Middle School · McLean, VA</p>
+    <p><a href="privacy.html">Privacy</a> · Designed and developed by Hannah Shiv</p>
+  </footer>
+
+  <script src="js/tryout-signup.js?v=1"></script>
+</body>
+</html>
