@@ -24,20 +24,6 @@
       background: #121827;
     }
     html { scroll-behavior: smooth; }
-    @view-transition { navigation: auto; }
-    ::view-transition-old(root) { animation: application-page-out 180ms ease both; }
-    ::view-transition-new(root) { animation: application-page-in 260ms ease both; }
-    @keyframes application-page-out {
-      to { opacity: 0; transform: translateY(-8px); }
-    }
-    @keyframes application-page-in {
-      from { opacity: 0; transform: translateY(8px); }
-    }
-    html.page-leaving body {
-      opacity: 0;
-      transform: translateY(-8px);
-      transition: opacity 180ms ease, transform 180ms ease;
-    }
     .apply-page {
       position: relative;
       min-height: 100vh;
@@ -47,55 +33,6 @@
       width: min(1290px, calc(100% - 48px));
       margin: 0 auto;
     }
-    .application-switcher {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      width: fit-content;
-      max-width: 100%;
-      margin: 0 auto 24px;
-      padding: 5px;
-      border: 1px solid rgba(242,209,107,0.36);
-      border-radius: 999px;
-      background: #081B3F;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.2);
-    }
-    .application-switcher-label {
-      padding: 0 10px;
-      color: rgba(255,255,255,0.7);
-      font: 700 0.66rem 'Josefin Sans', sans-serif;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-    .application-switcher a {
-      display: inline-flex;
-      align-items: center;
-      min-height: 34px;
-      padding: 0 14px;
-      border: 1px solid transparent;
-      border-radius: 999px;
-      color: #9fb6d4;
-      font: 700 0.72rem 'Josefin Sans', sans-serif;
-      letter-spacing: 0.06em;
-      text-decoration: none;
-      text-transform: uppercase;
-      white-space: nowrap;
-      transition: color 0.2s ease, background 0.2s ease, border-color 0.2s ease;
-    }
-    .application-switcher a:hover,
-    .application-switcher a:focus-visible {
-      color: #fff;
-      border-color: rgba(242,209,107,0.58);
-      outline: none;
-    }
-    .application-switcher a.is-active {
-      color: #07152C;
-      background: #F2D16B;
-      border-color: #F8E49A;
-    }
-
     /* ── Page header ── */
     .apply-header {
       text-align: center;
@@ -1069,7 +1006,7 @@
     .entry-choice h2 { margin:0 0 8px; color:#F8E49A; font-family:'Cormorant Garamond',serif; font-size:clamp(1.9rem,3vw,2.3rem); font-weight:700; line-height:1.05; text-align:center; }
     .entry-choice > p:not(.entry-choice-note) { max-width:760px; margin:0 auto 22px; color:#fff; font-family:'Cormorant Garamond',serif; font-size:clamp(1.08rem,1.8vw,1.24rem); font-weight:600; line-height:1.45; letter-spacing:.01em; text-align:center; }
     .entry-choice-note { margin:20px auto 0; color:#F8E49A; font-family:'Cormorant Garamond',serif; font-size:clamp(1.04rem,1.7vw,1.18rem); font-weight:600; line-height:1.4; letter-spacing:.01em; text-align:center; }
-    .entry-choice-grid { display:grid; grid-template-columns:minmax(0,1fr) 78px minmax(0,1fr); gap:12px; align-items:stretch; }
+    .entry-choice-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; align-items:stretch; }
     .entry-choice-card { display:flex; flex-direction:column; align-items:center; gap:8px; min-height:164px; padding:22px; border:1px solid rgba(242,209,107,.72); border-radius:9px; background:#061331; text-align:center; transition:transform .2s,border-color .2s,box-shadow .2s; }
     .entry-choice-card:hover { transform:translateY(-3px); }
     .entry-choice-card.entry-team { background:#493615; border-color:rgba(232,196,124,.76); border-top:2px solid #F2D16B; box-shadow:0 6px 16px rgba(0,0,0,.18),0 0 24px rgba(242,209,107,.12),inset 0 1px 0 rgba(255,255,255,.12); }
@@ -1084,14 +1021,11 @@
     .entry-choice-card .entry-link { margin-top:auto; font:700 .7rem 'Josefin Sans',sans-serif; letter-spacing:.12em; text-transform:uppercase; }
     .entry-team .entry-link { color:#F2D16B; }
     .entry-paper .entry-link { color:#79E3C1; }
-    .entry-flow-arrow { align-self:center; display:flex; flex-direction:column; align-items:center; gap:5px; color:#F2D16B; font-family:'Josefin Sans',sans-serif; text-align:center; text-transform:uppercase; }
-    .entry-flow-arrow span { display:none; font-size:.6rem; font-weight:700; letter-spacing:.12em; }
-    .entry-flow-arrow strong { font-size:2.2rem; font-weight:400; line-height:1; }
-    @media(max-width:640px){.entry-choice{padding:24px 18px 22px}.entry-choice-grid{grid-template-columns:1fr;gap:8px}.entry-choice-card{min-height:197px}.entry-flow-arrow{flex-direction:row;justify-content:center}.entry-flow-arrow strong{transform:rotate(90deg)}}
-    @media(max-width:600px){.application-switcher{width:100%;margin-bottom:20px}.application-switcher-label{display:none}.application-switcher a{flex:1;justify-content:center;padding:0 8px;font-size:.64rem;letter-spacing:.04em}}
-    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}::view-transition-old(root),::view-transition-new(root){animation:none!important}html.page-leaving body{transition:none}}
+    @media(max-width:640px){.entry-choice{padding:24px 18px 22px}.entry-choice-grid{grid-template-columns:1fr;gap:8px}.entry-choice-card{min-height:197px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
   </style>
+  <link id="unified-application-styles" rel="stylesheet" href="css/unified-application.css?v=1"/>
 </head>
 <body class="apply-body" style="--navy-dark:#1c2030;">
 
@@ -1159,23 +1093,17 @@
       </div>
     </div>
 
-    <nav class="application-switcher" aria-label="Application sections">
-      <span class="application-switcher-label">Application sections</span>
-      <a class="is-active" href="apply.html#application-steps" aria-current="page">Team Application</a>
-      <a href="debate-prep.html">Debate Prep Essay</a>
-    </nav>
-
-    <section class="entry-choice" aria-labelledby="entry-choice-title">
+    <section class="entry-choice application-workspace-switcher" aria-labelledby="entry-choice-title">
       <h2 id="entry-choice-title">Welcome to Cooper Debate</h2>
       <p>Ready to join the team? Complete both parts of your 2026–2027 application below.</p>
-      <div class="entry-choice-grid">
-        <a class="entry-choice-card entry-team" href="#application-steps"><strong>Team Application</strong><span>Tell us about yourself, your interests, and your experience through our five-step application.</span><span class="entry-link">Continue to application →</span></a>
-        <div class="entry-flow-arrow" aria-hidden="true"><strong>→</strong></div>
-        <a class="entry-choice-card entry-paper" href="debate-prep.html"><strong>Debate Prep (Essay Writing)</strong><span>Show us how you think and write. Build a guided debate case or go straight to the essay.</span><span class="entry-link">Open prep studio →</span></a>
+      <div class="entry-choice-grid" role="tablist" aria-label="Choose an application section">
+        <button class="entry-choice-card entry-team" id="team-application-tab" type="button" role="tab" aria-controls="team-application-panel" aria-selected="true" aria-pressed="true" data-application-section="team"><strong>Team Application</strong><span>Tell us about yourself, your interests, and your experience through our five-step application.</span><span class="entry-link">Team application open</span></button>
+        <button class="entry-choice-card entry-paper" id="debate-prep-tab" type="button" role="tab" aria-controls="debate-prep-panel" aria-selected="false" aria-pressed="false" data-application-section="debate-prep"><strong>Debate Prep (Essay Writing)</strong><span>Show us how you think and write. Build a guided debate case or go straight to the essay.</span><span class="entry-link">Open prep studio →</span></button>
       </div>
       <p class="entry-choice-note">Please complete both forms to finish your application.</p>
     </section>
 
+    <section class="application-content-panel" id="team-application-panel" role="tabpanel" aria-labelledby="team-application-tab" aria-hidden="false">
     <!-- APPLICATION JOURNEY -->
     <section class="application-progress" id="application-steps" aria-labelledby="application-progress-title">
       <p class="application-progress-kicker">Your Application Journey</p>
@@ -1739,6 +1667,14 @@
 
       </aside>
     </div>
+    </section>
+
+    <section class="application-content-panel" id="debate-prep-panel" role="tabpanel" aria-labelledby="debate-prep-tab" aria-hidden="true" hidden>
+      <div class="application-panel-loading" role="status">
+        <strong>Preparing Debate Prep Studio</strong>
+        <p>Your saved draft and writing tools are loading.</p>
+      </div>
+    </section>
 
   </div>
 </main>
@@ -2225,6 +2161,6 @@
   });
   updateTournamentAvailabilityState();
 </script>
-<script src="js/application-switcher.js?v=1"></script>
+<script src="js/unified-application.js?v=1"></script>
 </body>
 </html>

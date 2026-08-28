@@ -28,6 +28,7 @@
   var gateError = $('prepGateError');
   var studio = document.querySelector('.studio-shell');
   var studioContent = $('studioContent');
+  var previewReturnFocus = null;
 
   function wordCount(value) {
     return value.trim() ? value.trim().split(/\s+/).length : 0;
@@ -136,7 +137,7 @@
       return;
     }
     document.body.classList.add('prep-gated');
-    gateName.focus();
+    if (!studio.closest('[hidden]')) gateName.focus({ preventScroll: true });
   }
 
   function updateDaysRemaining() {
@@ -427,6 +428,7 @@
     } else {
       $('previewCopy').textContent = 'Your essay preview will appear here once you begin writing.';
     }
+    previewReturnFocus = document.activeElement;
     $('previewPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
     $('closePreview').focus();
@@ -434,10 +436,19 @@
 
   $('previewBtn').addEventListener('click', openPreview);
 
-  function closePreview() {
+  function closePreview(options) {
+    var restoreFocus = !options || options.restoreFocus !== false;
     $('previewPanel').classList.remove('open');
     document.body.style.overflow = '';
-    $('previewBtn').focus();
+    if (restoreFocus) {
+      var focusTarget = previewReturnFocus && document.contains(previewReturnFocus)
+        ? previewReturnFocus
+        : $('previewBtn');
+      focusTarget.focus({ preventScroll: true });
+    } else if ($('previewPanel').contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+    previewReturnFocus = null;
   }
 
   $('closePreview').addEventListener('click', closePreview);
@@ -445,7 +456,29 @@
     if (event.target === $('previewPanel')) closePreview();
   });
   document.addEventListener('keydown', function (event) {
-    if (event.key === 'Escape' && $('previewPanel').classList.contains('open')) closePreview();
+    if (!$('previewPanel').classList.contains('open')) return;
+    if (event.key === 'Escape') {
+      closePreview();
+    } else if (event.key === 'Tab') {
+      event.preventDefault();
+      $('closePreview').focus();
+    }
+  });
+
+  document.addEventListener('applicationsectionbeforechange', function (event) {
+    if (event.detail && event.detail.from === 'debate-prep' && event.detail.to !== 'debate-prep') {
+      closePreview({ restoreFocus: false });
+    }
+  });
+
+  document.addEventListener('applicationsectionchange', function (event) {
+    if (
+      event.detail &&
+      event.detail.section === 'debate-prep' &&
+      studio.classList.contains('is-locked')
+    ) {
+      gateName.focus({ preventScroll: true });
+    }
   });
 
   window.addEventListener('beforeunload', function () {
