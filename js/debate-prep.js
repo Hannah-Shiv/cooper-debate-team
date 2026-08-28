@@ -196,10 +196,10 @@
     updateRequirement('requirementEvidence', evidenceReady ? 'Added' : 'In progress', evidenceReady);
     updateRequirement('requirementReasoning', reasoningReady ? 'Added' : 'In progress', reasoningReady);
 
-    ['contentions', 'reasoning', 'evidence', 'impacts', 'sources'].forEach(function (key) {
+    ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
-      var started = key === 'sources' ? sources.length > 0 : Boolean(fields[key].value.trim());
-      status.textContent = started ? (key === 'sources' ? 'Sources added' : 'Notes added') : 'Optional';
+      var started = Boolean(fields[key].value.trim());
+      status.textContent = started ? 'Notes added' : 'Optional';
       status.classList.toggle('done', started);
     });
   }
