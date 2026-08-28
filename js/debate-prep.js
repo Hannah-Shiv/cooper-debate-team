@@ -7,7 +7,7 @@
   var fields = {
     name: $('studentName'),
     studentId: $('studentId'),
-    email: $('prepGateEmail'),
+    email: $('studentEmail'),
     title: $('paperTitle'),
     essay: $('essay'),
     contentions: $('contentions'),
@@ -22,7 +22,9 @@
   var time = $('savedTime');
   var gate = $('prepGate');
   var gateForm = $('prepGateForm');
+  var gateName = $('prepGateName');
   var gateEmail = $('prepGateEmail');
+  var gateStudentId = $('prepGateStudentId');
   var gateError = $('prepGateError');
   var studio = document.querySelector('.studio-shell');
   var studioContent = $('studioContent');
@@ -35,8 +37,13 @@
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
   }
 
-  function openStudio(email) {
+  function openStudio(email, name, studentId) {
+    fields.name.value = name;
+    fields.studentId.value = studentId;
     fields.email.value = email;
+    gateName.value = name;
+    gateStudentId.value = studentId;
+    gateEmail.value = email;
     try {
       localStorage.setItem(emailKey, email);
     } catch (error) {
@@ -56,16 +63,18 @@
     } catch (error) {
       rememberedEmail = fields.email.value || '';
     }
+    gateName.value = fields.name.value;
     gateEmail.value = rememberedEmail;
+    gateStudentId.value = fields.studentId.value;
     studio.classList.add('is-locked');
     studioContent.inert = true;
     studioContent.setAttribute('aria-disabled', 'true');
-    if (validEmail(rememberedEmail)) {
-      openStudio(rememberedEmail);
+    if (validEmail(rememberedEmail) && gateName.value.trim() && gateStudentId.value.trim()) {
+      openStudio(rememberedEmail, gateName.value.trim(), gateStudentId.value.trim());
       return;
     }
     document.body.classList.add('prep-gated');
-    gateEmail.focus();
+    gateName.focus();
   }
 
   function updateDaysRemaining() {
@@ -258,6 +267,9 @@
     fields[key].addEventListener('input', function () {
       renderStats();
       markDirty();
+      if (key === 'name') gateName.value = fields.name.value;
+      if (key === 'studentId') gateStudentId.value = fields.studentId.value;
+      if (key === 'email') gateEmail.value = fields.email.value;
       if (key === 'email' && validEmail(fields.email.value)) {
         try {
           localStorage.setItem(emailKey, fields.email.value.trim());
@@ -270,16 +282,21 @@
 
   function continueFromGate(event) {
     event.preventDefault();
+    var name = gateName.value.trim();
     var email = gateEmail.value.trim();
-    if (!validEmail(email)) {
+    var studentId = gateStudentId.value.trim();
+    if (!name || !validEmail(email) || !studentId) {
       gateError.hidden = false;
-      gateEmail.focus();
+      if (!name) gateName.focus();
+      else if (!validEmail(email)) gateEmail.focus();
+      else gateStudentId.focus();
       return;
     }
     gateError.hidden = true;
-    openStudio(email);
+    openStudio(email, name, studentId);
     renderStats();
     syncStanceCards();
+    markDirty();
   }
 
   gateForm.addEventListener('submit', continueFromGate);
