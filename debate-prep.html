@@ -203,32 +203,32 @@
     .paper-sidebar { display:grid; grid-template-rows:minmax(0,1fr) minmax(0,1fr); align-self:stretch; gap:12px; min-width:0; }
      .paper-side-card { min-height:0; padding:20px; }
      .paper-side-card h3 { margin:0 0 17px; font-size:.8rem; }
+     .progress-card,.requirements-card { display:flex; flex-direction:column; }
      .progress-card { border-top:3px solid #8fc9ff; background:linear-gradient(145deg,rgba(143,201,255,.12),#242936 38%); }
-     .progress-card h3 { color:#8fc9ff; }
+     .progress-card h3 { color:#8fc9ff; font-size:1rem; }
      .requirements-card { border-top:3px solid #79E3C1; background:linear-gradient(145deg,rgba(121,227,193,.11),#242936 38%); }
-     .requirements-card h3 { color:#79E3C1; }
-     .progress-metrics { display:grid; grid-template-columns:1fr 1fr; border:1px solid rgba(220,226,234,.2); border-radius:7px; overflow:hidden; }
-     .progress-metrics > div { min-width:0; min-height:74px; padding:13px 10px; border-left:1px solid rgba(220,226,234,.16); border-top:1px solid rgba(220,226,234,.16); text-align:center; }
-    .progress-metrics > div:nth-child(odd) { border-left:0; }
-    .progress-metrics > div:nth-child(-n+2) { border-top:0; }
-    .progress-metrics span { display:block; color:#b9c7d8; font:700 .64rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
-    .progress-metrics strong { display:block; margin:8px 0 5px; color:#fff; font:700 1.6rem 'Josefin Sans',sans-serif; line-height:1; }
-    .progress-metrics small { display:block; color:#b9c7d8; font-size:.64rem; line-height:1.3; }
-      .progress-metrics .metric-words span,.progress-metrics .metric-words strong { color:#8fc9ff; }
-      .progress-metrics .metric-pages span,.progress-metrics .metric-pages strong { color:#c4a8ff; }
-      .progress-metrics .metric-sources span,.progress-metrics .metric-sources strong { color:#F2D16B; }
-      .progress-metrics .metric-characters span,.progress-metrics .metric-characters strong { color:#79E3C1; }
-    .progress-track { height:10px; margin-top:22px; overflow:hidden; border-radius:999px; background:#111725; }
-    .progress-track span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#6bbcff,#F2D16B); transition:width .25s ease; }
-     .progress-scale { display:flex; justify-content:space-between; margin-top:7px; color:#aab2be; font-size:.61rem; }
-    .requirement-list { display:grid; gap:18px; }
-      .requirement-list > div { display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:11px; padding:6px 7px; border-left:2px solid rgba(255,255,255,.12); border-radius:4px; color:#e3e6eb; font-size:.9rem; line-height:1.35; }
-      .requirement-list > div:nth-child(1) { border-left-color:#8fc9ff; background:rgba(143,201,255,.05); }
-      .requirement-list > div:nth-child(2) { border-left-color:#c4a8ff; background:rgba(196,168,255,.05); }
-      .requirement-list > div:nth-child(3) { border-left-color:#F2D16B; background:rgba(242,209,107,.05); }
-      .requirement-list > div:nth-child(4) { border-left-color:#ff8c8c; background:rgba(255,140,140,.05); }
-      .requirement-list > div:nth-child(5) { border-left-color:#79E3C1; background:rgba(121,227,193,.05); }
-     .requirement-list strong { color:#e3e6eb; font:600 .8rem 'Josefin Sans',sans-serif; text-align:right; }
+     .requirements-card h3 { color:#79E3C1; font-size:1rem; }
+     .progress-metrics { display:grid; grid-template-columns:1fr; flex:1; align-content:space-between; gap:0; border:0; border-radius:0; overflow:visible; }
+     .progress-metrics > div { display:flex; align-items:baseline; justify-content:space-between; gap:14px; min-width:0; min-height:0; padding:11px 0; border:0; border-bottom:1px solid rgba(220,226,234,.18); text-align:left; }
+     .progress-metrics > div:last-child { border-bottom:0; }
+     .progress-metrics > div > span { display:block; color:#b9c7d8; font:700 .78rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+     .progress-metrics strong { display:block; margin:0; color:#fff; font:700 1.3rem/1.15 'Josefin Sans',sans-serif; white-space:nowrap; }
+     .progress-metrics small { display:inline; color:inherit; font:inherit; font-size:1rem; letter-spacing:0; line-height:inherit; text-transform:none; }
+      .progress-metrics .metric-words > span,.progress-metrics .metric-words strong { color:#8fc9ff; }
+      .progress-metrics .metric-pages > span,.progress-metrics .metric-pages strong { color:#c4a8ff; }
+      .progress-metrics .metric-sources > span,.progress-metrics .metric-sources strong { color:#F2D16B; }
+      .progress-metrics .metric-characters > span,.progress-metrics .metric-characters strong { color:#79E3C1; }
+     .progress-track { height:12px; margin-top:18px; overflow:hidden; border-radius:999px; background:#111725; box-shadow:inset 0 1px 2px rgba(0,0,0,.45); }
+     .progress-track span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#2ca46f,#79e3a8); box-shadow:0 0 12px rgba(63,206,131,.5); transition:width .25s ease; }
+      .progress-scale { display:flex; justify-content:space-between; margin-top:10px; color:#e0f7ea; font:700 .8rem 'Josefin Sans',sans-serif; }
+     .requirement-list { display:grid; flex:1; align-content:space-between; gap:12px; }
+       .requirement-list > div { display:grid; grid-template-columns:34px minmax(0,1fr) auto; align-items:center; gap:12px; min-height:46px; padding:9px 10px; border-left:4px solid rgba(255,255,255,.12); border-radius:4px; color:#fff; font-size:.98rem; font-weight:600; line-height:1.35; }
+       .requirement-list > div:nth-child(1) { border-left-color:#8fc9ff; background:#183b58; }
+       .requirement-list > div:nth-child(2) { border-left-color:#c4a8ff; background:#342858; }
+       .requirement-list > div:nth-child(3) { border-left-color:#F2D16B; background:#4c3b19; }
+       .requirement-list > div:nth-child(4) { border-left-color:#ff8c8c; background:#52262d; }
+       .requirement-list > div:nth-child(5) { border-left-color:#79E3C1; background:#164438; }
+      .requirement-list strong { color:#fff; font:700 .9rem 'Josefin Sans',sans-serif; text-align:right; white-space:nowrap; }
     .requirement-list strong.is-complete { color:var(--studio-pro); }
     .requirement-icon { font-size:1.55rem; line-height:1; text-align:center; }
      .requirement-icon.blue { color:#8fc9ff; }
@@ -256,18 +256,19 @@
     a.source-label { text-decoration:none; }
     a.source-label:hover { color:#fff; text-decoration:underline; text-underline-offset:3px; }
     .remove-source { align-self:start; width:24px; height:24px; padding:0; border:1px solid rgba(244,166,166,.42); border-radius:50%; background:rgba(244,166,166,.08); color:#ffb5b5; cursor:pointer; font-size:1rem; line-height:1; }
-    .preview-panel { display:none; position:fixed; inset:0; z-index:50; background:rgba(3,10,23,.86); backdrop-filter:blur(7px); padding:clamp(22px,5vh,60px) 20px; }
-    .preview-panel.open { display:grid; place-items:center; }
-    .preview-sheet { position:relative; width:min(860px,100%); max-height:90vh; overflow:auto; background:#f8f1df; color:#1a2434; padding:48px clamp(24px,6vw,72px) 58px; border:1px solid #d2b65e; border-radius:12px; box-shadow:0 28px 100px rgba(0,0,0,.72),0 0 0 5px rgba(242,209,107,.1); }
-    .preview-sheet::before { content:""; position:absolute; inset:12px; pointer-events:none; border:1px solid rgba(130,103,43,.25); border-radius:6px; }
-    .preview-sheet h2 { margin:8px 0 8px; color:#132b55; font-size:clamp(2rem,4vw,3rem); line-height:1; }
-    .preview-sheet .eyebrow { position:relative; color:#977526; }
-    .preview-sheet .preview-meta { padding-bottom:18px; border-bottom:1px solid rgba(130,103,43,.3); font:700 .72rem 'Josefin Sans',sans-serif; text-transform:uppercase; letter-spacing:.1em; color:#82672b; }
-    .preview-sheet .preview-copy { white-space:normal; font:1.18rem/1.72 'Cormorant Garamond',serif; }
-    .preview-sheet .preview-copy p { margin:0 0 1em; }
-    .preview-sheet .preview-copy ul,.preview-sheet .preview-copy ol { margin:.25em 0 1em 1.35em; padding:0; }
-    .preview-close { position:absolute; z-index:1; top:21px; right:23px; color:#132b55; border:1px solid #b7a779; border-radius:50%; background:rgba(255,255,255,.35); width:31px; height:31px; cursor:pointer; font-size:1.1rem; line-height:1; }
-    .preview-close:hover { background:#fff; }
+     .preview-panel { display:none; position:fixed; inset:0; z-index:10000; background:rgba(3,8,18,.94); backdrop-filter:blur(9px); padding:96px 20px 28px; }
+     .preview-panel.open { display:flex; align-items:flex-start; justify-content:center; }
+     .preview-sheet { position:relative; display:flex; flex-direction:column; width:min(900px,100%); max-height:calc(100dvh - 124px); overflow:hidden; background:#182230; color:#f4f7fb; border:1px solid rgba(143,201,255,.42); border-top:3px solid #F2D16B; border-radius:14px; box-shadow:0 28px 100px rgba(0,0,0,.78),0 0 0 5px rgba(143,201,255,.08); }
+     .preview-header { position:relative; padding:27px clamp(24px,5vw,62px) 21px; background:linear-gradient(135deg,#102a4c,#1e2b3b); border-bottom:1px solid rgba(143,201,255,.25); }
+     .preview-header::after { content:""; position:absolute; left:clamp(24px,5vw,62px); bottom:-2px; width:120px; height:3px; background:#79E3C1; }
+     .preview-sheet h2 { margin:8px 58px 9px 0; color:#fff; font-size:clamp(2rem,4vw,3.2rem); line-height:1; }
+     .preview-sheet .eyebrow { position:relative; color:#F2D16B; }
+     .preview-sheet .preview-meta { font:700 .78rem 'Josefin Sans',sans-serif; text-transform:uppercase; letter-spacing:.1em; color:#b9d8f2; }
+     .preview-sheet .preview-copy { overflow:auto; padding:28px clamp(24px,5vw,62px) 46px; background:#111a27; white-space:normal; font:1.18rem/1.72 'Cormorant Garamond',serif; }
+     .preview-sheet .preview-copy p { margin:0 0 1em; }
+     .preview-sheet .preview-copy ul,.preview-sheet .preview-copy ol { margin:.25em 0 1em 1.35em; padding:0; }
+     .preview-close { position:absolute; z-index:2; top:18px; right:20px; display:grid; place-items:center; width:36px; height:36px; color:#fff; border:1px solid rgba(242,209,107,.8); border-radius:50%; background:#263b52; cursor:pointer; font:400 1.45rem/1 'Josefin Sans',sans-serif; }
+     .preview-close:hover,.preview-close:focus-visible { color:#111a27; background:#F2D16B; outline:3px solid rgba(143,201,255,.45); outline-offset:2px; }
     .studio-note { color:var(--studio-muted); font-size:.78rem; margin-top:10px; }
     .route-assurance { display:flex; align-items:flex-start; gap:9px; color:#c9f4e6; background:rgba(105,215,181,.08); border:1px solid rgba(105,215,181,.25); border-radius:6px; padding:10px 12px; margin-top:14px; font-size:.82rem; line-height:1.5; }
     .route-assurance svg { flex:0 0 18px; margin-top:1px; }
@@ -292,7 +293,7 @@
     @media (max-width:800px) { .paper-sources-head{flex-direction:column}.paper-sources .source-list{grid-template-columns:1fr} }
     @media (max-width:800px) { .studio-access-form{grid-template-columns:1fr 1fr}.studio-access-form button{grid-column:1 / -1;justify-self:start}.brief-resolution-mark{transform:translateY(-12px)}.essay-head{grid-template-columns:1fr}.essay-head-tools{justify-items:stretch}.essay-stats{justify-content:flex-start}.essay-stat{flex:1 1 86px}.essay-stats .studio-btn{flex:1 1 100%}.identity-grid{grid-template-columns:1fr 1fr}.editor-label-row{align-items:flex-start;flex-direction:column;gap:4px}.editor-toolbar{gap:6px} }
     @media (max-width:980px) { .paper-sidebar{grid-template-rows:auto;align-self:auto} }
-    @media (max-width:480px) { .studio-access-form,.identity-grid{grid-template-columns:1fr}.preview-sheet{padding:42px 22px 32px}.preview-close{top:13px;right:14px} }
+    @media (max-width:480px) { .studio-access-form,.identity-grid{grid-template-columns:1fr}.preview-panel{padding:82px 12px 16px}.preview-sheet{max-height:calc(100dvh - 98px)}.preview-header{padding:24px 20px 18px}.preview-header::after{left:20px}.preview-sheet h2{margin-right:42px}.preview-sheet .preview-copy{padding:22px 20px 34px}.preview-close{top:15px;right:15px} }
   </style>
 </head>
 <body class="studio-body">
@@ -328,7 +329,7 @@
              <div class="paper-hero-actions"><div class="paper-save-indicator"><span class="save-check" aria-hidden="true">✓</span><span><strong id="paperSaveState">Saved automatically</strong><small id="paperSavedTime">Not saved yet</small></span></div><button class="studio-btn paper-preview-btn" id="previewBtn" type="button"><span aria-hidden="true">◉</span> Preview paper <span aria-hidden="true">→</span></button></div>
            </header>
            <div class="paper-context">
-             <div class="student-context"><span class="student-avatar" id="studentInitials" aria-hidden="true">—</span><strong class="identity-value-inline" id="studentName" aria-label="Full name">—</strong><span class="student-verified" aria-label="Student details confirmed">✓</span><span class="context-dot" aria-hidden="true">·</span><span class="identity-value-inline" id="studentEmail" aria-label="Email address">—</span><span class="context-dot" aria-hidden="true">·</span><span class="student-id-context">ID <strong class="identity-value-inline" id="studentId" aria-label="FCPS student ID">—</strong></span><span class="context-dot" aria-hidden="true">·</span><span class="route-context" id="essayHint">Option A · Guided</span></div>
+              <div class="student-context"><span class="student-avatar" id="studentInitials" aria-hidden="true">—</span><strong class="identity-value-inline" id="studentName" aria-label="Full name">—</strong><span class="student-verified" aria-label="Student details confirmed">✓</span><span class="context-dot" aria-hidden="true">·</span><span class="identity-value-inline" id="studentEmail" aria-label="Email address">—</span><span class="context-dot" aria-hidden="true">·</span><span class="student-id-context">ID <strong class="identity-value-inline" id="studentId" aria-label="FCPS student ID">—</strong></span></div>
              <button class="change-option-btn" id="changeRouteBtn" type="button">Change option <span aria-hidden="true">✎</span></button>
            </div>
            <div class="paper-grid">
@@ -338,7 +339,7 @@
                 <div class="field essay-editor-field"><div class="editor-label-row"><span class="identity-label" id="essayEditorLabel">Your essay</span><span class="editor-hint">Formatting is saved with your draft</span></div><div class="editor-shell"><div class="editor-toolbar" role="toolbar" aria-label="Essay formatting"><button class="editor-tool" type="button" data-editor-command="bold" aria-label="Bold" title="Bold"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5h6.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 12h7.5a3.5 3.5 0 0 1 0 7H6z"/><path d="M6 5v14"/></svg></button><button class="editor-tool" type="button" data-editor-command="italic" aria-label="Italic" title="Italic"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 5h9M5 19h9M13 5 9 19"/></svg></button><button class="editor-tool" type="button" data-editor-command="underline" aria-label="Underline" title="Underline"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v6a6 6 0 0 0 12 0V5M4 20h16"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="6" r="1.2"/><circle cx="5" cy="12" r="1.2"/><circle cx="5" cy="18" r="1.2"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><button class="editor-tool" type="button" data-editor-command="insertOrderedList" aria-label="Numbered list" title="Numbered list"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h2v4M4 9h3M4 12h2v4M4 16h3M4 19h3"/><path d="M10 6h10M10 12h10M10 18h10"/></svg></button><span class="editor-divider" aria-hidden="true"></span><button class="editor-tool" type="button" data-editor-command="undo" aria-label="Undo" title="Undo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 4 12l5 5"/><path d="M4 12h9a6 6 0 0 1 6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="redo" aria-label="Redo" title="Redo"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m15 7 5 5-5 5"/><path d="M20 12h-9a6 6 0 0 0-6 6"/></svg></button><button class="editor-tool" type="button" data-editor-command="removeFormat" aria-label="Clear formatting" title="Clear formatting"><svg class="editor-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m7 5 12 12-4 4H7l-4-4L7 5Z"/><path d="m8 16 4-4"/></svg></button></div><div class="essay-editor" id="essay" contenteditable="true" role="textbox" aria-multiline="true" aria-labelledby="essayEditorLabel" spellcheck="true" data-placeholder="Start your argument here… Introduce your position, develop your strongest reasons, support your claims with evidence, and explain why your arguments matter."></div><div class="editor-count">Words: <strong id="editorWordCount">0</strong></div></div></div>
              </div>
              <aside class="paper-sidebar" aria-label="Paper progress">
-                <section class="paper-side-card progress-card"><h3>Writing progress</h3><div class="progress-metrics"><div class="metric-words"><span>Words</span><strong id="wordCount">0</strong><small>/ 750–1,000</small></div><div class="metric-pages"><span>Pages</span><strong id="pageCount">0</strong><small>/ 2</small></div><div class="metric-sources"><span>Sources</span><strong id="statSources">0</strong><small>/ 5 min</small></div><div class="metric-characters"><span>Characters</span><strong id="characterCount">0</strong><small>(no spaces)</small></div></div><div class="progress-track" aria-hidden="true"><span id="wordProgressBar"></span></div><div class="progress-scale"><span>0%</span><span>50%</span><span>100%</span></div></section>
+                 <section class="paper-side-card progress-card"><h3>Writing progress</h3><div class="progress-metrics"><div class="metric-words"><span>Words</span><strong><span id="wordCount">0</span><small> / 750–1,000</small></strong></div><div class="metric-pages"><span>Pages</span><strong><span id="pageCount">0</span><small> / 2</small></strong></div><div class="metric-sources"><span>Sources</span><strong><span id="statSources">0</span><small> / 5 min</small></strong></div><div class="metric-characters"><span>Characters</span><strong><span id="characterCount">0</span><small> (no spaces)</small></strong></div></div><div class="progress-track" aria-hidden="true"><span id="wordProgressBar"></span></div><div class="progress-scale"><span>0%</span><span>50%</span><span>100%</span></div></section>
                <section class="paper-side-card requirements-card"><h3>Requirements</h3><div class="requirement-list"><div><span class="requirement-icon blue" aria-hidden="true">▤</span><span>750–1,000 words</span><strong id="requirementWords">0 / 750–1,000</strong></div><div><span class="requirement-icon purple" aria-hidden="true">▧</span><span>Two (2) pages</span><strong id="requirementPages">0 / 2</strong></div><div><span class="requirement-icon gold" aria-hidden="true">▱</span><span>Minimum 5 sources</span><strong id="requirementSources">0 / 5</strong></div><div><span class="requirement-icon red" aria-hidden="true">“</span><span>Support claims with evidence</span><strong id="requirementEvidence">In progress</strong></div><div><span class="requirement-icon green" aria-hidden="true">⚖</span><span>Clear reasoning and impacts</span><strong id="requirementReasoning">In progress</strong></div></div></section>
              </aside>
            </div>
@@ -415,7 +416,7 @@
       </div>
     </div>
   </footer>
-  <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button" aria-label="Close paper preview">×</button><div class="eyebrow">Cooper Debate · Essay preview</div><h2 id="previewHeading">Untitled position paper</h2><div class="preview-meta" id="previewMeta"></div><div class="preview-copy" id="previewCopy"></div></article></div>
+  <div class="preview-panel" id="previewPanel" role="dialog" aria-modal="true" aria-labelledby="previewHeading"><article class="preview-sheet"><button class="preview-close" id="closePreview" type="button" aria-label="Close paper preview" title="Close preview">×</button><header class="preview-header"><div class="eyebrow">Cooper Debate</div><h2 id="previewHeading">Untitled position paper</h2><div class="preview-meta" id="previewMeta"></div></header><div class="preview-copy" id="previewCopy"></div></article></div>
   <script src="js/dome-nav.js?v=3"></script><script src="js/debate-prep.js?v=3"></script>
 </body>
 </html>

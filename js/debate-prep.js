@@ -317,7 +317,6 @@
       input.checked = input.value === route;
     });
     $('caseSection').hidden = route === 'essay';
-    $('essayHint').textContent = route === 'essay' ? 'Option B · Essay only' : 'Option A · Guided';
     document.querySelectorAll('.guided-check').forEach(function (item) {
       item.hidden = route === 'essay';
     });
