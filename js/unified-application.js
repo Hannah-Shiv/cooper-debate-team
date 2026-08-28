@@ -43,6 +43,24 @@
     });
   }
 
+  function focusSectionEntry(section) {
+    var target = section === 'team'
+      ? document.getElementById('first-name')
+      : document.getElementById('prepGateName');
+    var sectionHeading = section === 'team'
+      ? document.getElementById('application-progress-title')
+      : document.querySelector('#debate-prep-panel .studio-mast h1');
+
+    if (!target) return;
+
+    var scrollTarget = sectionHeading || target;
+    scrollTarget.scrollIntoView({
+      behavior: reducedMotion.matches ? 'auto' : 'smooth',
+      block: 'center'
+    });
+    target.focus({ preventScroll: true });
+  }
+
   function loadDebatePrep() {
     if (prepLoadPromise) return prepLoadPromise;
 
@@ -136,14 +154,28 @@
     if (nextSection === 'debate-prep') loadDebatePrep().catch(function () {});
     if (nextSection === currentSection && !panels[nextSection].hidden) {
       panels[nextSection].classList.remove('is-entering');
+      if (settings.focusEntry) {
+        if (nextSection === 'debate-prep' && prepLoadPromise) {
+          prepLoadPromise.then(function () { focusSectionEntry(nextSection); });
+        } else {
+          focusSectionEntry(nextSection);
+        }
+      }
       return;
     }
     finishSwitch(nextSection);
+    if (settings.focusEntry) {
+      if (nextSection === 'debate-prep' && prepLoadPromise) {
+        prepLoadPromise.then(function () { focusSectionEntry(nextSection); });
+      } else {
+        focusSectionEntry(nextSection);
+      }
+    }
   }
 
   buttons.forEach(function (button) {
     button.addEventListener('click', function () {
-      showSection(button.dataset.applicationSection);
+      showSection(button.dataset.applicationSection, { focusEntry: true });
     });
     button.addEventListener('keydown', function (event) {
       var currentIndex = buttons.indexOf(button);
@@ -160,7 +192,7 @@
       if (nextIndex === null) return;
       event.preventDefault();
       buttons[nextIndex].focus({ preventScroll: true });
-      showSection(buttons[nextIndex].dataset.applicationSection);
+      showSection(buttons[nextIndex].dataset.applicationSection, { focusEntry: true });
     });
   });
 
