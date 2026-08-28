@@ -79,7 +79,7 @@
     if (prepLoadPromise) return prepLoadPromise;
 
     var panel = panels['debate-prep'];
-    prepLoadPromise = fetch('debate-prep.html?v=5', { credentials: 'same-origin' })
+    prepLoadPromise = fetch('debate-prep.html?v=6', { credentials: 'same-origin' })
       .then(function (response) {
         if (!response.ok) throw new Error('The Debate Prep Studio could not be loaded.');
         return response.text();
