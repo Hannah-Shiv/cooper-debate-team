@@ -87,6 +87,24 @@
     field.textContent = nextValue || '—';
   }
 
+  function initialsFor(name) {
+    var parts = name.trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '—';
+    return (parts[0].charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
+  }
+
+  function updatePaperSaveState(label, detail) {
+    $('paperSaveState').textContent = label;
+    $('paperSavedTime').textContent = detail;
+    $('paperFooterSavedTime').textContent = detail;
+  }
+
+  function updateRequirement(id, value, complete) {
+    var item = $(id);
+    item.textContent = value;
+    item.classList.toggle('is-complete', complete);
+  }
+
   function openStudio(email, name, studentId) {
     setValue(fields.name, name);
     setValue(fields.studentId, studentId);
@@ -94,6 +112,7 @@
     gateName.value = name;
     gateStudentId.value = studentId;
     gateEmail.value = email;
+    $('studentInitials').textContent = initialsFor(name);
     try {
       localStorage.setItem(emailKey, email);
     } catch (error) {
@@ -161,11 +180,21 @@
     var essayText = textValueOf(fields.essay);
     var words = wordCount(essayText);
     var characters = essayText.replace(/\s/g, '').length;
+    var pages = words ? Math.max(1, Math.ceil(words / 500)) : 0;
+    var evidenceReady = Boolean(fields.evidence.value.trim());
+    var reasoningReady = Boolean(fields.reasoning.value.trim() && fields.impacts.value.trim());
     $('wordCount').textContent = words.toLocaleString();
-    $('pageCount').textContent = (words ? Math.max(1, Math.ceil(words / 500)) : 0) + ' / 2';
+    $('editorWordCount').textContent = words.toLocaleString();
+    $('pageCount').textContent = pages;
     $('sourceCount').textContent = sources.length;
     $('statSources').textContent = sources.length;
     $('characterCount').textContent = characters.toLocaleString();
+    $('wordProgressBar').style.width = Math.min(100, (words / 750) * 100) + '%';
+    updateRequirement('requirementWords', words.toLocaleString() + ' / 750–1,000', words >= 750 && words <= 1000);
+    updateRequirement('requirementPages', pages + ' / 2', pages === 2);
+    updateRequirement('requirementSources', sources.length + ' / 5', sources.length >= 5);
+    updateRequirement('requirementEvidence', evidenceReady ? 'Added' : 'In progress', evidenceReady);
+    updateRequirement('requirementReasoning', reasoningReady ? 'Added' : 'In progress', reasoningReady);
 
     ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
@@ -230,16 +259,20 @@
       state.textContent = quiet ? 'Autosaved' : 'Draft saved';
       state.style.color = '';
       time.textContent = savedLabel(savedAt);
+      updatePaperSaveState(quiet ? 'Saved automatically' : 'Draft saved',
+        'Last saved ' + savedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
     } catch (error) {
       state.textContent = 'Local save unavailable';
       state.style.color = '#f4a6a6';
       time.textContent = 'Copy your work before leaving this page';
+      updatePaperSaveState('Local save unavailable', 'Copy your work before leaving');
     }
   }
 
   function markDirty() {
     state.textContent = 'Saving changes';
     state.style.color = '#f2d16b';
+    updatePaperSaveState('Saving changes', 'Autosave in progress');
     clearTimeout(autosaveTimer);
     autosaveTimer = setTimeout(function () {
       save({ quiet: true });
@@ -274,9 +307,13 @@
       state.textContent = 'Draft recovered';
       state.style.color = '';
       time.textContent = data.updatedAt ? savedLabel(new Date(data.updatedAt)) : 'Recovered from this device';
+      updatePaperSaveState('Draft recovered', data.updatedAt
+        ? 'Last saved ' + new Date(data.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+        : 'Recovered from this device');
     } catch (error) {
       state.textContent = 'Draft could not be recovered';
       state.style.color = '#f4a6a6';
+      updatePaperSaveState('Draft could not be recovered', 'Start a new draft');
     }
   }
 
@@ -401,7 +438,21 @@
     save({ quiet: false });
   });
 
-  $('previewBtn').addEventListener('click', function () {
+  $('saveEssayBtn').addEventListener('click', function () {
+    save({ quiet: false });
+  });
+
+  $('changeRouteBtn').addEventListener('click', function () {
+    document.querySelector('.route-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+
+  $('viewGuidedSteps').addEventListener('click', function () {
+    setRoute('guided');
+    markDirty();
+    $('caseSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  function openPreview() {
     $('previewMeta').textContent = (valueOf(fields.name) || 'Unnamed student') + ' · ' +
       (fields.title.value || 'Untitled position paper') + ' · ' +
       document.querySelector('input[name="stance"]:checked').value;
@@ -413,7 +464,10 @@
     $('previewPanel').classList.add('open');
     document.body.style.overflow = 'hidden';
     $('closePreview').focus();
-  });
+  }
+
+  $('previewBtn').addEventListener('click', openPreview);
+  $('previewBtnFooter').addEventListener('click', openPreview);
 
   function closePreview() {
     $('previewPanel').classList.remove('open');
