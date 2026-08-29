@@ -66,6 +66,22 @@ test('opens one board from the details gate and supports drag and tap placement'
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
+test('lets a student place themselves before choosing a partner', async ({ page }) => {
+  await seed(page, [
+    record('olivia', 'Olivia Brooks'),
+  ]);
+  await openBoard(page, 'Jennifer Student');
+
+  await page.getByRole('button', { name: 'Add me here' }).first().click();
+  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toContainText('You');
+  await expect(page.locator('#tourney-tryout-error')).toContainText('Your piece is on the board');
+
+  await page.locator('[data-partner="olivia"]').click();
+  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toContainText('Olivia B.');
+  await page.locator('#tourney-tryout-submit').click();
+  await expect(page.locator('#tourney-tryout-student-status')).toContainText('Request saved');
+});
+
 test('first mutual acceptance pairs students and releases competitors', async ({ page }) => {
   const records = [
     record('avery', 'Avery Able', 'blake'),
