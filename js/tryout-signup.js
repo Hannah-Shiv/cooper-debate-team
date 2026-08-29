@@ -3,6 +3,8 @@
 
   var STORAGE_KEY = "cooper_tryout_signups_v1";
   var ACTIVE_KEY = "cooper_tryout_active_student_v1";
+  var WRITE_LOCK = "cooper-tryout-signups-write";
+  var FALLBACK_LOCK_KEY = "cooper_tryout_signups_write_lock_v1";
   var STORAGE_VERSION = 1;
   var DEMO_RECORDS = [
     { id: "demo-alex", name: "Alex Rivera", grade: "8", dates: ["sep22", "sep23"], selectedDate: "sep22", mode: "partner", partnerId: "demo-maya", tint: "gold", isDemo: true },
@@ -53,12 +55,14 @@
       mode: mode, partnerId: record.partnerId ? String(record.partnerId) : null,
       assignedPartnerId: record.assignedPartnerId ? String(record.assignedPartnerId) : null,
       tint: ["gold", "blue", "violet", "teal"].includes(record.tint) ? record.tint : "blue",
+      piece: record.piece === "girl" ? "girl" : "boy",
       isDemo: Boolean(record.isDemo), withdrawn: Boolean(record.withdrawn),
+      releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
       createdAt: record.createdAt || now(), updatedAt: record.updatedAt || now()
     };
   }
   function defaultData() {
-    return { version: STORAGE_VERSION, records: DEMO_RECORDS.map(function (record) {
+    return { version: STORAGE_VERSION, revision: 0, records: DEMO_RECORDS.map(function (record) {
       return safeRecord(Object.assign({}, record, { createdAt: "2026-08-01T12:00:00.000Z", updatedAt: "2026-08-01T12:00:00.000Z" }));
     }).filter(Boolean) };
   }
@@ -69,7 +73,7 @@
       if (!raw) return fallback;
       var parsed = JSON.parse(raw);
       if (!parsed || parsed.version !== STORAGE_VERSION || !Array.isArray(parsed.records)) return fallback;
-      return { version: STORAGE_VERSION, records: parsed.records.map(safeRecord).filter(Boolean) };
+      return { version: STORAGE_VERSION, revision: Number(parsed.revision) || 0, records: parsed.records.map(safeRecord).filter(Boolean) };
     } catch (error) {
       showStatus("Local sign-up data could not be read. The demo roster is being used instead.", true);
       return fallback;
@@ -77,6 +81,7 @@
   }
   function saveData() {
     try {
+      state.data.revision = (Number(state.data.revision) || 0) + 1;
       window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data));
       return true;
     } catch (error) {
@@ -90,8 +95,41 @@
       if (!raw) return;
       var parsed = JSON.parse(raw);
       if (!parsed || parsed.version !== STORAGE_VERSION || !Array.isArray(parsed.records)) return;
-      state.data = { version: STORAGE_VERSION, records: parsed.records.map(safeRecord).filter(Boolean) };
+      state.data = { version: STORAGE_VERSION, revision: Number(parsed.revision) || 0, records: parsed.records.map(safeRecord).filter(Boolean) };
     } catch (ignore) {}
+  }
+  function withWriteLock(callback) {
+    if (navigator.locks && navigator.locks.request) return navigator.locks.request(WRITE_LOCK, callback);
+    var owner = makeId(), deadline = Date.now() + 2500;
+    return new Promise(function (resolve, reject) {
+      function release() {
+        try {
+          var held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
+          if (held && held.owner === owner) window.localStorage.removeItem(FALLBACK_LOCK_KEY);
+        } catch (ignore) {}
+      }
+      function attempt() {
+        try {
+          var timestamp = Date.now();
+          var held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
+          if (!held || !held.owner || Number(held.expires) < timestamp) {
+            window.localStorage.setItem(FALLBACK_LOCK_KEY, JSON.stringify({ owner: owner, expires: timestamp + 4000 }));
+            held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
+            if (held && held.owner === owner) {
+              try { resolve(callback()); } catch (error) { reject(error); } finally { release(); }
+              return;
+            }
+          }
+          if (timestamp >= deadline) {
+            showStatus("Another tryout update is still being saved. Please try again.", true);
+            reject(new Error("Tryout write lock timed out."));
+            return;
+          }
+          window.setTimeout(attempt, 35);
+        } catch (error) { reject(error); }
+      }
+      attempt();
+    });
   }
   function isDevelopmentHost() {
     var host = window.location.hostname;
@@ -113,10 +151,11 @@
     if (!record) return "new";
     if (record.assignedPartnerId) return "assigned";
     if (record.mode === "assign") return "waiting";
+    if (!record.partnerId) return "open";
     return mutualPartner(record) ? "mutual" : "pending";
   }
   function statusLabel(status) {
-    return { pending: "Pending request", mutual: "Mutual request", assigned: "Coach assigned", waiting: "Waiting for Coach" }[status] || "Ready";
+    return { pending: "Pending request", mutual: "Mutual request", assigned: "Coach assigned", waiting: "Waiting for Coach", open: "Available again" }[status] || "Ready";
   }
   function publicCandidates() {
     var current = activeRecord();
@@ -197,11 +236,12 @@
       pending: ["Your request is pending", "We’ll show a confirmed pairing here if " + partnerName + " chooses you back. You can change or withdraw this request while it is pending."],
       mutual: ["You have a mutual request", "You and " + partnerName + " chose each other. Coach will make the final pairing decision."],
       assigned: ["Coach assigned your pairing", "Your tryout pairing is with " + partnerName + ". Please arrive at the date shown above."],
-      waiting: ["You are waiting for Coach", "You asked Coach to pair you with a teammate who can attend " + DATES[record.selectedDate].shortDate + "."]
+      waiting: ["You are waiting for Coach", "You asked Coach to pair you with a teammate who can attend " + DATES[record.selectedDate].shortDate + "."],
+      open: ["Your piece is available", record.releasedReason === "partner-locked" ? "That student completed another pairing first. Choose another available student or ask Coach to pair you." : "Choose another available student or ask Coach to pair you."]
     }[status];
     dom.studentStatus.className = "tryout-status-card is-" + status;
     dom.studentStatus.innerHTML = '<h2 id="student-status-heading">' + copy[0] + "</h2><p>" + copy[1] + "</p>" +
-      (status === "pending" || status === "waiting" ? '<button class="tryout-secondary-button" data-edit-signup type="button">Change my sign-up</button> <button class="tryout-secondary-button" data-withdraw-signup type="button">Withdraw</button>' : "") +
+      (status === "pending" || status === "waiting" || status === "open" ? '<button class="tryout-secondary-button" data-edit-signup type="button">Change my sign-up</button> <button class="tryout-secondary-button" data-withdraw-signup type="button">Withdraw</button>' : "") +
       '<button class="tryout-secondary-button" data-new-student type="button">Sign up another student</button>';
     dom.studentStatus.hidden = false;
   }
@@ -243,9 +283,18 @@
   function submitSignup() {
     var error = validate();
     if (error) { setMessage(dom.formError, error); dom.formError.focus(); return; }
+    return withWriteLock(function () {
     syncFromStorage();
     var name = dom.studentName.value.trim().replace(/\s+/g, " ");
     var grade = dom.studentGrade.value;
+    var record = activeRecord();
+    if (record && ["mutual", "assigned"].includes(statusFor(record))) {
+      state.editing = false;
+      fillFromRecord(record);
+      setMessage(dom.formError, "This pairing locked while you were editing, so your older changes were not saved.");
+      renderAll();
+      return;
+    }
     var existing = state.data.records.find(function (record) { return isActive(record) && normalizeName(record.name) === normalizeName(name) && record.id !== state.activeId; });
     if (existing) {
       setMessage(dom.formError, "A sign-up for this name is already saved in this browser. If this is you, use “Sign up another student” only for a different student.");
@@ -262,9 +311,7 @@
         return;
       }
     }
-    var record = activeRecord();
-    if (record && !state.editing && (statusFor(record) === "mutual" || statusFor(record) === "assigned")) return;
-    if (!record || !state.editing) {
+    if (!record) {
       record = {
         id: makeId(), name: name, grade: grade, dates: [state.date], selectedDate: state.date,
         mode: state.mode, partnerId: state.partnerId, assignedPartnerId: null, tint: "blue", isDemo: false, createdAt: now(), updatedAt: now()
@@ -275,7 +322,18 @@
       try { window.localStorage.setItem(ACTIVE_KEY, state.activeId); } catch (ignore) {}
     } else {
       record.name = name; record.grade = grade; record.dates = [state.date]; record.selectedDate = state.date;
-      record.mode = state.mode; record.partnerId = state.partnerId; record.updatedAt = now();
+      record.mode = state.mode; record.partnerId = state.partnerId; record.releasedReason = ""; record.updatedAt = now();
+    }
+    var winningPartner = mutualPartner(record);
+    if (winningPartner) {
+      state.data.records.forEach(function (other) {
+        if (!isActive(other) || other.id === record.id || other.id === winningPartner.id) return;
+        if (other.partnerId === record.id || other.partnerId === winningPartner.id) {
+          other.partnerId = null;
+          other.releasedReason = "partner-locked";
+          other.updatedAt = now();
+        }
+      });
     }
     if (!saveData()) return;
     setMessage(dom.formError, "");
@@ -284,6 +342,7 @@
     state.editing = false;
     renderAll();
     dom.studentStatus.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    });
   }
   function editSignup() {
     var record = activeRecord();
@@ -295,18 +354,20 @@
     renderAll();
   }
   function withdrawSignup() {
-    syncFromStorage();
-    var record = activeRecord();
-    if (!record || ["mutual", "assigned"].includes(statusFor(record))) return;
-    record.withdrawn = true;
-    record.updatedAt = now();
-    if (saveData()) {
-      state.activeId = null;
-      try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
-      setMessage(dom.formMessage, "Your sign-up was withdrawn. You can submit a new choice from this page.");
-      state.editing = false;
-      renderAll();
-    }
+    return withWriteLock(function () {
+      syncFromStorage();
+      var record = activeRecord();
+      if (!record || ["mutual", "assigned"].includes(statusFor(record))) return;
+      record.withdrawn = true;
+      record.updatedAt = now();
+      if (saveData()) {
+        state.activeId = null;
+        try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
+        setMessage(dom.formMessage, "Your sign-up was withdrawn. You can submit a new choice from this page.");
+        state.editing = false;
+        renderAll();
+      }
+    });
   }
   function newStudent() {
     state.activeId = null; state.editing = false; state.date = "sep22"; state.mode = "partner"; state.partnerId = null;
@@ -318,6 +379,7 @@
   }
   function assignPair(studentId, partnerId) {
     if (!studentId || !partnerId || studentId === partnerId) return;
+    return withWriteLock(function () {
     syncFromStorage();
     var student = recordById(studentId), partner = recordById(partnerId);
     if (!student || !partner || !isActive(student) || !isActive(partner)) return;
@@ -338,8 +400,10 @@
     student.assignedPartnerId = partner.id; partner.assignedPartnerId = student.id;
     student.updatedAt = now(); partner.updatedAt = now();
     if (saveData()) { showStatus("Coach assignment saved for " + displayName(student.name) + " and " + displayName(partner.name) + "."); renderAll(); }
+    });
   }
   function unassignPair(studentId) {
+    return withWriteLock(function () {
     syncFromStorage();
     var student = recordById(studentId);
     if (!student || !student.assignedPartnerId) return;
@@ -356,13 +420,14 @@
       showStatus("Coach assignment removed. Both students are available for a new decision.");
       renderAll();
     }
+    });
   }
   function renderCoach() {
     if (!dom.coachPanel || !isDevelopmentHost() || !new URLSearchParams(window.location.search).has("coach")) return;
     var records = state.data.records.filter(isActive);
     var mutual = records.filter(function (record) { return statusFor(record) === "mutual"; });
     var assigned = records.filter(function (record) { return statusFor(record) === "assigned"; });
-    var unmatched = records.filter(function (record) { return statusFor(record) === "pending" || statusFor(record) === "waiting"; });
+    var unmatched = records.filter(function (record) { return statusFor(record) === "pending" || statusFor(record) === "waiting" || statusFor(record) === "open"; });
     dom.coachSummary.innerHTML = [
       ["total", records.length], ["mutual pairs", mutual.length / 2], ["waiting", unmatched.length], ["assigned pairs", assigned.length / 2]
     ].map(function (stat) { return '<div class="tryout-coach-stat"><strong>' + stat[1] + '</strong><span>' + stat[0] + "</span></div>"; }).join("");
@@ -391,11 +456,13 @@
   }
   function resetDemo() {
     if (!window.confirm("Reset local tryout sign-up data to the sample roster?")) return;
-    state.data = defaultData(); state.activeId = null; state.editing = false; state.date = "sep22"; state.mode = "partner"; state.partnerId = null;
-    try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
-    saveData(); dom.studentName.value = ""; dom.studentGrade.value = "";
-    showStatus("Demo data reset. Four sample students are available again.");
-    renderAll();
+    return withWriteLock(function () {
+      state.data = defaultData(); state.activeId = null; state.editing = false; state.date = "sep22"; state.mode = "partner"; state.partnerId = null;
+      try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
+      saveData(); dom.studentName.value = ""; dom.studentGrade.value = "";
+      showStatus("Demo data reset. Four sample students are available again.");
+      renderAll();
+    });
   }
   function init() {
     dom = {
