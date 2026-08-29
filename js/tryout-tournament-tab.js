@@ -214,7 +214,14 @@
     var allActive = state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
-    var boardRecords = allActive;
+    var boardRecords = allActive.map(function (record) {
+      if (record.id !== state.activeId || !state.draftDirty) return record;
+      return Object.assign({}, record, {
+        partnerId: state.partnerIds[0] || null,
+        partnerIds: state.partnerIds.slice(),
+        relationshipStatus: state.partnerIds.length ? "pending" : "open"
+      });
+    });
     var rows = [];
     var seen = {};
     function addRow(left, right, status) {
@@ -232,7 +239,7 @@
         addRow(record, mutualPartner, "locked");
         seen[record.id] = true; seen[mutualPartner.id] = true;
       } else if (partner && active(partner) && partner.dates.includes(state.date) && !mutual(partner)) {
-        addRow(record, partner, "pending");
+        addRow(record, partner, record.isYou ? "your-request" : "pending");
         seen[record.id] = true; seen[partner.id] = true;
       }
     });
@@ -495,7 +502,7 @@
         setPartnerIds(reordered);
         state.draftDirty = true;
         formMessage(preferenceButton.dataset.prefRemove ? "Choice removed." : "Preference order updated.");
-        renderPairing();
+        renderAll();
         persistSession();
         return;
       }
@@ -510,7 +517,7 @@
         formMessage(toggleResult === "removed"
           ? "Choice removed. The remaining students keep their preference order."
           : "Choice #" + state.partnerIds.length + " added. Select another student or submit your ranked choices.");
-        renderPairing();
+        renderAll();
         state.draftDirty = true;
         persistSession();
         return;
@@ -520,7 +527,7 @@
         state.boardRow = Number(slot.dataset.dropRow);
         state.selfPlaced = true;
         formMessage(state.partnerIds.length ? "Piece placed. Submit your ranked partner choices when ready." : "Your piece is on the board. Now choose up to four students.");
-        renderPairing();
+        renderAll();
         persistSession();
       }
     });
@@ -563,7 +570,7 @@
       state.boardRow = Number(target.dataset.dropRow);
       state.selfPlaced = true;
       formMessage("Choice #" + (state.partnerIds.indexOf(partnerId) + 1) + " placed. Add more choices or submit your ranked list.");
-      renderPairing();
+      renderAll();
       persistSession();
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });

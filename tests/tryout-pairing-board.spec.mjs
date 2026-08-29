@@ -16,7 +16,7 @@ function publicStudent(id, displayName, partnerId = null) {
   };
 }
 
-async function installSharedBoard(page, records, onRequest = () => {}) {
+async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = []) {
   await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
   await page.addInitScript(publicRecords => {
     const snapshot = {
@@ -53,7 +53,7 @@ async function installSharedBoard(page, records, onRequest = () => {}) {
   await page.route(endpoint, async requestRoute => {
     const body = requestRoute.request().postDataJSON();
     onRequest(body);
-    const partnerIds = Array.isArray(body.partnerIds) ? body.partnerIds : [];
+    const partnerIds = Array.isArray(body.partnerIds) ? body.partnerIds : body.action === "open" ? savedPartnerIds : [];
     const self = {
       id: "self",
       name: "Jordan Student",
@@ -163,6 +163,22 @@ test("restores the signup details and board after a page refresh", async ({ page
   await expect(page.locator("#tourney-tryout-identity-name")).toHaveText("Jordan Student");
   await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(1);
   await expect(page.locator('[data-partner="avery"] .tourney-tryout-roster-check')).toHaveText("#1");
+});
+
+test("shows the current unsaved first choice on the board preview", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("m", "Test M."),
+    publicStudent("j", "Test J."),
+  ], () => {}, ["m"]);
+  await openBoard(page);
+
+  await page.locator('[data-partner="m"]').click();
+  await page.locator('[data-partner="j"]').click();
+
+  await expect(page.locator(".tourney-tryout-board-row.is-your-request")).toContainText("Test J.");
+  await expect(page.locator(".tourney-tryout-board-row.is-your-request")).not.toContainText("Test M.");
+  await expect(page.locator("#tourney-tryout-student-status")).toContainText("Test J.");
+  await expect(page.locator("#tourney-tryout-student-status")).not.toContainText("Test M.");
 });
 
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
