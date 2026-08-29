@@ -233,6 +233,10 @@ test("shows large primary board actions", async ({ page }) => {
   for (let index = 1; index < desktopFlow.length; index += 1) {
     expect(desktopFlow[index].top).toBeGreaterThan(desktopFlow[index - 1].bottom);
   }
+  await expect(page.locator(".tourney-tryout-flow-number").nth(0)).toHaveCSS("border-top-color", "rgb(118, 189, 255)");
+  await expect(page.locator(".tourney-tryout-flow-number").nth(1)).toHaveCSS("border-top-color", "rgb(108, 224, 200)");
+  await expect(page.locator(".tourney-tryout-flow-number").nth(2)).toHaveCSS("border-top-color", "rgb(193, 173, 255)");
+  await expect(page.locator(".tourney-tryout-flow-number").nth(3)).toHaveCSS("border-top-color", "rgb(244, 196, 76)");
   await expect(page.locator("[data-tryout-print]")).toBeVisible();
   const printPopupPromise = page.waitForEvent("popup");
   await page.locator("[data-tryout-print]").click();
