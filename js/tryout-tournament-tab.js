@@ -43,7 +43,7 @@
         id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.self.session],
         selectedDate: state.self.session, mode: "partner", partnerId: state.self.partnerId,
         assignedPartnerId: null, tint: "teal", piece: "girl", isDemo: false, withdrawn: false,
-        releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status
+        releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status, isYou: true
       };
       records = records.filter(function (record) { return record.id !== selfRecord.id; });
       records.push(selfRecord);
@@ -207,7 +207,7 @@
     function piece(record, extra, rowIndex) {
        if (!record) return '<button class="tourney-tryout-drop-slot ' + (extra || "") + '" data-drop-slot data-drop-row="' + rowIndex + '" type="button"><span aria-hidden="true">+</span><small>' + (state.selfPlaced && state.partnerId ? "Choose partner" : state.selfPlaced ? "Choose a partner" : "Add me here") + '</small></button>';
       return '<div class="tourney-tryout-piece ' + (record.isYou ? "is-you " : "") + (record.tint || "blue") + '" ' + (record.isYou ? "" : 'data-piece-id="' + escapeHtml(record.id) + '"') + '>' +
-        '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-piece-name">' + escapeHtml(record.isYou ? "You" : displayName(record.name)) + '</span>' +
+        '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-piece-name">' + escapeHtml(record.isYou ? "You (" + record.name + ")" : displayName(record.name)) + '</span>' +
         (record.isYou ? '<span class="tourney-tryout-piece-tag">Your move</span>' : "") + '</div>';
     }
     function rowMarkup(row, index) {
