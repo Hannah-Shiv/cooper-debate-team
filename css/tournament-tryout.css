@@ -338,6 +338,7 @@
 .tourney-tryout-board-actions { justify-content: flex-end; margin-top: 18px; padding-top: 17px; border-top: 1px solid rgba(157,187,255,.15); }
 .tourney-tryout-board-actions > span { margin-right: auto; color: #89a0c7; font-size: .65rem; }
 .tourney-tryout-board-actions .tourney-tryout-continue { margin-left: 0; }
+.tourney-tryout-gate-actions .tourney-tryout-continue,.tourney-tryout-board-actions .tourney-tryout-continue { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 15px 28px; border-radius: 9px; font: 700 .78rem 'Josefin Sans',sans-serif; letter-spacing: .07em; line-height: 1.2; text-align: center; }
 .tourney-tryout-review { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; margin-top: 20px; }
 .tourney-tryout-review > div { padding: 12px 13px; border: 1px solid rgba(244,188,25,.25); border-radius: 8px; background: rgba(244,188,25,.07); }
 .tourney-tryout-review span,.tourney-tryout-review strong { display: block; }.tourney-tryout-review span { color: #e5bd4a; font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }.tourney-tryout-review strong { margin-top: 4px; color: #fff; font-size: .78rem; }

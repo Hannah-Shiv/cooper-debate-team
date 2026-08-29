@@ -119,6 +119,15 @@ test("submits four choices in the visible preference order", async ({ page }) =>
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("Partner choices saved");
 });
 
+test("shows large primary board actions", async ({ page }) => {
+  await installSharedBoard(page, []);
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
+  await openBoard(page);
+  await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
+});
+
 test("keeps duplicate names as distinct choices and enforces the four-choice limit", async ({ page }) => {
   await installSharedBoard(page, [
     publicStudent("sam-one", "Sam K."),
