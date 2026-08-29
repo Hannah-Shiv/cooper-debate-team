@@ -127,7 +127,6 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           createdAt: FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
         };
-        transaction.set(keyRef, { studentId: id, season: SEASON, createdAt: FieldValue.serverTimestamp() });
       } else {
         record = changedRecord(record, {
           name: identity.name,
@@ -138,6 +137,9 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       }
       const records = await readAll(transaction);
       records.set(id, record);
+      if (!keySnap.exists) {
+        transaction.set(keyRef, { studentId: id, season: SEASON, createdAt: FieldValue.serverTimestamp() });
+      }
       writeRecord(transaction, id, record);
       response = privateView(id, record, records);
     });
