@@ -241,14 +241,18 @@
 .tourney-tryout-filter-row span { color: #7890b7; font: 700 .63rem 'Josefin Sans',sans-serif; letter-spacing: .05em; text-transform: uppercase; }
 .tourney-tryout-filter-row .is-active { padding: 6px 9px; color: #092049; border-radius: 5px; background: #f5c441; }
 .tourney-tryout-preference-list { display:grid; gap:5px; margin:0 0 10px; padding:0; list-style:none; }
-.tourney-tryout-preference-list li { display:grid; grid-template-columns:25px minmax(0,1fr) 27px 27px 27px; gap:5px; align-items:center; min-height:38px; padding:5px 6px; color:#dce9ff; border:1px solid rgba(244,196,76,.3); border-radius:6px; background:rgba(244,196,76,.08); }
+.tourney-tryout-preference-list li { display:grid; grid-template-columns:25px 18px minmax(0,1fr) 30px; gap:7px; align-items:center; min-height:44px; padding:6px 7px; color:#dce9ff; border:1px solid rgba(244,196,76,.3); border-radius:6px; background:rgba(244,196,76,.08); cursor:grab; touch-action:none; transition:border-color .16s,background .16s,transform .16s,opacity .16s; }
+.tourney-tryout-preference-list li:hover,.tourney-tryout-preference-list li:focus-visible { border-color:#f4c44c; background:rgba(244,196,76,.13); outline:none; }
+.tourney-tryout-preference-list li.is-dragging { z-index:3; opacity:.72; border-color:#6ce0c8; background:rgba(42,149,135,.2); cursor:grabbing; transform:scale(1.01); }
 .tourney-tryout-preference-list li > b { display:grid; place-items:center; width:23px; height:23px; color:#07162d; border-radius:50%; background:#f4c44c; font-size:.58rem; }
-.tourney-tryout-preference-list li > span { min-width:0; overflow:hidden; font-size:.66rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.tourney-tryout-preference-list li > span:not(.tourney-tryout-preference-grip) { min-width:0; overflow:hidden; font-size:.66rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+.tourney-tryout-preference-grip { color:#a9c0e3; font-size:.72rem; letter-spacing:-.15em; line-height:1; text-align:center; }
 .tourney-tryout-preference-list button { display:grid; place-items:center; width:27px; height:27px; padding:0; color:#a9ccff; border:1px solid rgba(120,157,225,.3); border-radius:4px; background:rgba(4,13,34,.62); font-size:.76rem; }
 .tourney-tryout-preference-list button:last-child { color:#ffc7c7; }
 .tourney-tryout-preference-list button:disabled { opacity:.28; cursor:not-allowed; }
 .tourney-tryout-preference-list button:not(:disabled):hover,.tourney-tryout-preference-list button:not(:disabled):focus-visible { color:#fff; border-color:#76bdff; outline:none; }
 .tourney-tryout-preference-empty { margin:0 0 10px; padding:9px 10px; color:#8298bf; border:1px dashed rgba(120,157,225,.25); border-radius:6px; font-size:.62rem; line-height:1.4; }
+.tourney-tryout-preference-hint { margin:-3px 0 10px; color:#879dc1; font-size:.57rem; line-height:1.4; }
 .tourney-tryout-search { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; padding: 0 9px; color: #7391bd; border: 1px solid rgba(89,137,215,.25); border-radius: 6px; background: rgba(2,13,36,.7); }
 .tourney-tryout-search input { min-width: 0; width: 100%; padding: 9px 0; color: #eef5ff; border: 0; outline: 0; background: transparent; font-size: .7rem; }
 .tourney-tryout-search input::placeholder { color: #617ba4; }
@@ -297,6 +301,7 @@
 .tourney-tryout-drop-slot:hover,.tourney-tryout-drop-slot:focus-visible { color: #8fc8ff; border-color: #76bdff; background: rgba(25,78,154,.32); box-shadow: inset 0 0 14px rgba(45,120,220,.18); outline: none; }
 .tourney-tryout-drop-slot span { font-size: 1rem; line-height: 1; }
 .tourney-tryout-drop-slot small { font-size: .47rem; }
+.tourney-tryout-drop-slot.is-read-only { color:#637da5; border-style:solid; border-color:rgba(72,112,187,.22); background:rgba(4,18,44,.34); cursor:default; }
 .tourney-tryout-side { display: grid; align-content: start; gap: 8px; }
 .tourney-tryout-side > section { padding: 12px; }
 .tourney-tryout-side-title { margin-bottom: 9px; color: #dce9ff; font: 700 .58rem 'Josefin Sans',sans-serif; letter-spacing: .06em; text-transform: uppercase; }
@@ -334,6 +339,7 @@
 .tourney-tryout-gate-actions p { margin: 0; color: #89a0c7; font-size: .65rem; line-height: 1.45; }
 .tourney-tryout-gate-actions p span { color: #6ce0c8; }
 .tourney-tryout-identity { position: relative; justify-content: space-between; margin-bottom: 22px; padding: 20px 22px; overflow: visible; border: 1px solid rgba(108,224,200,.46); border-radius: 14px; background: radial-gradient(circle at 18% 0,rgba(47,180,156,.2),transparent 38%),linear-gradient(112deg,rgba(10,64,91,.98),rgba(7,31,72,.98) 48%,rgba(9,23,55,.99)); box-shadow: 0 16px 30px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.08); }
+.tourney-tryout-identity.is-paired-collapsed { margin-bottom:0; }
 .tourney-tryout-identity::before { content:""; position:absolute; inset:0 auto 0 0; width:5px; border-radius:14px 0 0 14px; background:linear-gradient(#f4c44c,#6ce0c8); }
 .tourney-tryout-identity-profile { display: flex; align-items: center; gap: 16px; min-width: 260px; }
 .tourney-tryout-identity-emblem { display:grid; place-items:center; flex:0 0 auto; width:58px; height:58px; color:#f4c44c; border:1px solid rgba(244,196,76,.52); border-radius:16px; background:linear-gradient(145deg,rgba(244,196,76,.16),rgba(108,224,200,.1)); box-shadow:inset 0 1px 0 rgba(255,255,255,.08); font-size:1.8rem; }
@@ -343,6 +349,7 @@
 .tourney-tryout-identity-id,.tourney-tryout-identity-meta { display: block; color: #b9cbe5; font-size: .76rem; font-weight: 700; letter-spacing: .02em; line-height: 1.35; }
 .tourney-tryout-identity-id { color: #f1d783; }
 .tourney-tryout-identity-actions { flex-wrap: nowrap; justify-content: flex-end; gap:9px; }
+.tourney-tryout-identity-actions [hidden],.tourney-tryout-board-actions[hidden] { display:none; }
 .tourney-tryout-identity-actions button { position:relative; display:grid; place-items:center; align-content:center; gap:4px; width:142px; min-height:82px; padding:10px 9px; color:#dce8ff; border:1px solid rgba(120,157,225,.38); border-radius:10px; background:linear-gradient(155deg,rgba(16,51,103,.78),rgba(4,15,38,.8)); box-shadow:inset 0 1px 0 rgba(255,255,255,.05); font:700 .61rem/1.2 'Josefin Sans',sans-serif; letter-spacing:.035em; text-align:center; text-transform:uppercase; transition:border-color .18s,background .18s,transform .18s; }
 .tourney-tryout-identity-actions button:hover,.tourney-tryout-identity-actions button:focus-visible { z-index:4; border-color:#76bdff; background:linear-gradient(155deg,rgba(31,95,195,.45),rgba(5,22,53,.94)); transform:translateY(-2px); }
 .tourney-tryout-identity-actions button small { color:#a9c0e3; font:600 .58rem/1.25 'Josefin Sans',sans-serif; letter-spacing:.02em; text-transform:none; }
@@ -355,9 +362,12 @@
 .tourney-tryout-identity-actions [data-tryout-edit] .tourney-tryout-action-info { color:#06214c; background:#8cc8ff; }
 .tourney-tryout-identity-actions [data-tryout-new] { color:#eadfff; border-color:rgba(181,161,255,.58); background:linear-gradient(155deg,rgba(85,54,157,.58),rgba(26,14,67,.82)); }
 .tourney-tryout-identity-actions [data-tryout-new] .tourney-tryout-action-info { color:#25134e; background:#c1adff; }
+.tourney-tryout-identity-actions [data-tryout-pairs] { color:#d5fff4; border-color:rgba(108,224,200,.55); background:linear-gradient(155deg,rgba(25,112,99,.62),rgba(5,45,48,.84)); }
+.tourney-tryout-identity-actions [data-tryout-pairs] .tourney-tryout-action-info { color:#073b35; background:#79ead2; }
 .tourney-tryout-identity-actions [data-tryout-edit]:hover,.tourney-tryout-identity-actions [data-tryout-edit]:focus-visible { border-color:#8cc8ff; background:linear-gradient(155deg,rgba(32,111,224,.72),rgba(5,22,53,.94)); }
 .tourney-tryout-identity-actions [data-tryout-withdraw]:hover,.tourney-tryout-identity-actions [data-tryout-withdraw]:focus-visible { border-color:#ff9ca9; background:linear-gradient(155deg,rgba(145,40,65,.68),rgba(38,12,27,.94)); }
 .tourney-tryout-identity-actions [data-tryout-new]:hover,.tourney-tryout-identity-actions [data-tryout-new]:focus-visible { border-color:#c1adff; background:linear-gradient(155deg,rgba(111,75,202,.72),rgba(26,14,67,.94)); }
+.tourney-tryout-identity-actions [data-tryout-pairs]:hover,.tourney-tryout-identity-actions [data-tryout-pairs]:focus-visible { border-color:#79ead2; background:linear-gradient(155deg,rgba(34,151,133,.72),rgba(5,45,48,.94)); }
 .tourney-tryout-confirm { position:fixed; inset:0; width:min(520px,calc(100vw - 32px)); max-height:max-content; margin:auto; padding:28px; color:#dce8ff; border:1px solid rgba(118,189,255,.52); border-radius:16px; background:radial-gradient(circle at 50% 0,rgba(45,118,218,.22),transparent 42%),#071735; box-shadow:0 26px 70px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,255,255,.08); text-align:center; }
 .tourney-tryout-confirm::backdrop { background:rgba(0,7,22,.76); backdrop-filter:blur(5px); }
 .tourney-tryout-confirm-icon { display:grid; place-items:center; width:46px; height:46px; margin:0 auto 12px; color:#07162d; border-radius:50%; background:#76bdff; font:900 1rem Arial,sans-serif; }
@@ -378,6 +388,10 @@
 .tourney-tryout-workspace-intro { display:grid; grid-template-columns:minmax(0,1fr) minmax(320px,620px); gap:24px; align-items:center; margin-bottom:22px; }
 .tourney-tryout-workspace-intro .tourney-tryout-screen-heading { margin-bottom:0; }
 .tourney-tryout-workspace-intro .tourney-tryout-message { justify-self:end; margin:0; }
+.tourney-tryout-workspace.is-pairing-review .tourney-tryout-workspace-intro { margin-bottom:14px; }
+.tourney-tryout-workspace.is-pairing-review .tourney-tryout-board-layout { grid-template-columns:minmax(0,1fr) 230px; }
+.tourney-tryout-workspace.is-pairing-review .tourney-tryout-roster { display:none; }
+.tourney-tryout-workspace.is-pairing-review .tourney-tryout-instructions { display:none; }
 .tourney-tryout-board-actions { justify-content: flex-end; margin-top: 18px; padding-top: 17px; border-top: 1px solid rgba(157,187,255,.15); }
 .tourney-tryout-board-actions > span { margin-right: auto; color: #89a0c7; font-size: .65rem; }
 .tourney-tryout-board-actions .tourney-tryout-continue { margin-left: 0; }

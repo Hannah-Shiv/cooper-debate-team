@@ -113,8 +113,24 @@ test("submits four choices in the visible preference order", async ({ page }) =>
   await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(4);
   await expect(page.locator('[data-partner="casey"] .tourney-tryout-roster-check')).toHaveText("#3");
 
-  await page.getByRole("button", { name: "Move Casey C. up" }).click();
+  const caseyRow = page.locator('[data-pref-id="casey"]');
+  const blakeRow = page.locator('[data-pref-id="blake"]');
+  const caseyBox = await caseyRow.boundingBox();
+  const blakeBox = await blakeRow.boundingBox();
+  await page.mouse.move(caseyBox.x + caseyBox.width / 2, caseyBox.y + caseyBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(blakeBox.x + blakeBox.width / 2, blakeBox.y + blakeBox.height * 0.25, { steps: 5 });
+  await page.mouse.up();
   await expect(page.locator(".tourney-tryout-preference-list li").nth(1)).toContainText("Casey C.");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(0).locator("b")).toHaveText("1");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(1).locator("b")).toHaveText("2");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(2).locator("b")).toHaveText("3");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(3).locator("b")).toHaveText("4");
+  await page.locator('[data-pref-id="devon"]').focus();
+  await page.keyboard.press("ArrowUp");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(2)).toContainText("Devon D.");
+  await page.keyboard.press("ArrowDown");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(3)).toContainText("Devon D.");
   await page.locator("#tourney-tryout-submit").click();
 
   const submitted = requests.find(request => request.action === "request");
@@ -134,9 +150,9 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Pending action");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Rank your partner choices");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
-  await expect(page.locator(".tourney-tryout-identity-actions .tourney-tryout-action-info")).toHaveCount(3);
+  await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(3);
   await expect(page.locator("[data-tryout-edit]")).toHaveAttribute("data-tooltip", /release any current request or confirmed pairing/i);
-  const actionStyles = await page.locator(".tourney-tryout-identity-actions button").evaluateAll(buttons => ({
+  const actionStyles = await page.locator(".tourney-tryout-identity-actions button:not([hidden])").evaluateAll(buttons => ({
     backgrounds: buttons.map(button => getComputedStyle(button).backgroundImage),
     consequenceSizes: buttons.map(button => parseFloat(getComputedStyle(button.querySelector("small")).fontSize)),
   }));
@@ -172,6 +188,19 @@ test("explains and confirms identity actions before changing a paired signup", a
   await page.locator('[data-partner="hannah"]').click();
   await page.locator("#tourney-tryout-submit").click();
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("You are paired");
+  await expect(page.locator("#tourney-tryout-workspace")).toBeHidden();
+  await expect(page.locator("[data-tryout-pairs]")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-identity")).toHaveCSS("margin-bottom", "0px");
+  await page.locator("[data-tryout-pairs]").click();
+  await expect(page.locator("#tourney-tryout-workspace")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-workspace-label")).toHaveText("Current pairings");
+  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
+  await expect(page.locator(".tourney-tryout-roster")).toBeHidden();
+  await expect(page.locator("#tourney-tryout-submit")).toBeHidden();
+  await expect(page.locator("[data-drop-slot]")).toHaveCount(0);
+  await expect(page.locator(".tourney-tryout-drop-slot.is-read-only").first()).toContainText("Open row");
+  await page.locator("[data-tryout-pairs]").click();
+  await expect(page.locator("#tourney-tryout-workspace")).toBeHidden();
 
   await page.locator("[data-tryout-edit]").click();
   await expect(page.locator("#tourney-tryout-confirm")).toBeVisible();

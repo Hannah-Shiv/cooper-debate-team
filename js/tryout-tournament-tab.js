@@ -16,9 +16,10 @@
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
   var SESSION_KEY = "cooper-debate-tryout-session";
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, showAllPairs: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
   var pendingIdentityAction = "";
+  var preferenceDrag = null;
 
   function $(id) { return document.getElementById(id); }
   function normalized(value) { return String(value || "").trim().toLowerCase().replace(/\s+/g, " "); }
@@ -184,6 +185,7 @@
       });
   }
   function activeRecord() { return state.data.records.find(function (record) { return record.id === state.activeId && active(record); }) || null; }
+  function selfIsPaired() { return Boolean(state.self && (state.self.status === "mutual" || state.self.status === "assigned")); }
   function recordById(id) { return state.data.records.find(function (record) { return record.id === id; }) || null; }
   function active(record) { return record && !record.withdrawn; }
   function relationshipSignature(record) {
@@ -231,6 +233,7 @@
   function renderPairing() {
     var candidates = currentCandidates();
     var current = activeRecord();
+    var reviewMode = selfIsPaired() && state.showAllPairs;
     var allActive = state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
@@ -307,11 +310,14 @@
       return '<svg viewBox="0 0 48 48" aria-hidden="true"><g>' + paths + '</g></svg>';
     }
      function piece(record, extra, rowIndex) {
-       if (!record) return '<button class="tourney-tryout-drop-slot ' + (extra || "") + '" data-drop-slot data-drop-row="' + rowIndex + '" type="button"><span aria-hidden="true">+</span><small>' + (state.selfPlaced && state.partnerIds.length ? "Add choices" : state.selfPlaced ? "Choose partners" : "Add me here") + '</small></button>';
+        if (!record) {
+          if (reviewMode) return '<div class="tourney-tryout-drop-slot is-read-only"><span aria-hidden="true">—</span><small>Open row</small></div>';
+          return '<button class="tourney-tryout-drop-slot ' + (extra || "") + '" data-drop-slot data-drop-row="' + rowIndex + '" type="button"><span aria-hidden="true">+</span><small>' + (state.selfPlaced && state.partnerIds.length ? "Add choices" : state.selfPlaced ? "Choose partners" : "Add me here") + '</small></button>';
+        }
        var incoming = record.isIncoming;
        var pieceMarkup = '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-piece-name">' + escapeHtml(record.isYou ? record.name + " (You)" : displayName(record.name)) + '</span>';
        var tag = incoming ? '<span class="tourney-tryout-piece-tag">' + (state.partnerIds.includes(record.id) ? "Selected" : "Waiting for acceptance") + '</span>' : "";
-       if (incoming) {
+        if (incoming && !reviewMode) {
          return '<button class="tourney-tryout-piece is-incoming ' + (record.tint || "blue") + '" data-accept-partner="' + escapeHtml(record.id) + '" type="button" aria-label="' + escapeHtml((state.partnerIds.includes(record.id) ? "Selected " : "Accept ") + displayName(record.name) + "'s request") + '">' + pieceMarkup + tag + '</button>';
        }
        return '<div class="tourney-tryout-piece ' + (record.isYou ? "is-you " : "") + (record.tint || "blue") + '" ' + (record.isYou ? "" : 'data-piece-id="' + escapeHtml(record.id) + '"') + '>' + pieceMarkup + '</div>';
@@ -335,14 +341,13 @@
         '<span class="tourney-tryout-roster-check" aria-label="' + (selected ? "Priority " + (selectedIndex + 1) : "Not selected") + '">' + (selected ? "#" + (selectedIndex + 1) : "—") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var selectedChoices = state.partnerIds.length
-      ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices">' + state.partnerIds.map(function (partnerId, index) {
+      ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices" aria-describedby="tourney-tryout-preference-hint">' + state.partnerIds.map(function (partnerId, index) {
         var preference = recordById(partnerId);
         if (!preference) return "";
-        return '<li><b>' + (index + 1) + '</b><span>' + escapeHtml(displayName(preference.name)) + '</span>' +
-          '<button data-pref-up="' + escapeHtml(partnerId) + '" type="button" aria-label="Move ' + escapeHtml(displayName(preference.name)) + ' up" ' + (index === 0 ? "disabled" : "") + '>↑</button>' +
-          '<button data-pref-down="' + escapeHtml(partnerId) + '" type="button" aria-label="Move ' + escapeHtml(displayName(preference.name)) + ' down" ' + (index === state.partnerIds.length - 1 ? "disabled" : "") + '>↓</button>' +
-          '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(displayName(preference.name)) + '">×</button></li>';
-      }).join("") + '</ol>'
+        var name = displayName(preference.name);
+        return '<li data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + '. Drag this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">⋮⋮</span><span>' + escapeHtml(name) + '</span>' +
+          '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(name) + '">×</button></li>';
+      }).join("") + '</ol><p id="tourney-tryout-preference-hint" class="tourney-tryout-preference-hint">Hold and drag a row to change its priority. Keyboard users can use the up and down arrow keys.</p>'
       : '<p class="tourney-tryout-preference-empty">Your choices will appear here in priority order.</p>';
     var lockedCount = rows.filter(function (row) { return row.status === "locked"; }).length;
      var pendingCount = rows.filter(function (row) { return row.status === "pending" || row.status === "your-request" || row.status === "incoming"; }).length;
@@ -385,9 +390,22 @@
   }
   function renderIdentity() {
     var record = activeRecord();
+    var paired = selfIsPaired();
     dom.gate.hidden = state.boardVisible && !state.editing;
     dom.identity.hidden = !state.boardVisible;
-    dom.workspace.hidden = !state.boardVisible;
+    dom.workspace.hidden = !state.boardVisible || (paired && !state.showAllPairs);
+    dom.workspace.classList.toggle("is-pairing-review", paired && state.showAllPairs);
+    dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
+    dom.pairs.hidden = !paired;
+    dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Hide all pairs" : "Show all pairs";
+    dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to your signup" : "Review the current board";
+    dom.workspaceLabel.textContent = paired ? "Current pairings" : "Pending action";
+    dom.workspaceHeading.textContent = paired ? "Review all current pairs" : "Rank your partner choices";
+    dom.workspaceCopy.textContent = paired
+      ? "This is a read-only view of the shared board. Your confirmed pairing remains unchanged."
+      : "Choose up to four students in order. Your first available mutual choice becomes your partner.";
+    dom.submit.parentElement.hidden = paired;
+    if (paired) dom.message.hidden = true;
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityId.textContent = "FCPS ID: " + (state.fcpsId || dom.fcpsId.value.trim());
@@ -442,11 +460,12 @@
       dom.grade.value = state.self.grade;
       state.boardVisible = true;
       state.editing = false;
+      state.showAllPairs = false;
       persistSession();
       formMessage("Row numbers may change as other students make choices.");
       renderAll();
       startStatusPolling();
-      dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+      (selfIsPaired() ? dom.identity : dom.workspace).scrollIntoView({ behavior: "smooth", block: selfIsPaired() ? "center" : "start" });
     } catch (apiError) {
       state.fcpsId = "";
       formMessage(apiError.message, true);
@@ -465,6 +484,7 @@
       applySelf(result.self);
       state.draftDirty = false;
       state.editing = false;
+      state.showAllPairs = false;
       formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Your ranked partner choices are saved. The first valid mutual choice will pair automatically.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (apiError) {
@@ -495,14 +515,14 @@
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
-      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.dateDirty = false; state.draftDirty = false; state.selfPlaced = false;
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; state.showAllPairs = false; setPartnerIds([]); state.dateDirty = false; state.draftDirty = false; state.selfPlaced = false;
       clearPersistedSession();
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; state.dateDirty = false; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.showAllPairs = false; state.date = "sep22"; state.dateDirty = false; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
     clearPersistedSession();
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
@@ -573,6 +593,8 @@
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
       identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
+      pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),
+      workspaceHeading: $("tourney-tryout-pair-heading"), workspaceCopy: $("tourney-tryout-workspace-copy"),
       result: $("tourney-tryout-student-status"), confirm: $("tourney-tryout-confirm"),
       confirmTitle: $("tourney-tryout-confirm-title"), confirmCopy: $("tourney-tryout-confirm-copy"),
       confirmNote: $("tourney-tryout-confirm-note"), confirmCancel: document.querySelector("[data-tryout-confirm-cancel]"),
@@ -594,23 +616,16 @@
          persistSession();
          return;
        }
-      var preferenceButton = event.target.closest("[data-pref-up],[data-pref-down],[data-pref-remove]");
+       var preferenceButton = event.target.closest("[data-pref-remove]");
       if (preferenceButton) {
-        var preferenceId = preferenceButton.dataset.prefUp || preferenceButton.dataset.prefDown || preferenceButton.dataset.prefRemove;
+         var preferenceId = preferenceButton.dataset.prefRemove;
         var preferenceIndex = state.partnerIds.indexOf(preferenceId);
         if (preferenceIndex === -1) return;
         var reordered = state.partnerIds.slice();
-        if (preferenceButton.dataset.prefRemove) {
-          reordered.splice(preferenceIndex, 1);
-        } else {
-          var nextIndex = preferenceButton.dataset.prefUp ? preferenceIndex - 1 : preferenceIndex + 1;
-          if (nextIndex < 0 || nextIndex >= reordered.length) return;
-          var moved = reordered.splice(preferenceIndex, 1)[0];
-          reordered.splice(nextIndex, 0, moved);
-        }
+         reordered.splice(preferenceIndex, 1);
         setPartnerIds(reordered);
         state.draftDirty = true;
-        formMessage(preferenceButton.dataset.prefRemove ? "Choice removed." : "Preference order updated.");
+         formMessage("Choice removed.");
         renderAll();
         persistSession();
         return;
@@ -647,6 +662,61 @@
         button.hidden = Boolean(query) && normalized(button.textContent).indexOf(query) === -1;
       });
     });
+    dom.picker.addEventListener("keydown", function (event) {
+      var row = event.target.closest("[data-pref-id]");
+      if (!row || event.target.closest("button") || (event.key !== "ArrowUp" && event.key !== "ArrowDown")) return;
+      var index = state.partnerIds.indexOf(row.dataset.prefId);
+      var nextIndex = event.key === "ArrowUp" ? index - 1 : index + 1;
+      if (index === -1 || nextIndex < 0 || nextIndex >= state.partnerIds.length) return;
+      event.preventDefault();
+      var reordered = state.partnerIds.slice();
+      var moved = reordered.splice(index, 1)[0];
+      reordered.splice(nextIndex, 0, moved);
+      setPartnerIds(reordered);
+      state.draftDirty = true;
+      formMessage("Preference order updated.");
+      renderAll();
+      persistSession();
+      var movedRow = dom.picker.querySelector('[data-pref-id="' + CSS.escape(moved) + '"]');
+      if (movedRow) movedRow.focus();
+    });
+    dom.picker.addEventListener("pointerdown", function (event) {
+      var row = event.target.closest("[data-pref-id]");
+      if (!row || event.target.closest("button")) return;
+      preferenceDrag = { row: row, pointerId: event.pointerId, startOrder: state.partnerIds.join("|") };
+      row.classList.add("is-dragging");
+      row.setPointerCapture(event.pointerId);
+    });
+    dom.picker.addEventListener("pointermove", function (event) {
+      if (!preferenceDrag || preferenceDrag.pointerId !== event.pointerId) return;
+      event.preventDefault();
+      var row = preferenceDrag.row;
+      var rows = Array.from(dom.picker.querySelectorAll("[data-pref-id]")).filter(function (item) { return item !== row; });
+      var target = rows.find(function (item) {
+        var box = item.getBoundingClientRect();
+        return event.clientY >= box.top && event.clientY <= box.bottom;
+      });
+      if (!target) return;
+      var targetBox = target.getBoundingClientRect();
+      target.parentNode.insertBefore(row, event.clientY < targetBox.top + targetBox.height / 2 ? target : target.nextSibling);
+    });
+    function finishPreferenceDrag(event) {
+      if (!preferenceDrag || preferenceDrag.pointerId !== event.pointerId) return;
+      var row = preferenceDrag.row;
+      row.classList.remove("is-dragging");
+      if (row.hasPointerCapture(event.pointerId)) row.releasePointerCapture(event.pointerId);
+      var reordered = Array.from(dom.picker.querySelectorAll("[data-pref-id]")).map(function (item) { return item.dataset.prefId; });
+      var changed = reordered.join("|") !== preferenceDrag.startOrder;
+      preferenceDrag = null;
+      if (!changed) return;
+      setPartnerIds(reordered);
+      state.draftDirty = true;
+      formMessage("Preference order updated.");
+      renderAll();
+      persistSession();
+    }
+    dom.picker.addEventListener("pointerup", finishPreferenceDrag);
+    dom.picker.addEventListener("pointercancel", finishPreferenceDrag);
     dom.picker.addEventListener("dragstart", function (event) {
       var piece = event.target.closest("[data-partner]");
       if (!piece || !event.dataTransfer) return;
@@ -687,7 +757,11 @@
     dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); persistSession(); });
     dom.name.addEventListener("input", function () { formMessage(""); persistSession(); }); dom.grade.addEventListener("change", function () { formMessage(""); persistSession(); });
     dom.identity.addEventListener("click", function (event) {
-      if (event.target.closest("[data-tryout-edit]")) openConfirmation("edit");
+      if (event.target.closest("[data-tryout-pairs]")) {
+        state.showAllPairs = !state.showAllPairs;
+        renderAll();
+        if (state.showAllPairs) dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (event.target.closest("[data-tryout-edit]")) openConfirmation("edit");
       else if (event.target.closest("[data-tryout-withdraw]")) openConfirmation("withdraw");
       else if (event.target.closest("[data-tryout-new]")) openConfirmation("new");
     });

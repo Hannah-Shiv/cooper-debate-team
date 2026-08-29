@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=12"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=13"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1120,6 +1120,11 @@
               <span>Change details &amp; pairing</span>
               <small>Releases current choices</small>
             </button>
+            <button type="button" data-tryout-pairs data-tooltip="Open a read-only view of the shared board so you can review all current pairings without changing this signup." hidden>
+              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
+              <span>Show all pairs</span>
+              <small>Review the current board</small>
+            </button>
             <button type="button" data-tryout-withdraw data-tooltip="Remove this student from tryouts. A confirmed partner will be released and become available to other students again.">
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
               <span>Withdraw from tryouts</span>
@@ -1138,7 +1143,7 @@
           <div class="tourney-tryout-workspace-intro">
             <div class="tourney-tryout-screen-heading">
               <span class="tourney-tryout-icon is-gold" aria-hidden="true">♜</span>
-              <div><p>Pending action</p><h3 id="tourney-tryout-pair-heading">Rank your partner choices</h3><span>Choose up to four students in order. Your first available mutual choice becomes your partner.</span></div>
+              <div><p id="tourney-tryout-workspace-label">Pending action</p><h3 id="tourney-tryout-pair-heading">Rank your partner choices</h3><span id="tourney-tryout-workspace-copy">Choose up to four students in order. Your first available mutual choice becomes your partner.</span></div>
             </div>
             <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
           </div>
@@ -1682,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=16"></script>
+  <script src="js/tryout-tournament-tab.js?v=17"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>
