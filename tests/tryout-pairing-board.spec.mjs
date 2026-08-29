@@ -198,6 +198,7 @@ test("shows the current unsaved first choice on the board preview", async ({ pag
   await page.locator('[data-partner="j"]').click();
 
   await expect(page.locator(".tourney-tryout-board-row.is-your-request")).toContainText("Test J.");
+  await expect(page.locator(".tourney-tryout-board-row.is-your-request .tourney-tryout-row-state")).toHaveAttribute("title", "Pending");
   await expect(page.locator(".tourney-tryout-board-row.is-your-request")).not.toContainText("Test M.");
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("Test J.");
   await expect(page.locator("#tourney-tryout-student-status")).not.toContainText("Test M.");
@@ -236,6 +237,11 @@ test("shows confirmed reciprocal pairs but not private pending relationships", a
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toHaveCount(1);
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Avery A.");
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Blake B.");
+  await expect(page.locator(".tourney-tryout-board-row.is-locked .tourney-tryout-row-state")).toHaveAttribute("title", "Paired");
+  await expect(page.locator(".tourney-tryout-legend i.locked svg")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-legend i.pending svg")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-legend i.incoming svg")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-legend i.open svg")).toHaveCount(1);
   await expect(page.locator('[data-partner="casey"]')).toBeVisible();
 });
 
@@ -255,6 +261,7 @@ test("moves incoming requests onto the board and lets the student accept one", a
   await expect(page.locator('[data-partner="hannah"]')).toHaveCount(0);
   await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toContainText("Hannah S.");
   await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toContainText("Waiting for acceptance");
+  await expect(page.locator(".tourney-tryout-board-row.is-incoming .tourney-tryout-row-state")).toHaveAttribute("title", "Waiting for acceptance");
   await page.locator('[data-accept-partner="hannah"]').click();
   await expect(page.locator(".tourney-tryout-preference-list")).toContainText("Hannah S.");
   await page.locator("#tourney-tryout-submit").click();
