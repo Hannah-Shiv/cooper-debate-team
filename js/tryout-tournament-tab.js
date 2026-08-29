@@ -247,8 +247,10 @@
       var selected = selectedIndex !== -1;
       var availability = record.dates.length > 1 ? "Available either day" : "Available " + DATES[record.dates[0]].shortDate;
       return '<button class="tourney-tryout-roster-piece ' + (selected ? "is-selected " : "") + record.tint + '" data-partner="' + escapeHtml(record.id) + '" draggable="true" type="button" aria-pressed="' + selected + '">' +
-        '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-roster-copy"><strong>' +
-        escapeHtml(displayName(record.name)) + "</strong><small>" + escapeHtml(gradeLabel(record.grade) + " · " + availability) + '</small></span><span class="tourney-tryout-roster-check">' + (selected ? "#" + (selectedIndex + 1) : "+") + '</span></button>';
+        '<span class="tourney-tryout-roster-name"><strong>' + escapeHtml(displayName(record.name)) + '</strong></span>' +
+        '<span class="tourney-tryout-roster-grade">' + escapeHtml(gradeLabel(record.grade)) + '</span>' +
+        '<span class="tourney-tryout-roster-availability">' + escapeHtml(availability) + '</span>' +
+        '<span class="tourney-tryout-roster-check">' + (selected ? "#" + (selectedIndex + 1) : "+") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var selectedChoices = state.partnerIds.length
       ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices">' + state.partnerIds.map(function (partnerId, index) {
@@ -268,7 +270,7 @@
     var statusDetail = selectedPartner ? "First choice: " + escapeHtml(displayName(selectedPartner.name)) + (state.partnerIds.length > 1 ? " · " + (state.partnerIds.length - 1) + " more" : "") + "." : state.selfPlaced ? "Your piece is on the board. Choose up to four students." : "Click “Add me here,” then choose up to four students.";
     dom.picker.innerHTML =
       '<div class="tourney-tryout-board-layout">' +
-        '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><span class="tourney-tryout-board-icon">♟</span><div><h4>Available students</h4><p>Choose up to four, in preference order.</p></div></div>' +
+        '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><div><h4>Available students</h4><p>Choose up to four, in preference order.</p></div></div>' +
           '<div class="tourney-tryout-filter-row"><span class="is-active">' + state.partnerIds.length + ' of 4 choices</span><span>' + candidates.length + ' available</span></div>' + selectedChoices + '<label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
