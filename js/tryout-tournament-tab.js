@@ -464,7 +464,7 @@
       mutual: ["You are paired", "You and " + partnerName + " chose each other. Either of you can use Change My Signup to unpair and choose again."],
       assigned: ["You are paired", "Your debate partner is " + partnerName + ". You can use Change Sign-Up Details to choose again."],
       waiting: ["Choose partner preferences", "Select up to four students in the order you prefer them."],
-      open: ["Your piece is available", record.releasedReason === "partner-locked" ? "A student in your list completed another pairing first. Choose a new ranked list from the students who are still open." : "Choose up to four available students in preference order."]
+       open: ["Your sign-up is open", record.releasedReason === "partner-locked" ? "A student in your list completed another pairing first. Choose a new ranked list from the students who are still open." : "Choose up to four available students in preference order."]
     }[status];
     dom.result.className = "tourney-tryout-result is-" + status;
     dom.result.innerHTML = "<h3>" + copy[0] + "</h3><p>" + copy[1] + "</p>";

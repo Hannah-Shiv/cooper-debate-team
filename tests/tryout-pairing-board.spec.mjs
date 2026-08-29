@@ -215,6 +215,7 @@ test("shows large primary board actions", async ({ page }) => {
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-student-status h3")).toHaveText("Your sign-up is open");
   await expect(page.locator("#tourney-tryout-workspace-label")).toHaveText("How it works");
   await expect(page.locator("#tourney-tryout-workspace-label")).toHaveCSS("font-weight", "900");
   expect(parseFloat(await page.locator("#tourney-tryout-workspace-label").evaluate(label => getComputedStyle(label).fontSize))).toBeGreaterThanOrEqual(16);
