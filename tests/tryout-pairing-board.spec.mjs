@@ -117,6 +117,8 @@ test("submits four choices in the visible preference order", async ({ page }) =>
   ], body => requests.push(body));
   await openBoard(page);
 
+  await expect(page.locator(".tourney-tryout-roster-instructions")).toHaveText("Choose up to four in preference order. Hold and drag a row to change the priority. Keyboard users can use the up and down arrow keys.");
+  await expect(page.locator(".tourney-tryout-preference-hint")).toHaveCount(0);
   for (const id of ["avery", "blake", "casey", "devon"]) {
     await page.locator(`[data-partner="${id}"]`).click();
   }

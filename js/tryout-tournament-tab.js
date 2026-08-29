@@ -386,7 +386,7 @@
         '<span class="tourney-tryout-roster-check" aria-label="' + (selected ? "Priority " + (selectedIndex + 1) : "Not selected") + '">' + (selected ? "#" + (selectedIndex + 1) : "—") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var selectedChoices = state.partnerIds.length
-      ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices" aria-describedby="tourney-tryout-preference-hint">' + state.partnerIds.map(function (partnerId, index) {
+       ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices" aria-describedby="tourney-tryout-roster-instructions">' + state.partnerIds.map(function (partnerId, index) {
         var preference = recordById(partnerId);
         if (!preference) return "";
         var name = displayName(preference.name);
@@ -394,7 +394,7 @@
          var animationClass = preferenceAnimation && preferenceAnimation.id === partnerId ? " is-reordered-" + preferenceAnimation.direction : "";
          return '<li class="tourney-tryout-preference-row' + animationClass + '" data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + ', ' + escapeHtml(grade) + '. Drag anywhere on this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">↕</span><span class="tourney-tryout-preference-name">' + escapeHtml(name) + '</span><span class="tourney-tryout-preference-grade">' + escapeHtml(grade) + '</span>' +
           '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(name) + '">×</button></li>';
-      }).join("") + '</ol><p id="tourney-tryout-preference-hint" class="tourney-tryout-preference-hint">Hold and drag a row to change its priority. Keyboard users can use the up and down arrow keys.</p>'
+       }).join("") + '</ol>'
       : '<p class="tourney-tryout-preference-empty">Your choices will appear here in priority order.</p>';
     var lockedCount = rows.filter(function (row) { return row.status === "locked"; }).length;
      var pendingCount = rows.filter(function (row) { return row.status === "pending" || row.status === "your-request" || row.status === "incoming"; }).length;
@@ -434,8 +434,8 @@
       statusDetail = "This read-only view does not change the student’s sign-up.";
     }
     dom.picker.innerHTML =
-      '<div class="tourney-tryout-board-layout">' +
-        '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><div><h4>Available students</h4><p>Choose up to four, in preference order.</p></div></div>' +
+       '<div class="tourney-tryout-board-layout">' +
+         '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><div><h4>Available students</h4><p id="tourney-tryout-roster-instructions" class="tourney-tryout-roster-instructions">Choose up to four in preference order. Hold and drag a row to change the priority. Keyboard users can use the up and down arrow keys.</p></div></div>' +
           '<div class="tourney-tryout-filter-row"><span class="is-active">' + state.partnerIds.length + ' of 4 choices</span><span>' + candidates.length + ' available</span></div>' + selectedChoices + '<label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +

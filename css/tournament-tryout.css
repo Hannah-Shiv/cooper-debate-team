@@ -307,7 +307,8 @@
 .tourney-tryout-board-panel-title,.tourney-tryout-board-heading,.tourney-tryout-board-heading > div { display: flex; align-items: center; gap: 9px; }
 .tourney-tryout-board-panel-title { margin-bottom: 12px; }
 .tourney-tryout-board-panel-title h4,.tourney-tryout-board-heading h4 { margin: 0; color: #fff; font: 700 .9rem 'Josefin Sans',sans-serif; letter-spacing: .04em; text-transform: uppercase; }
-.tourney-tryout-board-panel-title p { margin: 3px 0 0; color: #8da5ca; font-size: .7rem; line-height: 1.35; }
+ .tourney-tryout-board-panel-title p { margin: 3px 0 0; color: #8da5ca; font-size: .7rem; line-height: 1.35; }
+ .tourney-tryout-board-panel-title .tourney-tryout-roster-instructions { margin-top: 6px; color: #fff; font-size: .77rem; font-weight: 600; line-height: 1.5; }
 .tourney-tryout-board-icon { display: grid; place-items: center; flex: 0 0 auto; width: 29px; height: 29px; color: #79baff; border-radius: 7px; background: rgba(36,104,224,.2); font-size: 1rem; }
 .tourney-tryout-filter-row { display: flex; align-items: center; justify-content: space-between; gap: 7px; margin-bottom: 9px; }
 .tourney-tryout-filter-row span { color: #7890b7; font: 700 .63rem 'Josefin Sans',sans-serif; letter-spacing: .05em; text-transform: uppercase; }
@@ -332,7 +333,6 @@
 .tourney-tryout-preference-list button:disabled { opacity:.28; cursor:not-allowed; }
 .tourney-tryout-preference-list button:not(:disabled):hover,.tourney-tryout-preference-list button:not(:disabled):focus-visible { color:#fff; border-color:#76bdff; outline:none; }
 .tourney-tryout-preference-empty { margin:0 0 10px; padding:9px 10px; color:#8298bf; border:1px dashed rgba(120,157,225,.25); border-radius:6px; font-size:.62rem; line-height:1.4; }
-.tourney-tryout-preference-hint { margin:-3px 0 10px; color:#879dc1; font-size:.57rem; line-height:1.4; }
 .tourney-tryout-search { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; padding: 0 9px; color: #7391bd; border: 1px solid rgba(89,137,215,.25); border-radius: 6px; background: rgba(2,13,36,.7); }
 .tourney-tryout-search input { min-width: 0; width: 100%; padding: 9px 0; color: #eef5ff; border: 0; outline: 0; background: transparent; font-size: .7rem; }
 .tourney-tryout-search input::placeholder { color: #617ba4; }
