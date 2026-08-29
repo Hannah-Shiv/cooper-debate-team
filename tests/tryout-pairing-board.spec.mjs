@@ -129,6 +129,24 @@ test("keeps duplicate names as distinct choices and enforces the four-choice lim
   await expect(page.locator("#tourney-tryout-error")).toContainText("up to four students");
 });
 
+test("keeps an unsaved ranked draft through background status polling", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+    publicStudent("casey", "Casey C."),
+  ]);
+  await openBoard(page);
+
+  for (const id of ["avery", "blake", "casey"]) {
+    await page.locator(`[data-partner="${id}"]`).click();
+  }
+  await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(3);
+  await page.waitForTimeout(10500);
+
+  await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(3);
+  await expect(page.locator('[data-partner="blake"] .tourney-tryout-roster-check')).toHaveText("#2");
+});
+
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
   await installSharedBoard(page, [
     publicStudent("avery", "Avery A.", "blake"),

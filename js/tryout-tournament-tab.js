@@ -15,7 +15,7 @@
     sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria" },
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], draftDirty: false, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
@@ -87,7 +87,12 @@
     try {
       var result = await api("status");
       var previousRevision = state.self && state.self.revision;
+      var draftPartnerIds = state.draftDirty ? state.partnerIds.slice() : null;
       applySelf(result.self);
+      if (draftPartnerIds && result.self.status !== "mutual") {
+        setPartnerIds(draftPartnerIds);
+        state.draftDirty = true;
+      }
       if (state.boardVisible) {
         renderAll();
         if (previousRevision !== state.self.revision) showMessage("The shared board changed. Your view is up to date.");
@@ -316,6 +321,7 @@
     state.date = date;
     var candidateIds = currentCandidates().map(function (record) { return record.id; });
     setPartnerIds(state.partnerIds.filter(function (partnerId) { return candidateIds.includes(partnerId); }));
+    if (state.boardVisible) state.draftDirty = true;
     state.boardRow = null;
     state.selfPlaced = false;
     formMessage(""); renderAll();
@@ -338,6 +344,7 @@
         session: state.date
       });
       applySelf(result.self);
+      state.draftDirty = false;
       dom.name.value = state.self.name;
       dom.grade.value = state.self.grade;
       state.boardVisible = true;
@@ -362,6 +369,7 @@
     try {
       var result = await api("request", { partnerIds: state.partnerIds, expectedRevision: state.self.revision });
       applySelf(result.self);
+      state.draftDirty = false;
       state.editing = false;
       formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Your ranked partner choices are saved. The first valid mutual choice will pair automatically.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
@@ -379,6 +387,7 @@
     try {
       var result = await api("release", { expectedRevision: state.self.revision });
       applySelf(result.self);
+      state.draftDirty = false;
       setPartnerIds([]);
       state.boardRow = null;
       state.selfPlaced = false;
@@ -393,13 +402,13 @@
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
-      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.selfPlaced = false;
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.draftDirty = false; state.selfPlaced = false;
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; setPartnerIds([]); state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
   }
@@ -430,6 +439,7 @@
           reordered.splice(nextIndex, 0, moved);
         }
         setPartnerIds(reordered);
+        state.draftDirty = true;
         formMessage(preferenceButton.dataset.prefRemove ? "Choice removed." : "Preference order updated.");
         renderPairing();
         return;
@@ -446,6 +456,7 @@
           ? "Choice removed. The remaining students keep their preference order."
           : "Choice #" + state.partnerIds.length + " added. Select another student or submit your ranked choices.");
         renderPairing();
+        state.draftDirty = true;
         return;
       }
       var slot = event.target.closest("[data-drop-slot]");
@@ -491,6 +502,7 @@
         return;
       }
       if (!state.partnerIds.includes(partnerId)) setPartnerIds(state.partnerIds.concat(partnerId));
+      state.draftDirty = true;
       state.boardRow = Number(target.dataset.dropRow);
       state.selfPlaced = true;
       formMessage("Choice #" + (state.partnerIds.indexOf(partnerId) + 1) + " placed. Add more choices or submit your ranked list.");
