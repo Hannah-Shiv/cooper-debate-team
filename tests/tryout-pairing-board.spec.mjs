@@ -178,16 +178,18 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-error")).toHaveCount(1);
   const topLayout = await page.locator(".tourney-tryout-top-layout").evaluate(layout => {
     const gate = layout.querySelector("#tourney-tryout-gate").getBoundingClientRect();
+    const how = layout.querySelector(".tourney-tryout-how-panel").getBoundingClientRect();
     const output = layout.querySelector(".tourney-tryout-output").getBoundingClientRect();
     return {
-      outputIsRightOfInputs: output.left > gate.right,
-      topsAlign: Math.abs(output.top - gate.top) < 3,
-      widthsFit: gate.width + output.width <= layout.getBoundingClientRect().width,
+      howIsBetweenPanels: how.left > gate.right && output.left > how.right,
+      topsAlign: Math.abs(how.top - gate.top) < 3 && Math.abs(output.top - gate.top) < 3,
+      widthsFit: gate.width + how.width + output.width <= layout.getBoundingClientRect().width,
     };
   });
-  expect(topLayout.outputIsRightOfInputs).toBe(true);
+  expect(topLayout.howIsBetweenPanels).toBe(true);
   expect(topLayout.topsAlign).toBe(true);
   expect(topLayout.widthsFit).toBe(true);
+  await expect(page.locator(".tourney-tryout-footer-note")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-date-options option")).toHaveText([
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
@@ -201,6 +203,9 @@ test("shows large primary board actions", async ({ page }) => {
   expect(parseFloat(await page.locator("#tourney-tryout-workspace-label").evaluate(label => getComputedStyle(label).fontSize))).toBeGreaterThanOrEqual(16);
   await expect(page.locator("#tourney-tryout-output-placeholder")).toBeHidden();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-identity")).toBeVisible();
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
   await expect(page.locator(".tourney-tryout-flow strong")).toHaveText([
     "Review all pairs",
@@ -237,19 +242,20 @@ test("shows large primary board actions", async ({ page }) => {
       gradeTextFits: gate.querySelector("#tourney-tryout-grade").scrollWidth <= gate.querySelector("#tourney-tryout-grade").clientWidth,
     };
   });
-  expect(gateMetrics.gateWidth).toBeGreaterThan(700);
+  expect(gateMetrics.gateWidth).toBeGreaterThan(400);
   expect(Math.abs(gateMetrics.idInput.top - gateMetrics.nameInput.top)).toBeLessThan(4);
   expect(Math.abs(gateMetrics.gradeInput.top - gateMetrics.sessionInput.top)).toBeLessThan(4);
   expect(gateMetrics.gradeInput.top).toBeGreaterThan(gateMetrics.idInput.bottom);
-  expect(gateMetrics.idInput.width).toBeGreaterThan(200);
-  expect(gateMetrics.nameInput.width).toBeGreaterThan(450);
+  expect(gateMetrics.idInput.width).toBeGreaterThan(120);
+  expect(gateMetrics.nameInput.width).toBeGreaterThan(210);
   expect(Math.abs(gateMetrics.sessionInput.width - gateMetrics.nameInput.width)).toBeLessThan(2);
   expect(gateMetrics.gradeTextFits).toBe(true);
   expect(gateMetrics.footer.top).toBeGreaterThan(gateMetrics.sessionInput.bottom);
-  expect(gateMetrics.footer.height).toBeLessThan(90);
+  expect(gateMetrics.footer.height).toBeLessThan(150);
+  expect(parseFloat(await page.locator(".tourney-tryout-legend p").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(11);
   await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator("#tourney-tryout-message")).toBeHidden();
-  await expect(page.locator(".tourney-tryout-output .tourney-tryout-screen-heading p")).toHaveText("How it works");
+  await expect(page.locator(".tourney-tryout-how-panel .tourney-tryout-screen-heading p")).toHaveText("How it works");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Choose your debate partner");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "50px");
   await expect(page.locator(".tourney-tryout-action-card button:visible")).toHaveCount(2);
@@ -330,7 +336,7 @@ test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
 
   await openBoard(page, false);
   const mobileBoardLayout = await page.locator("#tourney-tryout-workspace").evaluate(workspace => {
-    const steps = Array.from(document.querySelectorAll(".tourney-tryout-output-how .tourney-tryout-flow li")).map(step => step.getBoundingClientRect());
+    const steps = Array.from(document.querySelectorAll(".tourney-tryout-how-panel .tourney-tryout-flow li")).map(step => step.getBoundingClientRect());
     const actionCard = workspace.querySelector(".tourney-tryout-action-card").getBoundingClientRect();
     const visibleButtons = Array.from(workspace.querySelectorAll(".tourney-tryout-action-card button")).filter(button => !button.hidden);
     return {

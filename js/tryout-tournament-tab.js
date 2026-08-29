@@ -440,8 +440,11 @@
         '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
            actionButtons +
            '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked" aria-hidden="true">' + boardStateIcon("locked") + '</i> Both agreed · Paired</p><p><i class="pending" aria-hidden="true">' + boardStateIcon("pending") + '</i> One agreed · Pending</p><p><i class="incoming" aria-hidden="true">' + boardStateIcon("incoming") + '</i> Waiting for acceptance</p><p><i class="open" aria-hidden="true">' + boardStateIcon("open") + '</i> Available</p></section>' +
-          '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
+           '</aside>' +
          '</div>';
+     dom.outputPaired.textContent = lockedCount;
+     dom.outputPending.textContent = pendingCount;
+     dom.outputOpen.textContent = openCount;
   }
   function renderResult() {
     var record = activeRecord();
@@ -686,6 +689,7 @@
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
       outputPlaceholder: $("tourney-tryout-output-placeholder"),
       callout: $("tourney-tryout-board-callout"),
+      outputPaired: $("tourney-tryout-output-paired"), outputPending: $("tourney-tryout-output-pending"), outputOpen: $("tourney-tryout-output-open"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
       edit: document.querySelector("[data-tryout-edit]"), withdraw: document.querySelector("[data-tryout-withdraw]"), newStudent: document.querySelector("[data-tryout-new]"),
       pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),
