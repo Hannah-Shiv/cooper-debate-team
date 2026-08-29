@@ -223,6 +223,10 @@ test("shows large primary board actions", async ({ page }) => {
     "Drag choices or use the arrow keys to rank your preferences from first to fourth.",
     "Save your ranked list so the board can identify mutual partner choices.",
   ]);
+  const desktopFlow = await page.locator(".tourney-tryout-how-panel .tourney-tryout-flow li").evaluateAll(items => items.map(item => item.getBoundingClientRect()));
+  for (let index = 1; index < desktopFlow.length; index += 1) {
+    expect(desktopFlow[index].top).toBeGreaterThan(desktopFlow[index - 1].bottom);
+  }
   await expect(page.locator("[data-tryout-print]")).toBeVisible();
   const printPopupPromise = page.waitForEvent("popup");
   await page.locator("[data-tryout-print]").click();
