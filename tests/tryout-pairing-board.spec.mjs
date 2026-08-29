@@ -167,6 +167,8 @@ test("shows large primary board actions", async ({ page }) => {
 
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
+  await expect(page.locator("#tourney-tab-calendar")).toHaveText("Calendar");
+  await expect(page.locator(".page-subtitle")).toHaveText("Calendar, volunteer judges, partner sign-ups, and everything families need to know");
   await expect(page.locator("#tourney-tab-tryout")).toContainText("Partner Sign Up");
   await expect(page.locator("#tourney-tab-tryout svg circle")).toHaveCount(2);
   await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
@@ -201,7 +203,7 @@ test("shows large primary board actions", async ({ page }) => {
   await page.locator("#tourney-tryout-show-board").click();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toBeVisible();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toHaveText("Please enter the student’s seven-digit FCPS ID.");
-  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "42px");
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "52px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
