@@ -152,7 +152,7 @@ test("shows large primary board actions", async ({ page }) => {
 
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
-  await expect(page.locator("#tourney-tab-tryout")).toContainText("Debate Partner Sign-Up");
+  await expect(page.locator("#tourney-tab-tryout")).toContainText("Partner Sign Up");
   await expect(page.locator("#tourney-tab-tryout svg circle")).toHaveCount(2);
   await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("color", "rgb(255, 227, 110)");
@@ -161,7 +161,7 @@ test("shows large primary board actions", async ({ page }) => {
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
   ]);
-  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "44px");
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "48px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
@@ -170,22 +170,27 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-roster")).toBeHidden();
   await expect(page.locator("[data-tryout-pairs] span").nth(1)).toHaveText("Select partners");
   const gateMetrics = await page.locator("#tourney-tryout-gate").evaluate(gate => {
-    const fields = gate.querySelector(".tourney-tryout-fields").getBoundingClientRect();
-    const session = gate.querySelector(".tourney-tryout-session-fieldset").getBoundingClientRect();
+    const footer = gate.querySelector(".tourney-tryout-gate-actions").getBoundingClientRect();
     return {
       gateWidth: gate.getBoundingClientRect().width,
       idInput: gate.querySelector("#tourney-tryout-fcps-id").getBoundingClientRect(),
       nameInput: gate.querySelector("#tourney-tryout-name").getBoundingClientRect(),
       gradeInput: gate.querySelector("#tourney-tryout-grade").getBoundingClientRect(),
       sessionInput: gate.querySelector("#tourney-tryout-date-options").getBoundingClientRect(),
+      footer,
+      gradeTextFits: gate.querySelector("#tourney-tryout-grade").scrollWidth <= gate.querySelector("#tourney-tryout-grade").clientWidth,
     };
   });
   expect(gateMetrics.gateWidth).toBeGreaterThan(1100);
-  const controlTops = [gateMetrics.idInput.top, gateMetrics.nameInput.top, gateMetrics.gradeInput.top, gateMetrics.sessionInput.top];
-  expect(Math.max(...controlTops) - Math.min(...controlTops)).toBeLessThan(4);
-  expect(gateMetrics.idInput.width).toBeLessThan(170);
-  expect(gateMetrics.nameInput.width).toBeLessThan(380);
-  expect(gateMetrics.sessionInput.width).toBeGreaterThan(gateMetrics.nameInput.width);
+  expect(Math.abs(gateMetrics.idInput.top - gateMetrics.nameInput.top)).toBeLessThan(4);
+  expect(Math.abs(gateMetrics.gradeInput.top - gateMetrics.sessionInput.top)).toBeLessThan(4);
+  expect(gateMetrics.gradeInput.top).toBeGreaterThan(gateMetrics.idInput.bottom);
+  expect(gateMetrics.idInput.width).toBeGreaterThan(250);
+  expect(gateMetrics.nameInput.width).toBeGreaterThan(500);
+  expect(Math.abs(gateMetrics.sessionInput.width - gateMetrics.nameInput.width)).toBeLessThan(2);
+  expect(gateMetrics.gradeTextFits).toBe(true);
+  expect(gateMetrics.footer.top).toBeGreaterThan(gateMetrics.sessionInput.bottom);
+  expect(gateMetrics.footer.height).toBeLessThan(90);
   await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator("#tourney-tryout-message")).toContainText("Row numbers may change as other students make choices.");
   await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Next step");
@@ -222,6 +227,34 @@ test("shows large primary board actions", async ({ page }) => {
   expect(parseFloat(layoutMetrics.rosterName)).toBeGreaterThanOrEqual(12);
   expect(parseFloat(layoutMetrics.preferenceName)).toBeGreaterThanOrEqual(9);
   expect(layoutMetrics.longNameFits).toBe(true);
+});
+
+test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await installSharedBoard(page, [publicStudent("avery", "Avery A.")]);
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.locator("#tourney-tryout-grade").selectOption("8");
+
+  const mobileLayout = await page.locator("#tourney-tryout-gate").evaluate(gate => {
+    const ids = ["tourney-tryout-fcps-id", "tourney-tryout-name", "tourney-tryout-grade", "tourney-tryout-date-options"];
+    const controls = ids.map(id => gate.querySelector("#" + id).getBoundingClientRect());
+    const privacy = gate.querySelector(".tourney-tryout-gate-actions p").getBoundingClientRect();
+    const button = gate.querySelector("#tourney-tryout-show-board").getBoundingClientRect();
+    return {
+      controls,
+      privacy,
+      button,
+      noHorizontalOverflow: document.documentElement.scrollWidth <= document.documentElement.clientWidth,
+    };
+  });
+
+  for (let index = 1; index < mobileLayout.controls.length; index += 1) {
+    expect(mobileLayout.controls[index].top).toBeGreaterThan(mobileLayout.controls[index - 1].bottom);
+  }
+  expect(mobileLayout.controls.every(control => control.width > 300)).toBe(true);
+  expect(mobileLayout.button.top).toBeGreaterThan(mobileLayout.privacy.bottom);
+  expect(mobileLayout.noHorizontalOverflow).toBe(true);
+  await expect(page.locator("#tourney-tryout-grade option:checked")).toHaveText("8th grade");
 });
 
 test("explains and confirms identity actions before changing a paired signup", async ({ page }) => {
