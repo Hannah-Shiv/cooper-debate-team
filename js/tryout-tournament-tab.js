@@ -12,8 +12,8 @@
     appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
   };
   var DATES = {
-    sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria" },
-    sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
+    sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria", time: "2:30–4:30 p.m." },
+    sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall", time: "2:30–4:30 p.m." }
   };
   var SESSION_KEY = "cooper-debate-tryout-session";
   var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, showAllPairs: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
@@ -29,7 +29,10 @@
     return parts.length > 1 ? parts[0] + " " + parts[parts.length - 1].charAt(0).toUpperCase() + "." : parts[0] || "Student";
   }
   function initials(name) { return displayName(name).replace(".", "").split(/\s+/).map(function (part) { return part.charAt(0); }).join("").slice(0, 2).toUpperCase(); }
-  function gradeLabel(grade) { return grade + "th grade"; }
+  function gradeLabel(grade) { return grade === "7" ? "7th grade" : grade === "8" ? "8th grade" : grade + " grade"; }
+  function sessionLabel(session) {
+    return session.weekday + ", " + session.date + " — " + session.location + " — " + session.time;
+  }
   function setPartnerIds(ids) {
     state.partnerIds = Array.from(new Set((Array.isArray(ids) ? ids : []).filter(Boolean))).slice(0, 4);
     state.partnerId = state.partnerIds[0] || null;
@@ -225,15 +228,13 @@
   }
   function renderDates() {
     dom.dates.innerHTML = Object.keys(DATES).map(function (key) {
-      var option = DATES[key], selected = key === state.date;
-      return '<button class="tourney-tryout-date-card' + (selected ? " is-selected" : "") + '" data-date="' + key + '" type="button" aria-pressed="' + selected + '">' +
-        "<b>" + option.weekday + "</b><strong>" + option.date + '</strong><span>' + option.location + ' · 2:30–4:30 PM</span><em aria-hidden="true">' + (selected ? "✓" : "") + "</em></button>";
+      return '<option value="' + escapeHtml(key) + '"' + (key === state.date ? " selected" : "") + ">" + escapeHtml(sessionLabel(DATES[key])) + "</option>";
     }).join("");
   }
   function renderPairing() {
     var candidates = currentCandidates();
     var current = activeRecord();
-    var reviewMode = selfIsPaired() && state.showAllPairs;
+    var reviewMode = state.showAllPairs;
     var allActive = state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
@@ -355,6 +356,10 @@
     var currentStatus = current ? statusFor(current) : state.partnerIds.length ? "pending" : "new";
     var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? state.partnerIds.length + " choice" + (state.partnerIds.length === 1 ? "" : "s") + " pending" : state.partnerIds.length ? "Ready to request" : state.selfPlaced ? "Choose partners" : "Place your piece";
     var statusDetail = selectedPartner ? "First choice: " + escapeHtml(displayName(selectedPartner.name)) + (state.partnerIds.length > 1 ? " · " + (state.partnerIds.length - 1) + " more" : "") + "." : state.selfPlaced ? "Your piece is on the board. Choose up to four students." : "Click “Add me here,” then choose up to four students.";
+    if (reviewMode) {
+      statusText = "Viewing all pairs";
+      statusDetail = "This read-only view does not change the student’s sign-up.";
+    }
     dom.picker.innerHTML =
       '<div class="tourney-tryout-board-layout">' +
         '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><div><h4>Available students</h4><p>Choose up to four, in preference order.</p></div></div>' +
@@ -396,21 +401,32 @@
     dom.workspace.hidden = !state.boardVisible || (paired && !state.showAllPairs);
     dom.workspace.classList.toggle("is-pairing-review", paired && state.showAllPairs);
     dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
-    dom.pairs.hidden = !paired;
+    var hasSubmittedSignup = Boolean(state.self && (
+      state.self.isExistingSignup === true ||
+      (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
+    ));
+    dom.edit.hidden = !hasSubmittedSignup;
+    dom.withdraw.hidden = !hasSubmittedSignup;
+    dom.newStudent.hidden = !hasSubmittedSignup;
+    dom.pairs.hidden = !state.boardVisible;
+    dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate tryout sign-up" : "Tryout sign-up in progress";
     dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Hide all pairs" : "Show all pairs";
     dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to your signup" : "Review the current board";
-    dom.workspaceLabel.textContent = paired ? "Current pairings" : "Pending action";
-    dom.workspaceHeading.textContent = paired ? "Review all current pairs" : "Rank your partner choices";
+    var reviewingPairs = state.showAllPairs || paired;
+    dom.workspaceLabel.textContent = reviewingPairs ? "Current pairings" : "Next step";
+    dom.workspaceHeading.textContent = reviewingPairs ? "Review all current pairs" : "Select partner preferences";
     dom.workspaceCopy.textContent = paired
       ? "This is a read-only view of the shared board. Your confirmed pairing remains unchanged."
-      : "Choose up to four students in order. Your first available mutual choice becomes your partner.";
-    dom.submit.parentElement.hidden = paired;
+      : state.showAllPairs
+        ? "This is a read-only view of the shared pairing board. Your sign-up remains unchanged."
+        : "Select up to four students in order of preference. The first available mutual choice becomes your partner.";
+    dom.submit.parentElement.hidden = paired || state.showAllPairs;
     if (paired) dom.message.hidden = true;
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityId.textContent = "FCPS ID: " + (state.fcpsId || dom.fcpsId.value.trim());
     dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
-    dom.submit.textContent = state.editing ? "Save ranked partner choices →" : "Submit ranked partner choices →";
+    dom.submit.textContent = state.editing ? "Save partner preferences →" : "Submit partner preferences →";
   }
   function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
   function fillRecord(record) {
@@ -592,7 +608,8 @@
       error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
-      identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
+      identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
+      edit: document.querySelector("[data-tryout-edit]"), withdraw: document.querySelector("[data-tryout-withdraw]"), newStudent: document.querySelector("[data-tryout-new]"),
       pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),
       workspaceHeading: $("tourney-tryout-pair-heading"), workspaceCopy: $("tourney-tryout-workspace-copy"),
       result: $("tourney-tryout-student-status"), confirm: $("tourney-tryout-confirm"),
@@ -601,7 +618,7 @@
       confirmAccept: document.querySelector("[data-tryout-confirm-accept]")
     };
     startPublicSubscription();
-    dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });
+    dom.dates.addEventListener("change", function (event) { chooseDate(event.target.value); });
     dom.picker.addEventListener("click", function (event) {
        var acceptButton = event.target.closest("[data-accept-partner]");
        if (acceptButton) {

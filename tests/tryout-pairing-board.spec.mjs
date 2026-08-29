@@ -20,6 +20,7 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
   let serverSession = "sep22";
   let serverPartnerIds = savedPartnerIds.slice();
   let serverPairedWith = null;
+  let existingSignup = savedPartnerIds.length > 0;
   await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
   await page.addInitScript(publicRecords => {
     const snapshot = {
@@ -58,6 +59,7 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
     onRequest(body);
     if (body.action === "open" && body.session) serverSession = body.session;
     if (body.action === "request") {
+      existingSignup = true;
       serverSession = body.session || serverSession;
       serverPartnerIds = Array.isArray(body.partnerIds) ? body.partnerIds.slice() : [];
       if (pairOnRequestId && serverPartnerIds.includes(pairOnRequestId)) serverPairedWith = pairOnRequestId;
@@ -79,6 +81,7 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
       status: serverPairedWith ? "mutual" : partnerIds.length ? "pending" : "open",
       releasedReason: "",
       revision: 2,
+      isExistingSignup: existingSignup,
     };
     await requestRoute.fulfill({
       status: 200,
@@ -132,6 +135,7 @@ test("submits four choices in the visible preference order", async ({ page }) =>
   await page.keyboard.press("ArrowDown");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(3)).toContainText("Devon D.");
   await page.locator("#tourney-tryout-submit").click();
+  await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(4);
 
   const submitted = requests.find(request => request.action === "request");
   expect(submitted.partnerIds).toEqual(["avery", "casey", "blake", "devon"]);
@@ -144,19 +148,29 @@ test("shows large primary board actions", async ({ page }) => {
 
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
+  await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Tryout Sign-Up");
+  await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");
+  await expect(page.locator("#tourney-tryout-date-options option")).toHaveText([
+    "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
+    "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
+  ]);
   await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
   await openBoard(page);
   await expect(page.locator("#tourney-tryout-message")).toContainText("Row numbers may change as other students make choices.");
-  await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Pending action");
-  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Rank your partner choices");
+  await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Next step");
+  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Select partner preferences");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
-  await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(3);
-  await expect(page.locator("[data-tryout-edit]")).toHaveAttribute("data-tooltip", /release any current request or confirmed pairing/i);
+  await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(1);
+  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Tryout sign-up in progress");
+  await expect(page.locator("[data-tryout-pairs]")).toBeVisible();
+  await expect(page.locator("[data-tryout-edit]")).toBeHidden();
+  await expect(page.locator("[data-tryout-withdraw]")).toBeHidden();
+  await expect(page.locator("[data-tryout-new]")).toBeHidden();
   const actionStyles = await page.locator(".tourney-tryout-identity-actions button:not([hidden])").evaluateAll(buttons => ({
     backgrounds: buttons.map(button => getComputedStyle(button).backgroundImage),
     consequenceSizes: buttons.map(button => parseFloat(getComputedStyle(button.querySelector("small")).fontSize)),
   }));
-  expect(new Set(actionStyles.backgrounds).size).toBe(3);
+  expect(new Set(actionStyles.backgrounds).size).toBe(1);
   expect(actionStyles.consequenceSizes.every(size => size >= 9.2)).toBe(true);
   const layoutMetrics = await page.locator(".tourney-tryout-shell").evaluate(shell => {
     const shellBox = shell.getBoundingClientRect();
@@ -188,6 +202,8 @@ test("explains and confirms identity actions before changing a paired signup", a
   await page.locator('[data-partner="hannah"]').click();
   await page.locator("#tourney-tryout-submit").click();
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("You are paired");
+  await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(4);
+  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Current debate tryout sign-up");
   await expect(page.locator("#tourney-tryout-workspace")).toBeHidden();
   await expect(page.locator("[data-tryout-pairs]")).toBeVisible();
   await expect(page.locator("#tourney-tryout-identity")).toHaveCSS("margin-bottom", "0px");
@@ -305,7 +321,7 @@ test("keeps a selected September 23 session and shows its candidates", async ({ 
   await page.locator("#tourney-tryout-fcps-id").fill("7000001");
   await page.locator("#tourney-tryout-name").fill("Test M");
   await page.locator("#tourney-tryout-grade").selectOption("7");
-  await page.locator('[data-date="sep23"]').click();
+  await page.locator("#tourney-tryout-date-options").selectOption("sep23");
   await page.locator("#tourney-tryout-show-board").click();
 
   await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");

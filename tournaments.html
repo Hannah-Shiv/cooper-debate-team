@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=13"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=15"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -948,7 +948,7 @@
       <button id="tourney-tab-overview" type="button" role="tab" aria-controls="tournament-overview" aria-selected="true"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M2.5 20.5h19"/></svg><span>Overview</span></button>
       <button id="tourney-tab-calendar" type="button" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg><span>Calendar &amp; Results</span></button>
       <button id="tourney-tab-volunteer" type="button" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3 1.8 0 3 .9 3.5 2.8"/></svg><span>Volunteer Signup</span></button>
-      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 3v4m8-4v4M7 11h2m3 0h2m3 0h1M7 15h2m3 0h2"/></svg><span>Try Out Signup</span></button>
+      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 3v4m8-4v4M7 11h2m3 0h2m3 0h1M7 15h2m3 0h2"/></svg><span>Tryout Sign-Up</span></button>
       <button id="tourney-tab-parent" type="button" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3"/></svg><span>Parent Guide</span></button>
     </div>
   </nav>
@@ -1077,8 +1077,8 @@
   <div class="section-wrap">
     <div class="tourney-tryout-heading">
       <p class="section-label">Fall 2026 Team Selection</p>
-      <h2 class="section-title">Try Out Signup</h2>
-      <p class="section-sub">Enter your details. Open the board and rank up to four tryout partner choices—all in one place.</p>
+        <h2 class="section-title">Debate Tryout Sign-Up</h2>
+        <p class="section-sub">Provide the student’s information, select a session, and submit up to four partner preferences through the shared pairing board.</p>
     </div>
 
     <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
@@ -1087,20 +1087,20 @@
         <section id="tourney-tryout-gate" class="tourney-tryout-screen tourney-tryout-gate" aria-labelledby="tourney-tryout-details-heading">
           <div class="tourney-tryout-screen-heading">
             <span class="tourney-tryout-icon is-teal" aria-hidden="true">♟</span>
-            <div><p>Your board pass</p><h3 id="tourney-tryout-details-heading">Who is stepping up to the board?</h3><span>Only your first name, last initial, grade, and availability appear to other students.</span></div>
+            <div><p>Debate tryout sign-up</p><h3 id="tourney-tryout-details-heading">Student information</h3><span>Enter the student’s information to access the shared pairing board. Only the student’s first name, last initial, grade level, and session appear to other students.</span></div>
           </div>
           <div class="tourney-tryout-fields">
             <label><span>Seven-digit FCPS ID</span><input id="tourney-tryout-fcps-id" name="fcpsId" autocomplete="off" inputmode="numeric" pattern="[0-9]{7}" minlength="7" maxlength="7" placeholder="1234567" aria-describedby="tourney-tryout-id-help"><small id="tourney-tryout-id-help">Used privately to reopen or change this signup. It never appears on the board.</small></label>
-            <label><span>Student first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="First and last name"></label>
-            <label class="tourney-tryout-grade"><span>Grade</span><select id="tourney-tryout-grade" name="grade"><option value="">Select</option><option value="7">7th</option><option value="8">8th</option></select></label>
+            <label><span>Student’s first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="Enter first and last name"></label>
+            <label class="tourney-tryout-grade"><span>Grade level</span><select id="tourney-tryout-grade" name="grade"><option value="">Select grade</option><option value="7">7th grade</option><option value="8">8th grade</option></select></label>
           </div>
           <fieldset class="tourney-tryout-session-fieldset">
-            <legend>Choose your tryout session</legend>
-            <div id="tourney-tryout-date-options" class="tourney-tryout-date-options"></div>
+            <legend>Choose an upcoming debate session</legend>
+            <select id="tourney-tryout-date-options" class="tourney-tryout-session-select" name="session" aria-label="Upcoming debate session"></select>
           </fieldset>
           <div class="tourney-tryout-gate-actions">
-            <p><span aria-hidden="true">♢</span> Shared live board · your FCPS ID stays private.</p>
-            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Show me the board →</button>
+            <p><span aria-hidden="true">♢</span> Shared pairing board · your FCPS ID remains private.</p>
+            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Continue to the pairing board →</button>
           </div>
         </section>
 
@@ -1108,32 +1108,32 @@
           <div class="tourney-tryout-identity-profile">
             <span class="tourney-tryout-identity-emblem" aria-hidden="true">♟</span>
             <div class="tourney-tryout-identity-copy">
-              <span class="tourney-tryout-identity-label">Your active tryout signup</span>
+              <span id="tourney-tryout-identity-label" class="tourney-tryout-identity-label">Tryout sign-up in progress</span>
               <strong id="tourney-tryout-identity-name"></strong>
               <span id="tourney-tryout-identity-id" class="tourney-tryout-identity-id"></span>
               <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
             </div>
           </div>
           <div class="tourney-tryout-identity-actions">
-            <button type="button" data-tryout-edit data-tooltip="Edit the student details or partner choices. Continuing will release any current request or confirmed pairing so both students can choose again.">
+            <button type="button" data-tryout-edit data-tooltip="Update the student’s information, session, or partner preferences. Any current request or confirmed pairing will be released before changes are made." hidden>
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Change details &amp; pairing</span>
-              <small>Releases current choices</small>
+              <span>Change sign-up details</span>
+              <small>Update session or preferences</small>
             </button>
-            <button type="button" data-tryout-pairs data-tooltip="Open a read-only view of the shared board so you can review all current pairings without changing this signup." hidden>
+            <button type="button" data-tryout-pairs data-tooltip="Open a read-only view of the shared pairing board. This view does not change the student’s sign-up or preferences.">
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
               <span>Show all pairs</span>
-              <small>Review the current board</small>
+              <small>Review the shared board</small>
             </button>
-            <button type="button" data-tryout-withdraw data-tooltip="Remove this student from tryouts. A confirmed partner will be released and become available to other students again.">
+            <button type="button" data-tryout-withdraw data-tooltip="Remove the student’s submitted sign-up from the tryout board. A confirmed partner will be released and become available to other students.">
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Withdraw from tryouts</span>
-              <small>Removes this signup</small>
+              <span>Withdraw from sign-up</span>
+              <small>Remove this student</small>
             </button>
-            <button type="button" data-tryout-new data-tooltip="Clear this student's private details from this browser so another student can sign up. The current student's saved signup and pairing will stay on the board.">
+            <button type="button" data-tryout-new data-tooltip="Clear this student’s private information from this browser so another student can begin. The current sign-up and pairing remain saved on the shared board.">
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
               <span>Sign up another student</span>
-              <small>Keeps this signup saved</small>
+              <small>Keep this sign-up saved</small>
             </button>
           </div>
         </section>
@@ -1143,14 +1143,14 @@
           <div class="tourney-tryout-workspace-intro">
             <div class="tourney-tryout-screen-heading">
               <span class="tourney-tryout-icon is-gold" aria-hidden="true">♜</span>
-              <div><p id="tourney-tryout-workspace-label">Pending action</p><h3 id="tourney-tryout-pair-heading">Rank your partner choices</h3><span id="tourney-tryout-workspace-copy">Choose up to four students in order. Your first available mutual choice becomes your partner.</span></div>
+              <div><p id="tourney-tryout-workspace-label">Next step</p><h3 id="tourney-tryout-pair-heading">Select partner preferences</h3><span id="tourney-tryout-workspace-copy">Select up to four students in order of preference. The first available mutual choice becomes the student’s partner.</span></div>
             </div>
             <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
           </div>
           <div id="tourney-tryout-partner-picker"></div>
           <div class="tourney-tryout-board-actions">
-            <span>Pending requests do not reserve a student.</span>
-            <button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit ranked partner choices →</button>
+            <span>Preferences remain pending until both students select each other.</span>
+            <button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit partner preferences →</button>
           </div>
           <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
         </section>
@@ -1687,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=17"></script>
+  <script src="js/tryout-tournament-tab.js?v=18"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

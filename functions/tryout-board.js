@@ -87,7 +87,7 @@ function publicProjection(id, record) {
   };
 }
 
-function privateView(id, record, records) {
+function privateView(id, record, records, isExistingSignup = true) {
   const preferenceIds = normalizePreferenceIds(record);
   const partnerId = record.pairedWith || preferenceIds[0] || null;
   const partner = partnerId ? records.get(partnerId) : null;
@@ -109,6 +109,7 @@ function privateView(id, record, records) {
     status: paired ? "mutual" : preferenceIds.length ? "pending" : "open",
     releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
     revision: Number(record.revision) || 0,
+    isExistingSignup,
   };
 }
 
@@ -173,7 +174,8 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       const recordSnap = keySnap.exists ? await transaction.get(recordRef) : null;
       const records = await readAll(transaction);
       const changed = new Map();
-      let record = recordSnap && recordSnap.exists ? recordSnap.data() : null;
+      const isExistingSignup = Boolean(recordSnap && recordSnap.exists);
+      let record = isExistingSignup ? recordSnap.data() : null;
       if (!record) {
         record = {
           season: SEASON,
@@ -237,7 +239,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
         transaction.set(keyRef, { studentId: id, season: SEASON, createdAt: FieldValue.serverTimestamp() });
       }
       changed.forEach((changedRecordValue, changedId) => writeRecord(transaction, changedId, changedRecordValue));
-      response = privateView(id, record, records);
+      response = privateView(id, record, records, isExistingSignup);
     });
     return response;
   }
