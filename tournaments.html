@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=25"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=26"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1092,7 +1092,7 @@
           <div class="tourney-tryout-fields">
             <label class="tourney-tryout-id-field"><span>Seven-digit FCPS ID</span><input id="tourney-tryout-fcps-id" name="fcpsId" autocomplete="off" inputmode="numeric" pattern="[0-9]{7}" minlength="7" maxlength="7" placeholder="1234567" aria-describedby="tourney-tryout-id-help"><small id="tourney-tryout-id-help">Private — used only to reopen or change this sign-up.</small></label>
             <label class="tourney-tryout-name-field"><span>Student’s first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="Enter first and last name"></label>
-            <label class="tourney-tryout-grade"><span>Grade level</span><select id="tourney-tryout-grade" name="grade"><option value="">Select grade level</option><option value="7">7th grade</option><option value="8">8th grade</option></select></label>
+            <label class="tourney-tryout-grade"><span>Grade level</span><select id="tourney-tryout-grade" name="grade"><option value="">Select Grade</option><option value="7">7th grade</option><option value="8">8th grade</option></select></label>
             <fieldset class="tourney-tryout-session-fieldset">
               <legend>Choose an upcoming debate session</legend>
               <select id="tourney-tryout-date-options" class="tourney-tryout-session-select" name="session" aria-label="Upcoming debate session"></select>
@@ -1101,7 +1101,7 @@
           </div>
           <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
           <div class="tourney-tryout-gate-actions">
-            <p><span aria-hidden="true">✓</span><strong>Your information is protected.</strong> Your FCPS ID is never shown on the shared pairing board.</p>
+            <p><span aria-hidden="true">✓</span><span class="tourney-tryout-protected-copy"><strong>Your information is protected.</strong>FCPS ID is never shown on the shared pairing board.</span></p>
             <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Continue to the partner board →</button>
           </div>
         </section>

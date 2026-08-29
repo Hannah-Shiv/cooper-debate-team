@@ -195,10 +195,13 @@ test("shows large primary board actions", async ({ page }) => {
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
   ]);
+  await expect(page.locator("#tourney-tryout-grade option").first()).toHaveText("Select Grade");
+  await expect(page.locator(".tourney-tryout-id-field > span")).toHaveCSS("color", "rgb(255, 255, 255)");
+  await expect(page.locator(".tourney-tryout-name-field > span")).toHaveCSS("color", "rgb(255, 255, 255)");
   await page.locator("#tourney-tryout-show-board").click();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toBeVisible();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toHaveText("Please enter the student’s seven-digit FCPS ID.");
-  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "48px");
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "42px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
@@ -247,6 +250,8 @@ test("shows large primary board actions", async ({ page }) => {
       gradeInput: gate.querySelector("#tourney-tryout-grade").getBoundingClientRect(),
       sessionInput: gate.querySelector("#tourney-tryout-date-options").getBoundingClientRect(),
       footer,
+      privacy: gate.querySelector(".tourney-tryout-gate-actions p").getBoundingClientRect(),
+      continueButton: gate.querySelector("#tourney-tryout-show-board").getBoundingClientRect(),
       gradeTextFits: gate.querySelector("#tourney-tryout-grade").scrollWidth <= gate.querySelector("#tourney-tryout-grade").clientWidth,
     };
   });
@@ -260,6 +265,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(gateMetrics.gradeTextFits).toBe(true);
   expect(gateMetrics.footer.top).toBeGreaterThan(gateMetrics.sessionInput.bottom);
   expect(gateMetrics.footer.height).toBeLessThan(150);
+  expect(gateMetrics.continueButton.left).toBeGreaterThan(gateMetrics.privacy.right);
   expect(parseFloat(await page.locator(".tourney-tryout-legend p").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(11);
   await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator("#tourney-tryout-message")).toBeHidden();
