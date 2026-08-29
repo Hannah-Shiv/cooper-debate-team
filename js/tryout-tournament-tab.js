@@ -273,6 +273,7 @@
     dom.dates.innerHTML = Object.keys(DATES).map(function (key) {
       return '<option value="' + escapeHtml(key) + '"' + (key === state.date ? " selected" : "") + ">" + escapeHtml(sessionLabel(DATES[key])) + "</option>";
     }).join("");
+    dom.sessionPreview.textContent = sessionLabel(DATES[state.date] || DATES.sep22);
   }
   function renderPairing() {
     var candidates = currentCandidates();
@@ -687,7 +688,7 @@
       error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
-      outputPlaceholder: $("tourney-tryout-output-placeholder"),
+      outputPlaceholder: $("tourney-tryout-output-placeholder"), sessionPreview: $("tourney-tryout-session-preview"),
       callout: $("tourney-tryout-board-callout"),
       outputPaired: $("tourney-tryout-output-paired"), outputPending: $("tourney-tryout-output-pending"), outputOpen: $("tourney-tryout-output-open"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),

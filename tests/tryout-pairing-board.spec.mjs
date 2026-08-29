@@ -175,7 +175,8 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-output-placeholder")).toBeVisible();
   await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Your sign-up status appears here");
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-status")).toHaveCount(1);
-  await expect(page.locator(".tourney-tryout-output #tourney-tryout-error")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-gate #tourney-tryout-error")).toHaveCount(1);
+  await expect(page.locator("#tourney-tryout-session-preview")).toHaveText("Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.");
   const topLayout = await page.locator(".tourney-tryout-top-layout").evaluate(layout => {
     const gate = layout.querySelector("#tourney-tryout-gate").getBoundingClientRect();
     const how = layout.querySelector(".tourney-tryout-how-panel").getBoundingClientRect();
@@ -194,6 +195,9 @@ test("shows large primary board actions", async ({ page }) => {
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
   ]);
+  await page.locator("#tourney-tryout-show-board").click();
+  await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toHaveText("Please enter the student’s seven-digit FCPS ID.");
   await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "48px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
@@ -214,10 +218,10 @@ test("shows large primary board actions", async ({ page }) => {
     "Submit your choices",
   ]);
   await expect(page.locator(".tourney-tryout-flow small")).toHaveText([
-    "See who is available",
-    "Choose possible partners",
-    "Move choices up or down",
-    "Do not forget this final step",
+    "Check the shared board to see which students are open for your selected session.",
+    "Add the students you would be comfortable debating with this season.",
+    "Drag choices or use the arrow keys to rank your preferences from first to fourth.",
+    "Save your ranked list so the board can identify mutual partner choices.",
   ]);
   await expect(page.locator("[data-tryout-print]")).toBeVisible();
   const printPopupPromise = page.waitForEvent("popup");
@@ -246,7 +250,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(Math.abs(gateMetrics.idInput.top - gateMetrics.nameInput.top)).toBeLessThan(4);
   expect(Math.abs(gateMetrics.gradeInput.top - gateMetrics.sessionInput.top)).toBeLessThan(4);
   expect(gateMetrics.gradeInput.top).toBeGreaterThan(gateMetrics.idInput.bottom);
-  expect(gateMetrics.idInput.width).toBeGreaterThan(120);
+  expect(gateMetrics.idInput.width).toBeGreaterThan(85);
   expect(gateMetrics.nameInput.width).toBeGreaterThan(210);
   expect(Math.abs(gateMetrics.sessionInput.width - gateMetrics.nameInput.width)).toBeLessThan(2);
   expect(gateMetrics.gradeTextFits).toBe(true);

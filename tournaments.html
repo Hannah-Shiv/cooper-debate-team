@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=23"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=24"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1096,8 +1096,10 @@
             <fieldset class="tourney-tryout-session-fieldset">
               <legend>Choose an upcoming debate session</legend>
               <select id="tourney-tryout-date-options" class="tourney-tryout-session-select" name="session" aria-label="Upcoming debate session"></select>
+              <div id="tourney-tryout-session-preview" class="tourney-tryout-session-preview" aria-live="polite"></div>
             </fieldset>
           </div>
+          <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
           <div class="tourney-tryout-gate-actions">
             <p><span aria-hidden="true">✓</span><strong>Your information is protected.</strong> Your FCPS ID is never shown on the shared pairing board.</p>
             <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Continue to the partner board →</button>
@@ -1110,10 +1112,10 @@
             <div><p id="tourney-tryout-workspace-label">How it works</p><h3 id="tourney-tryout-pair-heading">Choose your debate partner</h3><span id="tourney-tryout-workspace-copy">Follow these four steps to make and submit your ranked partner choices.</span></div>
           </div>
           <ol class="tourney-tryout-flow" aria-label="How to choose a debate partner">
-            <li class="is-review"><span class="tourney-tryout-flow-number">1</span><span><strong>Review all pairs</strong><small>See who is available</small></span></li>
-            <li class="is-select"><span class="tourney-tryout-flow-number">2</span><span><strong>Select up to four</strong><small>Choose possible partners</small></span></li>
-            <li class="is-prioritize"><span class="tourney-tryout-flow-number">3</span><span><strong>Set your priority</strong><small>Move choices up or down</small></span></li>
-            <li class="is-submit"><span class="tourney-tryout-flow-number">4</span><span><strong>Submit your choices</strong><small>Do not forget this final step</small></span></li>
+            <li class="is-review"><span class="tourney-tryout-flow-number">1</span><span><strong>Review all pairs</strong><small>Check the shared board to see which students are open for your selected session.</small></span></li>
+            <li class="is-select"><span class="tourney-tryout-flow-number">2</span><span><strong>Select up to four</strong><small>Add the students you would be comfortable debating with this season.</small></span></li>
+            <li class="is-prioritize"><span class="tourney-tryout-flow-number">3</span><span><strong>Set your priority</strong><small>Drag choices or use the arrow keys to rank your preferences from first to fourth.</small></span></li>
+            <li class="is-submit"><span class="tourney-tryout-flow-number">4</span><span><strong>Submit your choices</strong><small>Save your ranked list so the board can identify mutual partner choices.</small></span></li>
           </ol>
           <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
         </section>
@@ -1138,7 +1140,6 @@
               </div>
             </section>
             <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
-            <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
             <div id="tourney-tryout-board-callout" class="tourney-tryout-callout" hidden>Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>
             <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
             <section class="tourney-tryout-output-stats" aria-label="Visible board statistics">
@@ -1683,7 +1684,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=25"></script>
+  <script src="js/tryout-tournament-tab.js?v=26"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>
