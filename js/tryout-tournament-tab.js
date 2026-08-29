@@ -381,6 +381,7 @@
     dom.workspace.hidden = !state.boardVisible;
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
+    dom.identityId.textContent = "FCPS ID: " + (state.fcpsId || dom.fcpsId.value.trim());
     dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
     dom.submit.textContent = state.editing ? "Save ranked partner choices →" : "Submit ranked partner choices →";
   }
@@ -506,7 +507,8 @@
       error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
-      identityMeta: $("tourney-tryout-identity-meta"), result: $("tourney-tryout-student-status")
+      identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
+      result: $("tourney-tryout-student-status")
     };
     startPublicSubscription();
     dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });

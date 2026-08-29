@@ -329,7 +329,8 @@
 .tourney-tryout-identity > div:first-child { display: grid; gap: 3px; }
 .tourney-tryout-identity-label { color: #6ce0c8; font: 700 .55rem 'Josefin Sans',sans-serif; letter-spacing: .1em; text-transform: uppercase; }
 .tourney-tryout-identity strong { color: #fff; font: 700 1.25rem 'Cormorant Garamond',serif; }
-.tourney-tryout-identity strong + span { color: #a9bbd9; font-size: .65rem; }
+.tourney-tryout-identity-id,.tourney-tryout-identity-meta { display: block; color: #b9cbe5; font-size: .74rem; font-weight: 700; letter-spacing: .02em; line-height: 1.35; }
+.tourney-tryout-identity-id { color: #d7e5f8; }
 .tourney-tryout-identity-actions { flex-wrap: wrap; justify-content: flex-end; }
 .tourney-tryout-identity-actions button { min-height: 34px; padding: 7px 10px; color: #dce8ff; border: 1px solid rgba(120,157,225,.38); border-radius: 6px; background: rgba(4,13,34,.62); font: 700 .58rem 'Josefin Sans',sans-serif; letter-spacing: .04em; text-transform: uppercase; }
 .tourney-tryout-identity-actions button:hover { border-color: #76bdff; background: rgba(31,95,195,.24); }
