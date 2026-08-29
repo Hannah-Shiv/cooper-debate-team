@@ -1,235 +1,144 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from "@playwright/test";
 
-const route = '/tournaments.html?tab=tryout-signup';
-const storageKey = 'cooper_tryout_signups_v1';
-const activeKey = 'cooper_tryout_active_student_v1';
+const route = "/tournaments.html?tab=tryout-signup";
+const endpoint = "**/tryoutBoard";
 
-function record(id, name, partnerId = null) {
-  const timestamp = '2026-08-29T12:00:00.000Z';
+function publicStudent(id, displayName, partnerId = null) {
   return {
     id,
-    name,
-    grade: '8',
-    dates: ['sep22'],
-    selectedDate: 'sep22',
-    mode: 'partner',
+    displayName,
+    grade: "8",
+    session: "sep22",
+    available: !partnerId,
+    status: partnerId ? "paired" : "open",
     partnerId,
-    assignedPartnerId: null,
-    tint: 'blue',
-    piece: 'boy',
-    isDemo: false,
-    withdrawn: false,
-    releasedReason: '',
-    createdAt: timestamp,
-    updatedAt: timestamp,
+    revision: 1,
   };
 }
 
-async function seed(page, records, activeId = null) {
-  await page.goto(route, { waitUntil: 'domcontentloaded' });
-  await page.evaluate(({ storageKey, activeKey, records, activeId }) => {
-    localStorage.setItem(storageKey, JSON.stringify({ version: 1, revision: 0, records }));
-    if (activeId) localStorage.setItem(activeKey, activeId);
-    else localStorage.removeItem(activeKey);
-  }, { storageKey, activeKey, records, activeId });
-  await page.reload({ waitUntil: 'domcontentloaded' });
+async function installSharedBoard(page, records, onRequest = () => {}) {
+  await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
+  await page.addInitScript(publicRecords => {
+    const snapshot = {
+      docs: publicRecords.map(record => ({
+        id: record.id,
+        data: () => ({ ...record }),
+      })),
+    };
+    const app = {
+      firestore() {
+        return {
+          collection() {
+            return {
+              where() {
+                return {
+                  onSnapshot(success) {
+                    setTimeout(() => success(snapshot), 0);
+                    return () => {};
+                  },
+                };
+              },
+            };
+          },
+        };
+      },
+    };
+    window.firebase = {
+      apps: [app],
+      firestore: true,
+      initializeApp: () => app,
+    };
+  }, records);
+
+  await page.route(endpoint, async requestRoute => {
+    const body = requestRoute.request().postDataJSON();
+    onRequest(body);
+    const partnerIds = Array.isArray(body.partnerIds) ? body.partnerIds : [];
+    const self = {
+      id: "self",
+      name: "Jordan Student",
+      displayName: "Jordan S.",
+      grade: "8",
+      session: "sep22",
+      partnerId: partnerIds[0] || null,
+      partnerIds,
+      partnerNames: partnerIds,
+      status: partnerIds.length ? "pending" : "open",
+      releasedReason: "",
+      revision: 2,
+    };
+    await requestRoute.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ ok: true, self }),
+    });
+  });
 }
 
-async function openBoard(page, name = 'Jordan Student', grade = '8') {
-  await page.locator('#tourney-tryout-name').fill(name);
-  await page.locator('#tourney-tryout-grade').selectOption(grade);
-  await page.locator('#tourney-tryout-show-board').click();
+async function openBoard(page) {
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.locator("#tourney-tryout-fcps-id").fill("1234567");
+  await page.locator("#tourney-tryout-name").fill("Jordan Student");
+  await page.locator("#tourney-tryout-grade").selectOption("8");
+  await page.locator("#tourney-tryout-show-board").click();
+  await expect(page.locator("#tourney-tryout-workspace")).toBeVisible();
 }
 
-test('opens one board from the details gate and supports drag and tap placement', async ({ page }) => {
-  await seed(page, []);
-  await page.evaluate(({ storageKey, activeKey }) => {
-    localStorage.removeItem(storageKey);
-    localStorage.removeItem(activeKey);
-  }, { storageKey, activeKey });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-
-  await expect(page.locator('#tourney-tryout-workspace')).toBeHidden();
-  await expect(page.locator('#tourney-tryout-grade option')).toHaveCount(3);
+test("submits four choices in the visible preference order", async ({ page }) => {
+  const requests = [];
+  await installSharedBoard(page, [
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+    publicStudent("casey", "Casey C."),
+    publicStudent("devon", "Devon D."),
+  ], body => requests.push(body));
   await openBoard(page);
-  await expect(page.locator('#tourney-tryout-workspace')).toBeVisible();
-  await expect(page.locator('#tourney-tryout-gate')).toBeHidden();
 
-  await page.locator('[data-partner="demo-sam"]').dragTo(page.locator('[data-drop-slot]').first());
-  await expect(page.locator('[data-partner="demo-sam"]')).toHaveAttribute('aria-pressed', 'true');
-  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toHaveCount(1);
+  for (const id of ["avery", "blake", "casey", "devon"]) {
+    await page.locator(`[data-partner="${id}"]`).click();
+  }
+  await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(4);
+  await expect(page.locator('[data-partner="casey"] .tourney-tryout-roster-check')).toHaveText("#3");
 
-  await page.locator('[data-board-row="5"] [data-drop-slot]').first().click();
-  await expect(page.locator('[data-board-row="5"].is-your-request')).toHaveCount(1);
+  await page.getByRole("button", { name: "Move Casey C. up" }).click();
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(1)).toContainText("Casey C.");
+  await page.locator("#tourney-tryout-submit").click();
 
-  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
-  expect(overflow).toBeLessThanOrEqual(0);
+  const submitted = requests.find(request => request.action === "request");
+  expect(submitted.partnerIds).toEqual(["avery", "casey", "blake", "devon"]);
+  await expect(page.locator("#tourney-tryout-student-status")).toContainText("Partner choices saved");
 });
 
-test('lets a student place themselves before choosing a partner', async ({ page }) => {
-  await seed(page, [
-    record('olivia', 'Olivia Brooks'),
+test("keeps duplicate names as distinct choices and enforces the four-choice limit", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("sam-one", "Sam K."),
+    publicStudent("sam-two", "Sam K."),
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+    publicStudent("casey", "Casey C."),
   ]);
-  await openBoard(page, 'Jennifer Student');
-
-  await page.getByRole('button', { name: 'Add me here' }).first().click();
-  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toContainText('You');
-  await expect(page.locator('#tourney-tryout-error')).toContainText('Your piece is on the board');
-
-  await page.locator('[data-partner="olivia"]').click();
-  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toContainText('Olivia B.');
-  await page.locator('#tourney-tryout-submit').click();
-  await expect(page.locator('#tourney-tryout-student-status')).toContainText('Request saved');
-});
-
-test('first mutual acceptance pairs students and releases competitors', async ({ page }) => {
-  const records = [
-    record('avery', 'Avery Able', 'blake'),
-    record('casey', 'Casey Cole', 'blake'),
-    record('blake', 'Blake Baker'),
-  ];
-
-  await seed(page, records, 'blake');
-  await page.locator('[data-partner="avery"]').click();
-  await page.locator('#tourney-tryout-submit').click();
-  await expect(page.locator('#tourney-tryout-student-status')).toContainText('You are paired');
-
-  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
-  const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
-  expect(byId.blake.partnerId).toBe('avery');
-  expect(byId.avery.partnerId).toBe('blake');
-  expect(byId.casey.partnerId).toBeNull();
-  expect(byId.casey.releasedReason).toBe('partner-locked');
-});
-
-test('a pending request can add a student already shown in another pending row', async ({ page }) => {
-  const records = [
-    record('sam', 'Sam Kim', 'olivia'),
-    record('olivia', 'Olivia Brooks'),
-  ];
-  records[0].dates = ['sep23'];
-  records[0].selectedDate = 'sep23';
-  records[1].dates = ['sep23'];
-  records[1].selectedDate = 'sep23';
-
-  await seed(page, records);
-  await page.locator('[data-date="sep23"]').click();
-  await openBoard(page);
-  await page.locator('[data-partner="olivia"]').click();
-  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toHaveCount(1);
-  await page.locator('#tourney-tryout-submit').click();
-  await expect(page.locator('.tourney-tryout-board-row.is-pending')).toContainText('Olivia B.');
-});
-
-test('does not show a legacy Coach-assignment row for Noah', async ({ page }) => {
-  await seed(page, []);
-  await page.evaluate(({ storageKey, activeKey }) => {
-    localStorage.removeItem(storageKey);
-    localStorage.removeItem(activeKey);
-  }, { storageKey, activeKey });
-  await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.locator('[data-date="sep23"]').click();
   await openBoard(page);
 
-  await expect(page.locator('.tourney-tryout-board-grid')).not.toContainText('Noah');
-  await expect(page.locator('.tourney-tryout-roster-list')).toContainText('Noah C.');
+  await expect(page.getByRole("button", { name: /Sam K\./ })).toHaveCount(2);
+  for (const id of ["sam-one", "sam-two", "avery", "blake"]) {
+    await page.locator(`[data-partner="${id}"]`).click();
+  }
+  await page.locator('[data-partner="casey"]').click();
+
+  await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(4);
+  await expect(page.locator("#tourney-tryout-error")).toContainText("up to four students");
 });
 
-test('either student can release a mutual pairing and choose again', async ({ page }) => {
-  const records = [
-    record('avery', 'Avery Able', 'blake'),
-    record('blake', 'Blake Baker', 'avery'),
-  ];
-  await seed(page, records, 'avery');
-
-  page.on('dialog', dialog => dialog.accept());
-  await page.locator('[data-tryout-edit]').click();
-  await expect(page.locator('#tourney-tryout-gate')).toBeVisible();
-  await expect(page.locator('[data-partner="blake"]')).toBeVisible();
-
-  let saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
-  let byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
-  expect(byId.avery.partnerId).toBeNull();
-  expect(byId.blake.partnerId).toBeNull();
-
-  await page.locator('[data-partner="blake"]').click();
-  await page.locator('#tourney-tryout-submit').click();
-  saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
-  byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
-  expect(byId.avery.partnerId).toBe('blake');
-});
-
-test('withdrawal releases both sides of a mutual pairing', async ({ page }) => {
-  const records = [
-    record('avery', 'Avery Able', 'blake'),
-    record('blake', 'Blake Baker', 'avery'),
-  ];
-  await seed(page, records, 'avery');
-
-  page.on('dialog', dialog => dialog.accept());
-  await page.locator('[data-tryout-withdraw]').click();
-  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
-  const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
-  expect(byId.avery.withdrawn).toBe(true);
-  expect(byId.avery.partnerId).toBeNull();
-  expect(byId.blake.partnerId).toBeNull();
-  await expect(page.locator('#tourney-tryout-workspace')).toBeHidden();
-});
-
-test('changing a signup releases incoming pending requests', async ({ page }) => {
-  const records = [
-    record('avery', 'Avery Able'),
-    record('casey', 'Casey Cole', 'avery'),
-  ];
-  await seed(page, records, 'avery');
-
-  page.on('dialog', dialog => dialog.accept());
-  await page.locator('[data-tryout-edit]').click();
-  await expect.poll(async () => page.evaluate(storageKey => {
-    const data = JSON.parse(localStorage.getItem(storageKey));
-    return data.records.find(item => item.id === 'casey').partnerId;
-  }, storageKey)).toBeNull();
-});
-
-test('a stale board cannot overwrite a newer mutual pairing', async ({ page }) => {
-  const records = [
-    record('avery', 'Avery Able', 'blake'),
-    record('blake', 'Blake Baker'),
-    record('casey', 'Casey Cole'),
-  ];
-  await seed(page, records, 'avery');
-  await page.evaluate(storageKey => {
-    const data = JSON.parse(localStorage.getItem(storageKey));
-    const avery = data.records.find(item => item.id === 'avery');
-    const casey = data.records.find(item => item.id === 'casey');
-    avery.partnerId = 'casey';
-    casey.partnerId = 'avery';
-    avery.updatedAt = '2026-08-29T13:00:00.000Z';
-    casey.updatedAt = '2026-08-29T13:00:00.000Z';
-    data.revision += 1;
-    localStorage.setItem(storageKey, JSON.stringify(data));
-  }, storageKey);
-
-  await page.locator('#tourney-tryout-submit').click();
-  await expect(page.locator('#tourney-tryout-error')).toContainText('changed in another tab');
-  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
-  const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
-  expect(byId.avery.partnerId).toBe('casey');
-  expect(byId.casey.partnerId).toBe('avery');
-});
-
-test('hides unrelated relationships and sixth-grade legacy records', async ({ page }) => {
-  const records = [
-    record('private-a', 'Private Alpha', 'private-b'),
-    record('private-b', 'Private Beta', 'private-a'),
-    record('private-c', 'Private Casey', 'private-d'),
-    record('private-d', 'Private Delta'),
-    { ...record('sixth', 'Sixth Student'), grade: '6' },
-  ];
-  await seed(page, records);
+test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("avery", "Avery A.", "blake"),
+    publicStudent("blake", "Blake B.", "avery"),
+    publicStudent("casey", "Casey C."),
+  ]);
   await openBoard(page);
 
-  await expect(page.locator('.tourney-tryout-board-grid')).not.toContainText('Private');
-  await expect(page.locator('.tourney-tryout-roster-list')).toContainText('Private C.');
-  await expect(page.locator('.tourney-tryout-roster-list')).not.toContainText('Sixth');
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Avery A.");
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Blake B.");
+  await expect(page.locator('[data-partner="casey"]')).toBeVisible();
 });

@@ -15,7 +15,7 @@
     sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria" },
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
@@ -27,6 +27,20 @@
   }
   function initials(name) { return displayName(name).replace(".", "").split(/\s+/).map(function (part) { return part.charAt(0); }).join("").slice(0, 2).toUpperCase(); }
   function gradeLabel(grade) { return grade + "th grade"; }
+  function setPartnerIds(ids) {
+    state.partnerIds = Array.from(new Set((Array.isArray(ids) ? ids : []).filter(Boolean))).slice(0, 4);
+    state.partnerId = state.partnerIds[0] || null;
+  }
+  function togglePartner(id) {
+    var index = state.partnerIds.indexOf(id);
+    if (index !== -1) {
+      setPartnerIds(state.partnerIds.filter(function (partnerId) { return partnerId !== id; }));
+      return "removed";
+    }
+    if (state.partnerIds.length >= 4) return "full";
+    setPartnerIds(state.partnerIds.concat(id));
+    return "added";
+  }
   function projectionRecord(record) {
     return {
       id: String(record.id), name: String(record.displayName || "Student"), grade: String(record.grade),
@@ -41,7 +55,7 @@
     if (state.self) {
       var selfRecord = {
         id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.self.session],
-        selectedDate: state.self.session, mode: "partner", partnerId: state.self.partnerId,
+        selectedDate: state.self.session, mode: "partner", partnerId: state.self.partnerId, partnerIds: state.self.partnerIds || [],
         assignedPartnerId: null, tint: "teal", piece: "girl", isDemo: false, withdrawn: false,
         releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status, isYou: true
       };
@@ -63,7 +77,8 @@
   function applySelf(self) {
     state.self = self || null;
     state.activeId = self ? self.id : null;
-    state.partnerId = self ? self.partnerId : null;
+    setPartnerIds(self ? (self.partnerIds || (self.partnerId ? [self.partnerId] : [])) : []);
+    if (self && self.status === "mutual" && self.partnerId) state.partnerId = self.partnerId;
     if (self) state.date = self.session;
     refreshRecords();
   }
@@ -173,7 +188,7 @@
         seen[record.id] = true; seen[partner.id] = true;
       }
     });
-    if (state.partnerId || state.selfPlaced) {
+    if (state.partnerIds.length || state.selfPlaced) {
       var selectedPartner = recordById(state.partnerId);
       var selfName = state.self ? state.self.name : (dom.name.value.trim() || "Student");
       var hasYourRequest = rows.some(function (row) { return row.left && row.left.isYou; });
@@ -204,7 +219,7 @@
       return '<svg viewBox="0 0 48 48" aria-hidden="true"><g>' + paths + '</g></svg>';
     }
     function piece(record, extra, rowIndex) {
-       if (!record) return '<button class="tourney-tryout-drop-slot ' + (extra || "") + '" data-drop-slot data-drop-row="' + rowIndex + '" type="button"><span aria-hidden="true">+</span><small>' + (state.selfPlaced && state.partnerId ? "Choose partner" : state.selfPlaced ? "Choose a partner" : "Add me here") + '</small></button>';
+       if (!record) return '<button class="tourney-tryout-drop-slot ' + (extra || "") + '" data-drop-slot data-drop-row="' + rowIndex + '" type="button"><span aria-hidden="true">+</span><small>' + (state.selfPlaced && state.partnerIds.length ? "Add choices" : state.selfPlaced ? "Choose partners" : "Add me here") + '</small></button>';
       return '<div class="tourney-tryout-piece ' + (record.isYou ? "is-you " : "") + (record.tint || "blue") + '" ' + (record.isYou ? "" : 'data-piece-id="' + escapeHtml(record.id) + '"') + '>' +
         '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-piece-name">' + escapeHtml(record.isYou ? "You (" + record.name + ")" : displayName(record.name)) + '</span>' +
         (record.isYou ? '<span class="tourney-tryout-piece-tag">Your move</span>' : "") + '</div>';
@@ -215,7 +230,7 @@
         : row.status === "pending" || row.status === "your-request"
           ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>'
           : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-       var label = row.status === "locked" ? "Both agreed · Locked" : row.status === "your-request" ? (row.right ? "Your request · Pending" : "You · Choose a partner") : row.status === "pending" ? "One agreed · Pending" : "Open row";
+       var label = row.status === "locked" ? "Both agreed · Locked" : row.status === "your-request" ? (row.right ? "Your ranked choices · Pending" : "You · Choose partners") : row.status === "pending" ? "One agreed · Pending" : "Open row";
       return '<div class="tourney-tryout-board-row is-' + row.status + '" data-board-row="' + index + '">' +
         '<span class="tourney-tryout-row-number">' + (index + 1) + '</span><div class="tourney-tryout-board-slot">' + piece(row.left, row.left ? "" : "is-open", index) + '</div>' +
         '<span class="tourney-tryout-row-state" aria-label="' + label + '">' + indicator + '</span><div class="tourney-tryout-board-slot">' + piece(row.right, row.right ? "" : "is-open", index) + '</div></div>';
@@ -223,26 +238,37 @@
     while (rows.length < maxRows) rows.push({ left: null, right: null, status: "open" });
     var boardRows = rows.slice(0, 8).map(rowMarkup).join("");
     var list = candidates.length ? candidates.map(function (record) {
-      var selected = record.id === state.partnerId;
+      var selectedIndex = state.partnerIds.indexOf(record.id);
+      var selected = selectedIndex !== -1;
       var availability = record.dates.length > 1 ? "Available either day" : "Available " + DATES[record.dates[0]].shortDate;
       return '<button class="tourney-tryout-roster-piece ' + (selected ? "is-selected " : "") + record.tint + '" data-partner="' + escapeHtml(record.id) + '" draggable="true" type="button" aria-pressed="' + selected + '">' +
         '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-roster-copy"><strong>' +
-        escapeHtml(displayName(record.name)) + "</strong><small>" + escapeHtml(gradeLabel(record.grade) + " · " + availability) + '</small></span><span class="tourney-tryout-roster-check">' + (selected ? "✓" : "↗") + '</span></button>';
+        escapeHtml(displayName(record.name)) + "</strong><small>" + escapeHtml(gradeLabel(record.grade) + " · " + availability) + '</small></span><span class="tourney-tryout-roster-check">' + (selected ? "#" + (selectedIndex + 1) : "+") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
+    var selectedChoices = state.partnerIds.length
+      ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices">' + state.partnerIds.map(function (partnerId, index) {
+        var preference = recordById(partnerId);
+        if (!preference) return "";
+        return '<li><b>' + (index + 1) + '</b><span>' + escapeHtml(displayName(preference.name)) + '</span>' +
+          '<button data-pref-up="' + escapeHtml(partnerId) + '" type="button" aria-label="Move ' + escapeHtml(displayName(preference.name)) + ' up" ' + (index === 0 ? "disabled" : "") + '>↑</button>' +
+          '<button data-pref-down="' + escapeHtml(partnerId) + '" type="button" aria-label="Move ' + escapeHtml(displayName(preference.name)) + ' down" ' + (index === state.partnerIds.length - 1 ? "disabled" : "") + '>↓</button>' +
+          '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(displayName(preference.name)) + '">×</button></li>';
+      }).join("") + '</ol>'
+      : '<p class="tourney-tryout-preference-empty">Your choices will appear here in priority order.</p>';
     var lockedCount = rows.filter(function (row) { return row.status === "locked"; }).length;
     var pendingCount = rows.filter(function (row) { return row.status === "pending" || row.status === "your-request"; }).length;
     var openCount = rows.filter(function (row) { return row.status === "open"; }).length;
-    var currentStatus = current ? statusFor(current) : state.partnerId ? "pending" : "new";
-    var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? "Request pending" : state.partnerId ? "Ready to request" : state.selfPlaced ? "Choose a partner" : "Place your piece";
-    var statusDetail = selectedPartner ? "Your piece is beside " + escapeHtml(displayName(selectedPartner.name)) + "." : state.selfPlaced ? "Your piece is on the board. Choose an available student." : "Click “Add me here,” then choose an available student.";
+    var currentStatus = current ? statusFor(current) : state.partnerIds.length ? "pending" : "new";
+    var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? state.partnerIds.length + " choice" + (state.partnerIds.length === 1 ? "" : "s") + " pending" : state.partnerIds.length ? "Ready to request" : state.selfPlaced ? "Choose partners" : "Place your piece";
+    var statusDetail = selectedPartner ? "First choice: " + escapeHtml(displayName(selectedPartner.name)) + (state.partnerIds.length > 1 ? " · " + (state.partnerIds.length - 1) + " more" : "") + "." : state.selfPlaced ? "Your piece is on the board. Choose up to four students." : "Click “Add me here,” then choose up to four students.";
     dom.picker.innerHTML =
       '<div class="tourney-tryout-board-layout">' +
-        '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><span class="tourney-tryout-board-icon">♟</span><div><h4>Available students</h4><p>Drag a piece to request a pairing.</p></div></div>' +
-          '<div class="tourney-tryout-filter-row"><span class="is-active">All open pieces</span><span>' + candidates.length + ' available</span></div><label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
+        '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><span class="tourney-tryout-board-icon">♟</span><div><h4>Available students</h4><p>Choose up to four, in preference order.</p></div></div>' +
+          '<div class="tourney-tryout-filter-row"><span class="is-active">' + state.partnerIds.length + ' of 4 choices</span><span>' + candidates.length + ' available</span></div>' + selectedChoices + '<label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
         '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
-          '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Move your piece</strong>Drag or tap to choose.</span></li><li><b>2</b><span><strong>Partner responds</strong>They choose you back.</span></li><li><b>3</b><span><strong>Both agree = paired</strong>Either student can later unpair.</span></li></ol></section>' +
+          '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Rank your choices</strong>Tap in first-to-fourth order.</span></li><li><b>2</b><span><strong>Partners respond</strong>They may choose you too.</span></li><li><b>3</b><span><strong>First mutual choice wins</strong>Either student can later unpair.</span></li></ol></section>' +
           '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked"></i> Both agreed · Paired</p><p><i class="pending"></i> One agreed · Pending</p><p><i class="open"></i> Available</p></section>' +
           '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
         '</div><div class="tourney-tryout-callout">Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>';
@@ -253,12 +279,16 @@
     var status = statusFor(record);
     var partner = record.assignedPartnerId ? recordById(record.assignedPartnerId) : (mutual(record) || recordById(record.partnerId));
     var partnerName = partner ? displayName(partner.name) : "your requested partner";
+    var pendingNames = state.partnerIds.map(function (partnerId) {
+      var preference = recordById(partnerId);
+      return preference ? displayName(preference.name) : "";
+    }).filter(Boolean);
     var copy = {
-      pending: ["Request saved", "Your request for " + partnerName + " is pending. They must choose you back before the row locks."],
+      pending: ["Partner choices saved", "Your ranked choices are " + pendingNames.join(", ") + ". The first available student who also chooses you will become your partner."],
       mutual: ["You are paired", "You and " + partnerName + " chose each other. Either of you can use Change My Signup to unpair and choose again."],
       assigned: ["You are paired", "Your tryout pairing is with " + partnerName + ". You can use Change My Signup to choose again."],
-      waiting: ["Choose a partner", "Move a student piece onto the board to send a request."],
-      open: ["Your piece is available", record.releasedReason === "partner-locked" ? "That student completed another pairing first. Move your piece again to request someone who is still open." : "Move your piece to request an available student."]
+      waiting: ["Choose partner preferences", "Select up to four students in the order you prefer them."],
+      open: ["Your piece is available", record.releasedReason === "partner-locked" ? "A student in your list completed another pairing first. Choose a new ranked list from the students who are still open." : "Choose up to four available students in preference order."]
     }[status];
     dom.result.className = "tourney-tryout-result is-" + status;
     dom.result.innerHTML = "<h3>" + copy[0] + "</h3><p>" + copy[1] + "</p>";
@@ -272,19 +302,20 @@
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
-    dom.submit.textContent = state.editing ? "Save new pairing request →" : "Submit pairing request →";
+    dom.submit.textContent = state.editing ? "Save ranked partner choices →" : "Submit ranked partner choices →";
   }
   function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
   function fillRecord(record) {
     if (!record) return;
-    state.date = record.selectedDate; state.partnerId = record.partnerId; state.selfPlaced = Boolean(record.partnerId);
+    state.date = record.selectedDate; setPartnerIds(record.partnerIds || (record.partnerId ? [record.partnerId] : [])); state.selfPlaced = Boolean(state.partnerIds.length);
     state.baseRelationship = relationshipSignature(record);
     dom.name.value = record.name; dom.grade.value = record.grade;
   }
   function chooseDate(date) {
     if (!DATES[date]) return;
     state.date = date;
-    if (state.partnerId && !currentCandidates().some(function (record) { return record.id === state.partnerId; })) state.partnerId = null;
+    var candidateIds = currentCandidates().map(function (record) { return record.id; });
+    setPartnerIds(state.partnerIds.filter(function (partnerId) { return candidateIds.includes(partnerId); }));
     state.boardRow = null;
     state.selfPlaced = false;
     formMessage(""); renderAll();
@@ -325,14 +356,14 @@
   }
   async function submit() {
     var error = validateIdentity();
-    if (!error && !state.partnerId) error = "Choose an available student before submitting your pairing request.";
+    if (!error && !state.partnerIds.length) error = "Choose at least one available student before submitting your partner choices.";
     if (error) { formMessage(error, true); dom.error.focus(); return; }
     state.loading = true; dom.submit.disabled = true;
     try {
-      var result = await api("request", { partnerId: state.partnerId, expectedRevision: state.self.revision });
+      var result = await api("request", { partnerIds: state.partnerIds, expectedRevision: state.self.revision });
       applySelf(result.self);
       state.editing = false;
-      formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Pairing request saved. It will pair automatically if the other student chooses you.");
+      formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Your ranked partner choices are saved. The first valid mutual choice will pair automatically.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (apiError) {
       await refreshStatus();
@@ -348,7 +379,7 @@
     try {
       var result = await api("release", { expectedRevision: state.self.revision });
       applySelf(result.self);
-      state.partnerId = null;
+      setPartnerIds([]);
       state.boardRow = null;
       state.selfPlaced = false;
       state.editing = true;
@@ -362,13 +393,13 @@
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
-      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; state.partnerId = null; state.selfPlaced = false;
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.selfPlaced = false;
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; state.partnerId = null; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; setPartnerIds([]); state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
   }
@@ -384,11 +415,36 @@
     startPublicSubscription();
     dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });
     dom.picker.addEventListener("click", function (event) {
+      var preferenceButton = event.target.closest("[data-pref-up],[data-pref-down],[data-pref-remove]");
+      if (preferenceButton) {
+        var preferenceId = preferenceButton.dataset.prefUp || preferenceButton.dataset.prefDown || preferenceButton.dataset.prefRemove;
+        var preferenceIndex = state.partnerIds.indexOf(preferenceId);
+        if (preferenceIndex === -1) return;
+        var reordered = state.partnerIds.slice();
+        if (preferenceButton.dataset.prefRemove) {
+          reordered.splice(preferenceIndex, 1);
+        } else {
+          var nextIndex = preferenceButton.dataset.prefUp ? preferenceIndex - 1 : preferenceIndex + 1;
+          if (nextIndex < 0 || nextIndex >= reordered.length) return;
+          var moved = reordered.splice(preferenceIndex, 1)[0];
+          reordered.splice(nextIndex, 0, moved);
+        }
+        setPartnerIds(reordered);
+        formMessage(preferenceButton.dataset.prefRemove ? "Choice removed." : "Preference order updated.");
+        renderPairing();
+        return;
+      }
       var button = event.target.closest("[data-partner]");
       if (button) {
-        state.partnerId = button.dataset.partner;
+        var toggleResult = togglePartner(button.dataset.partner);
+        if (toggleResult === "full") {
+          formMessage("You can choose up to four students. Remove a choice before adding another.", true);
+          return;
+        }
         if (!state.selfPlaced) state.boardRow = null;
-        formMessage(state.selfPlaced ? "Partner selected. Submit to send this request." : "Student selected. Tap an open square to place your piece, or submit this request.");
+        formMessage(toggleResult === "removed"
+          ? "Choice removed. The remaining students keep their preference order."
+          : "Choice #" + state.partnerIds.length + " added. Select another student or submit your ranked choices.");
         renderPairing();
         return;
       }
@@ -396,7 +452,7 @@
       if (slot) {
         state.boardRow = Number(slot.dataset.dropRow);
         state.selfPlaced = true;
-        formMessage(state.partnerId ? "Piece placed. Submit to send this pending request." : "Your piece is on the board. Now choose an available student.");
+        formMessage(state.partnerIds.length ? "Piece placed. Submit your ranked partner choices when ready." : "Your piece is on the board. Now choose up to four students.");
         renderPairing();
       }
     });
@@ -430,10 +486,14 @@
         formMessage("That student is no longer available. Choose another open piece.", true);
         return;
       }
-      state.partnerId = partnerId;
+      if (!state.partnerIds.includes(partnerId) && state.partnerIds.length >= 4) {
+        formMessage("You can choose up to four students. Remove a choice before adding another.", true);
+        return;
+      }
+      if (!state.partnerIds.includes(partnerId)) setPartnerIds(state.partnerIds.concat(partnerId));
       state.boardRow = Number(target.dataset.dropRow);
       state.selfPlaced = true;
-      formMessage("Piece moved. Submit to send this pending request.");
+      formMessage("Choice #" + (state.partnerIds.indexOf(partnerId) + 1) + " placed. Add more choices or submit your ranked list.");
       renderPairing();
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });

@@ -2,7 +2,10 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 const {
   displayName,
+  firstValidMutualPreference,
   identityKey,
+  normalizePreferenceIds,
+  remainingPreferenceIds,
   validFcpsId,
 } = require("../functions/tryout-board");
 
@@ -26,4 +29,37 @@ test("identity keys are stable for the same FCPS ID and distinct across IDs", ()
   assert.notEqual(first, identityKey("7654321"));
   assert.match(first, /^[a-f0-9]{64}$/);
   assert.equal(first.includes("1234567"), false);
+});
+
+test("legacy single partner requests become one-item preference lists", () => {
+  assert.deepEqual(normalizePreferenceIds({ partnerId: "avery" }), ["avery"]);
+  assert.deepEqual(normalizePreferenceIds({ partnerIds: ["avery", "blake", "avery", "casey", "devon", "ellis"] }), [
+    "avery", "blake", "casey", "devon",
+  ]);
+});
+
+test("the first valid mutual partner wins by submitted preference order", () => {
+  const records = new Map([
+    ["avery", { partnerIds: ["self"], pairedWith: null }],
+    ["blake", { partnerIds: ["other"], pairedWith: null }],
+    ["casey", { partnerIds: ["self"], pairedWith: null }],
+    ["devon", { partnerIds: ["self"], pairedWith: "ellis" }],
+  ]);
+  const self = { partnerIds: ["blake", "avery", "casey", "devon"] };
+  assert.equal(firstValidMutualPreference("self", self, records), "avery");
+});
+
+test("many unpaired students may include the same target in their preferences", () => {
+  const records = new Map([
+    ["target", { partnerIds: [], pairedWith: null }],
+    ["first", { partnerIds: ["target"], pairedWith: null }],
+    ["second", { partnerIds: ["target", "other"], pairedWith: null }],
+  ]);
+  assert.equal(normalizePreferenceIds(records.get("first")).includes("target"), true);
+  assert.equal(normalizePreferenceIds(records.get("second")).includes("target"), true);
+});
+
+test("a locked target is removed without discarding lower-ranked choices", () => {
+  const record = { partnerIds: ["avery", "blake", "casey", "devon"] };
+  assert.deepEqual(remainingPreferenceIds(record, ["avery", "casey"]), ["blake", "devon"]);
 });

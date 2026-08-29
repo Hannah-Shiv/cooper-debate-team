@@ -22,6 +22,39 @@ function identityKey(fcpsId) {
   return crypto.createHash("sha256").update(`${SEASON}:${fcpsId}`).digest("hex");
 }
 
+function normalizePreferenceIds(recordOrIds, legacyPartnerId) {
+  const source = Array.isArray(recordOrIds)
+    ? recordOrIds
+    : recordOrIds && Array.isArray(recordOrIds.partnerIds)
+      ? recordOrIds.partnerIds
+      : legacyPartnerId || (recordOrIds && recordOrIds.partnerId)
+        ? [legacyPartnerId || recordOrIds.partnerId]
+        : [];
+  return [...new Set(source
+    .filter(value => typeof value === "string")
+    .map(value => value.trim().slice(0, 80))
+    .filter(Boolean))].slice(0, 4);
+}
+
+function normalizeStoredRecord(record) {
+  return { ...record, partnerIds: normalizePreferenceIds(record) };
+}
+
+function firstValidMutualPreference(selfId, self, records) {
+  return normalizePreferenceIds(self).find(partnerId => {
+    const partner = records.get(partnerId);
+    return partner &&
+      !partner.withdrawn &&
+      !partner.pairedWith &&
+      normalizePreferenceIds(partner).includes(selfId);
+  }) || null;
+}
+
+function remainingPreferenceIds(record, unavailableIds) {
+  const unavailable = new Set(unavailableIds);
+  return normalizePreferenceIds(record).filter(partnerId => !unavailable.has(partnerId));
+}
+
 function publicProjection(id, record) {
   return {
     id,
@@ -38,7 +71,9 @@ function publicProjection(id, record) {
 }
 
 function privateView(id, record, records) {
-  const partner = record.partnerId ? records.get(record.partnerId) : null;
+  const preferenceIds = normalizePreferenceIds(record);
+  const partnerId = record.pairedWith || preferenceIds[0] || null;
+  const partner = partnerId ? records.get(partnerId) : null;
   const paired = Boolean(record.pairedWith && partner && partner.pairedWith === id);
   return {
     id,
@@ -46,9 +81,14 @@ function privateView(id, record, records) {
     displayName: displayName(record.name),
     grade: record.grade,
     session: record.session,
-    partnerId: record.partnerId || null,
+    partnerId,
+    partnerIds: preferenceIds,
+    partnerNames: preferenceIds
+      .map(preferenceId => records.get(preferenceId))
+      .filter(Boolean)
+      .map(preference => displayName(preference.name)),
     partnerDisplayName: partner ? displayName(partner.name) : "",
-    status: paired ? "mutual" : record.partnerId ? "pending" : "open",
+    status: paired ? "mutual" : preferenceIds.length ? "pending" : "open",
     releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
     revision: Number(record.revision) || 0,
   };
@@ -95,7 +135,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
 
   async function readAll(transaction) {
     const snapshot = await transaction.get(privateCollection.where("season", "==", SEASON));
-    return new Map(snapshot.docs.map(doc => [doc.id, doc.data()]));
+    return new Map(snapshot.docs.map(doc => [doc.id, normalizeStoredRecord(doc.data())]));
   }
 
   function writeRecord(transaction, id, record) {
@@ -122,6 +162,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           grade: identity.grade,
           session: identity.session,
           partnerId: null,
+          partnerIds: [],
           pairedWith: null,
           withdrawn: false,
           releasedReason: "",
@@ -134,6 +175,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           name: identity.name,
           grade: record.grade,
           session: record.session,
+          partnerIds: normalizePreferenceIds(record),
           withdrawn: false,
         });
       }
@@ -180,9 +222,16 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       const changed = new Map();
       const releaseReferences = (studentId, reason) => {
         records.forEach((record, id) => {
-          if (id === studentId || record.withdrawn) return;
-          if (record.partnerId === studentId || record.pairedWith === studentId) {
-            const updated = changedRecord(record, { partnerId: null, pairedWith: null, releasedReason: reason || "" });
+          if (id === studentId || record.withdrawn || record.pairedWith) return;
+          const currentPreferences = normalizePreferenceIds(record);
+          if (currentPreferences.includes(studentId)) {
+            const remainingPreferences = remainingPreferenceIds(record, [studentId]);
+            const updated = changedRecord(record, {
+              partnerId: remainingPreferences[0] || null,
+              partnerIds: remainingPreferences,
+              pairedWith: null,
+              releasedReason: remainingPreferences.length ? "" : reason || "",
+            });
             records.set(id, updated);
             changed.set(id, updated);
           }
@@ -190,50 +239,72 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       };
 
       if (action === "request") {
-        const partnerId = cleanText(body.partnerId, 80);
-        const partner = records.get(partnerId);
-        if (!partner || partner.withdrawn || partner.session !== self.session || partnerId === selfId) {
-          throw new Error("That student is no longer available for this session.");
+        if (Array.isArray(body.partnerIds) && body.partnerIds.length > 4) {
+          throw new Error("Choose no more than four preferred partners.");
         }
-        if (partner.pairedWith && partner.pairedWith !== selfId) {
-          throw new Error("That student completed another pairing first. Choose another student.");
+        const submittedPreferences = normalizePreferenceIds(body.partnerIds, body.partnerId);
+        if (!submittedPreferences.length) throw new Error("Choose at least one preferred partner.");
+        if (submittedPreferences.includes(selfId)) throw new Error("You cannot choose yourself as a partner.");
+
+        const partners = submittedPreferences.map(partnerId => records.get(partnerId));
+        if (partners.some(partner => !partner || partner.withdrawn || partner.session !== self.session)) {
+          throw new Error("One of those students is no longer available for this session.");
         }
-        if (self.pairedWith && self.pairedWith !== partnerId) {
+        if (partners.some(partner => partner.pairedWith && partner.pairedWith !== selfId)) {
+          throw new Error("One of those students completed another pairing first. Choose another student.");
+        }
+        if (self.pairedWith && !submittedPreferences.includes(self.pairedWith)) {
           throw new Error("Release your current pairing before choosing someone else.");
         }
 
-        if (self.pairedWith === partnerId && partner.pairedWith === selfId) {
-          self = changedRecord(self, { partnerId, pairedWith: partnerId, releasedReason: "" });
-          const confirmedPartner = changedRecord(partner, { partnerId: selfId, pairedWith: selfId, releasedReason: "" });
+        if (self.pairedWith) {
+          const confirmedPartner = records.get(self.pairedWith);
+          self = changedRecord(self, {
+            partnerId: self.pairedWith,
+            partnerIds: submittedPreferences,
+            pairedWith: self.pairedWith,
+            releasedReason: "",
+          });
+          const partnerUpdate = changedRecord(confirmedPartner, {
+            partnerId: selfId,
+            partnerIds: normalizePreferenceIds(confirmedPartner),
+            pairedWith: selfId,
+            releasedReason: "",
+          });
           records.set(selfId, self);
-          records.set(partnerId, confirmedPartner);
+          records.set(self.pairedWith, partnerUpdate);
           changed.set(selfId, self);
-          changed.set(partnerId, confirmedPartner);
+          changed.set(self.pairedWith, partnerUpdate);
         } else {
-          if (self.partnerId !== partnerId) {
-            const formerPartner = self.partnerId && records.get(self.partnerId);
-            if (formerPartner && formerPartner.pairedWith === selfId) {
-              const released = changedRecord(formerPartner, { partnerId: null, pairedWith: null, releasedReason: "" });
-              records.set(self.partnerId, released);
-              changed.set(self.partnerId, released);
-            }
-          }
-          self = changedRecord(self, { partnerId, pairedWith: null, releasedReason: "" });
+          self = changedRecord(self, {
+            partnerId: submittedPreferences[0],
+            partnerIds: submittedPreferences,
+            pairedWith: null,
+            releasedReason: "",
+          });
           records.set(selfId, self);
           changed.set(selfId, self);
 
-          const latestPartner = records.get(partnerId);
-          if (latestPartner.partnerId === selfId && !latestPartner.pairedWith) {
-            self = changedRecord(self, { pairedWith: partnerId });
-            const pairedPartner = changedRecord(latestPartner, { pairedWith: selfId });
+          const matchedPartnerId = firstValidMutualPreference(selfId, self, records);
+          if (matchedPartnerId) {
+            const latestPartner = records.get(matchedPartnerId);
+            self = changedRecord(self, { partnerId: matchedPartnerId, pairedWith: matchedPartnerId });
+            const pairedPartner = changedRecord(latestPartner, { partnerId: selfId, pairedWith: selfId });
             records.set(selfId, self);
-            records.set(partnerId, pairedPartner);
+            records.set(matchedPartnerId, pairedPartner);
             changed.set(selfId, self);
-            changed.set(partnerId, pairedPartner);
+            changed.set(matchedPartnerId, pairedPartner);
             records.forEach((record, id) => {
-              if (id === selfId || id === partnerId || record.withdrawn) return;
-              if (record.partnerId === selfId || record.partnerId === partnerId) {
-                const released = changedRecord(record, { partnerId: null, pairedWith: null, releasedReason: "partner-locked" });
+              if (id === selfId || id === matchedPartnerId || record.withdrawn || record.pairedWith) return;
+              const currentPreferences = normalizePreferenceIds(record);
+              if (currentPreferences.includes(selfId) || currentPreferences.includes(matchedPartnerId)) {
+                const remainingPreferences = remainingPreferenceIds(record, [selfId, matchedPartnerId]);
+                const released = changedRecord(record, {
+                  partnerId: remainingPreferences[0] || null,
+                  partnerIds: remainingPreferences,
+                  pairedWith: null,
+                  releasedReason: remainingPreferences.length ? "" : "partner-locked",
+                });
                 records.set(id, released);
                 changed.set(id, released);
               }
@@ -241,9 +312,10 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           }
         }
       } else if (action === "release" || action === "withdraw") {
-        const formerPartnerId = self.partnerId;
+        const formerPartnerId = self.pairedWith;
         self = changedRecord(self, {
           partnerId: null,
+          partnerIds: [],
           pairedWith: null,
           releasedReason: "",
           withdrawn: action === "withdraw",
@@ -252,8 +324,13 @@ function createTryoutBoardHandler({ db, clientAddress }) {
         changed.set(selfId, self);
         if (formerPartnerId) {
           const formerPartner = records.get(formerPartnerId);
-          if (formerPartner && (formerPartner.partnerId === selfId || formerPartner.pairedWith === selfId)) {
-            const released = changedRecord(formerPartner, { partnerId: null, pairedWith: null, releasedReason: "" });
+          if (formerPartner && formerPartner.pairedWith === selfId) {
+            const released = changedRecord(formerPartner, {
+              partnerId: null,
+              partnerIds: [],
+              pairedWith: null,
+              releasedReason: "",
+            });
             records.set(formerPartnerId, released);
             changed.set(formerPartnerId, released);
           }
@@ -293,6 +370,9 @@ module.exports = {
   SEASON,
   createTryoutBoardHandler,
   displayName,
+  firstValidMutualPreference,
   identityKey,
+  normalizePreferenceIds,
+  remainingPreferenceIds,
   validFcpsId,
 };
