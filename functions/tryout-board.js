@@ -202,34 +202,43 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           throw new Error("Release your current pairing before choosing someone else.");
         }
 
-        if (self.partnerId !== partnerId) {
-          const formerPartner = self.partnerId && records.get(self.partnerId);
-          if (formerPartner && formerPartner.pairedWith === selfId) {
-            const released = changedRecord(formerPartner, { partnerId: null, pairedWith: null, releasedReason: "" });
-            records.set(self.partnerId, released);
-            changed.set(self.partnerId, released);
-          }
-        }
-        self = changedRecord(self, { partnerId, pairedWith: null, releasedReason: "" });
-        records.set(selfId, self);
-        changed.set(selfId, self);
-
-        const latestPartner = records.get(partnerId);
-        if (latestPartner.partnerId === selfId && !latestPartner.pairedWith) {
-          self = changedRecord(self, { pairedWith: partnerId });
-          const pairedPartner = changedRecord(latestPartner, { pairedWith: selfId });
+        if (self.pairedWith === partnerId && partner.pairedWith === selfId) {
+          self = changedRecord(self, { partnerId, pairedWith: partnerId, releasedReason: "" });
+          const confirmedPartner = changedRecord(partner, { partnerId: selfId, pairedWith: selfId, releasedReason: "" });
           records.set(selfId, self);
-          records.set(partnerId, pairedPartner);
+          records.set(partnerId, confirmedPartner);
           changed.set(selfId, self);
-          changed.set(partnerId, pairedPartner);
-          records.forEach((record, id) => {
-            if (id === selfId || id === partnerId || record.withdrawn) return;
-            if (record.partnerId === selfId || record.partnerId === partnerId) {
-              const released = changedRecord(record, { partnerId: null, pairedWith: null, releasedReason: "partner-locked" });
-              records.set(id, released);
-              changed.set(id, released);
+          changed.set(partnerId, confirmedPartner);
+        } else {
+          if (self.partnerId !== partnerId) {
+            const formerPartner = self.partnerId && records.get(self.partnerId);
+            if (formerPartner && formerPartner.pairedWith === selfId) {
+              const released = changedRecord(formerPartner, { partnerId: null, pairedWith: null, releasedReason: "" });
+              records.set(self.partnerId, released);
+              changed.set(self.partnerId, released);
             }
-          });
+          }
+          self = changedRecord(self, { partnerId, pairedWith: null, releasedReason: "" });
+          records.set(selfId, self);
+          changed.set(selfId, self);
+
+          const latestPartner = records.get(partnerId);
+          if (latestPartner.partnerId === selfId && !latestPartner.pairedWith) {
+            self = changedRecord(self, { pairedWith: partnerId });
+            const pairedPartner = changedRecord(latestPartner, { pairedWith: selfId });
+            records.set(selfId, self);
+            records.set(partnerId, pairedPartner);
+            changed.set(selfId, self);
+            changed.set(partnerId, pairedPartner);
+            records.forEach((record, id) => {
+              if (id === selfId || id === partnerId || record.withdrawn) return;
+              if (record.partnerId === selfId || record.partnerId === partnerId) {
+                const released = changedRecord(record, { partnerId: null, pairedWith: null, releasedReason: "partner-locked" });
+                records.set(id, released);
+                changed.set(id, released);
+              }
+            });
+          }
         }
       } else if (action === "release" || action === "withdraw") {
         const formerPartnerId = self.partnerId;
