@@ -30,8 +30,8 @@
   function projectionRecord(record) {
     return {
       id: String(record.id), name: String(record.displayName || "Student"), grade: String(record.grade),
-      dates: [record.session], selectedDate: record.session, mode: "partner", partnerId: null,
-      assignedPartnerId: record.available === false ? "private-pair" : null,
+      dates: [record.session], selectedDate: record.session, mode: "partner", partnerId: record.partnerId || null,
+      assignedPartnerId: null,
       tint: ["gold", "blue", "violet", "teal"][String(record.id).charCodeAt(0) % 4],
       piece: "boy", isDemo: false, withdrawn: false, releasedReason: ""
     };
@@ -151,9 +151,7 @@
     var allActive = state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
-    var boardRecords = allActive.filter(function (record) {
-      return record.isDemo || Boolean(current && (record.id === current.id || record.id === current.partnerId || record.partnerId === current.id));
-    });
+    var boardRecords = allActive;
     var rows = [];
     var seen = {};
     function addRow(left, right, status) {
@@ -241,12 +239,12 @@
         '<aside class="tourney-tryout-roster"><div class="tourney-tryout-board-panel-title"><span class="tourney-tryout-board-icon">♟</span><div><h4>Available students</h4><p>Drag a piece to request a pairing.</p></div></div>' +
           '<div class="tourney-tryout-filter-row"><span class="is-active">All open pieces</span><span>' + candidates.length + ' available</span></div><label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
-        '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>Pairing board</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
+        '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
         '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
           '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Move your piece</strong>Drag or tap to choose.</span></li><li><b>2</b><span><strong>Partner responds</strong>They choose you back.</span></li><li><b>3</b><span><strong>Both agree = paired</strong>Either student can later unpair.</span></li></ol></section>' +
           '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked"></i> Both agreed · Paired</p><p><i class="pending"></i> One agreed · Pending</p><p><i class="open"></i> Available</p></section>' +
           '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
-       '</div><div class="tourney-tryout-callout">Click “Add me here” to start a row, then choose a student from the roster. Your move sends a request, not a final pairing.</div>';
+        '</div><div class="tourney-tryout-callout">Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>';
   }
   function renderResult() {
     var record = activeRecord();

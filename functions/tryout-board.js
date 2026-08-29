@@ -31,6 +31,7 @@ function publicProjection(id, record) {
     session: record.session,
     available: !record.pairedWith,
     status: record.pairedWith ? "paired" : "open",
+    partnerId: record.pairedWith || null,
     revision: Number(record.revision) || 0,
     updatedAt: FieldValue.serverTimestamp(),
   };
