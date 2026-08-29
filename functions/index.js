@@ -13,8 +13,17 @@ const { defineSecret }      = require("firebase-functions/params");
 const crypto = require("node:crypto");
 const { createVolunteerEmailService } = require("./volunteer-email");
 const { createApplicationEmailService } = require("./application-email");
+const { createTryoutBoardHandler } = require("./tryout-board");
 
 initializeApp();
+
+exports.tryoutBoard = onRequest(
+  { region: "us-central1", cors: true },
+  createTryoutBoardHandler({
+    db: getFirestore(),
+    clientAddress: submissionClientAddress,
+  })
+);
 
 /**
  * Fetches all FCM tokens from Firestore, sends a multicast notification,
