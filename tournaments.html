@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=19"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=20"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1114,28 +1114,6 @@
               <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
             </div>
           </div>
-          <div class="tourney-tryout-identity-actions">
-            <button type="button" data-tryout-edit data-tooltip="Update the student’s information, session, or partner preferences. Any current request or confirmed pairing will be released before changes are made." hidden>
-              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Change sign-up details</span>
-              <small>Update session or preferences</small>
-            </button>
-            <button type="button" data-tryout-pairs data-tooltip="Open a read-only view of the shared pairing board. This view does not change the student’s sign-up or preferences.">
-              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Show all pairs</span>
-              <small>Review the shared board</small>
-            </button>
-            <button type="button" data-tryout-withdraw data-tooltip="Remove the student’s submitted sign-up from the partner board. A confirmed partner will be released and become available to other students.">
-              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Withdraw from sign-up</span>
-              <small>Remove this student</small>
-            </button>
-            <button type="button" data-tryout-new data-tooltip="Clear this student’s private information from this browser so another student can begin. The current sign-up and pairing remain saved on the shared board.">
-              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
-              <span>Sign up another student</span>
-              <small>Keep this sign-up saved</small>
-            </button>
-          </div>
         </section>
 
         <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
@@ -1143,18 +1121,17 @@
           <div class="tourney-tryout-workspace-intro">
             <div class="tourney-tryout-screen-heading">
               <span class="tourney-tryout-icon is-gold" aria-hidden="true">♜</span>
-              <div><p id="tourney-tryout-workspace-label">Next step</p><h3 id="tourney-tryout-pair-heading">Select partner preferences</h3><span id="tourney-tryout-workspace-copy">Select up to four students in order of preference. The first available mutual choice becomes the student’s partner.</span></div>
+              <div><p id="tourney-tryout-workspace-label">How it works</p><h3 id="tourney-tryout-pair-heading">Choose your debate partner</h3><span id="tourney-tryout-workspace-copy">Follow these four steps to make and submit your ranked partner choices.</span></div>
             </div>
-            <div class="tourney-tryout-workspace-tools">
-              <button id="tourney-tryout-print-pairs" class="tourney-tryout-print-pairs" type="button" hidden>Print / Save PDF</button>
-              <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
-            </div>
+            <ol class="tourney-tryout-flow" aria-label="How to choose a debate partner">
+              <li class="is-review"><span class="tourney-tryout-flow-number">1</span><span><strong>Review all pairs</strong><small>See who is available</small></span></li>
+              <li class="is-select"><span class="tourney-tryout-flow-number">2</span><span><strong>Select up to four</strong><small>Choose possible partners</small></span></li>
+              <li class="is-prioritize"><span class="tourney-tryout-flow-number">3</span><span><strong>Set your priority</strong><small>Move choices up or down</small></span></li>
+              <li class="is-submit"><span class="tourney-tryout-flow-number">4</span><span><strong>Submit your choices</strong><small>Do not forget this final step</small></span></li>
+            </ol>
+            <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
           </div>
           <div id="tourney-tryout-partner-picker"></div>
-          <div class="tourney-tryout-board-actions">
-            <span>Preferences remain pending until both students select each other.</span>
-            <button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit partner preferences →</button>
-          </div>
           <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
         </section>
       </form>
@@ -1690,7 +1667,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=21"></script>
+  <script src="js/tryout-tournament-tab.js?v=22"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

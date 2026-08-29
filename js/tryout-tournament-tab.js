@@ -269,7 +269,8 @@
   function renderPairing() {
     var candidates = currentCandidates();
     var current = activeRecord();
-    var reviewMode = state.showAllPairs;
+    var pairedView = selfIsPaired();
+    var reviewMode = state.showAllPairs || pairedView;
     var allActive = state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
@@ -391,6 +392,36 @@
     var currentStatus = current ? statusFor(current) : state.partnerIds.length ? "pending" : "new";
     var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? state.partnerIds.length + " choice" + (state.partnerIds.length === 1 ? "" : "s") + " pending" : state.partnerIds.length ? "Ready to request" : state.selfPlaced ? "Choose partners" : "Place your piece";
     var statusDetail = selectedPartner ? "First choice: " + escapeHtml(displayName(selectedPartner.name)) + (state.partnerIds.length > 1 ? " · " + (state.partnerIds.length - 1) + " more" : "") + "." : state.selfPlaced ? "Your piece is on the board. Choose up to four students." : "Click “Add me here,” then choose up to four students.";
+     var hasSubmittedSignup = Boolean(state.self && (
+       state.self.isExistingSignup === true ||
+       (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
+     ));
+     var actionButtons =
+       '<section class="tourney-tryout-action-card" aria-labelledby="tourney-tryout-action-heading">' +
+         '<div class="tourney-tryout-side-title" id="tourney-tryout-action-heading">Choose an action</div>' +
+         '<p class="tourney-tryout-action-intro">Use these controls to move through the partner signup.</p>' +
+         '<div class="tourney-tryout-action-list">' +
+           '<button type="button" data-tryout-pairs data-tooltip="Open a read-only view of the shared pairing board. This view does not change the student’s sign-up or preferences." ' + (pairedView ? "disabled" : "") + '>' +
+             '<span class="tourney-tryout-action-info" aria-hidden="true">1</span><span>' + (pairedView ? "All pairs shown" : reviewMode ? "Select partners" : "Show all pairs") + '</span><small>' + (pairedView ? "Your confirmed pair is read-only" : reviewMode ? "Return to partner selection" : "Review the shared board") + '</small>' +
+           '</button>' +
+           '<button type="button" data-tryout-print data-tooltip="Create a clean printout of the public pairing board or save it as a PDF." ' + (reviewMode ? "" : "hidden") + '>' +
+             '<span class="tourney-tryout-action-info" aria-hidden="true">↗</span><span>Print / save PDF</span><small>Share the current pairings</small>' +
+           '</button>' +
+           '<button type="button" data-tryout-edit data-tooltip="Update the student’s information, session, or partner preferences. Any current request or confirmed pairing will be released before changes are made." ' + (hasSubmittedSignup ? "" : "hidden") + '>' +
+             '<span class="tourney-tryout-action-info" aria-hidden="true">↻</span><span>Change sign-up details</span><small>Update session or preferences</small>' +
+           '</button>' +
+           '<button type="button" data-tryout-withdraw data-tooltip="Remove the student’s submitted sign-up from the partner board. A confirmed partner will be released and become available to other students." ' + (hasSubmittedSignup ? "" : "hidden") + '>' +
+             '<span class="tourney-tryout-action-info" aria-hidden="true">×</span><span>Withdraw from sign-up</span><small>Remove this student</small>' +
+           '</button>' +
+           '<button type="button" data-tryout-new data-tooltip="Clear this student’s private information from this browser so another student can begin. The current sign-up and pairing remain saved on the shared board." ' + (hasSubmittedSignup ? "" : "hidden") + '>' +
+             '<span class="tourney-tryout-action-info" aria-hidden="true">+</span><span>Sign up another student</span><small>Keep this sign-up saved</small>' +
+           '</button>' +
+           '<div class="tourney-tryout-action-submit" ' + (reviewMode ? "hidden" : "") + '>' +
+             '<span class="tourney-tryout-action-arrow" aria-hidden="true">↓</span><p>When you are ready, submit your ranked choices.</p>' +
+             '<button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit partner preferences →</button>' +
+           '</div>' +
+         '</div>' +
+       '</section>';
     if (reviewMode) {
       statusText = "Viewing all pairs";
       statusDetail = "This read-only view does not change the student’s sign-up.";
@@ -402,7 +433,7 @@
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
         '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
-          '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Rank your choices</strong>Tap in first-to-fourth order.</span></li><li><b>2</b><span><strong>Partners respond</strong>They may choose you too.</span></li><li><b>3</b><span><strong>First mutual choice wins</strong>Either student can later unpair.</span></li></ol></section>' +
+           actionButtons +
            '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked" aria-hidden="true">' + boardStateIcon("locked") + '</i> Both agreed · Paired</p><p><i class="pending" aria-hidden="true">' + boardStateIcon("pending") + '</i> One agreed · Pending</p><p><i class="incoming" aria-hidden="true">' + boardStateIcon("incoming") + '</i> Waiting for acceptance</p><p><i class="open" aria-hidden="true">' + boardStateIcon("open") + '</i> Available</p></section>' +
           '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
         '</div><div class="tourney-tryout-callout">Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>';
@@ -433,36 +464,40 @@
     var paired = selfIsPaired();
      dom.gate.hidden = false;
     dom.identity.hidden = !state.boardVisible;
-    dom.workspace.hidden = !state.boardVisible || (paired && !state.showAllPairs);
+    dom.workspace.hidden = !state.boardVisible;
     dom.workspace.classList.toggle("is-pairing-review", state.showAllPairs);
     dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
     var hasSubmittedSignup = Boolean(state.self && (
       state.self.isExistingSignup === true ||
       (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
     ));
-    dom.edit.hidden = !hasSubmittedSignup;
-    dom.withdraw.hidden = !hasSubmittedSignup;
-    dom.newStudent.hidden = !hasSubmittedSignup;
-    dom.pairs.hidden = !state.boardVisible;
-    dom.printPairs.hidden = !state.showAllPairs;
+    var actionRoot = dom.workspace.querySelector(".tourney-tryout-action-card");
+    dom.edit = actionRoot && actionRoot.querySelector("[data-tryout-edit]");
+    dom.withdraw = actionRoot && actionRoot.querySelector("[data-tryout-withdraw]");
+    dom.newStudent = actionRoot && actionRoot.querySelector("[data-tryout-new]");
+    dom.pairs = actionRoot && actionRoot.querySelector("[data-tryout-pairs]");
+    dom.printPairs = actionRoot && actionRoot.querySelector("[data-tryout-print]");
+    dom.submit = dom.workspace.querySelector("#tourney-tryout-submit");
     dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate partner sign-up" : "Partner sign-up in progress";
-    dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Select partners" : "Show all pairs";
-    dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to partner selection" : "Review the current board";
+    if (dom.pairs) {
+      dom.pairs.querySelector("span:nth-child(2)").textContent = paired ? "All pairs shown" : state.showAllPairs ? "Select partners" : "Show all pairs";
+      dom.pairs.querySelector("small").textContent = paired ? "Your confirmed pair is read-only" : state.showAllPairs ? "Return to partner selection" : "Review the shared board";
+    }
     var reviewingPairs = state.showAllPairs || paired;
-    dom.workspaceLabel.textContent = reviewingPairs ? "Current pairings" : "Next step";
-    dom.workspaceHeading.textContent = reviewingPairs ? "Review all current pairs" : "Select partner preferences";
+    dom.workspaceLabel.textContent = "How it works";
+    dom.workspaceHeading.textContent = reviewingPairs ? "Review all current pairs" : "Choose your debate partner";
     dom.workspaceCopy.textContent = paired
       ? "This is a read-only view of the shared board. Your confirmed pairing remains unchanged."
       : state.showAllPairs
-        ? "This is a read-only view of the shared pairing board. Your sign-up remains unchanged."
-        : "Select up to four students in order of preference. The first available mutual choice becomes your partner.";
-    dom.submit.parentElement.hidden = paired || state.showAllPairs;
+        ? "Review the shared board, then use the action card to return to partner selection."
+        : "Choose up to four students, move them into priority order, and submit your choices.";
+    if (dom.submit) dom.submit.parentElement.hidden = paired || state.showAllPairs;
     if (paired) dom.message.hidden = true;
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityId.textContent = "FCPS ID: " + (state.fcpsId || dom.fcpsId.value.trim());
     dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
-    dom.submit.textContent = state.editing ? "Save partner preferences →" : "Submit partner preferences →";
+    if (dom.submit) dom.submit.textContent = state.editing ? "Save partner preferences →" : "Submit partner preferences →";
   }
   function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
   function fillRecord(record) {
@@ -810,15 +845,16 @@
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });
     dom.showBoard.addEventListener("click", showBoard);
-    dom.printPairs.addEventListener("click", printPairings);
     dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); persistSession(); });
     dom.name.addEventListener("input", function () { formMessage(""); persistSession(); }); dom.grade.addEventListener("change", function () { formMessage(""); persistSession(); });
-    dom.identity.addEventListener("click", function (event) {
+    dom.form.addEventListener("click", function (event) {
       if (event.target.closest("[data-tryout-pairs]")) {
+        if (selfIsPaired()) return;
         state.showAllPairs = !state.showAllPairs;
         renderAll();
         if (state.showAllPairs) dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
-      } else if (event.target.closest("[data-tryout-edit]")) openConfirmation("edit");
+      } else if (event.target.closest("[data-tryout-print]")) printPairings();
+      else if (event.target.closest("[data-tryout-edit]")) openConfirmation("edit");
       else if (event.target.closest("[data-tryout-withdraw]")) openConfirmation("withdraw");
       else if (event.target.closest("[data-tryout-new]")) openConfirmation("new");
     });
