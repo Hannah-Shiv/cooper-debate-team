@@ -1090,6 +1090,7 @@
             <div><p>Your board pass</p><h3 id="tourney-tryout-details-heading">Who is stepping up to the board?</h3><span>Only your first name, last initial, grade, and availability appear to other students.</span></div>
           </div>
           <div class="tourney-tryout-fields">
+            <label><span>Seven-digit FCPS ID</span><input id="tourney-tryout-fcps-id" name="fcpsId" autocomplete="off" inputmode="numeric" pattern="[0-9]{7}" minlength="7" maxlength="7" placeholder="1234567" aria-describedby="tourney-tryout-id-help"><small id="tourney-tryout-id-help">Used privately to reopen or change this signup. It never appears on the board.</small></label>
             <label><span>Student first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="First and last name"></label>
             <label class="tourney-tryout-grade"><span>Grade</span><select id="tourney-tryout-grade" name="grade"><option value="">Select</option><option value="7">7th</option><option value="8">8th</option></select></label>
           </div>
@@ -1098,7 +1099,7 @@
             <div id="tourney-tryout-date-options" class="tourney-tryout-date-options"></div>
           </fieldset>
           <div class="tourney-tryout-gate-actions">
-            <p><span aria-hidden="true">♢</span> This demo saves only in this browser.</p>
+            <p><span aria-hidden="true">♢</span> Shared live board · your FCPS ID stays private.</p>
             <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Show me the board →</button>
           </div>
         </section>
@@ -1652,7 +1653,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-<script src="js/tryout-tournament-tab.js?v=6"></script>
+<script src="js/tryout-tournament-tab.js?v=7"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

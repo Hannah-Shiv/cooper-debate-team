@@ -212,5 +212,26 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Tryout identities and relationships are private and can only be changed
+    // through the transaction-safe Cloud Function.
+    match /tryout_signups/{docId} {
+      allow read, write: if false;
+    }
+
+    match /tryout_student_keys/{docId} {
+      allow read, write: if false;
+    }
+
+    match /tryout_action_limits/{docId} {
+      allow read, write: if false;
+    }
+
+    // Public clients may subscribe to this deliberately narrow projection.
+    // It contains opaque IDs and privacy-safe display labels, never FCPS IDs.
+    match /public_tryout_students/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
   }
 }

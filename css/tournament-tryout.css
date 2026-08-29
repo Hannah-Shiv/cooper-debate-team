@@ -299,8 +299,9 @@
 .tourney-tryout-stats > div:last-child { display: grid; grid-template-columns: repeat(3,1fr); gap: 5px; }
 .tourney-tryout-stats span { color: #8298bc; font-size: .46rem; text-align: center; }
 .tourney-tryout-stats strong { display: block; margin-bottom: 2px; color: #fff; font-size: .8rem; }
-.tourney-tryout-fields { display: grid; grid-template-columns: minmax(0,1fr) 155px; gap: 14px; }
+.tourney-tryout-fields { display: grid; grid-template-columns: minmax(170px,.7fr) minmax(0,1.3fr) 120px; gap: 14px; }
 .tourney-tryout-fields label { display: block; color: #b7c9e5; font-size: .7rem; font-weight: 700; }
+.tourney-tryout-fields small { display: block; margin-top: 6px; color: #8195b8; font-size: .62rem; line-height: 1.35; font-weight: 500; }
 .tourney-tryout-fields input,.tourney-tryout-fields select { width: 100%; min-height: 44px; margin-top: 7px; padding: 10px 12px; color: #f6f9ff; border: 1px solid rgba(120,157,225,.34); border-radius: 7px; background: rgba(3,13,34,.7); font-size: .78rem; }
 .tourney-tryout-fields input::placeholder { color: #7086ac; }
 .tourney-tryout-gate { max-width: 820px; margin: 0 auto; }

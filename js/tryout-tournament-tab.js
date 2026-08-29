@@ -1,32 +1,24 @@
-/* Cooper Debate Team — in-page browser-only tryout signup */
+/* Cooper Debate Team — shared FCPS-ID tryout signup */
 (function () {
   "use strict";
 
-  var STORAGE_KEY = "cooper_tryout_signups_v1";
-  var ACTIVE_KEY = "cooper_tryout_active_student_v1";
-  var WRITE_LOCK = "cooper-tryout-signups-write";
-  var FALLBACK_LOCK_KEY = "cooper_tryout_signups_write_lock_v1";
-  var VERSION = 1;
+  var ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/tryoutBoard";
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+    authDomain: "cooper-debate-team.firebaseapp.com",
+    projectId: "cooper-debate-team",
+    storageBucket: "cooper-debate-team.firebasestorage.app",
+    messagingSenderId: "112813790184",
+    appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
+  };
   var DATES = {
     sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria" },
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
-  var DEMO_RECORDS = [
-    { id: "demo-alex", name: "Alex Rivera", grade: "8", dates: ["sep22", "sep23"], selectedDate: "sep22", mode: "partner", partnerId: "demo-maya", tint: "blue", piece: "boy", isDemo: true },
-    { id: "demo-maya", name: "Maya Johnson", grade: "8", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: "demo-alex", tint: "violet", piece: "girl", isDemo: true },
-    { id: "demo-sam", name: "Sam Kim", grade: "7", dates: ["sep22", "sep23"], selectedDate: "sep23", mode: "partner", partnerId: "demo-olivia", tint: "blue", piece: "boy", isDemo: true },
-    { id: "demo-olivia", name: "Olivia Brooks", grade: "7", dates: ["sep23"], selectedDate: "sep23", mode: "partner", partnerId: null, tint: "violet", piece: "girl", isDemo: true },
-    { id: "demo-ethan", name: "Ethan Lewis", grade: "8", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "teal", piece: "boy", isDemo: true },
-    { id: "demo-sophie", name: "Sophie Nguyen", grade: "6", dates: ["sep22", "sep23"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "violet", piece: "girl", isDemo: true },
-    { id: "demo-ava", name: "Ava Patel", grade: "7", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "gold", piece: "girl", isDemo: true },
-    { id: "demo-noah", name: "Noah Carter", grade: "7", dates: ["sep23"], selectedDate: "sep23", mode: "partner", partnerId: null, tint: "teal", piece: "boy", isDemo: true }
-  ];
-  var state = { data: null, activeId: null, date: "sep22", partnerId: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, baseRelationship: "" };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
-  function now() { return new Date().toISOString(); }
-  function makeId() { return "student-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 7); }
   function normalized(value) { return String(value || "").trim().toLowerCase().replace(/\s+/g, " "); }
   function escapeHtml(value) { return String(value == null ? "" : value).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function displayName(name) {
@@ -35,79 +27,81 @@
   }
   function initials(name) { return displayName(name).replace(".", "").split(/\s+/).map(function (part) { return part.charAt(0); }).join("").slice(0, 2).toUpperCase(); }
   function gradeLabel(grade) { return grade + "th grade"; }
-  function safeRecord(record) {
-    if (!record || !record.id || !record.name || !["6", "7", "8"].includes(String(record.grade))) return null;
-    var dates = Array.isArray(record.dates) ? record.dates.filter(function (key) { return DATES[key]; }) : [];
-    if (!dates.length) return null;
-    var isDemo = Boolean(record.isDemo);
+  function projectionRecord(record) {
     return {
-      id: String(record.id), name: String(record.name).trim().slice(0, 80), grade: String(record.grade),
-      dates: dates, selectedDate: DATES[record.selectedDate] ? record.selectedDate : dates[0],
-      mode: record.mode === "assign" && !isDemo ? "assign" : "partner", partnerId: record.partnerId ? String(record.partnerId) : null,
-      assignedPartnerId: record.assignedPartnerId ? String(record.assignedPartnerId) : null,
-      tint: ["gold", "blue", "violet", "teal"].includes(record.tint) ? record.tint : "blue",
-      piece: record.piece === "girl" ? "girl" : "boy",
-      isDemo: isDemo, withdrawn: Boolean(record.withdrawn),
-      releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
-      createdAt: record.createdAt || now(), updatedAt: record.updatedAt || now()
+      id: String(record.id), name: String(record.displayName || "Student"), grade: String(record.grade),
+      dates: [record.session], selectedDate: record.session, mode: "partner", partnerId: null,
+      assignedPartnerId: record.available === false ? "private-pair" : null,
+      tint: ["gold", "blue", "violet", "teal"][String(record.id).charCodeAt(0) % 4],
+      piece: "boy", isDemo: false, withdrawn: false, releasedReason: ""
     };
   }
-  function defaultData() {
-    return { version: VERSION, revision: 0, records: DEMO_RECORDS.map(function (record) {
-      return safeRecord(Object.assign({}, record, { createdAt: "2026-08-01T12:00:00.000Z", updatedAt: "2026-08-01T12:00:00.000Z" }));
-    }).filter(Boolean) };
+  function refreshRecords() {
+    var records = state.publicRecords.map(projectionRecord);
+    if (state.self) {
+      var selfRecord = {
+        id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.self.session],
+        selectedDate: state.self.session, mode: "partner", partnerId: state.self.partnerId,
+        assignedPartnerId: null, tint: "teal", piece: "girl", isDemo: false, withdrawn: false,
+        releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status
+      };
+      records = records.filter(function (record) { return record.id !== selfRecord.id; });
+      records.push(selfRecord);
+    }
+    state.data = { records: records };
   }
-  function loadData() {
-    try {
-      var parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "");
-      if (parsed && parsed.version === VERSION && Array.isArray(parsed.records)) return { version: VERSION, revision: Number(parsed.revision) || 0, records: parsed.records.map(safeRecord).filter(Boolean) };
-    } catch (ignore) {}
-    return defaultData();
-  }
-  function syncData() {
-    try {
-      var parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || "");
-      if (parsed && parsed.version === VERSION && Array.isArray(parsed.records)) state.data = { version: VERSION, revision: Number(parsed.revision) || 0, records: parsed.records.map(safeRecord).filter(Boolean) };
-    } catch (ignore) {}
-  }
-  function saveData() {
-    try { state.data.revision = (Number(state.data.revision) || 0) + 1; window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state.data)); return true; }
-    catch (ignore) { showMessage("Your browser blocked local storage, so this sign-up could not be saved.", true); return false; }
-  }
-  function withWriteLock(callback) {
-    if (navigator.locks && navigator.locks.request) return navigator.locks.request(WRITE_LOCK, callback);
-    var owner = makeId(), deadline = Date.now() + 2500;
-    return new Promise(function (resolve, reject) {
-      function release() {
-        try {
-          var held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
-          if (held && held.owner === owner) window.localStorage.removeItem(FALLBACK_LOCK_KEY);
-        } catch (ignore) {}
-      }
-      function attempt() {
-        try {
-          var timestamp = Date.now();
-          var held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
-          if (!held || !held.owner || Number(held.expires) < timestamp) {
-            window.localStorage.setItem(FALLBACK_LOCK_KEY, JSON.stringify({ owner: owner, expires: timestamp + 4000 }));
-            held = JSON.parse(window.localStorage.getItem(FALLBACK_LOCK_KEY) || "null");
-            if (held && held.owner === owner) {
-              try { resolve(callback()); } catch (error) { reject(error); } finally { release(); }
-              return;
-            }
-          }
-          if (timestamp >= deadline) {
-            showMessage("Another tryout update is still being saved. Please try again.", true);
-            reject(new Error("Tryout write lock timed out."));
-            return;
-          }
-          window.setTimeout(attempt, 35);
-        } catch (error) {
-          reject(error);
-        }
-      }
-      attempt();
+  async function api(action, extra) {
+    var response = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(Object.assign({ action: action, fcpsId: state.fcpsId }, extra || {}))
     });
+    var result = await response.json().catch(function () { return {}; });
+    if (!response.ok) throw new Error(result.error || "The shared tryout board is temporarily unavailable.");
+    return result;
+  }
+  function applySelf(self) {
+    state.self = self || null;
+    state.activeId = self ? self.id : null;
+    state.partnerId = self ? self.partnerId : null;
+    if (self) state.date = self.session;
+    refreshRecords();
+  }
+  async function refreshStatus() {
+    if (!state.fcpsId || state.loading) return;
+    try {
+      var result = await api("status");
+      var previousRevision = state.self && state.self.revision;
+      applySelf(result.self);
+      if (state.boardVisible) {
+        renderAll();
+        if (previousRevision !== state.self.revision) showMessage("The shared board changed. Your view is up to date.");
+      }
+    } catch (ignore) {}
+  }
+  function startStatusPolling() {
+    stopStatusPolling();
+    state.pollTimer = window.setInterval(refreshStatus, 10000);
+  }
+  function stopStatusPolling() {
+    if (state.pollTimer) window.clearInterval(state.pollTimer);
+    state.pollTimer = null;
+  }
+  function startPublicSubscription() {
+    if (!window.firebase || !firebase.firestore) {
+      showMessage("The shared board could not connect. Please refresh and try again.", true);
+      return;
+    }
+    var app = firebase.apps.length ? firebase.apps[0] : firebase.initializeApp(FIREBASE_CONFIG);
+    state.unsubscribe = app.firestore().collection("public_tryout_students")
+      .where("season", "==", "2026-2027")
+      .onSnapshot(function (snapshot) {
+        state.publicRecords = snapshot.docs.map(function (doc) { return Object.assign({ id: doc.id }, doc.data()); });
+        refreshRecords();
+        if (state.boardVisible) renderAll();
+      }, function () {
+        if (state.boardVisible) showMessage("Live board updates are temporarily unavailable. Your actions are still saved safely.", true);
+      });
   }
   function activeRecord() { return state.data.records.find(function (record) { return record.id === state.activeId && active(record); }) || null; }
   function recordById(id) { return state.data.records.find(function (record) { return record.id === id; }) || null; }
@@ -116,12 +110,14 @@
     return record ? [record.partnerId || "", record.assignedPartnerId || "", record.selectedDate || "", record.updatedAt || ""].join("|") : "";
   }
   function mutual(record) {
+    if (record && record.id === state.activeId && record.relationshipStatus === "mutual") return recordById(record.partnerId);
     if (!record || !record.partnerId || record.assignedPartnerId) return null;
     var partner = recordById(record.partnerId);
     return partner && active(partner) && !partner.assignedPartnerId && partner.partnerId === record.id ? partner : null;
   }
   function statusFor(record) {
     if (!record) return "new";
+    if (record.id === state.activeId && record.relationshipStatus) return record.relationshipStatus;
     if (record.assignedPartnerId) return "assigned";
     if (record.mode === "assign") return "waiting";
     if (!record.partnerId) return "open";
@@ -295,136 +291,98 @@
     formMessage(""); renderAll();
   }
   function validateIdentity() {
+    if (!/^\d{7}$/.test(dom.fcpsId.value.trim())) return "Please enter the student’s seven-digit FCPS ID.";
     if (dom.name.value.trim().split(/\s+/).length < 2) return "Please enter the student's first and last name.";
     if (!["7", "8"].includes(dom.grade.value)) return "Please select seventh or eighth grade.";
     return "";
   }
-  function showBoard() {
+  async function showBoard() {
     var error = validateIdentity();
     if (error) { formMessage(error, true); dom.error.focus(); return; }
-    var duplicate = state.data.records.find(function (record) {
-      return active(record) && normalized(record.name) === normalized(dom.name.value) && record.id !== state.activeId;
-    });
-    if (duplicate) { formMessage("A sign-up for this name is already saved in this browser.", true); dom.error.focus(); return; }
-    state.boardVisible = true;
-    state.editing = Boolean(activeRecord());
-    formMessage("");
-    renderAll();
-    dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+    state.loading = true; dom.showBoard.disabled = true; formMessage("Connecting to the shared board…");
+    try {
+      state.fcpsId = dom.fcpsId.value.trim();
+      var result = await api("open", {
+        name: dom.name.value.trim(),
+        grade: dom.grade.value,
+        session: state.date
+      });
+      applySelf(result.self);
+      dom.name.value = state.self.name;
+      dom.grade.value = state.self.grade;
+      state.boardVisible = true;
+      state.editing = false;
+      formMessage("Shared board loaded. Row numbers may move as other students make choices.");
+      renderAll();
+      startStatusPolling();
+      dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+    } catch (apiError) {
+      state.fcpsId = "";
+      formMessage(apiError.message, true);
+      dom.error.focus();
+    } finally {
+      state.loading = false; dom.showBoard.disabled = false;
+    }
   }
-  function releaseRelationships(record, releaseIncoming) {
-    if (!record) return;
-    var partnerId = record.partnerId;
-    var assignedId = record.assignedPartnerId;
-    record.partnerId = null;
-    record.assignedPartnerId = null;
-    state.data.records.forEach(function (other) {
-      if (other.id === record.id) return;
-      var reciprocal = (partnerId && other.id === partnerId && other.partnerId === record.id) ||
-        (assignedId && other.id === assignedId && other.assignedPartnerId === record.id);
-      if (reciprocal || (releaseIncoming && (other.partnerId === record.id || other.assignedPartnerId === record.id))) {
-        if (other.partnerId === record.id) other.partnerId = null;
-        if (other.assignedPartnerId === record.id) other.assignedPartnerId = null;
-        other.releasedReason = "";
-        other.updatedAt = now();
-      }
-    });
-  }
-  function submit() {
+  async function submit() {
     var error = validateIdentity();
     if (!error && !state.partnerId) error = "Choose an available student before submitting your pairing request.";
     if (error) { formMessage(error, true); dom.error.focus(); return; }
-    return withWriteLock(function () {
-      var expectedRelationship = state.baseRelationship;
-      syncData();
-      var name = dom.name.value.trim().replace(/\s+/g, " "), grade = dom.grade.value;
-      var record = activeRecord();
-      if (record && expectedRelationship && relationshipSignature(record) !== expectedRelationship) {
-        fillRecord(record);
-        state.editing = false;
-        renderAll();
-        formMessage("Your signup changed in another tab. The board was refreshed so the newer pairing was not overwritten.", true);
-        return;
-      }
-      var duplicate = state.data.records.find(function (record) { return active(record) && normalized(record.name) === normalized(name) && record.id !== state.activeId; });
-      if (duplicate) { formMessage("A sign-up for this name is already saved in this browser. Use “Sign up another student” only for a different student.", true); dom.error.focus(); return; }
-      var partner = recordById(state.partnerId);
-      if (!partner || !active(partner) || !["7", "8"].includes(partner.grade) || partner.mode !== "partner" || !partner.dates.includes(state.date) || partner.assignedPartnerId || mutual(partner)) {
-        state.partnerId = null; renderPairing(); formMessage("That student is no longer available for this session. Please choose another.", true); dom.error.focus(); return;
-      }
-      if (!record) {
-        record = { id: makeId(), name: name, grade: grade, dates: [state.date], selectedDate: state.date, mode: "partner", partnerId: state.partnerId, assignedPartnerId: null, tint: "blue", isDemo: false, createdAt: now(), updatedAt: now() };
-        state.data.records.push(record); state.activeId = record.id;
-        try { window.localStorage.setItem(ACTIVE_KEY, state.activeId); } catch (ignore) {}
-      } else {
-        if (record.partnerId !== state.partnerId || record.selectedDate !== state.date) releaseRelationships(record, false);
-        record.name = name; record.grade = grade; record.dates = [state.date]; record.selectedDate = state.date; record.mode = "partner"; record.partnerId = state.partnerId; record.releasedReason = ""; record.updatedAt = now();
-      }
-      var winningPartner = mutual(record);
-      if (winningPartner) {
-        state.data.records.forEach(function (other) {
-          if (!active(other) || other.id === record.id || other.id === winningPartner.id) return;
-          if (other.partnerId === record.id || other.partnerId === winningPartner.id) {
-            other.partnerId = null;
-            other.releasedReason = "partner-locked";
-            other.updatedAt = now();
-          }
-        });
-      }
-      if (!saveData()) return;
-      state.baseRelationship = relationshipSignature(record);
-      state.editing = false; formMessage(mutual(record) ? "You are paired. Either student can change the pairing from this board." : "Pairing request saved. It will pair automatically if the other student chooses you.");
+    state.loading = true; dom.submit.disabled = true;
+    try {
+      var result = await api("request", { partnerId: state.partnerId, expectedRevision: state.self.revision });
+      applySelf(result.self);
+      state.editing = false;
+      formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Pairing request saved. It will pair automatically if the other student chooses you.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    });
+    } catch (apiError) {
+      await refreshStatus();
+      formMessage(apiError.message, true);
+    } finally {
+      state.loading = false; dom.submit.disabled = false;
+    }
   }
-  function edit() {
+  async function edit() {
     var record = activeRecord();
     if (!record) { state.editing = true; renderAll(); dom.name.focus(); return; }
     if (!window.confirm("Change this signup? Any current request or pairing will be released so both students can choose again.")) return;
-    return withWriteLock(function () {
-      syncData();
-      record = activeRecord();
-      if (!record) return;
-      releaseRelationships(record, true);
-      record.releasedReason = "";
-      record.updatedAt = now();
-      if (!saveData()) return;
+    try {
+      var result = await api("release", { expectedRevision: state.self.revision });
+      applySelf(result.self);
       state.partnerId = null;
       state.boardRow = null;
       state.selfPlaced = false;
       state.editing = true;
-      fillRecord(record);
       formMessage("Your previous pairing was released. Update your details or choose a new partner.");
       renderAll();
       dom.name.focus();
-    });
+    } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
-  function withdraw() {
+  async function withdraw() {
     if (!window.confirm("Withdraw from tryouts? Any current partner will become available to choose again.")) return;
-    return withWriteLock(function () {
-      syncData(); var record = activeRecord(); if (!record) return;
-      releaseRelationships(record, true);
-      record.withdrawn = true; record.updatedAt = now();
-      if (saveData()) { state.activeId = null; state.editing = false; state.boardVisible = false; state.partnerId = null; state.selfPlaced = false; try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {} dom.name.value = ""; dom.grade.value = ""; formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll(); }
-    });
+    try {
+      await api("withdraw", { expectedRevision: state.self.revision });
+      stopStatusPolling();
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; state.partnerId = null; state.selfPlaced = false;
+      dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
+      refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
+    } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
     state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; state.partnerId = null; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
-    try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
-    dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.name.focus();
+    stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
+    dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
   }
   function init() {
     dom = {
       status: $("tourney-tryout-status"), dates: $("tourney-tryout-date-options"), picker: $("tourney-tryout-partner-picker"),
-      name: $("tourney-tryout-name"), grade: $("tourney-tryout-grade"), form: $("tourney-tryout-form"),
+      fcpsId: $("tourney-tryout-fcps-id"), name: $("tourney-tryout-name"), grade: $("tourney-tryout-grade"), form: $("tourney-tryout-form"),
       error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
       identityMeta: $("tourney-tryout-identity-meta"), result: $("tourney-tryout-student-status")
     };
-    state.data = loadData();
-    try { state.activeId = window.localStorage.getItem(ACTIVE_KEY); } catch (ignore) {}
-    if (activeRecord()) { fillRecord(activeRecord()); state.boardVisible = true; }
+    startPublicSubscription();
     dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });
     dom.picker.addEventListener("click", function (event) {
       var button = event.target.closest("[data-partner]");
@@ -481,18 +439,10 @@
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });
     dom.showBoard.addEventListener("click", showBoard);
+    dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); });
     dom.name.addEventListener("input", function () { formMessage(""); }); dom.grade.addEventListener("change", function () { formMessage(""); });
     dom.identity.addEventListener("click", function (event) { if (event.target.closest("[data-tryout-edit]")) edit(); if (event.target.closest("[data-tryout-withdraw]")) withdraw(); if (event.target.closest("[data-tryout-new]")) newStudent(); });
-    window.addEventListener("storage", function (event) {
-      if (event.key !== STORAGE_KEY && event.key !== ACTIVE_KEY) return;
-      if (event.key === ACTIVE_KEY && !state.activeId && event.newValue) state.activeId = event.newValue;
-      syncData();
-      var record = activeRecord();
-      if (record) fillRecord(record);
-      else { state.activeId = null; state.boardVisible = false; state.partnerId = null; state.selfPlaced = false; state.baseRelationship = ""; }
-      showMessage("Tryout data changed in another tab. This view has been refreshed.");
-      renderAll();
-    });
+    window.addEventListener("beforeunload", function () { stopStatusPolling(); if (state.unsubscribe) state.unsubscribe(); });
     renderAll();
   }
   document.addEventListener("DOMContentLoaded", function () { if ($("tourney-tryout-form")) init(); });
