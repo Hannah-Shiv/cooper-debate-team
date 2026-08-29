@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=2"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=3"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1078,62 +1078,60 @@
     <div class="tourney-tryout-heading">
       <p class="section-label">Fall 2026 Team Selection</p>
       <h2 class="section-title">Try Out Signup</h2>
-      <p class="section-sub">Choose a session, tell us how you want to partner, and save your place for tryouts.</p>
+      <p class="section-sub">Enter your details, open the board, and choose your own tryout partner—all in one place.</p>
     </div>
 
     <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
     <div class="tourney-tryout-shell">
-      <div class="tourney-tryout-progress" aria-label="Tryout signup steps">
-        <div class="is-current" data-tryout-progress="1"><b>1</b><span>Tryout date</span></div>
-        <div data-tryout-progress="2"><b>2</b><span>Pairing preference</span></div>
-        <div data-tryout-progress="3"><b>3</b><span>Your details</span></div>
-      </div>
-
       <form id="tourney-tryout-form" novalidate>
-        <section class="tourney-tryout-screen is-current" data-tryout-step="1" aria-labelledby="tourney-tryout-date-heading">
+        <section id="tourney-tryout-gate" class="tourney-tryout-screen tourney-tryout-gate" aria-labelledby="tourney-tryout-details-heading">
           <div class="tourney-tryout-screen-heading">
-            <span class="tourney-tryout-icon" aria-hidden="true">▦</span>
-            <div><p>Step 1 of 3</p><h3 id="tourney-tryout-date-heading">Select your tryout date</h3><span>Both sessions run after school from 2:30–4:30 PM.</span></div>
-          </div>
-          <div id="tourney-tryout-date-options" class="tourney-tryout-date-options"></div>
-          <div class="tourney-tryout-note"><strong>Good to know</strong><span>Choose the session you can attend. Your pairing request will be limited to students attending the same date.</span></div>
-        </section>
-
-        <section class="tourney-tryout-screen" data-tryout-step="2" aria-labelledby="tourney-tryout-pair-heading" hidden>
-          <div class="tourney-tryout-screen-heading">
-            <span class="tourney-tryout-icon is-teal" aria-hidden="true">♧</span>
-          <div><p>Step 2 of 3</p><h3 id="tourney-tryout-pair-heading">Move your piece on the pairing board</h3><span>Drag one student piece to an open square, or tap a piece to select it. A request stays open until both students agree.</span></div>
-          </div>
-          <div class="tourney-tryout-modes" role="group" aria-label="Pairing preference">
-            <button id="tourney-tryout-mode-partner" class="is-selected" type="button" aria-pressed="true"><span aria-hidden="true">＋</span><strong>Choose an opted-in partner</strong><small>Request a student who can attend this date.</small></button>
-            <button id="tourney-tryout-mode-assign" type="button" aria-pressed="false"><span aria-hidden="true">✦</span><strong>Let Coach pair me</strong><small>Stay open for a Coach assignment.</small></button>
-          </div>
-          <div id="tourney-tryout-partner-picker"></div>
-        </section>
-
-        <section class="tourney-tryout-screen" data-tryout-step="3" aria-labelledby="tourney-tryout-details-heading" hidden>
-          <div class="tourney-tryout-screen-heading">
-            <span class="tourney-tryout-icon is-gold" aria-hidden="true">✓</span>
-            <div><p>Step 3 of 3</p><h3 id="tourney-tryout-details-heading">Tell us who is signing up</h3><span>Only a first name, last initial, grade, and availability appear on the public list.</span></div>
+            <span class="tourney-tryout-icon is-teal" aria-hidden="true">♟</span>
+            <div><p>Your board pass</p><h3 id="tourney-tryout-details-heading">Who is stepping up to the board?</h3><span>Only your first name, last initial, grade, and availability appear to other students.</span></div>
           </div>
           <div class="tourney-tryout-fields">
             <label><span>Student first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="First and last name"></label>
-            <label class="tourney-tryout-grade"><span>Grade</span><select id="tourney-tryout-grade" name="grade"><option value="">Select</option><option value="6">6th</option><option value="7">7th</option><option value="8">8th</option></select></label>
+            <label class="tourney-tryout-grade"><span>Grade</span><select id="tourney-tryout-grade" name="grade"><option value="">Select</option><option value="7">7th</option><option value="8">8th</option></select></label>
           </div>
-          <div id="tourney-tryout-review" class="tourney-tryout-review" aria-live="polite"></div>
-          <div class="tourney-tryout-privacy"><span aria-hidden="true">♢</span><span>This development demo stays in this browser. No Firebase or production data is used.</span></div>
+          <fieldset class="tourney-tryout-session-fieldset">
+            <legend>Choose your tryout session</legend>
+            <div id="tourney-tryout-date-options" class="tourney-tryout-date-options"></div>
+          </fieldset>
+          <div class="tourney-tryout-gate-actions">
+            <p><span aria-hidden="true">♢</span> This demo saves only in this browser.</p>
+            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Show me the board →</button>
+          </div>
+        </section>
+
+        <section id="tourney-tryout-identity" class="tourney-tryout-identity" aria-live="polite" hidden>
+          <div>
+            <span class="tourney-tryout-identity-label">Playing as</span>
+            <strong id="tourney-tryout-identity-name"></strong>
+            <span id="tourney-tryout-identity-meta"></span>
+          </div>
+          <div class="tourney-tryout-identity-actions">
+            <button type="button" data-tryout-edit>Change My Signup</button>
+            <button type="button" data-tryout-withdraw>Withdraw</button>
+            <button type="button" data-tryout-new>Another Student</button>
+          </div>
         </section>
 
         <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
         <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
-        <div class="tourney-tryout-actions">
-          <button id="tourney-tryout-back" class="tourney-tryout-back" type="button" hidden>← Back</button>
-          <button id="tourney-tryout-continue" class="tourney-tryout-continue" type="button">Continue →</button>
-        </div>
+        <section id="tourney-tryout-workspace" class="tourney-tryout-workspace" aria-labelledby="tourney-tryout-pair-heading" hidden>
+          <div class="tourney-tryout-screen-heading">
+            <span class="tourney-tryout-icon is-gold" aria-hidden="true">♜</span>
+            <div><p>Your move</p><h3 id="tourney-tryout-pair-heading">Choose your tryout partner</h3><span>Drag a student piece to an open square, or tap the piece and then the square. A pair forms when both students choose each other.</span></div>
+          </div>
+          <div id="tourney-tryout-partner-picker"></div>
+          <div class="tourney-tryout-board-actions">
+            <span>Pending requests do not reserve a student.</span>
+            <button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit pairing request →</button>
+          </div>
+          <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
+        </section>
       </form>
     </div>
-
-    <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
     <p class="tourney-tryout-footer-note"><span aria-hidden="true">✦</span> Team membership will be determined later that week. Tuesday practices begin September 29.</p>
   </div>
 </section>
@@ -1654,7 +1652,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-<script src="js/tryout-tournament-tab.js?v=2"></script>
+<script src="js/tryout-tournament-tab.js?v=3"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

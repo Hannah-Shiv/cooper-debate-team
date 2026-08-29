@@ -35,14 +35,25 @@ async function seed(page, records, activeId = null) {
   await page.reload({ waitUntil: 'domcontentloaded' });
 }
 
-test('supports drag and tap placement without horizontal overflow', async ({ page }) => {
+async function openBoard(page, name = 'Jordan Student', grade = '8') {
+  await page.locator('#tourney-tryout-name').fill(name);
+  await page.locator('#tourney-tryout-grade').selectOption(grade);
+  await page.locator('#tourney-tryout-show-board').click();
+}
+
+test('opens one board from the details gate and supports drag and tap placement', async ({ page }) => {
   await seed(page, []);
   await page.evaluate(({ storageKey, activeKey }) => {
     localStorage.removeItem(storageKey);
     localStorage.removeItem(activeKey);
   }, { storageKey, activeKey });
   await page.reload({ waitUntil: 'domcontentloaded' });
-  await page.locator('#tourney-tryout-continue').click();
+
+  await expect(page.locator('#tourney-tryout-workspace')).toBeHidden();
+  await expect(page.locator('#tourney-tryout-grade option')).toHaveCount(3);
+  await openBoard(page);
+  await expect(page.locator('#tourney-tryout-workspace')).toBeVisible();
+  await expect(page.locator('#tourney-tryout-gate')).toBeHidden();
 
   await page.locator('[data-partner="demo-sam"]').dragTo(page.locator('[data-drop-slot]').first());
   await expect(page.locator('[data-partner="demo-sam"]')).toHaveAttribute('aria-pressed', 'true');
@@ -55,50 +66,121 @@ test('supports drag and tap placement without horizontal overflow', async ({ pag
   expect(overflow).toBeLessThanOrEqual(0);
 });
 
-test('first mutual acceptance locks one pair and releases competitors', async ({ browser }) => {
-  const context = await browser.newContext();
-  const requester = await context.newPage();
-  const accepter = await context.newPage();
+test('first mutual acceptance pairs students and releases competitors', async ({ page }) => {
   const records = [
     record('avery', 'Avery Able', 'blake'),
     record('casey', 'Casey Cole', 'blake'),
     record('blake', 'Blake Baker'),
   ];
 
-  await seed(requester, records, 'avery');
-  await requester.locator('[data-tryout-edit]').click();
-  await requester.locator('#tourney-tryout-continue').click();
-  await requester.locator('#tourney-tryout-continue').click();
+  await seed(page, records, 'blake');
+  await page.locator('[data-partner="avery"]').click();
+  await page.locator('#tourney-tryout-submit').click();
+  await expect(page.locator('#tourney-tryout-student-status')).toContainText('You are paired');
 
-  await seed(accepter, records, 'blake');
-  await accepter.locator('#tourney-tryout-continue').click();
-  await accepter.locator('[data-partner="avery"]').click();
-  await accepter.locator('#tourney-tryout-continue').click();
-  await accepter.locator('#tourney-tryout-continue').click();
-
-  await requester.locator('#tourney-tryout-continue').click();
-  await expect(requester.locator('#tourney-tryout-error')).toContainText('locked while you were editing');
-
-  const saved = await requester.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
+  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
   const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
   expect(byId.blake.partnerId).toBe('avery');
   expect(byId.avery.partnerId).toBe('blake');
   expect(byId.casey.partnerId).toBeNull();
   expect(byId.casey.releasedReason).toBe('partner-locked');
-
-  await context.close();
 });
 
-test('does not expose unrelated public pairing relationships on the board', async ({ page }) => {
+test('either student can release a mutual pairing and choose again', async ({ page }) => {
+  const records = [
+    record('avery', 'Avery Able', 'blake'),
+    record('blake', 'Blake Baker', 'avery'),
+  ];
+  await seed(page, records, 'avery');
+
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('[data-tryout-edit]').click();
+  await expect(page.locator('#tourney-tryout-gate')).toBeVisible();
+  await expect(page.locator('[data-partner="blake"]')).toBeVisible();
+
+  let saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
+  let byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
+  expect(byId.avery.partnerId).toBeNull();
+  expect(byId.blake.partnerId).toBeNull();
+
+  await page.locator('[data-partner="blake"]').click();
+  await page.locator('#tourney-tryout-submit').click();
+  saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
+  byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
+  expect(byId.avery.partnerId).toBe('blake');
+});
+
+test('withdrawal releases both sides of a mutual pairing', async ({ page }) => {
+  const records = [
+    record('avery', 'Avery Able', 'blake'),
+    record('blake', 'Blake Baker', 'avery'),
+  ];
+  await seed(page, records, 'avery');
+
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('[data-tryout-withdraw]').click();
+  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
+  const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
+  expect(byId.avery.withdrawn).toBe(true);
+  expect(byId.avery.partnerId).toBeNull();
+  expect(byId.blake.partnerId).toBeNull();
+  await expect(page.locator('#tourney-tryout-workspace')).toBeHidden();
+});
+
+test('changing a signup releases incoming pending requests', async ({ page }) => {
+  const records = [
+    record('avery', 'Avery Able'),
+    record('casey', 'Casey Cole', 'avery'),
+  ];
+  await seed(page, records, 'avery');
+
+  page.on('dialog', dialog => dialog.accept());
+  await page.locator('[data-tryout-edit]').click();
+  await expect.poll(async () => page.evaluate(storageKey => {
+    const data = JSON.parse(localStorage.getItem(storageKey));
+    return data.records.find(item => item.id === 'casey').partnerId;
+  }, storageKey)).toBeNull();
+});
+
+test('a stale board cannot overwrite a newer mutual pairing', async ({ page }) => {
+  const records = [
+    record('avery', 'Avery Able', 'blake'),
+    record('blake', 'Blake Baker'),
+    record('casey', 'Casey Cole'),
+  ];
+  await seed(page, records, 'avery');
+  await page.evaluate(storageKey => {
+    const data = JSON.parse(localStorage.getItem(storageKey));
+    const avery = data.records.find(item => item.id === 'avery');
+    const casey = data.records.find(item => item.id === 'casey');
+    avery.partnerId = 'casey';
+    casey.partnerId = 'avery';
+    avery.updatedAt = '2026-08-29T13:00:00.000Z';
+    casey.updatedAt = '2026-08-29T13:00:00.000Z';
+    data.revision += 1;
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  }, storageKey);
+
+  await page.locator('#tourney-tryout-submit').click();
+  await expect(page.locator('#tourney-tryout-error')).toContainText('changed in another tab');
+  const saved = await page.evaluate(storageKey => JSON.parse(localStorage.getItem(storageKey)), storageKey);
+  const byId = Object.fromEntries(saved.records.map(item => [item.id, item]));
+  expect(byId.avery.partnerId).toBe('casey');
+  expect(byId.casey.partnerId).toBe('avery');
+});
+
+test('hides unrelated relationships and sixth-grade legacy records', async ({ page }) => {
   const records = [
     record('private-a', 'Private Alpha', 'private-b'),
     record('private-b', 'Private Beta', 'private-a'),
     record('private-c', 'Private Casey', 'private-d'),
     record('private-d', 'Private Delta'),
+    { ...record('sixth', 'Sixth Student'), grade: '6' },
   ];
   await seed(page, records);
-  await page.locator('#tourney-tryout-continue').click();
+  await openBoard(page);
 
   await expect(page.locator('.tourney-tryout-board-grid')).not.toContainText('Private');
   await expect(page.locator('.tourney-tryout-roster-list')).toContainText('Private C.');
+  await expect(page.locator('.tourney-tryout-roster-list')).not.toContainText('Sixth');
 });

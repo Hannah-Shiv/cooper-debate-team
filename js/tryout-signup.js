@@ -43,7 +43,7 @@
     var parts = displayName(name).replace(".", "").split(/\s+/);
     return parts.map(function (part) { return part.charAt(0); }).join("").slice(0, 2).toUpperCase();
   }
-  function gradeLabel(grade) { return grade + (grade === "6" ? "th" : grade === "7" ? "th" : "th") + " grade"; }
+  function gradeLabel(grade) { return grade + "th grade"; }
   function safeRecord(record) {
     if (!record || !record.id || !record.name || !["6", "7", "8"].includes(String(record.grade))) return null;
     var dates = Array.isArray(record.dates) ? record.dates.filter(function (date) { return DATES[date]; }) : [];
@@ -160,7 +160,7 @@
   function publicCandidates() {
     var current = activeRecord();
     return state.data.records.filter(function (record) {
-      return isActive(record) && record.id !== (current && current.id) &&
+      return isActive(record) && ["7", "8"].includes(record.grade) && record.id !== (current && current.id) &&
         record.mode === "partner" && record.dates.includes(state.date) &&
         !record.assignedPartnerId && !mutualPartner(record);
     });
@@ -276,7 +276,7 @@
     var grade = dom.studentGrade.value;
     if (name.length < 2) return "Please enter your first and last name.";
     if (name.split(/\s+/).length < 2) return "Please enter both a first and last name.";
-    if (!["6", "7", "8"].includes(grade)) return "Please select your grade.";
+    if (!["7", "8"].includes(grade)) return "Please select seventh or eighth grade.";
     if (state.mode === "partner" && !state.partnerId) return "Choose an opted-in partner or select “Let Coach pair me.”";
     return "";
   }

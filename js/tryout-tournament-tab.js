@@ -21,7 +21,7 @@
     { id: "demo-ava", name: "Ava Patel", grade: "7", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "gold", piece: "girl", isDemo: true },
     { id: "demo-noah", name: "Noah Carter", grade: "7", dates: ["sep23"], selectedDate: "sep23", mode: "assign", partnerId: null, tint: "teal", piece: "boy", isDemo: true }
   ];
-  var state = { data: null, activeId: null, date: "sep22", mode: "partner", partnerId: null, boardRow: null, step: 1, editing: false };
+  var state = { data: null, activeId: null, date: "sep22", partnerId: null, boardRow: null, boardVisible: false, editing: false, baseRelationship: "" };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
@@ -108,9 +108,12 @@
       attempt();
     });
   }
-  function activeRecord() { return state.data.records.find(function (record) { return record.id === state.activeId; }) || null; }
+  function activeRecord() { return state.data.records.find(function (record) { return record.id === state.activeId && active(record); }) || null; }
   function recordById(id) { return state.data.records.find(function (record) { return record.id === id; }) || null; }
   function active(record) { return record && !record.withdrawn; }
+  function relationshipSignature(record) {
+    return record ? [record.partnerId || "", record.assignedPartnerId || "", record.selectedDate || "", record.updatedAt || ""].join("|") : "";
+  }
   function mutual(record) {
     if (!record || !record.partnerId || record.assignedPartnerId) return null;
     var partner = recordById(record.partnerId);
@@ -126,7 +129,7 @@
   function currentCandidates() {
     var current = activeRecord();
     return state.data.records.filter(function (record) {
-      return active(record) && record.id !== (current && current.id) && record.mode === "partner" &&
+      return active(record) && ["7", "8"].includes(record.grade) && record.id !== (current && current.id) && record.mode === "partner" &&
         record.dates.includes(state.date) && !record.assignedPartnerId && !mutual(record);
     });
   }
@@ -138,17 +141,6 @@
     dom.error.hidden = !message; dom.error.textContent = message || "";
     dom.error.className = "tourney-tryout-message " + (error ? "is-error" : "is-success");
   }
-  function renderProgress() {
-    dom.screens.forEach(function (screen) { var current = Number(screen.dataset.tryoutStep) === state.step; screen.hidden = !current; screen.classList.toggle("is-current", current); });
-    dom.progress.forEach(function (item) {
-      var number = Number(item.dataset.tryoutProgress);
-      item.classList.toggle("is-current", number === state.step);
-      item.classList.toggle("is-active", number <= state.step);
-    });
-    dom.back.hidden = state.step === 1;
-    dom.continue.textContent = state.step === 3 ? (state.editing ? "Save changes →" : "Submit my sign-up →") : "Continue →";
-    if (state.step === 3) renderReview();
-  }
   function renderDates() {
     dom.dates.innerHTML = Object.keys(DATES).map(function (key) {
       var option = DATES[key], selected = key === state.date;
@@ -157,18 +149,10 @@
     }).join("");
   }
   function renderPairing() {
-    dom.modePartner.classList.toggle("is-selected", state.mode === "partner");
-    dom.modeAssign.classList.toggle("is-selected", state.mode === "assign");
-    dom.modePartner.setAttribute("aria-pressed", state.mode === "partner");
-    dom.modeAssign.setAttribute("aria-pressed", state.mode === "assign");
-    if (state.mode === "assign") {
-      dom.picker.innerHTML = '<div class="tourney-tryout-callout is-teal"><strong>Waiting for Coach</strong><br>You’ll be matched with a teammate who can attend ' + DATES[state.date].shortDate + ".</div>";
-      return;
-    }
     var candidates = currentCandidates();
     var current = activeRecord();
     var allActive = state.data.records.filter(function (record) {
-      return active(record) && record.dates.includes(state.date);
+      return active(record) && ["7", "8"].includes(record.grade) && record.dates.includes(state.date);
     });
     var boardRecords = allActive.filter(function (record) {
       return record.isDemo || Boolean(current && (record.id === current.id || record.id === current.partnerId || record.partnerId === current.id));
@@ -242,12 +226,12 @@
       return '<button class="tourney-tryout-roster-piece ' + (selected ? "is-selected " : "") + record.tint + '" data-partner="' + escapeHtml(record.id) + '" draggable="true" type="button" aria-pressed="' + selected + '">' +
         '<span class="tourney-tryout-piece-art">' + pieceSvg(record) + '</span><span class="tourney-tryout-roster-copy"><strong>' +
         escapeHtml(displayName(record.name)) + "</strong><small>" + escapeHtml(gradeLabel(record.grade) + " · " + availability) + '</small></span><span class="tourney-tryout-roster-check">' + (selected ? "✓" : "↗") + '</span></button>';
-    }).join("") : '<div class="tourney-tryout-empty">No opted-in students are available for this date yet. You can let Coach pair you instead.</div>';
+    }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var lockedCount = rows.filter(function (row) { return row.status === "locked"; }).length;
     var pendingCount = rows.filter(function (row) { return row.status === "pending" || row.status === "your-request"; }).length;
     var openCount = rows.filter(function (row) { return row.status === "open"; }).length;
     var currentStatus = current ? statusFor(current) : state.partnerId ? "pending" : "new";
-    var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "Pairing locked" : currentStatus === "pending" ? "Request pending" : state.partnerId ? "Ready to request" : "Ready to move";
+    var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? "Request pending" : state.partnerId ? "Ready to request" : "Ready to move";
     var statusDetail = selectedPartner ? "Your piece is beside " + escapeHtml(displayName(selectedPartner.name)) + "." : "Move one piece to an open square to request a pairing.";
     dom.picker.innerHTML =
       '<div class="tourney-tryout-board-layout">' +
@@ -256,16 +240,10 @@
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>Pairing board</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
         '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
-          '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Move your piece</strong>Drag to an open square.</span></li><li><b>2</b><span><strong>Partner responds</strong>They can accept, think, or decline.</span></li><li><b>3</b><span><strong>Both agree = locked</strong>The row cannot be moved.</span></li></ol></section>' +
-          '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked"></i> Both agreed · Locked</p><p><i class="pending"></i> One agreed · Pending</p><p><i class="open"></i> Available</p></section>' +
-          '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Locked</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
+          '<section class="tourney-tryout-instructions"><div class="tourney-tryout-side-title">How it works</div><ol><li><b>1</b><span><strong>Move your piece</strong>Drag or tap to choose.</span></li><li><b>2</b><span><strong>Partner responds</strong>They choose you back.</span></li><li><b>3</b><span><strong>Both agree = paired</strong>Either student can later unpair.</span></li></ol></section>' +
+          '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked"></i> Both agreed · Paired</p><p><i class="pending"></i> One agreed · Pending</p><p><i class="open"></i> Available</p></section>' +
+          '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
       '</div><div class="tourney-tryout-callout">Your move sends a request, not a final pairing. If the other student is still thinking, their square remains available for someone else.</div>';
-  }
-  function renderReview() {
-    var partner = state.partnerId && recordById(state.partnerId);
-    var target = state.mode === "partner" && partner ? displayName(partner.name) : "Waiting for Coach";
-    dom.review.innerHTML = '<div><span>Tryout session</span><strong>' + DATES[state.date].shortDate + " · " + DATES[state.date].location + "</strong></div>" +
-      '<div><span>Pairing preference</span><strong>' + escapeHtml(target) + "</strong></div>";
   }
   function renderResult() {
     var record = activeRecord();
@@ -275,21 +253,30 @@
     var partnerName = partner ? displayName(partner.name) : "your requested partner";
     var copy = {
       pending: ["Request saved", "Your request for " + partnerName + " is pending. They must choose you back before the row locks."],
-      mutual: ["Mutual request", "You and " + partnerName + " chose each other. Coach will make the final pairing decision."],
-      assigned: ["Coach assigned your pairing", "Your tryout pairing is with " + partnerName + ". Please arrive at the session shown above."],
-      waiting: ["Waiting for Coach", "You asked Coach to pair you with a teammate who can attend " + DATES[record.selectedDate].shortDate + "."],
+      mutual: ["You are paired", "You and " + partnerName + " chose each other. Either of you can use Change My Signup to unpair and choose again."],
+      assigned: ["You are paired", "Your tryout pairing is with " + partnerName + ". You can use Change My Signup to choose again."],
+      waiting: ["Choose a partner", "Move a student piece onto the board to send a request."],
       open: ["Your piece is available", record.releasedReason === "partner-locked" ? "That student completed another pairing first. Move your piece again to request someone who is still open." : "Move your piece to request an available student."]
     }[status];
     dom.result.className = "tourney-tryout-result is-" + status;
-    dom.result.innerHTML = "<h3>" + copy[0] + "</h3><p>" + copy[1] + "</p>" +
-      ((status === "pending" || status === "waiting" || status === "open") ? '<div class="tourney-tryout-result-actions"><button type="button" data-tryout-edit>Change my sign-up</button><button type="button" data-tryout-withdraw>Withdraw</button></div>' : "") +
-      '<div class="tourney-tryout-result-actions"><button type="button" data-tryout-new>Sign up another student</button></div>';
+    dom.result.innerHTML = "<h3>" + copy[0] + "</h3><p>" + copy[1] + "</p>";
     dom.result.hidden = false;
   }
-  function renderAll() { renderDates(); renderPairing(); renderProgress(); renderResult(); }
+  function renderIdentity() {
+    var record = activeRecord();
+    dom.gate.hidden = state.boardVisible && !state.editing;
+    dom.identity.hidden = !state.boardVisible;
+    dom.workspace.hidden = !state.boardVisible;
+    if (!state.boardVisible) return;
+    dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
+    dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
+    dom.submit.textContent = state.editing ? "Save new pairing request →" : "Submit pairing request →";
+  }
+  function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
   function fillRecord(record) {
     if (!record) return;
-    state.date = record.selectedDate; state.mode = record.mode; state.partnerId = record.partnerId;
+    state.date = record.selectedDate; state.partnerId = record.partnerId;
+    state.baseRelationship = relationshipSignature(record);
     dom.name.value = record.name; dom.grade.value = record.grade;
   }
   function chooseDate(date) {
@@ -299,44 +286,71 @@
     state.boardRow = null;
     formMessage(""); renderAll();
   }
-  function chooseMode(mode) { state.mode = mode === "assign" ? "assign" : "partner"; if (state.mode === "assign") state.partnerId = null; state.boardRow = null; formMessage(""); renderPairing(); }
-  function validateStep() {
-    if (state.step === 2 && state.mode === "partner" && !state.partnerId) return "Choose an opted-in partner or select “Let Coach pair me.”";
-    if (state.step === 3) {
-      if (dom.name.value.trim().split(/\s+/).length < 2) return "Please enter the student's first and last name.";
-      if (!["6", "7", "8"].includes(dom.grade.value)) return "Please select the student's grade.";
-    }
+  function validateIdentity() {
+    if (dom.name.value.trim().split(/\s+/).length < 2) return "Please enter the student's first and last name.";
+    if (!["7", "8"].includes(dom.grade.value)) return "Please select seventh or eighth grade.";
     return "";
   }
+  function showBoard() {
+    var error = validateIdentity();
+    if (error) { formMessage(error, true); dom.error.focus(); return; }
+    var duplicate = state.data.records.find(function (record) {
+      return active(record) && normalized(record.name) === normalized(dom.name.value) && record.id !== state.activeId;
+    });
+    if (duplicate) { formMessage("A sign-up for this name is already saved in this browser.", true); dom.error.focus(); return; }
+    state.boardVisible = true;
+    state.editing = Boolean(activeRecord());
+    formMessage("");
+    renderAll();
+    dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function releaseRelationships(record, releaseIncoming) {
+    if (!record) return;
+    var partnerId = record.partnerId;
+    var assignedId = record.assignedPartnerId;
+    record.partnerId = null;
+    record.assignedPartnerId = null;
+    state.data.records.forEach(function (other) {
+      if (other.id === record.id) return;
+      var reciprocal = (partnerId && other.id === partnerId && other.partnerId === record.id) ||
+        (assignedId && other.id === assignedId && other.assignedPartnerId === record.id);
+      if (reciprocal || (releaseIncoming && (other.partnerId === record.id || other.assignedPartnerId === record.id))) {
+        if (other.partnerId === record.id) other.partnerId = null;
+        if (other.assignedPartnerId === record.id) other.assignedPartnerId = null;
+        other.releasedReason = "";
+        other.updatedAt = now();
+      }
+    });
+  }
   function submit() {
-    var error = validateStep();
+    var error = validateIdentity();
+    if (!error && !state.partnerId) error = "Choose an available student before submitting your pairing request.";
     if (error) { formMessage(error, true); dom.error.focus(); return; }
     return withWriteLock(function () {
+      var expectedRelationship = state.baseRelationship;
       syncData();
       var name = dom.name.value.trim().replace(/\s+/g, " "), grade = dom.grade.value;
       var record = activeRecord();
-      if (record && ["mutual", "assigned"].includes(statusFor(record))) {
-        state.editing = false;
+      if (record && expectedRelationship && relationshipSignature(record) !== expectedRelationship) {
         fillRecord(record);
-        state.step = 1;
+        state.editing = false;
         renderAll();
-        formMessage("This pairing locked while you were editing, so your older changes were not saved.", true);
+        formMessage("Your signup changed in another tab. The board was refreshed so the newer pairing was not overwritten.", true);
         return;
       }
       var duplicate = state.data.records.find(function (record) { return active(record) && normalized(record.name) === normalized(name) && record.id !== state.activeId; });
       if (duplicate) { formMessage("A sign-up for this name is already saved in this browser. Use “Sign up another student” only for a different student.", true); dom.error.focus(); return; }
-      if (state.mode === "partner") {
-        var partner = recordById(state.partnerId);
-        if (!partner || !active(partner) || partner.mode !== "partner" || !partner.dates.includes(state.date) || partner.assignedPartnerId || mutual(partner)) {
-          state.partnerId = null; renderPairing(); formMessage("That partner is no longer available for this date. Please choose another option.", true); dom.error.focus(); return;
-        }
+      var partner = recordById(state.partnerId);
+      if (!partner || !active(partner) || !["7", "8"].includes(partner.grade) || partner.mode !== "partner" || !partner.dates.includes(state.date) || partner.assignedPartnerId || mutual(partner)) {
+        state.partnerId = null; renderPairing(); formMessage("That student is no longer available for this session. Please choose another.", true); dom.error.focus(); return;
       }
       if (!record) {
-        record = { id: makeId(), name: name, grade: grade, dates: [state.date], selectedDate: state.date, mode: state.mode, partnerId: state.partnerId, assignedPartnerId: null, tint: "blue", isDemo: false, createdAt: now(), updatedAt: now() };
+        record = { id: makeId(), name: name, grade: grade, dates: [state.date], selectedDate: state.date, mode: "partner", partnerId: state.partnerId, assignedPartnerId: null, tint: "blue", isDemo: false, createdAt: now(), updatedAt: now() };
         state.data.records.push(record); state.activeId = record.id;
         try { window.localStorage.setItem(ACTIVE_KEY, state.activeId); } catch (ignore) {}
       } else {
-        record.name = name; record.grade = grade; record.dates = [state.date]; record.selectedDate = state.date; record.mode = state.mode; record.partnerId = state.partnerId; record.releasedReason = ""; record.updatedAt = now();
+        if (record.partnerId !== state.partnerId || record.selectedDate !== state.date) releaseRelationships(record, false);
+        record.name = name; record.grade = grade; record.dates = [state.date]; record.selectedDate = state.date; record.mode = "partner"; record.partnerId = state.partnerId; record.releasedReason = ""; record.updatedAt = now();
       }
       var winningPartner = mutual(record);
       if (winningPartner) {
@@ -350,29 +364,58 @@
         });
       }
       if (!saveData()) return;
-      state.editing = false; state.step = 1; formMessage("Your sign-up is saved. Return to this page in this browser to review your status.");
+      state.baseRelationship = relationshipSignature(record);
+      state.editing = false; formMessage(mutual(record) ? "You are paired. Either student can change the pairing from this board." : "Pairing request saved. It will pair automatically if the other student chooses you.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     });
   }
-  function edit() { var record = activeRecord(); if (!record || ["mutual", "assigned"].includes(statusFor(record))) return; state.editing = true; fillRecord(record); state.step = 1; formMessage(""); renderAll(); dom.name.focus(); }
-  function withdraw() {
-    if (!window.confirm("Withdraw this tryout sign-up?")) return;
+  function edit() {
+    var record = activeRecord();
+    if (!record) { state.editing = true; renderAll(); dom.name.focus(); return; }
+    if (!window.confirm("Change this signup? Any current request or pairing will be released so both students can choose again.")) return;
     return withWriteLock(function () {
-      syncData(); var record = activeRecord(); if (!record || ["mutual", "assigned"].includes(statusFor(record))) return;
+      syncData();
+      record = activeRecord();
+      if (!record) return;
+      releaseRelationships(record, true);
+      record.releasedReason = "";
+      record.updatedAt = now();
+      if (!saveData()) return;
+      state.partnerId = null;
+      state.boardRow = null;
+      state.editing = true;
+      fillRecord(record);
+      formMessage("Your previous pairing was released. Update your details or choose a new partner.");
+      renderAll();
+      dom.name.focus();
+    });
+  }
+  function withdraw() {
+    if (!window.confirm("Withdraw from tryouts? Any current partner will become available to choose again.")) return;
+    return withWriteLock(function () {
+      syncData(); var record = activeRecord(); if (!record) return;
+      releaseRelationships(record, true);
       record.withdrawn = true; record.updatedAt = now();
-      if (saveData()) { state.activeId = null; state.editing = false; try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {} formMessage("Your sign-up was withdrawn. You can submit a new choice from this page."); renderAll(); }
+      if (saveData()) { state.activeId = null; state.editing = false; state.boardVisible = false; state.partnerId = null; try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {} dom.name.value = ""; dom.grade.value = ""; formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll(); }
     });
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.step = 1; state.date = "sep22"; state.mode = "partner"; state.partnerId = null; state.boardRow = null;
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; state.partnerId = null; state.boardRow = null; state.baseRelationship = "";
     try { window.localStorage.removeItem(ACTIVE_KEY); } catch (ignore) {}
     dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.name.focus();
   }
   function init() {
-    dom = { status: $("tourney-tryout-status"), dates: $("tourney-tryout-date-options"), picker: $("tourney-tryout-partner-picker"), modePartner: $("tourney-tryout-mode-partner"), modeAssign: $("tourney-tryout-mode-assign"), name: $("tourney-tryout-name"), grade: $("tourney-tryout-grade"), review: $("tourney-tryout-review"), form: $("tourney-tryout-form"), error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), back: $("tourney-tryout-back"), continue: $("tourney-tryout-continue"), result: $("tourney-tryout-student-status"), screens: Array.from(document.querySelectorAll("[data-tryout-step]")), progress: Array.from(document.querySelectorAll("[data-tryout-progress]")) };
+    dom = {
+      status: $("tourney-tryout-status"), dates: $("tourney-tryout-date-options"), picker: $("tourney-tryout-partner-picker"),
+      name: $("tourney-tryout-name"), grade: $("tourney-tryout-grade"), form: $("tourney-tryout-form"),
+      error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
+      showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
+      identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
+      identityMeta: $("tourney-tryout-identity-meta"), result: $("tourney-tryout-student-status")
+    };
     state.data = loadData();
     try { state.activeId = window.localStorage.getItem(ACTIVE_KEY); } catch (ignore) {}
-    fillRecord(activeRecord());
+    if (activeRecord()) { fillRecord(activeRecord()); state.boardVisible = true; }
     dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });
     dom.picker.addEventListener("click", function (event) {
       var button = event.target.closest("[data-partner]");
@@ -380,7 +423,7 @@
       var slot = event.target.closest("[data-drop-slot]");
       if (slot && state.partnerId) {
         state.boardRow = Number(slot.dataset.dropRow);
-        formMessage("Piece moved. Continue to send this pending request.");
+        formMessage("Piece moved. Submit to send this pending request.");
         renderPairing();
       }
     });
@@ -416,16 +459,23 @@
       }
       state.partnerId = partnerId;
       state.boardRow = Number(target.dataset.dropRow);
-      formMessage("Piece moved. Continue to send this pending request.");
+      formMessage("Piece moved. Submit to send this pending request.");
       renderPairing();
     });
-    dom.modePartner.addEventListener("click", function () { chooseMode("partner"); }); dom.modeAssign.addEventListener("click", function () { chooseMode("assign"); });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });
-    dom.continue.addEventListener("click", function () { if (state.step < 3) { var error = validateStep(); if (error) { formMessage(error, true); dom.error.focus(); return; } state.step += 1; formMessage(""); renderAll(); } else submit(); });
-    dom.back.addEventListener("click", function () { if (state.step > 1) { state.step -= 1; formMessage(""); renderAll(); } });
+    dom.showBoard.addEventListener("click", showBoard);
     dom.name.addEventListener("input", function () { formMessage(""); }); dom.grade.addEventListener("change", function () { formMessage(""); });
-    dom.result.addEventListener("click", function (event) { if (event.target.closest("[data-tryout-edit]")) edit(); if (event.target.closest("[data-tryout-withdraw]")) withdraw(); if (event.target.closest("[data-tryout-new]")) newStudent(); });
-    window.addEventListener("storage", function (event) { if (event.key !== STORAGE_KEY) return; syncData(); fillRecord(activeRecord()); showMessage("Tryout data changed in another tab. This view has been refreshed."); renderAll(); });
+    dom.identity.addEventListener("click", function (event) { if (event.target.closest("[data-tryout-edit]")) edit(); if (event.target.closest("[data-tryout-withdraw]")) withdraw(); if (event.target.closest("[data-tryout-new]")) newStudent(); });
+    window.addEventListener("storage", function (event) {
+      if (event.key !== STORAGE_KEY && event.key !== ACTIVE_KEY) return;
+      if (event.key === ACTIVE_KEY && !state.activeId && event.newValue) state.activeId = event.newValue;
+      syncData();
+      var record = activeRecord();
+      if (record) fillRecord(record);
+      else { state.activeId = null; state.boardVisible = false; state.partnerId = null; state.baseRelationship = ""; }
+      showMessage("Tryout data changed in another tab. This view has been refreshed.");
+      renderAll();
+    });
     renderAll();
   }
   document.addEventListener("DOMContentLoaded", function () { if ($("tourney-tryout-form")) init(); });
