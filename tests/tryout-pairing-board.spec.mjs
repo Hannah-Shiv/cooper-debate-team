@@ -224,6 +224,10 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
+  await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveText("Board statistics");
+  await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span")).toHaveCount(2);
+  await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span").first()).toHaveCSS("border-left-style", "solid");
+  expect(parseFloat(await page.locator(".tourney-tryout-output-stats strong").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(22);
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 182, 165)");
