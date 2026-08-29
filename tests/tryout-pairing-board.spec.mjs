@@ -291,7 +291,10 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-message")).toBeHidden();
   await expect(page.locator(".tourney-tryout-how-panel .tourney-tryout-screen-heading p")).toHaveText("How it works");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Choose your debate partner");
-  await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "50px");
+   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "68px");
+   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("font-weight", "900");
+   expect(parseFloat(await page.locator("#tourney-tryout-submit").evaluate(button => getComputedStyle(button).fontSize))).toBeGreaterThanOrEqual(15);
+   expect(parseFloat(await page.locator("[data-drop-slot] small").first().evaluate(label => getComputedStyle(label).fontSize))).toBeGreaterThanOrEqual(8.6);
   await expect(page.locator(".tourney-tryout-action-card button:visible")).toHaveCount(2);
   await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Partner sign-up in progress");
   await expect(page.locator("[data-tryout-pairs]")).toBeVisible();
