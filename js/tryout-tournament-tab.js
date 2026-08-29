@@ -19,7 +19,7 @@
     { id: "demo-ethan", name: "Ethan Lewis", grade: "8", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "teal", piece: "boy", isDemo: true },
     { id: "demo-sophie", name: "Sophie Nguyen", grade: "6", dates: ["sep22", "sep23"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "violet", piece: "girl", isDemo: true },
     { id: "demo-ava", name: "Ava Patel", grade: "7", dates: ["sep22"], selectedDate: "sep22", mode: "partner", partnerId: null, tint: "gold", piece: "girl", isDemo: true },
-    { id: "demo-noah", name: "Noah Carter", grade: "7", dates: ["sep23"], selectedDate: "sep23", mode: "assign", partnerId: null, tint: "teal", piece: "boy", isDemo: true }
+    { id: "demo-noah", name: "Noah Carter", grade: "7", dates: ["sep23"], selectedDate: "sep23", mode: "partner", partnerId: null, tint: "teal", piece: "boy", isDemo: true }
   ];
   var state = { data: null, activeId: null, date: "sep22", partnerId: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, baseRelationship: "" };
   var dom = {};
@@ -39,14 +39,15 @@
     if (!record || !record.id || !record.name || !["6", "7", "8"].includes(String(record.grade))) return null;
     var dates = Array.isArray(record.dates) ? record.dates.filter(function (key) { return DATES[key]; }) : [];
     if (!dates.length) return null;
+    var isDemo = Boolean(record.isDemo);
     return {
       id: String(record.id), name: String(record.name).trim().slice(0, 80), grade: String(record.grade),
       dates: dates, selectedDate: DATES[record.selectedDate] ? record.selectedDate : dates[0],
-      mode: record.mode === "assign" ? "assign" : "partner", partnerId: record.partnerId ? String(record.partnerId) : null,
+      mode: record.mode === "assign" && !isDemo ? "assign" : "partner", partnerId: record.partnerId ? String(record.partnerId) : null,
       assignedPartnerId: record.assignedPartnerId ? String(record.assignedPartnerId) : null,
       tint: ["gold", "blue", "violet", "teal"].includes(record.tint) ? record.tint : "blue",
       piece: record.piece === "girl" ? "girl" : "boy",
-      isDemo: Boolean(record.isDemo), withdrawn: Boolean(record.withdrawn),
+      isDemo: isDemo, withdrawn: Boolean(record.withdrawn),
       releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
       createdAt: record.createdAt || now(), updatedAt: record.updatedAt || now()
     };
@@ -199,9 +200,6 @@
         }
       }
     }
-    boardRecords.forEach(function (record) {
-      if (!seen[record.id] && record.mode === "assign") addRow(record, null, "open");
-    });
     var maxRows = Math.max(8, rows.length);
     function pieceSvg(record) {
       var pieceType = record && record.piece === "girl" ? "girl" : "boy";

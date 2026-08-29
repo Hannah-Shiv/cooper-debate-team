@@ -121,6 +121,20 @@ test('a pending request can add a student already shown in another pending row',
   await expect(page.locator('.tourney-tryout-board-row.is-pending')).toContainText('Olivia B.');
 });
 
+test('does not show a legacy Coach-assignment row for Noah', async ({ page }) => {
+  await seed(page, []);
+  await page.evaluate(({ storageKey, activeKey }) => {
+    localStorage.removeItem(storageKey);
+    localStorage.removeItem(activeKey);
+  }, { storageKey, activeKey });
+  await page.reload({ waitUntil: 'domcontentloaded' });
+  await page.locator('[data-date="sep23"]').click();
+  await openBoard(page);
+
+  await expect(page.locator('.tourney-tryout-board-grid')).not.toContainText('Noah');
+  await expect(page.locator('.tourney-tryout-roster-list')).toContainText('Noah C.');
+});
+
 test('either student can release a mutual pairing and choose again', async ({ page }) => {
   const records = [
     record('avery', 'Avery Able', 'blake'),
