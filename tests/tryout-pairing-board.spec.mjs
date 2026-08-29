@@ -140,7 +140,7 @@ test("keeps duplicate names as distinct choices and enforces the four-choice lim
 
   await expect(page.getByRole("button", { name: /Sam K\./ })).toHaveCount(2);
   await expect(page.locator(".tourney-tryout-roster-piece svg")).toHaveCount(0);
-  await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-grade')).toHaveText("8");
+  await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-grade')).toHaveText("8th grade");
   await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-availability')).toHaveText("Sept 22");
   for (const id of ["sam-one", "sam-two", "avery", "blake"]) {
     await page.locator(`[data-partner="${id}"]`).click();

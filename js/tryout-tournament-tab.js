@@ -318,12 +318,12 @@
     var list = candidates.length ? candidates.map(function (record) {
       var selectedIndex = state.partnerIds.indexOf(record.id);
       var selected = selectedIndex !== -1;
-      var availability = record.dates.map(function (date) { return DATES[date].shortDate; }).join(" · ");
+      var availability = DATES[state.date].shortDate;
       return '<button class="tourney-tryout-roster-piece ' + (selected ? "is-selected " : "") + record.tint + '" data-partner="' + escapeHtml(record.id) + '" draggable="true" type="button" aria-pressed="' + selected + '">' +
         '<span class="tourney-tryout-roster-name"><strong>' + escapeHtml(displayName(record.name)) + '</strong></span>' +
-        '<span class="tourney-tryout-roster-grade">' + escapeHtml(record.grade) + '</span>' +
+        '<span class="tourney-tryout-roster-grade">' + escapeHtml(record.grade + "th grade") + '</span>' +
         '<span class="tourney-tryout-roster-availability">' + escapeHtml(availability) + '</span>' +
-        '<span class="tourney-tryout-roster-check">' + (selected ? "#" + (selectedIndex + 1) : "+") + '</span></button>';
+        '<span class="tourney-tryout-roster-check" aria-label="' + (selected ? "Priority " + (selectedIndex + 1) : "Not selected") + '">' + (selected ? "#" + (selectedIndex + 1) : "—") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var selectedChoices = state.partnerIds.length
       ? '<ol class="tourney-tryout-preference-list" aria-label="Ranked partner choices">' + state.partnerIds.map(function (partnerId, index) {
