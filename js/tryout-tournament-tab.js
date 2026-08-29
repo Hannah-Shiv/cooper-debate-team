@@ -180,7 +180,8 @@
     });
     if (state.partnerId) {
       var selectedPartner = recordById(state.partnerId);
-      if (selectedPartner && !rows.some(function (row) { return row.left && row.left.id === selectedPartner.id || row.right && row.right.id === selectedPartner.id; })) {
+      var hasYourRequest = rows.some(function (row) { return row.left && row.left.isYou; });
+      if (selectedPartner && !hasYourRequest) {
         var requestRow = { left: { id: "your-piece", name: "Your piece", grade: "", piece: "girl", tint: "teal", isYou: true }, right: selectedPartner, status: "your-request" };
         if (Number.isInteger(state.boardRow) && state.boardRow >= rows.length && state.boardRow < 8) {
           while (rows.length <= state.boardRow) rows.push({ left: null, right: null, status: "open" });

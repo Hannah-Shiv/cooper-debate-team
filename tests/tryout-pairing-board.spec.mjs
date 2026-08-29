@@ -86,6 +86,25 @@ test('first mutual acceptance pairs students and releases competitors', async ({
   expect(byId.casey.releasedReason).toBe('partner-locked');
 });
 
+test('a pending request can add a student already shown in another pending row', async ({ page }) => {
+  const records = [
+    record('sam', 'Sam Kim', 'olivia'),
+    record('olivia', 'Olivia Brooks'),
+  ];
+  records[0].dates = ['sep23'];
+  records[0].selectedDate = 'sep23';
+  records[1].dates = ['sep23'];
+  records[1].selectedDate = 'sep23';
+
+  await seed(page, records);
+  await page.locator('[data-date="sep23"]').click();
+  await openBoard(page);
+  await page.locator('[data-partner="olivia"]').click();
+  await expect(page.locator('.tourney-tryout-board-row.is-your-request')).toHaveCount(1);
+  await page.locator('#tourney-tryout-submit').click();
+  await expect(page.locator('.tourney-tryout-board-row.is-pending')).toContainText('Olivia B.');
+});
+
 test('either student can release a mutual pairing and choose again', async ({ page }) => {
   const records = [
     record('avery', 'Avery Able', 'blake'),
