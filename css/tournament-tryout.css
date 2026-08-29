@@ -253,8 +253,9 @@
 .tourney-tryout-roster-piece.is-selected { border-color: #f4c44c; box-shadow: 0 0 13px rgba(244,196,76,.34); }
 .tourney-tryout-roster-piece.is-dragging { opacity: .42; cursor: grabbing; }
 .tourney-tryout-roster-piece[hidden] { display: none; }
-.tourney-tryout-roster-name,.tourney-tryout-roster-grade,.tourney-tryout-roster-availability { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tourney-tryout-roster-name strong { display: block; overflow: hidden; font-size: .62rem; text-overflow: ellipsis; white-space: nowrap; }
+.tourney-tryout-roster-name { min-width: 0; overflow: visible; white-space: normal; }
+.tourney-tryout-roster-grade,.tourney-tryout-roster-availability { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tourney-tryout-roster-name strong { display: block; overflow: visible; font-size: .62rem; overflow-wrap: anywhere; white-space: normal; }
 .tourney-tryout-roster-grade,.tourney-tryout-roster-availability { color: #7891b8; font-size: .48rem; line-height: 1.35; }
 .tourney-tryout-roster-check { display:grid; place-items:center; justify-self: end; min-width:18px; height:18px; padding:0 3px; color: #7fbaff; border-radius:9px; font-size: .52rem; font-weight:800; }
 .tourney-tryout-roster-piece.is-selected .tourney-tryout-roster-check { color:#07162d; background:#f4c44c; }
