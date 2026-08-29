@@ -125,11 +125,16 @@ test("submits four choices in the visible preference order", async ({ page }) =>
 
   const caseyRow = page.locator('[data-pref-id="casey"]');
   const blakeRow = page.locator('[data-pref-id="blake"]');
+  await expect(page.locator(".tourney-tryout-roster-piece").first()).toContainText("8th grade");
+  await expect(page.locator(".tourney-tryout-roster-availability")).toHaveCount(0);
+  await expect(caseyRow.locator(".tourney-tryout-preference-grade")).toHaveText("8th grade");
   const caseyBox = await caseyRow.boundingBox();
   const blakeBox = await blakeRow.boundingBox();
   await page.mouse.move(caseyBox.x + caseyBox.width / 2, caseyBox.y + caseyBox.height / 2);
   await page.mouse.down();
+  await expect(caseyRow).toHaveClass(/is-dragging/);
   await page.mouse.move(blakeBox.x + blakeBox.width / 2, blakeBox.y + blakeBox.height * 0.25);
+  await expect(blakeRow).toHaveClass(/is-drop-target/);
   await page.mouse.up();
   await expect(page.locator(".tourney-tryout-preference-list li").nth(1)).toContainText("Casey C.");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(0).locator("b")).toHaveText("1");
@@ -465,7 +470,7 @@ test("keeps duplicate names as distinct choices and enforces the four-choice lim
   await expect(page.getByRole("button", { name: /Sam K\./ })).toHaveCount(2);
   await expect(page.locator(".tourney-tryout-roster-piece svg")).toHaveCount(0);
   await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-grade')).toHaveText("8th grade");
-  await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-availability')).toHaveText("Sept 22");
+  await expect(page.locator('[data-partner="sam-one"] .tourney-tryout-roster-availability')).toHaveCount(0);
   for (const id of ["sam-one", "sam-two", "avery", "blake"]) {
     await page.locator(`[data-partner="${id}"]`).click();
   }

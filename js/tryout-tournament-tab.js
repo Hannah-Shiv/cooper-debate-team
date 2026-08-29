@@ -20,6 +20,7 @@
   var dom = {};
   var pendingIdentityAction = "";
   var preferenceDrag = null;
+  var preferenceAnimation = null;
 
   function $(id) { return document.getElementById(id); }
   function normalized(value) { return String(value || "").trim().toLowerCase().replace(/\s+/g, " "); }
@@ -379,11 +380,9 @@
     var list = candidates.length ? candidates.map(function (record) {
       var selectedIndex = state.partnerIds.indexOf(record.id);
       var selected = selectedIndex !== -1;
-      var availability = DATES[state.date].shortDate;
       return '<button class="tourney-tryout-roster-piece ' + (selected ? "is-selected " : "") + record.tint + '" data-partner="' + escapeHtml(record.id) + '" draggable="true" type="button" aria-pressed="' + selected + '">' +
         '<span class="tourney-tryout-roster-name"><strong>' + escapeHtml(displayName(record.name)) + '</strong></span>' +
-        '<span class="tourney-tryout-roster-grade">' + escapeHtml(record.grade + "th grade") + '</span>' +
-        '<span class="tourney-tryout-roster-availability">' + escapeHtml(availability) + '</span>' +
+         '<span class="tourney-tryout-roster-grade">' + escapeHtml(gradeLabel(record.grade)) + '</span>' +
         '<span class="tourney-tryout-roster-check" aria-label="' + (selected ? "Priority " + (selectedIndex + 1) : "Not selected") + '">' + (selected ? "#" + (selectedIndex + 1) : "—") + '</span></button>';
     }).join("") : '<div class="tourney-tryout-empty">No students are available for this session yet. Check back after more students open the board.</div>';
     var selectedChoices = state.partnerIds.length
@@ -391,7 +390,9 @@
         var preference = recordById(partnerId);
         if (!preference) return "";
         var name = displayName(preference.name);
-        return '<li data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + '. Drag anywhere on this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">↕</span><span>' + escapeHtml(name) + '</span>' +
+         var grade = preference.grade ? gradeLabel(String(preference.grade)) : "";
+         var animationClass = preferenceAnimation && preferenceAnimation.id === partnerId ? " is-reordered-" + preferenceAnimation.direction : "";
+         return '<li class="tourney-tryout-preference-row' + animationClass + '" data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + ', ' + escapeHtml(grade) + '. Drag anywhere on this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">↕</span><span class="tourney-tryout-preference-name">' + escapeHtml(name) + '</span><span class="tourney-tryout-preference-grade">' + escapeHtml(grade) + '</span>' +
           '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(name) + '">×</button></li>';
       }).join("") + '</ol><p id="tourney-tryout-preference-hint" class="tourney-tryout-preference-hint">Hold and drag a row to change its priority. Keyboard users can use the up and down arrow keys.</p>'
       : '<p class="tourney-tryout-preference-empty">Your choices will appear here in priority order.</p>';
@@ -446,6 +447,7 @@
      dom.outputPaired.textContent = lockedCount;
      dom.outputPending.textContent = pendingCount;
      dom.outputOpen.textContent = openCount;
+      preferenceAnimation = null;
   }
   function renderResult() {
     var record = activeRecord();
@@ -725,6 +727,7 @@
         var reordered = state.partnerIds.slice();
          reordered.splice(preferenceIndex, 1);
         setPartnerIds(reordered);
+       preferenceAnimation = { id: moved, direction: nextIndex < index ? "up" : "down" };
         state.draftDirty = true;
          formMessage("Choice removed.");
         renderAll();
@@ -786,6 +789,7 @@
       if (!row || event.target.closest("button")) return;
       preferenceDrag = { row: row, pointerId: event.pointerId, startOrder: state.partnerIds.slice(), targetId: null, before: true };
       row.classList.add("is-dragging");
+       row.setAttribute("aria-grabbed", "true");
       row.setPointerCapture(event.pointerId);
     });
     dom.picker.addEventListener("pointermove", function (event) {
@@ -798,20 +802,26 @@
         return event.clientY >= box.top && event.clientY <= box.bottom;
       });
       if (!target) return;
-      rows.forEach(function (item) { item.classList.toggle("is-drop-target", item === target); });
+       rows.forEach(function (item) {
+         item.classList.toggle("is-drop-target", item === target);
+         item.classList.remove("is-drop-before", "is-drop-after");
+       });
       var targetBox = target.getBoundingClientRect();
       preferenceDrag.targetId = target.dataset.prefId;
       preferenceDrag.before = event.clientY < targetBox.top + targetBox.height / 2;
+       target.classList.add(preferenceDrag.before ? "is-drop-before" : "is-drop-after");
     });
     function finishPreferenceDrag(event) {
       if (!preferenceDrag || preferenceDrag.pointerId !== event.pointerId) return;
       var row = preferenceDrag.row;
       row.classList.remove("is-dragging");
+       row.removeAttribute("aria-grabbed");
       dom.picker.querySelectorAll(".is-drop-target").forEach(function (item) { item.classList.remove("is-drop-target"); });
+       dom.picker.querySelectorAll(".is-drop-before,.is-drop-after").forEach(function (item) { item.classList.remove("is-drop-before", "is-drop-after"); });
       if (row.hasPointerCapture(event.pointerId)) row.releasePointerCapture(event.pointerId);
       var reordered = preferenceDrag.startOrder.slice();
+       var movedIndex = reordered.indexOf(row.dataset.prefId);
       if (preferenceDrag.targetId) {
-        var movedIndex = reordered.indexOf(row.dataset.prefId);
         if (movedIndex !== -1) reordered.splice(movedIndex, 1);
         var targetIndex = reordered.indexOf(preferenceDrag.targetId);
         if (targetIndex !== -1) reordered.splice(targetIndex + (preferenceDrag.before ? 0 : 1), 0, row.dataset.prefId);
@@ -820,6 +830,7 @@
       preferenceDrag = null;
       if (!changed) return;
       setPartnerIds(reordered);
+       preferenceAnimation = { id: row.dataset.prefId, direction: reordered.indexOf(row.dataset.prefId) < movedIndex ? "up" : "down" };
       state.draftDirty = true;
       formMessage("Preference order updated.");
       renderAll();

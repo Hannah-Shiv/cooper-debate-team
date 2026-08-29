@@ -1,4 +1,14 @@
 /* Native Tournaments tab treatment for the browser-only tryout demo. */
+@keyframes tourneyPreferenceShiftUp {
+  0% { background: #123f49; transform: translateY(10px) scale(1.015); }
+  55% { background: #2f756e; transform: translateY(-4px) scale(1.02); }
+  100% { background: rgba(244,196,76,.08); transform: translateY(0) scale(1); }
+}
+@keyframes tourneyPreferenceShiftDown {
+  0% { background: #123f49; transform: translateY(-10px) scale(1.015); }
+  55% { background: #2f756e; transform: translateY(4px) scale(1.02); }
+  100% { background: rgba(244,196,76,.08); transform: translateY(0) scale(1); }
+}
 .tourney-tryout-section {
   padding: 30px 0 80px;
   background: #1c2030;
@@ -303,12 +313,19 @@
 .tourney-tryout-filter-row span { color: #7890b7; font: 700 .63rem 'Josefin Sans',sans-serif; letter-spacing: .05em; text-transform: uppercase; }
 .tourney-tryout-filter-row .is-active { padding: 6px 9px; color: #092049; border-radius: 5px; background: #f5c441; }
 .tourney-tryout-preference-list { display:grid; gap:5px; margin:0 0 10px; padding:0; list-style:none; }
-.tourney-tryout-preference-list li { display:grid; grid-template-columns:25px 22px minmax(0,1fr) 30px; gap:7px; align-items:center; min-height:44px; padding:6px 7px; color:#dce9ff; border:1px solid rgba(244,196,76,.3); border-radius:6px; background:rgba(244,196,76,.08); cursor:grab; touch-action:none; transition:border-color .16s,background .16s,box-shadow .16s,transform .16s,opacity .16s; }
+ .tourney-tryout-preference-list li { position:relative; display:grid; grid-template-columns:25px 22px minmax(0,1fr) 72px 30px; gap:7px; align-items:center; min-height:44px; padding:6px 7px; color:#dce9ff; border:1px solid rgba(244,196,76,.3); border-radius:6px; background:rgba(244,196,76,.08); cursor:grab; touch-action:none; transition:border-color .16s,background .16s,box-shadow .16s,transform .16s,opacity .16s; }
 .tourney-tryout-preference-list li:hover,.tourney-tryout-preference-list li:focus-visible { border-color:#f4c44c; background:rgba(244,196,76,.13); outline:none; }
-.tourney-tryout-preference-list li.is-dragging { z-index:3; opacity:.92; border-color:#6ce0c8; background:linear-gradient(100deg,rgba(31,122,111,.48),rgba(15,54,100,.78)); box-shadow:0 8px 18px rgba(0,0,0,.28),0 0 0 2px rgba(108,224,200,.16); cursor:grabbing; transform:scale(1.015); }
-.tourney-tryout-preference-list li.is-drop-target { border-color:#f4c44c; box-shadow:0 -3px 0 rgba(244,196,76,.75); }
+ .tourney-tryout-preference-list li.is-dragging { z-index:3; opacity:.98; border-color:#6ce0c8; background:#123f49; box-shadow:0 10px 20px rgba(0,0,0,.34),0 0 0 2px rgba(108,224,200,.3); cursor:grabbing; transform:translateY(-3px) scale(1.02); }
+ .tourney-tryout-preference-list li.is-drop-target { border-color:#f4c44c; background:#3b341f; box-shadow:none; }
+ .tourney-tryout-preference-list li.is-drop-before::before,.tourney-tryout-preference-list li.is-drop-after::before { position:absolute; left:7px; right:7px; z-index:4; height:3px; border-radius:3px; background:#f4c44c; box-shadow:0 0 0 1px rgba(255,245,180,.45); content:""; }
+ .tourney-tryout-preference-list li.is-drop-before::before { top:-4px; }
+ .tourney-tryout-preference-list li.is-drop-after::before { bottom:-4px; }
+ .tourney-tryout-preference-list li.is-reordered-up { animation:tourneyPreferenceShiftUp .42s ease-out; }
+ .tourney-tryout-preference-list li.is-reordered-down { animation:tourneyPreferenceShiftDown .42s ease-out; }
 .tourney-tryout-preference-list li > b { display:grid; place-items:center; width:23px; height:23px; color:#07162d; border-radius:50%; background:#f4c44c; font-size:.58rem; }
-.tourney-tryout-preference-list li > span:not(.tourney-tryout-preference-grip) { min-width:0; overflow:hidden; font-size:.66rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+ .tourney-tryout-preference-list li > span:not(.tourney-tryout-preference-grip) { min-width:0; overflow:hidden; font-size:.66rem; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
+ .tourney-tryout-preference-name { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+ .tourney-tryout-preference-grade { padding-left:8px; color:#b8cae6; border-left:1px solid rgba(142,199,255,.35); font-size:.57rem!important; font-weight:600!important; }
 .tourney-tryout-preference-grip { display:grid; place-items:center; width:19px; height:24px; color:#8ec7ff; border:1px solid rgba(142,199,255,.34); border-radius:4px; font-size:.94rem; font-weight:700; line-height:1; text-align:center; }
 .tourney-tryout-preference-list button { display:grid; place-items:center; width:27px; height:27px; padding:0; color:#a9ccff; border:1px solid rgba(120,157,225,.3); border-radius:4px; background:rgba(4,13,34,.62); font-size:.76rem; }
 .tourney-tryout-preference-list button:last-child { color:#ffc7c7; }
@@ -320,16 +337,16 @@
 .tourney-tryout-search input { min-width: 0; width: 100%; padding: 9px 0; color: #eef5ff; border: 0; outline: 0; background: transparent; font-size: .7rem; }
 .tourney-tryout-search input::placeholder { color: #617ba4; }
 .tourney-tryout-roster-list { display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 540px; overflow-y: auto; scrollbar-color: rgba(103,157,235,.45) transparent; }
-.tourney-tryout-roster-piece { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 74px 82px 48px; align-items: center; min-width: 0; min-height: 52px; padding: 7px 10px; color: #eaf3ff; border: 1px solid rgba(79,139,231,.5); border-radius: 7px; background: linear-gradient(155deg,rgba(10,41,91,.88),rgba(3,18,48,.86)); cursor: grab; text-align: left; transition: border-color .17s,box-shadow .17s,transform .17s,opacity .17s; }
+ .tourney-tryout-roster-piece { position: relative; display: grid; grid-template-columns: minmax(0,1fr) 82px 48px; align-items: center; min-width: 0; min-height: 52px; padding: 7px 10px; color: #eaf3ff; border: 1px solid rgba(79,139,231,.5); border-radius: 7px; background: linear-gradient(155deg,rgba(10,41,91,.88),rgba(3,18,48,.86)); cursor: grab; text-align: left; transition: border-color .17s,box-shadow .17s,transform .17s,opacity .17s; }
 .tourney-tryout-roster-piece:hover,.tourney-tryout-roster-piece:focus-visible { border-color: #76bdff; box-shadow: 0 0 13px rgba(56,145,255,.25); transform: translateY(-2px); outline: none; }
 .tourney-tryout-roster-piece.is-selected { border-color: #f4c44c; box-shadow: 0 0 13px rgba(244,196,76,.34); }
 .tourney-tryout-roster-piece.is-dragging { opacity: .42; cursor: grabbing; }
 .tourney-tryout-roster-piece[hidden] { display: none; }
 .tourney-tryout-roster-name { min-width: 0; overflow: hidden; white-space: nowrap; }
-.tourney-tryout-roster-grade,.tourney-tryout-roster-availability { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+ .tourney-tryout-roster-grade { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tourney-tryout-roster-name strong { display: block; overflow: hidden; font-size: .78rem; text-overflow: ellipsis; white-space: nowrap; }
-.tourney-tryout-roster-grade,.tourney-tryout-roster-availability,.tourney-tryout-roster-check { padding-left: 9px; border-left: 1px solid rgba(126,173,235,.3); }
-.tourney-tryout-roster-grade,.tourney-tryout-roster-availability { color: #b4c8e6; font-size: .6rem; font-weight: 700; line-height: 1.35; }
+ .tourney-tryout-roster-grade,.tourney-tryout-roster-check { padding-left: 9px; border-left: 1px solid rgba(126,173,235,.3); }
+ .tourney-tryout-roster-grade { color: #b4c8e6; font-size: .6rem; font-weight: 700; line-height: 1.35; }
 .tourney-tryout-roster-check { display:grid; place-items:center; justify-self: end; min-width:29px; height:24px; padding-right: 3px; color: #7fbaff; border-radius:9px; font-size: .68rem; font-weight:800; }
 .tourney-tryout-roster-piece.is-selected .tourney-tryout-roster-check { color:#07162d; background:#f4c44c; }
 .tourney-tryout-piece-art { display: grid; place-items: center; width: 50px; height: 58px; margin-bottom: 3px; color: #4191ff; filter: none; }
