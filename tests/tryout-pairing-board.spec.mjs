@@ -150,6 +150,21 @@ test("keeps an unsaved ranked draft through background status polling", async ({
   await expect(page.locator('[data-partner="blake"] .tourney-tryout-roster-check')).toHaveText("#2");
 });
 
+test("restores the signup details and board after a page refresh", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+  ]);
+  await openBoard(page);
+  await page.locator('[data-partner="avery"]').click();
+  await page.reload({ waitUntil: "domcontentloaded" });
+
+  await expect(page.locator("#tourney-tryout-workspace")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-identity-name")).toHaveText("Jordan Student");
+  await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(1);
+  await expect(page.locator('[data-partner="avery"] .tourney-tryout-roster-check')).toHaveText("#1");
+});
+
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
   await installSharedBoard(page, [
     publicStudent("avery", "Avery A.", "blake"),

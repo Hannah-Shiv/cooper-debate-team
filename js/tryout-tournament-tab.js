@@ -15,7 +15,8 @@
     sep22: { weekday: "Tuesday", date: "September 22", shortDate: "Sept 22", location: "Cafeteria" },
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], draftDirty: false, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var SESSION_KEY = "cooper-debate-tryout-session";
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
@@ -30,6 +31,47 @@
   function setPartnerIds(ids) {
     state.partnerIds = Array.from(new Set((Array.isArray(ids) ? ids : []).filter(Boolean))).slice(0, 4);
     state.partnerId = state.partnerIds[0] || null;
+  }
+  function persistSession() {
+    if (!dom.fcpsId) return;
+    var fcpsId = dom.fcpsId.value.trim();
+    if (!/^\d{7}$/.test(fcpsId)) return;
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        fcpsId: fcpsId,
+        name: dom.name.value.trim(),
+        grade: dom.grade.value,
+        date: state.date,
+        boardVisible: state.boardVisible,
+        partnerIds: state.partnerIds,
+        draftDirty: state.draftDirty,
+        selfPlaced: state.selfPlaced,
+        boardRow: state.boardRow
+      }));
+    } catch (ignore) {}
+  }
+  function clearPersistedSession() {
+    try { sessionStorage.removeItem(SESSION_KEY); } catch (ignore) {}
+  }
+  function restoreSession() {
+    var saved;
+    try { saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null"); } catch (ignore) { return; }
+    if (!saved || !/^\d{7}$/.test(String(saved.fcpsId || ""))) return;
+    dom.fcpsId.value = saved.fcpsId;
+    dom.name.value = saved.name || "";
+    dom.grade.value = saved.grade || "7";
+    state.date = DATES[saved.date] ? saved.date : "sep22";
+    state.fcpsId = saved.fcpsId;
+    if (saved.boardVisible) {
+      state.pendingRestorePartnerIds = saved.draftDirty && Array.isArray(saved.partnerIds) ? saved.partnerIds : null;
+      state.boardRow = Number.isInteger(saved.boardRow) ? saved.boardRow : null;
+      state.selfPlaced = Boolean(saved.selfPlaced);
+      formMessage("Restoring your shared tryout board…");
+      showBoard();
+    } else {
+      formMessage("Your saved tryout details are ready.");
+      renderAll();
+    }
   }
   function togglePartner(id) {
     var index = state.partnerIds.indexOf(id);
@@ -97,6 +139,7 @@
         renderAll();
         if (previousRevision !== state.self.revision) showMessage("The shared board changed. Your view is up to date.");
       }
+      persistSession();
     } catch (ignore) {}
   }
   function startStatusPolling() {
@@ -326,7 +369,7 @@
     if (state.boardVisible) state.draftDirty = true;
     state.boardRow = null;
     state.selfPlaced = false;
-    formMessage(""); renderAll();
+    formMessage(""); renderAll(); persistSession();
   }
   function validateIdentity() {
     if (!/^\d{7}$/.test(dom.fcpsId.value.trim())) return "Please enter the student’s seven-digit FCPS ID.";
@@ -347,10 +390,16 @@
       });
       applySelf(result.self);
       state.draftDirty = false;
+      if (state.pendingRestorePartnerIds && result.self.status !== "mutual") {
+        setPartnerIds(state.pendingRestorePartnerIds);
+        state.draftDirty = true;
+      }
+      state.pendingRestorePartnerIds = null;
       dom.name.value = state.self.name;
       dom.grade.value = state.self.grade;
       state.boardVisible = true;
       state.editing = false;
+      persistSession();
       formMessage("Shared board loaded. Row numbers may move as other students make choices.");
       renderAll();
       startStatusPolling();
@@ -394,6 +443,7 @@
       state.boardRow = null;
       state.selfPlaced = false;
       state.editing = true;
+      persistSession();
       formMessage("Your previous pairing was released. Update your details or choose a new partner.");
       renderAll();
       dom.name.focus();
@@ -405,12 +455,14 @@
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
       state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.draftDirty = false; state.selfPlaced = false;
+      clearPersistedSession();
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
     state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    clearPersistedSession();
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
   }
@@ -444,6 +496,7 @@
         state.draftDirty = true;
         formMessage(preferenceButton.dataset.prefRemove ? "Choice removed." : "Preference order updated.");
         renderPairing();
+        persistSession();
         return;
       }
       var button = event.target.closest("[data-partner]");
@@ -459,6 +512,7 @@
           : "Choice #" + state.partnerIds.length + " added. Select another student or submit your ranked choices.");
         renderPairing();
         state.draftDirty = true;
+        persistSession();
         return;
       }
       var slot = event.target.closest("[data-drop-slot]");
@@ -467,6 +521,7 @@
         state.selfPlaced = true;
         formMessage(state.partnerIds.length ? "Piece placed. Submit your ranked partner choices when ready." : "Your piece is on the board. Now choose up to four students.");
         renderPairing();
+        persistSession();
       }
     });
     dom.picker.addEventListener("input", function (event) {
@@ -509,14 +564,16 @@
       state.selfPlaced = true;
       formMessage("Choice #" + (state.partnerIds.indexOf(partnerId) + 1) + " placed. Add more choices or submit your ranked list.");
       renderPairing();
+      persistSession();
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });
     dom.showBoard.addEventListener("click", showBoard);
-    dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); });
-    dom.name.addEventListener("input", function () { formMessage(""); }); dom.grade.addEventListener("change", function () { formMessage(""); });
+    dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); persistSession(); });
+    dom.name.addEventListener("input", function () { formMessage(""); persistSession(); }); dom.grade.addEventListener("change", function () { formMessage(""); persistSession(); });
     dom.identity.addEventListener("click", function (event) { if (event.target.closest("[data-tryout-edit]")) edit(); if (event.target.closest("[data-tryout-withdraw]")) withdraw(); if (event.target.closest("[data-tryout-new]")) newStudent(); });
     window.addEventListener("beforeunload", function () { stopStatusPolling(); if (state.unsubscribe) state.unsubscribe(); });
     renderAll();
+    restoreSession();
   }
   document.addEventListener("DOMContentLoaded", function () { if ($("tourney-tryout-form")) init(); });
 }());
