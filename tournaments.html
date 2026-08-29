@@ -11,10 +11,11 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=3"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
-      var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "parent-info"];
+      var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "tryout-signup", "parent-info"];
       var incomingTab = window.location.hash.slice(1);
       if (validTabs.indexOf(incomingTab) !== -1) {
         window.__TOURNEY_INITIAL_TAB = incomingTab;
@@ -86,6 +87,16 @@
     }
     .tournaments-page .resolution-card {
       border-top:1px solid #F2D16B;
+    }
+    .tournaments-page .resolution-card .tryout-cta {
+      color:#07162d;
+      background:linear-gradient(100deg,#6ce0c8,#a2f0d1);
+      box-shadow:0 4px 14px rgba(108,224,200,0.2);
+    }
+    .tournaments-page .resolution-card .tryout-cta:hover,
+    .tournaments-page .resolution-card .tryout-cta:focus-visible {
+      color:#07162d;
+      background:#9af0d8;
     }
     .tournaments-page .public-calendar-shell,
     .tournaments-page .vol-unified-card,
@@ -405,7 +416,8 @@
     .tourney-section-nav button:nth-child(1) { --tab-color:#f4c84e; --tab-soft:rgba(244,200,78,.14); --tab-border:rgba(244,200,78,.42); --tab-active:#f7d15b; --tab-active-deep:#d99b18; --tab-active-text:#07162d; --tab-active-border:#ffe69b; --tab-glow:rgba(244,200,78,.34); }
     .tourney-section-nav button:nth-child(2) { --tab-color:#78c3ff; --tab-soft:rgba(41,135,235,.21); --tab-border:rgba(83,166,255,.58); --tab-active:#1d548f; --tab-active-deep:#0b2b5d; --tab-active-text:#fff; --tab-active-border:#76bdff; --tab-glow:rgba(56,150,255,.38); }
     .tourney-section-nav button:nth-child(3) { --tab-color:#62ce9c; --tab-soft:rgba(22,142,94,.22); --tab-border:rgba(63,192,132,.54); --tab-active:#175d49; --tab-active-deep:#082f29; --tab-active-text:#fff; --tab-active-border:#6fd5a4; --tab-glow:rgba(38,175,113,.32); }
-    .tourney-section-nav button:nth-child(4) { --tab-color:#ddb0f2; --tab-soft:rgba(184,113,220,.17); --tab-border:rgba(184,113,220,.46); --tab-active:#593475; --tab-active-deep:#2b1848; --tab-active-text:#fff; --tab-active-border:#dda9f3; --tab-glow:rgba(184,113,220,.32); }
+    .tourney-section-nav button:nth-child(4) { --tab-color:#6ce0c8; --tab-soft:rgba(37,178,157,.17); --tab-border:rgba(108,224,200,.48); --tab-active:#17685e; --tab-active-deep:#0a3936; --tab-active-text:#fff; --tab-active-border:#8cf1dc; --tab-glow:rgba(61,210,180,.34); }
+    .tourney-section-nav button:nth-child(5) { --tab-color:#ddb0f2; --tab-soft:rgba(184,113,220,.17); --tab-border:rgba(184,113,220,.46); --tab-active:#593475; --tab-active-deep:#2b1848; --tab-active-text:#fff; --tab-active-border:#dda9f3; --tab-glow:rgba(184,113,220,.32); }
     .tourney-section-nav button:hover, .tourney-section-nav button:focus-visible {
       border-color:var(--tab-active); background:linear-gradient(135deg,var(--tab-soft),rgba(15,44,89,.88)); outline:none;
       transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 16px var(--tab-glow),0 5px 14px rgba(0,0,0,.24);
@@ -932,10 +944,11 @@
 </div>
 
   <nav class="tourney-section-nav" aria-label="Tournament page sections">
-    <div class="section-wrap">
+    <div class="section-wrap" role="tablist" aria-label="Tournament page sections">
       <button id="tourney-tab-overview" type="button" role="tab" aria-controls="tournament-overview" aria-selected="true"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M2.5 20.5h19"/></svg><span>Overview</span></button>
       <button id="tourney-tab-calendar" type="button" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg><span>Calendar &amp; Results</span></button>
       <button id="tourney-tab-volunteer" type="button" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3 1.8 0 3 .9 3.5 2.8"/></svg><span>Volunteer Signup</span></button>
+      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 3v4m8-4v4M7 11h2m3 0h2m3 0h1M7 15h2m3 0h2"/></svg><span>Try Out Signup</span></button>
       <button id="tourney-tab-parent" type="button" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3"/></svg><span>Parent Guide</span></button>
     </div>
   </nav>
@@ -954,7 +967,10 @@
         <span class="dot"></span>
         <span>530 coaches · 2,401 students voted</span>
       </div>
-      <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+      <div class="resolution-actions">
+        <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+        <a href="tournaments.html?tab=tryout-signup" class="btn tryout-cta" style="font-size:0.75rem;padding:10px 22px;">Sign up for tryouts →</a>
+      </div>
     </div>
   </div>
 </section>
@@ -980,7 +996,7 @@
 
     <!-- THIS SEASON -->
     <div id="pane-this-season">
-       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. The existing <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a> is the only application needed.</p>
+       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=tryout-signup" style="color:var(--gold);font-weight:700;">sign up for a tryout date</a>.</p>
        <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
        <div class="public-calendar-legend" aria-label="Calendar legend">
           <span><i style="background:#7f1d1d;"></i>Tournament</span>
@@ -1053,6 +1069,71 @@
       <section id="vol-public-summary" class="vol-public-summary" aria-label="Current tournament volunteer summary" hidden></section>
       <div id="volunteer-events" class="volunteer-events" aria-live="polite"></div>
     </div>
+  </div>
+</section>
+
+<!-- TRY OUT SIGNUP -->
+<section id="tryout-signup" class="section tourney-tab-panel tourney-tryout-section" role="tabpanel" aria-labelledby="tourney-tab-tryout" data-tourney-panel>
+  <div class="section-wrap">
+    <div class="tourney-tryout-heading">
+      <p class="section-label">Fall 2026 Team Selection</p>
+      <h2 class="section-title">Try Out Signup</h2>
+      <p class="section-sub">Enter your details, open the board, and choose your own tryout partner—all in one place.</p>
+    </div>
+
+    <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
+    <div class="tourney-tryout-shell">
+      <form id="tourney-tryout-form" novalidate>
+        <section id="tourney-tryout-gate" class="tourney-tryout-screen tourney-tryout-gate" aria-labelledby="tourney-tryout-details-heading">
+          <div class="tourney-tryout-screen-heading">
+            <span class="tourney-tryout-icon is-teal" aria-hidden="true">♟</span>
+            <div><p>Your board pass</p><h3 id="tourney-tryout-details-heading">Who is stepping up to the board?</h3><span>Only your first name, last initial, grade, and availability appear to other students.</span></div>
+          </div>
+          <div class="tourney-tryout-fields">
+            <label><span>Seven-digit FCPS ID</span><input id="tourney-tryout-fcps-id" name="fcpsId" autocomplete="off" inputmode="numeric" pattern="[0-9]{7}" minlength="7" maxlength="7" placeholder="1234567" aria-describedby="tourney-tryout-id-help"><small id="tourney-tryout-id-help">Used privately to reopen or change this signup. It never appears on the board.</small></label>
+            <label><span>Student first and last name</span><input id="tourney-tryout-name" name="studentName" autocomplete="name" maxlength="80" placeholder="First and last name"></label>
+            <label class="tourney-tryout-grade"><span>Grade</span><select id="tourney-tryout-grade" name="grade"><option value="">Select</option><option value="7">7th</option><option value="8">8th</option></select></label>
+          </div>
+          <fieldset class="tourney-tryout-session-fieldset">
+            <legend>Choose your tryout session</legend>
+            <div id="tourney-tryout-date-options" class="tourney-tryout-date-options"></div>
+          </fieldset>
+          <div class="tourney-tryout-gate-actions">
+            <p><span aria-hidden="true">♢</span> Shared live board · your FCPS ID stays private.</p>
+            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Show me the board →</button>
+          </div>
+        </section>
+
+        <section id="tourney-tryout-identity" class="tourney-tryout-identity" aria-live="polite" hidden>
+          <div>
+            <span class="tourney-tryout-identity-label">Playing as</span>
+            <strong id="tourney-tryout-identity-name"></strong>
+            <span id="tourney-tryout-identity-meta"></span>
+          </div>
+          <div class="tourney-tryout-identity-actions">
+            <button type="button" data-tryout-edit>Change My Signup</button>
+            <button type="button" data-tryout-withdraw>Withdraw</button>
+            <button type="button" data-tryout-new>Another Student</button>
+          </div>
+        </section>
+
+        <div id="tourney-tryout-error" class="tourney-tryout-message is-error" role="alert" tabindex="-1" hidden></div>
+        <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
+        <section id="tourney-tryout-workspace" class="tourney-tryout-workspace" aria-labelledby="tourney-tryout-pair-heading" hidden>
+          <div class="tourney-tryout-screen-heading">
+            <span class="tourney-tryout-icon is-gold" aria-hidden="true">♜</span>
+            <div><p>Your move</p><h3 id="tourney-tryout-pair-heading">Choose your tryout partner</h3><span>Drag a student piece to an open square, or tap the piece and then the square. A pair forms when both students choose each other.</span></div>
+          </div>
+          <div id="tourney-tryout-partner-picker"></div>
+          <div class="tourney-tryout-board-actions">
+            <span>Pending requests do not reserve a student.</span>
+            <button id="tourney-tryout-submit" class="tourney-tryout-continue" type="submit">Submit pairing request →</button>
+          </div>
+          <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
+        </section>
+      </form>
+    </div>
+    <p class="tourney-tryout-footer-note"><span aria-hidden="true">✦</span> Team membership will be determined later that week. Tuesday practices begin September 29.</p>
   </div>
 </section>
 
@@ -1572,6 +1653,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
+<script src="js/tryout-tournament-tab.js?v=7"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>
