@@ -126,9 +126,13 @@ test("shows large primary board actions", async ({ page }) => {
   await installSharedBoard(page, [publicStudent("avery", "Alexandria-Marguerite W.")]);
   await page.goto(route, { waitUntil: "domcontentloaded" });
 
+  await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
+  await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
   await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
   await openBoard(page);
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
+  await expect(page.locator(".tourney-tryout-identity-actions .tourney-tryout-action-info")).toHaveCount(3);
+  await expect(page.locator("[data-tryout-edit]")).toHaveAttribute("data-tooltip", /release any current request or confirmed pairing/i);
   const layoutMetrics = await page.locator(".tourney-tryout-shell").evaluate(shell => {
     const shellBox = shell.getBoundingClientRect();
     const rosterBox = shell.querySelector(".tourney-tryout-roster").getBoundingClientRect();
@@ -148,6 +152,37 @@ test("shows large primary board actions", async ({ page }) => {
   expect(parseFloat(layoutMetrics.rosterName)).toBeGreaterThanOrEqual(12);
   expect(parseFloat(layoutMetrics.preferenceName)).toBeGreaterThanOrEqual(9);
   expect(layoutMetrics.longNameFits).toBe(true);
+});
+
+test("explains and confirms identity actions before changing a paired signup", async ({ page }) => {
+  const requests = [];
+  await installSharedBoard(page, [
+    publicStudent("hannah", "Hannah Shiv"),
+  ], body => requests.push(body), [], [], "hannah");
+  await openBoard(page);
+  await page.locator('[data-partner="hannah"]').click();
+  await page.locator("#tourney-tryout-submit").click();
+  await expect(page.locator("#tourney-tryout-student-status")).toContainText("You are paired");
+
+  await page.locator("[data-tryout-edit]").click();
+  await expect(page.locator("#tourney-tryout-confirm")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-confirm-title")).toContainText("release this pairing");
+  await expect(page.locator("#tourney-tryout-confirm-note")).toContainText("Both students will become available");
+  expect(requests.some(request => request.action === "release")).toBe(false);
+  await page.locator("[data-tryout-confirm-cancel]").click();
+
+  await page.locator("[data-tryout-new]").click();
+  await expect(page.locator("#tourney-tryout-confirm-title")).toContainText("another student");
+  await expect(page.locator("#tourney-tryout-confirm-note")).toContainText("confirmed pairing stay safely saved");
+  await page.locator("[data-tryout-confirm-cancel]").click();
+
+  await page.locator("[data-tryout-withdraw]").click();
+  await expect(page.locator("#tourney-tryout-confirm-title")).toHaveText("Are you sure you want to withdraw?");
+  await expect(page.locator("#tourney-tryout-confirm-note")).toContainText("confirmed pair will be ended");
+  expect(requests.some(request => request.action === "withdraw")).toBe(false);
+  await page.locator("[data-tryout-confirm-accept]").click();
+  await expect.poll(() => requests.some(request => request.action === "withdraw")).toBe(true);
+  await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
 });
 
 test("keeps duplicate names as distinct choices and enforces the four-choice limit", async ({ page }) => {

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=10"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=11"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1078,7 +1078,7 @@
     <div class="tourney-tryout-heading">
       <p class="section-label">Fall 2026 Team Selection</p>
       <h2 class="section-title">Try Out Signup</h2>
-      <p class="section-sub">Enter your details, open the board, and rank up to four tryout partner choices—all in one place.</p>
+      <p class="section-sub">Enter your details. Open the board and rank up to four tryout partner choices—all in one place.</p>
     </div>
 
     <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
@@ -1105,16 +1105,31 @@
         </section>
 
         <section id="tourney-tryout-identity" class="tourney-tryout-identity" aria-live="polite" hidden>
-          <div>
-            <span class="tourney-tryout-identity-label">Debater</span>
-            <strong id="tourney-tryout-identity-name"></strong>
-            <span id="tourney-tryout-identity-id" class="tourney-tryout-identity-id"></span>
-            <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
+          <div class="tourney-tryout-identity-profile">
+            <span class="tourney-tryout-identity-emblem" aria-hidden="true">♟</span>
+            <div class="tourney-tryout-identity-copy">
+              <span class="tourney-tryout-identity-label">Your active tryout signup</span>
+              <strong id="tourney-tryout-identity-name"></strong>
+              <span id="tourney-tryout-identity-id" class="tourney-tryout-identity-id"></span>
+              <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
+            </div>
           </div>
           <div class="tourney-tryout-identity-actions">
-            <button type="button" data-tryout-edit>Change My Signup</button>
-            <button type="button" data-tryout-withdraw>Withdraw</button>
-            <button type="button" data-tryout-new>Another Student</button>
+            <button type="button" data-tryout-edit data-tooltip="Edit the student details or partner choices. Continuing will release any current request or confirmed pairing so both students can choose again.">
+              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
+              <span>Change details &amp; pairing</span>
+              <small>Releases current choices</small>
+            </button>
+            <button type="button" data-tryout-withdraw data-tooltip="Remove this student from tryouts. A confirmed partner will be released and become available to other students again.">
+              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
+              <span>Withdraw from tryouts</span>
+              <small>Removes this signup</small>
+            </button>
+            <button type="button" data-tryout-new data-tooltip="Clear this student's private details from this browser so another student can sign up. The current student's saved signup and pairing will stay on the board.">
+              <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
+              <span>Sign up another student</span>
+              <small>Keeps this signup saved</small>
+            </button>
           </div>
         </section>
 
@@ -1133,6 +1148,17 @@
           <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
         </section>
       </form>
+      <dialog id="tourney-tryout-confirm" class="tourney-tryout-confirm" aria-labelledby="tourney-tryout-confirm-title" aria-describedby="tourney-tryout-confirm-copy">
+        <div class="tourney-tryout-confirm-icon" aria-hidden="true">i</div>
+        <p class="tourney-tryout-confirm-eyebrow">Please confirm</p>
+        <h3 id="tourney-tryout-confirm-title"></h3>
+        <p id="tourney-tryout-confirm-copy"></p>
+        <div class="tourney-tryout-confirm-note" id="tourney-tryout-confirm-note"></div>
+        <div class="tourney-tryout-confirm-actions">
+          <button type="button" class="tourney-tryout-confirm-cancel" data-tryout-confirm-cancel>Keep current signup</button>
+          <button type="button" class="tourney-tryout-confirm-accept" data-tryout-confirm-accept></button>
+        </div>
+      </dialog>
     </div>
     <p class="tourney-tryout-footer-note"><span aria-hidden="true">✦</span> Team membership will be determined later that week. Tuesday practices begin September 29.</p>
   </div>
@@ -1654,7 +1680,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=15"></script>
+  <script src="js/tryout-tournament-tab.js?v=16"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

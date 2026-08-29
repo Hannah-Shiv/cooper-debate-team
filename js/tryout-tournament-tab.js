@@ -18,6 +18,7 @@
   var SESSION_KEY = "cooper-debate-tryout-session";
   var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
+  var pendingIdentityAction = "";
 
   function $(id) { return document.getElementById(id); }
   function normalized(value) { return String(value || "").trim().toLowerCase().replace(/\s+/g, " "); }
@@ -473,7 +474,6 @@
   async function edit() {
     var record = activeRecord();
     if (!record) { state.editing = true; renderAll(); dom.name.focus(); return; }
-    if (!window.confirm("Change this signup? Any current request or pairing will be released so both students can choose again.")) return;
     try {
       var result = await api("release", { expectedRevision: state.self.revision });
       applySelf(result.self);
@@ -489,7 +489,6 @@
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   async function withdraw() {
-    if (!window.confirm("Withdraw from tryouts? Any current partner will become available to choose again.")) return;
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
@@ -505,6 +504,64 @@
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();
   }
+  function confirmationContent(action) {
+    var studentName = dom.identityName.textContent || dom.name.value.trim() || "This student";
+    var paired = Boolean(state.self && (state.self.status === "mutual" || state.self.status === "assigned"));
+    if (action === "edit") {
+      return {
+        tone: paired ? "danger" : "warning",
+        title: paired ? "Change details and release this pairing?" : "Change this signup and clear current choices?",
+        copy: "This returns you to the signup details and lets you choose a different session or a new ranked partner list.",
+        note: paired
+          ? studentName + " will come out of the confirmed pair. Both students will become available to choose again."
+          : "Any submitted partner requests and ranked choices will be released before you make changes.",
+        accept: paired ? "Release pairing & continue" : "Clear choices & continue"
+      };
+    }
+    if (action === "withdraw") {
+      return {
+        tone: "danger",
+        title: "Are you sure you want to withdraw?",
+        copy: "This removes " + studentName + " from the tryout signup and shared pairing board.",
+        note: paired
+          ? "The confirmed pair will be ended. The partner will become available to other students again."
+          : "All submitted partner requests will be removed. This signup will no longer be active.",
+        accept: "Yes, withdraw from tryouts"
+      };
+    }
+    return {
+      tone: "warning",
+      title: "Sign up another student on this device?",
+      copy: "This clears " + studentName + "’s private FCPS ID and signup details from this browser so another student can begin.",
+      note: "The current signup, submitted choices, and any confirmed pairing stay safely saved on the shared board.",
+      accept: "Continue to another student"
+    };
+  }
+  function closeConfirmation() {
+    pendingIdentityAction = "";
+    if (dom.confirm.open) dom.confirm.close();
+  }
+  function openConfirmation(action) {
+    var content = confirmationContent(action);
+    pendingIdentityAction = action;
+    dom.confirm.dataset.tone = content.tone;
+    dom.confirmTitle.textContent = content.title;
+    dom.confirmCopy.textContent = content.copy;
+    dom.confirmNote.textContent = content.note;
+    dom.confirmAccept.textContent = content.accept;
+    dom.confirmAccept.disabled = false;
+    dom.confirm.showModal();
+    dom.confirmCancel.focus();
+  }
+  async function confirmIdentityAction() {
+    var action = pendingIdentityAction;
+    if (!action) return;
+    dom.confirmAccept.disabled = true;
+    closeConfirmation();
+    if (action === "edit") await edit();
+    else if (action === "withdraw") await withdraw();
+    else if (action === "new") newStudent();
+  }
   function init() {
     dom = {
       status: $("tourney-tryout-status"), dates: $("tourney-tryout-date-options"), picker: $("tourney-tryout-partner-picker"),
@@ -513,7 +570,10 @@
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
       identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
-      result: $("tourney-tryout-student-status")
+      result: $("tourney-tryout-student-status"), confirm: $("tourney-tryout-confirm"),
+      confirmTitle: $("tourney-tryout-confirm-title"), confirmCopy: $("tourney-tryout-confirm-copy"),
+      confirmNote: $("tourney-tryout-confirm-note"), confirmCancel: document.querySelector("[data-tryout-confirm-cancel]"),
+      confirmAccept: document.querySelector("[data-tryout-confirm-accept]")
     };
     startPublicSubscription();
     dom.dates.addEventListener("click", function (event) { var button = event.target.closest("[data-date]"); if (button) chooseDate(button.dataset.date); });
@@ -623,7 +683,14 @@
     dom.showBoard.addEventListener("click", showBoard);
     dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); persistSession(); });
     dom.name.addEventListener("input", function () { formMessage(""); persistSession(); }); dom.grade.addEventListener("change", function () { formMessage(""); persistSession(); });
-    dom.identity.addEventListener("click", function (event) { if (event.target.closest("[data-tryout-edit]")) edit(); if (event.target.closest("[data-tryout-withdraw]")) withdraw(); if (event.target.closest("[data-tryout-new]")) newStudent(); });
+    dom.identity.addEventListener("click", function (event) {
+      if (event.target.closest("[data-tryout-edit]")) openConfirmation("edit");
+      else if (event.target.closest("[data-tryout-withdraw]")) openConfirmation("withdraw");
+      else if (event.target.closest("[data-tryout-new]")) openConfirmation("new");
+    });
+    dom.confirmCancel.addEventListener("click", closeConfirmation);
+    dom.confirmAccept.addEventListener("click", confirmIdentityAction);
+    dom.confirm.addEventListener("cancel", function () { pendingIdentityAction = ""; });
     window.addEventListener("beforeunload", function () { stopStatusPolling(); if (state.unsubscribe) state.unsubscribe(); });
     renderAll();
     restoreSession();
