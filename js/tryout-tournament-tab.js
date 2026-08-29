@@ -346,7 +346,7 @@
         var preference = recordById(partnerId);
         if (!preference) return "";
         var name = displayName(preference.name);
-        return '<li data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + '. Drag this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">⋮⋮</span><span>' + escapeHtml(name) + '</span>' +
+        return '<li data-pref-id="' + escapeHtml(partnerId) + '" tabindex="0" aria-label="Priority ' + (index + 1) + ': ' + escapeHtml(name) + '. Drag anywhere on this row or use the up and down arrow keys to change priority."><b>' + (index + 1) + '</b><span class="tourney-tryout-preference-grip" aria-hidden="true">↕</span><span>' + escapeHtml(name) + '</span>' +
           '<button data-pref-remove="' + escapeHtml(partnerId) + '" type="button" aria-label="Remove ' + escapeHtml(name) + '">×</button></li>';
       }).join("") + '</ol><p id="tourney-tryout-preference-hint" class="tourney-tryout-preference-hint">Hold and drag a row to change its priority. Keyboard users can use the up and down arrow keys.</p>'
       : '<p class="tourney-tryout-preference-empty">Your choices will appear here in priority order.</p>';
@@ -396,10 +396,10 @@
   function renderIdentity() {
     var record = activeRecord();
     var paired = selfIsPaired();
-    dom.gate.hidden = state.boardVisible && !state.editing;
+     dom.gate.hidden = false;
     dom.identity.hidden = !state.boardVisible;
     dom.workspace.hidden = !state.boardVisible || (paired && !state.showAllPairs);
-    dom.workspace.classList.toggle("is-pairing-review", paired && state.showAllPairs);
+    dom.workspace.classList.toggle("is-pairing-review", state.showAllPairs);
     dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
     var hasSubmittedSignup = Boolean(state.self && (
       state.self.isExistingSignup === true ||
@@ -410,8 +410,8 @@
     dom.newStudent.hidden = !hasSubmittedSignup;
     dom.pairs.hidden = !state.boardVisible;
     dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate tryout sign-up" : "Tryout sign-up in progress";
-    dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Hide all pairs" : "Show all pairs";
-    dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to your signup" : "Review the current board";
+    dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Select partners" : "Show all pairs";
+    dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to partner selection" : "Review the current board";
     var reviewingPairs = state.showAllPairs || paired;
     dom.workspaceLabel.textContent = reviewingPairs ? "Current pairings" : "Next step";
     dom.workspaceHeading.textContent = reviewingPairs ? "Review all current pairs" : "Select partner preferences";
@@ -476,7 +476,7 @@
       dom.grade.value = state.self.grade;
       state.boardVisible = true;
       state.editing = false;
-      state.showAllPairs = false;
+       state.showAllPairs = true;
       persistSession();
       formMessage("Row numbers may change as other students make choices.");
       renderAll();
@@ -500,7 +500,7 @@
       applySelf(result.self);
       state.draftDirty = false;
       state.editing = false;
-      state.showAllPairs = false;
+      state.showAllPairs = true;
       formMessage(state.self.status === "mutual" ? "You are paired. Either student can change the pairing from this board." : "Your ranked partner choices are saved. The first valid mutual choice will pair automatically.");
       renderAll(); dom.result.scrollIntoView({ behavior: "smooth", block: "nearest" });
     } catch (apiError) {
@@ -521,6 +521,7 @@
       state.boardRow = null;
       state.selfPlaced = false;
       state.editing = true;
+      state.showAllPairs = false;
       persistSession();
       formMessage("Your previous pairing was released. Update your details or choose a new partner.");
       renderAll();
@@ -714,6 +715,7 @@
         return event.clientY >= box.top && event.clientY <= box.bottom;
       });
       if (!target) return;
+      rows.forEach(function (item) { item.classList.toggle("is-drop-target", item === target); });
       var targetBox = target.getBoundingClientRect();
       target.parentNode.insertBefore(row, event.clientY < targetBox.top + targetBox.height / 2 ? target : target.nextSibling);
     });
@@ -721,6 +723,7 @@
       if (!preferenceDrag || preferenceDrag.pointerId !== event.pointerId) return;
       var row = preferenceDrag.row;
       row.classList.remove("is-dragging");
+      dom.picker.querySelectorAll(".is-drop-target").forEach(function (item) { item.classList.remove("is-drop-target"); });
       if (row.hasPointerCapture(event.pointerId)) row.releasePointerCapture(event.pointerId);
       var reordered = Array.from(dom.picker.querySelectorAll("[data-pref-id]")).map(function (item) { return item.dataset.prefId; });
       var changed = reordered.join("|") !== preferenceDrag.startOrder;
