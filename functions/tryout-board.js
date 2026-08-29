@@ -113,6 +113,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       const id = keySnap.exists ? keySnap.data().studentId : crypto.randomUUID();
       const recordRef = privateCollection.doc(id);
       const recordSnap = keySnap.exists ? await transaction.get(recordRef) : null;
+      const records = await readAll(transaction);
       let record = recordSnap && recordSnap.exists ? recordSnap.data() : null;
       if (!record) {
         record = {
@@ -136,7 +137,6 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           withdrawn: false,
         });
       }
-      const records = await readAll(transaction);
       records.set(id, record);
       if (!keySnap.exists) {
         transaction.set(keyRef, { studentId: id, season: SEASON, createdAt: FieldValue.serverTimestamp() });
