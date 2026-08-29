@@ -441,7 +441,7 @@
            actionButtons +
            '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked" aria-hidden="true">' + boardStateIcon("locked") + '</i> Both agreed · Paired</p><p><i class="pending" aria-hidden="true">' + boardStateIcon("pending") + '</i> One agreed · Pending</p><p><i class="incoming" aria-hidden="true">' + boardStateIcon("incoming") + '</i> Waiting for acceptance</p><p><i class="open" aria-hidden="true">' + boardStateIcon("open") + '</i> Available</p></section>' +
           '<section class="tourney-tryout-stats"><div class="tourney-tryout-side-title">Visible board</div><div><span><strong>' + lockedCount + '</strong>Paired</span><span><strong>' + pendingCount + '</strong>Pending</span><span><strong>' + openCount + '</strong>Open</span></div></section></aside>' +
-        '</div><div class="tourney-tryout-callout">Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>';
+         '</div>';
   }
   function renderResult() {
     var record = activeRecord();
@@ -470,6 +470,7 @@
      dom.gate.hidden = false;
     dom.identity.hidden = !state.boardVisible;
     dom.outputPlaceholder.hidden = state.boardVisible;
+    dom.callout.hidden = !state.boardVisible;
     dom.workspace.hidden = !state.boardVisible;
     dom.workspace.classList.toggle("is-pairing-review", state.showAllPairs);
     dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
@@ -684,6 +685,7 @@
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
       outputPlaceholder: $("tourney-tryout-output-placeholder"),
+      callout: $("tourney-tryout-board-callout"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
       edit: document.querySelector("[data-tryout-edit]"), withdraw: document.querySelector("[data-tryout-withdraw]"), newStudent: document.querySelector("[data-tryout-new]"),
       pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),

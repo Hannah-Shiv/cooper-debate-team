@@ -249,7 +249,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(gateMetrics.footer.height).toBeLessThan(90);
   await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator("#tourney-tryout-message")).toBeHidden();
-  await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("How it works");
+  await expect(page.locator(".tourney-tryout-output .tourney-tryout-screen-heading p")).toHaveText("How it works");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Choose your debate partner");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "50px");
   await expect(page.locator(".tourney-tryout-action-card button:visible")).toHaveCount(2);
@@ -330,7 +330,7 @@ test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
 
   await openBoard(page, false);
   const mobileBoardLayout = await page.locator("#tourney-tryout-workspace").evaluate(workspace => {
-    const steps = Array.from(workspace.querySelectorAll(".tourney-tryout-flow li")).map(step => step.getBoundingClientRect());
+    const steps = Array.from(document.querySelectorAll(".tourney-tryout-output-how .tourney-tryout-flow li")).map(step => step.getBoundingClientRect());
     const actionCard = workspace.querySelector(".tourney-tryout-action-card").getBoundingClientRect();
     const visibleButtons = Array.from(workspace.querySelectorAll(".tourney-tryout-action-card button")).filter(button => !button.hidden);
     return {

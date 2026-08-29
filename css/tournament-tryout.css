@@ -50,6 +50,27 @@
 .tourney-tryout-output-placeholder p { margin:0 0 6px; color:#6ce0c8; font:800 .64rem 'Josefin Sans',sans-serif; letter-spacing:.12em; text-transform:uppercase; }
 .tourney-tryout-output-placeholder h3 { margin:0; color:#fff; font:700 1.65rem/1.05 'Cormorant Garamond',serif; }
 .tourney-tryout-output-placeholder > span:last-child { display:block; max-width:330px; margin-top:9px; color:#9fb4d2; font-size:.7rem; line-height:1.5; }
+.tourney-tryout-output-how { min-width:0; }
+.tourney-tryout-output-how .tourney-tryout-screen-heading { gap:10px; margin-bottom:12px; }
+.tourney-tryout-output-how .tourney-tryout-icon { width:32px; height:32px; font-size:17px; }
+.tourney-tryout-output-how .tourney-tryout-screen-heading h3 { font-size:1.32rem; }
+.tourney-tryout-output-how .tourney-tryout-screen-heading > div > span { margin-top:3px; font-size:.62rem; line-height:1.35; }
+.tourney-tryout-output-how .tourney-tryout-flow { grid-template-columns:1fr; gap:7px; }
+.tourney-tryout-output-how .tourney-tryout-flow li { grid-template-columns:27px minmax(0,1fr); gap:8px; min-height:43px; padding:7px 9px; }
+.tourney-tryout-output-how .tourney-tryout-flow li:not(:last-child)::after { content:"↓"; top:calc(100% - 2px); left:12px; width:5px; transform:none; font-size:.72rem; }
+.tourney-tryout-output-how .tourney-tryout-flow-number { width:27px; height:27px; font-size:.62rem; }
+.tourney-tryout-output-how .tourney-tryout-flow strong { font-size:.55rem; }
+.tourney-tryout-output-how .tourney-tryout-flow small { margin-top:2px; font-size:.48rem; }
+.tourney-tryout-output-divider { height:1px; margin:15px 0 13px; background:rgba(157,187,255,.2); }
+.tourney-tryout-output-status { min-width:0; }
+.tourney-tryout-output-status-label { margin-bottom:9px; color:#f1d783; font:800 .58rem 'Josefin Sans',sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+.tourney-tryout-output-status .tourney-tryout-output-placeholder { min-height:112px; padding:8px 5px 13px; }
+.tourney-tryout-output-status .tourney-tryout-output-icon { width:35px; height:35px; margin-bottom:8px; font-size:1rem; }
+.tourney-tryout-output-status .tourney-tryout-output-placeholder h3 { font-size:1.18rem; }
+.tourney-tryout-output-status .tourney-tryout-output-placeholder > span:last-child { margin-top:6px; font-size:.59rem; }
+.tourney-tryout-output-status .tourney-tryout-result { max-width:none; margin:12px 0 0; padding:14px 15px; }
+.tourney-tryout-output-status .tourney-tryout-result h3 { font-size:1.22rem; }
+.tourney-tryout-output-status .tourney-tryout-result p { font-size:.62rem; line-height:1.4; }
 .tourney-tryout-status {
   width: 100%;
   max-width: none;
@@ -480,7 +501,7 @@
   .tourney-tryout-progress > div { justify-content: center; padding: 7px 5px; font-size: .55rem; text-align: center; }.tourney-tryout-progress b { width: 21px; height: 21px; }.tourney-tryout-progress { gap: 5px; margin-bottom: 22px; }
   .tourney-tryout-screen-heading h3 { font-size: 1.45rem; }.tourney-tryout-screen-heading > div > span { font-size: .7rem; }.tourney-tryout-icon { width: 34px; height: 34px; font-size: 18px; }
   .tourney-tryout-date-options,.tourney-tryout-modes,.tourney-tryout-review { grid-template-columns: 1fr; }.tourney-tryout-date-card { min-height: 122px; padding: 16px; }.tourney-tryout-date-card strong { font-size: 1.3rem; }.tourney-tryout-date-card span { margin-top: 12px; }
-  .tourney-tryout-top-layout { grid-template-columns:1fr; gap:14px; }.tourney-tryout-output { min-height:230px; padding:18px; }.tourney-tryout-gate { padding:17px; }.tourney-tryout-gate .tourney-tryout-fields { grid-template-columns:1fr; grid-template-areas:"id" "name" "grade" "session"; gap:16px; }.tourney-tryout-gate .tourney-tryout-screen-heading { margin-bottom:20px; padding-bottom:16px; }.tourney-tryout-result { padding: 19px 17px; }.tourney-tryout-footer-note { padding-inline: 2px; }
+  .tourney-tryout-top-layout { grid-template-columns:1fr; gap:14px; }.tourney-tryout-output { min-height:0; padding:18px; }.tourney-tryout-gate { padding:17px; }.tourney-tryout-gate .tourney-tryout-fields { grid-template-columns:1fr; grid-template-areas:"id" "name" "grade" "session"; gap:16px; }.tourney-tryout-gate .tourney-tryout-screen-heading { margin-bottom:20px; padding-bottom:16px; }.tourney-tryout-result { padding: 19px 17px; }.tourney-tryout-footer-note { padding-inline: 2px; }
   .tourney-tryout-workspace-intro { padding:16px; }.tourney-tryout-flow { grid-template-columns:1fr; gap:22px; }.tourney-tryout-flow li { min-height:64px; }.tourney-tryout-flow li:not(:last-child)::after { content:"↓"; top:calc(100% + 3px); left:50%; width:16px; transform:translateX(-50%); }
   .tourney-tryout-identity { align-items: stretch; flex-direction: column; padding:18px; }.tourney-tryout-identity-actions { display:grid; grid-template-columns:1fr; justify-content:stretch; width:100%; }.tourney-tryout-identity-actions button { grid-template-columns:22px 1fr; justify-items:start; width:100%; min-height:58px; text-align:left; }.tourney-tryout-identity-actions button small { grid-column:2; }.tourney-tryout-identity-actions button::after { top:calc(100% + 7px); right:auto; left:0; width:min(270px,calc(100vw - 74px)); }.tourney-tryout-confirm { padding:23px 18px; }.tourney-tryout-confirm-actions { align-items:stretch; flex-direction:column-reverse; }.tourney-tryout-confirm-actions button { width:100%; }
   .tourney-tryout-gate-actions,.tourney-tryout-board-actions { align-items:stretch; flex-direction:column; }.tourney-tryout-gate-actions { padding:15px; }.tourney-tryout-gate-actions button,.tourney-tryout-board-actions button { width:100%; }
