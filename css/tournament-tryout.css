@@ -93,8 +93,14 @@
 .tourney-tryout-output-status .tourney-tryout-result p { font-size:.62rem; line-height:1.4; }
 .tourney-tryout-output-stats { margin-top:14px; padding-top:13px; border-top:1px solid rgba(157,187,255,.2); }
 .tourney-tryout-output-stats > div:last-child { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
-.tourney-tryout-output-stats span { color:#a4b8d5; font-size:.62rem; text-align:center; }
-.tourney-tryout-output-stats strong { display:block; margin-bottom:2px; color:#fff; font-size:1rem; }
+ .tourney-tryout-output-stats span { color:#a4b8d5; font-size:.62rem; font-weight:700; text-align:center; }
+ .tourney-tryout-output-stats strong { display:block; margin-bottom:2px; color:#fff; font-size:1rem; }
+ .tourney-tryout-output-stats span.is-paired { color:#9be8ae; }
+ .tourney-tryout-output-stats span.is-paired strong { color:#55d978; }
+ .tourney-tryout-output-stats span.is-pending { color:#ffd783; }
+ .tourney-tryout-output-stats span.is-pending strong { color:#f2b83f; }
+ .tourney-tryout-output-stats span.is-open { color:#a9d2ff; }
+ .tourney-tryout-output-stats span.is-open strong { color:#68aaff; }
 .tourney-tryout-status {
   width: 100%;
   max-width: none;
