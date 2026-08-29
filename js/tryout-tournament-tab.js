@@ -16,7 +16,7 @@
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall" }
   };
   var SESSION_KEY = "cooper-debate-tryout-session";
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
 
   function $(id) { return document.getElementById(id); }
@@ -42,6 +42,7 @@
         name: dom.name.value.trim(),
         grade: dom.grade.value,
         date: state.date,
+        dateDirty: state.dateDirty,
         boardVisible: state.boardVisible,
         partnerIds: state.partnerIds,
         draftDirty: state.draftDirty,
@@ -61,6 +62,7 @@
     dom.name.value = saved.name || "";
     dom.grade.value = saved.grade || "7";
     state.date = DATES[saved.date] ? saved.date : "sep22";
+    state.dateDirty = Boolean(saved.dateDirty);
     state.fcpsId = saved.fcpsId;
     if (saved.boardVisible) {
       state.pendingRestorePartnerIds = saved.draftDirty && Array.isArray(saved.partnerIds) ? saved.partnerIds : null;
@@ -96,8 +98,8 @@
     var records = state.publicRecords.map(projectionRecord);
     if (state.self) {
       var selfRecord = {
-        id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.self.session],
-        selectedDate: state.self.session, mode: "partner", partnerId: state.self.partnerId, partnerIds: state.self.partnerIds || [],
+        id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.date],
+        selectedDate: state.date, mode: "partner", partnerId: state.self.partnerId, partnerIds: state.self.partnerIds || [],
         assignedPartnerId: null, tint: "teal", piece: "girl", isDemo: false, withdrawn: false,
         releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status, isYou: true
       };
@@ -121,7 +123,10 @@
     state.activeId = self ? self.id : null;
     setPartnerIds(self ? (self.partnerIds || (self.partnerId ? [self.partnerId] : [])) : []);
     if (self && self.status === "mutual" && self.partnerId) state.partnerId = self.partnerId;
-    if (self) state.date = self.session;
+    if (self && (!state.dateDirty || state.date === self.session)) {
+      state.date = self.session;
+      state.dateDirty = false;
+    }
     refreshRecords();
   }
   async function refreshStatus() {
@@ -373,7 +378,10 @@
     state.date = date;
     var candidateIds = currentCandidates().map(function (record) { return record.id; });
     setPartnerIds(state.partnerIds.filter(function (partnerId) { return candidateIds.includes(partnerId); }));
-    if (state.boardVisible) state.draftDirty = true;
+    if (state.boardVisible) {
+      state.dateDirty = true;
+      state.draftDirty = true;
+    }
     state.boardRow = null;
     state.selfPlaced = false;
     formMessage(""); renderAll(); persistSession();
@@ -425,7 +433,7 @@
     if (error) { formMessage(error, true); dom.error.focus(); return; }
     state.loading = true; dom.submit.disabled = true;
     try {
-      var result = await api("request", { partnerIds: state.partnerIds, expectedRevision: state.self.revision });
+      var result = await api("request", { partnerIds: state.partnerIds, session: state.date, expectedRevision: state.self.revision });
       applySelf(result.self);
       state.draftDirty = false;
       state.editing = false;
@@ -461,14 +469,14 @@
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
-      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.draftDirty = false; state.selfPlaced = false;
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; setPartnerIds([]); state.dateDirty = false; state.draftDirty = false; state.selfPlaced = false;
       clearPersistedSession();
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.date = "sep22"; state.dateDirty = false; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
     clearPersistedSession();
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();

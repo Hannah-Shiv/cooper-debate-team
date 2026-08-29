@@ -154,6 +154,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       const recordRef = privateCollection.doc(id);
       const recordSnap = keySnap.exists ? await transaction.get(recordRef) : null;
       const records = await readAll(transaction);
+      const changed = new Map();
       let record = recordSnap && recordSnap.exists ? recordSnap.data() : null;
       if (!record) {
         record = {
@@ -171,19 +172,53 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           updatedAt: FieldValue.serverTimestamp(),
         };
       } else {
+        const sessionChanged = record.session !== identity.session;
+        const formerPartnerId = sessionChanged ? record.pairedWith : null;
         record = changedRecord(record, {
           name: identity.name,
           grade: record.grade,
-          session: record.session,
-          partnerIds: normalizePreferenceIds(record),
+          session: identity.session,
+          partnerId: sessionChanged ? null : record.partnerId || null,
+          partnerIds: sessionChanged ? [] : normalizePreferenceIds(record),
+          pairedWith: sessionChanged ? null : record.pairedWith || null,
           withdrawn: false,
+          releasedReason: sessionChanged ? "" : record.releasedReason || "",
         });
+        if (sessionChanged) {
+          if (formerPartnerId) {
+            const formerPartner = records.get(formerPartnerId);
+            if (formerPartner && formerPartner.pairedWith === id) {
+              const released = changedRecord(formerPartner, {
+                partnerId: null,
+                partnerIds: [],
+                pairedWith: null,
+                releasedReason: "",
+              });
+              records.set(formerPartnerId, released);
+              changed.set(formerPartnerId, released);
+            }
+          }
+          records.forEach((otherRecord, otherId) => {
+            if (otherId === id || otherRecord.withdrawn || otherRecord.pairedWith) return;
+            const remainingPreferences = remainingPreferenceIds(otherRecord, [id]);
+            if (remainingPreferences.length !== normalizePreferenceIds(otherRecord).length) {
+              const updated = changedRecord(otherRecord, {
+                partnerId: remainingPreferences[0] || null,
+                partnerIds: remainingPreferences,
+                releasedReason: "",
+              });
+              records.set(otherId, updated);
+              changed.set(otherId, updated);
+            }
+          });
+        }
       }
       records.set(id, record);
+      changed.set(id, record);
       if (!keySnap.exists) {
         transaction.set(keyRef, { studentId: id, season: SEASON, createdAt: FieldValue.serverTimestamp() });
       }
-      writeRecord(transaction, id, record);
+      changed.forEach((changedRecordValue, changedId) => writeRecord(transaction, changedId, changedRecordValue));
       response = privateView(id, record, records);
     });
     return response;
@@ -239,6 +274,34 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       };
 
       if (action === "request") {
+        const requestedSession = cleanText(body.session, 8);
+        if (!SESSIONS.has(requestedSession)) throw new Error("Select a valid tryout session.");
+        if (requestedSession !== self.session) {
+          const formerPartnerId = self.pairedWith;
+          self = changedRecord(self, {
+            session: requestedSession,
+            partnerId: null,
+            partnerIds: [],
+            pairedWith: null,
+            releasedReason: "",
+          });
+          records.set(selfId, self);
+          changed.set(selfId, self);
+          if (formerPartnerId) {
+            const formerPartner = records.get(formerPartnerId);
+            if (formerPartner && formerPartner.pairedWith === selfId) {
+              const released = changedRecord(formerPartner, {
+                partnerId: null,
+                partnerIds: [],
+                pairedWith: null,
+                releasedReason: "",
+              });
+              records.set(formerPartnerId, released);
+              changed.set(formerPartnerId, released);
+            }
+          }
+          releaseReferences(selfId, "");
+        }
         if (Array.isArray(body.partnerIds) && body.partnerIds.length > 4) {
           throw new Error("Choose no more than four preferred partners.");
         }

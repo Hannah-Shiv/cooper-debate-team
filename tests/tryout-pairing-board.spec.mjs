@@ -3,12 +3,12 @@ import { expect, test } from "@playwright/test";
 const route = "/tournaments.html?tab=tryout-signup";
 const endpoint = "**/tryoutBoard";
 
-function publicStudent(id, displayName, partnerId = null) {
+function publicStudent(id, displayName, partnerId = null, session = "sep22") {
   return {
     id,
     displayName,
     grade: "8",
-    session: "sep22",
+    session,
     available: !partnerId,
     status: partnerId ? "paired" : "open",
     partnerId,
@@ -17,6 +17,8 @@ function publicStudent(id, displayName, partnerId = null) {
 }
 
 async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = []) {
+  let serverSession = "sep22";
+  let serverPartnerIds = savedPartnerIds.slice();
   await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
   await page.addInitScript(publicRecords => {
     const snapshot = {
@@ -53,13 +55,20 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
   await page.route(endpoint, async requestRoute => {
     const body = requestRoute.request().postDataJSON();
     onRequest(body);
-    const partnerIds = Array.isArray(body.partnerIds) ? body.partnerIds : body.action === "open" ? savedPartnerIds : [];
+    if (body.action === "open" && body.session) serverSession = body.session;
+    if (body.action === "request") {
+      serverSession = body.session || serverSession;
+      serverPartnerIds = Array.isArray(body.partnerIds) ? body.partnerIds.slice() : [];
+    } else if (body.action === "release" || body.action === "withdraw") {
+      serverPartnerIds = [];
+    }
+    const partnerIds = serverPartnerIds.slice();
     const self = {
       id: "self",
       name: "Jordan Student",
       displayName: "Jordan S.",
       grade: "8",
-      session: "sep22",
+      session: serverSession,
       partnerId: partnerIds[0] || null,
       partnerIds,
       partnerNames: partnerIds,
@@ -179,6 +188,28 @@ test("shows the current unsaved first choice on the board preview", async ({ pag
   await expect(page.locator(".tourney-tryout-board-row.is-your-request")).not.toContainText("Test M.");
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("Test J.");
   await expect(page.locator("#tourney-tryout-student-status")).not.toContainText("Test M.");
+});
+
+test("keeps a selected September 23 session and shows its candidates", async ({ page }) => {
+  const requests = [];
+  await installSharedBoard(page, [
+    publicStudent("hannah", "Hannah Shiv", null, "sep23"),
+  ], body => requests.push(body));
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.locator("#tourney-tryout-fcps-id").fill("7000001");
+  await page.locator("#tourney-tryout-name").fill("Test M");
+  await page.locator("#tourney-tryout-grade").selectOption("7");
+  await page.locator('[data-date="sep23"]').click();
+  await page.locator("#tourney-tryout-show-board").click();
+
+  await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");
+  await expect(page.locator('[data-partner="hannah"]')).toBeVisible();
+  await page.locator('[data-partner="hannah"]').click();
+  await page.locator("#tourney-tryout-submit").click();
+
+  expect(requests.find(request => request.action === "request")?.session).toBe("sep23");
+  await page.waitForTimeout(10500);
+  await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");
 });
 
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
