@@ -223,12 +223,12 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
-  await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(155, 232, 174)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(85, 217, 120)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 215, 131)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-pending strong")).toHaveCSS("color", "rgb(242, 184, 63)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-open")).toHaveCSS("color", "rgb(169, 210, 255)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-open strong")).toHaveCSS("color", "rgb(104, 170, 255)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 182, 165)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-pending strong")).toHaveCSS("color", "rgb(255, 118, 95)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-open")).toHaveCSS("color", "rgb(196, 225, 255)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-open strong")).toHaveCSS("color", "rgb(128, 188, 255)");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
   await expect(page.locator(".tourney-tryout-flow strong")).toHaveText([
     "Review all pairs",
