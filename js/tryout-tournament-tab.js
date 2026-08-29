@@ -172,6 +172,7 @@
     state.pollTimer = null;
   }
   function startPublicSubscription() {
+    showMessage("Connecting to the shared partner board…");
     if (!window.firebase || !firebase.firestore) {
       showMessage("The shared board could not connect. Please refresh and try again.", true);
       return;
@@ -181,6 +182,7 @@
       .where("season", "==", "2026-2027")
       .onSnapshot(function (snapshot) {
         state.publicRecords = snapshot.docs.map(function (doc) { return Object.assign({ id: doc.id }, doc.data()); });
+        showMessage("");
         refreshRecords();
         if (state.boardVisible) renderAll();
       }, function () {
@@ -189,6 +191,12 @@
   }
   function activeRecord() { return state.data.records.find(function (record) { return record.id === state.activeId && active(record); }) || null; }
   function selfIsPaired() { return Boolean(state.self && (state.self.status === "mutual" || state.self.status === "assigned")); }
+  function hasExistingSignup() {
+    return Boolean(state.self && (
+      state.self.isExistingSignup === true ||
+      (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
+    ));
+  }
   function recordById(id) { return state.data.records.find(function (record) { return record.id === id; }) || null; }
   function active(record) { return record && !record.withdrawn; }
   function relationshipSignature(record) {
@@ -392,10 +400,7 @@
     var currentStatus = current ? statusFor(current) : state.partnerIds.length ? "pending" : "new";
     var statusText = currentStatus === "mutual" || currentStatus === "assigned" ? "You are paired" : currentStatus === "pending" ? state.partnerIds.length + " choice" + (state.partnerIds.length === 1 ? "" : "s") + " pending" : state.partnerIds.length ? "Ready to request" : state.selfPlaced ? "Choose partners" : "Place your piece";
     var statusDetail = selectedPartner ? "First choice: " + escapeHtml(displayName(selectedPartner.name)) + (state.partnerIds.length > 1 ? " · " + (state.partnerIds.length - 1) + " more" : "") + "." : state.selfPlaced ? "Your piece is on the board. Choose up to four students." : "Click “Add me here,” then choose up to four students.";
-     var hasSubmittedSignup = Boolean(state.self && (
-       state.self.isExistingSignup === true ||
-       (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
-     ));
+     var hasSubmittedSignup = hasExistingSignup();
      var actionButtons =
        '<section class="tourney-tryout-action-card" aria-labelledby="tourney-tryout-action-heading">' +
          '<div class="tourney-tryout-side-title" id="tourney-tryout-action-heading">Choose an action</div>' +
@@ -464,13 +469,11 @@
     var paired = selfIsPaired();
      dom.gate.hidden = false;
     dom.identity.hidden = !state.boardVisible;
+    dom.outputPlaceholder.hidden = state.boardVisible;
     dom.workspace.hidden = !state.boardVisible;
     dom.workspace.classList.toggle("is-pairing-review", state.showAllPairs);
     dom.identity.classList.toggle("is-paired-collapsed", paired && !state.showAllPairs);
-    var hasSubmittedSignup = Boolean(state.self && (
-      state.self.isExistingSignup === true ||
-      (state.self.isExistingSignup == null && state.self.status && state.self.status !== "open")
-    ));
+    var hasSubmittedSignup = hasExistingSignup();
     var actionRoot = dom.workspace.querySelector(".tourney-tryout-action-card");
     dom.edit = actionRoot && actionRoot.querySelector("[data-tryout-edit]");
     dom.withdraw = actionRoot && actionRoot.querySelector("[data-tryout-withdraw]");
@@ -547,11 +550,12 @@
       dom.grade.value = state.self.grade;
       state.boardVisible = true;
       state.editing = false;
-       state.showAllPairs = true;
+      state.showAllPairs = hasExistingSignup();
+      formMessage("");
       persistSession();
       renderAll();
       startStatusPolling();
-      (selfIsPaired() ? dom.identity : dom.workspace).scrollIntoView({ behavior: "smooth", block: selfIsPaired() ? "center" : "start" });
+      dom.workspace.scrollIntoView({ behavior: "auto", block: "start" });
     } catch (apiError) {
       state.fcpsId = "";
       formMessage(apiError.message, true);
@@ -679,6 +683,7 @@
       error: $("tourney-tryout-error"), message: $("tourney-tryout-message"), gate: $("tourney-tryout-gate"),
       showBoard: $("tourney-tryout-show-board"), workspace: $("tourney-tryout-workspace"), submit: $("tourney-tryout-submit"),
       identity: $("tourney-tryout-identity"), identityName: $("tourney-tryout-identity-name"),
+      outputPlaceholder: $("tourney-tryout-output-placeholder"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
       edit: document.querySelector("[data-tryout-edit]"), withdraw: document.querySelector("[data-tryout-withdraw]"), newStudent: document.querySelector("[data-tryout-new]"),
       pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),
@@ -772,7 +777,7 @@
     dom.picker.addEventListener("pointerdown", function (event) {
       var row = event.target.closest("[data-pref-id]");
       if (!row || event.target.closest("button")) return;
-      preferenceDrag = { row: row, pointerId: event.pointerId, startOrder: state.partnerIds.join("|") };
+      preferenceDrag = { row: row, pointerId: event.pointerId, startOrder: state.partnerIds.slice(), targetId: null, before: true };
       row.classList.add("is-dragging");
       row.setPointerCapture(event.pointerId);
     });
@@ -788,7 +793,8 @@
       if (!target) return;
       rows.forEach(function (item) { item.classList.toggle("is-drop-target", item === target); });
       var targetBox = target.getBoundingClientRect();
-      target.parentNode.insertBefore(row, event.clientY < targetBox.top + targetBox.height / 2 ? target : target.nextSibling);
+      preferenceDrag.targetId = target.dataset.prefId;
+      preferenceDrag.before = event.clientY < targetBox.top + targetBox.height / 2;
     });
     function finishPreferenceDrag(event) {
       if (!preferenceDrag || preferenceDrag.pointerId !== event.pointerId) return;
@@ -796,8 +802,14 @@
       row.classList.remove("is-dragging");
       dom.picker.querySelectorAll(".is-drop-target").forEach(function (item) { item.classList.remove("is-drop-target"); });
       if (row.hasPointerCapture(event.pointerId)) row.releasePointerCapture(event.pointerId);
-      var reordered = Array.from(dom.picker.querySelectorAll("[data-pref-id]")).map(function (item) { return item.dataset.prefId; });
-      var changed = reordered.join("|") !== preferenceDrag.startOrder;
+      var reordered = preferenceDrag.startOrder.slice();
+      if (preferenceDrag.targetId) {
+        var movedIndex = reordered.indexOf(row.dataset.prefId);
+        if (movedIndex !== -1) reordered.splice(movedIndex, 1);
+        var targetIndex = reordered.indexOf(preferenceDrag.targetId);
+        if (targetIndex !== -1) reordered.splice(targetIndex + (preferenceDrag.before ? 0 : 1), 0, row.dataset.prefId);
+      }
+      var changed = reordered.join("|") !== preferenceDrag.startOrder.join("|");
       preferenceDrag = null;
       if (!changed) return;
       setPartnerIds(reordered);
@@ -808,6 +820,8 @@
     }
     dom.picker.addEventListener("pointerup", finishPreferenceDrag);
     dom.picker.addEventListener("pointercancel", finishPreferenceDrag);
+    window.addEventListener("pointerup", finishPreferenceDrag);
+    window.addEventListener("pointercancel", finishPreferenceDrag);
     dom.picker.addEventListener("dragstart", function (event) {
       var piece = event.target.closest("[data-partner]");
       if (!piece || !event.dataTransfer) return;

@@ -98,10 +98,13 @@ async function openBoard(page, selectionMode = true) {
   await page.locator("#tourney-tryout-grade").selectOption("8");
   await page.locator("#tourney-tryout-show-board").click();
   await expect(page.locator("#tourney-tryout-workspace")).toBeVisible();
-  if (selectionMode) {
+  const selectionIsOpen = await page.locator("#tourney-tryout-pair-heading").getByText("Choose your debate partner", { exact: true }).count();
+  if (selectionMode && !selectionIsOpen) {
     await page.locator("[data-tryout-pairs]").click();
-    await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Choose your debate partner");
+  } else if (!selectionMode && selectionIsOpen) {
+    await page.locator("[data-tryout-pairs]").click();
   }
+  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText(selectionMode ? "Choose your debate partner" : "Review all current pairs");
 }
 
 test("submits four choices in the visible preference order", async ({ page }) => {
@@ -126,15 +129,27 @@ test("submits four choices in the visible preference order", async ({ page }) =>
   const blakeBox = await blakeRow.boundingBox();
   await page.mouse.move(caseyBox.x + caseyBox.width / 2, caseyBox.y + caseyBox.height / 2);
   await page.mouse.down();
-  await page.mouse.move(blakeBox.x + blakeBox.width / 2, blakeBox.y + blakeBox.height * 0.25, { steps: 5 });
+  await page.mouse.move(blakeBox.x + blakeBox.width / 2, blakeBox.y + blakeBox.height * 0.25);
   await page.mouse.up();
   await expect(page.locator(".tourney-tryout-preference-list li").nth(1)).toContainText("Casey C.");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(0).locator("b")).toHaveText("1");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(1).locator("b")).toHaveText("2");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(2).locator("b")).toHaveText("3");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(3).locator("b")).toHaveText("4");
+
+  const devonRow = page.locator('[data-pref-id="devon"]');
+  const averyRow = page.locator('[data-pref-id="avery"]');
+  const devonBox = await devonRow.boundingBox();
+  const averyBox = await averyRow.boundingBox();
+  await page.mouse.move(devonBox.x + devonBox.width / 2, devonBox.y + devonBox.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(averyBox.x + averyBox.width / 2, averyBox.y + averyBox.height * 0.75);
+  await page.mouse.up();
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(0)).toContainText("Avery A.");
+  await expect(page.locator(".tourney-tryout-preference-list li").nth(1)).toContainText("Devon D.");
+
   await page.locator('[data-pref-id="devon"]').focus();
-  await page.keyboard.press("ArrowUp");
+  await page.keyboard.press("ArrowDown");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(2)).toContainText("Devon D.");
   await page.keyboard.press("ArrowDown");
   await expect(page.locator(".tourney-tryout-preference-list li").nth(3)).toContainText("Devon D.");
@@ -157,6 +172,22 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("color", "rgb(255, 227, 110)");
   await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");
+  await expect(page.locator("#tourney-tryout-output-placeholder")).toBeVisible();
+  await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Your sign-up status appears here");
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-status")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-error")).toHaveCount(1);
+  const topLayout = await page.locator(".tourney-tryout-top-layout").evaluate(layout => {
+    const gate = layout.querySelector("#tourney-tryout-gate").getBoundingClientRect();
+    const output = layout.querySelector(".tourney-tryout-output").getBoundingClientRect();
+    return {
+      outputIsRightOfInputs: output.left > gate.right,
+      topsAlign: Math.abs(output.top - gate.top) < 3,
+      widthsFit: gate.width + output.width <= layout.getBoundingClientRect().width,
+    };
+  });
+  expect(topLayout.outputIsRightOfInputs).toBe(true);
+  expect(topLayout.topsAlign).toBe(true);
+  expect(topLayout.widthsFit).toBe(true);
   await expect(page.locator("#tourney-tryout-date-options option")).toHaveText([
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
@@ -166,6 +197,10 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
   await expect(page.locator("#tourney-tryout-workspace-label")).toHaveText("How it works");
+  await expect(page.locator("#tourney-tryout-workspace-label")).toHaveCSS("font-weight", "900");
+  expect(parseFloat(await page.locator("#tourney-tryout-workspace-label").evaluate(label => getComputedStyle(label).fontSize))).toBeGreaterThanOrEqual(16);
+  await expect(page.locator("#tourney-tryout-output-placeholder")).toBeHidden();
+  await expect(page.locator(".tourney-tryout-output #tourney-tryout-identity")).toBeVisible();
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
   await expect(page.locator(".tourney-tryout-flow strong")).toHaveText([
     "Review all pairs",
@@ -202,12 +237,12 @@ test("shows large primary board actions", async ({ page }) => {
       gradeTextFits: gate.querySelector("#tourney-tryout-grade").scrollWidth <= gate.querySelector("#tourney-tryout-grade").clientWidth,
     };
   });
-  expect(gateMetrics.gateWidth).toBeGreaterThan(1100);
+  expect(gateMetrics.gateWidth).toBeGreaterThan(700);
   expect(Math.abs(gateMetrics.idInput.top - gateMetrics.nameInput.top)).toBeLessThan(4);
   expect(Math.abs(gateMetrics.gradeInput.top - gateMetrics.sessionInput.top)).toBeLessThan(4);
   expect(gateMetrics.gradeInput.top).toBeGreaterThan(gateMetrics.idInput.bottom);
-  expect(gateMetrics.idInput.width).toBeGreaterThan(250);
-  expect(gateMetrics.nameInput.width).toBeGreaterThan(500);
+  expect(gateMetrics.idInput.width).toBeGreaterThan(200);
+  expect(gateMetrics.nameInput.width).toBeGreaterThan(450);
   expect(Math.abs(gateMetrics.sessionInput.width - gateMetrics.nameInput.width)).toBeLessThan(2);
   expect(gateMetrics.gradeTextFits).toBe(true);
   expect(gateMetrics.footer.top).toBeGreaterThan(gateMetrics.sessionInput.bottom);
@@ -281,10 +316,17 @@ test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
   for (let index = 1; index < mobileLayout.controls.length; index += 1) {
     expect(mobileLayout.controls[index].top).toBeGreaterThan(mobileLayout.controls[index - 1].bottom);
   }
-  expect(mobileLayout.controls.every(control => control.width > 300)).toBe(true);
+  expect(mobileLayout.controls.every(control => control.width > 260)).toBe(true);
   expect(mobileLayout.button.top).toBeGreaterThan(mobileLayout.privacy.bottom);
   expect(mobileLayout.noHorizontalOverflow).toBe(true);
   await expect(page.locator("#tourney-tryout-grade option:checked")).toHaveText("8th grade");
+  const mobileTopLayout = await page.locator(".tourney-tryout-top-layout").evaluate(layout => {
+    const gate = layout.querySelector("#tourney-tryout-gate").getBoundingClientRect();
+    const output = layout.querySelector(".tourney-tryout-output").getBoundingClientRect();
+    return { outputBelowGate: output.top > gate.bottom, outputFits: output.width <= layout.getBoundingClientRect().width };
+  });
+  expect(mobileTopLayout.outputBelowGate).toBe(true);
+  expect(mobileTopLayout.outputFits).toBe(true);
 
   await openBoard(page, false);
   const mobileBoardLayout = await page.locator("#tourney-tryout-workspace").evaluate(workspace => {
@@ -303,6 +345,41 @@ test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
   }
   expect(mobileBoardLayout.buttonsFitCard).toBe(true);
   expect(mobileBoardLayout.noHorizontalOverflow).toBe(true);
+});
+
+test("opens new students in selection and returning students in all-pairs review", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+  ]);
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.locator("#tourney-tryout-fcps-id").fill("1234567");
+  await page.locator("#tourney-tryout-name").fill("Jordan Student");
+  await page.locator("#tourney-tryout-grade").selectOption("8");
+  await page.locator("#tourney-tryout-show-board").click();
+
+  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Choose your debate partner");
+  await expect(page.locator(".tourney-tryout-roster")).toBeVisible();
+  await expect(page.locator("[data-tryout-print]")).toBeHidden();
+  await expect(page.locator("[data-tryout-pairs] span").nth(1)).toHaveText("Show all pairs");
+
+  const returningPage = await page.context().newPage();
+  await installSharedBoard(returningPage, [
+    publicStudent("avery", "Avery A."),
+    publicStudent("blake", "Blake B."),
+  ], () => {}, ["avery"]);
+  await returningPage.goto(route, { waitUntil: "domcontentloaded" });
+  await returningPage.locator("#tourney-tryout-fcps-id").fill("7654321");
+  await returningPage.locator("#tourney-tryout-name").fill("Returning Student");
+  await returningPage.locator("#tourney-tryout-grade").selectOption("8");
+  await returningPage.locator("#tourney-tryout-show-board").click();
+
+  await expect(returningPage.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
+  await expect(returningPage.locator(".tourney-tryout-roster")).toBeHidden();
+  await expect(returningPage.locator("[data-tryout-print]")).toBeVisible();
+  await expect(returningPage.locator("[data-tryout-pairs] span").nth(1)).toHaveText("Select partners");
+  await expect(returningPage.locator(".tourney-tryout-output #tourney-tryout-identity")).toBeVisible();
+  await returningPage.close();
 });
 
 test("explains and confirms identity actions before changing a paired signup", async ({ page }) => {
@@ -434,7 +511,6 @@ test("keeps a selected September 23 session and shows its candidates", async ({ 
   await page.locator("#tourney-tryout-show-board").click();
 
   await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");
-  await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator('[data-partner="hannah"]')).toBeVisible();
   await page.locator('[data-partner="hannah"]').click();
   await page.locator("#tourney-tryout-submit").click();
