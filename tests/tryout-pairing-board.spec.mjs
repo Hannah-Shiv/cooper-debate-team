@@ -123,12 +123,31 @@ test("submits four choices in the visible preference order", async ({ page }) =>
 });
 
 test("shows large primary board actions", async ({ page }) => {
-  await installSharedBoard(page, []);
+  await installSharedBoard(page, [publicStudent("avery", "Alexandria-Marguerite W.")]);
   await page.goto(route, { waitUntil: "domcontentloaded" });
 
   await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
   await openBoard(page);
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
+  const layoutMetrics = await page.locator(".tourney-tryout-shell").evaluate(shell => {
+    const shellBox = shell.getBoundingClientRect();
+    const rosterBox = shell.querySelector(".tourney-tryout-roster").getBoundingClientRect();
+    const rosterNameElement = shell.querySelector(".tourney-tryout-roster-name strong");
+    const rosterName = getComputedStyle(rosterNameElement).fontSize;
+    const preferenceName = getComputedStyle(shell.querySelector(".tourney-tryout-preference-empty")).fontSize;
+    return {
+      shellWidth: shellBox.width,
+      rosterWidth: rosterBox.width,
+      rosterName,
+      preferenceName,
+      longNameFits: rosterNameElement.scrollWidth <= rosterNameElement.clientWidth,
+    };
+  });
+  expect(layoutMetrics.shellWidth).toBeGreaterThan(1100);
+  expect(layoutMetrics.rosterWidth).toBeGreaterThan(540);
+  expect(parseFloat(layoutMetrics.rosterName)).toBeGreaterThanOrEqual(12);
+  expect(parseFloat(layoutMetrics.preferenceName)).toBeGreaterThanOrEqual(9);
+  expect(layoutMetrics.longNameFits).toBe(true);
 });
 
 test("keeps duplicate names as distinct choices and enforces the four-choice limit", async ({ page }) => {
