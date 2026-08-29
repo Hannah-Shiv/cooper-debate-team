@@ -152,13 +152,16 @@ test("shows large primary board actions", async ({ page }) => {
 
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
-  await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Tryout Sign-Up");
+  await expect(page.locator("#tourney-tab-tryout")).toContainText("Debate Partner Sign-Up");
+  await expect(page.locator("#tourney-tab-tryout svg circle")).toHaveCount(2);
+  await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
+  await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("color", "rgb(255, 227, 110)");
   await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");
   await expect(page.locator("#tourney-tryout-date-options option")).toHaveText([
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
     "Wednesday, September 23 — Lecture Hall — 2:30–4:30 p.m.",
   ]);
-  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "44px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
@@ -171,19 +174,25 @@ test("shows large primary board actions", async ({ page }) => {
     const session = gate.querySelector(".tourney-tryout-session-fieldset").getBoundingClientRect();
     return {
       gateWidth: gate.getBoundingClientRect().width,
-      fieldsBottom: Math.round(fields.bottom),
-      sessionBottom: Math.round(session.bottom),
+      idInput: gate.querySelector("#tourney-tryout-fcps-id").getBoundingClientRect(),
+      nameInput: gate.querySelector("#tourney-tryout-name").getBoundingClientRect(),
+      gradeInput: gate.querySelector("#tourney-tryout-grade").getBoundingClientRect(),
+      sessionInput: gate.querySelector("#tourney-tryout-date-options").getBoundingClientRect(),
     };
   });
   expect(gateMetrics.gateWidth).toBeGreaterThan(1100);
-  expect(Math.abs(gateMetrics.fieldsBottom - gateMetrics.sessionBottom)).toBeLessThan(12);
+  const controlTops = [gateMetrics.idInput.top, gateMetrics.nameInput.top, gateMetrics.gradeInput.top, gateMetrics.sessionInput.top];
+  expect(Math.max(...controlTops) - Math.min(...controlTops)).toBeLessThan(4);
+  expect(gateMetrics.idInput.width).toBeLessThan(170);
+  expect(gateMetrics.nameInput.width).toBeLessThan(380);
+  expect(gateMetrics.sessionInput.width).toBeGreaterThan(gateMetrics.nameInput.width);
   await page.locator("[data-tryout-pairs]").click();
   await expect(page.locator("#tourney-tryout-message")).toContainText("Row numbers may change as other students make choices.");
   await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Next step");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Select partner preferences");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
   await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(1);
-  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Tryout sign-up in progress");
+  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Partner sign-up in progress");
   await expect(page.locator("[data-tryout-pairs]")).toBeVisible();
   await expect(page.locator("[data-tryout-edit]")).toBeHidden();
   await expect(page.locator("[data-tryout-withdraw]")).toBeHidden();
@@ -225,7 +234,7 @@ test("explains and confirms identity actions before changing a paired signup", a
   await page.locator("#tourney-tryout-submit").click();
   await expect(page.locator("#tourney-tryout-student-status")).toContainText("You are paired");
   await expect(page.locator(".tourney-tryout-identity-actions button:visible")).toHaveCount(4);
-  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Current debate tryout sign-up");
+  await expect(page.locator("#tourney-tryout-identity-label")).toHaveText("Current debate partner sign-up");
   await expect(page.locator("#tourney-tryout-workspace")).toBeVisible();
   await expect(page.locator("#tourney-tryout-workspace-label")).toHaveText("Current pairings");
   await expect(page.locator(".tourney-tryout-roster")).toBeHidden();

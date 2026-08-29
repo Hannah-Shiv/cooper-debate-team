@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=16"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=17"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -948,7 +948,7 @@
       <button id="tourney-tab-overview" type="button" role="tab" aria-controls="tournament-overview" aria-selected="true"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M2.5 20.5h19"/></svg><span>Overview</span></button>
       <button id="tourney-tab-calendar" type="button" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg><span>Calendar &amp; Results</span></button>
       <button id="tourney-tab-volunteer" type="button" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3 1.8 0 3 .9 3.5 2.8"/></svg><span>Volunteer Signup</span></button>
-      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 5h16v14H4z"/><path d="M8 3v4m8-4v4M7 11h2m3 0h2m3 0h1M7 15h2m3 0h2"/></svg><span>Tryout Sign-Up</span></button>
+      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 32 24"><circle cx="10" cy="9" r="3.5"/><circle cx="22" cy="9" r="3.5"/><path d="M3 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M15 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M5 4h10l-2 2H7zM17 4h10l-2 2h-8z"/></svg><span>Debate Partner Sign-Up</span></button>
       <button id="tourney-tab-parent" type="button" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3"/></svg><span>Parent Guide</span></button>
     </div>
   </nav>
@@ -969,7 +969,7 @@
       </div>
       <div class="resolution-actions">
         <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
-        <a href="tournaments.html?tab=tryout-signup" class="btn tryout-cta" style="font-size:0.75rem;padding:10px 22px;">Sign up for tryouts →</a>
+        <a href="tournaments.html?tab=tryout-signup" class="btn tryout-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
       </div>
     </div>
   </div>
@@ -996,7 +996,7 @@
 
     <!-- THIS SEASON -->
     <div id="pane-this-season">
-       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=tryout-signup" style="color:var(--gold);font-weight:700;">sign up for a tryout date</a>.</p>
+       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=tryout-signup" style="color:var(--gold);font-weight:700;">sign up for a debate partner session</a>.</p>
        <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
        <div class="public-calendar-legend" aria-label="Calendar legend">
           <span><i style="background:#7f1d1d;"></i>Tournament</span>
@@ -1072,12 +1072,12 @@
   </div>
 </section>
 
-<!-- TRY OUT SIGNUP -->
+<!-- DEBATE PARTNER SIGNUP -->
 <section id="tryout-signup" class="section tourney-tab-panel tourney-tryout-section" role="tabpanel" aria-labelledby="tourney-tab-tryout" data-tourney-panel>
   <div class="section-wrap">
     <div class="tourney-tryout-heading">
       <p class="section-label">Fall 2026 Team Selection</p>
-        <h2 class="section-title">Debate Tryout Sign-Up</h2>
+        <h2 class="section-title">Debate Partner Sign-Up</h2>
         <p class="section-sub">Provide the student’s information, select a session, and submit up to four partner preferences through the shared pairing board.</p>
     </div>
 
@@ -1087,7 +1087,7 @@
         <section id="tourney-tryout-gate" class="tourney-tryout-screen tourney-tryout-gate" aria-labelledby="tourney-tryout-details-heading">
           <div class="tourney-tryout-screen-heading">
             <span class="tourney-tryout-icon is-teal" aria-hidden="true">♟</span>
-            <div><p>Debate tryout sign-up</p><h3 id="tourney-tryout-details-heading">Student information</h3><span>Enter the student’s information to access the shared pairing board. Only the student’s first name, last initial, grade level, and session appear to other students.</span></div>
+            <div><p>Debate partner sign-up</p><h3 id="tourney-tryout-details-heading">Student information</h3><span>Enter the student’s information to access the shared pairing board. Only the student’s first name, last initial, grade level, and session appear to other students.</span></div>
           </div>
           <div class="tourney-tryout-fields">
             <label><span>Seven-digit FCPS ID</span><input id="tourney-tryout-fcps-id" name="fcpsId" autocomplete="off" inputmode="numeric" pattern="[0-9]{7}" minlength="7" maxlength="7" placeholder="1234567" aria-describedby="tourney-tryout-id-help"><small id="tourney-tryout-id-help">Used privately to reopen or change this signup. It never appears on the board.</small></label>
@@ -1100,7 +1100,7 @@
           </fieldset>
           <div class="tourney-tryout-gate-actions">
             <p><span aria-hidden="true">♢</span> Shared pairing board · your FCPS ID remains private.</p>
-            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Continue to the pairing board →</button>
+            <button id="tourney-tryout-show-board" class="tourney-tryout-continue" type="button">Continue to the partner board →</button>
           </div>
         </section>
 
@@ -1108,7 +1108,7 @@
           <div class="tourney-tryout-identity-profile">
             <span class="tourney-tryout-identity-emblem" aria-hidden="true">♟</span>
             <div class="tourney-tryout-identity-copy">
-              <span id="tourney-tryout-identity-label" class="tourney-tryout-identity-label">Tryout sign-up in progress</span>
+              <span id="tourney-tryout-identity-label" class="tourney-tryout-identity-label">Partner sign-up in progress</span>
               <strong id="tourney-tryout-identity-name"></strong>
               <span id="tourney-tryout-identity-id" class="tourney-tryout-identity-id"></span>
               <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
@@ -1125,7 +1125,7 @@
               <span>Show all pairs</span>
               <small>Review the shared board</small>
             </button>
-            <button type="button" data-tryout-withdraw data-tooltip="Remove the student’s submitted sign-up from the tryout board. A confirmed partner will be released and become available to other students.">
+            <button type="button" data-tryout-withdraw data-tooltip="Remove the student’s submitted sign-up from the partner board. A confirmed partner will be released and become available to other students.">
               <span class="tourney-tryout-action-info" aria-hidden="true">i</span>
               <span>Withdraw from sign-up</span>
               <small>Remove this student</small>
@@ -1687,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=19"></script>
+  <script src="js/tryout-tournament-tab.js?v=20"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

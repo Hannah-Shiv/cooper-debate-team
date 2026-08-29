@@ -73,10 +73,10 @@
       state.pendingRestorePartnerIds = saved.draftDirty && Array.isArray(saved.partnerIds) ? saved.partnerIds : null;
       state.boardRow = Number.isInteger(saved.boardRow) ? saved.boardRow : null;
       state.selfPlaced = Boolean(saved.selfPlaced);
-      formMessage("Restoring your shared tryout board…");
+      formMessage("Restoring your shared partner board…");
       showBoard();
     } else {
-      formMessage("Your saved tryout details are ready.");
+      formMessage("Your saved partner sign-up details are ready.");
       renderAll();
     }
   }
@@ -131,7 +131,7 @@
       body: JSON.stringify(Object.assign({ action: action, fcpsId: state.fcpsId }, extra || {}))
     });
     var result = await response.json().catch(function () { return {}; });
-    if (!response.ok) throw new Error(result.error || "The shared tryout board is temporarily unavailable.");
+    if (!response.ok) throw new Error(result.error || "The shared partner board is temporarily unavailable.");
     return result;
   }
   function applySelf(self) {
@@ -385,7 +385,7 @@
     var copy = {
       pending: ["Partner choices saved", "Your ranked choices are " + pendingNames.join(", ") + ". The first available student who also chooses you will become your partner."],
       mutual: ["You are paired", "You and " + partnerName + " chose each other. Either of you can use Change My Signup to unpair and choose again."],
-      assigned: ["You are paired", "Your tryout pairing is with " + partnerName + ". You can use Change My Signup to choose again."],
+      assigned: ["You are paired", "Your debate partner is " + partnerName + ". You can use Change Sign-Up Details to choose again."],
       waiting: ["Choose partner preferences", "Select up to four students in the order you prefer them."],
       open: ["Your piece is available", record.releasedReason === "partner-locked" ? "A student in your list completed another pairing first. Choose a new ranked list from the students who are still open." : "Choose up to four available students in preference order."]
     }[status];
@@ -409,7 +409,7 @@
     dom.withdraw.hidden = !hasSubmittedSignup;
     dom.newStudent.hidden = !hasSubmittedSignup;
     dom.pairs.hidden = !state.boardVisible;
-    dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate tryout sign-up" : "Tryout sign-up in progress";
+    dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate partner sign-up" : "Partner sign-up in progress";
     dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Select partners" : "Show all pairs";
     dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to partner selection" : "Review the current board";
     var reviewingPairs = state.showAllPairs || paired;
@@ -562,11 +562,11 @@
       return {
         tone: "danger",
         title: "Are you sure you want to withdraw?",
-        copy: "This removes " + studentName + " from the tryout signup and shared pairing board.",
+        copy: "This removes " + studentName + " from the debate partner sign-up and shared pairing board.",
         note: paired
           ? "The confirmed pair will be ended. The partner will become available to other students again."
           : "All submitted partner requests will be removed. This signup will no longer be active.",
-        accept: "Yes, withdraw from tryouts"
+        accept: "Yes, withdraw sign-up"
       };
     }
     return {
