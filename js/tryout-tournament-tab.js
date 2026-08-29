@@ -215,8 +215,11 @@
     dom.status.className = "tourney-tryout-status" + (error ? " is-error" : "");
   }
   function formMessage(message, error) {
-    dom.error.hidden = !message; dom.error.textContent = message || "";
-    dom.error.className = "tourney-tryout-message " + (error ? "is-error" : "is-success");
+    var target = state.boardVisible ? dom.message : dom.error;
+    var inactive = target === dom.message ? dom.error : dom.message;
+    inactive.hidden = true; inactive.textContent = "";
+    target.hidden = !message; target.textContent = message || "";
+    target.className = "tourney-tryout-message " + (error ? "is-error" : "is-success");
   }
   function renderDates() {
     dom.dates.innerHTML = Object.keys(DATES).map(function (key) {
@@ -440,7 +443,7 @@
       state.boardVisible = true;
       state.editing = false;
       persistSession();
-      formMessage("Shared board loaded. Row numbers may move as other students make choices.");
+      formMessage("Row numbers may change as other students make choices.");
       renderAll();
       startStatusPolling();
       dom.workspace.scrollIntoView({ behavior: "smooth", block: "start" });

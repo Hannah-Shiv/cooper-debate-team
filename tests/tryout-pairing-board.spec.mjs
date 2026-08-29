@@ -130,9 +130,18 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
   await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "56px");
   await openBoard(page);
+  await expect(page.locator("#tourney-tryout-message")).toContainText("Row numbers may change as other students make choices.");
+  await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Pending action");
+  await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Rank your partner choices");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
   await expect(page.locator(".tourney-tryout-identity-actions .tourney-tryout-action-info")).toHaveCount(3);
   await expect(page.locator("[data-tryout-edit]")).toHaveAttribute("data-tooltip", /release any current request or confirmed pairing/i);
+  const actionStyles = await page.locator(".tourney-tryout-identity-actions button").evaluateAll(buttons => ({
+    backgrounds: buttons.map(button => getComputedStyle(button).backgroundImage),
+    consequenceSizes: buttons.map(button => parseFloat(getComputedStyle(button.querySelector("small")).fontSize)),
+  }));
+  expect(new Set(actionStyles.backgrounds).size).toBe(3);
+  expect(actionStyles.consequenceSizes.every(size => size >= 9.2)).toBe(true);
   const layoutMetrics = await page.locator(".tourney-tryout-shell").evaluate(shell => {
     const shellBox = shell.getBoundingClientRect();
     const rosterBox = shell.querySelector(".tourney-tryout-roster").getBoundingClientRect();
@@ -205,7 +214,7 @@ test("keeps duplicate names as distinct choices and enforces the four-choice lim
   await page.locator('[data-partner="casey"]').click();
 
   await expect(page.locator(".tourney-tryout-preference-list li")).toHaveCount(4);
-  await expect(page.locator("#tourney-tryout-error")).toContainText("up to four students");
+  await expect(page.locator("#tourney-tryout-message")).toContainText("up to four students");
 });
 
 test("keeps an unsaved ranked draft through background status polling", async ({ page }) => {
