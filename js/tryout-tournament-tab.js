@@ -226,6 +226,41 @@
     target.hidden = !message; target.textContent = message || "";
     target.className = "tourney-tryout-message " + (error ? "is-error" : "is-success");
   }
+  function printPairings() {
+    var session = DATES[state.date] || DATES.sep22;
+    var boardRows = Array.from(dom.picker.querySelectorAll(".tourney-tryout-board-row")).map(function (row, index) {
+      var names = Array.from(row.querySelectorAll(".tourney-tryout-piece-name")).map(function (piece) {
+        return piece.textContent.trim().replace(/\s+\(You\)$/, "");
+      });
+      var status = row.classList.contains("is-locked")
+        ? "Paired"
+        : row.classList.contains("is-pending") || row.classList.contains("is-your-request")
+          ? "Pending"
+          : row.classList.contains("is-incoming")
+            ? "Waiting for acceptance"
+            : "Open";
+      return {
+        number: index + 1,
+        left: names[0] || "Open",
+        right: names[1] || "Open",
+        status: status
+      };
+    });
+    var printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      showMessage("Allow pop-ups to print or save the pairing board as a PDF.", true);
+      return;
+    }
+    printWindow.opener = null;
+    var rowsMarkup = boardRows.map(function (row) {
+      return "<tr><td>" + row.number + "</td><td>" + escapeHtml(row.left) + "</td><td>" + escapeHtml(row.right) + "</td><td><span class=\"status status-" + row.status.toLowerCase().replace(/\s+/g, "-") + "\">" + escapeHtml(row.status) + "</span></td></tr>";
+    }).join("");
+    printWindow.document.open();
+    printWindow.document.write("<!doctype html><html><head><meta charset=\"utf-8\"><title>Debate Partner Sign-Up — " + escapeHtml(session.date) + "</title><style>" +
+      "@page{size:letter;margin:0.6in}*{box-sizing:border-box}body{margin:0;color:#17243d;background:#fff;font-family:Arial,Helvetica,sans-serif;font-size:11pt}header{padding-bottom:18px;border-bottom:3px solid #d5a52f}h1{margin:0;color:#10264a;font-family:Georgia,serif;font-size:25pt;font-weight:700}h2{margin:5px 0 0;color:#4e6380;font-size:11pt;font-weight:400}dl{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0 26px;padding:0}dt{color:#687a94;font-size:8pt;font-weight:700;letter-spacing:.1em;text-transform:uppercase}dd{margin:4px 0 0;color:#17243d;font-size:11pt;font-weight:700}table{width:100%;border-collapse:collapse;border:1px solid #c9d3e1;border-radius:6px;overflow:hidden}thead{background:#10264a;color:#fff}th{padding:10px 12px;text-align:left;font-size:9pt;letter-spacing:.06em;text-transform:uppercase}td{padding:11px 12px;border-top:1px solid #dce3ec}tbody tr:nth-child(even){background:#f5f8fb}td:first-child{width:44px;color:#687a94;text-align:center}td:last-child{width:150px}.status{display:inline-block;padding:4px 8px;border-radius:999px;background:#edf1f6;color:#52647c;font-size:8pt;font-weight:700}.status-paired{background:#dff5eb;color:#176447}.status-pending,.status-waiting-for-acceptance{background:#fff2ce;color:#745500}footer{margin-top:22px;color:#687a94;font-size:8.5pt;line-height:1.45}footer strong{color:#17243d}@media print{button{display:none}}" +
+      "</style></head><body><header><h1>Debate Partner Sign-Up</h1><h2>Current pairing board</h2></header><dl><div><dt>Date</dt><dd>" + escapeHtml(session.weekday + ", " + session.date) + "</dd></div><div><dt>Time</dt><dd>" + escapeHtml(session.time) + "</dd></div><div><dt>Location</dt><dd>" + escapeHtml(session.location) + "</dd></div></dl><table><thead><tr><th>#</th><th>Student 1</th><th>Student 2</th><th>Status</th></tr></thead><tbody>" + rowsMarkup + "</tbody></table><footer><strong>Privacy note:</strong> Names are shown as first name and last initial. FCPS IDs and other private student information are not included.</footer><script>window.addEventListener('load',function(){setTimeout(function(){window.print()},250)});<\/script></body></html>");
+    printWindow.document.close();
+  }
   function renderDates() {
     dom.dates.innerHTML = Object.keys(DATES).map(function (key) {
       return '<option value="' + escapeHtml(key) + '"' + (key === state.date ? " selected" : "") + ">" + escapeHtml(sessionLabel(DATES[key])) + "</option>";
@@ -409,6 +444,7 @@
     dom.withdraw.hidden = !hasSubmittedSignup;
     dom.newStudent.hidden = !hasSubmittedSignup;
     dom.pairs.hidden = !state.boardVisible;
+    dom.printPairs.hidden = !state.showAllPairs;
     dom.identityLabel.textContent = hasSubmittedSignup ? "Current debate partner sign-up" : "Partner sign-up in progress";
     dom.pairs.querySelector("span:nth-child(2)").textContent = state.showAllPairs ? "Select partners" : "Show all pairs";
     dom.pairs.querySelector("small").textContent = state.showAllPairs ? "Return to partner selection" : "Review the current board";
@@ -478,7 +514,6 @@
       state.editing = false;
        state.showAllPairs = true;
       persistSession();
-      formMessage("Row numbers may change as other students make choices.");
       renderAll();
       startStatusPolling();
       (selfIsPaired() ? dom.identity : dom.workspace).scrollIntoView({ behavior: "smooth", block: selfIsPaired() ? "center" : "start" });
@@ -616,7 +651,8 @@
       result: $("tourney-tryout-student-status"), confirm: $("tourney-tryout-confirm"),
       confirmTitle: $("tourney-tryout-confirm-title"), confirmCopy: $("tourney-tryout-confirm-copy"),
       confirmNote: $("tourney-tryout-confirm-note"), confirmCancel: document.querySelector("[data-tryout-confirm-cancel]"),
-      confirmAccept: document.querySelector("[data-tryout-confirm-accept]")
+      confirmAccept: document.querySelector("[data-tryout-confirm-accept]"),
+      printPairs: $("tourney-tryout-print-pairs")
     };
     startPublicSubscription();
     dom.dates.addEventListener("change", function (event) { chooseDate(event.target.value); });
@@ -774,6 +810,7 @@
     });
     dom.form.addEventListener("submit", function (event) { event.preventDefault(); submit(); });
     dom.showBoard.addEventListener("click", showBoard);
+    dom.printPairs.addEventListener("click", printPairings);
     dom.fcpsId.addEventListener("input", function () { this.value = this.value.replace(/\D/g, "").slice(0, 7); formMessage(""); persistSession(); });
     dom.name.addEventListener("input", function () { formMessage(""); persistSession(); }); dom.grade.addEventListener("change", function () { formMessage(""); persistSession(); });
     dom.identity.addEventListener("click", function (event) {

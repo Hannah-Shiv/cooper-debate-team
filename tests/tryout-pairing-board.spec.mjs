@@ -167,6 +167,15 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
   await expect(page.locator("#tourney-tryout-workspace-label")).toHaveText("Current pairings");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
+  await expect(page.locator("#tourney-tryout-print-pairs")).toBeVisible();
+  const printPopupPromise = page.waitForEvent("popup");
+  await page.locator("#tourney-tryout-print-pairs").click();
+  const printPopup = await printPopupPromise;
+  await expect(printPopup).toHaveTitle(/Debate Partner Sign-Up/);
+  await expect(printPopup.locator("table")).toBeVisible();
+  await expect(printPopup.locator("th")).toHaveText(["#", "Student 1", "Student 2", "Status"]);
+  await expect(printPopup.locator("dd")).toHaveText(["Tuesday, September 22", "2:30–4:30 p.m.", "Cafeteria"]);
+  await printPopup.close();
   await expect(page.locator(".tourney-tryout-roster")).toBeHidden();
   await expect(page.locator("[data-tryout-pairs] span").nth(1)).toHaveText("Select partners");
   const gateMetrics = await page.locator("#tourney-tryout-gate").evaluate(gate => {
@@ -192,7 +201,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(gateMetrics.footer.top).toBeGreaterThan(gateMetrics.sessionInput.bottom);
   expect(gateMetrics.footer.height).toBeLessThan(90);
   await page.locator("[data-tryout-pairs]").click();
-  await expect(page.locator("#tourney-tryout-message")).toContainText("Row numbers may change as other students make choices.");
+  await expect(page.locator("#tourney-tryout-message")).toBeHidden();
   await expect(page.locator("#tourney-tryout-workspace .tourney-tryout-screen-heading p")).toHaveText("Next step");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Select partner preferences");
   await expect(page.locator("#tourney-tryout-submit")).toHaveCSS("min-height", "56px");
