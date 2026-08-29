@@ -16,9 +16,10 @@ function publicStudent(id, displayName, partnerId = null, session = "sep22") {
   };
 }
 
-async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = [], incomingRequests = []) {
+async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = [], incomingRequests = [], pairOnRequestId = null) {
   let serverSession = "sep22";
   let serverPartnerIds = savedPartnerIds.slice();
+  let serverPairedWith = null;
   await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
   await page.addInitScript(publicRecords => {
     const snapshot = {
@@ -59,8 +60,10 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
     if (body.action === "request") {
       serverSession = body.session || serverSession;
       serverPartnerIds = Array.isArray(body.partnerIds) ? body.partnerIds.slice() : [];
+      if (pairOnRequestId && serverPartnerIds.includes(pairOnRequestId)) serverPairedWith = pairOnRequestId;
     } else if (body.action === "release" || body.action === "withdraw") {
       serverPartnerIds = [];
+      serverPairedWith = null;
     }
     const partnerIds = serverPartnerIds.slice();
     const self = {
@@ -69,11 +72,11 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
       displayName: "Jordan S.",
       grade: "8",
       session: serverSession,
-      partnerId: partnerIds[0] || null,
+      partnerId: serverPairedWith || partnerIds[0] || null,
       partnerIds,
       partnerNames: partnerIds,
       incomingRequests,
-      status: partnerIds.length ? "pending" : "open",
+      status: serverPairedWith ? "mutual" : partnerIds.length ? "pending" : "open",
       releasedReason: "",
       revision: 2,
     };
@@ -270,4 +273,18 @@ test("shows every incoming request even when more than eight students are waitin
 
   await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toHaveCount(9);
   await expect(page.locator('[data-partner^="waiting-"]')).toHaveCount(0);
+});
+
+test("does not duplicate a row after an incoming request becomes a confirmed pair", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("test-h", "Test H.", "self"),
+  ], () => {}, [], [], "test-h");
+  await openBoard(page);
+
+  await page.locator('[data-partner="test-h"]').click();
+  await page.locator("#tourney-tryout-submit").click();
+
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toHaveCount(1);
+  await expect(page.locator(".tourney-tryout-board-row.is-your-request")).toHaveCount(0);
+  await expect(page.locator(".tourney-tryout-board-row")).toHaveCount(8);
 });

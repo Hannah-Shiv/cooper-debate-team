@@ -276,11 +276,12 @@
 .tourney-tryout-board-slot { min-width: 0; }
 .tourney-tryout-piece,.tourney-tryout-drop-slot { display: flex; align-items: center; justify-content: center; gap: 6px; width: 100%; min-height: 54px; border-radius: 7px; }
 .tourney-tryout-piece { position: relative; padding: 4px 7px; color: #edf5ff; border: 1px solid rgba(79,139,231,.52); background: linear-gradient(145deg,rgba(12,47,102,.88),rgba(4,21,53,.9)); box-shadow: 0 0 10px rgba(34,108,220,.13); }
-.tourney-tryout-piece.is-incoming { cursor: pointer; text-align: left; }
+.tourney-tryout-piece.is-incoming { cursor: pointer; text-align: left; background: linear-gradient(145deg,rgba(91,66,18,.92),rgba(47,30,9,.94)); }
 .tourney-tryout-piece.is-incoming:hover,.tourney-tryout-piece.is-incoming:focus-visible { border-color: #f4c44c; box-shadow: 0 0 13px rgba(244,196,76,.34); outline: none; }
 .tourney-tryout-piece .tourney-tryout-piece-art { width: 32px; height: 40px; margin: 0; }
 .tourney-tryout-piece-name { min-width: 0; overflow: hidden; font-size: .58rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.tourney-tryout-piece-tag { position: absolute; top: -5px; right: 4px; padding: 2px 4px; color: #07162d; border-radius: 3px; background: #6ce0c8; font-size: .39rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.tourney-tryout-piece-tag { position: absolute; top: -8px; right: 6px; z-index: 1; padding: 4px 7px; color: #07162d; border: 1px solid rgba(255,244,180,.72); border-radius: 4px; background: #ffd35c; box-shadow: 0 3px 8px rgba(0,0,0,.28); font-size: .54rem; font-weight: 900; letter-spacing: .04em; line-height: 1.1; text-transform: uppercase; white-space: nowrap; }
+.tourney-tryout-piece.is-incoming .tourney-tryout-piece-tag { color: #241500; background: #ffcf4d; }
 .tourney-tryout-board-row.is-locked .tourney-tryout-piece { border-color: #43db76; box-shadow: 0 0 9px rgba(50,222,107,.3); }
 .tourney-tryout-board-row.is-pending .tourney-tryout-piece,.tourney-tryout-board-row.is-your-request .tourney-tryout-piece,.tourney-tryout-board-row.is-incoming .tourney-tryout-piece { border-color: #f4c44c; box-shadow: 0 0 9px rgba(244,196,76,.3); }
 .tourney-tryout-row-state { color: #5f83b9; font-size: .62rem; text-align: center; }

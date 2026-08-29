@@ -265,7 +265,7 @@
     if (state.partnerIds.length || state.selfPlaced) {
       var selectedPartner = recordById(state.partnerId);
       var selfName = state.self ? state.self.name : (dom.name.value.trim() || "Student");
-      var hasYourRequest = rows.some(function (row) { return row.left && row.left.isYou; });
+      var hasYourRequest = rows.some(function (row) { return (row.left && row.left.isYou) || (row.right && row.right.isYou); });
       if (selectedPartner && !hasYourRequest) {
         var requestRow = { left: { id: "your-piece", name: selfName, grade: "", piece: "girl", tint: "teal", isYou: true }, right: selectedPartner, status: "your-request" };
         if (Number.isInteger(state.boardRow) && state.boardRow >= rows.length && state.boardRow < 8) {
