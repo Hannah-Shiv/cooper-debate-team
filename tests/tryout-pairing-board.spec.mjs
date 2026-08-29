@@ -200,10 +200,11 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-grade option").first()).toHaveText("Select Grade");
   await expect(page.locator(".tourney-tryout-id-field > span")).toHaveCSS("color", "rgb(255, 255, 255)");
   await expect(page.locator(".tourney-tryout-name-field > span")).toHaveCSS("color", "rgb(255, 255, 255)");
+  await expect(page.locator("#tourney-tryout-id-help")).toHaveCount(0);
   await page.locator("#tourney-tryout-show-board").click();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toBeVisible();
   await expect(page.locator("#tourney-tryout-gate #tourney-tryout-error")).toHaveText("Please enter the student’s seven-digit FCPS ID.");
-  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "52px");
+  await expect(page.locator("#tourney-tryout-show-board")).toHaveCSS("min-height", "55px");
   await openBoard(page, false);
   await expect(page.locator("#scroll-top")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-gate")).toBeVisible();
