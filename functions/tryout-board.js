@@ -55,6 +55,23 @@ function remainingPreferenceIds(record, unavailableIds) {
   return normalizePreferenceIds(record).filter(partnerId => !unavailable.has(partnerId));
 }
 
+function incomingRequestViews(selfId, self, records) {
+  return [...records.entries()]
+    .filter(([id, record]) =>
+      id !== selfId &&
+      !record.withdrawn &&
+      !record.pairedWith &&
+      record.session === self.session &&
+      normalizePreferenceIds(record).includes(selfId)
+    )
+    .map(([id, record]) => ({
+      id,
+      displayName: displayName(record.name),
+      grade: record.grade,
+      session: record.session,
+    }));
+}
+
 function publicProjection(id, record) {
   return {
     id,
@@ -88,6 +105,7 @@ function privateView(id, record, records) {
       .filter(Boolean)
       .map(preference => displayName(preference.name)),
     partnerDisplayName: partner ? displayName(partner.name) : "",
+    incomingRequests: incomingRequestViews(id, record, records),
     status: paired ? "mutual" : preferenceIds.length ? "pending" : "open",
     releasedReason: record.releasedReason === "partner-locked" ? "partner-locked" : "",
     revision: Number(record.revision) || 0,
@@ -435,6 +453,7 @@ module.exports = {
   displayName,
   firstValidMutualPreference,
   identityKey,
+  incomingRequestViews,
   normalizePreferenceIds,
   remainingPreferenceIds,
   validFcpsId,

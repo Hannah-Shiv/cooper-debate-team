@@ -16,7 +16,7 @@ function publicStudent(id, displayName, partnerId = null, session = "sep22") {
   };
 }
 
-async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = []) {
+async function installSharedBoard(page, records, onRequest = () => {}, savedPartnerIds = [], incomingRequests = []) {
   let serverSession = "sep22";
   let serverPartnerIds = savedPartnerIds.slice();
   await page.route("https://www.gstatic.com/firebasejs/**", requestRoute => requestRoute.abort());
@@ -72,6 +72,7 @@ async function installSharedBoard(page, records, onRequest = () => {}, savedPart
       partnerId: partnerIds[0] || null,
       partnerIds,
       partnerNames: partnerIds,
+      incomingRequests,
       status: partnerIds.length ? "pending" : "open",
       releasedReason: "",
       revision: 2,
@@ -224,4 +225,40 @@ test("shows confirmed reciprocal pairs but not private pending relationships", a
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Avery A.");
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Blake B.");
   await expect(page.locator('[data-partner="casey"]')).toBeVisible();
+});
+
+test("moves incoming requests onto the board and lets the student accept one", async ({ page }) => {
+  const requests = [];
+  await installSharedBoard(page, [
+    publicStudent("hannah", "Hannah Shiv", null, "sep22"),
+    publicStudent("avery", "Avery A.", null, "sep22"),
+  ], body => requests.push(body), [], [{
+    id: "hannah",
+    displayName: "Hannah S.",
+    grade: "8",
+    session: "sep22",
+  }]);
+  await openBoard(page);
+
+  await expect(page.locator('[data-partner="hannah"]')).toHaveCount(0);
+  await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toContainText("Hannah S.");
+  await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toContainText("Waiting for acceptance");
+  await page.locator('[data-accept-partner="hannah"]').click();
+  await expect(page.locator(".tourney-tryout-preference-list")).toContainText("Hannah S.");
+  await page.locator("#tourney-tryout-submit").click();
+  expect(requests.find(request => request.action === "request")?.partnerIds).toEqual(["hannah"]);
+});
+
+test("shows every incoming request even when more than eight students are waiting", async ({ page }) => {
+  const incoming = Array.from({ length: 9 }, (_, index) => ({
+    id: `waiting-${index}`,
+    displayName: `Waiting ${index}.`,
+    grade: "8",
+    session: "sep22",
+  }));
+  await installSharedBoard(page, incoming.map(record => publicStudent(record.id, record.displayName)), () => {}, [], incoming);
+  await openBoard(page);
+
+  await expect(page.locator(".tourney-tryout-board-row.is-incoming")).toHaveCount(9);
+  await expect(page.locator('[data-partner^="waiting-"]')).toHaveCount(0);
 });

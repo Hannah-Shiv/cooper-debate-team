@@ -4,6 +4,7 @@ const {
   displayName,
   firstValidMutualPreference,
   identityKey,
+  incomingRequestViews,
   normalizePreferenceIds,
   remainingPreferenceIds,
   validFcpsId,
@@ -62,4 +63,18 @@ test("many unpaired students may include the same target in their preferences", 
 test("a locked target is removed without discarding lower-ranked choices", () => {
   const record = { partnerIds: ["avery", "blake", "casey", "devon"] };
   assert.deepEqual(remainingPreferenceIds(record, ["avery", "casey"]), ["blake", "devon"]);
+});
+
+test("incoming requests are private, session-matched, and privacy-safe", () => {
+  const records = new Map([
+    ["hannah", { name: "Hannah Shiv", grade: "8", session: "sep23", partnerIds: ["self"], pairedWith: null }],
+    ["other-session", { name: "Other Student", grade: "7", session: "sep22", partnerIds: ["self"], pairedWith: null }],
+    ["paired", { name: "Paired Student", grade: "8", session: "sep23", partnerIds: ["self"], pairedWith: "someone" }],
+  ]);
+  assert.deepEqual(incomingRequestViews("self", { session: "sep23" }, records), [{
+    id: "hannah",
+    displayName: "Hannah S.",
+    grade: "8",
+    session: "sep23",
+  }]);
 });
