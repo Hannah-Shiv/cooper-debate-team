@@ -175,9 +175,10 @@
     });
     if (state.partnerId || state.selfPlaced) {
       var selectedPartner = recordById(state.partnerId);
+      var selfName = state.self ? state.self.name : (dom.name.value.trim() || "Student");
       var hasYourRequest = rows.some(function (row) { return row.left && row.left.isYou; });
       if (selectedPartner && !hasYourRequest) {
-        var requestRow = { left: { id: "your-piece", name: "Your piece", grade: "", piece: "girl", tint: "teal", isYou: true }, right: selectedPartner, status: "your-request" };
+        var requestRow = { left: { id: "your-piece", name: selfName, grade: "", piece: "girl", tint: "teal", isYou: true }, right: selectedPartner, status: "your-request" };
         if (Number.isInteger(state.boardRow) && state.boardRow >= rows.length && state.boardRow < 8) {
           while (rows.length <= state.boardRow) rows.push({ left: null, right: null, status: "open" });
           rows[state.boardRow] = requestRow;
@@ -185,7 +186,7 @@
           rows.push(requestRow);
         }
       } else if (state.selfPlaced && !hasYourRequest) {
-        var openRequestRow = { left: { id: "your-piece", name: "Your piece", grade: "", piece: "girl", tint: "teal", isYou: true }, right: null, status: "your-request" };
+        var openRequestRow = { left: { id: "your-piece", name: selfName, grade: "", piece: "girl", tint: "teal", isYou: true }, right: null, status: "your-request" };
         if (Number.isInteger(state.boardRow) && state.boardRow >= rows.length && state.boardRow < 8) {
           while (rows.length <= state.boardRow) rows.push({ left: null, right: null, status: "open" });
           rows[state.boardRow] = openRequestRow;
@@ -214,7 +215,7 @@
         : row.status === "pending" || row.status === "your-request"
           ? '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 7v5l3 2"/></svg>'
           : '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>';
-       var label = row.status === "locked" ? "Both agreed · Locked" : row.status === "your-request" ? (row.right ? "Your request · Pending" : "Your piece · Choose a partner") : row.status === "pending" ? "One agreed · Pending" : "Open row";
+       var label = row.status === "locked" ? "Both agreed · Locked" : row.status === "your-request" ? (row.right ? "Your request · Pending" : "You · Choose a partner") : row.status === "pending" ? "One agreed · Pending" : "Open row";
       return '<div class="tourney-tryout-board-row is-' + row.status + '" data-board-row="' + index + '">' +
         '<span class="tourney-tryout-row-number">' + (index + 1) + '</span><div class="tourney-tryout-board-slot">' + piece(row.left, row.left ? "" : "is-open", index) + '</div>' +
         '<span class="tourney-tryout-row-state" aria-label="' + label + '">' + indicator + '</span><div class="tourney-tryout-board-slot">' + piece(row.right, row.right ? "" : "is-open", index) + '</div></div>';
