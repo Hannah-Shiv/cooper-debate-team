@@ -1753,26 +1753,55 @@
       display: none;
     }
 
-    /* Philosophy and Join are one closing section with one shared icon. */
-    #idx-phi-join-grid {
-      display: block !important;
-      padding-left: 0;
-      border-left: 0;
+    /* Cinematic Philosophy + Join closing panel */
+    #idx-bottom-section {
+      position: relative;
+      overflow: hidden;
+      padding: 0 !important;
+      background:
+        radial-gradient(circle at 72% 38%, rgba(21,58,112,0.2), transparent 43%),
+        linear-gradient(110deg, #010714 0%, #030d20 48%, #03112a 100%) !important;
+    }
+    #idx-bottom-section .section-wrap {
+      max-width: 1240px;
+      padding: 0 20px;
     }
     #idx-phi-join-panel {
+      position: relative;
       display: grid;
-      grid-template-columns: 120px minmax(0, 1fr);
-      gap: 28px;
-      align-items: start;
+      grid-template-columns: minmax(290px, 35%) minmax(0, 1fr);
+      grid-template-rows: minmax(520px, auto) auto;
+      overflow: hidden;
+      min-height: 590px;
+      background:
+        radial-gradient(circle at 48% 73%, rgba(216,154,27,0.07), transparent 23%),
+        linear-gradient(90deg, rgba(0,0,0,0.26), transparent 40%);
+      box-shadow: inset 0 1px rgba(242,193,66,0.1), inset 0 -1px rgba(242,193,66,0.1);
     }
-    #idx-phi-join-icon {
+    #idx-closing-art {
+      position: relative;
+      z-index: 0;
+      min-width: 0;
+      overflow: hidden;
+      align-self: stretch;
+    }
+    #idx-closing-art img {
+      position: absolute;
+      inset: 0;
       display: block;
-      width: 112px;
-      height: 112px;
-      object-fit: contain;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 52%;
+      mix-blend-mode: screen;
+      opacity: 0.95;
     }
     #idx-phi-join-copy {
+      position: relative;
+      z-index: 1;
       min-width: 0;
+      padding: 50px 30px 34px 16px;
+      align-self: center;
     }
     #idx-phi-box,
     #idx-join-box {
@@ -1783,35 +1812,296 @@
       border-radius: 0 !important;
       box-shadow: none !important;
     }
-    #idx-join-box {
-      margin-top: 24px !important;
-      padding-top: 0 !important;
+    .idx-closing-quote {
+      position: relative;
+      max-width: 660px;
+      padding: 0 42px 4px 58px;
+      border-left: 1px solid rgba(232,168,40,0.72);
     }
-    #idx-join-text {
-      width: 100%;
+    .idx-closing-quote p {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.25rem, 2.15vw, 1.72rem);
+      font-style: italic;
+      line-height: 1.38;
+      color: rgba(255,255,255,0.94);
+    }
+    .idx-closing-quote-mark {
+      position: absolute;
+      color: #e8a828;
+      font-family: Georgia, serif;
+      font-size: 3.3rem;
+      font-style: normal;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .idx-closing-quote-open {
+      top: -4px;
+      left: 18px;
+    }
+    .idx-closing-quote-close {
+      right: 4px;
+      bottom: 25px;
+    }
+    .idx-closing-quote .idx-closing-quote-attr {
+      margin-top: 14px;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.72rem;
+      font-style: normal;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #e8a828;
+    }
+    #idx-join-box {
+      margin-top: 32px !important;
+    }
+    .idx-closing-title {
+      margin: 0;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.7rem, 4.8vw, 4.2rem);
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: -0.025em;
+      color: #fff;
+      white-space: nowrap;
+    }
+    .idx-closing-title span {
+      color: #e8a828;
+    }
+    .idx-closing-gold-rule {
+      position: relative;
+      height: 1px;
+      margin: 24px 0 22px;
+      background: linear-gradient(90deg, rgba(232,168,40,0.14), rgba(232,168,40,0.95) 45%, rgba(232,168,40,0.14));
+    }
+    .idx-closing-gold-rule span {
+      position: absolute;
+      top: 50%;
+      left: 46%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ffd56a;
+      box-shadow: 0 0 16px 5px rgba(232,168,40,0.7);
+      transform: translate(-50%, -50%);
+    }
+    .idx-closing-description {
+      margin: 0;
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: clamp(0.92rem, 1.65vw, 1.12rem);
+      line-height: 1.7;
+      color: rgba(222,229,240,0.78);
+    }
+    .idx-closing-description strong {
+      color: #efb432;
+      font-weight: 600;
+    }
+    .idx-closing-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+    .idx-closing-action {
+      display: grid;
+      grid-template-columns: 38px minmax(0, 1fr) auto;
+      gap: 13px;
+      align-items: center;
+      min-height: 72px;
+      padding: 13px 18px;
+      border: 1px solid #d79c25;
+      border-radius: 7px;
+      font-family: 'Josefin Sans', sans-serif;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+    .idx-closing-action:hover {
+      transform: translateY(-2px);
+    }
+    .idx-closing-action svg {
+      width: 32px;
+      height: 32px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+    .idx-closing-action span {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .idx-closing-action b {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .idx-closing-action small {
+      font-size: 0.68rem;
+      color: inherit;
+      opacity: 0.76;
+    }
+    .idx-closing-action i {
+      font-family: Arial, sans-serif;
+      font-size: 1.6rem;
+      font-style: normal;
+      font-weight: 300;
+    }
+    .idx-closing-action-primary {
+      color: #071126;
+      background: linear-gradient(135deg, #f7cb58, #e9a91f);
+      box-shadow: 0 0 16px rgba(232,168,40,0.3), inset 0 1px rgba(255,255,255,0.55);
+    }
+    .idx-closing-action-primary:hover {
+      box-shadow: 0 0 22px rgba(232,168,40,0.48), inset 0 1px rgba(255,255,255,0.55);
+    }
+    .idx-closing-action-secondary {
+      color: #fff;
+      background: rgba(2,10,28,0.58);
+    }
+    .idx-closing-action-secondary:hover {
+      background: rgba(232,168,40,0.08);
+    }
+    .idx-closing-benefits {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      min-height: 72px;
+      border-top: 1px solid rgba(232,168,40,0.14);
+      background: rgba(1,7,20,0.42);
+    }
+    .idx-closing-benefits > div {
+      display: flex;
+      gap: 11px;
+      align-items: center;
+      justify-content: center;
+      margin: 15px 0;
+      padding: 0 15px;
+      border-left: 1px solid rgba(232,168,40,0.2);
+      color: rgba(255,255,255,0.92);
+    }
+    .idx-closing-benefits > div:first-child {
+      border-left: 0;
+    }
+    .idx-closing-benefits span {
+      color: #e8a828;
+      font-size: 1.65rem;
+      line-height: 1;
+    }
+    .idx-closing-benefits b {
+      font-family: 'Josefin Sans', sans-serif;
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    @media (max-width: 900px) {
+      #idx-phi-join-panel {
+        grid-template-columns: minmax(225px, 33%) minmax(0, 1fr);
+        grid-template-rows: minmax(500px, auto) auto;
+      }
+      #idx-phi-join-copy {
+        padding: 40px 20px 30px 10px;
+      }
+      .idx-closing-quote {
+        padding-left: 44px;
+        padding-right: 26px;
+      }
+      .idx-closing-title {
+        font-size: clamp(2.35rem, 5.6vw, 3.25rem);
+      }
+      .idx-closing-actions {
+        gap: 11px;
+      }
+      .idx-closing-action {
+        grid-template-columns: 30px minmax(0, 1fr) auto;
+        gap: 9px;
+        padding: 11px;
+      }
+      .idx-closing-action svg {
+        width: 27px;
+        height: 27px;
+      }
+      .idx-closing-benefits b {
+        font-size: 0.57rem;
+      }
     }
     @media (max-width: 600px) {
       #idx-champ-grid::before {
         display: none;
       }
+      #idx-bottom-section .section-wrap {
+        padding: 0;
+      }
       #idx-phi-join-panel {
         grid-template-columns: 1fr;
-        gap: 12px;
-        text-align: center;
+        grid-template-rows: 340px auto auto;
+        min-height: 0;
       }
-      #idx-phi-join-icon {
-        width: 92px;
-        height: 92px;
-        justify-self: center;
+      #idx-closing-art {
+        min-height: 340px;
+      }
+      #idx-closing-art img {
+        width: 270px;
+        height: 405px;
+        inset: auto auto -18px 50%;
+        object-fit: contain;
+        transform: translateX(-50%);
       }
       #idx-phi-join-copy {
-        width: 100%;
+        width: auto;
+        padding: 12px 20px 36px;
+      }
+      .idx-closing-quote {
+        padding: 0 28px 2px 38px;
+        text-align: left;
+      }
+      .idx-closing-quote p {
+        font-size: 1.22rem;
+      }
+      .idx-closing-quote p br {
+        display: none;
+      }
+      .idx-closing-quote-open {
+        left: 9px;
+      }
+      .idx-closing-quote-close {
+        right: 1px;
       }
       #idx-join-box {
-        margin-top: 24px !important;
+        margin-top: 28px !important;
       }
-      #idx-join-text {
+      .idx-closing-title {
+        font-size: clamp(2.35rem, 12vw, 3rem);
         text-align: center;
+        white-space: normal;
+      }
+      .idx-closing-description {
+        text-align: center;
+      }
+      .idx-closing-desktop-break {
+        display: none;
+      }
+      .idx-closing-actions {
+        grid-template-columns: 1fr;
+        max-width: 340px;
+        margin-right: auto;
+        margin-left: auto;
+      }
+      .idx-closing-benefits {
+        grid-column: 1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .idx-closing-benefits > div:nth-child(odd) {
+        border-left: 0;
+      }
+      .idx-closing-benefits > div:nth-child(n+3) {
+        border-top: 1px solid rgba(232,168,40,0.16);
       }
     }
   </style>
@@ -2343,38 +2633,53 @@
   </div>
 </section>
 
-<!-- PHILOSOPHY · JOIN — consolidated to eliminate dead air -->
-<section id="idx-bottom-section" style="background:var(--navy-dark);padding:48px 0 56px;">
-  <div class="section-wrap" style="display:flex;flex-direction:column;gap:20px;">
+<!-- PHILOSOPHY · JOIN -->
+<section id="idx-bottom-section">
+  <div class="section-wrap">
+    <div id="idx-phi-join-panel">
+      <div id="idx-closing-art" aria-hidden="true">
+        <img src="images/spotlight-mic-stage.png" alt="">
+      </div>
 
-    <!-- Philosophy quote + Join CTA side by side -->
-    <div id="idx-phi-join-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:20px;">
-      <div id="idx-phi-join-panel">
-        <img id="idx-phi-join-icon" src="images/spotlight-mic-icon.png" alt="Spotlight microphone">
-        <div id="idx-phi-join-copy">
-          <!-- Philosophy quote -->
-          <div id="idx-phi-box">
-            <div class="philosophy-quote-inner" style="width:100%;">
-              <div class="philosophy-quote-mark">"</div>
-              <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
-              <p class="philosophy-quote-attr" style="margin-top:1.2em;">— Our Philosophy</p>
-            </div>
+      <div id="idx-phi-join-copy">
+        <div id="idx-phi-box">
+          <div class="idx-closing-quote">
+            <span class="idx-closing-quote-mark idx-closing-quote-open">“</span>
+            <p>Debate is not just a competition.<br>It’s a way of thinking, a way of speaking,<br>and a way of leading.</p>
+            <span class="idx-closing-quote-mark idx-closing-quote-close">”</span>
+            <p class="idx-closing-quote-attr">—&nbsp; Our Philosophy</p>
           </div>
+        </div>
 
-          <!-- Join CTA -->
-          <div id="idx-join-box">
-            <div id="idx-join-text">
-              <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
-              <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
-              <div class="join-buttons">
-                <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
-                <a href="about.html" class="btn btn-outline">Learn More</a>
-              </div>
-            </div>
+        <div id="idx-join-box">
+          <h2 class="idx-closing-title">Ready to <span>Find</span> Your Voice?</h2>
+          <div class="idx-closing-gold-rule" aria-hidden="true"><span></span></div>
+          <p class="idx-closing-description">
+            Cooper Debate develops confident speakers, sharp thinkers,<br class="idx-closing-desktop-break">
+            and tomorrow’s leaders.<br>
+            <strong>No experience necessary — just curiosity and commitment.</strong>
+          </p>
+          <div class="idx-closing-actions">
+            <a href="about.html#join" class="idx-closing-action idx-closing-action-primary">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="6"/><circle cx="32" cy="18" r="5"/><path d="M6 38v-5c0-7 5-11 12-11s12 4 12 11v5M27 25c7 0 12 4 12 10v3"/></svg>
+              <span><b>Apply to Join</b><small>Take the first step today</small></span>
+              <i aria-hidden="true">→</i>
+            </a>
+            <a href="about.html" class="idx-closing-action idx-closing-action-secondary">
+              <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 10c8-2 14 0 19 5v27c-5-5-11-7-19-5zM43 10c-8-2-14 0-19 5v27c5-5 11-7 19-5z"/></svg>
+              <span><b>Learn More</b><small>Discover what we do</small></span>
+              <i aria-hidden="true">→</i>
+            </a>
           </div>
         </div>
       </div>
 
+      <div class="idx-closing-benefits" aria-label="Benefits of Cooper Debate">
+        <div><span>♙</span><b>Speak Confidently</b></div>
+        <div><span>♢</span><b>Think Critically</b></div>
+        <div><span>◇</span><b>Lead Boldly</b></div>
+        <div><span>♜</span><b>Impact the Future</b></div>
+      </div>
     </div>
   </div>
 </section>
