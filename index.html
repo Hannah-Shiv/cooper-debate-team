@@ -2317,15 +2317,16 @@
     /* Bring back distinct navy surfaces for the By the Numbers metrics so
        they read as a deliberate section instead of blending into charcoal. */
     #idx-stats-section {
-      background:
-        linear-gradient(180deg, #101b36 0%, #172342 52%, #1c2030 100%) !important;
+      background: var(--navy-dark) !important;
     }
     #idx-stats-outer {
       padding: 24px 32px 40px !important;
       background: rgba(6, 18, 48, 0.58) !important;
-      border: 1px solid rgba(242, 209, 107, 0.22) !important;
+      border: 1px solid rgba(242, 209, 107, 0.82) !important;
       border-radius: 14px !important;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+      box-shadow:
+        0 0 18px rgba(242, 209, 107, 0.08),
+        inset 0 1px 0 rgba(255, 244, 177, 0.16) !important;
     }
     #idx-stats-grid {
       gap: 14px !important;
@@ -2333,11 +2334,12 @@
       border: 0 !important;
     }
     #idx-stats-grid > div {
-      border: 1px solid rgba(242, 209, 107, 0.42) !important;
+      border: 1px solid rgba(242, 209, 107, 0.82) !important;
       border-radius: 12px !important;
       box-shadow:
+        0 0 12px rgba(242, 209, 107, 0.12),
         0 8px 20px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+        inset 0 1px 0 rgba(255, 244, 177, 0.18) !important;
     }
     #idx-stats-grid > div:nth-child(1) {
       background: linear-gradient(145deg, #0d2a5c, #091d43) !important;
@@ -2352,7 +2354,7 @@
       background: linear-gradient(145deg, #163962, #0b244b) !important;
     }
     #idx-stats-grid > div + div {
-      border-left: 1px solid rgba(242, 209, 107, 0.42) !important;
+      border-left: 1px solid rgba(242, 209, 107, 0.82) !important;
     }
     @media (max-width: 800px) {
       #idx-stats-outer {
@@ -2365,7 +2367,7 @@
       #idx-stats-grid > div + div,
       #idx-stats-grid > div:nth-child(even),
       #idx-stats-grid > div:nth-child(n + 3) {
-        border: 1px solid rgba(242, 209, 107, 0.42) !important;
+        border: 1px solid rgba(242, 209, 107, 0.82) !important;
       }
     }
   </style>
