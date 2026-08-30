@@ -2410,8 +2410,8 @@
       }
     }
 
-    /* Match the elegant inset rail used by the Mission and Why Debate panels
-       on about.html. */
+    /* Use a more distinctive constellation rail for the two season-pulse
+       panels while keeping the inset proportions used on about.html. */
     .idx-season-pulse__column {
       position: relative;
       border-left: 0 !important;
@@ -2422,15 +2422,43 @@
       top: 24px;
       bottom: 24px;
       left: 0;
-      width: 3px;
+      width: 2px;
       background: linear-gradient(
         to bottom,
         transparent,
-        #F2D16B 18%,
-        #F2D16B 82%,
+        var(--pulse-accent-soft) 12%,
+        var(--pulse-accent) 34%,
+        var(--pulse-accent) 66%,
+        var(--pulse-accent-soft) 88%,
         transparent
       );
-      box-shadow: 0 0 12px rgba(242, 209, 107, 0.35);
+      box-shadow:
+        0 0 7px var(--pulse-accent-glow),
+        0 0 14px var(--pulse-accent-glow);
+    }
+    .idx-season-pulse__column::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 1px;
+      width: 8px;
+      height: 8px;
+      background: var(--navy-dark);
+      border: 1px solid var(--pulse-accent);
+      box-shadow:
+        0 0 6px var(--pulse-accent-glow),
+        0 0 12px var(--pulse-accent-glow);
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+    .idx-season-pulse__news {
+      --pulse-accent: #6CE0C8;
+      --pulse-accent-soft: rgba(108, 224, 200, 0.3);
+      --pulse-accent-glow: rgba(108, 224, 200, 0.48);
+    }
+    .idx-season-pulse__resolution {
+      --pulse-accent: #D4A017;
+      --pulse-accent-soft: rgba(212, 160, 23, 0.3);
+      --pulse-accent-glow: rgba(212, 160, 23, 0.48);
     }
   </style>
   <script>
