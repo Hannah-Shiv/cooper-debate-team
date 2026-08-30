@@ -755,14 +755,20 @@
          font-size: 0.58rem;
        }
        .hero-compact-brand {
-         top: 97px;
-         left: 14px;
+          top: 96px;
+          left: 50%;
          font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
          font-size: clamp(1.25rem, 5.5vw, 1.55rem);
          font-weight: 400;
          letter-spacing: 0.02em;
          word-spacing: 0.12em;
-         transform: none;
+          line-height: 0.92;
+          text-align: center;
+          transform: translateX(-50%);
+        }
+        .hero-compact-brand strong {
+          display: block;
+          margin-top: 2px;
        }
        .hero-compact-subtitle {
          display: none !important;
