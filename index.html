@@ -2370,6 +2370,19 @@
         border: 1px solid rgba(242, 209, 107, 0.82) !important;
       }
     }
+
+    /* Frame the complete closing mic and join section with the same bright
+       gold treatment used for the statistics box. */
+    #idx-phi-join-panel {
+      border: 1px solid rgba(242, 209, 107, 0.82);
+      border-radius: 12px;
+      box-shadow:
+        0 0 18px rgba(242, 209, 107, 0.08),
+        inset 0 1px 0 rgba(255, 244, 177, 0.16);
+    }
+    #idx-closing-art::before {
+      display: none;
+    }
   </style>
   <script>
     (function () {
