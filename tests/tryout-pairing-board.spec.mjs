@@ -303,6 +303,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(statsGeometry.centerGaps.every(gap => gap > 50)).toBe(true);
   expect(statsGeometry.cards.every(card => card.borderRadius >= 8 && card.height > 50 && card.background !== "rgba(0, 0, 0, 0)")).toBe(true);
   expect(parseFloat(await page.locator(".tourney-tryout-output-stats strong").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(22);
+  expect(parseFloat(await page.locator(".tourney-tryout-output-stats small").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(15);
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 182, 165)");
@@ -525,6 +526,8 @@ test("explains and confirms identity actions before changing a paired signup", a
   await page.locator('[data-partner="hannah"]').click();
   await page.locator("#tourney-tryout-submit").click();
   await expect(page.locator("#tourney-tryout-identity-status")).toHaveText("Paired");
+  await expect(page.locator("#tourney-tryout-identity-status")).toHaveCSS("color", "rgb(45, 36, 16)");
+  await expect(page.locator("#tourney-tryout-identity-status")).toHaveCSS("background-color", "rgb(244, 196, 76)");
   await expect(page.locator("#tourney-tryout-identity-partner-row")).toBeVisible();
   await expect(page.locator("#tourney-tryout-identity-partner")).toHaveText("Hannah S.");
   await expect(page.locator(".tourney-tryout-action-card button:visible")).toHaveCount(5);

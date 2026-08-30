@@ -105,7 +105,7 @@
 .tourney-tryout-output-stats strong { display:block; margin-bottom:6px; color:#fff; font-size:1.5rem; line-height:1; white-space:nowrap; }
 .tourney-tryout-output-stats strong > span { color:inherit; font-size:inherit; }
 .tourney-tryout-output-stats strong > .tourney-tryout-stat-unit { font-size:.62rem; letter-spacing:.035em; text-transform:uppercase; }
-.tourney-tryout-output-stats small { display:block; color:inherit; font-size:.58rem; font-weight:800; line-height:1.2; }
+.tourney-tryout-output-stats small { display:block; color:inherit; font-size:.87rem; font-weight:800; line-height:1.2; }
 .tourney-tryout-output-stats small > span { display:block; color:inherit; font-size:inherit; }
 .tourney-tryout-output-stats span.is-paired { color:#b8fac4; border-color:rgba(108,242,138,.3); background:rgba(108,242,138,.09); }
 .tourney-tryout-output-stats span.is-paired strong { color:#6cf28a; }
@@ -482,7 +482,7 @@
 .tourney-tryout-metric-status { justify-self:start; margin-right:0!important; padding:3px 7px!important; border-radius:999px; }
 .tourney-tryout-metric-status.is-open { color:#c4e1ff; background:rgba(72,141,229,.18); }
 .tourney-tryout-metric-status.is-pending,.tourney-tryout-metric-status.is-waiting { color:#ffb6a5; background:rgba(255,118,95,.16); }
-.tourney-tryout-metric-status.is-paired { color:#b8fac4; background:rgba(84,221,129,.16); }
+.tourney-tryout-metric-status.is-paired { color:#2d2410; border:1px solid #ffe39a; background:#f4c44c; }
 .tourney-tryout-identity-actions { flex-wrap: nowrap; justify-content: flex-end; gap:9px; }
 .tourney-tryout-identity-actions [hidden],.tourney-tryout-board-actions[hidden] { display:none; }
 .tourney-tryout-identity-actions button { position:relative; display:grid; place-items:center; align-content:center; gap:4px; width:142px; min-height:82px; padding:10px 9px; color:#dce8ff; border:1px solid rgba(120,157,225,.38); border-radius:10px; background:linear-gradient(155deg,rgba(16,51,103,.78),rgba(4,15,38,.8)); box-shadow:inset 0 1px 0 rgba(255,255,255,.05); font:700 .61rem/1.2 'Josefin Sans',sans-serif; letter-spacing:.035em; text-align:center; text-transform:uppercase; transition:border-color .18s,background .18s,transform .18s; }
