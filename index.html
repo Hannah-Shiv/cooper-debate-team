@@ -684,7 +684,8 @@
        color: var(--gold-light);
      }
      .hero-bg::after {
-       transition: none;
+        transition: background-size 0.48s cubic-bezier(0.22, 0.61, 0.36, 1),
+                    background-position 0.48s cubic-bezier(0.22, 0.61, 0.36, 1);
      }
       @media (min-width: 601px) {
         .home-hero > .hero-bg {
@@ -723,6 +724,9 @@
      html.home-hero-image-hidden .hero-bg::after {
         opacity: 1;
        transform: none;
+        background-size: 100% 78%;
+        background-position: center center;
+        background-repeat: no-repeat;
      }
      html.home-hero-image-hidden .hero-bg::before {
         opacity: 1;
