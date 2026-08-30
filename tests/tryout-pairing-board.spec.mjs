@@ -237,6 +237,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(parseFloat(await page.locator("#tourney-tryout-workspace-label").evaluate(label => getComputedStyle(label).fontSize))).toBeGreaterThanOrEqual(16);
   await expect(page.locator("#tourney-tryout-output-placeholder")).toBeHidden();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-identity")).toBeVisible();
+  await expect(page.locator(".tourney-tryout-output .tourney-tryout-identity-profile .tourney-tryout-identity-emblem")).toHaveCount(0);
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
