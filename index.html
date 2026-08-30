@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=43"/>
+   <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/homepage-readiness.css?v=4"/>
@@ -72,7 +72,7 @@
         flex-direction: row;
         align-items: baseline;
         justify-content: center;
-        gap: clamp(14px, 2vw, 26px);
+         gap: clamp(10px, 1.6vw, 18px);
         padding: 2px 0 12px;
         margin-bottom: 16px;
       }
@@ -82,14 +82,14 @@
         gap: 0;
        color: #F2D16B !important;
         font-family: 'Cormorant Garamond', serif;
-         font-size: clamp(1.05rem, 1.6vw, 1.3rem) !important;
+          font-size: clamp(1.7rem, 3.5vw, 2.55rem) !important;
         font-style: normal;
          font-weight: 600;
-         letter-spacing: 0.1em;
+         letter-spacing: 0;
         line-height: 1;
-        text-shadow: 0 0 14px rgba(242,209,107,0.22);
+         text-shadow: none;
        white-space: nowrap;
-        text-transform: uppercase;
+         text-transform: none;
          border: 0;
          border-radius: 0;
          padding: 0;
@@ -108,26 +108,28 @@
         gap: 0.2em;
         color: rgba(255,255,255,0.98);
         font-family: 'Cormorant Garamond', serif;
-         font-size: clamp(2.15rem, 4.2vw, 3.25rem) !important;
+         font-size: clamp(1.7rem, 3.5vw, 2.55rem) !important;
         font-weight: 600;
         line-height: 1;
         letter-spacing: 0;
          text-shadow: none;
        white-space: nowrap;
      }
-      #idx-stats-heading .stats-heading-by {
-        color: #F2D16B;
-         font-size: 0.64em;
-        font-style: italic;
-         font-weight: 400;
-        letter-spacing: 0.02em;
-        transform: translateY(-0.08em);
-      }
-      #idx-stats-heading .stats-heading-numbers {
+       #idx-stats-heading .stats-heading-by,
+       #idx-stats-heading .stats-heading-numbers {
         color: rgba(255,255,255,0.98);
-        font-size: 1em;
+         font-size: 1em;
         font-weight: 600;
       }
+       #idx-stats-heading .stats-heading-by {
+         color: rgba(255,255,255,0.98);
+       }
+       #idx-stats-heading .stats-heading-separator {
+         color: rgba(242,209,107,0.74);
+         font-family: 'Cormorant Garamond', serif;
+         font-size: clamp(1.7rem, 3.5vw, 2.55rem);
+         line-height: 1;
+       }
      #idx-stats-heading #idx-stats-season-label,
      #idx-stats-heading .section-title {
        margin-bottom: 0 !important;
@@ -318,10 +320,11 @@
      .idx-award-panel .aw-award-stats {
        display: grid;
        grid-template-columns: repeat(3, minmax(0, 1fr));
-       gap: 10px;
+        gap: 0;
        margin: 0 10px 10px;
        padding: 0;
        background: transparent;
+        border-top: 1px solid rgba(242,209,107,0.34);
      }
      .idx-award-panel .aw-award-stat {
        display: flex;
@@ -331,11 +334,14 @@
        align-items: center;
        justify-content: flex-start;
        padding: 12px 6px 14px;
-       background: linear-gradient(145deg, rgba(6,20,53,0.98), rgba(3,12,33,0.99));
-       border: 1px solid #F2D16B;
-       border-radius: 12px;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
        text-align: center;
      }
+      .idx-award-panel .aw-award-stat + .aw-award-stat {
+        border-left: 1px solid rgba(242,209,107,0.24);
+      }
      .idx-award-panel .aw-award-stat-icon {
        display: grid;
        width: 45px;
@@ -391,12 +397,95 @@
        line-height: 1.3;
        text-transform: uppercase;
      }
-     @media (max-width: 800px) {
+       @media (max-width: 800px) {
        #idx-champ-grid {
-         grid-template-columns: 1fr;
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+          gap: 12px;
+        }
+        .idx-award-panel .aw-award-card {
+          min-height: 355px;
+        }
+        .idx-award-panel .aw-award-content {
+          gap: 9px;
+          padding: 15px 10px;
+        }
+        .idx-award-panel .aw-award-media {
+          flex-basis: 86px;
+          width: 86px;
+          height: 126px;
+        }
+        .idx-award-panel .aw-metro-award-media img,
+        .idx-award-panel .aw-ncfl-award-media img {
+          width: 86px;
+        }
+        .idx-award-panel .aw-award-badge {
+          padding: 3px 6px;
+          font-size: 0.49rem;
+        }
+        .idx-award-panel .aw-award-badge-icon {
+          width: 17px;
+          height: 17px;
+          margin-right: 3px;
+        }
+        .idx-award-panel .aw-award-hierarchy {
+          font-size: 0.46rem;
+        }
+        .idx-award-panel .aw-award-title {
+          font-size: 1rem;
+        }
+        .idx-award-panel .aw-award-place {
+          font-size: 2.35rem;
+        }
+        .idx-award-panel .aw-ncfl-award-achievement {
+          font-size: 1.05rem;
+          white-space: normal;
+        }
+        .idx-award-panel .aw-award-note {
+          font-size: 0.56rem;
+        }
+        .idx-award-panel .aw-award-stats {
+          gap: 0;
+          margin-inline: 6px;
+          margin-bottom: 6px;
+        }
+        .idx-award-panel .aw-award-stat {
+          min-height: 118px;
+          padding: 9px 3px 10px;
+        }
+        .idx-award-panel .aw-award-stat-icon {
+          width: 34px;
+          height: 34px;
+          margin-bottom: 5px;
+        }
+        .idx-award-panel .aw-award-stat-icon svg {
+          width: 19px;
+          height: 19px;
+        }
+        .idx-award-panel .aw-award-stat-number {
+          font-size: 1.8rem;
+        }
+        .idx-award-panel .aw-award-stat-divider {
+          width: 42px;
+          margin-block: 5px;
+        }
+        .idx-award-panel .aw-award-stat-label {
+          font-size: 0.45rem;
        }
      }
-     @media (max-width: 500px) {
+      @media (max-width: 600px) {
+        #idx-stats-heading {
+          gap: 7px;
+        }
+        #idx-stats-heading #idx-stats-season-label,
+        #idx-stats-heading .section-title,
+        #idx-stats-heading .stats-heading-separator {
+          font-size: clamp(1.35rem, 7vw, 1.9rem) !important;
+        }
+        #idx-champ-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 500px) {
        .idx-award-panel .aw-award-content {
          gap: 12px;
          padding: 18px 14px;
@@ -598,14 +687,17 @@
       #idx-bottom-section .section-wrap { gap: 14px !important; }
        #idx-stats-heading { gap: 8px; padding: 6px 0 14px; }
        #idx-stats-heading #idx-stats-season-label {
-          font-size: 0.9rem !important;
-         letter-spacing: 0.08em;
+          font-size: 1.45rem !important;
+         letter-spacing: 0;
           padding: 0;
       }
        #idx-stats-heading .section-title {
-         gap: 0.2em;
-         font-size: 2.15rem !important;
+         gap: 0;
+         font-size: 1.45rem !important;
        }
+        #idx-stats-heading .stats-heading-separator {
+          font-size: 1.45rem !important;
+        }
     }
 
     /* Keep dense content comfortable on tall tablet portrait screens without
@@ -1643,8 +1735,8 @@
       <div id="idx-stats-heading">
         <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
         <h2 class="section-title" style="text-align:center;margin-bottom:32px;" aria-label="By the Numbers">
-          <span class="stats-heading-by">By the</span>
-          <span class="stats-heading-numbers">Numbers</span>
+          <span class="stats-heading-separator" aria-hidden="true">·</span>
+          <span class="stats-heading-numbers">By the Numbers</span>
         </h2>
       </div>
 
