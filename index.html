@@ -134,6 +134,29 @@
      #idx-stats-heading .section-title {
        margin-bottom: 0 !important;
      }
+      /* The closing Philosophy and Join content uses the same open editorial
+         treatment as the homepage News and Resolution columns. */
+      #idx-phi-join-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: clamp(30px, 6vw, 76px) !important;
+        align-items: stretch;
+      }
+      #idx-phi-box,
+      #idx-join-box {
+        min-width: 0;
+        padding: 12px 0 12px clamp(18px, 2.4vw, 28px) !important;
+        background: transparent !important;
+        border: 0 !important;
+        border-left: 3px solid rgba(126,184,232,0.82) !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+      }
+      #idx-join-box {
+        border-left-color: rgba(109,216,184,0.82) !important;
+      }
+      #idx-phi-box .philosophy-quote-text {
+        max-width: 760px;
+      }
      .idx-champ-main {
        background: linear-gradient(135deg, rgba(3,14,42,0.99) 0%, rgba(7,26,61,0.98) 58%, rgba(15,39,76,0.98) 100%),
                   radial-gradient(ellipse at 70% 50%, rgba(212,160,23,0.12) 0%, transparent 65%),
@@ -629,6 +652,11 @@
 
       /* Stack philosophy quote above join CTA */
       #idx-phi-join-grid { grid-template-columns: 1fr !important; }
+       #idx-phi-box,
+       #idx-join-box {
+         padding-left: 16px !important;
+         border-left-width: 2px !important;
+       }
 
       /* Join box: stack icon above text on mobile */
       #idx-join-box { flex-direction: column !important; align-items: stretch !important; }
@@ -2033,7 +2061,7 @@
     <div id="idx-phi-join-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:20px;">
 
       <!-- Philosophy quote -->
-      <div id="idx-phi-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;align-items:center;">
+      <div id="idx-phi-box" style="display:flex;align-items:center;">
         <div class="philosophy-quote-inner" style="width:100%;">
           <div class="philosophy-quote-mark">"</div>
           <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
@@ -2042,7 +2070,7 @@
       </div>
 
       <!-- Join CTA -->
-      <div id="idx-join-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:40px 36px;display:flex;flex-direction:row;align-items:center;gap:32px;">
+      <div id="idx-join-box" style="display:flex;flex-direction:row;align-items:center;gap:32px;">
         <img src="images/spotlight-mic-icon.png" alt="Spotlight microphone" style="width:120px;height:120px;object-fit:contain;flex-shrink:0;">
         <div id="idx-join-text">
           <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
