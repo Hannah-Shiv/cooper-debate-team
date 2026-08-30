@@ -183,22 +183,35 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");
   await expect(page.locator("#tourney-tryout-output-placeholder")).toBeVisible();
   await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Your sign-up status appears here");
+  await expect(page.locator(".tourney-tryout-output > .tourney-tryout-output-heading p")).toHaveText("Current sign-up status");
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-status")).toHaveCount(1);
   await expect(page.locator(".tourney-tryout-gate #tourney-tryout-error")).toHaveCount(1);
   await expect(page.locator("#tourney-tryout-session-preview")).toHaveText("Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.");
   const topLayout = await page.locator(".tourney-tryout-top-layout").evaluate(layout => {
-    const gate = layout.querySelector("#tourney-tryout-gate").getBoundingClientRect();
-    const how = layout.querySelector(".tourney-tryout-how-panel").getBoundingClientRect();
-    const output = layout.querySelector(".tourney-tryout-output").getBoundingClientRect();
+    const gateElement = layout.querySelector("#tourney-tryout-gate");
+    const howElement = layout.querySelector(".tourney-tryout-how-panel");
+    const outputElement = layout.querySelector(".tourney-tryout-output");
+    const gate = gateElement.getBoundingClientRect();
+    const how = howElement.getBoundingClientRect();
+    const output = outputElement.getBoundingClientRect();
+    const icons = [
+      gateElement.querySelector(".tourney-tryout-icon").getBoundingClientRect(),
+      howElement.querySelector(".tourney-tryout-icon").getBoundingClientRect(),
+      outputElement.querySelector(".tourney-tryout-icon").getBoundingClientRect(),
+    ];
     return {
       howIsBetweenPanels: how.left > gate.right && output.left > how.right,
       topsAlign: Math.abs(how.top - gate.top) < 3 && Math.abs(output.top - gate.top) < 3,
       widthsFit: gate.width + how.width + output.width <= layout.getBoundingClientRect().width,
+      iconsAlign: icons.every(icon => Math.abs(icon.top - icons[0].top) < 3),
+      iconsMatch: icons.every(icon => Math.abs(icon.width - icons[0].width) < 1 && Math.abs(icon.height - icons[0].height) < 1),
     };
   });
   expect(topLayout.howIsBetweenPanels).toBe(true);
   expect(topLayout.topsAlign).toBe(true);
   expect(topLayout.widthsFit).toBe(true);
+  expect(topLayout.iconsAlign).toBe(true);
+  expect(topLayout.iconsMatch).toBe(true);
   await expect(page.locator(".tourney-tryout-footer-note")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-date-options option")).toHaveText([
     "Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.",
@@ -226,7 +239,32 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveText("Board statistics");
   await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span")).toHaveCount(2);
-  await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span").first()).toHaveCSS("border-left-style", "solid");
+  const statsGeometry = await page.locator(".tourney-tryout-output-stats").evaluate(stats => {
+    const group = stats.querySelector("div:last-child").getBoundingClientRect();
+    const items = Array.from(stats.querySelectorAll("div:last-child > span"));
+    const centers = items.map(item => {
+      const box = item.getBoundingClientRect();
+      return box.left + box.width / 2;
+    });
+    const markers = items.slice(1).map(item => {
+      const itemBox = item.getBoundingClientRect();
+      const marker = getComputedStyle(item, "::before");
+      return {
+        color: marker.backgroundColor,
+        height: parseFloat(marker.height),
+        itemHeight: itemBox.height,
+      };
+    });
+    return {
+      groupWidth: group.width,
+      sectionWidth: stats.getBoundingClientRect().width,
+      centerGaps: centers.slice(1).map((center, index) => center - centers[index]),
+      markers,
+    };
+  });
+  expect(statsGeometry.groupWidth).toBeGreaterThan(statsGeometry.sectionWidth * .9);
+  expect(statsGeometry.centerGaps.every(gap => gap > 50)).toBe(true);
+  expect(statsGeometry.markers.every(marker => marker.color === "rgba(255, 255, 255, 0.8)" && marker.height > 8 && marker.height < marker.itemHeight)).toBe(true);
   expect(parseFloat(await page.locator(".tourney-tryout-output-stats strong").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(22);
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
