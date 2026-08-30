@@ -7,7 +7,7 @@
   <title>Cooper Debate Team — Speak · Reason · Lead</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Pinyon+Script&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=40"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
@@ -648,7 +648,7 @@
        left: 50%;
        z-index: 3;
        color: rgba(255,255,255,0.94);
-       font-family: 'Pinyon Script', 'Cormorant Garamond', cursive;
+       font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
        font-size: clamp(1.95rem, 3.5vw, 2.7rem);
        font-weight: 400;
        letter-spacing: 0.025em;
@@ -693,24 +693,23 @@
        overflow: hidden;
        pointer-events: none;
        opacity: 0.78;
+       border-top: 1px solid rgba(242,193,66,0.5);
      }
      .hero-compact-emblem {
        position: absolute;
        top: 0;
        bottom: 0;
-       width: 25%;
-       background-image: url('attached_assets/image_1788058416678.png?v=1');
-       background-repeat: no-repeat;
-       background-size: 238% 100%;
+       width: auto;
+       height: 100%;
+       max-width: 25%;
+       object-fit: contain;
        filter: brightness(0.82) saturate(0.9) contrast(1.04);
      }
      .hero-compact-emblem--left {
-       left: 5%;
-       background-position: left center;
+       left: clamp(14px, 4vw, 58px);
      }
      .hero-compact-emblem--right {
-       right: 15%;
-       background-position: right center;
+       right: clamp(14px, 4vw, 58px);
      }
      .hero-bg::after {
        transition: opacity 0.42s ease, transform 0.48s ease;
@@ -770,7 +769,7 @@
        .hero-compact-brand {
          top: 97px;
          left: 14px;
-         font-family: 'Pinyon Script', 'Cormorant Garamond', cursive;
+         font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
          font-size: clamp(1.15rem, 5vw, 1.38rem);
          font-weight: 400;
          letter-spacing: 0.02em;
@@ -1418,8 +1417,8 @@
 <section class="home-hero">
   <div class="hero-bg"></div>
    <div class="hero-compact-emblems" aria-hidden="true">
-     <span class="hero-compact-emblem hero-compact-emblem--left"></span>
-     <span class="hero-compact-emblem hero-compact-emblem--right"></span>
+     <img class="hero-compact-emblem hero-compact-emblem--left" src="attached_assets/image_1788058670259.png?v=1" alt=""/>
+     <img class="hero-compact-emblem hero-compact-emblem--right" src="attached_assets/image_1788058642730.png?v=1" alt=""/>
    </div>
    <div class="hero-compact-brand" aria-hidden="true">Cooper <strong>Debate Team</strong></div>
    <div class="hero-compact-subtitle" aria-hidden="true">Speak <span>·</span> Persuade <span>·</span> Lead</div>
