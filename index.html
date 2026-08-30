@@ -596,6 +596,71 @@
       .hero-scroll-chevron { height: 18px; width: 18px; }
     }
 
+     /* ── Home hero image preference ─────────────────────────── */
+     .hero-image-toggle {
+       position: absolute;
+       top: clamp(88px, 12vh, 132px);
+       right: clamp(16px, 4vw, 52px);
+       z-index: 4;
+       display: inline-flex;
+       align-items: center;
+       gap: 8px;
+       padding: 9px 13px;
+       border: 1px solid rgba(255,255,255,0.48);
+       border-radius: 999px;
+       background: rgba(4,8,22,0.62);
+       color: rgba(255,255,255,0.9);
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.66rem;
+       font-weight: 700;
+       letter-spacing: 0.1em;
+       line-height: 1;
+       text-transform: uppercase;
+       cursor: pointer;
+       backdrop-filter: blur(8px);
+       box-shadow: 0 4px 18px rgba(0,0,0,0.28);
+       transition: background 0.22s ease, border-color 0.22s ease, color 0.22s ease;
+     }
+     .hero-image-toggle:hover {
+       border-color: var(--gold-light);
+       background: rgba(4,8,22,0.86);
+       color: var(--gold-pale);
+     }
+     .hero-image-toggle:focus-visible {
+       outline: 3px solid rgba(247,200,66,0.9);
+       outline-offset: 3px;
+     }
+     .hero-image-toggle svg {
+       width: 16px;
+       height: 16px;
+       flex: 0 0 auto;
+     }
+     html.home-hero-image-hidden .home-hero {
+       height: 0;
+       min-height: 0;
+     }
+     html.home-hero-image-hidden .home-hero > .hero-bg,
+     html.home-hero-image-hidden .home-hero > .hero-beams,
+     html.home-hero-image-hidden .home-hero > .hero-content,
+     html.home-hero-image-hidden .home-hero > .hero-scroll {
+       visibility: hidden;
+     }
+     html.home-hero-image-hidden .hero-image-toggle {
+       position: fixed;
+       top: 88px;
+     }
+     @media (max-width: 600px) {
+       .hero-image-toggle {
+         top: 88px;
+         right: 14px;
+         padding: 8px 11px;
+         font-size: 0.58rem;
+       }
+       html.home-hero-image-hidden .hero-image-toggle {
+         top: 84px;
+       }
+     }
+
     /* ── Index footer — reference layout ─────────────────────── */
     .index-footer {
       --index-footer-gold: #f2b41f;
@@ -1158,6 +1223,15 @@
       }
     }
   </style>
+  <script>
+    (function () {
+      try {
+        if (window.localStorage.getItem('cooper-home-hero-image') === 'hidden') {
+          document.documentElement.classList.add('home-hero-image-hidden');
+        }
+      } catch (e) { /* Private browsing or blocked storage — show the hero. */ }
+    })();
+  </script>
 </head>
 <body style="--navy-dark:#1c2030;">
 
@@ -1212,6 +1286,13 @@
 <!-- HERO SECTION -->
 <section class="home-hero">
   <div class="hero-bg"></div>
+   <button class="hero-image-toggle" id="hero-image-toggle" type="button" aria-pressed="false" aria-label="Hide hero image">
+     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+       <path d="M2.5 12s3.4-5 9.5-5 9.5 5 9.5 5-3.4 5-9.5 5-9.5-5-9.5-5Z"/>
+       <circle cx="12" cy="12" r="2.4"/>
+     </svg>
+     <span>Hide image</span>
+   </button>
 
   <!-- Stage light beam shafts (CSS-only atmospheric effect) -->
   <div class="hero-beams" aria-hidden="true"></div>
@@ -1814,6 +1895,41 @@
 
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
+<script>
+  (function () {
+    var STORAGE_KEY = 'cooper-home-hero-image';
+
+    function setHeroImageHidden(hidden) {
+      document.documentElement.classList.toggle('home-hero-image-hidden', hidden);
+
+      var button = document.getElementById('hero-image-toggle');
+      if (!button) return;
+
+      button.setAttribute('aria-pressed', String(hidden));
+      button.setAttribute('aria-label', hidden ? 'Show hero image' : 'Hide hero image');
+
+      var label = button.querySelector('span');
+      if (label) label.textContent = hidden ? 'Show image' : 'Hide image';
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var button = document.getElementById('hero-image-toggle');
+      if (!button) return;
+
+      var isHidden = document.documentElement.classList.contains('home-hero-image-hidden');
+      setHeroImageHidden(isHidden);
+
+      button.addEventListener('click', function () {
+        isHidden = !isHidden;
+        setHeroImageHidden(isHidden);
+
+        try {
+          window.localStorage.setItem(STORAGE_KEY, isHidden ? 'hidden' : 'shown');
+        } catch (e) { /* The visual toggle still works when storage is unavailable. */ }
+      });
+    });
+  })();
+</script>
 <script src="js/kickoff-schedule.js?v=3"></script>
 <script src="data/announcements.js"></script>
 <script>
