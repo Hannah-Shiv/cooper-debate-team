@@ -1759,11 +1759,12 @@ body.dome-open .page-header { padding-top: 240px; }
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(30px, 6vw, 76px);
-  align-items: start;
+  align-items: stretch;
 }
 .idx-season-pulse__column {
   min-width: 0;
   padding-left: clamp(18px, 2.4vw, 28px);
+  height: 100%;
 }
 .idx-season-pulse__resolution {
   border-left: 3px solid rgba(242, 209, 107, 0.9);
@@ -1880,6 +1881,7 @@ body.dome-open .page-header { padding-top: 240px; }
   }
   .idx-season-pulse__grid {
     grid-template-columns: 1fr;
+    grid-auto-rows: 1fr;
     gap: 42px;
   }
 }

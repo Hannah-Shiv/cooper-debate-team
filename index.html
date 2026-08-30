@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=42"/>
+  <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/homepage-readiness.css?v=4"/>
@@ -31,16 +31,39 @@
     .idx-stat-icon svg { display: block; }
 
      /* Keep gold panel borders crisp against the lighter charcoal page background. */
-     #idx-stats-outer,
      #idx-phi-box,
      #idx-join-box {
        background: linear-gradient(145deg, rgba(11,32,76,0.94), rgba(6,19,49,0.98)) !important;
        border-color: rgba(242,209,107,0.72) !important;
      }
+     #idx-stats-section {
+       background:
+         radial-gradient(ellipse at 50% 5%, rgba(242,209,107,0.06), transparent 42%),
+         var(--navy-dark) !important;
+     }
+     #idx-stats-outer {
+       padding: 0 !important;
+       background: transparent !important;
+       border: 0 !important;
+       border-radius: 0 !important;
+       box-shadow: none !important;
+     }
+     #idx-stats-grid {
+       gap: 0 !important;
+       margin-bottom: 34px !important;
+       border-top: 1px solid rgba(242,209,107,0.34);
+       border-bottom: 1px solid rgba(242,209,107,0.34);
+     }
      #idx-stats-grid > div {
-       background: linear-gradient(145deg, rgba(6,20,53,0.98), rgba(3,12,33,0.99)) !important;
-       border-color: #F2D16B !important;
-       box-shadow: 0 5px 18px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.04) !important;
+       position: relative;
+       padding: 30px 20px 27px !important;
+       background: transparent !important;
+       border: 0 !important;
+       border-radius: 0 !important;
+       box-shadow: none !important;
+     }
+     #idx-stats-grid > div + div {
+       border-left: 1px solid rgba(242,209,107,0.24) !important;
      }
      #idx-stats-section::before,
      #idx-stats-section::after {
@@ -489,6 +512,15 @@
     @media (max-width: 768px) {
       /* Stats: 4-col → 2×2 */
       #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
+      #idx-stats-grid > div {
+        border-left: 0 !important;
+      }
+      #idx-stats-grid > div:nth-child(even) {
+        border-left: 1px solid rgba(242,209,107,0.24) !important;
+      }
+      #idx-stats-grid > div:nth-child(n+3) {
+        border-top: 1px solid rgba(242,209,107,0.24) !important;
+      }
 
       /* Stack philosophy quote above join CTA */
       #idx-phi-join-grid { grid-template-columns: 1fr !important; }
@@ -531,7 +563,7 @@
       #idx-stats-grid { grid-template-columns: repeat(2,1fr) !important; }
 
       /* Tighten box padding */
-      #idx-stats-outer { padding: 20px 14px 18px !important; }
+      #idx-stats-outer { padding: 0 !important; }
       #idx-phi-box     { padding: 24px 18px !important; }
       #idx-join-box    { padding: 28px 18px !important; }
 
@@ -564,6 +596,15 @@
        changing the existing desktop or landscape hero composition. */
      @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
       #idx-stats-grid { grid-template-columns: repeat(2,minmax(0,1fr)) !important; }
+      #idx-stats-grid > div {
+        border-left: 0 !important;
+      }
+      #idx-stats-grid > div:nth-child(even) {
+        border-left: 1px solid rgba(242,209,107,0.24) !important;
+      }
+      #idx-stats-grid > div:nth-child(n+3) {
+        border-top: 1px solid rgba(242,209,107,0.24) !important;
+      }
       .idx-champ-plaque { width: min(300px,60vw); margin-inline: auto; }
     }
 
@@ -2068,7 +2109,6 @@
             <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
             <div class="news-card-title">${p.emoji} ${p.title}</div>
             <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
-            <div class="news-card-meta">${p.date}</div>
           </div>
         `).join('');
       } else {
@@ -2077,7 +2117,6 @@
             <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
             <div class="news-card-title">${p.emoji} ${p.title}</div>
             <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
-            <div class="news-card-meta">${p.date}</div>
           </div>
         `).join('');
       }
