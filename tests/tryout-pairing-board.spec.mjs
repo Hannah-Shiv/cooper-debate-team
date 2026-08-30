@@ -173,6 +173,8 @@ test("shows large primary board actions", async ({ page }) => {
   await installSharedBoard(page, [publicStudent("avery", "Alexandria-Marguerite W.")]);
   await page.goto(route, { waitUntil: "domcontentloaded" });
 
+  const partnerPanelTop = await page.locator("#partner-signup").evaluate(panel => panel.getBoundingClientRect().top);
+  expect(partnerPanelTop).toBeLessThan(100);
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("white-space", "nowrap");
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
   await expect(page.locator("#tourney-tab-calendar")).toHaveText("Calendar");
