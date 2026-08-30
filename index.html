@@ -136,7 +136,7 @@
      }
       /* The closing Philosophy and Join content uses the same open editorial
          treatment as the homepage News and Resolution columns. */
-      #idx-phi-join-grid {
+     #idx-phi-join-grid {
         grid-template-columns: 1fr !important;
         gap: 0 !important;
         align-items: stretch;
@@ -1733,6 +1733,87 @@
         font-size: 1.12rem !important;
       }
     }
+
+    /* Championship results: use one quiet center divider, not a rule above
+       each result, so the four-stat row remains the visual anchor. */
+    #idx-champ-grid {
+      position: relative;
+    }
+    #idx-champ-grid::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 1px;
+      background: linear-gradient(180deg, transparent, rgba(242,209,107,0.55) 18%, rgba(242,209,107,0.55) 82%, transparent);
+      content: "";
+      pointer-events: none;
+    }
+    .idx-award-panel .aw-award-card::before {
+      display: none;
+    }
+
+    /* Philosophy and Join are one closing section with one shared icon. */
+    #idx-phi-join-grid {
+      display: block !important;
+      padding-left: 0;
+      border-left: 0;
+    }
+    #idx-phi-join-panel {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 28px;
+      align-items: start;
+    }
+    #idx-phi-join-icon {
+      display: block;
+      width: 112px;
+      height: 112px;
+      object-fit: contain;
+    }
+    #idx-phi-join-copy {
+      min-width: 0;
+    }
+    #idx-phi-box,
+    #idx-join-box {
+      padding: 0 !important;
+      margin: 0 !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+    }
+    #idx-join-box {
+      margin-top: 24px !important;
+      padding-top: 0 !important;
+    }
+    #idx-join-text {
+      width: 100%;
+    }
+    @media (max-width: 600px) {
+      #idx-champ-grid::before {
+        display: none;
+      }
+      #idx-phi-join-panel {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        text-align: center;
+      }
+      #idx-phi-join-icon {
+        width: 92px;
+        height: 92px;
+        justify-self: center;
+      }
+      #idx-phi-join-copy {
+        width: 100%;
+      }
+      #idx-join-box {
+        margin-top: 24px !important;
+      }
+      #idx-join-text {
+        text-align: center;
+      }
+    }
   </style>
   <script>
     (function () {
@@ -2268,25 +2349,28 @@
 
     <!-- Philosophy quote + Join CTA side by side -->
     <div id="idx-phi-join-grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:20px;">
+      <div id="idx-phi-join-panel">
+        <img id="idx-phi-join-icon" src="images/spotlight-mic-icon.png" alt="Spotlight microphone">
+        <div id="idx-phi-join-copy">
+          <!-- Philosophy quote -->
+          <div id="idx-phi-box">
+            <div class="philosophy-quote-inner" style="width:100%;">
+              <div class="philosophy-quote-mark">"</div>
+              <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
+              <p class="philosophy-quote-attr" style="margin-top:1.2em;">— Our Philosophy</p>
+            </div>
+          </div>
 
-      <!-- Philosophy quote -->
-      <div id="idx-phi-box" style="display:flex;align-items:center;">
-        <div class="philosophy-quote-inner" style="width:100%;">
-          <div class="philosophy-quote-mark">"</div>
-          <p class="philosophy-quote-text">Debate is not just a competition. It's a way of thinking, a way of speaking, and a way of leading.</p>
-          <p class="philosophy-quote-attr" style="margin-top:1.2em;">— Our Philosophy</p>
-        </div>
-      </div>
-
-      <!-- Join CTA -->
-      <div id="idx-join-box" style="display:flex;flex-direction:row;align-items:center;gap:32px;">
-        <img src="images/spotlight-mic-icon.png" alt="Spotlight microphone" style="width:120px;height:120px;object-fit:contain;flex-shrink:0;">
-        <div id="idx-join-text">
-          <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
-          <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
-          <div class="join-buttons">
-            <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
-            <a href="about.html" class="btn btn-outline">Learn More</a>
+          <!-- Join CTA -->
+          <div id="idx-join-box">
+            <div id="idx-join-text">
+              <h2 class="join-title" style="font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;">Ready to Find Your Voice?</h2>
+              <p class="join-description" style="font-size:0.95rem;margin-bottom:28px;">Cooper Debate develops confident speakers, sharp thinkers, and tomorrow's leaders. No experience necessary — just curiosity and commitment.</p>
+              <div class="join-buttons">
+                <a href="about.html#join" class="btn btn-gold">Apply to Join</a>
+                <a href="about.html" class="btn btn-outline">Learn More</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
