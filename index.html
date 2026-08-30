@@ -2475,6 +2475,38 @@
     #idx-phi-join-panel {
       background: transparent !important;
     }
+
+    /* Keep the four headline metrics intentionally uniform rather than
+       mixing four internal gradients. */
+    #idx-stats-grid > div {
+      background: #12335f !important;
+      background-image: none !important;
+    }
+    #idx-stats-grid > div:nth-child(1),
+    #idx-stats-grid > div:nth-child(2),
+    #idx-stats-grid > div:nth-child(3),
+    #idx-stats-grid > div:nth-child(4) {
+      background: #12335f !important;
+      background-image: none !important;
+    }
+
+    /* Increase the six championship stat labels by approximately 15% while
+       preserving their existing compact layout. */
+    .idx-award-panel .aw-award-stat-label {
+      font-size: 0.529rem !important;
+    }
+    @media (max-width: 800px) {
+      .idx-award-panel .aw-award-stat-label {
+        font-size: 0.483rem !important;
+      }
+    }
+
+    /* Remove the highlight gradient from the readiness shell so its blue is
+       consistent from the left edge through the upper-right corner. */
+    .homepage-readiness__panel {
+      background: #0b204c !important;
+      background-image: none !important;
+    }
   </style>
   <script>
     (function () {
