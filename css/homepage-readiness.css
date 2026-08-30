@@ -187,10 +187,10 @@
   gap: 10px;
   min-height: 46px;
   padding: 10px 12px;
-  border: 1px solid rgba(185, 220, 255, 0.24);
+  border: 1px solid rgba(213, 201, 177, 0.34);
   border-radius: 8px;
-  background: rgba(35, 89, 143, 0.16);
-  color: #d8ecff;
+  background: linear-gradient(135deg, rgba(57, 62, 72, 0.96), rgba(36, 41, 50, 0.98));
+  color: #f2efe7;
   font-size: clamp(0.88rem, 1.2vw, 1rem);
   font-weight: 700;
   line-height: 1.35;
@@ -205,8 +205,8 @@
 
 .homepage-readiness__links a:hover,
 .homepage-readiness__links a:focus-visible {
-  border-color: rgba(242, 209, 107, 0.78);
-  background: rgba(35, 89, 143, 0.3);
+  border-color: rgba(242, 209, 107, 0.84);
+  background: linear-gradient(135deg, rgba(76, 81, 91, 0.98), rgba(48, 53, 63, 0.99));
   color: #fff;
   transform: translateY(-1px);
   outline: none;
