@@ -2507,6 +2507,26 @@
       background: #0b204c !important;
       background-image: none !important;
     }
+
+    /* Give the long Latest News heading the full mobile row, then place
+       View All beneath it so the fixed-width link cannot overlap the title. */
+    @media (max-width: 600px) {
+      #idx-news-section .news-strip-header {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 10px;
+      }
+      #idx-news-section .news-strip-title {
+        width: 100%;
+        min-width: 0;
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+      #idx-news-section .news-strip-all {
+        justify-self: start;
+        align-self: flex-start;
+        margin-top: 0;
+      }
+    }
   </style>
   <script>
     (function () {
