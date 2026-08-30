@@ -433,6 +433,17 @@ test("shows large primary board actions", async ({ page }) => {
   expect(layoutMetrics.longNameFits).toBe(true);
 });
 
+test("keeps the partner signup panel at the top after a hard refresh", async ({ page }) => {
+  await installSharedBoard(page, [publicStudent("avery", "Alexandria-Marguerite W.")]);
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+  await page.reload({ waitUntil: "domcontentloaded" });
+
+  await expect.poll(
+    () => page.locator("#partner-signup").evaluate(panel => panel.getBoundingClientRect().top)
+  ).toBeLessThan(100);
+});
+
 test("stacks the partner signup panel cleanly on mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await installSharedBoard(page, [publicStudent("avery", "Avery A.")]);

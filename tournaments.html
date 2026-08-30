@@ -15,6 +15,9 @@
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
       var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "partner-signup", "parent-info"];
       var incomingTab = window.location.hash.slice(1);
       if (validTabs.indexOf(incomingTab) !== -1) {
@@ -1674,10 +1677,13 @@ function renderLastSeason(tourns) {
   activateTab(initialId);
   if (window.__TOURNEY_INITIAL_TAB) updateUrl(initialId, true);
   if (shouldScrollToInitialPanel && initialId !== panels[0].id) {
-    requestAnimationFrame(() => {
+    const scrollToInitialPanel = () => {
       const initialPanel = panels.find(panel => panel.id === initialId);
       if (initialPanel) initialPanel.scrollIntoView({ behavior: 'auto', block: 'start' });
-    });
+    };
+    requestAnimationFrame(scrollToInitialPanel);
+    window.addEventListener('load', () => requestAnimationFrame(scrollToInitialPanel), { once: true });
+    window.addEventListener('pageshow', () => requestAnimationFrame(scrollToInitialPanel));
   }
 }());
 
