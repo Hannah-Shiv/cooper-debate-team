@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=40"/>
+  <link rel="stylesheet" href="css/main.css?v=41"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/homepage-readiness.css?v=4"/>
@@ -31,12 +31,6 @@
     .idx-stat-icon svg { display: block; }
 
      /* Keep gold panel borders crisp against the lighter charcoal page background. */
-     .resolution-card {
-       background: linear-gradient(145deg, rgba(8,28,69,0.96), rgba(4,15,39,0.98)) !important;
-       border-color: #F2D16B !important;
-       box-shadow: 0 8px 22px rgba(0,0,0,0.24);
-     }
-     #idx-news-box,
      #idx-stats-outer,
      #idx-phi-box,
      #idx-join-box {
@@ -538,7 +532,6 @@
 
       /* Tighten box padding */
       #idx-stats-outer { padding: 20px 14px 18px !important; }
-      #idx-news-box    { padding: 18px 16px !important; }
       #idx-phi-box     { padding: 24px 18px !important; }
       #idx-join-box    { padding: 28px 18px !important; }
 
@@ -1470,7 +1463,7 @@
       <div class="homepage-readiness__header">
         <div class="homepage-readiness__intro">
           <p class="homepage-readiness__eyebrow">Cooper Debate Team</p>
-          <h2 class="homepage-readiness__title" id="season-readiness-title">Getting ready for 2026–2027</h2>
+          <h2 class="homepage-readiness__title" id="season-readiness-title">Getting ready for 2026-27</h2>
           <p class="homepage-readiness__lead">Whether you are new to debate or returning from last season, start here. Read the website, understand Public Forum, and make a plan for the application and team selection.</p>
         </div>
         <div class="homepage-readiness__deadline" aria-label="Application deadline">
@@ -1528,22 +1521,36 @@
   </div>
 </section>
 
-<!-- CURRENT RESOLUTION BANNER -->
-<section class="resolution-banner" style="background:var(--navy-dark);border-top:none;border-bottom:none;">
-  <div class="section-wrap">
-    <div class="resolution-card">
-      <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
-      <div class="resolution-label">Current Resolution</div>
-      <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
-      <div class="resolution-stats">
-        <span>🗳️ 80% coach vote</span>
-        <span class="dot"></span>
-        <span>68% student vote</span>
-        <span class="dot"></span>
-        <span>530 coaches · 2,401 students voted</span>
+<!-- CURRENT RESOLUTION + NEWS -->
+<section id="idx-season-pulse" class="idx-season-pulse" aria-label="Season updates">
+  <div class="section-wrap idx-season-pulse__grid">
+    <article class="idx-season-pulse__column idx-season-pulse__resolution" aria-labelledby="idx-resolution-title">
+      <div class="resolution-card">
+        <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
+        <div class="resolution-label" id="idx-resolution-title">Current Resolution</div>
+        <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+        <div class="resolution-stats">
+          <span>🗳️ 80% coach vote</span>
+          <span class="dot"></span>
+          <span>68% student vote</span>
+          <span class="dot"></span>
+          <span>530 coaches · 2,401 students voted</span>
+        </div>
+        <a href="resources.html" class="btn btn-gold" style="font-size:0.9rem;padding:10px 22px;">Start Researching →</a>
       </div>
-      <a href="resources.html" class="btn btn-gold" style="font-size:0.9rem;padding:10px 22px;">Start Researching →</a>
-    </div>
+    </article>
+
+    <article id="idx-news-section" class="idx-season-pulse__column idx-season-pulse__news" aria-labelledby="idx-news-title">
+      <div id="idx-news-box">
+        <div class="news-strip-header">
+          <div class="news-strip-title" id="idx-news-title"><span style="font-size:1.6rem;vertical-align:middle;margin-right:16px;line-height:1;">📢</span>Latest News & Announcements</div>
+          <a href="announcements.html" class="news-strip-all btn-view-all">View All →</a>
+        </div>
+        <div id="home-news-cards" class="news-cards">
+          <!-- Populated by announcements.js -->
+        </div>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -1571,21 +1578,6 @@
     </div>
   </div>
 </div>
-
-<!-- NEWS + KICKOFF ANNOUNCEMENT -->
-<section id="idx-news-section" style="background:var(--navy-dark);padding:48px 0 20px;">
-  <div class="section-wrap">
-    <div id="idx-news-box" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:28px 32px;">
-      <div class="news-strip-header">
-        <div class="news-strip-title"><span style="font-size:1.6rem;vertical-align:middle;margin-right:16px;line-height:1;">📢</span>Latest News & Announcements</div>
-        <a href="announcements.html" class="news-strip-all btn-view-all">View All →</a>
-      </div>
-      <div id="home-news-cards">
-        <!-- Populated by announcements.js -->
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- STATISTICS SECTION — live from Firebase -->
 <section id="idx-stats-section" class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
@@ -2070,10 +2062,9 @@
   if (container && typeof ANNOUNCEMENTS !== 'undefined') {
     const items = ANNOUNCEMENTS.filter(p => !p.displayWithSchedule).slice(0, 2);
     if (items.length) {
-      container.style.cssText = 'margin-top:20px;';
       if (items.length === 1) {
         container.innerHTML = items.map(p => `
-          <div class="news-card" style="width:100%;box-sizing:border-box;">
+          <div class="news-card">
             <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
             <div class="news-card-title">${p.emoji} ${p.title}</div>
             <div class="news-card-excerpt">${p.body.split('\n\n')[0]}</div>
@@ -2081,7 +2072,6 @@
           </div>
         `).join('');
       } else {
-        container.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px;';
         container.innerHTML = items.map(p => `
           <div class="news-card">
             <span class="news-card-tag ${tagClasses[p.tag]||'tag-news-ann'}">${p.tagLabel}</span>
@@ -2092,7 +2082,7 @@
         `).join('');
       }
     } else {
-      container.innerHTML = '<p style="color:var(--gray-mid);font-size:0.85rem;margin-top:16px;">No announcements yet.</p>';
+      container.innerHTML = '<p class="news-empty">No announcements yet.</p>';
     }
   }
 </script>
