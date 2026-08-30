@@ -410,14 +410,14 @@
 }
 
 .homepage-readiness__action-link--calendar {
-  border-color: rgba(126, 184, 232, 0.78);
-  background: #0c2a52;
-  box-shadow: 0 6px 16px rgba(3, 14, 39, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-color: rgba(221, 169, 243, 0.78);
+  background: linear-gradient(135deg, #593475 0%, #2b1848 100%);
+  box-shadow: 0 6px 16px rgba(27, 9, 45, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .homepage-readiness__action-link--calendar > span:last-child {
-  border-color: rgba(173, 215, 255, 0.72);
-  color: #b7d7ff;
+  border-color: rgba(239, 213, 255, 0.76);
+  color: #fff;
 }
 
 .homepage-readiness__action-link:hover,
@@ -431,8 +431,8 @@
 
 .homepage-readiness__action-link--calendar:hover,
 .homepage-readiness__action-link--calendar:focus-visible {
-  border-color: #a7d4f7;
-  background: #123b70;
+  border-color: #efcfff;
+  background: linear-gradient(135deg, #71439a 0%, #3d2263 100%);
 }
 
 @media (max-width: 900px) {
