@@ -137,22 +137,25 @@
       /* The closing Philosophy and Join content uses the same open editorial
          treatment as the homepage News and Resolution columns. */
       #idx-phi-join-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: clamp(30px, 6vw, 76px) !important;
+        grid-template-columns: 1fr !important;
+        gap: 0 !important;
         align-items: stretch;
+        padding-left: clamp(18px, 2.4vw, 28px);
+        border-left: 3px solid rgba(126,184,232,0.82);
       }
       #idx-phi-box,
       #idx-join-box {
         min-width: 0;
-        padding: 12px 0 12px clamp(18px, 2.4vw, 28px) !important;
+        padding: 12px 0 !important;
         background: transparent !important;
         border: 0 !important;
-        border-left: 3px solid rgba(126,184,232,0.82) !important;
         border-radius: 0 !important;
         box-shadow: none !important;
       }
       #idx-join-box {
-        border-left-color: rgba(109,216,184,0.82) !important;
+        margin-top: 24px;
+        padding-top: 28px !important;
+        border-top: 1px solid rgba(109,216,184,0.32) !important;
       }
       #idx-phi-box .philosophy-quote-text {
         max-width: 760px;
@@ -652,10 +655,14 @@
 
       /* Stack philosophy quote above join CTA */
       #idx-phi-join-grid { grid-template-columns: 1fr !important; }
+       #idx-phi-join-grid {
+         padding-left: 16px;
+         border-left-width: 2px;
+       }
        #idx-phi-box,
        #idx-join-box {
-         padding-left: 16px !important;
-         border-left-width: 2px !important;
+         padding-left: 0 !important;
+         border-left: 0 !important;
        }
 
       /* Join box: stack icon above text on mobile */
@@ -697,8 +704,8 @@
 
       /* Tighten box padding */
       #idx-stats-outer { padding: 0 !important; }
-      #idx-phi-box     { padding: 24px 18px !important; }
-      #idx-join-box    { padding: 28px 18px !important; }
+       #idx-phi-box     { padding: 12px 0 !important; }
+       #idx-join-box    { padding: 24px 0 0 !important; }
 
       /* Stat numbers: slightly smaller on tiny screens */
       #idx-stat-tourneys, #idx-stat-winrate, #idx-stat-metro { font-size: 2.2rem !important; }
