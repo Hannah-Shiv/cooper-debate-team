@@ -80,6 +80,20 @@
   box-shadow: 0 8px 22px rgba(40, 0, 0, 0.3);
 }
 
+/* The readiness panel already provides the container. Keep the deadline as
+   an open editorial callout inside it, matching the homepage's marker-led
+   News and Resolution columns. */
+.homepage-readiness__deadline {
+  max-width: none;
+  padding: 12px 0 12px 24px;
+  border: 0;
+  border-left: 3px solid #f2d16b;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  box-shadow: none;
+}
+
 .homepage-readiness__deadline-label {
   color: #ffdca0;
   font-family: "Josefin Sans", sans-serif;
@@ -392,7 +406,8 @@
   }
 
   .homepage-readiness__deadline {
-    max-width: 420px;
+    max-width: none;
+    padding-left: 18px;
   }
 
   .homepage-readiness__grid {

@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/homepage-readiness.css?v=4"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=5"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -211,6 +211,19 @@
        border-radius: 14px;
        box-shadow: 0 8px 24px rgba(0,0,0,0.16);
      }
+      /* Keep the two championship results open and editorial when they sit
+         beside one another, rather than creating a second pair of large boxes. */
+      .idx-award-panel .aw-award-card {
+        padding-left: clamp(18px, 2.4vw, 28px);
+        background: transparent;
+        border: 0;
+        border-left: 3px solid rgba(242,209,107,0.82);
+        border-radius: 0;
+        box-shadow: none;
+      }
+      .idx-award-panel .aw-metro-award-card {
+        border-left-color: rgba(109,216,184,0.82);
+      }
      .idx-award-panel .aw-award-content {
        display: flex;
        flex: 1;
@@ -347,7 +360,7 @@
        display: grid;
        grid-template-columns: repeat(3, minmax(0, 1fr));
         gap: 0;
-       margin: 0 10px 10px;
+        margin: 0 0 10px;
        padding: 0;
        background: transparent;
         border-top: 1px solid rgba(242,209,107,0.34);
@@ -433,7 +446,11 @@
         }
         .idx-award-panel .aw-award-content {
           gap: 9px;
-          padding: 15px 10px;
+          padding: 15px 0;
+        }
+        .idx-award-panel .aw-award-card {
+          padding-left: 16px;
+          border-left-width: 2px;
         }
         .idx-award-panel .aw-award-media {
           flex-basis: 86px;
@@ -471,7 +488,7 @@
         }
         .idx-award-panel .aw-award-stats {
           gap: 0;
-          margin-inline: 6px;
+          margin-inline: 0;
           margin-bottom: 6px;
         }
         .idx-award-panel .aw-award-stat {
