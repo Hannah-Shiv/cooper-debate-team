@@ -258,29 +258,65 @@
 
 .homepage-readiness__steps {
   display: grid;
-  gap: 13px;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
 .homepage-readiness__steps li {
+  position: relative;
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 16px;
   align-items: start;
+  padding: 14px 0;
 }
 
 .homepage-readiness__steps li > span {
+  position: relative;
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 44px;
+  height: 44px;
   place-items: center;
-  border: 1px solid rgba(109, 216, 184, 0.72);
+  border: 2px solid #f2d16b;
   border-radius: 50%;
-  color: #8cebd0;
-  font-size: 0.75rem;
+  background: linear-gradient(145deg, #294b82 0%, #152d5a 52%, #081735 100%);
+  box-shadow:
+    0 0 0 4px rgba(242, 209, 107, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.34),
+    inset 0 1px 1px rgba(255, 255, 255, 0.16),
+    inset 0 -3px 5px rgba(54, 31, 0, 0.32);
+  color: #fff;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 1.3rem;
   font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.72);
+}
+
+.homepage-readiness__steps li > span::before {
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(255, 247, 202, 0.48);
+  border-radius: 50%;
+  content: "";
+}
+
+.homepage-readiness__steps li:not(:last-child)::after {
+  position: absolute;
+  top: 58px;
+  bottom: -14px;
+  left: 21px;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    rgba(242, 209, 107, 0.78),
+    rgba(109, 216, 184, 0.62) 52%,
+    rgba(126, 184, 232, 0.2)
+  );
+  box-shadow: 0 0 8px rgba(109, 216, 184, 0.24);
+  content: "";
+  pointer-events: none;
 }
 
 .homepage-readiness__steps p {
