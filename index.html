@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-   <link rel="stylesheet" href="css/homepage-readiness.css?v=5"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=6"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -1546,6 +1546,191 @@
       }
       .index-footer-bottom-cell:last-child {
         padding-bottom: 0;
+      }
+    }
+
+    /* Quieter, approximately 20% smaller treatment for the complete
+       By the Numbers section. */
+    #idx-stats-section {
+      padding: 45px 0 !important;
+    }
+    #idx-stats-heading {
+      gap: clamp(8px, 1.3vw, 14px);
+    }
+    #idx-stats-heading #idx-stats-season-label,
+    #idx-stats-heading .section-title,
+    #idx-stats-heading .stats-heading-separator {
+      font-size: clamp(1.36rem, 2.8vw, 2.04rem) !important;
+    }
+    #idx-stats-grid {
+      margin-bottom: 27px !important;
+    }
+    #idx-stats-grid > div {
+      padding: 24px 16px 22px !important;
+    }
+    #idx-stats-grid .idx-stat-icon {
+      width: 42px;
+      height: 42px;
+      margin-bottom: 14px;
+    }
+    #idx-stats-grid .idx-stat-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    #idx-stat-tourneys,
+    #idx-stat-winrate,
+    #idx-stat-metro {
+      font-size: 2.72rem !important;
+    }
+    #idx-stat-record {
+      font-size: clamp(1.12rem, 3.6vw, 2.08rem) !important;
+    }
+    #idx-stats-grid > div > div:last-child {
+      font-size: 0.6rem !important;
+    }
+
+    /* The championship pair uses slim top accents instead of side bars or
+       outer card frames. */
+    .idx-award-panel .aw-award-card {
+      min-height: 0;
+      position: relative;
+      padding: 14px 0 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+    .idx-award-panel .aw-award-card::before {
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #f2d16b, rgba(242,209,107,0.12));
+      content: "";
+    }
+    .idx-award-panel .aw-metro-award-card::before {
+      background: linear-gradient(90deg, #6dd8b8, rgba(109,216,184,0.12));
+    }
+    .idx-award-panel .aw-award-content {
+      gap: 13px;
+      padding: 16px 0;
+    }
+    .idx-award-panel .aw-award-media {
+      flex-basis: 118px;
+      width: 118px;
+      height: 152px;
+    }
+    .idx-award-panel .aw-metro-award-media img,
+    .idx-award-panel .aw-ncfl-award-media img {
+      width: 118px;
+    }
+    .idx-award-panel .aw-award-badge {
+      padding: 3px 8px;
+      font-size: 0.53rem;
+    }
+    .idx-award-panel .aw-award-hierarchy {
+      font-size: 0.46rem;
+    }
+    .idx-award-panel .aw-award-title {
+      font-size: clamp(0.86rem, 1.48vw, 1.1rem);
+    }
+    .idx-award-panel .aw-award-place {
+      font-size: clamp(2.24rem, 4.24vw, 3.2rem);
+    }
+    .idx-award-panel .aw-ncfl-award-achievement {
+      font-size: clamp(1.09rem, 2.06vw, 1.55rem);
+    }
+    .idx-award-panel .aw-award-note {
+      font-size: 0.54rem;
+    }
+    .idx-award-panel .aw-award-stats {
+      margin: 0;
+    }
+    .idx-award-panel .aw-award-stat {
+      min-height: 114px;
+      padding: 10px 5px 11px;
+    }
+    .idx-award-panel .aw-award-stat-icon {
+      width: 36px;
+      height: 36px;
+      margin-bottom: 6px;
+    }
+    .idx-award-panel .aw-award-stat-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+    .idx-award-panel .aw-award-stat-number {
+      font-size: 1.88rem;
+    }
+    .idx-award-panel .aw-award-stat-divider {
+      width: 56px;
+      margin-block: 6px;
+    }
+    .idx-award-panel .aw-award-stat-label {
+      font-size: 0.46rem;
+    }
+    #idx-stats-section a[href="awards.html"] {
+      padding: 10px 26px !important;
+      font-size: 0.72rem !important;
+    }
+    @media (max-width: 800px) {
+      #idx-stats-section {
+        padding: 26px 0 !important;
+      }
+      .idx-award-panel .aw-award-card {
+        padding: 12px 0 0;
+        border-left: 0;
+      }
+      .idx-award-panel .aw-award-content {
+        gap: 9px;
+        padding: 12px 0;
+      }
+      .idx-award-panel .aw-award-media {
+        flex-basis: 86px;
+        width: 86px;
+        height: 126px;
+      }
+      .idx-award-panel .aw-metro-award-media img,
+      .idx-award-panel .aw-ncfl-award-media img {
+        width: 86px;
+      }
+      .idx-award-panel .aw-award-title {
+        font-size: 0.86rem;
+      }
+      .idx-award-panel .aw-award-place {
+        font-size: 2.24rem;
+      }
+      .idx-award-panel .aw-ncfl-award-achievement {
+        font-size: 1.02rem;
+      }
+      .idx-award-panel .aw-award-stat {
+        min-height: 100px;
+      }
+      .idx-award-panel .aw-award-stat-icon {
+        width: 32px;
+        height: 32px;
+      }
+      .idx-award-panel .aw-award-stat-number {
+        font-size: 1.58rem;
+      }
+      .idx-award-panel .aw-award-stat-label {
+        font-size: 0.42rem;
+      }
+    }
+    @media (max-width: 600px) {
+      #idx-stats-heading #idx-stats-season-label,
+      #idx-stats-heading .section-title,
+      #idx-stats-heading .stats-heading-separator {
+        font-size: 1.16rem !important;
+      }
+      #idx-stat-tourneys,
+      #idx-stat-winrate,
+      #idx-stat-metro {
+        font-size: 1.76rem !important;
+      }
+      #idx-stat-record {
+        font-size: 1.12rem !important;
       }
     }
   </style>
