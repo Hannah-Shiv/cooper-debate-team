@@ -37,9 +37,7 @@
        border-color: rgba(242,209,107,0.72) !important;
      }
      #idx-stats-section {
-       background:
-         radial-gradient(ellipse at 50% 5%, rgba(242,209,107,0.06), transparent 42%),
-         var(--navy-dark) !important;
+       background: var(--navy-dark) !important;
      }
      #idx-stats-outer {
        padding: 0 !important;
@@ -84,18 +82,18 @@
         gap: 0;
        color: #F2D16B !important;
         font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(0.85rem, 1.25vw, 1.05rem) !important;
+         font-size: clamp(1.05rem, 1.6vw, 1.3rem) !important;
         font-style: normal;
          font-weight: 600;
-        letter-spacing: 0.12em;
+         letter-spacing: 0.1em;
         line-height: 1;
         text-shadow: 0 0 14px rgba(242,209,107,0.22);
        white-space: nowrap;
         text-transform: uppercase;
-        border: 1px solid rgba(242,209,107,0.6);
-        border-radius: 999px;
-        padding: 0.62em 1em 0.58em;
-        background: rgba(242,209,107,0.07);
+         border: 0;
+         border-radius: 0;
+         padding: 0;
+         background: transparent;
      }
      #idx-stats-heading #idx-stats-season-label::before {
         display: none;
@@ -110,16 +108,16 @@
         gap: 0.2em;
         color: rgba(255,255,255,0.98);
         font-family: 'Cormorant Garamond', serif;
-        font-size: clamp(2.45rem, 4.6vw, 3.7rem) !important;
+         font-size: clamp(2.15rem, 4.2vw, 3.25rem) !important;
         font-weight: 600;
         line-height: 1;
         letter-spacing: 0;
-        text-shadow: 0 2px 14px rgba(0,0,0,0.2);
+         text-shadow: none;
        white-space: nowrap;
      }
       #idx-stats-heading .stats-heading-by {
         color: #F2D16B;
-        font-size: 0.42em;
+         font-size: 0.64em;
         font-style: italic;
          font-weight: 400;
         letter-spacing: 0.02em;
@@ -145,8 +143,26 @@
        border-color: #F2D16B !important;
      }
      .idx-stat-icon {
-       border-color: #F2D16B;
+        border-color: rgba(242,209,107,0.72);
+        background: transparent;
+        box-shadow: none;
      }
+      #idx-stat-tourneys,
+      #idx-stat-record,
+      #idx-stat-winrate,
+      #idx-stat-metro {
+        color: #FFE28A !important;
+        text-shadow: none !important;
+      }
+      #idx-stat-record span:first-child { color: #65E890 !important; }
+      #idx-stat-record span:last-child { color: #FF6868 !important; }
+      #idx-stat-record span:nth-child(2) { color: rgba(255,255,255,0.58) !important; }
+      #idx-stat-metro span {
+        color: rgba(255,255,255,0.78) !important;
+      }
+      #idx-stats-grid > div > div:last-child {
+        color: rgba(255,255,255,0.8) !important;
+      }
      /* Homepage championship cards — match awards.html without using a screenshot */
      #idx-champ-panel.idx-award-panel {
        margin-top: 22px;
@@ -581,10 +597,10 @@
       /* Bottom section: tighter gap between boxes */
       #idx-bottom-section .section-wrap { gap: 14px !important; }
        #idx-stats-heading { gap: 8px; padding: 6px 0 14px; }
-      #idx-stats-heading #idx-stats-season-label {
-         font-size: 0.68rem !important;
+       #idx-stats-heading #idx-stats-season-label {
+          font-size: 0.9rem !important;
          letter-spacing: 0.08em;
-         padding: 0.58em 0.7em 0.54em;
+          padding: 0;
       }
        #idx-stats-heading .section-title {
          gap: 0.2em;

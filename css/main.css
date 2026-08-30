@@ -1806,6 +1806,9 @@ body.dome-open .page-header { padding-top: 240px; }
   margin-bottom: 22px;
 }
 .idx-season-pulse .news-strip-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
   margin-bottom: 0;
   align-items: center;
 }
@@ -1827,6 +1830,8 @@ body.dome-open .page-header { padding-top: 240px; }
 }
 .idx-season-pulse .news-strip-all {
   flex-shrink: 0;
+  align-self: start;
+  margin-top: 2px;
 }
 .idx-season-pulse .news-cards {
   display: grid;
@@ -1851,7 +1856,14 @@ body.dome-open .page-header { padding-top: 240px; }
   transform: translateX(2px);
 }
 .idx-season-pulse .news-card-tag {
+  padding: 0;
   margin-bottom: 9px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #f2d16b;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
 }
 .idx-season-pulse .news-card-title {
   margin-bottom: 7px;
@@ -1895,8 +1907,9 @@ body.dome-open .page-header { padding-top: 240px; }
     font-size: 1.08rem;
   }
   .idx-season-pulse .news-strip-header {
-    align-items: flex-start;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
   }
   .idx-season-pulse .news-strip-title {
     margin-bottom: 0;
