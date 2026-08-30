@@ -7,7 +7,7 @@
   <title>Cooper Debate Team — Speak · Reason · Lead</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Ballet&family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Pinyon+Script&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=40"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
@@ -644,11 +644,11 @@
      .hero-compact-brand {
        display: none;
        position: absolute;
-       top: 98px;
+       top: 124px;
        left: 50%;
        z-index: 3;
        color: rgba(255,255,255,0.94);
-       font-family: 'Ballet', 'Cormorant Garamond', cursive;
+       font-family: 'Pinyon Script', 'Cormorant Garamond', cursive;
        font-size: clamp(1.95rem, 3.5vw, 2.7rem);
        font-weight: 400;
        letter-spacing: 0.025em;
@@ -662,6 +662,56 @@
        color: var(--gold-pale);
        font-weight: 700;
      }
+     .hero-compact-subtitle {
+       display: none;
+       position: absolute;
+       top: 166px;
+       left: 50%;
+       z-index: 3;
+       transform: translateX(-50%);
+       color: rgba(255,255,255,0.78);
+       font-family: 'Josefin Sans', sans-serif;
+       font-size: 0.5rem;
+       font-weight: 600;
+       letter-spacing: 0.34em;
+       line-height: 1;
+       text-transform: uppercase;
+       white-space: nowrap;
+     }
+     .hero-compact-subtitle span {
+       padding: 0 0.65em;
+       color: var(--gold-light);
+     }
+     .hero-compact-emblems {
+       display: none;
+       position: absolute;
+       top: 88px;
+       right: 0;
+       bottom: 0;
+       left: 0;
+       z-index: 1;
+       overflow: hidden;
+       pointer-events: none;
+       opacity: 0.78;
+     }
+     .hero-compact-emblem {
+       position: absolute;
+       top: 0;
+       bottom: 0;
+       width: 25%;
+       background-image: url('attached_assets/image_1788058416678.png?v=1');
+       background-repeat: no-repeat;
+       background-size: 238% 100%;
+       filter: brightness(0.82) saturate(0.9) contrast(1.04);
+     }
+     .hero-compact-emblem--left {
+       left: 5%;
+       background-position: left center;
+     }
+     .hero-compact-emblem--right {
+       right: 15%;
+       background-position: right center;
+     }
      .hero-bg::after {
        transition: opacity 0.42s ease, transform 0.48s ease;
      }
@@ -669,8 +719,13 @@
        .home-hero { min-height: 0; }
      }
      html.home-hero-image-hidden .home-hero {
-       height: 156px;
-       min-height: 156px;
+       height: 220px;
+       min-height: 220px;
+       border-top: 1px solid rgba(242,193,66,0.48);
+       border-bottom: 1px solid rgba(242,193,66,0.72);
+       background:
+         radial-gradient(circle at 50% 58%, rgba(33,61,111,0.3), transparent 38%),
+         linear-gradient(90deg, rgba(5,25,65,0.96) 0%, #03091b 35%, #03091b 65%, rgba(67,8,20,0.9) 100%);
      }
      html.home-hero-image-hidden .home-hero > .hero-bg {
        visibility: visible;
@@ -681,15 +736,29 @@
        visibility: hidden;
      }
      html.home-hero-image-hidden .hero-bg::after {
-       opacity: 0.64;
+       opacity: 0;
        transform: scale(1.03);
+     }
+     html.home-hero-image-hidden .hero-compact-emblems {
+       display: block;
+     }
+     html.home-hero-image-hidden .hero-compact-subtitle {
+       display: block;
+     }
+     @media (min-width: 601px) {
+       html.home-hero-image-hidden .hero-compact-emblems {
+         display: block;
+       }
+       html.home-hero-image-hidden .hero-compact-subtitle {
+         display: block;
+       }
      }
      html.home-hero-image-hidden .hero-compact-brand {
        display: block;
      }
      html.home-hero-image-hidden .hero-image-toggle {
        position: absolute;
-       top: 98px;
+       top: 125px;
      }
      @media (max-width: 600px) {
        .hero-image-toggle {
@@ -701,12 +770,22 @@
        .hero-compact-brand {
          top: 97px;
          left: 14px;
-         font-family: 'Ballet', 'Cormorant Garamond', cursive;
+         font-family: 'Pinyon Script', 'Cormorant Garamond', cursive;
          font-size: clamp(1.15rem, 5vw, 1.38rem);
          font-weight: 400;
          letter-spacing: 0.02em;
          word-spacing: 0.08em;
          transform: none;
+       }
+       .hero-compact-subtitle {
+         display: none !important;
+       }
+       .hero-compact-emblems {
+         display: none !important;
+       }
+       html.home-hero-image-hidden .home-hero {
+         height: 156px;
+         min-height: 156px;
        }
        html.home-hero-image-hidden .hero-image-toggle {
          top: 96px;
@@ -1338,7 +1417,12 @@
 <!-- HERO SECTION -->
 <section class="home-hero">
   <div class="hero-bg"></div>
+   <div class="hero-compact-emblems" aria-hidden="true">
+     <span class="hero-compact-emblem hero-compact-emblem--left"></span>
+     <span class="hero-compact-emblem hero-compact-emblem--right"></span>
+   </div>
    <div class="hero-compact-brand" aria-hidden="true">Cooper <strong>Debate Team</strong></div>
+   <div class="hero-compact-subtitle" aria-hidden="true">Speak <span>·</span> Persuade <span>·</span> Lead</div>
    <button class="hero-image-toggle" id="hero-image-toggle" type="button" aria-pressed="false" aria-label="Hide hero image">
      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
        <path d="M2.5 12s3.4-5 9.5-5 9.5 5 9.5 5-3.4 5-9.5 5-9.5-5-9.5-5Z"/>
