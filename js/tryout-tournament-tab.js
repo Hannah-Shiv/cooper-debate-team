@@ -16,7 +16,7 @@
     sep23: { weekday: "Wednesday", date: "September 23", shortDate: "Sept 23", location: "Lecture Hall", time: "2:30–4:30 p.m." }
   };
   var SESSION_KEY = "cooper-debate-tryout-session";
-  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, showAllPairs: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
+  var state = { data: { records: [] }, publicRecords: [], self: null, fcpsId: "", activeId: null, date: "sep22", signupDate: "sep22", dateDirty: false, partnerId: null, partnerIds: [], draftDirty: false, pendingRestorePartnerIds: null, boardRow: null, selfPlaced: false, boardVisible: false, showAllPairs: false, editing: false, loading: false, unsubscribe: null, pollTimer: null };
   var dom = {};
   var pendingIdentityAction = "";
   var preferenceDrag = null;
@@ -48,6 +48,7 @@
         name: dom.name.value.trim(),
         grade: dom.grade.value,
         date: state.date,
+        signupDate: state.signupDate,
         dateDirty: state.dateDirty,
         boardVisible: state.boardVisible,
         partnerIds: state.partnerIds,
@@ -67,7 +68,8 @@
     dom.fcpsId.value = saved.fcpsId;
     dom.name.value = saved.name || "";
     dom.grade.value = saved.grade || "7";
-    state.date = DATES[saved.date] ? saved.date : "sep22";
+    state.signupDate = DATES[saved.signupDate] ? saved.signupDate : DATES[saved.date] ? saved.date : "sep22";
+    state.date = state.signupDate;
     state.dateDirty = Boolean(saved.dateDirty);
     state.fcpsId = saved.fcpsId;
     if (saved.boardVisible) {
@@ -115,8 +117,8 @@
     }
     if (state.self) {
       var selfRecord = {
-        id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.date],
-        selectedDate: state.date, mode: "partner", partnerId: state.self.partnerId, partnerIds: state.self.partnerIds || [],
+        id: state.self.id, name: state.self.name, grade: state.self.grade, dates: [state.signupDate],
+        selectedDate: state.signupDate, mode: "partner", partnerId: state.self.partnerId, partnerIds: state.self.partnerIds || [],
         assignedPartnerId: null, tint: "teal", piece: "girl", isDemo: false, withdrawn: false,
         releasedReason: state.self.releasedReason || "", relationshipStatus: state.self.status, isYou: true
       };
@@ -140,9 +142,12 @@
     state.activeId = self ? self.id : null;
     setPartnerIds(self ? (self.partnerIds || (self.partnerId ? [self.partnerId] : [])) : []);
     if (self && self.status === "mutual" && self.partnerId) state.partnerId = self.partnerId;
-    if (self && (!state.dateDirty || state.date === self.session)) {
-      state.date = self.session;
-      state.dateDirty = false;
+    if (self && DATES[self.session]) {
+      state.signupDate = self.session;
+      if (!state.boardVisible) {
+        state.date = self.session;
+        state.dateDirty = false;
+      }
     }
     refreshRecords();
   }
@@ -219,6 +224,7 @@
   }
   function currentCandidates() {
     var current = activeRecord();
+    if (state.boardVisible && !state.editing && state.date !== state.signupDate) return [];
     return state.data.records.filter(function (record) {
       return active(record) && ["7", "8"].includes(record.grade) && record.id !== (current && current.id) && record.mode === "partner" &&
         record.dates.includes(state.date) && !record.assignedPartnerId && !record.isIncoming && !mutual(record);
@@ -315,7 +321,7 @@
       if (seen[record.id] || record.mode === "assign") return;
       var partner = record.partnerId && recordById(record.partnerId);
       var mutualPartner = mutual(record);
-      if (mutualPartner) {
+       if (mutualPartner && mutualPartner.dates.includes(state.date)) {
         addRow(record, mutualPartner, "locked");
         seen[record.id] = true; seen[mutualPartner.id] = true;
        } else if (record.isIncoming && partner && partner.id === state.activeId) {
@@ -326,7 +332,7 @@
         seen[record.id] = true; seen[partner.id] = true;
       }
     });
-    if (state.partnerIds.length || state.selfPlaced) {
+    if ((state.partnerIds.length || state.selfPlaced) && state.signupDate === state.date) {
       var selectedPartner = recordById(state.partnerId);
       var selfName = state.self ? state.self.name : (dom.name.value.trim() || "Student");
       var hasYourRequest = rows.some(function (row) { return (row.left && row.left.isYou) || (row.right && row.right.isYou); });
@@ -439,7 +445,7 @@
           '<div class="tourney-tryout-filter-row"><span class="is-active">' + state.partnerIds.length + ' of 4 choices</span><span>' + candidates.length + ' available</span></div>' + selectedChoices + '<label class="tourney-tryout-search"><span aria-hidden="true">⌕</span><input data-tryout-search type="search" placeholder="Search students" aria-label="Search students"></label>' +
           '<div class="tourney-tryout-roster-list">' + list + '</div></aside>' +
         '<section class="tourney-tryout-board"><div class="tourney-tryout-board-heading"><div><span class="tourney-tryout-board-icon">♜</span><h4>All pairings</h4></div><span>' + escapeHtml(DATES[state.date].shortDate) + ' · ' + escapeHtml(DATES[state.date].location) + '</span></div><div class="tourney-tryout-board-grid">' + boardRows + '</div></section>' +
-        '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.date].shortDate) + '</strong></div></section>' +
+          '<aside class="tourney-tryout-side"><section class="tourney-tryout-my-status"><div class="tourney-tryout-side-title">My status</div><div class="tourney-tryout-your-status"><span class="tourney-tryout-your-piece teal">' + pieceSvg({ piece: "girl" }) + '</span><div><strong>' + statusText + '</strong><small>' + statusDetail + '</small></div></div><div class="tourney-tryout-side-fact">▣ <span>Session</span><strong>' + escapeHtml(DATES[state.signupDate].shortDate) + '</strong></div></section>' +
            actionButtons +
            '<section class="tourney-tryout-legend"><div class="tourney-tryout-side-title">Status legend</div><p><i class="locked" aria-hidden="true">' + boardStateIcon("locked") + '</i> Both agreed · Paired</p><p><i class="pending" aria-hidden="true">' + boardStateIcon("pending") + '</i> One agreed · Pending</p><p><i class="incoming" aria-hidden="true">' + boardStateIcon("incoming") + '</i> Waiting for acceptance</p><p><i class="open" aria-hidden="true">' + boardStateIcon("open") + '</i> Available</p></section>' +
            '</aside>' +
@@ -493,7 +499,7 @@
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityId.textContent = state.fcpsId || dom.fcpsId.value.trim() || "—";
     dom.identityGrade.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7");
-    dom.identityMeta.textContent = DATES[state.date].shortDate;
+    dom.identityMeta.textContent = DATES[state.signupDate].shortDate;
     dom.identityStatus.textContent = {
       mutual: "Paired",
       assigned: "Paired",
@@ -510,21 +516,23 @@
   function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
   function fillRecord(record) {
     if (!record) return;
-    state.date = record.selectedDate; setPartnerIds(record.partnerIds || (record.partnerId ? [record.partnerId] : [])); state.selfPlaced = Boolean(state.partnerIds.length);
+    state.date = record.selectedDate; state.signupDate = record.selectedDate; setPartnerIds(record.partnerIds || (record.partnerId ? [record.partnerId] : [])); state.selfPlaced = Boolean(state.partnerIds.length);
     state.baseRelationship = relationshipSignature(record);
     dom.name.value = record.name; dom.grade.value = record.grade;
   }
   function chooseDate(date) {
     if (!DATES[date]) return;
     state.date = date;
-    var candidateIds = currentCandidates().map(function (record) { return record.id; });
-    setPartnerIds(state.partnerIds.filter(function (partnerId) { return candidateIds.includes(partnerId); }));
-    if (state.boardVisible) {
+    if (!state.boardVisible) {
+      state.signupDate = date;
+    } else if (state.editing) {
+      var candidateIds = currentCandidates().map(function (record) { return record.id; });
+      setPartnerIds(state.partnerIds.filter(function (partnerId) { return candidateIds.includes(partnerId); }));
       state.dateDirty = true;
       state.draftDirty = true;
+      state.boardRow = null;
+      state.selfPlaced = false;
     }
-    state.boardRow = null;
-    state.selfPlaced = false;
     formMessage(""); renderAll(); persistSession();
   }
   function validateIdentity() {
@@ -539,6 +547,7 @@
     state.loading = true; dom.showBoard.disabled = true; formMessage("Connecting to the shared board…");
     try {
       state.fcpsId = dom.fcpsId.value.trim();
+      state.signupDate = state.date;
       var result = await api("open", {
         name: dom.name.value.trim(),
         grade: dom.grade.value,
@@ -575,7 +584,7 @@
     if (error) { formMessage(error, true); dom.error.focus(); return; }
     state.loading = true; dom.submit.disabled = true;
     try {
-      var result = await api("request", { partnerIds: state.partnerIds, session: state.date, expectedRevision: state.self.revision });
+      var result = await api("request", { partnerIds: state.partnerIds, session: state.editing ? state.date : state.signupDate, expectedRevision: state.self.revision });
       applySelf(result.self);
       state.draftDirty = false;
       state.editing = false;
@@ -611,14 +620,14 @@
     try {
       await api("withdraw", { expectedRevision: state.self.revision });
       stopStatusPolling();
-      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; state.showAllPairs = false; setPartnerIds([]); state.dateDirty = false; state.draftDirty = false; state.selfPlaced = false;
+      state.self = null; state.activeId = null; state.fcpsId = ""; state.editing = false; state.boardVisible = false; state.showAllPairs = false; setPartnerIds([]); state.signupDate = state.date; state.dateDirty = false; state.draftDirty = false; state.selfPlaced = false;
       clearPersistedSession();
       dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = "";
       refreshRecords(); formMessage("Your sign-up was withdrawn. Your former partner is available again."); renderAll();
     } catch (apiError) { await refreshStatus(); formMessage(apiError.message, true); }
   }
   function newStudent() {
-    state.activeId = null; state.editing = false; state.boardVisible = false; state.showAllPairs = false; state.date = "sep22"; state.dateDirty = false; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
+    state.activeId = null; state.editing = false; state.boardVisible = false; state.showAllPairs = false; state.date = "sep22"; state.signupDate = "sep22"; state.dateDirty = false; setPartnerIds([]); state.draftDirty = false; state.boardRow = null; state.selfPlaced = false; state.baseRelationship = "";
     clearPersistedSession();
     stopStatusPolling(); state.self = null; state.fcpsId = ""; refreshRecords();
     dom.fcpsId.value = ""; dom.name.value = ""; dom.grade.value = ""; formMessage("Ready for another student’s sign-up."); renderAll(); dom.fcpsId.focus();

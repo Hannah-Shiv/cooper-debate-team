@@ -655,6 +655,41 @@ test("keeps a selected September 23 session and shows its candidates", async ({ 
   await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
 });
 
+test("filters the public board by the viewed session without changing the student's saved session", async ({ page }) => {
+  await installSharedBoard(page, [
+    publicStudent("hannah", "Hannah Shiv", "test-h", "sep23"),
+    publicStudent("test-h", "Test H.", "hannah", "sep23"),
+    publicStudent("avery", "Avery A.", null, "sep22"),
+  ]);
+  await page.goto(route, { waitUntil: "domcontentloaded" });
+  await page.locator("#tourney-tryout-fcps-id").fill("7000001");
+  await page.locator("#tourney-tryout-name").fill("Jordan Student");
+  await page.locator("#tourney-tryout-grade").selectOption("8");
+  await page.locator("#tourney-tryout-date-options").selectOption("sep23");
+  await page.locator("#tourney-tryout-show-board").click();
+
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Hannah S.");
+  await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Test H.");
+  await expect(page.locator("#tourney-tryout-output-paired")).toHaveText("1");
+
+  await page.locator("#tourney-tryout-date-options").selectOption("sep22");
+
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
+  await expect(page.locator(".tourney-tryout-side-fact strong")).toHaveText("Sept 23");
+  await expect(page.locator(".tourney-tryout-board-heading > span")).toContainText("Sept 22");
+  await expect(page.locator(".tourney-tryout-board")).not.toContainText("Hannah S.");
+  await expect(page.locator(".tourney-tryout-board")).not.toContainText("Test H.");
+  await expect(page.locator('[data-partner="avery"]')).toHaveCount(0);
+  await expect(page.locator("#tourney-tryout-output-paired")).toHaveText("0");
+
+  await page.waitForTimeout(10500);
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
+  await expect(page.locator(".tourney-tryout-board-heading > span")).toContainText("Sept 22");
+  await expect(page.locator(".tourney-tryout-board")).not.toContainText("Hannah S.");
+  await expect(page.locator(".tourney-tryout-board")).not.toContainText("Test H.");
+});
+
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
   await installSharedBoard(page, [
     publicStudent("avery", "Avery A.", "blake"),
