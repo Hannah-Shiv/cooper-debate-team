@@ -303,14 +303,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 14px;
-  min-height: 58px;
-  padding: 11px 14px;
-  border: 1px solid rgba(109, 216, 184, 0.42);
+  min-height: 68px;
+  padding: 13px 15px;
+  border: 1px solid rgba(109, 216, 184, 0.72);
   border-radius: 8px;
-  background: rgba(14, 78, 73, 0.2);
+  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
   color: #fff;
   text-decoration: none;
-  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
 }
 
 .homepage-readiness__action-link > span:first-child {
@@ -321,34 +322,45 @@
 
 .homepage-readiness__action-link strong {
   color: #fff;
-  font-size: 0.88rem;
+  font-size: 0.96rem;
   line-height: 1.2;
 }
 
 .homepage-readiness__action-link small {
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.73rem;
   line-height: 1.35;
 }
 
 .homepage-readiness__action-link > span:last-child {
-  color: #8cebd0;
-  font-size: 1.15rem;
+  display: grid;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.08rem;
+  line-height: 1;
 }
 
 .homepage-readiness__action-link--calendar {
-  border-color: rgba(242, 209, 107, 0.4);
-  background: rgba(133, 91, 0, 0.16);
+  border-color: rgba(242, 209, 107, 0.82);
+  background: linear-gradient(135deg, #8a650d 0%, #4f3b18 100%);
+  box-shadow: 0 6px 16px rgba(43, 27, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .homepage-readiness__action-link--calendar > span:last-child {
-  color: #f2d16b;
+  border-color: rgba(255, 239, 176, 0.72);
+  color: #fff1b9;
 }
 
 .homepage-readiness__action-link:hover,
 .homepage-readiness__action-link:focus-visible {
   border-color: #8cebd0;
-  background: rgba(14, 78, 73, 0.38);
+  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
+  box-shadow: 0 9px 22px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateY(-1px);
   outline: none;
 }
@@ -356,7 +368,7 @@
 .homepage-readiness__action-link--calendar:hover,
 .homepage-readiness__action-link--calendar:focus-visible {
   border-color: #f2d16b;
-  background: rgba(133, 91, 0, 0.3);
+  background: linear-gradient(135deg, #a87c12 0%, #664919 100%);
 }
 
 .homepage-readiness__footer {
