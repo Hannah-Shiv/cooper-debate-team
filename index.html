@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="css/main.css?v=41"/>
+  <link rel="stylesheet" href="css/main.css?v=42"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
   <link rel="stylesheet" href="css/homepage-readiness.css?v=4"/>
@@ -1524,6 +1524,18 @@
 <!-- CURRENT RESOLUTION + NEWS -->
 <section id="idx-season-pulse" class="idx-season-pulse" aria-label="Season updates">
   <div class="section-wrap idx-season-pulse__grid">
+    <article id="idx-news-section" class="idx-season-pulse__column idx-season-pulse__news" aria-labelledby="idx-news-title">
+      <div id="idx-news-box">
+        <div class="news-strip-header">
+          <div class="news-strip-title" id="idx-news-title"><img class="idx-season-pulse__news-icon" src="images/announcement-megaphone.png?v=1" alt="Megaphone"/>Latest News & Announcements</div>
+          <a href="announcements.html" class="news-strip-all btn-view-all">View All →</a>
+        </div>
+        <div id="home-news-cards" class="news-cards">
+          <!-- Populated by announcements.js -->
+        </div>
+      </div>
+    </article>
+
     <article class="idx-season-pulse__column idx-season-pulse__resolution" aria-labelledby="idx-resolution-title">
       <div class="resolution-card">
         <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
@@ -1537,18 +1549,6 @@
           <span>530 coaches · 2,401 students voted</span>
         </div>
         <a href="resources.html" class="btn btn-gold" style="font-size:0.9rem;padding:10px 22px;">Start Researching →</a>
-      </div>
-    </article>
-
-    <article id="idx-news-section" class="idx-season-pulse__column idx-season-pulse__news" aria-labelledby="idx-news-title">
-      <div id="idx-news-box">
-        <div class="news-strip-header">
-          <div class="news-strip-title" id="idx-news-title"><span style="font-size:1.6rem;vertical-align:middle;margin-right:16px;line-height:1;">📢</span>Latest News & Announcements</div>
-          <a href="announcements.html" class="news-strip-all btn-view-all">View All →</a>
-        </div>
-        <div id="home-news-cards" class="news-cards">
-          <!-- Populated by announcements.js -->
-        </div>
       </div>
     </article>
   </div>
