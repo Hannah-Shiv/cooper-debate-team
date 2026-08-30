@@ -2461,12 +2461,19 @@
       --pulse-accent-glow: rgba(212, 160, 23, 0.48);
     }
 
-    /* Give the two charcoal planes a little more depth without introducing
-       another container border. */
+    /* Keep the page-wide charcoal untouched and place the darker tones only
+       behind the content areas they belong to. */
     #idx-season-pulse {
+      background: #1c2030 !important;
+    }
+    #idx-season-pulse > .idx-season-pulse__grid {
       background: #151927 !important;
+      background-clip: content-box !important;
     }
     #idx-bottom-section {
+      background: #1c2030 !important;
+    }
+    #idx-phi-join-panel {
       background: #191d2b !important;
     }
   </style>
