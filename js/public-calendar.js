@@ -175,8 +175,14 @@
       })(),
       id: event.id,
       title: event.title,
-      start: eventStart(event),
-      end: eventEnd(event),
+      // FullCalendar's named-time-zone fallback treats Date objects as UTC.
+      // Keep the intended wall-clock time for bootstrap events in Agenda view.
+      start: event.bootstrap && event.allDay === false && typeof event.start === "string"
+        ? event.start.replace(/(?:Z|[+-]\d{2}:\d{2})$/, "")
+        : eventStart(event),
+      end: event.bootstrap && event.allDay === false && typeof event.end === "string"
+        ? event.end.replace(/(?:Z|[+-]\d{2}:\d{2})$/, "")
+        : eventEnd(event),
       allDay: !hasSavedTimes(event) && event.allDay !== false,
       classNames: ["public-cal-event", `public-cal-event--${event.type || "event"}`],
       extendedProps: event
@@ -199,9 +205,11 @@
     if (!events.length) return;
 
     if (!calendar) {
+      const requestedView = new URLSearchParams(window.location.search).get("view");
+      const initialCalendarView = requestedView === "agenda" ? "listMonth" : "dayGridMonth";
       calendar = new FullCalendar.Calendar(mount, {
         timeZone: "America/New_York",
-        initialView: "dayGridMonth",
+        initialView: initialCalendarView,
         initialDate: currentOrNextMonthDate(),
         headerToolbar: {
           left: "prev,next today",

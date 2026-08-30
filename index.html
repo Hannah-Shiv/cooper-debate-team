@@ -11,8 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=40"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
-  <link rel="stylesheet" href="css/homepage-readiness.css?v=1"/>
+  <link rel="stylesheet" href="css/homepage-readiness.css?v=2"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -1512,19 +1511,22 @@
             <li><span>3</span><p><strong>Commit to the season</strong>Team members practice after school on Tuesdays and attend one Saturday tournament each month.</p></li>
           </ol>
           <div class="homepage-readiness__actions">
-            <a class="btn btn-gold" href="apply.html">Start the application →</a>
-            <a class="homepage-readiness__pending-action" href="tournaments.html?tab=tryout-signup">Sign up for tryouts →</a>
+            <a class="btn btn-gold homepage-readiness__primary-action" href="apply.html">Start the application <span aria-hidden="true">→</span></a>
+            <a class="homepage-readiness__action-link homepage-readiness__action-link--partner" href="tournaments.html?tab=tryout-signup">
+              <span><strong>Debate partner signups</strong><small>Choose a partner or request a pairing</small></span>
+              <span aria-hidden="true">→</span>
+            </a>
+            <a class="homepage-readiness__action-link homepage-readiness__action-link--calendar" href="tournaments.html?tab=calendar-results&amp;view=agenda">
+              <span><strong>Tournament calendar</strong><small>See the full season schedule in Agenda view</small></span>
+              <span aria-hidden="true">→</span>
+            </a>
           </div>
         </article>
       </div>
 
-      <div class="homepage-readiness__schedule">
-        <div class="kickoff-schedule-mount"></div>
-      </div>
-
       <div class="homepage-readiness__footer">
-        <p><strong>First tournament:</strong> Saturday, October 24 · WASDL Public Forum / Middle School</p>
-        <a href="tournaments.html#calendar-results">View the tournament calendar <span aria-hidden="true">→</span></a>
+        <p><strong>Need the full schedule?</strong> The tournament calendar is the up-to-date place for dates, times, and event details.</p>
+        <a href="tournaments.html?tab=calendar-results&amp;view=agenda">Open the calendar agenda <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </div>
@@ -2065,7 +2067,6 @@
     });
   })();
 </script>
-<script src="js/kickoff-schedule.js?v=3"></script>
 <script src="data/announcements.js"></script>
 <script>
   const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
