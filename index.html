@@ -2409,6 +2409,61 @@
         padding-right: 16px;
       }
     }
+
+    /* Replace the plain season-pulse rails with softly fading, illuminated
+       accents that keep the news and resolution colors distinct. */
+    .idx-season-pulse__column {
+      position: relative;
+      border-left: 0 !important;
+    }
+    .idx-season-pulse__column::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 3px;
+      background: linear-gradient(
+        180deg,
+        transparent 0%,
+        var(--pulse-rail-color) 16%,
+        var(--pulse-rail-bright) 50%,
+        var(--pulse-rail-color) 84%,
+        transparent 100%
+      );
+      box-shadow:
+        0 0 7px var(--pulse-rail-glow),
+        0 0 16px var(--pulse-rail-glow);
+      content: "";
+      opacity: 0.92;
+    }
+    .idx-season-pulse__column::after {
+      position: absolute;
+      top: 17%;
+      left: -2px;
+      width: 7px;
+      height: 26%;
+      background: linear-gradient(
+        180deg,
+        transparent,
+        rgba(255, 255, 255, 0.92) 48%,
+        transparent
+      );
+      border-radius: 999px;
+      box-shadow: 0 0 8px 2px var(--pulse-rail-glow);
+      content: "";
+      filter: blur(1px);
+      opacity: 0.7;
+    }
+    .idx-season-pulse__news {
+      --pulse-rail-color: rgba(108, 224, 200, 0.52);
+      --pulse-rail-bright: #a4f7df;
+      --pulse-rail-glow: rgba(108, 224, 200, 0.7);
+    }
+    .idx-season-pulse__resolution {
+      --pulse-rail-color: rgba(242, 209, 107, 0.56);
+      --pulse-rail-bright: #fff0a9;
+      --pulse-rail-glow: rgba(242, 209, 107, 0.72);
+    }
   </style>
   <script>
     (function () {
@@ -2943,7 +2998,7 @@
   <div class="section-wrap">
     <div id="idx-phi-join-panel">
       <div id="idx-closing-art" aria-hidden="true">
-        <img src="images/spotlight-mic-stage.png?v=2" alt="">
+        <img src="images/spotlight-mic-stage.png?v=3" alt="">
       </div>
 
       <div id="idx-phi-join-copy">
