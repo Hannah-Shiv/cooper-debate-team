@@ -597,6 +597,12 @@
     }
 
      /* ── Home hero image preference ─────────────────────────── */
+     .home-hero {
+       height: 100svh;
+       min-height: 100svh;
+       transition: height 0.48s cubic-bezier(0.22, 0.61, 0.36, 1),
+                   min-height 0.48s cubic-bezier(0.22, 0.61, 0.36, 1);
+     }
      .hero-image-toggle {
        position: absolute;
        top: clamp(88px, 12vh, 132px);
@@ -635,15 +641,49 @@
        height: 16px;
        flex: 0 0 auto;
      }
-     html.home-hero-image-hidden .home-hero {
-       height: 140px;
-       min-height: 140px;
+     .hero-compact-brand {
+       display: none;
+       position: absolute;
+       top: 98px;
+       left: clamp(16px, 4vw, 52px);
+       z-index: 3;
+       color: rgba(255,255,255,0.94);
+       font-family: 'Cormorant Garamond', serif;
+       font-size: clamp(1.05rem, 2.2vw, 1.7rem);
+       font-weight: 600;
+       letter-spacing: 0.02em;
+       line-height: 1;
+       text-shadow: 0 2px 12px rgba(0,0,0,0.72);
+       white-space: nowrap;
      }
-     html.home-hero-image-hidden .home-hero > .hero-bg,
+     .hero-compact-brand strong {
+       color: var(--gold-pale);
+       font-weight: 700;
+     }
+     .hero-bg::after {
+       transition: opacity 0.42s ease, transform 0.48s ease;
+     }
+     @media screen and (min-width: 769px) and (max-height: 850px) {
+       .home-hero { min-height: 0; }
+     }
+     html.home-hero-image-hidden .home-hero {
+       height: 156px;
+       min-height: 156px;
+     }
+     html.home-hero-image-hidden .home-hero > .hero-bg {
+       visibility: visible;
+     }
      html.home-hero-image-hidden .home-hero > .hero-beams,
      html.home-hero-image-hidden .home-hero > .hero-content,
      html.home-hero-image-hidden .home-hero > .hero-scroll {
        visibility: hidden;
+     }
+     html.home-hero-image-hidden .hero-bg::after {
+       opacity: 0.64;
+       transform: scale(1.03);
+     }
+     html.home-hero-image-hidden .hero-compact-brand {
+       display: block;
      }
      html.home-hero-image-hidden .hero-image-toggle {
        position: absolute;
@@ -655,6 +695,11 @@
          right: 14px;
          padding: 8px 11px;
          font-size: 0.58rem;
+       }
+       .hero-compact-brand {
+         top: 97px;
+         left: 14px;
+         font-size: 0.92rem;
        }
        html.home-hero-image-hidden .hero-image-toggle {
          top: 96px;
@@ -1286,6 +1331,7 @@
 <!-- HERO SECTION -->
 <section class="home-hero">
   <div class="hero-bg"></div>
+   <div class="hero-compact-brand" aria-hidden="true">Cooper <strong>Debate Team</strong></div>
    <button class="hero-image-toggle" id="hero-image-toggle" type="button" aria-pressed="false" aria-label="Hide hero image">
      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
        <path d="M2.5 12s3.4-5 9.5-5 9.5 5 9.5 5-3.4 5-9.5 5-9.5-5-9.5-5Z"/>
