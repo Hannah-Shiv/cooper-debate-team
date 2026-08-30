@@ -493,7 +493,7 @@
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
     dom.identityId.textContent = state.fcpsId || dom.fcpsId.value.trim() || "—";
     dom.identityGrade.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7");
-    dom.identityMeta.textContent = DATES[state.date].date;
+    dom.identityMeta.textContent = DATES[state.date].shortDate;
     dom.identityStatus.textContent = {
       mutual: "Paired",
       assigned: "Paired",

@@ -187,6 +187,8 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Current sign-up status");
   await expect(page.locator(".tourney-tryout-output-heading h3")).toHaveText("Student output");
   await expect(page.locator(".tourney-tryout-output-heading .tourney-tryout-output-primary-icon")).toHaveText("♟");
+  await expect(page.locator(".tourney-tryout-output-heading .tourney-tryout-output-primary-icon")).toHaveCSS("color", "rgb(244, 196, 76)");
+  await expect(page.locator("#tourney-tryout-output-heading")).toHaveCSS("color", "rgb(244, 196, 76)");
   await expect(page.locator(".tourney-tryout-output-heading img")).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-output-placeholder")).toBeEmpty();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-status")).toHaveCount(1);
@@ -250,14 +252,29 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator("#tourney-tryout-identity-name")).toHaveText("Jordan Student");
   await expect(page.locator("#tourney-tryout-identity-id")).toHaveText("1234567");
   await expect(page.locator("#tourney-tryout-identity-grade")).toHaveText("8th grade");
-  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("September 22");
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 22");
   await expect(page.locator("#tourney-tryout-identity-partner-row")).toBeHidden();
+  const metricGeometry = await page.locator(".tourney-tryout-output-metrics").evaluate(metrics => {
+    const visibleRows = Array.from(metrics.querySelectorAll(":scope > div:not([hidden])"));
+    return {
+      textGaps: visibleRows.map(row => {
+        const label = row.querySelector("dt").getBoundingClientRect();
+        const value = row.querySelector("dd").getBoundingClientRect();
+        return value.left - label.right;
+      }),
+      labelFont: parseFloat(getComputedStyle(visibleRows[0].querySelector("dt")).fontSize),
+      valueFont: parseFloat(getComputedStyle(visibleRows[0].querySelector("dd")).fontSize),
+    };
+  });
+  expect(metricGeometry.textGaps.every(gap => gap <= 1)).toBe(true);
+  expect(metricGeometry.labelFont).toBeGreaterThanOrEqual(10);
+  expect(metricGeometry.valueFont).toBeGreaterThanOrEqual(12);
   await expect(page.locator("#tourney-tryout-board-callout")).toBeEmpty();
   await expect(page.locator(".tourney-tryout-flow-fine-print")).toHaveText("Confirmed pairings are visible to everyone. Pending requests stay private until both students choose each other.");
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
-  await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveText("Board statistics");
+  await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveText("Sign-up statistics");
   await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span")).toHaveCount(2);
   const statsGeometry = await page.locator(".tourney-tryout-output-stats").evaluate(stats => {
     const group = stats.querySelector("div:last-child").getBoundingClientRect();
@@ -266,32 +283,32 @@ test("shows large primary board actions", async ({ page }) => {
       const box = item.getBoundingClientRect();
       return box.left + box.width / 2;
     });
-    const markers = items.slice(1).map(item => {
+    const cards = items.map(item => {
       const itemBox = item.getBoundingClientRect();
-      const marker = getComputedStyle(item, "::before");
+      const style = getComputedStyle(item);
       return {
-        color: marker.backgroundColor,
-        height: parseFloat(marker.height),
-        itemHeight: itemBox.height,
+        borderRadius: parseFloat(style.borderRadius),
+        height: itemBox.height,
+        background: style.backgroundColor,
       };
     });
     return {
       groupWidth: group.width,
       sectionWidth: stats.getBoundingClientRect().width,
       centerGaps: centers.slice(1).map((center, index) => center - centers[index]),
-      markers,
+      cards,
     };
   });
   expect(statsGeometry.groupWidth).toBeGreaterThan(statsGeometry.sectionWidth * .9);
   expect(statsGeometry.centerGaps.every(gap => gap > 50)).toBe(true);
-  expect(statsGeometry.markers.every(marker => marker.color === "rgba(255, 255, 255, 0.8)" && marker.height > 8 && marker.height < marker.itemHeight)).toBe(true);
+  expect(statsGeometry.cards.every(card => card.borderRadius >= 8 && card.height > 50 && card.background !== "rgba(0, 0, 0, 0)")).toBe(true);
   expect(parseFloat(await page.locator(".tourney-tryout-output-stats strong").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(22);
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 182, 165)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-pending strong")).toHaveCSS("color", "rgb(255, 118, 95)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-open")).toHaveCSS("color", "rgb(196, 225, 255)");
-  await expect(page.locator(".tourney-tryout-output-stats span.is-open strong")).toHaveCSS("color", "rgb(128, 188, 255)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-open")).toHaveCSS("color", "rgb(246, 216, 139)");
+  await expect(page.locator(".tourney-tryout-output-stats span.is-open strong")).toHaveCSS("color", "rgb(244, 196, 76)");
   await expect(page.locator("#tourney-tryout-pair-heading")).toHaveText("Review all current pairs");
   await expect(page.locator(".tourney-tryout-flow strong")).toHaveText([
     "Review all pairs",
@@ -379,6 +396,17 @@ test("shows large primary board actions", async ({ page }) => {
   expect(actionLayout.toRightOfBoard).toBe(true);
   expect(actionLayout.submitInsideCard).toBe(true);
   expect(actionLayout.submitIsLast).toBe(true);
+   const actionVisual = await page.locator(".tourney-tryout-action-card").evaluate(card => ({
+     cardBackground: getComputedStyle(card).backgroundImage,
+     cardShadow: getComputedStyle(card).boxShadow,
+     buttons: Array.from(card.querySelectorAll(".tourney-tryout-action-list > button:not(.tourney-tryout-action-submit)")).map(button => {
+       const style = getComputedStyle(button);
+       return { background: style.backgroundImage, shadow: style.boxShadow, radius: parseFloat(style.borderRadius) };
+     }),
+   }));
+   expect(actionVisual.cardBackground).toBe("none");
+   expect(actionVisual.cardShadow).toBe("none");
+   expect(actionVisual.buttons.every(button => button.background === "none" && button.shadow === "none" && button.radius >= 6)).toBe(true);
   const layoutMetrics = await page.locator(".tourney-tryout-shell").evaluate(shell => {
     const shellBox = shell.getBoundingClientRect();
     const rosterBox = shell.querySelector(".tourney-tryout-roster").getBoundingClientRect();
@@ -617,14 +645,14 @@ test("keeps a selected September 23 session and shows its candidates", async ({ 
   await page.locator("#tourney-tryout-date-options").selectOption("sep23");
   await page.locator("#tourney-tryout-show-board").click();
 
-  await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
   await expect(page.locator('[data-partner="hannah"]')).toBeVisible();
   await page.locator('[data-partner="hannah"]').click();
   await page.locator("#tourney-tryout-submit").click();
 
   expect(requests.find(request => request.action === "request")?.session).toBe("sep23");
   await page.waitForTimeout(10500);
-  await expect(page.locator("#tourney-tryout-identity-meta")).toContainText("September 23");
+  await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
 });
 
 test("shows confirmed reciprocal pairs but not private pending relationships", async ({ page }) => {
