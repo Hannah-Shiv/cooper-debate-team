@@ -2383,6 +2383,32 @@
     #idx-closing-art::before {
       display: none;
     }
+
+    /* Keep the closing frame on the same horizontal tracks as the stats box
+       above it instead of letting its wider shell protrude on both sides. */
+    #idx-bottom-section > .section-wrap {
+      max-width: 1200px;
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+    @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+      #idx-bottom-section > .section-wrap {
+        padding-left: 28px;
+        padding-right: 28px;
+      }
+    }
+    @media (max-width: 768px) {
+      #idx-bottom-section > .section-wrap {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    }
+    @media (max-width: 600px) {
+      #idx-bottom-section > .section-wrap {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+    }
   </style>
   <script>
     (function () {
