@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const route = "/tournaments.html?tab=partner-signup";
+const route = "/tournaments.html?tab=partner-signup&v=20260830-1";
 const endpoint = "**/tryoutBoard";
 
 function publicStudent(id, displayName, partnerId = null, session = "sep22") {
