@@ -2104,6 +2104,97 @@
         border-top: 1px solid rgba(232,168,40,0.16);
       }
     }
+
+    /* Keep the closing panel on the same charcoal plane as the season stats.
+       The transparent spotlight art supplies the only visual transition. */
+    #idx-bottom-section {
+      padding: 0 !important;
+      background: #1c2030 !important;
+    }
+    #idx-bottom-section .section-wrap {
+      max-width: 1240px;
+      padding: 0 20px;
+    }
+    #idx-phi-join-panel {
+      min-height: 0;
+      grid-template-rows: minmax(500px, auto) auto;
+      background: transparent;
+      box-shadow: none;
+    }
+    #idx-closing-art img {
+      mix-blend-mode: normal;
+      opacity: 0.9;
+    }
+    #idx-phi-join-copy {
+      padding-top: 40px;
+      padding-bottom: 28px;
+    }
+    .idx-closing-quote {
+      max-width: 600px;
+    }
+    .idx-closing-quote p {
+      font-size: clamp(1rem, 1.72vw, 1.38rem);
+    }
+    .idx-closing-quote-mark {
+      font-size: 2.7rem;
+    }
+    .idx-closing-title {
+      font-size: clamp(2.15rem, 3.85vw, 3.36rem);
+    }
+    .idx-closing-gold-rule {
+      margin: 20px 0 18px;
+    }
+    .idx-closing-description {
+      font-size: clamp(0.76rem, 1.32vw, 0.9rem);
+    }
+    .idx-closing-actions {
+      gap: 14px;
+      margin-top: 22px;
+    }
+    .idx-closing-action {
+      min-height: 62px;
+      padding: 10px 14px;
+    }
+    .idx-closing-action b {
+      font-size: 0.7rem;
+    }
+    .idx-closing-action small {
+      font-size: 0.59rem;
+    }
+    .idx-closing-action svg {
+      width: 27px;
+      height: 27px;
+    }
+    .idx-closing-action i {
+      font-size: 1.35rem;
+    }
+    .idx-closing-benefits {
+      min-height: 64px;
+      border-top-color: rgba(232,168,40,0.1);
+      background: transparent;
+    }
+    .idx-closing-benefits > div {
+      margin: 12px 0;
+      border-left-color: rgba(232,168,40,0.14);
+    }
+    .idx-closing-benefits span {
+      font-size: 1.35rem;
+    }
+    .idx-closing-benefits b {
+      font-size: 0.54rem;
+    }
+    @media (max-width: 900px) {
+      #idx-phi-join-panel {
+        grid-template-rows: minmax(470px, auto) auto;
+      }
+      #idx-phi-join-copy {
+        padding-top: 34px;
+        padding-bottom: 24px;
+      }
+      .idx-closing-title {
+        font-size: clamp(1.9rem, 4.7vw, 2.6rem);
+      }
+    }
   </style>
   <script>
     (function () {
@@ -2638,14 +2729,14 @@
   <div class="section-wrap">
     <div id="idx-phi-join-panel">
       <div id="idx-closing-art" aria-hidden="true">
-        <img src="images/spotlight-mic-stage.png" alt="">
+        <img src="images/spotlight-mic-stage.png?v=2" alt="">
       </div>
 
       <div id="idx-phi-join-copy">
         <div id="idx-phi-box">
           <div class="idx-closing-quote">
             <span class="idx-closing-quote-mark idx-closing-quote-open">“</span>
-            <p>Debate is not just a competition.<br>It’s a way of thinking, a way of speaking,<br>and a way of leading.</p>
+            <p>Debate is not just a competition.<br> It’s a way of thinking, a way of speaking,<br> and a way of leading.</p>
             <span class="idx-closing-quote-mark idx-closing-quote-close">”</span>
             <p class="idx-closing-quote-attr">—&nbsp; Our Philosophy</p>
           </div>
