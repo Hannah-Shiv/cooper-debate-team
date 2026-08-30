@@ -649,29 +649,29 @@
        z-index: 3;
        color: rgba(255,255,255,0.94);
        font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
-       font-size: clamp(1.95rem, 3.5vw, 2.7rem);
+       font-size: clamp(2.2rem, 4.1vw, 3.2rem);
        font-weight: 400;
        letter-spacing: 0.025em;
        line-height: 1;
        transform: translateX(-50%);
        word-spacing: 0.1em;
-       text-shadow: 0 2px 12px rgba(0,0,0,0.72);
+       text-shadow: 0 1px 7px rgba(0,0,0,0.78);
        white-space: nowrap;
      }
      .hero-compact-brand strong {
        color: var(--gold-pale);
-       font-weight: 700;
+       font-weight: 400;
      }
      .hero-compact-subtitle {
        display: none;
        position: absolute;
-       top: 166px;
+       bottom: 17px;
        left: 50%;
        z-index: 3;
        transform: translateX(-50%);
        color: rgba(255,255,255,0.78);
        font-family: 'Josefin Sans', sans-serif;
-       font-size: 0.5rem;
+       font-size: 0.62rem;
        font-weight: 600;
        letter-spacing: 0.34em;
        line-height: 1;
@@ -712,7 +712,7 @@
        right: clamp(14px, 4vw, 58px);
      }
      .hero-bg::after {
-       transition: opacity 0.42s ease, transform 0.48s ease;
+       transition: none;
      }
      @media screen and (min-width: 769px) and (max-height: 850px) {
        .home-hero { min-height: 0; }
@@ -736,7 +736,10 @@
      }
      html.home-hero-image-hidden .hero-bg::after {
        opacity: 0;
-       transform: scale(1.03);
+       transform: none;
+     }
+     html.home-hero-image-hidden .hero-bg::before {
+       opacity: 0;
      }
      html.home-hero-image-hidden .hero-compact-emblems {
        display: block;
@@ -770,10 +773,10 @@
          top: 97px;
          left: 14px;
          font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
-         font-size: clamp(1.15rem, 5vw, 1.38rem);
+         font-size: clamp(1.25rem, 5.5vw, 1.55rem);
          font-weight: 400;
          letter-spacing: 0.02em;
-         word-spacing: 0.08em;
+         word-spacing: 0.12em;
          transform: none;
        }
        .hero-compact-subtitle {
