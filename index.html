@@ -2298,6 +2298,76 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Center the season-pulse split on the same midpoint as the readiness
+       panel above it. The previous column gap placed the resolution rule
+       noticeably to the right of center. */
+    @media (min-width: 801px) {
+      .idx-season-pulse__grid {
+        gap: 0;
+      }
+      .idx-season-pulse__news {
+        padding-right: clamp(28px, 4vw, 56px);
+      }
+      .idx-season-pulse__resolution {
+        padding-left: clamp(28px, 4vw, 56px);
+      }
+    }
+
+    /* Bring back distinct navy surfaces for the By the Numbers metrics so
+       they read as a deliberate section instead of blending into charcoal. */
+    #idx-stats-section {
+      background:
+        linear-gradient(180deg, #101b36 0%, #172342 52%, #1c2030 100%) !important;
+    }
+    #idx-stats-outer {
+      padding: 24px 32px 40px !important;
+      background: rgba(6, 18, 48, 0.58) !important;
+      border: 1px solid rgba(242, 209, 107, 0.22) !important;
+      border-radius: 14px !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04) !important;
+    }
+    #idx-stats-grid {
+      gap: 14px !important;
+      margin-bottom: 27px !important;
+      border: 0 !important;
+    }
+    #idx-stats-grid > div {
+      border: 1px solid rgba(242, 209, 107, 0.42) !important;
+      border-radius: 12px !important;
+      box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+    }
+    #idx-stats-grid > div:nth-child(1) {
+      background: linear-gradient(145deg, #0d2a5c, #091d43) !important;
+    }
+    #idx-stats-grid > div:nth-child(2) {
+      background: linear-gradient(145deg, #123366, #0a224d) !important;
+    }
+    #idx-stats-grid > div:nth-child(3) {
+      background: linear-gradient(145deg, #102852, #081b3d) !important;
+    }
+    #idx-stats-grid > div:nth-child(4) {
+      background: linear-gradient(145deg, #163962, #0b244b) !important;
+    }
+    #idx-stats-grid > div + div {
+      border-left: 1px solid rgba(242, 209, 107, 0.42) !important;
+    }
+    @media (max-width: 800px) {
+      #idx-stats-outer {
+        padding: 18px 16px 28px !important;
+      }
+      #idx-stats-grid {
+        gap: 12px !important;
+      }
+      #idx-stats-grid > div,
+      #idx-stats-grid > div + div,
+      #idx-stats-grid > div:nth-child(even),
+      #idx-stats-grid > div:nth-child(n + 3) {
+        border: 1px solid rgba(242, 209, 107, 0.42) !important;
+      }
+    }
   </style>
   <script>
     (function () {
