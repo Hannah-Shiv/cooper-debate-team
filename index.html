@@ -2233,9 +2233,12 @@
     }
     .idx-closing-actions {
       width: 90%;
-      max-width: 526px;
+      max-width: 626px;
       margin-right: 0;
       margin-left: 0;
+    }
+    .idx-closing-action small {
+      white-space: nowrap;
     }
     .idx-closing-action-primary {
       background: #d99a18;
@@ -2267,7 +2270,8 @@
     }
     @media (max-width: 600px) {
       .idx-closing-actions {
-        max-width: 306px;
+        width: 100%;
+        max-width: none;
       }
       #idx-phi-join-panel {
         grid-template-rows: 405px auto auto;
@@ -2287,6 +2291,11 @@
       .idx-closing-title,
       .idx-closing-description {
         text-align: left;
+      }
+    }
+    @media (max-width: 900px) {
+      .idx-closing-actions {
+        grid-template-columns: 1fr;
       }
     }
   </style>
