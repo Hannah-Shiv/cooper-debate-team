@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-const route = "/tournaments.html?tab=tryout-signup";
+const route = "/tournaments.html?tab=partner-signup";
 const endpoint = "**/tryoutBoard";
 
 function publicStudent(id, displayName, partnerId = null, session = "sep22") {
@@ -177,8 +177,8 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-heading .section-label")).toHaveCSS("color", "rgb(201, 157, 50)");
   await expect(page.locator("#tourney-tab-calendar")).toHaveText("Calendar");
   await expect(page.locator(".page-subtitle")).toHaveText("Calendar, volunteer judges, partner sign-ups, and everything families need to know");
-  await expect(page.locator("#tourney-tab-tryout")).toContainText("Partner Sign Up");
-  await expect(page.locator("#tourney-tab-tryout svg circle")).toHaveCount(2);
+  await expect(page.locator("#tourney-tab-partner")).toContainText("Partner Sign Up");
+  await expect(page.locator("#tourney-tab-partner svg circle")).toHaveCount(2);
   await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("color", "rgb(255, 227, 110)");
   await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");

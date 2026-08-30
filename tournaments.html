@@ -15,7 +15,7 @@
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
-      var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "tryout-signup", "parent-info"];
+      var validTabs = ["tournament-overview", "calendar-results", "volunteer-signup", "partner-signup", "parent-info"];
       var incomingTab = window.location.hash.slice(1);
       if (validTabs.indexOf(incomingTab) !== -1) {
         window.__TOURNEY_INITIAL_TAB = incomingTab;
@@ -88,13 +88,13 @@
     .tournaments-page .resolution-card {
       border-top:1px solid #F2D16B;
     }
-    .tournaments-page .resolution-card .tryout-cta {
+    .tournaments-page .resolution-card .partner-cta {
       color:#07162d;
       background:linear-gradient(100deg,#6ce0c8,#a2f0d1);
       box-shadow:0 4px 14px rgba(108,224,200,0.2);
     }
-    .tournaments-page .resolution-card .tryout-cta:hover,
-    .tournaments-page .resolution-card .tryout-cta:focus-visible {
+    .tournaments-page .resolution-card .partner-cta:hover,
+    .tournaments-page .resolution-card .partner-cta:focus-visible {
       color:#07162d;
       background:#9af0d8;
     }
@@ -948,7 +948,7 @@
       <button id="tourney-tab-overview" type="button" role="tab" aria-controls="tournament-overview" aria-selected="true"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M4 19V9m5 10V5m5 14v-7m5 7V3"/><path d="M2.5 20.5h19"/></svg><span>Overview</span></button>
       <button id="tourney-tab-calendar" type="button" role="tab" aria-controls="calendar-results" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4m8-4v4M8 14h.01m4 0h.01m4 0h.01m-8 3h.01m4 0h.01"/></svg><span>Calendar</span></button>
       <button id="tourney-tab-volunteer" type="button" role="tab" aria-controls="volunteer-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3 1.8 0 3 .9 3.5 2.8"/></svg><span>Volunteer Signup</span></button>
-      <button id="tourney-tab-tryout" type="button" role="tab" aria-controls="tryout-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 32 24"><circle cx="10" cy="9" r="3.5"/><circle cx="22" cy="9" r="3.5"/><path d="M3 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M15 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M5 4h10l-2 2H7zM17 4h10l-2 2h-8z"/></svg><span>Partner Sign Up</span></button>
+      <button id="tourney-tab-partner" type="button" role="tab" aria-controls="partner-signup" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 32 24"><circle cx="10" cy="9" r="3.5"/><circle cx="22" cy="9" r="3.5"/><path d="M3 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M15 21c.4-4.3 2.9-6.5 7-6.5s6.6 2.2 7 6.5M5 4h10l-2 2H7zM17 4h10l-2 2h-8z"/></svg><span>Partner Sign Up</span></button>
       <button id="tourney-tab-parent" type="button" role="tab" aria-controls="parent-info" aria-selected="false" tabindex="-1"><svg class="tourney-tab-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2.5 20c.5-4 2.4-6 5.5-6s5 2 5.5 6M14 20c.3-2.7 1.6-4.3 4-4.3"/></svg><span>Parent Guide</span></button>
     </div>
   </nav>
@@ -969,7 +969,7 @@
       </div>
       <div class="resolution-actions">
         <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
-        <a href="tournaments.html?tab=tryout-signup" class="btn tryout-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
+        <a href="tournaments.html?tab=partner-signup" class="btn partner-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
       </div>
     </div>
   </div>
@@ -996,7 +996,7 @@
 
     <!-- THIS SEASON -->
     <div id="pane-this-season">
-       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=tryout-signup" style="color:var(--gold);font-weight:700;">sign up for a debate partner session</a>.</p>
+       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="apply.html" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=partner-signup" style="color:var(--gold);font-weight:700;">sign up for a debate partner session</a>.</p>
        <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
        <div class="public-calendar-legend" aria-label="Calendar legend">
           <span><i style="background:#7f1d1d;"></i>Tournament</span>
@@ -1073,7 +1073,7 @@
 </section>
 
 <!-- DEBATE PARTNER SIGNUP -->
-<section id="tryout-signup" class="section tourney-tab-panel tourney-tryout-section" role="tabpanel" aria-labelledby="tourney-tab-tryout" data-tourney-panel>
+<section id="partner-signup" class="section tourney-tab-panel tourney-tryout-section" role="tabpanel" aria-labelledby="tourney-tab-partner" data-tourney-panel>
   <div class="section-wrap">
     <div class="tourney-tryout-heading">
       <p class="section-label">Fall 2026 Team Selection</p>
