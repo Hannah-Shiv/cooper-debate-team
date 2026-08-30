@@ -2508,21 +2508,25 @@
       background-image: none !important;
     }
 
-    /* Give the long Latest News heading the full mobile row, then place
-       View All beneath it so the fixed-width link cannot overlap the title. */
+    /* Keep the megaphone beside the announcement heading, then place
+       View All beneath the heading and align it to the right on mobile. */
     @media (max-width: 600px) {
       #idx-news-section .news-strip-header {
-        grid-template-columns: minmax(0, 1fr) !important;
+        grid-template-columns: minmax(0, 1fr) auto !important;
         gap: 10px;
       }
       #idx-news-section .news-strip-title {
         width: 100%;
         min-width: 0;
-        align-items: flex-start;
-        flex-wrap: wrap;
+        grid-column: 1 / -1;
+        grid-row: 1;
+        align-items: center;
+        flex-wrap: nowrap;
       }
       #idx-news-section .news-strip-all {
-        justify-self: start;
+        grid-column: 2;
+        grid-row: 2;
+        justify-self: end;
         align-self: flex-start;
         margin-top: 0;
       }
