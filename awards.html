@@ -1422,6 +1422,1029 @@
       .aw-chart-grid { grid-template-columns:1fr; }
     }
     @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
+
+    /* ============================================================
+       EDITORIAL AWARDS REDESIGN
+       The live awards markup stays intact; hierarchy comes from
+       whitespace, hairline rules, and sidebars instead of cards.
+       ============================================================ */
+    .awards-page {
+      --aw-ink: #f8f5ed;
+      --aw-muted: rgba(248,245,237,0.58);
+      --aw-faint: rgba(248,245,237,0.34);
+      --aw-line: rgba(242,209,107,0.28);
+      --aw-line-soft: rgba(248,245,237,0.12);
+      --aw-gold: #f2d16b;
+      --aw-blue: #5d8ed2;
+      background: #1c2030;
+    }
+
+    .awards-page > section.section {
+      position: relative;
+      padding: 38px 0 92px;
+      background:
+        linear-gradient(180deg, rgba(10,27,61,0.3), transparent 260px),
+        #1c2030 !important;
+    }
+
+    .awards-page .page-header {
+      padding: 124px 24px 54px;
+      border-bottom: 1px solid var(--aw-line);
+      background:
+        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.12), transparent 38%),
+        linear-gradient(180deg, rgba(7,26,54,0.98), #1c2030);
+    }
+
+    .awards-page .page-header-content {
+      max-width: 980px;
+    }
+
+    .awards-page .page-header-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin-bottom: 14px;
+      color: var(--aw-gold);
+      letter-spacing: 0.22em;
+    }
+
+    .awards-page .page-header-label::before,
+    .awards-page .page-header-label::after {
+      content: '';
+      display: block;
+      width: clamp(28px, 8vw, 78px);
+      height: 1px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .page-title {
+      letter-spacing: -0.02em;
+      text-shadow: none;
+    }
+
+    .awards-page .page-subtitle {
+      color: var(--aw-gold);
+      opacity: 0.92;
+    }
+
+    .awards-page .aw-season-highlights-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      width: 100%;
+      margin: 0 auto 18px;
+      padding: 0;
+      background: transparent;
+      border-radius: 0;
+      box-shadow: none;
+      color: var(--aw-gold);
+      font-size: 0.76rem;
+      letter-spacing: 0.2em;
+    }
+
+    .awards-page .aw-season-highlights-title::before,
+    .awards-page .aw-season-highlights-title::after {
+      content: '';
+      display: block;
+      width: clamp(24px, 7vw, 68px);
+      height: 1px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .aw-season-highlights {
+      position: relative;
+      overflow: visible;
+      margin: 0 0 50px;
+      padding: 18px 0 20px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-season-highlights::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      bottom: 18px;
+      left: 0;
+      width: 3px;
+      background: linear-gradient(180deg, transparent, var(--aw-gold), transparent);
+    }
+
+    .awards-page .aw-season-highlight-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .awards-page .aw-season-highlight-item {
+      min-height: 118px;
+      padding: 0 20px 2px;
+    }
+
+    .awards-page .aw-season-highlight-item + .aw-season-highlight-item {
+      border-left-color: var(--aw-line);
+    }
+
+    .awards-page .aw-season-highlight-art {
+      opacity: 0.94;
+    }
+
+    .awards-page .aw-season-highlight-number {
+      color: var(--aw-gold);
+      text-shadow: none;
+    }
+
+    .awards-page .aw-season-highlight-rule {
+      width: 54px;
+      margin-top: 7px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .aw-season-highlight-label {
+      color: var(--aw-ink);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+    }
+
+    .awards-page .season-select-wrap {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      gap: 18px;
+      margin: 0 0 30px;
+      padding: 0 0 16px;
+      border: 0;
+      border-bottom: 1px solid var(--aw-line-soft);
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .awards-page .season-select-label {
+      gap: 10px;
+      color: var(--aw-gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-shadow: none;
+    }
+
+    .awards-page .season-select-label::before {
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--aw-line);
+      opacity: 1;
+    }
+
+    .awards-page .season-toggle {
+      gap: 18px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .awards-page .season-toggle-btn {
+      padding: 4px 0 6px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      background: transparent;
+      color: var(--aw-muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      box-shadow: none;
+    }
+
+    .awards-page .season-toggle-btn:hover {
+      color: var(--aw-ink);
+      background: transparent;
+    }
+
+    .awards-page .season-toggle-btn.active {
+      border-bottom-color: var(--aw-gold);
+      background: transparent;
+      color: var(--aw-gold);
+      box-shadow: none;
+    }
+
+    .awards-page .season-toggle-btn:focus-visible,
+    .awards-page .season-dropdown:focus-visible {
+      outline: 2px solid var(--aw-gold);
+      outline-offset: 4px;
+    }
+
+    .awards-page .aw-results-heading-row {
+      align-items: flex-end;
+      gap: 28px;
+      margin-bottom: 34px;
+      padding-left: 18px;
+      border-left: 3px solid var(--aw-gold);
+    }
+
+    .awards-page .aw-results-heading-row .section-title {
+      margin-bottom: 0 !important;
+      color: var(--aw-ink);
+      font-size: clamp(2rem, 4.5vw, 3.35rem);
+      line-height: 0.98;
+    }
+
+    .awards-page .aw-data-source {
+      display: block;
+      margin: 0 0 3px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      color: var(--aw-muted);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      line-height: 1.5;
+      text-align: right;
+      text-transform: uppercase;
+    }
+
+    .awards-page .aw-loading {
+      padding: 34px 0;
+      border-top: 1px solid var(--aw-line-soft);
+      border-bottom: 1px solid var(--aw-line-soft);
+      color: var(--aw-muted);
+    }
+
+    .awards-page .aw-results-content #aw-loading,
+    .awards-page .aw-results-content #aw-future,
+    .awards-page .aw-results-content #aw-data {
+      animation: awResultsReveal 0.28s ease both;
+    }
+
+    .awards-page .aw-stat-strip {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0;
+      margin-bottom: 42px;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+    }
+
+    .awards-page .aw-stat-box {
+      min-height: 142px;
+      padding: 24px 18px 20px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      transition: color 0.2s ease, background 0.2s ease;
+    }
+
+    .awards-page .aw-stat-box + .aw-stat-box {
+      border-left: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-stat-box:hover {
+      border-color: var(--aw-line-soft);
+      background: rgba(242,209,107,0.035);
+      box-shadow: none;
+    }
+
+    .awards-page .aw-stat-box::before {
+      display: none;
+    }
+
+    .awards-page .aw-stat-num {
+      padding-bottom: 12px;
+      color: var(--aw-gold);
+      text-shadow: none;
+    }
+
+    .awards-page .aw-stat-divider {
+      width: 42px;
+      margin-bottom: 12px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .aw-stat-lbl {
+      color: var(--aw-muted);
+      font-size: 0.62rem;
+      letter-spacing: 0.13em;
+    }
+
+    .awards-page #aw-highlights {
+      border-top-color: var(--aw-line-soft);
+      border-bottom-color: var(--aw-line-soft);
+    }
+
+    .awards-page #aw-highlights .aw-stat-box {
+      min-height: 124px;
+    }
+
+    .awards-page .aw-chart-title {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      color: var(--aw-gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+    }
+
+    .awards-page .aw-chart-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--aw-line-soft);
+    }
+
+    .awards-page .aw-tourn-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 34px;
+      row-gap: 0;
+      margin-bottom: 52px !important;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+    }
+
+    .awards-page .aw-tourn-card {
+      position: relative;
+      min-height: 156px;
+      padding: 24px 24px 24px 28px;
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--aw-line-soft);
+      border-radius: 0;
+      box-shadow: none;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .awards-page .aw-tourn-card:nth-child(odd) {
+      border-right: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-tourn-card::before {
+      content: '';
+      position: absolute;
+      top: 22px;
+      bottom: 22px;
+      left: 0;
+      width: 2px;
+      background: var(--aw-gold);
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .awards-page .aw-tourn-card:hover {
+      transform: none;
+      border-color: var(--aw-line-soft);
+      background: rgba(242,209,107,0.035);
+    }
+
+    .awards-page .aw-tourn-card:hover::before {
+      opacity: 1;
+    }
+
+    .awards-page .aw-tourn-name {
+      margin-bottom: 6px;
+      color: var(--aw-ink);
+      font-size: 0.84rem;
+      letter-spacing: 0.1em;
+    }
+
+    .awards-page .aw-tourn-date {
+      margin-bottom: 18px;
+      color: var(--aw-muted);
+      font-size: 0.76rem;
+    }
+
+    .awards-page .aw-tourn-rec {
+      color: var(--aw-gold);
+      text-shadow: none;
+      font-size: 2rem;
+    }
+
+    .awards-page .aw-tourn-sub {
+      margin-top: 5px;
+      color: var(--aw-muted);
+      font-size: 0.75rem;
+    }
+
+    .awards-page .aw-tourn-highlight {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--aw-gold);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+    }
+
+    .awards-page .metro-banner {
+      margin-bottom: 38px;
+      padding: 22px 0 22px 20px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--aw-line-soft);
+      border-bottom: 1px solid var(--aw-line-soft);
+      border-left: 3px solid var(--aw-blue);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .metro-banner-title {
+      color: var(--aw-gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.17em;
+    }
+
+    .awards-page .metro-badge-eligible,
+    .awards-page .metro-badge-progress {
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .awards-page .metro-badge-eligible {
+      color: #86efac;
+    }
+
+    .awards-page .metro-badge-progress {
+      color: var(--aw-gold);
+    }
+
+    .awards-page .aw-champ-dashboard {
+      margin: 8px 0 56px;
+    }
+
+    .awards-page .aw-champ-kicker {
+      gap: 12px;
+      margin: 0 0 18px;
+      color: var(--aw-gold);
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+    }
+
+    .awards-page .aw-champ-kicker::before {
+      content: '';
+      display: block;
+      width: 38px;
+      height: 1px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .aw-champ-highlight-grid.aw-two-awards {
+      gap: 0;
+      margin-bottom: 34px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-award-card {
+      min-height: 342px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-award-card + .aw-award-card {
+      border-left: 1px solid var(--aw-line);
+    }
+
+    .awards-page .aw-award-content {
+      gap: 24px;
+      padding: 28px 26px;
+    }
+
+    .awards-page .aw-award-media {
+      flex-basis: 132px;
+      width: 132px;
+      height: 176px;
+    }
+
+    .awards-page .aw-award-details {
+      min-width: 0;
+    }
+
+    .awards-page .aw-award-badge {
+      margin-bottom: 11px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      color: var(--aw-gold);
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+    }
+
+    .awards-page .aw-award-hierarchy {
+      margin-bottom: 9px;
+      color: var(--aw-faint);
+      font-size: 0.56rem;
+    }
+
+    .awards-page .aw-award-title {
+      margin-bottom: 10px;
+      color: var(--aw-ink);
+    }
+
+    .awards-page .aw-award-place,
+    .awards-page .aw-ncfl-award-achievement {
+      color: var(--aw-gold);
+      text-shadow: none;
+    }
+
+    .awards-page .aw-award-note {
+      color: var(--aw-muted);
+      font-size: 0.65rem;
+    }
+
+    .awards-page .aw-award-stats {
+      gap: 0;
+      margin: 0;
+      border-top: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-award-stat {
+      min-height: 126px;
+      padding: 14px 6px 16px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+    }
+
+    .awards-page .aw-award-stat + .aw-award-stat {
+      border-left: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-award-stat-icon {
+      width: 38px;
+      height: 38px;
+      margin-bottom: 7px;
+      border-color: var(--aw-line);
+      color: var(--aw-gold);
+      filter: none;
+    }
+
+    .awards-page .aw-award-stat-number {
+      color: var(--aw-gold);
+      text-shadow: none;
+      font-size: 2.15rem;
+    }
+
+    .awards-page .aw-award-stat-divider {
+      width: 48px;
+      margin: 7px 0 6px;
+      background: var(--aw-line);
+    }
+
+    .awards-page .aw-award-stat-divider::after {
+      background: #1c2030;
+      color: var(--aw-gold);
+    }
+
+    .awards-page .aw-award-stat-label {
+      color: var(--aw-muted);
+      font-size: 0.53rem;
+    }
+
+    .awards-page .aw-champ-summary {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      margin-bottom: 22px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-champ-metric {
+      min-height: 126px;
+      padding: 20px 14px;
+      border-right: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-champ-metric:last-child {
+      border-right: 0;
+    }
+
+    .awards-page .aw-champ-metric-icon {
+      width: auto;
+      height: auto;
+      margin-bottom: 5px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--aw-gold);
+      font-size: 0.88rem;
+    }
+
+    .awards-page .aw-champ-metric-value {
+      color: var(--aw-gold);
+      text-shadow: none;
+    }
+
+    .awards-page .aw-champ-metric-label {
+      color: var(--aw-muted);
+      font-size: 0.61rem;
+    }
+
+    .awards-page .aw-champ-chart-grid {
+      gap: 0;
+      margin-bottom: 22px;
+    }
+
+    .awards-page .aw-champ-card {
+      padding: 26px 28px;
+      background: transparent;
+      border: 0;
+      border-top: 1px solid var(--aw-line-soft);
+      border-bottom: 1px solid var(--aw-line-soft);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-champ-chart-grid > .aw-champ-card:first-child {
+      padding-left: 0;
+      border-right: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-champ-chart-grid > .aw-champ-card + .aw-champ-card {
+      padding-right: 0;
+    }
+
+    .awards-page .aw-champ-card-title {
+      color: var(--aw-ink);
+      font-size: 0.82rem;
+      letter-spacing: 0.11em;
+    }
+
+    .awards-page .aw-champ-card-subtitle {
+      color: var(--aw-muted);
+      font-size: 0.7rem;
+    }
+
+    .awards-page .aw-record-bars {
+      border-bottom-color: var(--aw-line);
+    }
+
+    .awards-page .aw-record-bar {
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-record-table th {
+      color: var(--aw-muted);
+      border-bottom-color: var(--aw-line);
+    }
+
+    .awards-page .aw-record-table td {
+      color: rgba(248,245,237,0.78);
+      border-bottom-color: var(--aw-line-soft);
+    }
+
+    .awards-page .aw-record-table tfoot td {
+      color: var(--aw-gold);
+    }
+
+    .awards-page .aw-record-dot {
+      border-radius: 50%;
+    }
+
+    .awards-page .aw-placement-card {
+      padding: 26px 0;
+    }
+
+    .awards-page .aw-place-tile {
+      min-height: 68px;
+      padding: 10px 6px 8px;
+      border: 0;
+      border-left: 1px solid var(--aw-line-soft);
+      border-radius: 0;
+      background: transparent;
+    }
+
+    .awards-page .aw-place-tile.top {
+      border-top: 2px solid var(--aw-gold);
+      border-left-color: var(--aw-line);
+      background: rgba(242,209,107,0.035);
+    }
+
+    .awards-page .aw-place-rank {
+      color: var(--aw-ink);
+    }
+
+    .awards-page .aw-place-tile.top .aw-place-rank {
+      color: var(--aw-gold);
+    }
+
+    .awards-page .aw-place-count,
+    .awards-page .aw-placement-legend,
+    .awards-page .aw-placement-note {
+      color: var(--aw-muted);
+    }
+
+    .awards-page .aw-placement-legend,
+    .awards-page .aw-placement-note {
+      border-top-color: var(--aw-line-soft);
+    }
+
+    .awards-page .aw-placement-note strong {
+      color: var(--aw-gold);
+    }
+
+    .awards-page .aw-chart-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0;
+      margin-bottom: 40px;
+      border-top: 1px solid var(--aw-line);
+      border-bottom: 1px solid var(--aw-line);
+    }
+
+    .awards-page .aw-chart-wrap {
+      min-width: 0;
+      padding: 28px 30px;
+      background: transparent;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-chart-wrap:first-child {
+      padding-left: 0;
+      border-right: 1px solid var(--aw-line-soft);
+    }
+
+    .awards-page .aw-chart-wrap + .aw-chart-wrap {
+      padding-right: 0;
+    }
+
+    .awards-page .aw-chart-wrap canvas {
+      max-width: 100%;
+    }
+
+    .awards-page .aw-future {
+      padding: 58px 24px;
+      border: 0;
+      border-top: 1px dashed var(--aw-line);
+      border-bottom: 1px dashed var(--aw-line);
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .awards-page .aw-future-title {
+      color: var(--aw-ink);
+    }
+
+    .awards-page .aw-future-sub {
+      color: var(--aw-muted);
+    }
+
+    /* Legacy sections remain hidden today, but inherit the same treatment
+       if their content is enabled in a future season. */
+    .awards-page .trophy-card,
+    .awards-page .speaker-card,
+    .awards-page .aw-lb-row {
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--aw-line-soft);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .awards-page .trophy-card:hover,
+    .awards-page .speaker-card:hover,
+    .awards-page .aw-lb-row:hover {
+      transform: none;
+      border-color: var(--aw-line);
+      background: rgba(242,209,107,0.035);
+      box-shadow: none;
+    }
+
+    @media (max-width: 900px) {
+      .awards-page .aw-season-highlight-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .awards-page .aw-season-highlight-item {
+        border-left: 0 !important;
+        border-top: 1px solid var(--aw-line);
+      }
+
+      .awards-page .aw-season-highlight-item:nth-child(-n+2) {
+        border-top: 0;
+      }
+
+      .awards-page .aw-season-highlight-item:nth-child(even) {
+        border-left: 1px solid var(--aw-line) !important;
+      }
+
+      .awards-page .aw-tourn-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .awards-page .aw-tourn-card:nth-child(odd) {
+        border-right: 0;
+      }
+
+      .awards-page .aw-tourn-card:last-child {
+        border-bottom: 0;
+      }
+
+      .awards-page .aw-stat-box:nth-child(n+3) {
+        border-top: 1px solid var(--aw-line-soft);
+      }
+
+      .awards-page .aw-chart-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .awards-page .aw-chart-wrap:first-child {
+        padding-left: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--aw-line-soft);
+      }
+
+      .awards-page .aw-chart-wrap + .aw-chart-wrap {
+        padding-right: 0;
+      }
+
+      .awards-page .aw-champ-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .awards-page .aw-champ-metric:nth-child(2) {
+        border-right: 0;
+      }
+
+      .awards-page .aw-champ-metric:nth-child(-n+2) {
+        border-bottom: 1px solid var(--aw-line-soft);
+      }
+
+      .awards-page .aw-champ-chart-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .awards-page .aw-champ-chart-grid > .aw-champ-card:first-child {
+        padding-right: 0;
+        border-right: 0;
+        border-bottom: 1px solid var(--aw-line-soft);
+      }
+
+      .awards-page .aw-champ-chart-grid > .aw-champ-card + .aw-champ-card {
+        padding-left: 0;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .awards-page .season-select-wrap {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+      }
+
+      .awards-page .aw-results-heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .awards-page .aw-data-source {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .awards-page > section.section {
+        padding-top: 30px;
+        padding-bottom: 68px;
+      }
+
+      .awards-page .page-header {
+        padding-top: 108px;
+        padding-bottom: 42px;
+      }
+
+      .awards-page .aw-season-highlights {
+        padding-inline: 0;
+        margin-bottom: 40px;
+      }
+
+      .awards-page .aw-season-highlight-item {
+        min-height: 104px;
+        padding-inline: 8px;
+      }
+
+      .awards-page .aw-season-highlight-label {
+        font-size: 0.56rem;
+        letter-spacing: 0.09em;
+      }
+
+      .awards-page .aw-stat-box {
+        min-height: 126px;
+        padding-inline: 8px;
+      }
+
+      .awards-page .aw-stat-num {
+        font-size: 2.65rem;
+      }
+
+      .awards-page .aw-stat-lbl {
+        font-size: 0.54rem;
+        letter-spacing: 0.1em;
+      }
+
+      .awards-page .aw-tourn-card {
+        min-height: 144px;
+        padding: 21px 14px 21px 20px;
+      }
+
+      .awards-page .aw-award-content {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+        padding: 24px 0;
+      }
+
+      .awards-page .aw-award-media {
+        align-self: flex-start;
+        flex-basis: auto;
+        width: 124px;
+        height: 118px;
+      }
+
+      .awards-page .aw-metro-award-media img,
+      .awards-page .aw-ncfl-award-media img {
+        width: 116px;
+      }
+
+      .awards-page .aw-ncfl-award-card .aw-award-details {
+        row-gap: 9px;
+        padding-top: 0;
+      }
+
+      .awards-page .aw-award-stats {
+        margin-inline: 0;
+      }
+
+      .awards-page .aw-award-stat {
+        min-height: 112px;
+        padding-inline: 3px;
+      }
+
+      .awards-page .aw-award-stat-number {
+        font-size: 1.9rem;
+      }
+
+      .awards-page .aw-award-stat-label {
+        font-size: 0.48rem;
+      }
+
+      .awards-page .aw-champ-card,
+      .awards-page .aw-placement-card,
+      .awards-page .aw-chart-wrap {
+        padding-top: 22px;
+        padding-bottom: 22px;
+      }
+
+      .awards-page .aw-record-bars {
+        height: 220px;
+        padding-inline: 0;
+      }
+
+      .awards-page .aw-placement-card {
+        padding-inline: 0;
+      }
+
+      .awards-page .aw-placement-legend {
+        justify-content: space-between;
+        gap: 10px;
+        font-size: 0.58rem;
+      }
+
+      .awards-page .aw-chart-wrap + .aw-chart-wrap {
+        padding-top: 28px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .awards-page .aw-results-content #aw-loading,
+      .awards-page .aw-results-content #aw-future,
+      .awards-page .aw-results-content #aw-data {
+        animation: none;
+      }
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">

@@ -8,6 +8,7 @@ const viewports = [
 
 const routes = [
   'index.html',
+  'awards.html',
   'tournaments.html',
   'apply.html',
   'members-directory.html',
@@ -54,6 +55,14 @@ for (const route of routes) {
       try {
         await page.goto(`/${route}`, { waitUntil: 'domcontentloaded' });
         await page.waitForTimeout(750);
+        if (route === 'awards.html') {
+          await page.waitForFunction(
+            () => getComputedStyle(document.querySelector('#aw-data')).display !== 'none',
+            null,
+            { timeout: 15_000 },
+          );
+          await page.waitForTimeout(1_200);
+        }
 
         const dimensions = await page.evaluate(() => ({
           viewportWidth: window.innerWidth,
