@@ -181,9 +181,12 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-heading .section-title")).toHaveText("Debate Partner Sign-Up");
   await expect(page.locator(".tourney-tryout-heading .section-sub")).toHaveCSS("color", "rgb(255, 227, 110)");
   await expect(page.locator("#tourney-tryout-details-heading")).toHaveText("Student information");
-  await expect(page.locator("#tourney-tryout-output-placeholder")).toBeVisible();
-  await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Your sign-up status appears here");
-  await expect(page.locator(".tourney-tryout-output > .tourney-tryout-output-heading p")).toHaveText("Current sign-up status");
+  await expect(page.locator("#tourney-tryout-output-placeholder")).toBeAttached();
+  await expect(page.locator("#tourney-tryout-output-placeholder")).not.toHaveAttribute("hidden");
+  await expect(page.locator("#tourney-tryout-output-heading")).toHaveText("Current sign-up status");
+  await expect(page.locator(".tourney-tryout-output-heading .tourney-tryout-output-primary-icon")).toHaveText("♟");
+  await expect(page.locator(".tourney-tryout-output-heading img")).toHaveCount(0);
+  await expect(page.locator("#tourney-tryout-output-placeholder")).toBeEmpty();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-status")).toHaveCount(1);
   await expect(page.locator(".tourney-tryout-gate #tourney-tryout-error")).toHaveCount(1);
   await expect(page.locator("#tourney-tryout-session-preview")).toHaveText("Tuesday, September 22 — Cafeteria — 2:30–4:30 p.m.");
