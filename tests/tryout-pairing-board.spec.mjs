@@ -676,6 +676,7 @@ test("filters the public board by the viewed session without changing the studen
   await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Hannah S.");
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Test H.");
+  expect(parseFloat(await page.locator(".tourney-tryout-board-row.is-locked .tourney-tryout-piece-name").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(15);
   await expect(page.locator("#tourney-tryout-output-paired")).toHaveText("1");
   await expect(page.locator("#tourney-tryout-output-paired-label")).toHaveText("pair");
   await expect(page.locator("#tourney-tryout-output-paired-students")).toHaveText("2 students");
