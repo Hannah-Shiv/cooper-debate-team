@@ -2215,8 +2215,27 @@
       font-size: 2.7rem;
       vertical-align: -0.18em;
     }
+    .idx-award-panel .aw-award-card .aw-award-details {
+      display: flex;
+      align-self: flex-start;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: flex-start;
+      row-gap: 11px;
+      padding-top: 12px;
+    }
+    .idx-award-panel .aw-award-card .aw-award-badge,
+    .idx-award-panel .aw-award-card .aw-award-hierarchy,
+    .idx-award-panel .aw-award-card .aw-award-title,
+    .idx-award-panel .aw-award-card .aw-award-place,
+    .idx-award-panel .aw-award-card .aw-award-note {
+      margin-bottom: 0;
+    }
     .idx-closing-actions {
-      max-width: 585px;
+      width: 90%;
+      max-width: 526px;
+      margin-right: auto;
+      margin-left: auto;
     }
     .idx-closing-action-primary {
       background: #d99a18;
@@ -2225,6 +2244,17 @@
     .idx-closing-action-primary:hover {
       background: #e1a21e;
       border-color: #e1a21e;
+    }
+    .idx-closing-action b,
+    .idx-closing-action small {
+      font-family: 'Josefin Sans', sans-serif;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      line-height: 1.25;
+      text-transform: uppercase;
+    }
+    .idx-closing-action b {
+      font-size: 0.78rem;
     }
     .idx-closing-action small {
       font-size: 0.68rem;
@@ -2237,7 +2267,7 @@
     }
     @media (max-width: 600px) {
       .idx-closing-actions {
-        max-width: 340px;
+        max-width: 306px;
       }
       #idx-phi-join-panel {
         grid-template-rows: 405px auto auto;
