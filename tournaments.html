@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=40"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=41"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1115,30 +1115,31 @@
             <li class="is-review"><span class="tourney-tryout-flow-number">1</span><span><strong>Review all pairs</strong><small>Check the shared board to see which students are open for your selected session.</small></span></li>
             <li class="is-select"><span class="tourney-tryout-flow-number">2</span><span><strong>Select up to four</strong><small>Add the students you would be comfortable debating with this season.</small></span></li>
             <li class="is-prioritize"><span class="tourney-tryout-flow-number">3</span><span><strong>Set your priority</strong><small>Drag choices or use the arrow keys to rank your preferences from first to fourth.</small></span></li>
-            <li class="is-submit"><span class="tourney-tryout-flow-number">4</span><span><strong>Submit your choices</strong><small>Save your ranked list so the board can identify mutual partner choices.</small></span></li>
+            <li class="is-submit"><span class="tourney-tryout-flow-number">4</span><span><strong>Submit your choices</strong><small>Save your ranked list so the board can identify mutual partner choices.</small><span class="tourney-tryout-flow-fine-print">Confirmed pairings are visible to everyone. Pending requests stay private until both students choose each other.</span></span></li>
           </ol>
           <div id="tourney-tryout-message" class="tourney-tryout-message is-success" role="status" aria-live="polite" hidden></div>
         </section>
 
         <aside class="tourney-tryout-output" aria-labelledby="tourney-tryout-output-heading">
           <div class="tourney-tryout-screen-heading tourney-tryout-output-heading">
-            <span class="tourney-tryout-icon tourney-tryout-identity-emblem tourney-tryout-output-primary-icon" aria-hidden="true">♟</span>
-            <div><p id="tourney-tryout-output-heading">Current sign-up status</p></div>
+            <span class="tourney-tryout-icon is-violet tourney-tryout-output-primary-icon" aria-hidden="true">♟</span>
+            <div><p id="tourney-tryout-output-heading">Current sign-up status</p><h3>Student output</h3><span>Private sign-up details and board totals.</span></div>
           </div>
           <div class="tourney-tryout-output-status">
             <div id="tourney-tryout-output-placeholder" class="tourney-tryout-output-placeholder"></div>
             <section id="tourney-tryout-identity" class="tourney-tryout-identity" aria-live="polite" hidden>
-              <div class="tourney-tryout-identity-profile">
-                <div class="tourney-tryout-identity-copy">
-                  <span id="tourney-tryout-identity-label" class="tourney-tryout-identity-label">Partner sign-up in progress</span>
-                  <strong id="tourney-tryout-identity-name"></strong>
-                  <span id="tourney-tryout-identity-id" class="tourney-tryout-identity-id"></span>
-                  <span id="tourney-tryout-identity-meta" class="tourney-tryout-identity-meta"></span>
-                </div>
-              </div>
+              <span id="tourney-tryout-identity-label" hidden>Partner sign-up in progress</span>
+              <dl class="tourney-tryout-output-metrics">
+                <div><dt>Name</dt><dd id="tourney-tryout-identity-name">—</dd></div>
+                <div><dt>FCPS ID</dt><dd id="tourney-tryout-identity-id">—</dd></div>
+                <div><dt>Grade</dt><dd id="tourney-tryout-identity-grade">—</dd></div>
+                <div><dt>Chosen debate session</dt><dd id="tourney-tryout-identity-meta">—</dd></div>
+                <div><dt>Status</dt><dd id="tourney-tryout-identity-status" class="tourney-tryout-metric-status">—</dd></div>
+                <div id="tourney-tryout-identity-partner-row" hidden><dt>Paired with</dt><dd id="tourney-tryout-identity-partner">—</dd></div>
+              </dl>
             </section>
             <div id="tourney-tryout-status" class="tourney-tryout-status" role="status" aria-live="polite" hidden></div>
-            <div id="tourney-tryout-board-callout" class="tourney-tryout-callout" hidden>Confirmed pairings are visible to everyone, like a shared pairing sheet. Pending requests stay private until both students choose each other.</div>
+            <div id="tourney-tryout-board-callout" hidden></div>
             <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
             <section class="tourney-tryout-output-stats" aria-label="Board statistics">
               <div class="tourney-tryout-output-status-label">Board statistics</div>
@@ -1682,7 +1683,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=30"></script>
+  <script src="js/tryout-tournament-tab.js?v=31"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>

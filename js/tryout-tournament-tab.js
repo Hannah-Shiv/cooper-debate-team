@@ -450,29 +450,15 @@
       preferenceAnimation = null;
   }
   function renderResult() {
-    var record = activeRecord();
-    if (!record) { dom.result.hidden = true; return; }
-    var status = statusFor(record);
-    var partner = record.assignedPartnerId ? recordById(record.assignedPartnerId) : (mutual(record) || recordById(record.partnerId));
-    var partnerName = partner ? displayName(partner.name) : "your requested partner";
-    var pendingNames = state.partnerIds.map(function (partnerId) {
-      var preference = recordById(partnerId);
-      return preference ? displayName(preference.name) : "";
-    }).filter(Boolean);
-    var copy = {
-      pending: ["Partner choices saved", "Your ranked choices are " + pendingNames.join(", ") + ". The first available student who also chooses you will become your partner."],
-      mutual: ["You are paired", "You and " + partnerName + " chose each other. Either of you can use Change My Signup to unpair and choose again."],
-      assigned: ["You are paired", "Your debate partner is " + partnerName + ". You can use Change Sign-Up Details to choose again."],
-      waiting: ["Choose partner preferences", "Select up to four students in the order you prefer them."],
-       open: ["Your sign-up is open", record.releasedReason === "partner-locked" ? "A student in your list completed another pairing first. Choose a new ranked list from the students who are still open." : "Choose up to four available students in preference order."]
-    }[status];
-    dom.result.className = "tourney-tryout-result is-" + status;
-    dom.result.innerHTML = "<h3>" + copy[0] + "</h3><p>" + copy[1] + "</p>";
-    dom.result.hidden = false;
+    dom.result.textContent = "";
+    dom.result.hidden = true;
   }
   function renderIdentity() {
     var record = activeRecord();
     var paired = selfIsPaired();
+    var recordStatus = statusFor(record);
+    var confirmedPartner = record && record.assignedPartnerId ? recordById(record.assignedPartnerId) : (mutual(record) || (record && record.partnerId ? recordById(record.partnerId) : null));
+    var metricPaired = recordStatus === "mutual" || recordStatus === "assigned";
      dom.gate.hidden = false;
     dom.identity.hidden = !state.boardVisible;
     dom.outputPlaceholder.hidden = state.boardVisible;
@@ -505,8 +491,20 @@
     if (paired) dom.message.hidden = true;
     if (!state.boardVisible) return;
     dom.identityName.textContent = dom.name.value.trim() || (record && record.name) || "Student";
-    dom.identityId.textContent = "FCPS ID: " + (state.fcpsId || dom.fcpsId.value.trim());
-    dom.identityMeta.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7") + " · " + DATES[state.date].date + " · " + DATES[state.date].location;
+    dom.identityId.textContent = state.fcpsId || dom.fcpsId.value.trim() || "—";
+    dom.identityGrade.textContent = gradeLabel(dom.grade.value || (record && record.grade) || "7");
+    dom.identityMeta.textContent = DATES[state.date].date;
+    dom.identityStatus.textContent = {
+      mutual: "Paired",
+      assigned: "Paired",
+      pending: "Pending",
+      waiting: "Waiting",
+      open: "Open",
+      new: "Not submitted"
+    }[recordStatus] || "Open";
+    dom.identityStatus.className = "tourney-tryout-metric-status is-" + (metricPaired ? "paired" : recordStatus);
+    dom.identityPartnerRow.hidden = !metricPaired;
+    dom.identityPartner.textContent = confirmedPartner ? displayName(confirmedPartner.name) : "Confirmed student";
     if (dom.submit) dom.submit.textContent = state.editing ? "Save partner preferences →" : "Submit partner preferences →";
   }
   function renderAll() { renderDates(); if (state.boardVisible) renderPairing(); renderIdentity(); renderResult(); }
@@ -694,6 +692,8 @@
       callout: $("tourney-tryout-board-callout"),
       outputPaired: $("tourney-tryout-output-paired"), outputPending: $("tourney-tryout-output-pending"), outputOpen: $("tourney-tryout-output-open"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
+      identityGrade: $("tourney-tryout-identity-grade"), identityStatus: $("tourney-tryout-identity-status"),
+      identityPartnerRow: $("tourney-tryout-identity-partner-row"), identityPartner: $("tourney-tryout-identity-partner"),
       edit: document.querySelector("[data-tryout-edit]"), withdraw: document.querySelector("[data-tryout-withdraw]"), newStudent: document.querySelector("[data-tryout-new]"),
       pairs: document.querySelector("[data-tryout-pairs]"), workspaceLabel: $("tourney-tryout-workspace-label"),
       workspaceHeading: $("tourney-tryout-pair-heading"), workspaceCopy: $("tourney-tryout-workspace-copy"),
