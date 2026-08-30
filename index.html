@@ -771,6 +771,17 @@
          height: 156px;
          min-height: 156px;
        }
+        html.home-hero-image-hidden .home-hero > .hero-bg {
+          top: 0;
+          right: 0;
+          bottom: auto;
+          left: 0;
+          height: 100svh;
+          transform: translateY(calc(70px - 50svh - 0.85vw));
+          transform-origin: center top;
+          transition: transform 0.48s cubic-bezier(0.22, 0.61, 0.36, 1);
+          will-change: transform;
+        }
        html.home-hero-image-hidden .hero-image-toggle {
           top: 75px;
           right: 10px;
