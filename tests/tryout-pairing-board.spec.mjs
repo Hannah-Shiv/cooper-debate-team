@@ -274,7 +274,8 @@ test("shows large primary board actions", async ({ page }) => {
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-paired")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-pending")).toBeVisible();
   await expect(page.locator(".tourney-tryout-output #tourney-tryout-output-open")).toBeVisible();
-  await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveText("Sign-up statistics");
+  await expect(page.locator(".tourney-tryout-output-stats .tourney-tryout-output-status-label")).toHaveCount(0);
+  await expect(page.locator(".tourney-tryout-stat-heading")).toHaveText(["Paired", "Pending", "Open"]);
   await expect(page.locator(".tourney-tryout-output-stats > div:last-child > span + span")).toHaveCount(2);
   const statsGeometry = await page.locator(".tourney-tryout-output-stats").evaluate(stats => {
     const group = stats.querySelector("div:last-child").getBoundingClientRect();
@@ -304,6 +305,7 @@ test("shows large primary board actions", async ({ page }) => {
   expect(statsGeometry.cards.every(card => card.borderRadius >= 8 && card.height > 50 && card.background !== "rgba(0, 0, 0, 0)")).toBe(true);
   expect(parseFloat(await page.locator(".tourney-tryout-output-stats strong").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(22);
   expect(parseFloat(await page.locator(".tourney-tryout-output-stats small").first().evaluate(item => getComputedStyle(item).fontSize))).toBeGreaterThanOrEqual(15);
+  expect(await page.locator(".tourney-tryout-output-stats > div:last-child > span").evaluateAll(items => items.every(item => item.scrollWidth <= item.clientWidth))).toBe(true);
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired")).toHaveCSS("color", "rgb(184, 250, 196)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-paired strong")).toHaveCSS("color", "rgb(108, 242, 138)");
   await expect(page.locator(".tourney-tryout-output-stats span.is-pending")).toHaveCSS("color", "rgb(255, 182, 165)");
