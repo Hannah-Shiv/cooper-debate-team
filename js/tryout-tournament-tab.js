@@ -453,6 +453,13 @@
      dom.outputPaired.textContent = lockedCount;
      dom.outputPending.textContent = pendingCount;
      dom.outputOpen.textContent = openCount;
+     dom.outputPairedLabel.textContent = lockedCount === 1 ? "pair" : "pairs";
+     dom.outputPendingLabel.textContent = pendingCount === 1 ? "pair" : "pairs";
+     dom.outputPairedStudents.textContent = (lockedCount * 2) + " students";
+     dom.outputPendingStudents.textContent = (pendingCount * 2) + " students";
+     dom.outputOpenStudents.textContent = openCount + " students";
+     var possibleOpenPairs = Math.floor(openCount / 2);
+     dom.outputOpenPairs.textContent = possibleOpenPairs + " possible " + (possibleOpenPairs === 1 ? "pair" : "pairs");
       preferenceAnimation = null;
   }
   function renderResult() {
@@ -700,6 +707,9 @@
       outputPlaceholder: $("tourney-tryout-output-placeholder"), sessionPreview: $("tourney-tryout-session-preview"),
       callout: $("tourney-tryout-board-callout"),
       outputPaired: $("tourney-tryout-output-paired"), outputPending: $("tourney-tryout-output-pending"), outputOpen: $("tourney-tryout-output-open"),
+      outputPairedLabel: $("tourney-tryout-output-paired-label"), outputPendingLabel: $("tourney-tryout-output-pending-label"),
+      outputPairedStudents: $("tourney-tryout-output-paired-students"), outputPendingStudents: $("tourney-tryout-output-pending-students"),
+      outputOpenStudents: $("tourney-tryout-output-open-students"), outputOpenPairs: $("tourney-tryout-output-open-pairs"),
       identityLabel: $("tourney-tryout-identity-label"), identityId: $("tourney-tryout-identity-id"), identityMeta: $("tourney-tryout-identity-meta"),
       identityGrade: $("tourney-tryout-identity-grade"), identityStatus: $("tourney-tryout-identity-status"),
       identityPartnerRow: $("tourney-tryout-identity-partner-row"), identityPartner: $("tourney-tryout-identity-partner"),

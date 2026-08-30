@@ -672,6 +672,8 @@ test("filters the public board by the viewed session without changing the studen
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Hannah S.");
   await expect(page.locator(".tourney-tryout-board-row.is-locked")).toContainText("Test H.");
   await expect(page.locator("#tourney-tryout-output-paired")).toHaveText("1");
+  await expect(page.locator("#tourney-tryout-output-paired-label")).toHaveText("pair");
+  await expect(page.locator("#tourney-tryout-output-paired-students")).toHaveText("2 students");
 
   await page.locator("#tourney-tryout-date-options").selectOption("sep22");
 
@@ -682,6 +684,8 @@ test("filters the public board by the viewed session without changing the studen
   await expect(page.locator(".tourney-tryout-board")).not.toContainText("Test H.");
   await expect(page.locator('[data-partner="avery"]')).toHaveCount(0);
   await expect(page.locator("#tourney-tryout-output-paired")).toHaveText("0");
+  await expect(page.locator("#tourney-tryout-output-paired-label")).toHaveText("pairs");
+  await expect(page.locator("#tourney-tryout-output-paired-students")).toHaveText("0 students");
 
   await page.waitForTimeout(10500);
   await expect(page.locator("#tourney-tryout-identity-meta")).toHaveText("Sept 23");

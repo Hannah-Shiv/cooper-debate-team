@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=1"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/tournament-tryout.css?v=43"/>
+  <link rel="stylesheet" href="css/tournament-tryout.css?v=47"/>
   <script>
     /* Keep deep-linked tabs shareable without letting the browser jump to a distant anchor. */
     (function () {
@@ -1143,7 +1143,11 @@
             <section id="tourney-tryout-student-status" class="tourney-tryout-result" aria-live="polite" hidden></section>
             <section class="tourney-tryout-output-stats" aria-label="Team statistics">
               <div class="tourney-tryout-output-status-label">Sign-up statistics</div>
-              <div><span class="is-paired"><strong id="tourney-tryout-output-paired">0</strong>Paired</span><span class="is-pending"><strong id="tourney-tryout-output-pending">0</strong>Pending</span><span class="is-open"><strong id="tourney-tryout-output-open">0</strong>Open</span></div>
+              <div>
+                <span class="is-paired"><strong><span id="tourney-tryout-output-paired">0</span> <span id="tourney-tryout-output-paired-label" class="tourney-tryout-stat-unit">pairs</span></strong><small id="tourney-tryout-output-paired-students">0 students</small></span>
+                <span class="is-pending"><strong><span id="tourney-tryout-output-pending">0</span> <span id="tourney-tryout-output-pending-label" class="tourney-tryout-stat-unit">pairs</span></strong><small id="tourney-tryout-output-pending-students">0 students</small></span>
+                <span class="is-open"><strong><span id="tourney-tryout-output-open">0</span> <span class="tourney-tryout-stat-unit">open</span></strong><small><span id="tourney-tryout-output-open-students">0 students</span><span id="tourney-tryout-output-open-pairs">0 possible pairs</span></small></span>
+              </div>
             </section>
           </div>
         </aside>
@@ -1683,7 +1687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="js/public-calendar.js?v=12"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-public.js?v=22"></script>
-  <script src="js/tryout-tournament-tab.js?v=33"></script>
+  <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=1"></script>
 </body>
