@@ -681,6 +681,19 @@
     padding: 8px 0 0;
   }
 
+  .index-footer-srr {
+    white-space: normal;
+  }
+
+  .index-footer-srr .index-footer-bottom-links {
+    display: block;
+    line-height: 1.45;
+  }
+
+  .index-footer-srr .index-footer-bottom-links .dot {
+    padding-inline: 5px;
+  }
+
   .index-footer-bottom-cell {
     padding: 18px 8px;
   }
