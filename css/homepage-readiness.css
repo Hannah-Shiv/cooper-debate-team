@@ -241,7 +241,7 @@
 }
 
 .homepage-readiness__detail-card--dates {
-  border-top-color: rgba(126, 184, 232, 0.95);
+  border-top-color: rgba(109, 216, 184, 0.95);
 }
 
 .homepage-readiness__detail-card--format {
@@ -253,7 +253,7 @@
 }
 
 .homepage-readiness__detail-card--dates .homepage-readiness__card-kicker {
-  color: #8fc9ff;
+  color: #8cebd0;
 }
 
 .homepage-readiness__detail-card--format .homepage-readiness__card-kicker {
@@ -300,9 +300,9 @@
   gap: 12px;
   margin: auto 0 0;
   padding: 13px 14px;
-  border: 1px solid rgba(80, 157, 255, 0.55);
+  border: 1px solid rgba(109, 216, 184, 0.72);
   border-radius: 8px;
-  background: linear-gradient(135deg, rgba(15, 54, 119, 0.94), rgba(7, 31, 77, 0.98));
+  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 6px 16px rgba(0, 0, 0, 0.18);
 }
 
@@ -312,10 +312,10 @@
   height: 30px;
   flex: 0 0 30px;
   place-items: center;
-  border: 1px solid rgba(126, 184, 232, 0.8);
+  border: 1px solid rgba(140, 235, 208, 0.82);
   border-radius: 50%;
-  background: rgba(2, 20, 54, 0.58);
-  color: #8fc9ff;
+  background: rgba(4, 46, 51, 0.58);
+  color: #b8ffe9;
 }
 
 .homepage-readiness__announcement-icon svg {
@@ -330,7 +330,7 @@
 
 .homepage-readiness__announcement p {
   margin: 0;
-  color: #eaf4ff;
+  color: #effff9;
   font-size: 0.86rem;
   line-height: 1.4;
 }
