@@ -104,6 +104,127 @@
       color:#07162d;
       background:#9af0d8;
     }
+    .tournament-overview-guide {
+      margin-top:32px;
+      padding:34px;
+      border:1px solid rgba(242,209,107,.42);
+      border-radius:14px;
+      background:linear-gradient(145deg,rgba(11,37,69,.94),rgba(7,23,53,.94));
+      box-shadow:0 12px 28px rgba(0,0,0,.22);
+    }
+    .tournament-overview-guide-header { max-width:820px; }
+    .tournament-overview-guide-kicker {
+      margin:0 0 8px;
+      color:#F2D16B;
+      font:700 .68rem 'Josefin Sans',sans-serif;
+      letter-spacing:.15em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-guide-title {
+      margin:0;
+      color:#fff;
+      font:700 clamp(1.8rem,3vw,2.45rem)/1.05 'Cormorant Garamond',serif;
+    }
+    .tournament-overview-guide-lead {
+      margin:12px 0 0;
+      color:#c8d7eb;
+      font-size:.96rem;
+      line-height:1.72;
+    }
+    .tournament-overview-guide-grid {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:16px;
+      margin-top:26px;
+    }
+    .tournament-overview-guide-card {
+      min-height:190px;
+      padding:22px;
+      border:1px solid rgba(125,166,220,.28);
+      border-radius:10px;
+      background:rgba(4,16,43,.52);
+    }
+    .tournament-overview-guide-card-number {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      width:30px;
+      height:30px;
+      margin-bottom:17px;
+      border:1px solid rgba(242,209,107,.65);
+      border-radius:50%;
+      color:#F2D16B;
+      font:700 .66rem 'Josefin Sans',sans-serif;
+      letter-spacing:.04em;
+    }
+    .tournament-overview-guide-card h3 {
+      margin:0 0 9px;
+      color:#fff;
+      font:700 1.3rem/1.1 'Cormorant Garamond',serif;
+    }
+    .tournament-overview-guide-card p {
+      margin:0;
+      color:#b9c9e2;
+      font-size:.82rem;
+      line-height:1.65;
+    }
+    .tournament-overview-timing {
+      margin-top:24px;
+      padding-top:24px;
+      border-top:1px solid rgba(125,166,220,.24);
+    }
+    .tournament-overview-timing-label {
+      margin:0 0 12px;
+      color:#F2D16B;
+      font:700 .65rem 'Josefin Sans',sans-serif;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-timing-list {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:8px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+    .tournament-overview-timing-step {
+      padding:13px 10px;
+      border:1px solid rgba(125,166,220,.28);
+      border-radius:8px;
+      background:rgba(4,16,43,.42);
+      text-align:center;
+    }
+    .tournament-overview-timing-step strong {
+      display:block;
+      color:#fff;
+      font:700 1.35rem/.95 'Cormorant Garamond',serif;
+    }
+    .tournament-overview-timing-step span {
+      display:block;
+      margin-top:6px;
+      color:#b9c9e2;
+      font:700 .58rem/1.25 'Josefin Sans',sans-serif;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-timing-note {
+      margin:12px 0 0;
+      color:#c8d7eb;
+      font-size:.78rem;
+      line-height:1.5;
+    }
+    .tournament-overview-guide-actions {
+      display:flex;
+      flex-wrap:wrap;
+      gap:11px;
+      margin-top:24px;
+    }
+    .tournament-overview-guide-actions a {
+      font-size:.68rem!important;
+      letter-spacing:.07em;
+      padding:10px 17px!important;
+    }
     .tournaments-page .public-calendar-shell,
     .tournaments-page .vol-unified-card,
     .tournaments-page .vol-public-roster {
@@ -1025,6 +1146,8 @@
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:900px){
       .two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}
+      .tournament-overview-guide-grid { grid-template-columns:1fr; }
+      .tournament-overview-guide-card { min-height:0; }
       .vol-choose-layout{grid-template-columns:1fr;}
       .vol-brief-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
       .vol-brief-facts .vol-event-fact:nth-child(3n){border-right:1px solid rgba(255,255,255,.08);}
@@ -1042,6 +1165,8 @@
       .vol-public-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
     }
     @media(max-width:700px){
+      .tournament-overview-guide { padding:25px 20px; }
+      .tournament-overview-timing-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .volunteer-events{grid-template-columns:minmax(0,1fr);}
       .vol-public-summary{grid-template-columns:1fr;}
       .vol-public-info{border-bottom:1px solid rgba(159,185,225,.18);border-right:0;}
@@ -1217,6 +1342,45 @@
       <div class="resolution-actions">
         <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
         <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" class="btn partner-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
+      </div>
+    </div>
+    <div class="tournament-overview-guide" aria-labelledby="tournament-overview-guide-title">
+      <div class="tournament-overview-guide-header">
+        <p class="tournament-overview-guide-kicker">New to the circuit?</p>
+        <h2 class="tournament-overview-guide-title" id="tournament-overview-guide-title">WASDL &amp; Middle School Public Forum</h2>
+        <p class="tournament-overview-guide-lead">Cooper competes in the Washington Area Speech and Debate League (WASDL), a regional, all-volunteer circuit where middle school students from Maryland, Virginia, and Washington, D.C. debate current issues throughout the season.</p>
+      </div>
+      <div class="tournament-overview-guide-grid">
+        <article class="tournament-overview-guide-card">
+          <span class="tournament-overview-guide-card-number" aria-hidden="true">01</span>
+          <h3>Our local circuit</h3>
+          <p>WASDL brings area schools together for regular-season tournaments and Metro Finals. It gives Cooper debaters a consistent place to research, practice, compete, and grow with students from across the region.</p>
+        </article>
+        <article class="tournament-overview-guide-card">
+          <span class="tournament-overview-guide-card-number" aria-hidden="true">02</span>
+          <h3>The format we compete in</h3>
+          <p>Middle School Public Forum is a two-on-two format focused on current events and public policy. Teams prepare to argue both PRO and CON, using clear explanations, credible evidence, and persuasive reasoning.</p>
+        </article>
+        <article class="tournament-overview-guide-card">
+          <span class="tournament-overview-guide-card-number" aria-hidden="true">03</span>
+          <h3>What students build</h3>
+          <p>Debate develops research, critical thinking, confident communication, teamwork, and the ability to explain a complex issue to a general audience.</p>
+        </article>
+      </div>
+      <div class="tournament-overview-timing">
+        <p class="tournament-overview-timing-label">A Public Forum round at a glance</p>
+        <ol class="tournament-overview-timing-list">
+          <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Constructive</span></li>
+          <li class="tournament-overview-timing-step"><strong>3 min</strong><span>Crossfire</span></li>
+          <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Rebuttal</span></li>
+          <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Summary</span></li>
+          <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Final Focus</span></li>
+        </ol>
+        <p class="tournament-overview-timing-note">A full round typically takes about 35 minutes, plus preparation time.</p>
+      </div>
+      <div class="tournament-overview-guide-actions">
+        <a href="tournaments.html?tab=calendar-results" class="btn btn-gold">See the tournament calendar →</a>
+        <a href="resources.html" class="btn btn-outline">Explore debate resources →</a>
       </div>
     </div>
   </div>
