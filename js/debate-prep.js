@@ -202,7 +202,7 @@
     $('sourceCount').textContent = sources.length;
     $('statSources').textContent = sources.length;
     $('characterCount').textContent = characters.toLocaleString();
-    $('wordProgressBar').style.width = Math.min(100, (words / 750) * 100) + '%';
+    $('wordProgressBar').style.width = Math.min(100, (words / 2000) * 100) + '%';
     ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
       var status = document.querySelector('[data-case-status="' + key + '"]');
       var started = Boolean(fields[key].value.trim());

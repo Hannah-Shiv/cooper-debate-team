@@ -70,23 +70,23 @@ const FALL_2026_KICKOFF_EVENTS = [
   },
   {
     id: "fall-2026-tryouts-1",
-    title: "Debate Team Tryouts",
+    title: "Debate Team Practice Session",
     type: "practice",
     start: new Date("2026-09-22T14:30:00-04:00"),
     end: new Date("2026-09-22T16:30:00-04:00"),
     allDay: false,
     location: "Cafeteria",
-    notes: "Tryout session, 2:30 PM–4:30 PM."
+    notes: "Practice session, 2:30 PM–4:30 PM."
   },
   {
     id: "fall-2026-tryouts-2",
-    title: "Debate Team Tryouts",
+    title: "Debate Team Practice Session",
     type: "practice",
     start: new Date("2026-09-23T14:30:00-04:00"),
     end: new Date("2026-09-23T16:30:00-04:00"),
     allDay: false,
     location: "Lecture Hall",
-    notes: "Tryout session, 2:30 PM–4:30 PM."
+    notes: "Practice session, 2:30 PM–4:30 PM."
   },
   {
     id: "fall-2026-first-team-meeting",

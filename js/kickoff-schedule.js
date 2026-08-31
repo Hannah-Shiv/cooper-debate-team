@@ -7,7 +7,7 @@
         <span>Fall 2026 · Team Start</span>
       </div>
       <h2 class="kickoff-schedule__title" id="kickoff-schedule-title">Debate Kickoff Schedule</h2>
-      <p class="kickoff-schedule__intro">Confirmed recruitment dates, tryouts, and team expectations for the start of the 2026–27 season.</p>
+       <p class="kickoff-schedule__intro">Confirmed recruitment dates, practice sessions, and team expectations for the start of the 2026–27 season.</p>
       <hr class="kickoff-schedule__rule">
 
       <div class="kickoff-schedule__dates">
@@ -73,10 +73,10 @@
               <span class="kickoff-schedule__date">September 22</span>
             </span>
           </div>
-          <h3 class="kickoff-schedule__event-title">Debate Team Tryouts</h3>
+          <h3 class="kickoff-schedule__event-title">Debate Team Practice Session</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">◷</span>
-            <span>Tryout session<strong>2:30 PM – 4:30 PM</strong></span>
+            <span>Practice session<strong>2:30 PM – 4:30 PM</strong></span>
           </div>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
@@ -93,10 +93,10 @@
               <span class="kickoff-schedule__date">September 23</span>
             </span>
           </div>
-          <h3 class="kickoff-schedule__event-title">Debate Team Tryouts</h3>
+          <h3 class="kickoff-schedule__event-title">Debate Team Practice Session</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">◷</span>
-            <span>Tryout session<strong>2:30 PM – 4:30 PM</strong></span>
+            <span>Practice session<strong>2:30 PM – 4:30 PM</strong></span>
           </div>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>

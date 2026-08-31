@@ -18,7 +18,7 @@ const ANNOUNCEMENTS = [
     emoji: "📅",
     displayWithSchedule: true,
     title: "Fall 2026 Debate Kickoff Dates Announced",
-    body: `Mark your calendars! Our QST Debate Info Session is Thursday, September 10 during QST (9:35–10:25 AM) in the Lecture Hall. Find us at the Activity Fair after school on Monday, September 14 (A Session, approximately 2:30–3:30 PM). The Debate Team application is due Wednesday, September 16.\n\nTryouts are Tuesday, September 22 in the Cafeteria and Wednesday, September 23 in the Lecture Hall, both from 2:30–4:30 PM. Our first Debate Team meeting is Tuesday, September 29. Team members should keep Tuesday afternoons clear for recurring meetings.\n\nOur first WASDL PF / Middle School tournament is Saturday, October 24. Cooper hosts the Middle School PF tournament on Saturday, November 14.`
+    body: `Mark your calendars! Our QST Debate Info Session is Thursday, September 10 during QST (9:35–10:25 AM) in the Lecture Hall. Find us at the Activity Fair after school on Monday, September 14 (A Session, approximately 2:30–3:30 PM). The Debate Team application is due Wednesday, September 16.\n\nPractice sessions are Tuesday, September 22 in the Cafeteria and Wednesday, September 23 in the Lecture Hall, both from 2:30–4:30 PM. Our first Debate Team meeting is Tuesday, September 29. Team members should keep Tuesday afternoons clear for recurring meetings.\n\nOur first WASDL PF / Middle School tournament is Saturday, October 24. Cooper hosts the Middle School PF tournament on Saturday, November 14.`
   },
   {
     id: 1,
