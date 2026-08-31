@@ -607,20 +607,39 @@
     }
     .tournament-overview-volunteer-callout {
       display:grid;
-      grid-template-columns:auto minmax(0,1fr) auto;
-      align-items:center;
-      gap:16px;
+      grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);
+      align-items:stretch;
+      gap:36px;
       margin-top:16px;
-      padding:19px 22px;
+      padding:22px 28px;
       border:1px solid rgba(242,209,107,.52);
       border-radius:12px;
-      background:linear-gradient(110deg,#373a42 0%,#23262d 100%);
+      background:#102B59;
+      box-sizing:border-box;
+      width:min(calc(100% + 168px),100vw);
+      margin-left:50%;
+      transform:translateX(-50%);
     }
-    .tournament-overview-volunteer-callout > img {
+    .tournament-overview-volunteer-art {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:0;
+      padding-right:28px;
+      border-right:2px solid rgba(255,255,255,.72);
+    }
+    .tournament-overview-volunteer-art img {
       display:block;
-      width:48px;
-      height:48px;
+      width:min(440px,100%);
+      height:auto;
       object-fit:contain;
+    }
+    .tournament-overview-volunteer-content {
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      justify-content:center;
+      min-width:0;
     }
     .tournament-overview-volunteer-callout h3 {
       margin:0 0 5px;
@@ -629,11 +648,12 @@
     }
     .tournament-overview-volunteer-callout p {
       margin:0;
-      color:#d5deeb;
+      color:#D7E4F7;
       font-size:.77rem;
       line-height:1.5;
     }
-    .tournament-overview-volunteer-callout .btn {
+    .tournament-overview-volunteer-content .btn {
+      margin-top:18px;
       white-space:nowrap;
       font-size:.65rem!important;
       padding:9px 14px!important;
@@ -1633,8 +1653,22 @@
         transform:none;
       }
       .tournament-overview-event-card { padding:21px 19px; }
-      .tournament-overview-volunteer-callout { grid-template-columns:auto minmax(0,1fr); }
-      .tournament-overview-volunteer-callout .btn { grid-column:1 / -1; justify-self:start; }
+      .tournament-overview-volunteer-callout {
+        grid-template-columns:1fr;
+        gap:20px;
+        padding:22px 19px;
+        width:100%;
+        margin-left:0;
+        transform:none;
+      }
+      .tournament-overview-volunteer-art {
+        padding:0 0 20px;
+        border-right:0;
+        border-bottom:2px solid rgba(255,255,255,.72);
+      }
+      .tournament-overview-volunteer-art img {
+        width:min(440px,100%);
+      }
       .volunteer-events{grid-template-columns:minmax(0,1fr);}
       .vol-public-summary{grid-template-columns:1fr;}
       .vol-public-info{border-bottom:1px solid rgba(159,185,225,.18);border-right:0;}
@@ -1972,13 +2006,15 @@
       </div>
 
       <div class="tournament-overview-volunteer-callout">
-        <img src="images/icons/icon-communication.png" alt="" loading="lazy">
-        <div>
+        <div class="tournament-overview-volunteer-art">
+          <img src="images/icon-wasdl-volunteer-large.png" alt="" loading="lazy">
+        </div>
+        <div class="tournament-overview-volunteer-content">
           <p class="tournament-overview-event-kicker">We need you</p>
           <h3>Every debater needs a tournament volunteer</h3>
           <p>Each Cooper Debate Team member is expected to arrange for a parent, guardian, older sibling, or other family member to volunteer at least once during the WASDL season.</p>
+          <a href="tournaments.html?tab=volunteer-signup" class="btn btn-gold">See volunteer options →</a>
         </div>
-        <a href="tournaments.html?tab=volunteer-signup" class="btn btn-gold">See volunteer options →</a>
       </div>
     </div>
   </div>
