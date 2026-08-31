@@ -847,7 +847,7 @@
        z-index: 3;
        color: rgba(255,255,255,0.94);
        font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
-       font-size: clamp(2.2rem, 4.1vw, 3.2rem);
+        font-size: clamp(2.42rem, 4.51vw, 3.52rem);
        font-weight: 400;
        letter-spacing: 0.025em;
        line-height: 1;
@@ -863,7 +863,7 @@
      .hero-compact-subtitle {
        display: none;
        position: absolute;
-        top: calc(50% + 62px);
+         top: calc(50% + 78px);
         bottom: auto;
        left: 50%;
        z-index: 3;
@@ -905,8 +905,8 @@
        .home-hero { min-height: 0; }
      }
      html.home-hero-image-hidden .home-hero {
-        height: clamp(178px, calc(88px + 6.8vw), 222px);
-        min-height: clamp(178px, calc(88px + 6.8vw), 222px);
+         height: clamp(200px, calc(96px + 7vw), 238px);
+         min-height: clamp(200px, calc(96px + 7vw), 238px);
        border-top: 1px solid rgba(242,193,66,0.48);
        border-bottom: 1px solid rgba(242,193,66,0.72);
         background: #03091b;
@@ -945,6 +945,10 @@
         top: 94px;
         right: 16px;
      }
+      html.home-hero-image-hidden body.dome-open .home-hero {
+        height: 236px;
+        min-height: 236px;
+      }
      @media (max-width: 600px) {
        .hero-image-toggle {
           top: 75px;
@@ -953,10 +957,10 @@
          font-size: 0.58rem;
        }
        .hero-compact-brand {
-          top: 96px;
+           top: 88px;
           left: 50%;
          font-family: 'Great Vibes', 'Cormorant Garamond', cursive;
-         font-size: clamp(1.25rem, 5.5vw, 1.55rem);
+          font-size: clamp(1.38rem, 6.05vw, 1.71rem);
          font-weight: 400;
          letter-spacing: 0.02em;
          word-spacing: 0.12em;
@@ -971,9 +975,18 @@
        .hero-compact-subtitle {
          display: none !important;
        }
+       html.home-hero-image-hidden .hero-compact-subtitle {
+         display: block !important;
+         top: 148px;
+         width: calc(100% - 108px);
+         font-size: 0.54rem;
+         letter-spacing: 0.18em;
+         line-height: 1.25;
+         white-space: normal;
+       }
        html.home-hero-image-hidden .home-hero {
-         height: 156px;
-         min-height: 156px;
+         height: 180px;
+         min-height: 180px;
        }
         html.home-hero-image-hidden .home-hero > .hero-bg {
           top: 0;
@@ -990,6 +1003,10 @@
           top: 75px;
           right: 10px;
         }
+       html.home-hero-image-hidden body.dome-open .home-hero {
+         height: 200px;
+         min-height: 200px;
+       }
      }
 
     /* ── Index footer — reference layout ─────────────────────── */
@@ -3474,7 +3491,7 @@
         <a class="index-footer-action index-footer-email" href="mailto:pgkonde@fcps.edu">
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3.5 6 8.5 7 8.5-7"/></svg>
           <span class="index-footer-email-copy">
-            <span class="index-footer-email-label">Contact Coach Pamela Konde</span>
+            <span class="index-footer-email-label">Contact Coach <span class="index-footer-email-separator" aria-hidden="true">·</span> Pamela Konde</span>
           </span>
         </a>
       </nav>
