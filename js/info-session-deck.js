@@ -125,7 +125,7 @@
         }
         document.body.classList.add("deck-dialog-open");
         buildThumbnails();
-        setSlide(currentSlide, true);
+        setSlide(0, true);
         dialog.querySelector("[data-deck-next]").focus();
       });
     });
