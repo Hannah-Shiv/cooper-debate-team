@@ -1514,10 +1514,10 @@ html body #idx-stats-heading .idx-awards-heading-rule-diamond {
 html body .idx-awards-story-badge-art {
   position: absolute;
   z-index: 2;
-  top: 3px;
-  left: -2px;
-  width: 124px;
-  height: 83px;
+  top: 0;
+  left: 0;
+  width: 155px;
+  height: 104px;
   object-fit: contain;
   object-position: left top;
   filter:
@@ -1537,10 +1537,10 @@ html body .idx-awards-story-badge-art {
   }
 
   html body .idx-awards-story-badge-art {
-    top: 2px;
-    left: -3px;
-    width: 104px;
-    height: 69px;
+    top: 0;
+    left: 0;
+    width: 130px;
+    height: 86px;
   }
 
   html body #idx-stats-grid.idx-awards-content {
