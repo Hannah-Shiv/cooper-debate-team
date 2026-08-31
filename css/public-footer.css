@@ -715,3 +715,10 @@
     padding-bottom: 0;
   }
 }
+
+/* Keep the navigation group aligned with the homepage reference layout. */
+@media (min-width: 1041px) {
+  .index-footer-column {
+    transform: translateX(30px);
+  }
+}
