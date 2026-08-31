@@ -169,6 +169,124 @@
     /* ── Public season calendar ────────────────────────────────── */
     .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:780px;margin:0 0 22px; }
     .public-calendar-shell { border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
+     .calendar-at-a-glance-layout {
+       display:grid;
+       grid-template-columns:minmax(0,1.72fr) minmax(300px,.78fr);
+       gap:24px;
+       align-items:start;
+     }
+     .calendar-primary { min-width:0; }
+     .calendar-at-a-glance {
+       min-width:0;
+       padding:26px 24px 24px;
+       border:1px solid rgba(242,209,107,.62);
+       border-radius:12px;
+       background:var(--tournaments-panel);
+       box-shadow:0 12px 28px rgba(0,0,0,.25);
+     }
+     .calendar-glance-kicker {
+       margin:0 0 8px;
+       color:#F2D16B;
+       font:700 .66rem 'Josefin Sans',sans-serif;
+       letter-spacing:.15em;
+       text-transform:uppercase;
+     }
+     .calendar-glance-title {
+       margin:0;
+       color:#fff;
+       font:700 clamp(1.55rem,2.8vw,2.05rem)/1.05 'Cormorant Garamond',serif;
+     }
+     .calendar-glance-subtitle {
+       margin:8px 0 20px;
+       color:#b9c9e2;
+       font:700 .68rem 'Josefin Sans',sans-serif;
+       letter-spacing:.1em;
+       text-transform:uppercase;
+     }
+     .calendar-glance-group {
+       margin:0;
+       padding:0;
+       list-style:none;
+     }
+     .calendar-glance-group + .calendar-glance-group {
+       margin-top:18px;
+       padding-top:18px;
+       border-top:1px solid rgba(255,255,255,.16);
+     }
+     .calendar-glance-group-label {
+       margin:0 0 10px;
+       color:#F2D16B;
+       font:700 .62rem 'Josefin Sans',sans-serif;
+       letter-spacing:.14em;
+       text-transform:uppercase;
+     }
+     .calendar-glance-item {
+       display:grid;
+       grid-template-columns:49px minmax(0,1fr);
+       gap:11px;
+       align-items:start;
+       padding:10px 0;
+       border-bottom:1px solid rgba(99,133,178,.22);
+     }
+     .calendar-glance-item:last-child { border-bottom:0; }
+     .calendar-glance-date {
+       display:flex;
+       flex-direction:column;
+       align-items:center;
+       justify-content:center;
+       min-height:45px;
+       border:1px solid rgba(242,209,107,.6);
+       border-radius:6px;
+       background:rgba(4,16,43,.62);
+       color:#fff;
+       text-align:center;
+     }
+     .calendar-glance-date span {
+       color:#F2D16B;
+       font:700 .54rem 'Josefin Sans',sans-serif;
+       letter-spacing:.08em;
+       text-transform:uppercase;
+     }
+     .calendar-glance-date strong {
+       font:700 1.18rem/.95 'Cormorant Garamond',serif;
+     }
+     .calendar-glance-copy strong {
+       display:block;
+       color:#fff;
+       font:700 .86rem/1.2 'Josefin Sans',sans-serif;
+     }
+     .calendar-glance-copy span {
+       display:block;
+       margin-top:4px;
+       color:#b9c9e2;
+       font-size:.74rem;
+       line-height:1.4;
+     }
+     .calendar-glance-note {
+       margin:20px 0 0;
+       padding:13px 14px;
+       border-left:3px solid #F2D16B;
+       background:rgba(4,16,43,.5);
+       color:#e7edf8;
+       font-size:.78rem;
+       line-height:1.55;
+     }
+     .calendar-glance-note strong { color:#F2D16B; }
+     .calendar-glance-link {
+       display:inline-block;
+       margin-top:16px;
+       color:#F2D16B;
+       font:700 .7rem 'Josefin Sans',sans-serif;
+       letter-spacing:.07em;
+       text-decoration:underline;
+       text-underline-offset:3px;
+       text-transform:uppercase;
+     }
+     .calendar-glance-link:hover,
+     .calendar-glance-link:focus-visible { color:#fff; }
+     @media(max-width:1040px){
+       .calendar-at-a-glance-layout { grid-template-columns:1fr; }
+     }
     .public-countdown {
       align-items:stretch; background:#850000;
       border:2px solid #d9aa3c; border-radius:18px; box-shadow:0 12px 28px rgba(47,0,0,.34),inset 0 0 0 5px rgba(255,218,122,.13);
@@ -1011,21 +1129,70 @@
     </div>
 
     <!-- THIS SEASON -->
-    <div id="pane-this-season">
-       <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" style="color:var(--gold);font-weight:700;">sign up for a debate partner session</a>.</p>
-       <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
-       <div class="public-calendar-legend" aria-label="Calendar legend">
-          <span><i style="background:#7f1d1d;"></i>Tournament</span>
-          <span><i style="background:#166534;"></i>Practice</span>
-         <span><i style="background:#ffd700;"></i>Meeting</span>
-          <span><i style="background:#9a3412;"></i>Deadline</span>
+     <div id="pane-this-season">
+       <div class="calendar-at-a-glance-layout">
+         <div class="calendar-primary">
+           <p class="public-calendar-intro">The 2026–27 season begins with fall recruiting and team selection, followed by the first WASDL Public Forum tournaments. Use the arrows to revisit earlier months as the season progresses. Complete the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">Debate Team application</a>, then <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" style="color:var(--gold);font-weight:700;">sign up for a debate partner session</a>.</p>
+           <div id="public-tournament-countdown" class="public-countdown" aria-live="polite"></div>
+           <div class="public-calendar-legend" aria-label="Calendar legend">
+             <span><i style="background:#7f1d1d;"></i>Tournament</span>
+             <span><i style="background:#166534;"></i>Practice</span>
+             <span><i style="background:#ffd700;"></i>Meeting</span>
+             <span><i style="background:#9a3412;"></i>Deadline</span>
+           </div>
+           <div class="public-calendar-shell">
+             <div id="public-calendar" aria-label="Public tournament calendar"></div>
+             <div id="public-calendar-empty" class="public-event-empty" hidden>No public events have been posted for this season yet.</div>
+           </div>
+           <p id="public-calendar-status" class="public-calendar-status" aria-live="polite"></p>
+         </div>
+         <aside class="calendar-at-a-glance" aria-labelledby="calendar-glance-title">
+           <p class="calendar-glance-kicker">2026–27 season</p>
+           <h3 class="calendar-glance-title" id="calendar-glance-title">Schedule at a Glance</h3>
+           <p class="calendar-glance-subtitle">Middle School Public Forum</p>
+           <ul class="calendar-glance-group">
+             <li class="calendar-glance-group-label">Family &amp; team kickoff</li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2026-09-29"><span>Sep</span><strong>29</strong></time>
+               <span class="calendar-glance-copy"><strong>Parent meeting</strong><span>7:00 PM · Online via Google Meet</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2026-10-03"><span>Oct</span><strong>3</strong></time>
+               <span class="calendar-glance-copy"><strong>Parent judge training</strong><span>8:30 AM–noon · BASIS Independent McLean</span></span>
+             </li>
+           </ul>
+           <ul class="calendar-glance-group">
+             <li class="calendar-glance-group-label">Tournament schedule</li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2026-10-24"><span>Oct</span><strong>24</strong></time>
+               <span class="calendar-glance-copy"><strong>MS PF #1</strong><span>Congressional School · Falls Church</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2026-11-14"><span>Nov</span><strong>14</strong></time>
+               <span class="calendar-glance-copy"><strong>MS PF #2 · Cooper hosts</strong><span>Cooper Middle School · McLean</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2026-12-05"><span>Dec</span><strong>5</strong></time>
+               <span class="calendar-glance-copy"><strong>MS PF #3</strong><span>Longfellow Middle School · McLean</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2027-01-30"><span>Jan</span><strong>30</strong></time>
+               <span class="calendar-glance-copy"><strong>MS PF #4</strong><span>Norwood School · Bethesda</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2027-02-20"><span>Feb</span><strong>20</strong></time>
+               <span class="calendar-glance-copy"><strong>PF #5 · Online</strong><span>Virtual extravaganza tournament</span></span>
+             </li>
+             <li class="calendar-glance-item">
+               <time class="calendar-glance-date" datetime="2027-03-12"><span>Mar</span><strong>12–13</strong></time>
+               <span class="calendar-glance-copy"><strong>Metro Finals</strong><span>Friday online · Saturday in person</span></span>
+             </li>
+           </ul>
+           <p class="calendar-glance-note"><strong>Attendance expectation:</strong> Every debater should attend at least 3 of the 5 preliminary tournaments.</p>
+           <a class="calendar-glance-link" href="https://docs.google.com/document/d/1oXMRezhpuRjJetx0RnyV_oxsAy3YTbY0wiDF5tBV9a0/edit?tab=t.0" target="_blank" rel="noopener">View the 2026–27 WACFL schedule →</a>
+         </aside>
        </div>
-       <div class="public-calendar-shell">
-         <div id="public-calendar" aria-label="Public tournament calendar"></div>
-         <div id="public-calendar-empty" class="public-event-empty" hidden>No public events have been posted for this season yet.</div>
-       </div>
-       <p id="public-calendar-status" class="public-calendar-status" aria-live="polite"></p>
-    </div>
+     </div>
 
     <!-- LAST SEASON (populated from Firestore) -->
     <div id="pane-last-season">
