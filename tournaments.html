@@ -340,6 +340,233 @@
       letter-spacing:.07em;
       padding:10px 17px!important;
     }
+    .tournament-overview-events {
+      margin-top:30px;
+    }
+    .tournament-day-card {
+      padding:28px;
+      border:1px solid rgba(242,209,107,.62);
+      border-radius:14px;
+      background:linear-gradient(145deg,#373a42 0%,#23262d 100%);
+      box-shadow:0 12px 28px rgba(0,0,0,.25);
+    }
+    .tournament-day-card-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      padding-bottom:22px;
+      border-bottom:1px solid rgba(255,255,255,.14);
+    }
+    .tournament-day-card-title {
+      display:flex;
+      align-items:center;
+      gap:15px;
+    }
+    .tournament-day-card-title img {
+      display:block;
+      width:54px;
+      height:54px;
+      object-fit:contain;
+      flex:0 0 auto;
+    }
+    .tournament-day-card-kicker,
+    .tournament-overview-event-kicker {
+      margin:0 0 6px;
+      color:#F2D16B;
+      font:700 .64rem 'Josefin Sans',sans-serif;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .tournament-day-card h2 {
+      margin:0;
+      color:#fff;
+      font:700 clamp(1.55rem,3vw,2.1rem)/1.05 'Cormorant Garamond',serif;
+    }
+    .tournament-day-card-tag {
+      flex:0 0 auto;
+      padding:9px 12px;
+      border:1px solid rgba(108,224,200,.55);
+      border-radius:99px;
+      color:#9af0d8;
+      font:700 .6rem 'Josefin Sans',sans-serif;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .tournament-day-timeline {
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:0;
+      margin-top:22px;
+    }
+    .tournament-day-timeline-item {
+      min-height:145px;
+      padding:0 20px;
+      border-right:1px solid rgba(255,255,255,.14);
+    }
+    .tournament-day-timeline-item:first-child { padding-left:0; }
+    .tournament-day-timeline-item:last-child {
+      padding-right:0;
+      border-right:0;
+    }
+    .tournament-day-timeline-item:nth-child(1) time { color:#F2D16B; }
+    .tournament-day-timeline-item:nth-child(2) time { color:#6CE0C8; }
+    .tournament-day-timeline-item:nth-child(3) time { color:#FF9A7A; }
+    .tournament-day-timeline-item time {
+      display:block;
+      margin-bottom:8px;
+      font:700 clamp(1.15rem,2.3vw,1.55rem)/1 'Cormorant Garamond',serif;
+    }
+    .tournament-day-timeline-item h3 {
+      margin:0 0 8px;
+      color:#fff;
+      font:700 .76rem 'Josefin Sans',sans-serif;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+    .tournament-day-timeline-item p {
+      margin:0;
+      color:#cbd5e5;
+      font-size:.78rem;
+      line-height:1.6;
+    }
+    .tournament-day-card-note {
+      margin:20px 0 0;
+      padding-top:17px;
+      border-top:1px solid rgba(255,255,255,.14);
+      color:#d5deeb;
+      font-size:.76rem;
+      line-height:1.55;
+    }
+    .tournament-overview-event-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      margin-top:16px;
+    }
+    .tournament-overview-event-card {
+      padding:25px;
+      border:1px solid rgba(125,166,220,.34);
+      border-top:3px solid #FF9A7A;
+      border-radius:12px;
+      background:linear-gradient(145deg,rgba(43,31,51,.96),rgba(18,24,54,.96));
+      box-shadow:0 10px 24px rgba(0,0,0,.2);
+    }
+    .tournament-overview-event-card--training {
+      border-top-color:#6CE0C8;
+      background:linear-gradient(145deg,rgba(12,55,59,.96),rgba(10,29,53,.96));
+    }
+    .tournament-overview-event-card-header {
+      display:flex;
+      align-items:flex-start;
+      gap:14px;
+    }
+    .tournament-overview-event-card-header img {
+      display:block;
+      width:48px;
+      height:48px;
+      flex:0 0 auto;
+      object-fit:contain;
+    }
+    .tournament-overview-event-date {
+      margin:0 0 5px;
+      color:#FF9A7A;
+      font:700 .62rem 'Josefin Sans',sans-serif;
+      letter-spacing:.13em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-event-card--training .tournament-overview-event-date { color:#6CE0C8; }
+    .tournament-overview-event-card h3 {
+      margin:0;
+      color:#fff;
+      font:700 1.45rem/1.05 'Cormorant Garamond',serif;
+    }
+    .tournament-overview-event-time {
+      margin:6px 0 0;
+      color:#d9e4f4;
+      font:700 .68rem 'Josefin Sans',sans-serif;
+      letter-spacing:.07em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-event-card > p {
+      margin:18px 0 0;
+      color:#c2d0e4;
+      font-size:.81rem;
+      line-height:1.65;
+    }
+    .tournament-overview-event-facts {
+      display:grid;
+      gap:9px;
+      margin:18px 0 0;
+      padding:15px 0 0;
+      border-top:1px solid rgba(255,255,255,.14);
+    }
+    .tournament-overview-event-fact {
+      display:grid;
+      grid-template-columns:72px 1fr;
+      gap:10px;
+      margin:0;
+      font-size:.75rem;
+      line-height:1.45;
+    }
+    .tournament-overview-event-fact dt {
+      color:#F2D16B;
+      font:700 .59rem 'Josefin Sans',sans-serif;
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .tournament-overview-event-fact dd {
+      margin:0;
+      color:#e0e8f4;
+    }
+    .tournament-overview-event-note {
+      margin-top:18px;
+      padding:12px 13px;
+      border:1px solid rgba(255,154,122,.3);
+      border-radius:8px;
+      background:rgba(232,113,84,.1);
+      color:#ffd5c8;
+      font-size:.74rem;
+      line-height:1.5;
+    }
+    .tournament-overview-event-card--training .tournament-overview-event-note {
+      border-color:rgba(108,224,200,.3);
+      background:rgba(108,224,200,.08);
+      color:#c8f7eb;
+    }
+    .tournament-overview-volunteer-callout {
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) auto;
+      align-items:center;
+      gap:16px;
+      margin-top:16px;
+      padding:19px 22px;
+      border:1px solid rgba(242,209,107,.52);
+      border-radius:12px;
+      background:linear-gradient(110deg,rgba(111,66,5,.72),rgba(55,31,55,.84));
+    }
+    .tournament-overview-volunteer-callout > img {
+      display:block;
+      width:48px;
+      height:48px;
+      object-fit:contain;
+    }
+    .tournament-overview-volunteer-callout h3 {
+      margin:0 0 5px;
+      color:#fff;
+      font:700 1.25rem/1.05 'Cormorant Garamond',serif;
+    }
+    .tournament-overview-volunteer-callout p {
+      margin:0;
+      color:#eadfc9;
+      font-size:.77rem;
+      line-height:1.5;
+    }
+    .tournament-overview-volunteer-callout .btn {
+      white-space:nowrap;
+      font-size:.65rem!important;
+      padding:9px 14px!important;
+    }
     .tournaments-page .public-calendar-shell,
     .tournaments-page .vol-unified-card,
     .tournaments-page .vol-public-roster {
@@ -1263,6 +1490,17 @@
       .two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}
       .tournament-overview-guide-grid { grid-template-columns:1fr; }
       .tournament-overview-guide-card { min-height:0; }
+      .tournament-day-timeline { grid-template-columns:1fr; gap:0; }
+      .tournament-day-timeline-item,
+      .tournament-day-timeline-item:first-child,
+      .tournament-day-timeline-item:last-child {
+        min-height:0;
+        padding:15px 0;
+        border-right:0;
+        border-bottom:1px solid rgba(255,255,255,.14);
+      }
+      .tournament-day-timeline-item:last-child { border-bottom:0; }
+      .tournament-overview-event-grid { grid-template-columns:1fr; }
       .vol-choose-layout{grid-template-columns:1fr;}
       .vol-brief-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
       .vol-brief-facts .vol-event-fact:nth-child(3n){border-right:1px solid rgba(255,255,255,.08);}
@@ -1283,6 +1521,11 @@
       .tournament-overview-guide { padding:25px 20px; }
       .tournament-overview-timing-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .tournament-overview-external-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .tournament-day-card { padding:22px 19px; }
+      .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
+      .tournament-overview-event-card { padding:21px 19px; }
+      .tournament-overview-volunteer-callout { grid-template-columns:auto minmax(0,1fr); }
+      .tournament-overview-volunteer-callout .btn { grid-column:1 / -1; justify-self:start; }
       .volunteer-events{grid-template-columns:minmax(0,1fr);}
       .vol-public-summary{grid-template-columns:1fr;}
       .vol-public-info{border-bottom:1px solid rgba(159,185,225,.18);border-right:0;}
@@ -1311,6 +1554,8 @@
     @media(max-width:600px){
       .tournaments-page .resolution-card { padding:17px 16px 16px; }
       .tournaments-page .resolution-text { font-size:1.22rem; line-height:1.25; }
+      .tournament-overview-volunteer-callout { padding:17px 16px; }
+      .tournament-overview-volunteer-callout > img { width:40px; height:40px; }
       .tournament-overview-external-grid { grid-template-columns:1fr; }
       .three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}
       .volunteer-modal{align-items:flex-start;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
@@ -1514,6 +1759,96 @@
       <div class="tournament-overview-guide-actions">
         <a href="tournaments.html?tab=calendar-results" class="btn btn-gold">See the tournament calendar →</a>
         <a href="resources.html" class="btn btn-outline">Explore debate resources →</a>
+      </div>
+    </div>
+    <div class="tournament-overview-events" aria-labelledby="tournament-day-title">
+      <div class="tournament-day-card">
+        <div class="tournament-day-card-header">
+          <div class="tournament-day-card-title">
+            <img src="images/kickoff-icon-calendar.png" alt="" loading="lazy">
+            <div>
+              <p class="tournament-day-card-kicker">Plan the day</p>
+              <h2 id="tournament-day-title">A Typical WASDL Tournament Day</h2>
+            </div>
+          </div>
+          <span class="tournament-day-card-tag">Students · Judges · Families</span>
+        </div>
+        <div class="tournament-day-timeline">
+          <article class="tournament-day-timeline-item">
+            <time datetime="08:00">8:00 AM</time>
+            <h3>Arrival &amp; check-in</h3>
+            <p>Students check in with their coaches. Parent volunteers meet with the judges.</p>
+          </article>
+          <article class="tournament-day-timeline-item">
+            <time datetime="09:00">9:00 AM–4:30 PM</time>
+            <h3>Debate rounds</h3>
+            <p>Students participate in up to four Public Forum rounds, with lunch and breaks on-site. Judges receive lunch and coffee.</p>
+          </article>
+          <article class="tournament-day-timeline-item">
+            <time datetime="17:30">5:30 PM</time>
+            <h3>Awards ceremony</h3>
+            <p>Awards begin at 5:30 PM, and the tournament typically wraps up by 6:00 PM.</p>
+          </article>
+        </div>
+        <p class="tournament-day-card-note"><strong>Good to know:</strong> Tournament length may vary by event as WASDL continues to coordinate middle school sites and dates. It is a long day—but an energetic, inspiring, and memorable one.</p>
+      </div>
+
+      <div class="tournament-overview-event-grid">
+        <article class="tournament-overview-event-card tournament-overview-event-card--training">
+          <div class="tournament-overview-event-card-header">
+            <img src="images/icons/icon-registration.png" alt="" loading="lazy">
+            <div>
+              <p class="tournament-overview-event-date">Saturday · October 3, 2026</p>
+              <h3>WASDL Judge Training</h3>
+              <p class="tournament-overview-event-time">9:00–11:30 AM · Check-in at 8:30 AM</p>
+            </div>
+          </div>
+          <p>A short training session for new and experienced coaches, parents, and other volunteers. Cooper volunteers will attend the Public Forum Debate Breakout Session.</p>
+          <dl class="tournament-overview-event-facts">
+            <div class="tournament-overview-event-fact">
+              <dt>Location</dt>
+              <dd>BASIS Independent McLean<br>8000 Jones Branch Dr, McLean, VA</dd>
+            </div>
+            <div class="tournament-overview-event-fact">
+              <dt>Who</dt>
+              <dd>Coaches are welcome but not required; parents and other volunteers are encouraged to attend.</dd>
+            </div>
+          </dl>
+          <div class="tournament-overview-event-note"><strong>Registration:</strong> Details are coming soon. Training helps volunteers feel confident and prepared to judge a round.</div>
+        </article>
+
+        <article class="tournament-overview-event-card">
+          <div class="tournament-overview-event-card-header">
+            <img src="images/kickoff-icon-activity-fair.png" alt="" loading="lazy">
+            <div>
+              <p class="tournament-overview-event-date">Tuesday · September 29, 2026</p>
+              <h3>Cooper Debate Parent Meeting</h3>
+              <p class="tournament-overview-event-time">7:30–8:30 PM · Online via Google Meet</p>
+            </div>
+          </div>
+          <p>This required—but short—meeting helps families understand how the season works and how to support their debater.</p>
+          <dl class="tournament-overview-event-facts">
+            <div class="tournament-overview-event-fact">
+              <dt>Who</dt>
+              <dd>Every debater must have a parent or guardian attend the Cooper Debate expectations meeting.</dd>
+            </div>
+            <div class="tournament-overview-event-fact">
+              <dt>Format</dt>
+              <dd>Online meeting for parents and guardians of students selected for the team.</dd>
+            </div>
+          </dl>
+          <div class="tournament-overview-event-note"><strong>Required, but brief:</strong> We will start on time and keep the meeting focused so families can make a plan for the season.</div>
+        </article>
+      </div>
+
+      <div class="tournament-overview-volunteer-callout">
+        <img src="images/icons/icon-communication.png" alt="" loading="lazy">
+        <div>
+          <p class="tournament-overview-event-kicker">We need you</p>
+          <h3>Every debater needs a tournament volunteer</h3>
+          <p>Each Cooper Debate Team member is expected to arrange for a parent, guardian, older sibling, or other family member to volunteer at least once during the WASDL season.</p>
+        </div>
+        <a href="tournaments.html?tab=volunteer-signup" class="btn btn-gold">See volunteer options →</a>
       </div>
     </div>
   </div>
