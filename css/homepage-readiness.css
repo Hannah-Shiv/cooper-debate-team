@@ -759,10 +759,10 @@
 }
 
 .homepage-readiness__deck-copy {
-  display: flex;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr);
   min-width: 0;
-  flex-direction: column;
-  gap: 8px;
+  gap: 8px 13px;
 }
 
 .homepage-readiness__deck-details {
@@ -776,9 +776,12 @@
 }
 
 .homepage-readiness__deck-copy-title {
-  display: flex;
-  align-items: center;
-  gap: 13px;
+  display: contents;
+}
+
+.homepage-readiness__deck-copy-title strong {
+  grid-column: 2;
+  align-self: center;
 }
 
 .homepage-readiness__deck-copy-icon {
@@ -807,6 +810,7 @@
 }
 
 .homepage-readiness__deck-copy p {
+  grid-column: 2;
   max-width: 280px;
   margin: 0;
   color: #fff;
