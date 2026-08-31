@@ -2705,6 +2705,10 @@
           <path d="M3 12s3.3-5 9-5 9 5 9 5-3.3 5-9 5-9-5-9-5Z"/>
           <circle cx="12" cy="12" r="2.5"/>
         </symbol>
+        <symbol id="readiness-icon-megaphone" viewBox="0 0 24 24">
+          <path d="M4 10v4h3l8 4V6l-8 4H4Z"/>
+          <path d="M7 14l1.5 5h2l-1.2-4.4M18 9.5a4 4 0 0 1 0 5"/>
+        </symbol>
       </svg>
       <div class="homepage-readiness__header">
         <div class="homepage-readiness__intro">
@@ -2783,7 +2787,10 @@
               <dd>Required after-school tryout debate. Choose a session through the sign-up board.</dd>
             </div>
           </dl>
-          <p class="homepage-readiness__detail-note">Team membership will be announced later that week.</p>
+          <div class="homepage-readiness__announcement">
+            <span class="homepage-readiness__announcement-icon" aria-hidden="true"><svg><use href="#readiness-icon-megaphone"></use></svg></span>
+            <p><strong>Team membership will be announced later that week.</strong></p>
+          </div>
         </article>
 
         <article class="homepage-readiness__detail-card homepage-readiness__detail-card--format">
@@ -2796,8 +2803,8 @@
             <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Collaborate well.</strong> Communicate with your partner and contribute to a civil, prepared team.</span></li>
           </ul>
           <div class="homepage-readiness__detail-links">
-            <a href="about.html#why-debate-section">What is Public Forum? <span aria-hidden="true">→</span></a>
-            <a href="about.html#join">Team member expectations <span aria-hidden="true">→</span></a>
+            <a href="about.html#why-debate-section"><span>What is Public Forum?</span><span aria-hidden="true">→</span></a>
+            <a href="about.html#join"><span>Team member expectations</span><span aria-hidden="true">→</span></a>
           </div>
         </article>
 
@@ -2811,7 +2818,7 @@
             <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-speech"></use></svg></span><span><strong>Communication:</strong> Coaches use Talking Points and Schoology, not the team app.</span></li>
             <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-eye"></use></svg></span><span><strong>Watching rounds:</strong> Check with the judge and the other debaters before observing; remain quiet and do not signal during the round.</span></li>
           </ul>
-          <a class="homepage-readiness__detail-cta" href="tournaments.html?tab=parent-info">Read the full Parent &amp; Family Guide <span aria-hidden="true">→</span></a>
+          <a class="homepage-readiness__detail-cta" href="tournaments.html?tab=parent-info"><span class="homepage-readiness__detail-cta-label"><svg aria-hidden="true"><use href="#readiness-icon-book"></use></svg><span>Read the full Parent &amp; Family Guide</span></span><span aria-hidden="true">→</span></a>
         </article>
       </div>
 
