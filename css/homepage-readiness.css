@@ -1010,12 +1010,40 @@ body.deck-dialog-open {
   transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open {
+  border-color: rgba(109, 216, 184, 0.72);
+  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download {
+  border-color: rgba(221, 169, 243, 0.78);
+  background: linear-gradient(135deg, #593475 0%, #2b1848 100%);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(27, 9, 45, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
 .homepage-readiness__deck-dialog-actions a:hover,
 .homepage-readiness__deck-dialog-actions a:focus-visible {
   border-color: #fff0a6;
   background: rgba(242, 209, 107, 0.1);
   color: #fff;
   outline: none;
+}
+
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open:hover,
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open:focus-visible {
+  border-color: #8cebd0;
+  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
+  color: #fff;
+}
+
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download:hover,
+.homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download:focus-visible {
+  border-color: #efcfff;
+  background: linear-gradient(135deg, #71439a 0%, #3d2263 100%);
+  color: #fff;
 }
 
 .homepage-readiness__deck-close {
