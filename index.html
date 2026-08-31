@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-   <link rel="stylesheet" href="css/homepage-readiness.css?v=10"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=11"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2410,6 +2410,12 @@
       }
     }
 
+    /* Give the homepage a little more room on laptop and desktop screens.
+       Keep the shared site wrapper unchanged on every other page. */
+    body.homepage-shell .section-wrap {
+      max-width: 1380px;
+    }
+
     /* Use a more distinctive constellation rail for the two season-pulse
        panels while keeping the inset proportions used on about.html. */
     .idx-season-pulse__column {
@@ -2542,7 +2548,7 @@
     })();
   </script>
 </head>
-<body style="--navy-dark:#1c2030;">
+<body class="homepage-shell" style="--navy-dark:#1c2030;">
 
 <!-- PUBLIC HEADER BAR — matches the private portal header -->
 <div class="mp-topbar" aria-hidden="true"></div>
@@ -2644,6 +2650,41 @@
 <section id="season-readiness" class="homepage-readiness" aria-labelledby="season-readiness-title">
   <div class="section-wrap">
     <div class="homepage-readiness__panel">
+      <svg class="homepage-readiness__icon-sprite" aria-hidden="true" focusable="false">
+        <symbol id="readiness-icon-book" viewBox="0 0 24 24">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"/>
+          <path d="M4 5.5v15M8 7h8M8 11h8M8 15h5"/>
+        </symbol>
+        <symbol id="readiness-icon-speech" viewBox="0 0 24 24">
+          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 12.5v-7Z"/>
+          <path d="M8 8h8M8 11h5"/>
+        </symbol>
+        <symbol id="readiness-icon-star" viewBox="0 0 24 24">
+          <path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.13L12 17.05l-5.5 2.89 1.05-6.13L3.1 9.47l6.15-.9L12 3Z"/>
+        </symbol>
+        <symbol id="readiness-icon-document" viewBox="0 0 24 24">
+          <path d="M6 3h8l4 4v14H6V3Z"/>
+          <path d="M14 3v5h4M9 12h6M9 16h6"/>
+        </symbol>
+        <symbol id="readiness-icon-calendar" viewBox="0 0 24 24">
+          <rect x="4" y="5" width="16" height="15" rx="2"/>
+          <path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/>
+        </symbol>
+        <symbol id="readiness-icon-users" viewBox="0 0 24 24">
+          <circle cx="9" cy="8" r="3"/>
+          <path d="M3.5 19c0-3 2.45-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/>
+          <circle cx="17" cy="9" r="2.25"/>
+          <path d="M15.5 14.2c2.75-.1 5 1.95 5 4.8"/>
+        </symbol>
+        <symbol id="readiness-icon-clipboard" viewBox="0 0 24 24">
+          <path d="M8 5h8v3H8z"/>
+          <path d="M6 6H5a2 2 0 0 0-2 2v12h18V8a2 2 0 0 0-2-2h-1M7 12h8M7 16h6"/>
+        </symbol>
+        <symbol id="readiness-icon-info" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M12 10v6M12 7h.01"/>
+        </symbol>
+      </svg>
       <div class="homepage-readiness__header">
         <div class="homepage-readiness__intro">
           <p class="homepage-readiness__eyebrow">Cooper Debate Team</p>
@@ -2658,29 +2699,29 @@
       </div>
 
       <div class="homepage-readiness__policy">
-        <span class="homepage-readiness__policy-mark" aria-hidden="true">!</span>
+        <span class="homepage-readiness__policy-mark" aria-hidden="true"><svg><use href="#readiness-icon-info"></use></svg></span>
         <p><strong>Every student must make the team this year.</strong> That includes returning debaters. The only students automatically on the team are those who qualified for Metro Finals in March 2026.</p>
       </div>
 
       <div class="homepage-readiness__grid">
         <article class="homepage-readiness__card homepage-readiness__card--reading">
-          <p class="homepage-readiness__card-kicker">Before you apply</p>
+          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-book"></use></svg></span><span>Before you apply</span></p>
           <h3>Read, understand, prepare</h3>
           <p>Review the pages below, learn how Public Forum works, and research both sides of the current resolution. The Google Form application requires a four-page essay: at least two pages for and two pages against the resolution.</p>
           <div class="homepage-readiness__links">
-            <a href="about.html#why-debate-section">Why Debate? <span aria-hidden="true">→</span></a>
-            <a href="about.html#why-debate-section">What is Public Forum Debate? <span aria-hidden="true">→</span></a>
-            <a href="about.html#join">Expectations for Cooper Debate Team Members <span aria-hidden="true">→</span></a>
-            <a href="resources.html">Research &amp; preparation resources <span aria-hidden="true">→</span></a>
+            <a href="about.html#why-debate-section"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-speech"></use></svg><span>Why Debate?</span></span><span aria-hidden="true">→</span></a>
+            <a href="about.html#why-debate-section"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-speech"></use></svg><span>What is Public Forum Debate?</span></span><span aria-hidden="true">→</span></a>
+            <a href="about.html#join"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-star"></use></svg><span>Expectations for Cooper Debate Team Members</span></span><span aria-hidden="true">→</span></a>
+            <a href="resources.html"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-book"></use></svg><span>Research &amp; preparation resources</span></span><span aria-hidden="true">→</span></a>
           </div>
           <div class="homepage-readiness__resource-note">
-            <span class="homepage-readiness__resource-icon" aria-hidden="true">▤</span>
+            <span class="homepage-readiness__resource-icon" aria-hidden="true"><svg><use href="#readiness-icon-document"></use></svg></span>
             <span><strong>Info-session slide deck</strong><span class="homepage-readiness__pending">Link coming soon</span></span>
           </div>
         </article>
 
         <article class="homepage-readiness__card homepage-readiness__card--next">
-          <p class="homepage-readiness__card-kicker">Your next steps</p>
+          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-clipboard"></use></svg></span><span>Your next steps</span></p>
           <h3>Apply, try out, compete</h3>
           <ol class="homepage-readiness__steps">
             <li><span>1</span><p><strong>Complete the Google Form application</strong>Submit every required response by Wednesday, September 16 at 3:00 PM. Include at least four pages of research—two pages for and two pages against the resolution.</p></li>
@@ -2688,14 +2729,12 @@
             <li><span>3</span><p><strong>Commit to the season</strong>Team members practice after school on Tuesdays in A and B Sessions and attend one Saturday tournament each month.</p></li>
           </ol>
           <div class="homepage-readiness__actions">
-            <a class="btn btn-gold homepage-readiness__primary-action" href="apply.html">Start the application <span class="homepage-readiness__primary-arrow" aria-hidden="true">→</span></a>
+            <a class="btn btn-gold homepage-readiness__primary-action" href="apply.html"><span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-document"></use></svg></span><span>Start the application</span><span class="homepage-readiness__primary-arrow" aria-hidden="true">→</span></a>
             <a class="homepage-readiness__action-link homepage-readiness__action-link--partner" href="tournaments.html?tab=partner-signup&amp;v=20260830-1">
-              <span><strong>Debate partner signups</strong><small>Choose a partner or request a pairing</small></span>
-              <span aria-hidden="true">→</span>
+              <span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-users"></use></svg></span><span class="homepage-readiness__action-copy"><strong>Debate partner signups</strong><small>Choose a partner or request a pairing</small></span><span class="homepage-readiness__action-arrow" aria-hidden="true">→</span>
             </a>
             <a class="homepage-readiness__action-link homepage-readiness__action-link--calendar" href="tournaments.html?tab=calendar-results&amp;view=agenda">
-              <span><strong>Tournament calendar</strong><small>See the full season schedule in Agenda view</small></span>
-              <span aria-hidden="true">→</span>
+              <span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span><span class="homepage-readiness__action-copy"><strong>Tournament calendar</strong><small>See the full season schedule in Agenda view</small></span><span class="homepage-readiness__action-arrow" aria-hidden="true">→</span>
             </a>
           </div>
         </article>
@@ -2703,7 +2742,7 @@
 
       <div class="homepage-readiness__details" aria-label="Important season information">
         <article class="homepage-readiness__detail-card homepage-readiness__detail-card--dates">
-          <p class="homepage-readiness__card-kicker">How to get information</p>
+          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-calendar"></use></svg></span><span>How to get information</span></p>
           <h3>Meet us and mark your calendar</h3>
           <dl class="homepage-readiness__date-list">
             <div>
@@ -2727,7 +2766,7 @@
         </article>
 
         <article class="homepage-readiness__detail-card homepage-readiness__detail-card--format">
-          <p class="homepage-readiness__card-kicker">What to expect</p>
+          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-speech"></use></svg></span><span>What to expect</span></p>
           <h3>Debate together in Public Forum</h3>
           <p class="homepage-readiness__detail-copy">Public Forum is a structured 35-minute back-and-forth with prepared, well-researched speeches, crossfire, and thinking on your feet. Every round takes two debaters working as a team.</p>
           <ul class="homepage-readiness__bullet-list">
@@ -2742,7 +2781,7 @@
         </article>
 
         <article class="homepage-readiness__detail-card homepage-readiness__detail-card--family">
-          <p class="homepage-readiness__card-kicker">For students and families</p>
+          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-users"></use></svg></span><span>For students and families</span></p>
           <h3>Plan for the season</h3>
           <ul class="homepage-readiness__bullet-list">
             <li><strong>Practices:</strong> Tuesdays after school in A and B Sessions.</li>
