@@ -1,0 +1,705 @@
+/* Homepage awards showcase
+   The plaques are the story here: stats support the achievement instead of
+   competing with it. */
+.idx-awards-section {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(58px, 7vw, 94px) 0 clamp(64px, 8vw, 104px) !important;
+  background:
+    radial-gradient(circle at 78% 42%, rgba(212, 160, 23, 0.13), transparent 30rem),
+    radial-gradient(circle at 8% 80%, rgba(72, 194, 176, 0.08), transparent 26rem),
+    #071a3b !important;
+}
+
+.idx-awards-section::before,
+.idx-awards-section::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.idx-awards-section::before {
+  width: 42rem;
+  height: 42rem;
+  top: -27rem;
+  right: -12rem;
+  border: 1px solid rgba(242, 209, 107, 0.13);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2.2rem rgba(242, 209, 107, 0.035),
+    0 0 0 5.4rem rgba(242, 209, 107, 0.025);
+}
+
+.idx-awards-section::after {
+  width: 9px;
+  height: 9px;
+  right: 10%;
+  bottom: 13%;
+  border: 1px solid rgba(242, 209, 107, 0.78);
+  transform: rotate(45deg);
+  box-shadow: 0 0 12px rgba(242, 209, 107, 0.56);
+}
+
+#idx-stats-outer.idx-awards-showcase {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  padding: clamp(28px, 4.5vw, 58px) clamp(18px, 4.5vw, 62px) clamp(28px, 4vw, 48px);
+  border: 1px solid rgba(242, 209, 107, 0.5);
+  background:
+    linear-gradient(145deg, rgba(11, 39, 83, 0.86), rgba(3, 15, 40, 0.94)),
+    #081d44;
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 246, 191, 0.16),
+    inset 0 0 70px rgba(8, 50, 88, 0.22);
+}
+
+.idx-awards-showcase::before,
+.idx-awards-showcase::after {
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+.idx-awards-showcase::before {
+  inset: 12px;
+  border: 1px solid rgba(242, 209, 107, 0.14);
+}
+
+.idx-awards-showcase::after {
+  width: 16rem;
+  height: 16rem;
+  right: -8rem;
+  bottom: -9rem;
+  border: 1px solid rgba(101, 218, 191, 0.16);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.4rem rgba(101, 218, 191, 0.04);
+}
+
+#idx-stats-heading.idx-awards-heading {
+  display: block !important;
+  position: relative;
+  z-index: 1;
+  margin: 0 auto clamp(30px, 4vw, 52px);
+  text-align: center;
+}
+
+.idx-awards-season,
+.idx-awards-kicker,
+.idx-awards-date,
+.idx-awards-live-metric span {
+  font-family: "Josefin Sans", sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.idx-awards-season {
+  margin: 0 0 13px;
+  color: #f2d16b;
+  font-size: clamp(0.68rem, 1.15vw, 0.83rem);
+}
+
+.idx-awards-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(12px, 2.4vw, 32px);
+}
+
+.idx-awards-title-rule {
+  width: clamp(32px, 8vw, 110px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 209, 107, 0.7));
+}
+
+.idx-awards-title-rule:last-child {
+  background: linear-gradient(90deg, rgba(242, 209, 107, 0.7), transparent);
+}
+
+.idx-awards-title {
+  margin: 0;
+  color: #fffaf0;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.55rem, 5.7vw, 5rem);
+  font-weight: 600;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.28);
+}
+
+.idx-awards-heading-copy {
+  max-width: 560px;
+  margin: 17px auto 0;
+  color: rgba(255, 255, 255, 0.68);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: clamp(0.84rem, 1.35vw, 1rem);
+  line-height: 1.65;
+}
+
+#idx-stats-grid.idx-awards-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(230px, 0.72fr) minmax(0, 1.7fr) !important;
+  gap: clamp(30px, 5vw, 78px) !important;
+  align-items: center;
+  margin: 0 !important;
+}
+
+#idx-stats-grid.idx-awards-content > div {
+  min-width: 0;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#idx-stats-grid.idx-awards-content > .idx-awards-story {
+  position: relative;
+  padding: 20px 0 22px 26px !important;
+  border-left: 2px solid rgba(242, 209, 107, 0.58) !important;
+}
+
+.idx-awards-story::before {
+  position: absolute;
+  content: "";
+  top: 15%;
+  bottom: 15%;
+  left: -6px;
+  width: 10px;
+  background: #071a3b;
+  border-top: 1px solid #f2d16b;
+  border-bottom: 1px solid #f2d16b;
+  transform: translateY(0);
+}
+
+.idx-awards-story-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 57px;
+  height: 57px;
+  margin-bottom: 23px;
+  border: 1px solid rgba(242, 209, 107, 0.78);
+  border-radius: 50%;
+  background: rgba(242, 209, 107, 0.05);
+  box-shadow: 0 0 24px rgba(242, 209, 107, 0.12);
+}
+
+.idx-awards-story-mark svg {
+  width: 34px;
+  height: 34px;
+  stroke: #f2d16b;
+  stroke-width: 1.35;
+}
+
+.idx-awards-kicker {
+  margin: 0 0 11px;
+  color: #6ce0c8;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.idx-awards-count {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-left: -5px;
+  color: #f6d875;
+  font-family: "Cormorant Garamond", serif;
+  line-height: 0.85;
+  text-shadow: 0 0 25px rgba(242, 209, 107, 0.36);
+}
+
+.idx-awards-count span {
+  font-size: clamp(5.6rem, 10vw, 8.7rem);
+  font-weight: 600;
+  letter-spacing: -0.08em;
+}
+
+.idx-awards-count small {
+  color: rgba(255, 255, 255, 0.85);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: clamp(0.9rem, 1.65vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.idx-awards-story-rule {
+  width: 80px;
+  height: 1px;
+  margin: 19px 0 17px;
+  background: linear-gradient(90deg, #f2d16b, rgba(242, 209, 107, 0));
+}
+
+.idx-awards-story h3,
+.idx-awards-gallery h3 {
+  margin: 0;
+  color: #fffaf0;
+  font-family: "Cormorant Garamond", serif;
+  font-weight: 600;
+}
+
+.idx-awards-story h3 {
+  max-width: 280px;
+  font-size: clamp(1.55rem, 2.45vw, 2.25rem);
+  line-height: 1.02;
+}
+
+.idx-awards-story-copy {
+  max-width: 300px;
+  margin: 15px 0 0;
+  color: rgba(255, 255, 255, 0.69);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.87rem;
+  line-height: 1.65;
+}
+
+.idx-awards-live-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 30px;
+  padding-top: 17px;
+  border-top: 1px solid rgba(242, 209, 107, 0.24);
+}
+
+.idx-awards-live-metric {
+  min-width: 0;
+}
+
+.idx-awards-live-metric strong {
+  display: block;
+  color: #f2d16b;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.45rem, 2.4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.idx-awards-live-metric span {
+  display: block;
+  margin-top: 7px;
+  color: rgba(255, 255, 255, 0.57);
+  font-size: 0.54rem;
+  line-height: 1.35;
+}
+
+#idx-stats-grid.idx-awards-content > .idx-awards-gallery {
+  min-width: 0;
+  padding-left: clamp(0px, 1.8vw, 25px) !important;
+}
+
+.idx-awards-gallery-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 6px;
+}
+
+.idx-awards-gallery-heading .idx-awards-kicker {
+  margin-bottom: 7px;
+  color: #f2d16b;
+}
+
+.idx-awards-gallery h3 {
+  font-size: clamp(1.9rem, 3.25vw, 3rem);
+  line-height: 0.98;
+}
+
+.idx-awards-gallery-badge {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid rgba(108, 224, 200, 0.64);
+  border-radius: 50%;
+  color: #6ce0c8;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.idx-awards-gallery-title {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.idx-awards-plaque-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(7px, 1.25vw, 18px);
+  align-items: end;
+  margin-top: 14px;
+}
+
+.idx-award-plaque {
+  position: relative;
+  min-width: 0;
+  padding: 9px 7px 12px;
+  border: 1px solid rgba(242, 209, 107, 0.28);
+  background:
+    linear-gradient(180deg, rgba(17, 44, 83, 0.65), rgba(4, 17, 42, 0.96)),
+    #071a3b;
+  box-shadow:
+    0 15px 26px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 250, 214, 0.16);
+  transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.idx-award-plaque::before {
+  position: absolute;
+  content: "";
+  inset: 5px;
+  border: 1px solid rgba(242, 209, 107, 0.14);
+  pointer-events: none;
+}
+
+.idx-award-plaque:hover {
+  border-color: rgba(242, 209, 107, 0.76);
+  box-shadow:
+    0 18px 32px rgba(0, 0, 0, 0.3),
+    0 0 26px rgba(242, 209, 107, 0.14),
+    inset 0 1px 0 rgba(255, 250, 214, 0.2);
+  transform: translateY(-8px);
+}
+
+.idx-award-plaque--second {
+  border-color: rgba(242, 209, 107, 0.72);
+  box-shadow:
+    0 19px 33px rgba(0, 0, 0, 0.3),
+    0 0 30px rgba(242, 209, 107, 0.14),
+    inset 0 1px 0 rgba(255, 250, 214, 0.2);
+  transform: translateY(-13px);
+}
+
+.idx-award-plaque--second:hover {
+  transform: translateY(-21px);
+}
+
+.idx-award-plaque-image {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: clamp(210px, 25vw, 315px);
+}
+
+.idx-award-plaque-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 330px;
+  object-fit: contain;
+  filter: drop-shadow(0 11px 8px rgba(0, 0, 0, 0.42));
+  transition: filter 220ms ease, transform 220ms ease;
+}
+
+.idx-award-plaque:hover .idx-award-plaque-image img {
+  filter: drop-shadow(0 15px 11px rgba(0, 0, 0, 0.5));
+  transform: scale(1.025);
+}
+
+.idx-award-plaque-caption {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 2px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(242, 209, 107, 0.24);
+}
+
+.idx-award-plaque-caption strong {
+  color: #f2d16b;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.55rem, 2.6vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.idx-award-plaque-caption sup {
+  font-size: 0.42em;
+  letter-spacing: 0.04em;
+  vertical-align: super;
+}
+
+.idx-award-plaque-caption span {
+  color: rgba(255, 255, 255, 0.66);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.57rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.idx-awards-date {
+  margin: 15px 0 0;
+  color: rgba(255, 255, 255, 0.49);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-align: right;
+}
+
+.idx-awards-footer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.2vw, 32px);
+  margin-top: clamp(32px, 4vw, 52px);
+}
+
+.idx-awards-footer-rule {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(242, 209, 107, 0.5));
+}
+
+.idx-awards-footer-rule:last-child {
+  background: linear-gradient(90deg, rgba(242, 209, 107, 0.5), transparent);
+}
+
+.idx-awards-footer .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 13px;
+  min-width: max-content;
+  padding: 13px 22px;
+  border: 1px solid rgba(255, 242, 171, 0.9);
+  box-shadow: 0 7px 24px rgba(0, 0, 0, 0.18);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+}
+
+.idx-awards-footer .btn span {
+  font-size: 1.2em;
+  line-height: 1;
+  transition: transform 180ms ease;
+}
+
+.idx-awards-footer .btn:hover span,
+.idx-awards-footer .btn:focus-visible span {
+  transform: translateX(4px);
+}
+
+.idx-stats-legacy-section {
+  display: none !important;
+}
+
+@media (max-width: 980px) {
+  #idx-stats-grid.idx-awards-content {
+    grid-template-columns: minmax(190px, 0.68fr) minmax(0, 1.5fr) !important;
+    gap: 32px !important;
+  }
+
+  .idx-award-plaque-image {
+    min-height: clamp(185px, 26vw, 270px);
+  }
+
+  .idx-awards-story-copy {
+    font-size: 0.81rem;
+  }
+}
+
+@media (max-width: 720px) {
+  .idx-awards-section {
+    padding-top: 48px !important;
+  }
+
+  .idx-awards-showcase {
+    padding: 32px 20px 29px;
+  }
+
+  #idx-stats-grid.idx-awards-content {
+    grid-template-columns: 1fr !important;
+    gap: 38px !important;
+  }
+
+  #idx-stats-grid.idx-awards-content > .idx-awards-story {
+    padding: 8px 0 0 22px !important;
+  }
+
+  .idx-awards-story-copy {
+    max-width: 510px;
+  }
+
+  .idx-awards-live-metrics {
+    max-width: 510px;
+  }
+
+  #idx-stats-grid.idx-awards-content > .idx-awards-gallery {
+    padding-left: 0 !important;
+  }
+
+  .idx-awards-plaque-grid {
+    gap: 9px;
+  }
+
+  .idx-award-plaque-image {
+    min-height: clamp(175px, 32vw, 245px);
+  }
+
+  .idx-award-plaque--second {
+    transform: translateY(-8px);
+  }
+
+  .idx-award-plaque--second:hover {
+    transform: translateY(-14px);
+  }
+}
+
+@media (max-width: 480px) {
+  .idx-awards-showcase {
+    padding: 29px 15px 25px;
+  }
+
+  .idx-awards-showcase::before {
+    inset: 8px;
+  }
+
+  .idx-awards-title-row {
+    gap: 9px;
+  }
+
+  .idx-awards-title-rule {
+    width: 24px;
+  }
+
+  .idx-awards-heading-copy {
+    padding: 0 6px;
+    font-size: 0.77rem;
+  }
+
+  .idx-awards-story {
+    padding-left: 17px !important;
+  }
+
+  .idx-awards-story-mark {
+    width: 49px;
+    height: 49px;
+    margin-bottom: 18px;
+  }
+
+  .idx-awards-story-mark svg {
+    width: 29px;
+    height: 29px;
+  }
+
+  .idx-awards-count {
+    margin-left: -3px;
+  }
+
+  .idx-awards-count span {
+    font-size: clamp(4.7rem, 23vw, 6.3rem);
+  }
+
+  .idx-awards-count small {
+    font-size: 0.75rem;
+  }
+
+  .idx-awards-live-metric span {
+    font-size: 0.47rem;
+    letter-spacing: 0.1em;
+  }
+
+  .idx-awards-gallery-heading {
+    gap: 10px;
+  }
+
+  .idx-awards-gallery-badge {
+    width: 43px;
+    height: 43px;
+    font-size: 0.52rem;
+  }
+
+  .idx-awards-gallery h3 {
+    font-size: 1.8rem;
+  }
+
+  .idx-awards-gallery-title {
+    font-size: 0.58rem;
+  }
+
+  .idx-awards-plaque-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 9px;
+  }
+
+  .idx-award-plaque--second {
+    grid-column: 1 / -1;
+    width: min(100%, 220px);
+    margin: 0 auto 5px;
+  }
+
+  .idx-award-plaque {
+    padding: 5px 3px 8px;
+  }
+
+  .idx-award-plaque::before {
+    inset: 3px;
+  }
+
+  .idx-award-plaque-image {
+    min-height: 188px;
+  }
+
+  .idx-award-plaque--second .idx-award-plaque-image {
+    min-height: 238px;
+  }
+
+  .idx-award-plaque-caption {
+    gap: 3px;
+    padding-top: 7px;
+  }
+
+  .idx-award-plaque-caption strong {
+    font-size: 1.35rem;
+  }
+
+  .idx-award-plaque-caption span {
+    font-size: 0.43rem;
+    letter-spacing: 0.1em;
+  }
+
+  .idx-awards-date {
+    font-size: 0.5rem;
+  }
+
+  .idx-awards-footer {
+    gap: 10px;
+  }
+
+  .idx-awards-footer .btn {
+    padding: 12px 15px;
+    font-size: 0.66rem;
+    letter-spacing: 0.07em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idx-award-plaque,
+  .idx-award-plaque-image img,
+  .idx-awards-footer .btn span {
+    transition: none;
+  }
+
+  .idx-award-plaque:hover,
+  .idx-award-plaque--second,
+  .idx-award-plaque--second:hover {
+    transform: none;
+  }
+}

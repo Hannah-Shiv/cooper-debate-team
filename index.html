@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-    <link rel="stylesheet" href="css/homepage-readiness.css?v=30"/>
+     <link rel="stylesheet" href="css/homepage-readiness.css?v=30"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2552,6 +2552,7 @@
       }
     }
   </style>
+  <link rel="stylesheet" href="css/homepage-awards-showcase.css?v=3"/>
   <script>
     (function () {
       try {
@@ -2941,12 +2942,110 @@
   </div>
 </div>
 
-<!-- STATISTICS SECTION — live from Firebase -->
-<section id="idx-stats-section" class="stats-section" style="background:var(--navy-dark);padding:56px 0;">
+<!-- AWARDS SHOWCASE — live season label and Metro metrics are updated from Firebase -->
+<section id="idx-stats-section" class="stats-section idx-awards-section">
   <div class="section-wrap">
-    <div id="idx-stats-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:24px 32px 40px;">
-      <div id="idx-stats-heading">
-        <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label">2025–26 Season</p>
+    <div id="idx-stats-outer" class="idx-awards-showcase">
+      <header id="idx-stats-heading" class="idx-awards-heading">
+        <p class="idx-awards-season" id="idx-stats-season-label">2025–26 Season</p>
+        <div class="idx-awards-title-row">
+          <span class="idx-awards-title-rule" aria-hidden="true"></span>
+          <h2 class="idx-awards-title" aria-label="By the Numbers">By the Numbers</h2>
+          <span class="idx-awards-title-rule" aria-hidden="true"></span>
+        </div>
+        <p class="idx-awards-heading-copy">A season of preparation, partnership, and results worth celebrating.</p>
+      </header>
+
+      <div id="idx-stats-grid" class="idx-awards-content">
+        <div class="idx-awards-story">
+          <div class="idx-awards-story-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48" fill="none">
+              <circle cx="24" cy="24" r="20"></circle>
+              <path d="M15 31v-2.5a4.5 4.5 0 0 1 4.5-4.5h9a4.5 4.5 0 0 1 4.5 4.5V31"></path>
+              <circle cx="24" cy="16" r="4.5"></circle>
+              <path d="M11 29.5v-1.2a3.8 3.8 0 0 1 3.8-3.8M37 29.5v-1.2a3.8 3.8 0 0 0-3.8-3.8"></path>
+            </svg>
+          </div>
+          <p class="idx-awards-kicker">Metro Finals · 2025–26</p>
+          <div class="idx-awards-count"><span>22</span><small>pairs</small></div>
+          <div class="idx-awards-story-rule" aria-hidden="true"></div>
+          <h3>Cooper showed up in force.</h3>
+          <p class="idx-awards-story-copy">Twenty-two Cooper pairs earned a place at Metro Finals—then three finished among the top four in a field of 32 teams.</p>
+          <div class="idx-awards-live-metrics" aria-label="Metro Finals participation details">
+            <div class="idx-awards-live-metric">
+              <strong id="idx-metro-award-qualified">22</strong>
+              <span>pairs qualified</span>
+            </div>
+            <div class="idx-awards-live-metric">
+              <strong id="idx-metro-award-competed">12</strong>
+              <span>Cooper teams competed</span>
+            </div>
+            <div class="idx-awards-live-metric">
+              <strong id="idx-metro-award-field">32</strong>
+              <span>teams in the field</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="idx-awards-gallery" aria-labelledby="idx-awards-gallery-title">
+          <div class="idx-awards-gallery-heading">
+            <div>
+              <p class="idx-awards-kicker">WASDL Metro Finals</p>
+              <h3 id="idx-awards-gallery-title">Three top-four finishes.</h3>
+            </div>
+            <span class="idx-awards-gallery-badge" aria-hidden="true">2026</span>
+          </div>
+          <p class="idx-awards-gallery-title" id="idx-metro-award-title">Public Forum · Policy &amp; Congress</p>
+
+          <div class="idx-awards-plaque-grid">
+            <article class="idx-award-plaque idx-award-plaque--second">
+              <div class="idx-award-plaque-image">
+                <img src="images/metro-finals-2nd-place.png?v=1" alt="WASDL Metro Finals plaque showing Cooper Debate's second-place finish among 32 teams">
+              </div>
+              <div class="idx-award-plaque-caption">
+                <strong id="idx-metro-award-place">2<sup>ND</sup></strong>
+                <span>place</span>
+              </div>
+            </article>
+            <article class="idx-award-plaque">
+              <div class="idx-award-plaque-image">
+                <img src="images/metro-finals-3rd-place.png?v=1" alt="WASDL Metro Finals plaque showing Cooper Debate's third-place finish among 32 teams">
+              </div>
+              <div class="idx-award-plaque-caption">
+                <strong>3<sup>RD</sup></strong>
+                <span>place</span>
+              </div>
+            </article>
+            <article class="idx-award-plaque">
+              <div class="idx-award-plaque-image">
+                <img src="images/metro-finals-4th-place.png?v=1" alt="WASDL Metro Finals plaque showing Cooper Debate's fourth-place finish among 32 teams">
+              </div>
+              <div class="idx-award-plaque-caption">
+                <strong>4<sup>TH</sup></strong>
+                <span>place</span>
+              </div>
+            </article>
+          </div>
+
+          <p class="idx-awards-date" id="idx-metro-award-date">Date · 14th Mar 2026</p>
+        </div>
+      </div>
+
+      <div class="idx-awards-footer">
+        <span class="idx-awards-footer-rule" aria-hidden="true"></span>
+        <a href="awards.html" class="btn btn-gold">View Full Awards <span aria-hidden="true">→</span></a>
+        <span class="idx-awards-footer-rule" aria-hidden="true"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Legacy championship markup retained for existing rendering hooks; hidden from the homepage. -->
+<section id="idx-stats-legacy-section" class="stats-section idx-stats-legacy-section">
+  <div class="section-wrap">
+    <div id="idx-stats-legacy-outer" style="background:rgba(17,40,112,0.38);border:1px solid rgba(212,160,23,0.22);border-radius:14px;padding:24px 32px 40px;">
+      <div id="idx-stats-legacy-heading">
+        <p class="section-label" style="justify-content:center;margin-bottom:6px;font-size:1.5rem;" id="idx-stats-season-label-legacy">2025–26 Season</p>
         <h2 class="section-title" style="text-align:center;margin-bottom:32px;" aria-label="By the Numbers">
           <span class="stats-heading-separator" aria-hidden="true">·</span>
           <span class="stats-heading-numbers">By the Numbers</span>
@@ -2954,7 +3053,7 @@
       </div>
 
        <!-- Metro Finals summary -->
-       <div id="idx-stats-grid" style="display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:24px;">
+       <div id="idx-stats-legacy-grid" style="display:grid;grid-template-columns:minmax(0,1fr);gap:18px;margin-bottom:24px;">
 
          <!-- Metro Finals -->
          <div style="background:rgba(9,26,66,0.88);border:1px solid rgba(212,160,23,0.45);border-radius:14px;padding:28px 28px 26px;text-align:center;display:grid;grid-template-columns:minmax(170px,0.8fr) minmax(0,1.2fr);gap:28px;align-items:center;box-shadow:0 0 22px rgba(212,160,23,0.08),inset 0 1px 0 rgba(255,255,255,0.04);">
@@ -3042,9 +3141,9 @@
                <div class="aw-award-details">
                  <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
                  <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; Metro Finals &nbsp;›&nbsp; Regional / Local</div>
-                 <div class="aw-award-title" id="idx-metro-award-title">WASDL Public Forum Policy and Congress Metro Finals</div>
-                 <div class="aw-award-place" id="idx-metro-award-place">2<sup>ND</sup> <span class="aw-award-place-label">PLACE</span></div>
-                 <div class="aw-award-note" id="idx-metro-award-date">Date · 14th Mar 2026</div>
+                  <div class="aw-award-title" id="idx-metro-award-title-legacy">WASDL Public Forum Policy and Congress Metro Finals</div>
+                  <div class="aw-award-place" id="idx-metro-award-place-legacy">2<sup>ND</sup> <span class="aw-award-place-label">PLACE</span></div>
+                  <div class="aw-award-note" id="idx-metro-award-date-legacy">Date · 14th Mar 2026</div>
                </div>
              </div>
              <div class="aw-award-stats">
@@ -3052,7 +3151,7 @@
                  <span class="aw-award-stat-icon" aria-hidden="true">
                    <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
                  </span>
-                 <div class="aw-award-stat-number" id="idx-metro-award-field">32</div>
+                  <div class="aw-award-stat-number" id="idx-metro-award-field-legacy">32</div>
                  <span class="aw-award-stat-divider" aria-hidden="true"></span>
                  <div class="aw-award-stat-label">Teams<br>in Field</div>
                </div>
@@ -3060,7 +3159,7 @@
                  <span class="aw-award-stat-icon" aria-hidden="true">
                    <svg viewBox="0 0 24 24"><circle cx="12" cy="7" r="3"/><path d="M6.5 20v-1a5.5 5.5 0 0 1 11 0v1"/><circle cx="5" cy="10" r="2"/><path d="M1.5 20v-1a3.5 3.5 0 0 1 4.7-3.3"/><circle cx="19" cy="10" r="2"/><path d="M22.5 20v-1a3.5 3.5 0 0 0-4.7-3.3"/></svg>
                  </span>
-                 <div class="aw-award-stat-number" id="idx-metro-award-competed">12</div>
+                  <div class="aw-award-stat-number" id="idx-metro-award-competed-legacy">12</div>
                  <span class="aw-award-stat-divider" aria-hidden="true"></span>
                  <div class="aw-award-stat-label">Cooper Teams<br>Competed</div>
                </div>
@@ -3068,7 +3167,7 @@
                  <span class="aw-award-stat-icon" aria-hidden="true">
                    <svg viewBox="0 0 24 24"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9L12 3z"/></svg>
                  </span>
-                 <div class="aw-award-stat-number" id="idx-metro-award-qualified">22</div>
+                  <div class="aw-award-stat-number" id="idx-metro-award-qualified-legacy">22</div>
                  <span class="aw-award-stat-divider" aria-hidden="true"></span>
                  <div class="aw-award-stat-label">Pairs Qualified<br>for Metro</div>
                </div>
@@ -3625,7 +3724,7 @@
                var homeQualified = document.getElementById('idx-metro-award-qualified');
                if (homeTitle) homeTitle.textContent = t.meta.name || 'Metro Finals';
                if (homePlace && bestRank < 999) {
-                 homePlace.innerHTML = bestRank + '<sup>' + sfx.toUpperCase() + '</sup> <span class="aw-award-place-label">PLACE</span>';
+                  homePlace.innerHTML = bestRank + '<sup>' + sfx.toUpperCase() + '</sup>';
                }
                if (homeDate && champDate) homeDate.textContent = 'Date · ' + champDate;
                if (homeField) homeField.textContent = t.entries.length || '—';
