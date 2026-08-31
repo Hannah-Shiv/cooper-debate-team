@@ -1332,3 +1332,88 @@ html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-ga
     font-size: 0.76em !important;
   }
 }
+
+/* Use the same line-diamond-fade treatment as About This Website, in the title row. */
+html body #idx-stats-heading .idx-awards-title {
+  display: flex;
+  align-items: center;
+  gap: clamp(7px, 1.2vw, 14px);
+  width: 100%;
+}
+
+html body #idx-stats-heading .idx-awards-title-copy {
+  display: inline-flex;
+  align-items: baseline;
+  flex: 0 0 auto;
+  gap: 0.28em;
+  white-space: nowrap;
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule {
+  display: flex;
+  align-items: center;
+  flex: 1 1 96px;
+  gap: 7px;
+  min-width: 46px;
+  max-width: 150px;
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-line {
+  height: 1.5px;
+  flex: 1 1 auto;
+  background: linear-gradient(to right, transparent, #f2d16b);
+  box-shadow: 0 0 6px rgba(242, 209, 107, 0.5);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-line:last-child {
+  background: linear-gradient(to left, #f2d16b, transparent);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-diamond {
+  flex: 0 0 auto;
+  color: #f2d16b;
+  font-size: 0.62rem;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(242, 209, 107, 0.8);
+}
+
+/* The title divider replaces the column-level lines. */
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-story::after,
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-gallery::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Reduce the emblem by 10% and lower it so its people icon meets plaque tops. */
+html body .idx-awards-pairs-art {
+  width: min(90%, 263px) !important;
+  margin-top: 0 !important;
+  transform: translateY(23px);
+}
+
+html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery,
+html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
+  background: #0b204c !important;
+  background-image: none !important;
+}
+
+@media (max-width: 720px) {
+  html body #idx-stats-heading .idx-awards-title {
+    gap: 5px;
+  }
+
+  html body #idx-stats-heading .idx-awards-heading-rule {
+    flex-basis: 58px;
+    gap: 4px;
+    min-width: 40px;
+  }
+
+  html body #idx-stats-heading .idx-awards-heading-rule-diamond {
+    font-size: 0.5rem;
+  }
+
+  html body .idx-awards-pairs-art {
+    width: min(90%, 243px) !important;
+    transform: translateY(10px);
+  }
+}
