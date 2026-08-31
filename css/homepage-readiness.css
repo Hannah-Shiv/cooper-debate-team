@@ -665,13 +665,7 @@
   align-items: stretch;
   min-height: 190px;
   margin-top: 18px;
-  padding: 10px;
-  border: 1px solid rgba(213, 201, 177, 0.62);
-  border-radius: 8px;
-  background:
-    radial-gradient(circle at 8% 18%, rgba(255, 255, 255, 0.08), transparent 28%),
-    linear-gradient(145deg, rgba(70, 75, 85, 0.99), rgba(40, 44, 53, 0.99));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), 0 10px 26px rgba(0, 0, 0, 0.28);
+  padding: 0;
 }
 
 .homepage-readiness__deck-cover {
@@ -696,7 +690,8 @@
   display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  background: #f7e9e9;
 }
 
 .homepage-readiness__deck-cover > span {
@@ -739,7 +734,7 @@
   grid-template-rows: 1fr auto;
   gap: 14px;
   min-width: 0;
-  padding: 10px 4px;
+  padding: 0 0 2px;
 }
 
 .homepage-readiness__deck-copy-title {
