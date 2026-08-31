@@ -76,17 +76,29 @@
         button.appendChild(image);
         button.appendChild(number);
         button.addEventListener("click", function () {
-          setSlide(Number(this.dataset.slideIndex), true);
+          setSlide(Number(this.dataset.slideIndex), true, true);
         });
         thumbnails.appendChild(button);
         thumbnailButtons.push(button);
       }
     }
 
-    function setSlide(index, moveFilmstrip) {
-      currentSlide = Math.max(0, Math.min(index, slideCount - 1));
+    function setSlide(index, moveFilmstrip, animate) {
+      var nextSlide = Math.max(0, Math.min(index, slideCount - 1));
+      var direction = nextSlide > currentSlide ? "next" : "previous";
+      var changed = nextSlide !== currentSlide;
+
+      currentSlide = nextSlide;
+      slide.classList.remove("is-entering-next", "is-entering-previous");
       slide.src = slidePath(currentSlide);
       slide.alt = "Cooper Debate information-session slide " + (currentSlide + 1) + ": " + slideTitles[currentSlide];
+
+      if (animate && changed) {
+        /* Force a reflow so repeated quick clicks reliably restart the motion. */
+        void slide.offsetWidth;
+        slide.classList.add("is-entering-" + direction);
+      }
+
       counter.textContent = "Slide " + (currentSlide + 1) + " of " + slideCount;
       caption.textContent = slideTitles[currentSlide];
       progress.style.width = ((currentSlide + 1) / slideCount * 100) + "%";
@@ -125,7 +137,7 @@
         }
         document.body.classList.add("deck-dialog-open");
         buildThumbnails();
-        setSlide(0, true);
+        setSlide(0, true, false);
         dialog.querySelector("[data-deck-next]").focus();
       });
     });
@@ -147,21 +159,21 @@
     dialog.addEventListener("keydown", function (event) {
       if (event.key === "ArrowLeft") {
         event.preventDefault();
-        setSlide(currentSlide - 1, true);
+        setSlide(currentSlide - 1, true, true);
       } else if (event.key === "ArrowRight") {
         event.preventDefault();
-        setSlide(currentSlide + 1, true);
+        setSlide(currentSlide + 1, true, true);
       }
     });
 
     previous.addEventListener("click", function () {
-      setSlide(currentSlide - 1, true);
+      setSlide(currentSlide - 1, true, true);
     });
     next.addEventListener("click", function () {
-      setSlide(currentSlide + 1, true);
+      setSlide(currentSlide + 1, true, true);
     });
 
-    setSlide(0, false);
+    setSlide(0, false, false);
   }
 
   if (document.readyState === "loading") {
