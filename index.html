@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-   <link rel="stylesheet" href="css/homepage-readiness.css?v=15"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=16"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2739,9 +2739,20 @@
             <a href="about.html#join"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-star"></use></svg><span>Expectations for Cooper Debate Team Members</span></span><span aria-hidden="true">→</span></a>
             <a href="resources.html"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-book"></use></svg><span>Research &amp; preparation resources</span></span><span aria-hidden="true">→</span></a>
           </div>
-          <div class="homepage-readiness__resource-note">
-            <span class="homepage-readiness__resource-icon" aria-hidden="true"><svg><use href="#readiness-icon-document"></use></svg></span>
-            <span><strong>Info-session slide deck</strong><span class="homepage-readiness__pending">Link coming soon</span></span>
+          <div class="homepage-readiness__resource-note homepage-readiness__deck-card" id="info-session-deck">
+            <button class="homepage-readiness__deck-cover" type="button" data-deck-open aria-label="Quick view the Cooper Debate information-session slide deck">
+              <img src="images/info-session/slide-01.jpg" alt="" loading="lazy"/>
+              <span aria-hidden="true">▶</span>
+            </button>
+            <span class="homepage-readiness__deck-copy">
+              <strong>Info-session slide deck</strong>
+              <span>Browse all 30 slides without leaving this page.</span>
+            </span>
+            <span class="homepage-readiness__deck-actions">
+              <button type="button" class="homepage-readiness__deck-action homepage-readiness__deck-action--quick" data-deck-open>Quick view</button>
+              <a class="homepage-readiness__deck-action" href="docs/cooper-debate-info-session-sept-2026.pdf" target="_blank" rel="noopener">Open full deck</a>
+              <a class="homepage-readiness__deck-action" href="docs/cooper-debate-info-session-sept-2026.pdf" download>Download PDF</a>
+            </span>
           </div>
         </article>
 
@@ -2764,6 +2775,39 @@
           </div>
         </article>
       </div>
+
+      <dialog class="homepage-readiness__deck-dialog" id="info-session-deck-dialog" aria-labelledby="info-session-deck-title">
+        <div class="homepage-readiness__deck-dialog-inner">
+          <header class="homepage-readiness__deck-dialog-header">
+            <div>
+              <p class="homepage-readiness__deck-dialog-kicker">Cooper Debate · September 2026</p>
+              <h3 id="info-session-deck-title">Information Session Slide Deck</h3>
+              <p>Take a quick look through the presentation, or open the original PDF for the full experience.</p>
+            </div>
+            <div class="homepage-readiness__deck-dialog-actions">
+              <a href="docs/cooper-debate-info-session-sept-2026.pdf" target="_blank" rel="noopener">Open full deck ↗</a>
+              <a href="docs/cooper-debate-info-session-sept-2026.pdf" download>Download PDF ↓</a>
+            </div>
+            <button class="homepage-readiness__deck-close" type="button" data-deck-close aria-label="Close slide deck quick view">×</button>
+          </header>
+
+          <div class="homepage-readiness__deck-stage-row">
+            <button class="homepage-readiness__deck-nav" type="button" data-deck-prev aria-label="Previous slide">←</button>
+            <figure class="homepage-readiness__deck-stage">
+              <img id="info-session-deck-slide" src="images/info-session/slide-01.jpg" alt="Cooper Debate information-session slide 1"/>
+              <figcaption>
+                <span id="info-session-deck-counter">Slide 1 of 30</span>
+                <strong id="info-session-deck-caption">Welcome to Cooper Debate</strong>
+              </figcaption>
+            </figure>
+            <button class="homepage-readiness__deck-nav" type="button" data-deck-next aria-label="Next slide">→</button>
+          </div>
+
+          <div class="homepage-readiness__deck-progress" aria-hidden="true"><span id="info-session-deck-progress"></span></div>
+          <div class="homepage-readiness__deck-thumbnails" id="info-session-deck-thumbnails" aria-label="Choose a slide"></div>
+          <p class="homepage-readiness__deck-keyboard-note">Use the arrow keys to move through the deck · Press Esc to close</p>
+        </div>
+      </dialog>
 
       <div class="homepage-readiness__details" aria-label="Important season information">
         <article class="homepage-readiness__detail-card homepage-readiness__detail-card--dates">
@@ -3720,5 +3764,6 @@
   });
 })();
 </script>
+<script src="js/info-session-deck.js?v=2"></script>
 </body>
 </html>
