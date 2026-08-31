@@ -222,9 +222,9 @@
      }
      .calendar-glance-item {
        display:grid;
-       grid-template-columns:49px minmax(0,1fr);
+       grid-template-columns:58px minmax(0,1fr);
        gap:11px;
-       align-items:start;
+       align-items:center;
        padding:10px 0;
        border-bottom:1px solid rgba(99,133,178,.22);
      }
@@ -243,8 +243,8 @@
      }
      .calendar-glance-date span {
        color:#F2D16B;
-       font:700 .54rem 'Josefin Sans',sans-serif;
-       letter-spacing:.08em;
+       font:700 .49rem 'Josefin Sans',sans-serif;
+       letter-spacing:.045em;
        text-transform:uppercase;
      }
      .calendar-glance-date strong {
@@ -275,15 +275,105 @@
      .calendar-glance-link {
        display:inline-block;
        margin-top:16px;
+       padding:0;
+       border:0;
+       background:transparent;
        color:#F2D16B;
+       cursor:pointer;
        font:700 .7rem 'Josefin Sans',sans-serif;
        letter-spacing:.07em;
+       text-align:left;
        text-decoration:underline;
        text-underline-offset:3px;
        text-transform:uppercase;
      }
      .calendar-glance-link:hover,
      .calendar-glance-link:focus-visible { color:#fff; }
+     .schedule-pdf-modal {
+       width:min(1100px,calc(100vw - 32px));
+       height:min(90vh,900px);
+       max-width:none;
+       max-height:none;
+       margin:auto;
+       padding:0;
+       overflow:hidden;
+       border:1px solid rgba(242,209,107,.7);
+       border-radius:14px;
+       background:#071735;
+       color:#fff;
+       box-shadow:0 28px 80px rgba(0,0,0,.68);
+     }
+     .schedule-pdf-modal[open] { display:flex; flex-direction:column; }
+     .schedule-pdf-modal::backdrop {
+       background:rgba(2,8,22,.82);
+       backdrop-filter:blur(4px);
+     }
+     .schedule-pdf-modal-header {
+       display:flex;
+       align-items:center;
+       justify-content:space-between;
+       gap:20px;
+       padding:16px 18px;
+       border-bottom:1px solid rgba(242,209,107,.34);
+       background:linear-gradient(135deg,#102b59,#07152f);
+     }
+     .schedule-pdf-modal-heading { min-width:0; }
+     .schedule-pdf-modal-kicker {
+       margin:0 0 4px;
+       color:#F2D16B;
+       font:700 .58rem 'Josefin Sans',sans-serif;
+       letter-spacing:.14em;
+       text-transform:uppercase;
+     }
+     .schedule-pdf-modal-title {
+       margin:0;
+       color:#fff;
+       font:700 1.45rem/1.05 'Cormorant Garamond',serif;
+     }
+     .schedule-pdf-modal-actions {
+       display:flex;
+       align-items:center;
+       gap:10px;
+       flex:0 0 auto;
+     }
+     .schedule-pdf-new-tab,
+     .schedule-pdf-close {
+       display:inline-flex;
+       align-items:center;
+       justify-content:center;
+       min-height:38px;
+       border:1px solid rgba(242,209,107,.56);
+       border-radius:7px;
+       background:rgba(255,255,255,.06);
+       color:#fff;
+       cursor:pointer;
+       font:700 .62rem 'Josefin Sans',sans-serif;
+       letter-spacing:.07em;
+       text-transform:uppercase;
+     }
+     .schedule-pdf-new-tab { padding:9px 13px; }
+     .schedule-pdf-close {
+       width:38px;
+       padding:0;
+       font-size:1.15rem;
+       line-height:1;
+     }
+     .schedule-pdf-new-tab:hover,
+     .schedule-pdf-new-tab:focus-visible,
+     .schedule-pdf-close:hover,
+     .schedule-pdf-close:focus-visible {
+       border-color:#F2D16B;
+       background:rgba(242,209,107,.16);
+       outline:none;
+     }
+     .schedule-pdf-frame {
+       width:100%;
+       flex:1 1 auto;
+       min-height:0;
+       border:0;
+       background:#fff;
+     }
+     body.schedule-pdf-is-open { overflow:hidden; }
      @media(max-width:1040px){
        .calendar-at-a-glance-layout { grid-template-columns:1fr; }
      }
@@ -430,6 +520,14 @@
       .public-event-card { max-height:calc(100vh - 28px); overflow-y:auto; padding:24px 20px; }
       .public-event-title { font-size:1.7rem; }
       .public-calendar-status { font-size:.75rem; padding-top:9px; }
+       .schedule-pdf-modal {
+         width:calc(100vw - 16px);
+         height:calc(100vh - 16px);
+         border-radius:10px;
+       }
+       .schedule-pdf-modal-header { align-items:flex-start; padding:13px; }
+       .schedule-pdf-modal-title { font-size:1.2rem; }
+       .schedule-pdf-new-tab { font-size:.55rem; padding:8px 9px; }
     }
     @media(max-width:480px){
       .public-countdown > * { padding:10px 13px; }
@@ -1147,49 +1245,49 @@
            <p id="public-calendar-status" class="public-calendar-status" aria-live="polite"></p>
          </div>
          <aside class="calendar-at-a-glance" aria-labelledby="calendar-glance-title">
-           <p class="calendar-glance-kicker">2026–27 season</p>
+           <p class="calendar-glance-kicker">2026–2027 season</p>
            <h3 class="calendar-glance-title" id="calendar-glance-title">Schedule at a Glance</h3>
            <p class="calendar-glance-subtitle">Middle School Public Forum</p>
            <ul class="calendar-glance-group">
              <li class="calendar-glance-group-label">Family &amp; team kickoff</li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2026-09-29"><span>Sep</span><strong>29</strong></time>
-               <span class="calendar-glance-copy"><strong>Parent meeting</strong><span>7:00 PM · Online via Google Meet</span></span>
+               <time class="calendar-glance-date" datetime="2026-09-29"><span>Sep 2026</span><strong>29</strong></time>
+               <span class="calendar-glance-copy"><strong>Parent meeting</strong><span>7:30 PM · Online via Google Meet</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2026-10-03"><span>Oct</span><strong>3</strong></time>
+               <time class="calendar-glance-date" datetime="2026-10-03"><span>Oct 2026</span><strong>3</strong></time>
                <span class="calendar-glance-copy"><strong>Parent judge training</strong><span>8:30 AM–noon · BASIS Independent McLean</span></span>
              </li>
            </ul>
            <ul class="calendar-glance-group">
              <li class="calendar-glance-group-label">Tournament schedule</li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2026-10-24"><span>Oct</span><strong>24</strong></time>
+               <time class="calendar-glance-date" datetime="2026-10-24"><span>Oct 2026</span><strong>24</strong></time>
                <span class="calendar-glance-copy"><strong>MS PF #1</strong><span>Congressional School · Falls Church</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2026-11-14"><span>Nov</span><strong>14</strong></time>
+               <time class="calendar-glance-date" datetime="2026-11-14"><span>Nov 2026</span><strong>14</strong></time>
                <span class="calendar-glance-copy"><strong>MS PF #2 · Cooper hosts</strong><span>Cooper Middle School · McLean</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2026-12-05"><span>Dec</span><strong>5</strong></time>
+               <time class="calendar-glance-date" datetime="2026-12-05"><span>Dec 2026</span><strong>5</strong></time>
                <span class="calendar-glance-copy"><strong>MS PF #3</strong><span>Longfellow Middle School · McLean</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2027-01-30"><span>Jan</span><strong>30</strong></time>
+               <time class="calendar-glance-date" datetime="2027-01-30"><span>Jan 2027</span><strong>30</strong></time>
                <span class="calendar-glance-copy"><strong>MS PF #4</strong><span>Norwood School · Bethesda</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2027-02-20"><span>Feb</span><strong>20</strong></time>
+               <time class="calendar-glance-date" datetime="2027-02-20"><span>Feb 2027</span><strong>20</strong></time>
                <span class="calendar-glance-copy"><strong>PF #5 · Online</strong><span>Virtual extravaganza tournament</span></span>
              </li>
              <li class="calendar-glance-item">
-               <time class="calendar-glance-date" datetime="2027-03-12"><span>Mar</span><strong>12–13</strong></time>
-               <span class="calendar-glance-copy"><strong>Metro Finals</strong><span>Friday online · Saturday in person</span></span>
+               <time class="calendar-glance-date" datetime="2027-03-12"><span>Mar 2027</span><strong>12–13</strong></time>
+               <span class="calendar-glance-copy"><strong>Public Forum &amp; Policy Metro Finals</strong><span>George C. Marshall · PF one day in person; Policy Friday/Saturday</span></span>
              </li>
            </ul>
            <p class="calendar-glance-note"><strong>Attendance expectation:</strong> Every debater should attend at least 3 of the 5 preliminary tournaments.</p>
-           <a class="calendar-glance-link" href="https://docs.google.com/document/d/1oXMRezhpuRjJetx0RnyV_oxsAy3YTbY0wiDF5tBV9a0/edit?tab=t.0" target="_blank" rel="noopener">View the 2026–27 WACFL schedule →</a>
+           <button class="calendar-glance-link" id="open-schedule-pdf" type="button">View the 2026–2027 full WASDL schedule →</button>
          </aside>
        </div>
      </div>
@@ -1395,6 +1493,25 @@
     </div>
   </div>
 </section>
+
+<dialog id="schedule-pdf-modal" class="schedule-pdf-modal" aria-labelledby="schedule-pdf-title">
+  <div class="schedule-pdf-modal-header">
+    <div class="schedule-pdf-modal-heading">
+      <p class="schedule-pdf-modal-kicker">Official PDF</p>
+      <h2 class="schedule-pdf-modal-title" id="schedule-pdf-title">2026–2027 WASDL Tournament Schedule</h2>
+    </div>
+    <div class="schedule-pdf-modal-actions">
+      <a class="schedule-pdf-new-tab" href="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788214669688.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
+      <button class="schedule-pdf-close" id="close-schedule-pdf" type="button" aria-label="Close schedule PDF">×</button>
+    </div>
+  </div>
+  <iframe
+    class="schedule-pdf-frame"
+    id="schedule-pdf-frame"
+    title="2026–2027 WASDL Tournament Schedule PDF"
+    data-src="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788214669688.pdf#view=FitH"
+  ></iframe>
+</dialog>
 
 <footer data-public-footer>
   <div class="section-wrap">
@@ -1871,6 +1988,35 @@ function renderLastSeason(tourns) {
 document.addEventListener('DOMContentLoaded', function() {
   showSeason('this');
 });
+</script>
+<script>
+(function initSchedulePdfModal() {
+  const openButton = document.getElementById('open-schedule-pdf');
+  const closeButton = document.getElementById('close-schedule-pdf');
+  const modal = document.getElementById('schedule-pdf-modal');
+  const frame = document.getElementById('schedule-pdf-frame');
+  if (!openButton || !closeButton || !modal || !frame) return;
+
+  function closeModal() {
+    modal.close();
+  }
+
+  openButton.addEventListener('click', function() {
+    if (!frame.src) frame.src = frame.dataset.src;
+    modal.showModal();
+    document.body.classList.add('schedule-pdf-is-open');
+  });
+  closeButton.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) closeModal();
+  });
+  modal.addEventListener('cancel', function() {
+    document.body.classList.remove('schedule-pdf-is-open');
+  });
+  modal.addEventListener('close', function() {
+    document.body.classList.remove('schedule-pdf-is-open');
+  });
+}());
 </script>
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js?v=2"></script>
