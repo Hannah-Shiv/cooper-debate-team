@@ -464,7 +464,7 @@
     .tournament-overview-event-card {
       display:flex;
       flex-direction:column;
-      padding:25px;
+      padding:18px 20px 20px;
       border:1px solid rgba(255,166,125,.52);
       border-top:3px solid #F2A477;
       border-radius:12px;
@@ -478,14 +478,14 @@
     }
     .tournament-overview-event-card-header {
       display:grid;
-      grid-template-columns:160px minmax(0,1fr);
+      grid-template-columns:240px minmax(0,1fr);
       align-items:start;
-      gap:20px;
+      gap:18px;
     }
     .tournament-overview-event-card-header img {
       display:block;
-      width:160px;
-      height:160px;
+      width:240px;
+      height:auto;
       flex:0 0 auto;
       object-fit:contain;
     }
@@ -510,7 +510,7 @@
       text-transform:uppercase;
     }
     .tournament-overview-event-card > p {
-      margin:18px 0 0;
+      margin:8px 0 0;
       color:#c2d0e4;
       font-size:.89rem;
       line-height:1.65;
@@ -1525,12 +1525,12 @@
       .tournament-day-timeline-item:last-child { border-bottom:0; }
       .tournament-overview-event-grid { grid-template-columns:1fr; }
       .tournament-overview-event-card-header {
-        grid-template-columns:140px minmax(0,1fr);
+        grid-template-columns:210px minmax(0,1fr);
         gap:16px;
       }
       .tournament-overview-event-card-header img {
-        width:140px;
-        height:140px;
+        width:210px;
+        height:auto;
       }
       .vol-choose-layout{grid-template-columns:1fr;}
       .vol-brief-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
@@ -1585,6 +1585,17 @@
     @media(max-width:600px){
       .tournaments-page .resolution-card { padding:17px 16px 16px; }
       .tournaments-page .resolution-text { font-size:1.22rem; line-height:1.25; }
+      .tournament-overview-event-card {
+        padding:16px 16px 18px;
+      }
+      .tournament-overview-event-card-header {
+        grid-template-columns:1fr;
+        gap:10px;
+      }
+      .tournament-overview-event-card-header img {
+        width:190px;
+        height:auto;
+      }
       .tournament-overview-volunteer-callout { padding:17px 16px; }
       .tournament-overview-volunteer-callout > img { width:40px; height:40px; }
       .tournament-overview-external-grid { grid-template-columns:1fr; }
