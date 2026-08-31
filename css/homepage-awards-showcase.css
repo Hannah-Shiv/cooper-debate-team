@@ -1511,44 +1511,19 @@ html body #idx-stats-heading .idx-awards-heading-rule-diamond {
     0 0 18px rgba(242, 209, 107, 0.62);
 }
 
-html body .idx-awards-story-badge {
+html body .idx-awards-story-badge-art {
   position: absolute;
   z-index: 2;
-  top: 10px;
-  left: 4px;
-  display: grid;
-  width: 44px;
-  height: 44px;
-  place-items: center;
-  border: 1px solid rgba(255, 244, 177, 0.72);
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.18), transparent 24%),
-    rgba(242, 209, 107, 0.075);
-  box-shadow:
-    inset 0 0 12px rgba(242, 209, 107, 0.09),
-    0 0 9px rgba(242, 209, 107, 0.28),
-    0 0 22px rgba(242, 209, 107, 0.13);
-}
-
-html body .idx-awards-story-badge::before {
-  position: absolute;
-  inset: 5px;
-  border: 1px solid rgba(242, 209, 107, 0.3);
-  transform: rotate(45deg);
-  content: "";
-}
-
-html body .idx-awards-story-badge svg {
-  position: relative;
-  z-index: 1;
-  width: 22px;
-  height: 22px;
-  stroke: #fff2a8;
-  stroke-width: 1.45;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 0 5px rgba(242, 209, 107, 0.72));
+  top: 3px;
+  left: -2px;
+  width: 124px;
+  height: 83px;
+  object-fit: contain;
+  object-position: left top;
+  filter:
+    drop-shadow(0 0 5px rgba(242, 209, 107, 0.46))
+    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.24));
+  opacity: 0.96;
 }
 
 @media (max-width: 600px) {
@@ -1561,16 +1536,11 @@ html body .idx-awards-story-badge svg {
     font-size: 0.72rem;
   }
 
-  html body .idx-awards-story-badge {
-    top: 8px;
-    left: 1px;
-    width: 38px;
-    height: 38px;
-  }
-
-  html body .idx-awards-story-badge svg {
-    width: 19px;
-    height: 19px;
+  html body .idx-awards-story-badge-art {
+    top: 2px;
+    left: -3px;
+    width: 104px;
+    height: 69px;
   }
 
   html body #idx-stats-grid.idx-awards-content {
@@ -1592,6 +1562,18 @@ html body .idx-awards-story-badge svg {
   html body .idx-award-plaque-image,
   html body .idx-award-plaque--second .idx-award-plaque-image {
     min-height: 112px !important;
+  }
+
+  html body #idx-stats-heading .idx-awards-title {
+    font-size: clamp(1.22rem, 6.2vw, 1.5rem);
+  }
+
+  html body #idx-stats-heading .idx-awards-season {
+    font-size: 0.98em !important;
+  }
+
+  html body #idx-stats-heading .idx-awards-title-main {
+    font-size: 0.82em !important;
   }
 }
 
@@ -1674,7 +1656,7 @@ html body #idx-stats-heading .idx-awards-heading-rule--right .idx-awards-heading
   }
 
   html body #idx-stats-heading .idx-awards-heading-rule-line {
-    width: 32px;
-    flex-basis: 32px;
+    width: clamp(24px, 8.2vw, 32px);
+    flex-basis: clamp(24px, 8.2vw, 32px);
   }
 }
