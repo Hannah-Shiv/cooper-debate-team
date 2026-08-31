@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
+  <link rel="stylesheet" href="css/srr-reminder.css?v=1"/>
   <style>
     :root{--app-ink:#1c2030;--app-navy:#0a2145;--app-panel:#0d2b54;--app-panel-deep:#091d3a;--app-rule:rgba(154,188,226,.22);--app-text:#f4f5ef;--app-muted:#a9bdd7;--app-gold:#e7b83f;--app-gold-soft:#f3d477;--app-red:#d75450;--app-green:#4fc58b;--app-blue:#78aee9;--gold:var(--app-gold);--muted:var(--app-muted);--line:var(--app-rule);--status-red:#ffaaa6}
     *{box-sizing:border-box}body{margin:0;background:var(--app-ink);color:var(--app-text);font-family:"Josefin Sans",sans-serif}[hidden]{display:none!important}button,input,select,textarea{font:inherit}.app{min-height:100vh;background:var(--app-ink);background-image:radial-gradient(ellipse 90% 50% at 50% -5%,rgba(20,40,100,.25) 0%,transparent 65%),radial-gradient(ellipse 50% 30% at 85% 90%,rgba(15,30,80,.15) 0%,transparent 60%)}.coach-link{border:1px solid rgba(231,184,63,.6);border-radius:4px;color:var(--app-gold);font-size:.6rem;font-weight:700;letter-spacing:.09em;padding:10px 12px;text-decoration:none;text-transform:uppercase;white-space:nowrap}.coach-link:hover{background:rgba(231,184,63,.1)}
@@ -145,6 +146,11 @@
           <div class="panel queue-panel"><div class="list-head"><h2>Applicants</h2><span class="count" id="visible-count">0 total</span></div><div class="application-list" id="application-list" aria-live="polite"></div></div>
           <article class="panel detail" id="detail"><div class="detail-empty">Select an application from the queue to view private details and record a decision.</div></article>
         </section>
+        <aside class="srr-reminder srr-reminder--compact" aria-labelledby="applications-srr-title">
+          <h2 class="srr-reminder__title" id="applications-srr-title">Remember Your Responsibilities</h2>
+          <p class="srr-reminder__copy">As members of the Cooper Debate Team and FCPS students, remember your responsibilities. Be respectful. Be responsible. Think before you post or share.</p>
+          <a class="srr-reminder__link" href="https://www.fcps.edu/about-fcps/leadership/district-performance-transparency/policies-regulations-notices/student-rights" target="_blank" rel="noopener">Review the FCPS Student Rights &amp; Responsibilities (SR&amp;R) →</a>
+        </aside>
       </section>
       <dialog class="answer-dialog" id="answer-dialog" aria-labelledby="answer-dialog-title">
         <form method="dialog" class="answer-dialog-card">
