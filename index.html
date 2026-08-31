@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-   <link rel="stylesheet" href="css/homepage-readiness.css?v=11"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=12"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2415,6 +2415,15 @@
     body.homepage-shell .section-wrap {
       max-width: 1380px;
     }
+    body.homepage-shell #idx-bottom-section > .section-wrap {
+      max-width: 1380px;
+    }
+    @media (min-width: 1600px) {
+      body.homepage-shell .section-wrap,
+      body.homepage-shell #idx-bottom-section > .section-wrap {
+        max-width: 1500px;
+      }
+    }
 
     /* Use a more distinctive constellation rail for the two season-pulse
        panels while keeping the inset proportions used on about.html. */
@@ -2684,6 +2693,18 @@
           <circle cx="12" cy="12" r="9"/>
           <path d="M12 10v6M12 7h.01"/>
         </symbol>
+        <symbol id="readiness-icon-check" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="m8 12 2.6 2.6L16.5 9"/>
+        </symbol>
+        <symbol id="readiness-icon-dollar" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="9"/>
+          <path d="M15.5 8.5c-.8-.7-1.9-1-3.2-1-1.7 0-3 .8-3 2.1 0 3.5 6.4 1.6 6.4 5.1 0 1.3-1.3 2.2-3.2 2.2-1.5 0-2.8-.5-3.7-1.4M12.3 5.5v13"/>
+        </symbol>
+        <symbol id="readiness-icon-eye" viewBox="0 0 24 24">
+          <path d="M3 12s3.3-5 9-5 9 5 9 5-3.3 5-9 5-9-5-9-5Z"/>
+          <circle cx="12" cy="12" r="2.5"/>
+        </symbol>
       </svg>
       <div class="homepage-readiness__header">
         <div class="homepage-readiness__intro">
@@ -2770,9 +2791,9 @@
           <h3>Debate together in Public Forum</h3>
           <p class="homepage-readiness__detail-copy">Public Forum is a structured 35-minute back-and-forth with prepared, well-researched speeches, crossfire, and thinking on your feet. Every round takes two debaters working as a team.</p>
           <ul class="homepage-readiness__bullet-list">
-            <li><strong>Partner up.</strong> Choose your partner or request a pairing.</li>
-            <li><strong>Prepare beyond practice.</strong> Research, write, and practice with your partner outside Tuesday meetings.</li>
-            <li><strong>Collaborate well.</strong> Communicate with your partner and contribute to a civil, prepared team.</li>
+            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Partner up.</strong> Choose your partner or request a pairing.</span></li>
+            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Prepare beyond practice.</strong> Research, write, and practice with your partner outside Tuesday meetings.</span></li>
+            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Collaborate well.</strong> Communicate with your partner and contribute to a civil, prepared team.</span></li>
           </ul>
           <div class="homepage-readiness__detail-links">
             <a href="about.html#why-debate-section">What is Public Forum? <span aria-hidden="true">→</span></a>
@@ -2784,11 +2805,11 @@
           <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-users"></use></svg></span><span>For students and families</span></p>
           <h3>Plan for the season</h3>
           <ul class="homepage-readiness__bullet-list">
-            <li><strong>Practices:</strong> Tuesdays after school in A and B Sessions.</li>
-            <li><strong>Tournaments:</strong> Monthly Saturday tournaments. Parents are responsible for transportation to and from tournaments and may arrange carpools.</li>
-            <li><strong>Fees:</strong> $20 per Cooper debater each year covers annual WASDL dues and five preliminary tournaments. Metro Finals or Nationals may add $15–$20 per student.</li>
-            <li><strong>Communication:</strong> Coaches use Talking Points and Schoology, not the team app.</li>
-            <li><strong>Watching rounds:</strong> Check with the judge and the other debaters before observing; remain quiet and do not signal during the round.</li>
+            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-users"></use></svg></span><span><strong>Practices:</strong> Tuesdays after school in A and B Sessions.</span></li>
+            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span><span><strong>Tournaments:</strong> Monthly Saturday tournaments. Parents are responsible for transportation to and from tournaments and may arrange carpools.</span></li>
+            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-dollar"></use></svg></span><span><strong>Fees:</strong> $20 per Cooper debater each year covers annual WASDL dues and five preliminary tournaments. Metro Finals or Nationals may add $15–$20 per student.</span></li>
+            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-speech"></use></svg></span><span><strong>Communication:</strong> Coaches use Talking Points and Schoology, not the team app.</span></li>
+            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-eye"></use></svg></span><span><strong>Watching rounds:</strong> Check with the judge and the other debaters before observing; remain quiet and do not signal during the round.</span></li>
           </ul>
           <a class="homepage-readiness__detail-cta" href="tournaments.html?tab=parent-info">Read the full Parent &amp; Family Guide <span aria-hidden="true">→</span></a>
         </article>
