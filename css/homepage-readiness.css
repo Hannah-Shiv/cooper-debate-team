@@ -658,7 +658,6 @@
 }
 
 .homepage-readiness__deck-card {
-  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   flex: 1;
@@ -670,7 +669,11 @@
   border-top: 0;
 }
 
-.homepage-readiness__deck-card::before {
+.homepage-readiness__deck-details {
+  position: relative;
+}
+
+.homepage-readiness__deck-details::before {
   position: absolute;
   top: -1px;
   left: 12%;
