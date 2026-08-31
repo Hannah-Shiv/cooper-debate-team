@@ -306,9 +306,18 @@
     transform: none;
   }
 
+  .homepage-readiness__deck-stage img.is-exiting-next,
+  .homepage-readiness__deck-stage img.is-exiting-previous {
+    animation: none;
+    opacity: 0;
+    transform: none;
+  }
+
   .homepage-readiness__deck-stage img.is-entering-next,
   .homepage-readiness__deck-stage img.is-entering-previous {
     animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -1119,12 +1128,106 @@ body.deck-dialog-open {
   box-shadow: 0 14px 34px rgba(0, 0, 0, 0.38);
 }
 
+.homepage-readiness__deck-slide-viewport {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #f7e9e9;
+}
+
 .homepage-readiness__deck-stage img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   display: block;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  height: 100%;
   object-fit: contain;
   background: #f7e9e9;
+  opacity: 0;
+  transform: translateX(0);
+}
+
+.homepage-readiness__deck-stage img.is-current {
+  z-index: 1;
+  opacity: 1;
+}
+
+@keyframes deck-slide-out-next {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes deck-slide-in-next {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes deck-slide-out-previous {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes deck-slide-in-previous {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.homepage-readiness__deck-stage img.is-exiting-next,
+.homepage-readiness__deck-stage img.is-exiting-previous,
+.homepage-readiness__deck-stage img.is-entering-next,
+.homepage-readiness__deck-stage img.is-entering-previous {
+  z-index: 2;
+  animation-duration: 360ms;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation-fill-mode: both;
+  will-change: opacity, transform;
+}
+
+.homepage-readiness__deck-stage img.is-exiting-next {
+  z-index: 1;
+  animation-name: deck-slide-out-next;
+}
+
+.homepage-readiness__deck-stage img.is-entering-next {
+  animation-name: deck-slide-in-next;
+}
+
+.homepage-readiness__deck-stage img.is-exiting-previous {
+  z-index: 1;
+  animation-name: deck-slide-out-previous;
+}
+
+.homepage-readiness__deck-stage img.is-entering-previous {
+  animation-name: deck-slide-in-previous;
 }
 
 @keyframes deck-slide-in-next {

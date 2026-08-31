@@ -11,7 +11,7 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=6"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-   <link rel="stylesheet" href="css/homepage-readiness.css?v=28"/>
+   <link rel="stylesheet" href="css/homepage-readiness.css?v=29"/>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2799,7 +2799,10 @@
           <div class="homepage-readiness__deck-stage-row">
             <button class="homepage-readiness__deck-nav" type="button" data-deck-prev aria-label="Previous slide">←</button>
             <figure class="homepage-readiness__deck-stage">
-              <img id="info-session-deck-slide" src="images/info-session/slide-01.jpg" alt="Cooper Debate information-session slide 1"/>
+              <div class="homepage-readiness__deck-slide-viewport">
+                <img id="info-session-deck-slide" class="is-current" src="images/info-session/slide-01.jpg" alt="Cooper Debate information-session slide 1"/>
+                <img id="info-session-deck-slide-secondary" aria-hidden="true" alt=""/>
+              </div>
               <figcaption>
                 <span id="info-session-deck-counter">Slide 1 of 30</span>
                 <strong id="info-session-deck-caption">Welcome to Cooper Debate</strong>
@@ -3769,6 +3772,6 @@
   });
 })();
 </script>
-<script src="js/info-session-deck.js?v=4"></script>
+<script src="js/info-session-deck.js?v=5"></script>
 </body>
 </html>
