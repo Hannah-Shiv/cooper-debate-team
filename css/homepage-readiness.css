@@ -342,8 +342,12 @@
 }
 
 .homepage-readiness__date-list div {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  column-gap: 10px;
+  align-items: start;
   padding-bottom: 10px;
-  border-bottom: 1px solid rgba(242, 209, 107, 0.15);
+  border-bottom: 1px solid rgba(109, 216, 184, 0.2);
 }
 
 .homepage-readiness__date-list div:last-child {
@@ -352,8 +356,9 @@
 }
 
 .homepage-readiness__date-list dt {
+  grid-column: 2;
   margin-bottom: 3px;
-  color: #ffb0b0;
+  color: #8cebd0;
   font-family: "Josefin Sans", sans-serif;
   font-size: 0.82rem;
   font-weight: 700;
@@ -361,10 +366,34 @@
 }
 
 .homepage-readiness__date-list dd {
+  grid-column: 2;
   margin: 0;
   color: rgba(255, 255, 255, 0.7);
   font-size: 0.86rem;
   line-height: 1.5;
+}
+
+.homepage-readiness__date-icon {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid rgba(109, 216, 184, 0.72);
+  border-radius: 50%;
+  background: rgba(13, 63, 73, 0.52);
+  color: #8cebd0;
+}
+
+.homepage-readiness__date-icon svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
 }
 
 .homepage-readiness__bullet-list {
