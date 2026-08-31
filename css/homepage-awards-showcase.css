@@ -1388,7 +1388,11 @@ html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-ga
 html body .idx-awards-pairs-art {
   width: min(90%, 263px) !important;
   margin-top: 0 !important;
-  transform: translateY(23px);
+  transform: translateY(31px);
+}
+
+html body .idx-awards-story-copy {
+  margin-top: 29px !important;
 }
 
 html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery,
@@ -1414,6 +1418,10 @@ html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
 
   html body .idx-awards-pairs-art {
     width: min(90%, 243px) !important;
-    transform: translateY(10px);
+    transform: translateY(16px);
+  }
+
+  html body .idx-awards-story-copy {
+    margin-top: 24px !important;
   }
 }
