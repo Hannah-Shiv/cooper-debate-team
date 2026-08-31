@@ -245,7 +245,7 @@
 
 .homepage-readiness__detail-card:hover,
 .homepage-readiness__detail-card:focus-within {
-  transform: translateY(-7px);
+  transform: translateY(-2px);
 }
 
 .homepage-readiness__detail-card--dates:hover,
