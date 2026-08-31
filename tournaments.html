@@ -366,22 +366,36 @@
       box-shadow:0 12px 28px rgba(0,0,0,.25);
     }
     .tournament-day-card-header {
+      align-items:flex-start;
       display:flex;
-      align-items:center;
       justify-content:space-between;
       gap:20px;
       padding-bottom:22px;
       border-bottom:1px solid rgba(255,255,255,.14);
     }
     .tournament-day-card-title {
-      display:flex;
+      position:relative;
+      display:grid;
+      grid-template-columns:220px minmax(0,1fr);
       align-items:center;
-      gap:15px;
+      gap:32px;
+      min-width:0;
+      flex:1 1 auto;
+    }
+    .tournament-day-card-title::after {
+      position:absolute;
+      top:20px;
+      bottom:20px;
+      left:232px;
+      width:2px;
+      background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.55) 18%,rgba(255,255,255,.24) 82%,transparent 100%);
+      content:"";
+      pointer-events:none;
     }
     .tournament-day-card-title img {
       display:block;
-      width:54px;
-      height:54px;
+      width:220px;
+      height:auto;
       object-fit:contain;
       flex:0 0 auto;
     }
@@ -485,11 +499,11 @@
     }
     .tournament-overview-event-card-header::after {
       position:absolute;
-      top:0;
-      bottom:0;
-      left:249px;
-      width:1px;
-      background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.46) 18%,rgba(255,255,255,.2) 82%,transparent 100%);
+      top:28px;
+      bottom:28px;
+      left:242px;
+      width:2px;
+      background:linear-gradient(to bottom,transparent 0%,rgba(255,255,255,.5) 18%,rgba(255,255,255,.22) 82%,transparent 100%);
       content:"";
       pointer-events:none;
     }
@@ -1548,7 +1562,9 @@
         gap:16px;
       }
       .tournament-overview-event-card-header::after {
-        left:218px;
+        top:24px;
+        bottom:24px;
+        left:213px;
       }
       .tournament-overview-event-card-header img {
         width:210px;
@@ -1576,6 +1592,19 @@
       .tournament-overview-external-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .tournament-day-card { padding:22px 19px; }
       .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
+      .tournament-day-card-title {
+        grid-template-columns:190px minmax(0,1fr);
+        gap:28px;
+        width:100%;
+      }
+      .tournament-day-card-title::after {
+        top:18px;
+        bottom:18px;
+        left:200px;
+      }
+      .tournament-day-card-title img {
+        width:190px;
+      }
       .tournament-overview-event-card { padding:21px 19px; }
       .tournament-overview-volunteer-callout { grid-template-columns:auto minmax(0,1fr); }
       .tournament-overview-volunteer-callout .btn { grid-column:1 / -1; justify-self:start; }
@@ -1835,7 +1864,7 @@
       <div class="tournament-day-card">
         <div class="tournament-day-card-header">
           <div class="tournament-day-card-title">
-            <img src="images/kickoff-icon-calendar.png" alt="" loading="lazy">
+            <img src="images/icon-wasdl-tournament-day-large.png" alt="" loading="lazy">
             <div>
               <p class="tournament-day-card-kicker">Plan the day</p>
               <h2 id="tournament-day-title">A Typical WASDL Tournament Day</h2>
