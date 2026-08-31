@@ -392,7 +392,7 @@
 }
 
 .homepage-readiness__date-list div:last-child {
-  padding-bottom: 0;
+  padding-bottom: 12px;
   border-bottom: 0;
 }
 
@@ -446,6 +446,10 @@
   font-size: 0.86rem;
   line-height: 1.5;
   list-style: none;
+}
+
+.homepage-readiness__detail-card--format .homepage-readiness__bullet-list {
+  gap: 15px;
 }
 
 .homepage-readiness__bullet-list li {
