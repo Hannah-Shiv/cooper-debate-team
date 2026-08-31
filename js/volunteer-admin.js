@@ -463,7 +463,7 @@
     $("judge-capacity-down").addEventListener("click", () => adjustCapacity(-1));
     $("judge-capacity-up").addEventListener("click", () => adjustCapacity(1));
     const schedulePresets = {
-      "8:30 AM – 5:00 PM": ["08:30", "17:00"],
+      "8:00 AM – 5:30 PM": ["08:00", "17:30"],
       "9:00 AM – 4:30 PM": ["09:00", "16:30"],
       "9:00 AM – 5:00 PM": ["09:00", "17:00"],
     };
