@@ -1571,6 +1571,14 @@
       }
     }
 
+    /* Keep the wide footer navigation visually clear of the brand lockup
+       while moving both navigation columns together as a balanced group. */
+    @media (min-width: 1041px) {
+      .index-footer-column {
+        transform: translateX(30px);
+      }
+    }
+
     /* Quieter, approximately 20% smaller treatment for the complete
        By the Numbers section. */
     #idx-stats-section {
@@ -3024,19 +3032,17 @@
     <div id="idx-stats-outer" class="idx-awards-showcase">
       <header id="idx-stats-heading" class="idx-awards-heading">
         <h2 class="idx-awards-title">
-          <span class="idx-awards-heading-rule" aria-hidden="true">
+          <span class="idx-awards-heading-rule idx-awards-heading-rule--left" aria-hidden="true">
             <span class="idx-awards-heading-rule-line"></span>
-            <span class="idx-awards-heading-rule-diamond">◆</span>
-            <span class="idx-awards-heading-rule-line"></span>
+            <span class="idx-awards-heading-rule-diamond">✦</span>
           </span>
           <span class="idx-awards-title-copy">
             <span class="idx-awards-season" id="idx-stats-season-label">2025–26 Season</span>
             <span class="idx-awards-heading-dot" aria-hidden="true">·</span>
             <span class="idx-awards-title-main">By the Numbers</span>
           </span>
-          <span class="idx-awards-heading-rule" aria-hidden="true">
-            <span class="idx-awards-heading-rule-line"></span>
-            <span class="idx-awards-heading-rule-diamond">◆</span>
+          <span class="idx-awards-heading-rule idx-awards-heading-rule--right" aria-hidden="true">
+            <span class="idx-awards-heading-rule-diamond">✦</span>
             <span class="idx-awards-heading-rule-line"></span>
           </span>
         </h2>

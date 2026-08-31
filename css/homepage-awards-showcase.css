@@ -1594,3 +1594,87 @@ html body .idx-awards-story-badge svg {
     min-height: 112px !important;
   }
 }
+
+/* Match the restrained gold line-and-star treatment used by About This
+   Website. The rule is intentionally quieter than the previous glow. */
+html body #idx-stats-heading .idx-awards-heading-rule {
+  flex: 0 0 80px;
+  width: 80px;
+  min-width: 0;
+  max-width: none;
+  gap: 12px;
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-line {
+  height: 1.5px;
+  flex: 1 1 auto;
+  border-radius: 0;
+  background: linear-gradient(to left, #F2D16B, transparent);
+  box-shadow: 0 0 6px rgba(242, 209, 107, 0.5);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-line:last-child {
+  background: linear-gradient(to right, #F2D16B, transparent);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-diamond {
+  flex: 0 0 auto;
+  color: #F2D16B;
+  font-size: 1.1rem;
+  line-height: 1;
+  text-shadow: 0 0 8px rgba(242, 209, 107, 0.8);
+}
+
+@media (max-width: 600px) {
+  html body #idx-stats-heading .idx-awards-heading-rule {
+    flex: 0 0 auto;
+    width: auto;
+    gap: 6px;
+  }
+
+  html body #idx-stats-heading .idx-awards-heading-rule-line {
+    width: 32px;
+    flex: 0 0 32px;
+  }
+
+  html body #idx-stats-heading .idx-awards-heading-rule-diamond {
+    font-size: 0.9rem;
+  }
+}
+
+/* Mirror the About page exactly: line + star on the left, star + line on
+   the right, with the line fading away from the title. */
+html body #idx-stats-heading .idx-awards-heading-rule {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: none;
+  min-width: 0;
+  gap: 12px;
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule-line {
+  width: 80px;
+  flex: 0 0 80px;
+  height: 1.5px;
+  border-radius: 0;
+  box-shadow: 0 0 6px rgba(242, 209, 107, 0.5);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule--left .idx-awards-heading-rule-line {
+  background: linear-gradient(to left, #F2D16B, transparent);
+}
+
+html body #idx-stats-heading .idx-awards-heading-rule--right .idx-awards-heading-rule-line {
+  background: linear-gradient(to right, #F2D16B, transparent);
+}
+
+@media (max-width: 600px) {
+  html body #idx-stats-heading .idx-awards-heading-rule {
+    gap: 6px;
+  }
+
+  html body #idx-stats-heading .idx-awards-heading-rule-line {
+    width: 32px;
+    flex-basis: 32px;
+  }
+}
