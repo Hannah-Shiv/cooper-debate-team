@@ -658,6 +658,7 @@
 }
 
 .homepage-readiness__deck-card {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   flex: 1;
@@ -666,6 +667,26 @@
   min-height: 190px;
   margin-top: 18px;
   padding: 0;
+  border-top: 0;
+}
+
+.homepage-readiness__deck-card::before {
+  position: absolute;
+  top: -1px;
+  left: 12%;
+  width: 76%;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(242, 209, 107, 0.22) 18%,
+    #f2d16b 50%,
+    rgba(242, 209, 107, 0.22) 82%,
+    transparent 100%
+  );
+  box-shadow: 0 0 8px rgba(242, 209, 107, 0.22);
+  content: "";
 }
 
 .homepage-readiness__deck-cover {
@@ -850,12 +871,12 @@
 }
 
 .homepage-readiness__deck-action--open {
-  border-color: rgba(109, 216, 184, 0.72);
+  border: 1px solid rgba(109, 216, 184, 0.72);
   background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
 }
 
 .homepage-readiness__deck-action--download {
-  border-color: rgba(221, 169, 243, 0.78);
+  border: 1px solid rgba(221, 169, 243, 0.78);
   background: linear-gradient(135deg, #593475 0%, #2b1848 100%);
   box-shadow: 0 6px 16px rgba(27, 9, 45, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
