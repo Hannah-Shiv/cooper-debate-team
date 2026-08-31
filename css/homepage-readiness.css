@@ -666,12 +666,12 @@
   min-height: 190px;
   margin-top: 18px;
   padding: 10px;
-  border: 1px solid rgba(242, 209, 107, 0.76);
+  border: 1px solid rgba(213, 201, 177, 0.62);
   border-radius: 8px;
   background:
-    radial-gradient(circle at 92% 20%, rgba(242, 209, 107, 0.13), transparent 33%),
-    linear-gradient(135deg, rgba(10, 28, 64, 0.98), rgba(4, 15, 39, 0.99));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 26px rgba(0, 0, 0, 0.24);
+    radial-gradient(circle at 8% 18%, rgba(255, 255, 255, 0.08), transparent 28%),
+    linear-gradient(145deg, rgba(70, 75, 85, 0.99), rgba(40, 44, 53, 0.99));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.13), 0 10px 26px rgba(0, 0, 0, 0.28);
 }
 
 .homepage-readiness__deck-cover {
@@ -746,9 +746,9 @@
   border: 1px solid rgba(213, 201, 177, 0.34);
   border-radius: 8px;
   background:
-    radial-gradient(circle at 96% 8%, rgba(242, 209, 107, 0.16), transparent 27%),
-    radial-gradient(circle, rgba(255, 255, 255, 0.06) 1px, transparent 1.5px) 0 0 / 14px 14px,
-    linear-gradient(145deg, rgba(57, 62, 72, 0.98), rgba(36, 41, 50, 0.99));
+    radial-gradient(circle at 96% 8%, rgba(242, 209, 107, 0.17), transparent 27%),
+    radial-gradient(circle, rgba(126, 184, 232, 0.1) 1px, transparent 1.5px) 0 0 / 14px 14px,
+    linear-gradient(145deg, rgba(29, 59, 103, 0.98), rgba(10, 28, 63, 0.99));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 5px 14px rgba(0, 0, 0, 0.18);
 }
 
@@ -817,10 +817,10 @@
   align-items: center;
   justify-content: center;
   padding: 8px 9px;
-  border: 1px solid rgba(213, 201, 177, 0.34);
+  border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: 6px;
-  background: linear-gradient(135deg, rgba(57, 62, 72, 0.96), rgba(36, 41, 50, 0.98));
-  color: #f2efe7;
+  background: linear-gradient(135deg, #596577, #3d4859);
+  color: #fff;
   font-family: "Josefin Sans", sans-serif;
   font-size: 0.68rem;
   font-weight: 700;
@@ -830,6 +830,19 @@
   text-decoration: none;
   cursor: pointer;
   transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.homepage-readiness__deck-action:not(.homepage-readiness__deck-action--quick) > span:first-child {
+  display: grid;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.48);
+  border-radius: 50%;
+  background: rgba(7, 22, 45, 0.28);
+  font-size: 0.8rem;
+  line-height: 1;
 }
 
 .homepage-readiness__deck-action svg {
@@ -847,12 +860,13 @@
   border-color: #f2d16b;
   background: linear-gradient(135deg, #f2d16b, #d4a017);
   color: #07162d;
+  box-shadow: 0 4px 12px rgba(8, 16, 33, 0.28);
 }
 
 .homepage-readiness__deck-action:hover,
 .homepage-readiness__deck-action:focus-visible {
-  border-color: rgba(242, 209, 107, 0.84);
-  background: linear-gradient(135deg, rgba(76, 81, 91, 0.98), rgba(48, 53, 63, 0.99));
+  border-color: #fff0a6;
+  background: linear-gradient(135deg, #718097, #4c5a6d);
   color: #fff;
   transform: translateY(-1px);
   outline: none;
@@ -862,6 +876,17 @@
 .homepage-readiness__deck-action--quick:focus-visible {
   background: linear-gradient(135deg, #ffe58f, #e3ad1d);
   color: #07162d;
+}
+
+.homepage-readiness__deck-action[href*="cooper-debate-info-session-sept-2026.pdf"][download] {
+  border-color: rgba(140, 235, 208, 0.74);
+  background: linear-gradient(135deg, #1b716a, #104f50);
+}
+
+.homepage-readiness__deck-action[href*="cooper-debate-info-session-sept-2026.pdf"][download]:hover,
+.homepage-readiness__deck-action[href*="cooper-debate-info-session-sept-2026.pdf"][download]:focus-visible {
+  border-color: #b8ffe9;
+  background: linear-gradient(135deg, #268d82, #17635f);
 }
 
 body.deck-dialog-open {
