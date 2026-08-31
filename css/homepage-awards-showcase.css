@@ -1648,3 +1648,14 @@ html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase 
     rgba(4, 16, 43, 0.96)
   ) !important;
 }
+
+/* Keep the outer panel as the only blue surface. The story and plaque
+   columns should sit directly on it rather than introducing inner panels. */
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase
+  #idx-stats-grid.idx-awards-content > .idx-awards-story,
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase
+  #idx-stats-grid.idx-awards-content > .idx-awards-gallery {
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+}
