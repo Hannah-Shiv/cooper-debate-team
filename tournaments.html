@@ -364,6 +364,10 @@
       border-radius:14px;
       background:#101D3B;
       box-shadow:0 12px 28px rgba(0,0,0,.25);
+      box-sizing:border-box;
+      width:min(calc(100% + 168px),100vw);
+      margin-left:50%;
+      transform:translateX(-50%);
     }
     .tournament-day-card-header {
       align-items:flex-start;
@@ -376,9 +380,9 @@
     .tournament-day-card-title {
       position:relative;
       display:grid;
-      grid-template-columns:253px minmax(0,1fr);
+      grid-template-columns:291px minmax(0,1fr);
       align-items:center;
-      gap:36px;
+      gap:44px;
       min-width:0;
       flex:1 1 auto;
     }
@@ -386,7 +390,7 @@
       position:absolute;
       top:20px;
       bottom:20px;
-      left:267px;
+      left:310px;
       width:2px;
       background:#fff;
       content:"";
@@ -394,7 +398,7 @@
     }
     .tournament-day-card-title img {
       display:block;
-      width:253px;
+      width:291px;
       height:auto;
       object-fit:contain;
       flex:0 0 auto;
@@ -478,8 +482,9 @@
       align-items:stretch;
       gap:16px;
       margin-top:16px;
-      width:calc(100% + 48px);
-      margin-left:-24px;
+      width:min(calc(100% + 168px),100vw);
+      margin-left:50%;
+      transform:translateX(-50%);
     }
     .tournament-overview-event-card {
       display:flex;
@@ -1614,6 +1619,12 @@
       .tournament-overview-event-grid {
         width:100%;
         margin-left:0;
+        transform:none;
+      }
+      .tournament-day-card {
+        width:100%;
+        margin-left:0;
+        transform:none;
       }
       .tournament-overview-event-card { padding:21px 19px; }
       .tournament-overview-volunteer-callout { grid-template-columns:auto minmax(0,1fr); }
