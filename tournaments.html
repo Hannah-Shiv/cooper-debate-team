@@ -477,14 +477,15 @@
       background:#23452F;
     }
     .tournament-overview-event-card-header {
-      display:flex;
-      align-items:flex-start;
-      gap:16px;
+      display:grid;
+      grid-template-columns:160px minmax(0,1fr);
+      align-items:start;
+      gap:20px;
     }
     .tournament-overview-event-card-header img {
       display:block;
-      width:78px;
-      height:78px;
+      width:160px;
+      height:160px;
       flex:0 0 auto;
       object-fit:contain;
     }
@@ -1523,6 +1524,14 @@
       }
       .tournament-day-timeline-item:last-child { border-bottom:0; }
       .tournament-overview-event-grid { grid-template-columns:1fr; }
+      .tournament-overview-event-card-header {
+        grid-template-columns:140px minmax(0,1fr);
+        gap:16px;
+      }
+      .tournament-overview-event-card-header img {
+        width:140px;
+        height:140px;
+      }
       .vol-choose-layout{grid-template-columns:1fr;}
       .vol-brief-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
       .vol-brief-facts .vol-event-fact:nth-child(3n){border-right:1px solid rgba(255,255,255,.08);}
