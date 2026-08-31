@@ -436,6 +436,16 @@
     .tourney-section-nav button:active { transform:translateY(0); }
     .tourney-tab-panel { display:none; scroll-margin-top:84px; }
     .tourney-tab-panel.is-active { display:block; }
+
+    /* Give the calendar grid and tab bar more room on desktop without
+       stretching the text-heavy tournament information panels. */
+    @media (min-width: 1041px) {
+      .tournaments-page .tourney-section-nav > .section-wrap,
+      .tournaments-page #calendar-results > .section-wrap {
+        max-width: 1400px;
+      }
+    }
+
     .resolution-banner,
     .volunteer-section { background:var(--navy-dark); }
 
