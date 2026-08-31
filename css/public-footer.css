@@ -477,13 +477,13 @@
 .index-footer-srr-title {
   display: inline;
   margin: 0;
-  color: var(--index-footer-gold);
-  font-family: "Josefin Sans",sans-serif;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.07em;
-  line-height: 1.35;
-  text-transform: uppercase;
+  color: rgba(255,255,255,0.94);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: inherit;
+  text-transform: none;
 }
 
 .index-footer-srr .index-footer-bottom-links {
@@ -502,8 +502,8 @@
   margin: 3px 0 0;
   color: var(--index-footer-muted);
   font-family: "Josefin Sans",sans-serif;
-  font-size: 0.67rem;
-  line-height: 1.5;
+  font-size: 0.82rem;
+  line-height: 1.55;
   white-space: normal;
 }
 
