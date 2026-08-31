@@ -369,39 +369,42 @@
       margin-left:50%;
       transform:translateX(-50%);
     }
+    .tournament-day-card-main {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      align-items:stretch;
+      gap:36px;
+    }
+    .tournament-day-card-art {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:0;
+      padding:10px 28px 10px 0;
+      border-right:2px solid rgba(255,255,255,.72);
+    }
+    .tournament-day-card-art img {
+      display:block;
+      width:min(582px,100%);
+      height:auto;
+      object-fit:contain;
+    }
+    .tournament-day-card-content {
+      display:flex;
+      flex-direction:column;
+      min-width:0;
+    }
     .tournament-day-card-header {
       align-items:flex-start;
       display:flex;
       justify-content:space-between;
-      gap:20px;
-      padding-bottom:22px;
-      border-bottom:1px solid rgba(255,255,255,.14);
+      gap:18px;
+      padding-bottom:18px;
+      border-bottom:1px solid rgba(255,255,255,.16);
     }
     .tournament-day-card-title {
-      position:relative;
-      display:grid;
-      grid-template-columns:291px minmax(0,1fr);
-      align-items:center;
-      gap:44px;
       min-width:0;
       flex:1 1 auto;
-    }
-    .tournament-day-card-title::after {
-      position:absolute;
-      top:20px;
-      bottom:20px;
-      left:310px;
-      width:2px;
-      background:#fff;
-      content:"";
-      pointer-events:none;
-    }
-    .tournament-day-card-title img {
-      display:block;
-      width:291px;
-      height:auto;
-      object-fit:contain;
-      flex:0 0 auto;
     }
     .tournament-day-card-kicker,
     .tournament-overview-event-kicker {
@@ -432,19 +435,20 @@
     }
     .tournament-day-timeline {
       display:grid;
-      grid-template-columns:repeat(3,minmax(0,1fr));
+      grid-template-columns:1fr;
       gap:0;
-      margin-top:22px;
+      margin-top:0;
     }
     .tournament-day-timeline-item {
-      min-height:145px;
-      padding:0 20px;
-      border-right:1px solid rgba(255,255,255,.16);
-    }
-    .tournament-day-timeline-item:first-child { padding-left:0; }
-    .tournament-day-timeline-item:last-child {
-      padding-right:0;
+      min-height:0;
+      padding:16px 0;
       border-right:0;
+      border-bottom:1px solid rgba(255,255,255,.16);
+    }
+    .tournament-day-timeline-item:first-child { padding-top:18px; }
+    .tournament-day-timeline-item:last-child {
+      padding-bottom:0;
+      border-bottom:0;
     }
     .tournament-day-timeline-item:nth-child(1) time { color:#F2D16B; }
     .tournament-day-timeline-item:nth-child(2) time { color:#5DE1D0; }
@@ -1603,18 +1607,20 @@
       .tournament-overview-external-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
       .tournament-day-card { padding:22px 19px; }
       .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
+      .tournament-day-card-main {
+        grid-template-columns:1fr;
+        gap:22px;
+      }
+      .tournament-day-card-art {
+        padding:0 0 22px;
+        border-right:0;
+        border-bottom:2px solid rgba(255,255,255,.72);
+      }
+      .tournament-day-card-art img {
+        width:min(440px,100%);
+      }
       .tournament-day-card-title {
-        grid-template-columns:219px minmax(0,1fr);
-        gap:28px;
         width:100%;
-      }
-      .tournament-day-card-title::after {
-        top:18px;
-        bottom:18px;
-        left:229px;
-      }
-      .tournament-day-card-title img {
-        width:219px;
       }
       .tournament-overview-event-grid {
         width:100%;
@@ -1883,32 +1889,36 @@
     </div>
     <div class="tournament-overview-events" aria-labelledby="tournament-day-title">
       <div class="tournament-day-card">
-        <div class="tournament-day-card-header">
-          <div class="tournament-day-card-title">
+        <div class="tournament-day-card-main">
+          <div class="tournament-day-card-art">
             <img src="images/icon-wasdl-tournament-day-large.png" alt="" loading="lazy">
-            <div>
-              <p class="tournament-day-card-kicker">Plan the day</p>
-              <h2 id="tournament-day-title">A Typical WASDL Tournament Day</h2>
+          </div>
+          <div class="tournament-day-card-content">
+            <div class="tournament-day-card-header">
+              <div class="tournament-day-card-title">
+                <p class="tournament-day-card-kicker">Plan the day</p>
+                <h2 id="tournament-day-title">A Typical WASDL Tournament Day</h2>
+              </div>
+              <span class="tournament-day-card-tag">Students · Judges · Families</span>
+            </div>
+            <div class="tournament-day-timeline">
+              <article class="tournament-day-timeline-item">
+                <time datetime="08:00">8:00 AM</time>
+                <h3>Arrival &amp; check-in</h3>
+                <p>Students check in with their coaches. Parent volunteers meet with the judges.</p>
+              </article>
+              <article class="tournament-day-timeline-item">
+                <time datetime="09:00">9:00 AM–4:30 PM</time>
+                <h3>Debate rounds</h3>
+                <p>Students participate in up to four Public Forum rounds, with lunch and breaks on-site. Judges receive lunch and coffee.</p>
+              </article>
+              <article class="tournament-day-timeline-item">
+                <time datetime="17:30">5:30 PM</time>
+                <h3>Awards ceremony</h3>
+                <p>Awards begin at 5:30 PM, and the tournament typically wraps up by 6:00 PM.</p>
+              </article>
             </div>
           </div>
-          <span class="tournament-day-card-tag">Students · Judges · Families</span>
-        </div>
-        <div class="tournament-day-timeline">
-          <article class="tournament-day-timeline-item">
-            <time datetime="08:00">8:00 AM</time>
-            <h3>Arrival &amp; check-in</h3>
-            <p>Students check in with their coaches. Parent volunteers meet with the judges.</p>
-          </article>
-          <article class="tournament-day-timeline-item">
-            <time datetime="09:00">9:00 AM–4:30 PM</time>
-            <h3>Debate rounds</h3>
-            <p>Students participate in up to four Public Forum rounds, with lunch and breaks on-site. Judges receive lunch and coffee.</p>
-          </article>
-          <article class="tournament-day-timeline-item">
-            <time datetime="17:30">5:30 PM</time>
-            <h3>Awards ceremony</h3>
-            <p>Awards begin at 5:30 PM, and the tournament typically wraps up by 6:00 PM.</p>
-          </article>
         </div>
         <p class="tournament-day-card-note"><strong>Good to know:</strong> Tournament length may vary by event as WASDL continues to coordinate middle school sites and dates. It is a long day—but an energetic, inspiring, and memorable one.</p>
       </div>
