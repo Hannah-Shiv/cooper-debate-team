@@ -1511,21 +1511,6 @@ html body #idx-stats-heading .idx-awards-heading-rule-diamond {
     0 0 18px rgba(242, 209, 107, 0.62);
 }
 
-html body .idx-awards-story-badge-art {
-  position: absolute;
-  z-index: 2;
-  top: 0;
-  left: 0;
-  width: 155px;
-  height: 104px;
-  object-fit: contain;
-  object-position: left top;
-  filter:
-    drop-shadow(0 0 5px rgba(242, 209, 107, 0.46))
-    drop-shadow(0 6px 10px rgba(0, 0, 0, 0.24));
-  opacity: 0.96;
-}
-
 @media (max-width: 600px) {
   html body #idx-stats-heading .idx-awards-heading-rule {
     gap: 5px;
@@ -1534,13 +1519,6 @@ html body .idx-awards-story-badge-art {
 
   html body #idx-stats-heading .idx-awards-heading-rule-diamond {
     font-size: 0.72rem;
-  }
-
-  html body .idx-awards-story-badge-art {
-    top: 0;
-    left: 0;
-    width: 130px;
-    height: 86px;
   }
 
   html body #idx-stats-grid.idx-awards-content {
@@ -1659,4 +1637,14 @@ html body #idx-stats-heading .idx-awards-heading-rule--right .idx-awards-heading
     width: clamp(24px, 8.2vw, 32px);
     flex-basis: clamp(24px, 8.2vw, 32px);
   }
+}
+
+/* Use the exact navy treatment from the “Meet us and mark your calendar”
+   detail card for the complete By the Numbers panel. */
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase {
+  background: linear-gradient(
+    145deg,
+    rgba(8, 27, 63, 0.92),
+    rgba(4, 16, 43, 0.96)
+  ) !important;
 }
