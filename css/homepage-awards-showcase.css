@@ -703,3 +703,162 @@
     transform: none;
   }
 }
+
+/* Compact refinement: let the artwork carry the celebration. */
+.idx-awards-section {
+  padding: 36px 0 46px !important;
+}
+
+#idx-stats-outer.idx-awards-showcase {
+  padding: 24px clamp(18px, 3vw, 42px) 22px !important;
+  background:
+    linear-gradient(145deg, rgba(9, 38, 81, 0.96), rgba(3, 16, 40, 0.98)),
+    #061a3d !important;
+}
+
+#idx-stats-heading.idx-awards-heading {
+  margin-bottom: 20px;
+}
+
+#idx-stats-heading .idx-awards-season {
+  margin-bottom: 8px;
+  font-size: 0.68rem;
+}
+
+#idx-stats-heading .idx-awards-title {
+  font-size: clamp(2.05rem, 4vw, 3.45rem);
+}
+
+#idx-stats-grid.idx-awards-content {
+  grid-template-columns: minmax(190px, 0.65fr) minmax(0, 1.8fr) !important;
+  gap: clamp(24px, 4vw, 58px) !important;
+}
+
+#idx-stats-grid.idx-awards-content > .idx-awards-story {
+  padding: 7px 0 7px 20px !important;
+}
+
+.idx-awards-count span {
+  font-size: clamp(4.1rem, 7vw, 6.5rem);
+}
+
+.idx-awards-story-copy {
+  max-width: 285px;
+  margin-top: 13px;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+#idx-stats-grid.idx-awards-content > .idx-awards-gallery {
+  padding-left: 0 !important;
+}
+
+.idx-awards-gallery-heading {
+  margin-bottom: 2px;
+}
+
+.idx-awards-gallery h3 {
+  font-size: clamp(1.6rem, 2.8vw, 2.55rem);
+}
+
+.idx-awards-gallery .idx-awards-kicker {
+  margin-bottom: 4px;
+}
+
+.idx-awards-plaque-grid {
+  gap: clamp(4px, 0.8vw, 12px);
+  margin-top: 5px;
+}
+
+.idx-award-plaque,
+.idx-award-plaque--second,
+.idx-award-plaque:hover,
+.idx-award-plaque--second:hover {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.idx-award-plaque::before {
+  display: none;
+}
+
+.idx-award-plaque-image {
+  min-height: clamp(170px, 19vw, 245px);
+}
+
+.idx-award-plaque-image img,
+.idx-award-plaque:hover .idx-award-plaque-image img {
+  filter: drop-shadow(0 10px 8px rgba(0, 0, 0, 0.42));
+  transform: none;
+}
+
+.idx-awards-dynamic-hooks {
+  display: none;
+}
+
+.idx-awards-footer {
+  margin-top: 21px;
+}
+
+.idx-awards-footer .btn {
+  padding: 11px 20px;
+}
+
+@media (max-width: 720px) {
+  .idx-awards-section {
+    padding: 30px 0 38px !important;
+  }
+
+  #idx-stats-outer.idx-awards-showcase {
+    padding: 22px 18px 20px !important;
+  }
+
+  #idx-stats-grid.idx-awards-content {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+
+  #idx-stats-grid.idx-awards-content > .idx-awards-story {
+    padding: 0 0 0 18px !important;
+  }
+
+  .idx-awards-count span {
+    font-size: clamp(4.5rem, 17vw, 6rem);
+  }
+
+  .idx-awards-story-copy {
+    max-width: 520px;
+  }
+
+  .idx-award-plaque-image {
+    min-height: clamp(155px, 29vw, 220px);
+  }
+}
+
+@media (max-width: 480px) {
+  #idx-stats-heading .idx-awards-title {
+    font-size: clamp(1.85rem, 9vw, 2.6rem);
+  }
+
+  .idx-awards-gallery h3 {
+    font-size: 1.55rem;
+  }
+
+  .idx-awards-plaque-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .idx-award-plaque-image {
+    min-height: 125px;
+  }
+
+  .idx-award-plaque--second {
+    grid-column: auto;
+    width: auto;
+    margin: 0;
+  }
+}
