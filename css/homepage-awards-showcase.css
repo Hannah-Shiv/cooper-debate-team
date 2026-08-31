@@ -1425,3 +1425,43 @@ html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
     margin-top: 30px !important;
   }
 }
+
+/* Compact the showcase and reclaim the empty bottom band with a top-right action. */
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase {
+  padding-top: 18px !important;
+  padding-bottom: 14px !important;
+}
+
+html body #idx-stats-heading.idx-awards-heading {
+  margin-bottom: 12px !important;
+  padding-bottom: 8px !important;
+}
+
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase > .idx-awards-footer {
+  position: absolute;
+  z-index: 2;
+  top: 18px;
+  right: clamp(18px, 3vw, 42px);
+  width: auto;
+  margin: 0 !important;
+  justify-content: flex-end;
+}
+
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase > .idx-awards-footer .btn {
+  padding: 9px 17px;
+  font-size: 0.78rem;
+}
+
+@media (max-width: 720px) {
+  html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase > .idx-awards-footer {
+    position: static;
+    width: 100%;
+    margin-top: 10px !important;
+    justify-content: center;
+  }
+
+  html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase > .idx-awards-footer .btn {
+    padding: 9px 17px;
+    font-size: 0.78rem;
+  }
+}
