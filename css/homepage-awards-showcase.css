@@ -915,6 +915,21 @@ html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
   padding-right: 18px !important;
 }
 
+html body .idx-awards-count {
+  display: block;
+  margin: 0;
+}
+
+html body .idx-awards-pairs-art {
+  display: block;
+  width: min(100%, 292px);
+  height: auto;
+  margin: -8px auto 0;
+  filter:
+    drop-shadow(0 0 10px rgba(242, 209, 107, 0.2))
+    drop-shadow(0 16px 18px rgba(0, 0, 0, 0.3));
+}
+
 html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery {
   position: relative;
 }
@@ -948,6 +963,11 @@ html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery::before {
 
   html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
     padding-right: 8px !important;
+  }
+
+  html body .idx-awards-pairs-art {
+    width: min(100%, 270px);
+    margin-top: -4px;
   }
 
   html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery::before {
