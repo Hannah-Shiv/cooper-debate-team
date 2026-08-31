@@ -167,12 +167,12 @@
     .parent-card-text  { font-size:0.97rem !important; }
 
     /* ── Public season calendar ────────────────────────────────── */
-    .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:780px;margin:0 0 22px; }
-    .public-calendar-shell { border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
+    .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:860px;margin:0 0 22px; }
+    .public-calendar-shell { width:100%; box-sizing:border-box; border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
      .calendar-at-a-glance-layout {
        display:grid;
-       grid-template-columns:minmax(0,1.72fr) minmax(300px,.78fr);
-       gap:24px;
+       grid-template-columns:minmax(0,2fr) minmax(390px,1fr);
+       gap:28px;
        align-items:start;
      }
      .calendar-primary { min-width:0; }
@@ -222,8 +222,8 @@
      }
      .calendar-glance-item {
        display:grid;
-       grid-template-columns:58px minmax(0,1fr);
-       gap:11px;
+       grid-template-columns:74px minmax(0,1fr);
+       gap:14px;
        align-items:center;
        padding:10px 0;
        border-bottom:1px solid rgba(99,133,178,.22);
@@ -234,7 +234,7 @@
        flex-direction:column;
        align-items:center;
        justify-content:center;
-       min-height:45px;
+       min-height:52px;
        border:1px solid rgba(242,209,107,.6);
        border-radius:6px;
        background:rgba(4,16,43,.62);
@@ -243,12 +243,15 @@
      }
      .calendar-glance-date span {
        color:#F2D16B;
-       font:700 .49rem 'Josefin Sans',sans-serif;
-       letter-spacing:.045em;
+       font:800 .64rem 'Josefin Sans',sans-serif;
+       letter-spacing:.025em;
+       line-height:1.1;
        text-transform:uppercase;
+       white-space:nowrap;
      }
      .calendar-glance-date strong {
-       font:700 1.18rem/.95 'Cormorant Garamond',serif;
+       margin-top:3px;
+       font:700 1.3rem/.95 'Cormorant Garamond',serif;
      }
      .calendar-glance-copy strong {
        display:block;
@@ -374,13 +377,13 @@
        background:#fff;
      }
      body.schedule-pdf-is-open { overflow:hidden; }
-     @media(max-width:1040px){
+     @media(max-width:900px){
        .calendar-at-a-glance-layout { grid-template-columns:1fr; }
      }
     .public-countdown {
       align-items:stretch; background:#850000;
       border:2px solid #d9aa3c; border-radius:18px; box-shadow:0 12px 28px rgba(47,0,0,.34),inset 0 0 0 5px rgba(255,218,122,.13);
-      color:#fff; display:none; gap:0; margin:0 0 16px; min-width:0; overflow:hidden; padding:5px;
+       width:100%; box-sizing:border-box; color:#fff; display:none; gap:0; margin:0 0 16px; min-width:0; overflow:hidden; padding:5px;
       grid-template-areas:"label name date countdown";
       grid-template-columns:170px minmax(0,1fr) 126px 142px;
     }
@@ -428,7 +431,7 @@
     #public-calendar { min-height:650px; }
     #public-calendar .fc { font-family:'Josefin Sans',sans-serif; }
     #public-calendar .fc-toolbar { background:#050e28; border-bottom:1px solid rgba(101,147,226,.28); margin:0!important; padding:14px 16px; }
-    #public-calendar .fc-toolbar-title { color:#fff!important; font-family:'Cormorant Garamond',serif!important; font-size:1.7rem!important; font-weight:700; }
+    #public-calendar .fc-toolbar-title { color:#fff!important; font-family:'Cormorant Garamond',serif!important; font-size:2.1rem!important; font-weight:800; letter-spacing:.01em; }
     #public-calendar .fc-button { background:rgba(255,255,255,.07)!important; border:1px solid rgba(255,255,255,.16)!important; box-shadow:none!important; color:#e2edff!important; font:700 .65rem 'Josefin Sans',sans-serif!important; letter-spacing:.08em!important; padding:7px 11px!important; text-transform:uppercase; }
     #public-calendar .fc-button:hover, #public-calendar .fc-button:focus { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:#fff!important; }
     #public-calendar .fc-button-active { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:var(--gold)!important; }
@@ -508,7 +511,7 @@
       #public-calendar .fc-toolbar-chunk:nth-child(1) { grid-area:nav; }
       #public-calendar .fc-toolbar-chunk:nth-child(2) { grid-area:title; text-align:center; }
       #public-calendar .fc-toolbar-chunk:nth-child(3) { grid-area:view; }
-      #public-calendar .fc-toolbar-title { font-size:1.35rem!important; }
+      #public-calendar .fc-toolbar-title { font-size:1.65rem!important; }
       #public-calendar .fc-button { font-size:.59rem!important; padding:7px 9px!important; }
       #public-calendar .fc-daygrid-day-frame { min-height:84px!important; }
       .public-cal-today-watermark { font-size:.88rem; }
@@ -532,7 +535,7 @@
     @media(max-width:480px){
       .public-countdown > * { padding:10px 13px; }
       .public-countdown-headline { font-size:1.2rem; }
-      #public-calendar .fc-toolbar-title { font-size:1.2rem!important; }
+      #public-calendar .fc-toolbar-title { font-size:1.48rem!important; }
       #public-calendar .fc-list-event-time { width:66px; }
     }
     /* Last-season table controls */
@@ -658,7 +661,7 @@
     @media (min-width: 1041px) {
       .tournaments-page .tourney-section-nav > .section-wrap,
       .tournaments-page #calendar-results > .section-wrap {
-        max-width: 1400px;
+        max-width: 1520px;
       }
     }
 
@@ -1501,7 +1504,7 @@
       <h2 class="schedule-pdf-modal-title" id="schedule-pdf-title">2026–2027 WASDL Tournament Schedule</h2>
     </div>
     <div class="schedule-pdf-modal-actions">
-      <a class="schedule-pdf-new-tab" href="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788214669688.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
+      <a class="schedule-pdf-new-tab" href="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788215000364.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
       <button class="schedule-pdf-close" id="close-schedule-pdf" type="button" aria-label="Close schedule PDF">×</button>
     </div>
   </div>
@@ -1509,7 +1512,7 @@
     class="schedule-pdf-frame"
     id="schedule-pdf-frame"
     title="2026–2027 WASDL Tournament Schedule PDF"
-    data-src="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788214669688.pdf#view=FitH"
+    data-src="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788215000364.pdf#view=FitH"
   ></iframe>
 </dialog>
 
