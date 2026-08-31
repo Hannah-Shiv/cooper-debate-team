@@ -847,6 +847,36 @@ html body #idx-stats-grid.idx-awards-content {
   gap: clamp(12px, 2vw, 28px) !important;
 }
 
+/* Final alignment: match the readiness panels exactly and keep one solid blue. */
+html body #idx-stats-section.idx-awards-section {
+  background: #1c2030 !important;
+}
+
+html body #idx-stats-section #idx-stats-outer.idx-awards-showcase {
+  width: 100%;
+  margin: 0;
+  background: #0b204c !important;
+  background-image: none !important;
+}
+
+html body #idx-stats-section #idx-stats-outer.idx-awards-showcase::before,
+html body #idx-stats-section #idx-stats-outer.idx-awards-showcase::after,
+html body #idx-stats-grid.idx-awards-content > .idx-awards-story::before,
+html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery::before {
+  display: none !important;
+}
+
+html body #idx-stats-grid.idx-awards-content > .idx-awards-story {
+  background: #0b204c !important;
+  background-image: none !important;
+}
+
+@media (max-width: 720px) {
+  html body #idx-stats-section #idx-stats-outer.idx-awards-showcase {
+    width: 100%;
+  }
+}
+
 /* Contained galactic card: distinct from the page band, without nested frames. */
 html body #idx-stats-section.idx-awards-section {
   padding: 42px 0 52px !important;
@@ -1147,5 +1177,39 @@ html body #idx-stats-grid.idx-awards-content > .idx-awards-gallery::before {
     grid-column: auto;
     width: auto;
     margin: 0;
+  }
+}
+
+/* Authoritative final surface and alignment overrides. */
+html body #idx-stats-section.idx-awards-section {
+  background: #1c2030 !important;
+}
+
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  background: #0b204c !important;
+  background-image: none !important;
+}
+
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase::before,
+html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase::after,
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-story::before,
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-story::after,
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-gallery::before,
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-gallery::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body #idx-stats-section #idx-stats-grid.idx-awards-content > .idx-awards-story {
+  background: #0b204c !important;
+  background-image: none !important;
+}
+
+@media (max-width: 720px) {
+  html body #idx-stats-section .section-wrap #idx-stats-outer.idx-awards-showcase {
+    width: 100% !important;
   }
 }
