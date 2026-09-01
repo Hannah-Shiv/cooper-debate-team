@@ -482,7 +482,7 @@ function showDashboard(email) {
 function writeMailDoc(subject, htmlBody, textBody) {
   const bcc = APPROVED_MEMBERS.map(e => e.toLowerCase()).join(",");
   return db.collection("mail").add({
-    to:      "cooperdebateteam@gmail.com",
+    to:      "pgkonde@fcps.edu",
     bcc,
     message: { subject, html: htmlBody, text: textBody },
   }).catch(err => console.warn("[Email] writeMailDoc failed:", err));

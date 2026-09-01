@@ -339,7 +339,7 @@
         <div class="vol-empty">
           <span aria-hidden="true">⚠</span>
           <h3>Judge signups are temporarily unavailable</h3>
-          <p>Please refresh in a moment, or contact <a href="mailto:CooperDebateTeam@gmail.com">CooperDebateTeam@gmail.com</a> for help.</p>
+          <p>Please refresh in a moment, or contact <a href="mailto:pgkonde@fcps.edu">Coach Pamela Konde</a> for help.</p>
         </div>`;
     }
   }

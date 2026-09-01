@@ -793,7 +793,7 @@ function buildGcalLink(t, start, end) {
 function writeCalMailDoc(subject, htmlBody, textBody) {
   const bcc = APPROVED_MEMBERS.map(e => e.toLowerCase()).join(",");
   return calDb.collection("mail").add({
-    to:      "cooperdebateteam@gmail.com",
+    to:      "pgkonde@fcps.edu",
     bcc,
     message: { subject, html: htmlBody, text: textBody },
   }).catch(err => console.warn("[Email] writeCalMailDoc failed:", err));
