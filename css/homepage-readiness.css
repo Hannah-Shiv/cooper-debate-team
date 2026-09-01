@@ -1475,14 +1475,47 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--application {
-  --primary-action-border: var(--gold);
-  --primary-action-border-hover: var(--gold-light);
-  --primary-action-start: var(--gold);
-  --primary-action-end: var(--gold);
-  --primary-action-hover-start: var(--gold-light);
-  --primary-action-hover-end: var(--gold-light);
-  --primary-action-shadow: rgba(212, 160, 23, 0.4);
+  --primary-action-border: #f8d66b;
+  --primary-action-border-hover: #fff1b5;
+  --primary-action-start: #ffe28a;
+  --primary-action-end: #d59a12;
+  --primary-action-hover-start: #ffedaa;
+  --primary-action-hover-end: #e4ae24;
+  --primary-action-shadow: rgba(232, 175, 36, 0.56);
+  position: relative;
+  overflow: hidden;
+  font-weight: 800 !important;
   color: #071735 !important;
+  box-shadow:
+    0 8px 20px var(--primary-action-shadow),
+    0 0 0 1px rgba(255, 236, 157, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58),
+    inset 0 -4px 7px rgba(128, 76, 0, 0.22);
+}
+
+.homepage-readiness__primary-action--application::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    112deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.46) 47%,
+    transparent 64%
+  );
+  content: "";
+  pointer-events: none;
+  transform: translateX(-135%);
+  transition: transform 0.5s ease;
+}
+
+.homepage-readiness__primary-action--application > * {
+  position: relative;
+  z-index: 1;
+}
+
+.homepage-readiness__primary-action--application:hover::before,
+.homepage-readiness__primary-action--application:focus-visible::before {
+  transform: translateX(135%);
 }
 
 .homepage-readiness__primary-action--qst {
@@ -1508,6 +1541,11 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application:hover,
 .homepage-readiness__primary-action--application:focus-visible {
+  box-shadow:
+    0 11px 27px var(--primary-action-shadow),
+    0 0 0 3px rgba(255, 224, 117, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    inset 0 -4px 7px rgba(128, 76, 0, 0.2);
   color: #071735 !important;
 }
 
