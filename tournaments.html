@@ -748,7 +748,7 @@
       left:301px;
     }
     .tournament-overview-event-date {
-      margin:0 0 9px;
+      margin:0 0 12px;
       color:#FF987D;
       font:700 .68rem 'Josefin Sans',sans-serif;
       letter-spacing:.13em;
@@ -773,6 +773,51 @@
       line-height:1.35;
       text-transform:uppercase;
     }
+    .tournament-overview-event-time span {
+      display:block;
+    }
+    .tournament-overview-event-time span + span {
+      margin-top:5px;
+      color:rgba(255,255,255,.82);
+      font-size:.69rem;
+      font-weight:600;
+      letter-spacing:.055em;
+    }
+     @media(min-width:701px) and (max-width:1400px){
+       .tournament-overview-event-card-header {
+         grid-template-columns:220px minmax(0,1fr);
+         gap:14px;
+         min-height:180px;
+       }
+       .tournament-overview-event-card-header img {
+         width:230px;
+         margin-left:-18px;
+       }
+       .tournament-overview-event-card-header::after {
+         top:22px;
+         bottom:22px;
+         left:206px;
+       }
+       .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header {
+         grid-template-columns:205px minmax(0,1fr);
+       }
+       .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
+         width:215px;
+         margin-left:-24px;
+       }
+       .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header::after {
+         left:191px;
+       }
+       .tournament-overview-event-date {
+         white-space:nowrap;
+         letter-spacing:.08em;
+       }
+       .tournament-overview-event-card h3 {
+         font-size:clamp(1.05rem,1.6vw,1.38rem);
+         line-height:1.08;
+         white-space:nowrap;
+       }
+     }
     .tournament-overview-event-card > p {
       margin:12px 0 0;
       min-height:82px;
@@ -2517,9 +2562,12 @@
           <div class="tournament-overview-event-card-header">
             <img src="images/icon-wasdl-judge-training-large.webp" alt="" loading="lazy">
             <div>
-              <p class="tournament-overview-event-date">Saturday · October 3, 2026</p>
+              <p class="tournament-overview-event-date">Saturday, October 3, 2026</p>
               <h3>WASDL Judge Training</h3>
-              <p class="tournament-overview-event-time">9:00–11:30 AM · Check-in at 8:30 AM</p>
+              <p class="tournament-overview-event-time">
+                <span>9:00–11:30 AM</span>
+                <span>Check-in at 8:30 AM</span>
+              </p>
             </div>
           </div>
           <p>A short training session for new and experienced coaches, parents, and other volunteers. Cooper volunteers will attend the Public Forum Debate Breakout Session.</p>
@@ -2540,9 +2588,12 @@
           <div class="tournament-overview-event-card-header">
             <img src="images/icon-cooper-parent-meeting-large.webp" alt="" loading="lazy">
             <div>
-              <p class="tournament-overview-event-date">Tuesday · September 29, 2026</p>
+              <p class="tournament-overview-event-date">Tuesday, September 29, 2026</p>
               <h3>Cooper Debate Parent Meeting</h3>
-              <p class="tournament-overview-event-time">7:30–8:30 PM · Online via Google Meet</p>
+              <p class="tournament-overview-event-time">
+                <span>7:30–8:30 PM</span>
+                <span>Online via Google Meet</span>
+              </p>
             </div>
           </div>
           <p>This required—but short—meeting helps families understand how the season works and how to support their debater.</p>
