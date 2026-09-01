@@ -57,7 +57,13 @@
     }
     .tournaments-page .page-subtitle {
       color:#F2D16B;
-      font-size:clamp(1.25rem, 3vw, 1.77rem);
+      font-size:clamp(1.25rem, 2.5vw, 1.6rem);
+      white-space:nowrap;
+    }
+    @media(max-width:700px){
+      .tournaments-page .page-subtitle {
+        white-space:normal;
+      }
     }
     .tournaments-page > .tourney-tab-panel,
     .tournaments-page .resolution-banner,
