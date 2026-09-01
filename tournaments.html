@@ -135,14 +135,29 @@
       background:#9af0d8;
     }
     .tournament-overview-guide {
+      position:relative;
       margin-top:32px;
       padding:34px;
       border:1px solid rgba(242,209,107,.42);
+      border-left-color:transparent;
+      border-right-color:transparent;
       border-radius:14px;
       background:linear-gradient(145deg,#252830 0%,#181B22 100%);
       box-shadow:0 12px 28px rgba(0,0,0,.22);
       scroll-margin-top:84px;
     }
+    .tournament-overview-guide::before,
+    .tournament-overview-guide::after {
+      content:"";
+      position:absolute;
+      top:0;
+      bottom:0;
+      width:1px;
+      background:linear-gradient(180deg,rgba(255,255,255,.8) 0%,rgba(255,255,255,.42) 58%,rgba(255,255,255,0) 100%);
+      pointer-events:none;
+    }
+    .tournament-overview-guide::before { left:0; }
+    .tournament-overview-guide::after { right:0; }
     .tournament-overview-guide-header {
       display:grid;
       grid-template-columns:minmax(0,1fr);
@@ -325,7 +340,7 @@
       right:calc(-14px + max(0px,(100% - 754px) / 2));
       bottom:0;
       width:1px;
-      background:rgba(255,255,255,.8);
+      background:linear-gradient(180deg,rgba(255,255,255,.8) 0%,rgba(255,255,255,.42) 58%,rgba(255,255,255,0) 100%);
     }
     .tournament-overview-external-item {
       display:grid;
