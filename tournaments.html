@@ -1162,6 +1162,36 @@
        border:0;
        background:#fff;
      }
+      .schedule-pdf-viewer {
+        flex:1 1 auto;
+        min-height:0;
+        overflow:auto;
+        padding:16px;
+        background:#020a1b;
+        -webkit-overflow-scrolling:touch;
+      }
+      .schedule-pdf-viewer[hidden],
+      .schedule-pdf-frame[hidden] { display:none; }
+      .schedule-pdf-pages {
+        display:grid;
+        gap:16px;
+        justify-items:center;
+        width:100%;
+      }
+      .schedule-pdf-page {
+        display:block;
+        width:min(100%, 840px);
+        height:auto;
+        background:#fff;
+        box-shadow:0 8px 22px rgba(0,0,0,.34);
+      }
+      .schedule-pdf-status {
+        margin:0;
+        color:#c8d7ed;
+        font:600 .78rem/1.5 'Josefin Sans',sans-serif;
+        letter-spacing:.04em;
+        text-align:center;
+      }
      body.schedule-pdf-is-open { overflow:hidden; }
      @media(max-width:900px){
        .calendar-at-a-glance-layout { grid-template-columns:1fr; }
@@ -1320,6 +1350,8 @@
        .schedule-pdf-modal-header { align-items:flex-start; padding:13px; }
        .schedule-pdf-modal-title { font-size:1.2rem; }
        .schedule-pdf-new-tab { font-size:.55rem; padding:8px 9px; }
+        .schedule-pdf-viewer { padding:8px; }
+        .schedule-pdf-pages { gap:10px; }
     }
     @media(max-width:480px){
       .public-countdown > * { padding:10px 13px; }
@@ -2708,11 +2740,16 @@
       <button class="schedule-pdf-close" id="close-schedule-pdf" type="button" aria-label="Close schedule PDF">×</button>
     </div>
   </div>
+  <div class="schedule-pdf-viewer" id="schedule-pdf-viewer" aria-live="polite">
+    <p class="schedule-pdf-status" id="schedule-pdf-status">Loading the full schedule…</p>
+    <div class="schedule-pdf-pages" id="schedule-pdf-pages"></div>
+  </div>
   <iframe
     class="schedule-pdf-frame"
     id="schedule-pdf-frame"
     title="2026–2027 WASDL Tournament Schedule PDF"
     data-src="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788215435064.pdf#view=FitH"
+    hidden
   ></iframe>
 </dialog>
 
@@ -3210,16 +3247,78 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeButton = document.getElementById('close-schedule-pdf');
   const modal = document.getElementById('schedule-pdf-modal');
   const frame = document.getElementById('schedule-pdf-frame');
-  if (!openButton || !closeButton || !modal || !frame) return;
+  const viewer = document.getElementById('schedule-pdf-viewer');
+  const pages = document.getElementById('schedule-pdf-pages');
+  const status = document.getElementById('schedule-pdf-status');
+  if (!openButton || !closeButton || !modal || !frame || !viewer || !pages || !status) return;
+
+  const pdfUrl = frame.dataset.src.split('#')[0];
+  let pdfJsPromise;
+  let rendered = false;
+
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (pdfJsPromise) return pdfJsPromise;
+
+    pdfJsPromise = new Promise(function(resolve, reject) {
+      const script = document.createElement('script');
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      script.onload = function() {
+        if (!window.pdfjsLib) {
+          reject(new Error('PDF renderer did not load'));
+          return;
+        }
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve(window.pdfjsLib);
+      };
+      script.onerror = function() { reject(new Error('PDF renderer failed to load')); };
+      document.head.appendChild(script);
+    });
+    return pdfJsPromise;
+  }
+
+  async function renderPdf() {
+    if (rendered) return;
+    status.hidden = false;
+    status.textContent = 'Loading the full schedule…';
+    try {
+      const pdfjsLib = await loadPdfJs();
+      const pdf = await pdfjsLib.getDocument(pdfUrl).promise;
+      pages.replaceChildren();
+      for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+        const page = await pdf.getPage(pageNumber);
+        const baseViewport = page.getViewport({ scale: 1 });
+        const availableWidth = Math.max(280, viewer.clientWidth - 32);
+        const scale = Math.min(1.8, availableWidth / baseViewport.width);
+        const viewport = page.getViewport({ scale });
+        const canvas = document.createElement('canvas');
+        canvas.className = 'schedule-pdf-page';
+        canvas.width = Math.ceil(viewport.width);
+        canvas.height = Math.ceil(viewport.height);
+        canvas.setAttribute('aria-label', `Schedule PDF page ${pageNumber} of ${pdf.numPages}`);
+        pages.appendChild(canvas);
+        await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+      }
+      rendered = true;
+      status.hidden = true;
+      frame.hidden = true;
+    } catch (error) {
+      console.error('Unable to render schedule PDF in the dialog.', error);
+      status.textContent = 'The preview could not load. Use “Open PDF in new tab” above.';
+      frame.hidden = false;
+      frame.src = frame.dataset.src;
+    }
+  }
 
   function closeModal() {
     modal.close();
   }
 
   openButton.addEventListener('click', function() {
-    if (!frame.src) frame.src = frame.dataset.src;
     modal.showModal();
     document.body.classList.add('schedule-pdf-is-open');
+    renderPdf();
   });
   closeButton.addEventListener('click', closeModal);
   modal.addEventListener('click', function(event) {
