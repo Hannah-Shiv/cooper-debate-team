@@ -40,8 +40,8 @@
     }
     .tournaments-page .page-header {
       padding: 118px 24px 34px;
-      background: #242a33;
-      border-bottom:1px solid rgba(242,209,107,0.2);
+      background:linear-gradient(180deg,#11161d 0%,#171b24 58%,#1c2030 100%);
+      border-bottom:0;
     }
     .tournaments-page .page-header::after { display:none; }
     .tournaments-page .page-header-content { max-width:920px; margin:0 auto; }
@@ -74,10 +74,10 @@
       border-top:0;
     }
     .tournaments-page .tourney-section-nav {
-      background:#242a33;
-      border-bottom:1px solid rgba(242,209,107,0.28);
+      background:transparent;
+      border-bottom:0;
       backdrop-filter:none;
-      box-shadow:0 12px 24px rgba(0,0,0,0.22);
+      box-shadow:none;
     }
     .tournaments-page .resolution-card,
     .tournaments-page .public-calendar-shell,
@@ -1598,8 +1598,8 @@
 
     /* ── Tourneys in-page navigation ─────────────────────────── */
     .tourney-section-nav {
-      position:sticky; top:0; z-index:20; background:#242a33;
-      border-bottom:1px solid rgba(212,160,23,0.2); backdrop-filter:none;
+      position:sticky; top:0; z-index:20; background:transparent;
+      border-bottom:0; backdrop-filter:none;
     }
     .tourney-section-nav .section-wrap { display:flex; gap:12px; overflow-x:hidden; padding-top:16px; padding-bottom:16px; }
     .tourney-section-nav button {
@@ -1659,7 +1659,8 @@
     }
     .tournament-overview-section-header .section-sub {
       margin:0 auto;
-      line-height:1.7;
+      line-height:1.65;
+      max-width:900px;
     }
 
     /* ── Public volunteer signup ─────────────────────────────── */
