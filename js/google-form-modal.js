@@ -1,6 +1,7 @@
 /* ============================================================
    COOPER DEBATE TEAM — Google Form modal
-   Opens Google Forms in a branded, accessible same-page dialog.
+   Opens the QST Google Form in a branded, accessible same-page dialog.
+   Application links use the direct Google Form page instead.
    ============================================================ */
 
 (function () {
@@ -60,6 +61,15 @@
     document.addEventListener("click", function (event) {
       var trigger = event.target.closest("[data-google-form-open]");
       if (!trigger) return;
+
+      var formUrl = trigger.getAttribute("data-form-url") || trigger.getAttribute("href");
+      if (trigger.hasAttribute("data-google-form-direct")) {
+        if (!formUrl) return;
+        event.preventDefault();
+        window.location.assign(formUrl);
+        return;
+      }
+
       if (trigger.tagName === "A") event.preventDefault();
       openDialog(trigger);
     });
