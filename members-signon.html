@@ -370,6 +370,10 @@
         box-shadow: 0 0 32px rgba(86, 160, 218, .2), 0 0 55px rgba(11, 29, 49, .16);
      }
       #state-login.auth-wrap { min-height: 0 !important; }
+      /* Keep the sign-in composition steady while the fixed dome opens.
+         Other pages can animate their content below the navigation, but this
+         layout's tall card makes that reflow look like a shake. */
+      .portal-page { transition: none; }
      .auth-box {
        width: 100%;
         max-width: 558px;
@@ -809,7 +813,7 @@
 
       <div class="portal-join">
          <p>Not a member yet?</p>
-         <a href="apply.html" class="btn btn-gold join-pill">
+         <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" class="btn btn-gold join-pill" target="_blank" rel="noopener">
            <svg class="join-mark" viewBox="0 0 32 28" aria-hidden="true">
              <circle cx="10" cy="8" r="4" fill="currentColor"/><circle cx="22" cy="8" r="4" fill="currentColor"/>
              <path d="M2 25c.4-6 3.4-9 8-9s7.6 3 8 9M14 25c.4-6 3.4-9 8-9s7.6 3 8 9" fill="none" stroke="currentColor" stroke-width="2"/>
