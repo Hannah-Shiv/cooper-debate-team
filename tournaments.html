@@ -145,9 +145,8 @@
     }
     .tournament-overview-guide-header {
       display:grid;
-      grid-template-columns:minmax(0,1fr) auto;
+      grid-template-columns:minmax(0,1fr);
       align-items:start;
-      gap:24px;
     }
     .tournament-overview-guide-header-copy { max-width:820px; }
     .tournament-overview-guide-kicker {
@@ -312,7 +311,7 @@
     .tournament-overview-external-grid {
       display:grid;
       grid-template-columns:repeat(2,minmax(0,360px));
-      justify-content:center;
+      justify-content:start;
       gap:16px 34px;
       height:100%;
     }
@@ -324,7 +323,10 @@
       min-width:0;
     }
     .tournament-overview-resource-row {
-      display:block;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 280px;
+      align-items:end;
+      gap:26px;
     }
     .tournament-overview-external-card {
       display:flex;
@@ -393,11 +395,13 @@
       display:flex;
       flex-direction:column;
       gap:8px;
-      justify-content:flex-start;
+      justify-content:flex-end;
       align-items:stretch;
       min-width:0;
       width:280px;
       margin-top:0;
+      justify-self:end;
+      align-self:end;
     }
     .tournament-overview-guide-actions a {
       align-items:center;
@@ -1158,7 +1162,6 @@
     .public-event-empty { color:var(--gray-mid); font-size:.9rem; line-height:1.65; padding:30px 18px; text-align:center; }
     @media(max-width:900px){
       .tournament-overview-guide-header { grid-template-columns:1fr; }
-      .tournament-overview-guide-actions { justify-self:end; }
     }
     @media(max-width:700px){
       /* The renderer sets display:flex inline when a tournament exists.
@@ -1756,7 +1759,6 @@
       .tournament-overview-guide { padding:25px 20px; }
       .tournament-overview-guide-actions {
         gap:6px;
-        justify-self:stretch;
         width:100%;
       }
       .tournament-overview-guide-actions a {
@@ -1783,7 +1785,10 @@
         grid-template-columns:1fr;
         gap:14px;
       }
-      .tournament-overview-resource-row { grid-template-columns:1fr; }
+      .tournament-overview-resource-row {
+        grid-template-columns:1fr;
+        gap:16px;
+      }
       .tournament-day-card { padding:22px 19px; }
       .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
       .tournament-day-card-main {
@@ -2068,10 +2073,6 @@
           <h2 class="tournament-overview-guide-title" id="tournament-overview-guide-title">WASDL &amp; Middle School Public Forum</h2>
           <p class="tournament-overview-guide-lead">Cooper competes in the Washington Area Speech and Debate League (WASDL), a regional, all-volunteer circuit where middle school students from Maryland, Virginia, and Washington, D.C. debate current issues throughout the season.</p>
         </div>
-        <div class="tournament-overview-guide-actions">
-          <a href="tournaments.html?tab=calendar-results" class="btn btn-gold"><span class="tournament-overview-guide-action-full">See the tournament calendar</span><span class="tournament-overview-guide-action-short">Tournament calendar</span>&nbsp;→</a>
-          <a href="resources.html" class="btn btn-outline"><span class="tournament-overview-guide-action-full">Explore debate resources</span><span class="tournament-overview-guide-action-short">Debate resources</span>&nbsp;→</a>
-        </div>
       </div>
       <div class="tournament-overview-guide-grid">
         <article class="tournament-overview-guide-card tournament-overview-guide-card--circuit">
@@ -2129,6 +2130,10 @@
                 <span class="tournament-overview-external-card-copy"><strong>National Speech &amp; Debate</strong><span>Official topic center</span></span>
               </a>
             </div>
+          </div>
+          <div class="tournament-overview-guide-actions">
+            <a href="tournaments.html?tab=calendar-results" class="btn btn-gold"><span class="tournament-overview-guide-action-full">See the tournament calendar</span><span class="tournament-overview-guide-action-short">Tournament calendar</span>&nbsp;→</a>
+            <a href="resources.html" class="btn btn-outline"><span class="tournament-overview-guide-action-full">Explore debate resources</span><span class="tournament-overview-guide-action-short">Debate resources</span>&nbsp;→</a>
           </div>
         </div>
       </div>
