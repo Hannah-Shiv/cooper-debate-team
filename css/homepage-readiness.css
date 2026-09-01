@@ -944,7 +944,7 @@ body.deck-dialog-open {
   padding: 0;
   border: 1px solid rgba(242, 209, 107, 0.72);
   border-radius: 16px;
-  background: #06132f;
+  background: #0d2166;
   color: #fff;
   box-shadow: 0 28px 80px rgba(0, 0, 0, 0.68), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -971,9 +971,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__deck-dialog-inner {
   padding: clamp(18px, 3vw, 30px);
-  background:
-    radial-gradient(circle at 85% 2%, rgba(242, 209, 107, 0.1), transparent 25%),
-    linear-gradient(145deg, rgba(11, 32, 76, 0.99), rgba(4, 15, 39, 0.99));
+  background: #0d2166;
 }
 
 .homepage-readiness__deck-dialog-header {
@@ -1029,17 +1027,17 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open {
-  border-color: rgba(109, 216, 184, 0.72);
-  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-color: #fff0a6;
+  background: #f2d16b;
+  color: #06132f;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download {
-  border-color: rgba(221, 169, 243, 0.78);
-  background: linear-gradient(135deg, #593475 0%, #2b1848 100%);
-  color: #fff;
-  box-shadow: 0 6px 16px rgba(27, 9, 45, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  border-color: #f2d16b;
+  background: transparent;
+  color: #f2d16b;
+  box-shadow: none;
 }
 
 .homepage-readiness__deck-dialog-actions a:hover,
@@ -1052,16 +1050,16 @@ body.deck-dialog-open {
 
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open:hover,
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--open:focus-visible {
-  border-color: #8cebd0;
-  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
-  color: #fff;
+  border-color: #fff;
+  background: #fae07c;
+  color: #06132f;
 }
 
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download:hover,
 .homepage-readiness__deck-dialog-actions .homepage-readiness__deck-dialog-action--download:focus-visible {
-  border-color: #efcfff;
-  background: linear-gradient(135deg, #71439a 0%, #3d2263 100%);
-  color: #fff;
+  border-color: #fae07c;
+  background: rgba(242, 209, 107, 0.12);
+  color: #fae07c;
 }
 
 .homepage-readiness__deck-close {
@@ -1070,9 +1068,9 @@ body.deck-dialog-open {
   height: 42px;
   place-items: center;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  border: 1px solid #d96b6b;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: #b30000;
   color: #fff;
   font-size: 1.45rem;
   line-height: 1;
@@ -1081,8 +1079,9 @@ body.deck-dialog-open {
 
 .homepage-readiness__deck-close:hover,
 .homepage-readiness__deck-close:focus-visible {
-  border-color: #f2d16b;
-  color: #f2d16b;
+  border-color: #fff;
+  background: #900000;
+  color: #fff;
   outline: none;
 }
 
