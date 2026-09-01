@@ -29,7 +29,7 @@
     }
 
     function openDialog(trigger) {
-      var formUrl = trigger.getAttribute("data-form-url");
+      var formUrl = trigger.getAttribute("data-form-url") || trigger.getAttribute("href");
       if (!formUrl) return;
 
       activeTrigger = trigger;
@@ -57,10 +57,11 @@
       });
     }
 
-    document.querySelectorAll("[data-google-form-open]").forEach(function (trigger) {
-      trigger.addEventListener("click", function () {
-        openDialog(trigger);
-      });
+    document.addEventListener("click", function (event) {
+      var trigger = event.target.closest("[data-google-form-open]");
+      if (!trigger) return;
+      if (trigger.tagName === "A") event.preventDefault();
+      openDialog(trigger);
     });
 
     closeButton.addEventListener("click", closeDialog);
