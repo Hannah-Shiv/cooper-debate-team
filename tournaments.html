@@ -697,6 +697,7 @@
       grid-template-columns:345px minmax(0,1fr);
       align-items:start;
       gap:18px;
+      min-height:222px;
     }
     .tournament-overview-event-card-header::after {
       position:absolute;
@@ -755,13 +756,15 @@
     }
     .tournament-overview-event-card > p {
       margin:12px 0 0;
+      min-height:82px;
       color:#fff;
       font-size:.89rem;
       line-height:1.7;
     }
     .tournament-overview-event-facts {
       display:grid;
-      gap:12px;
+      grid-template-rows:repeat(2,minmax(64px,auto));
+      align-content:start;
       margin:20px 0 0;
       padding:17px 0 0;
       border-top:1px solid rgba(255,255,255,.16);
@@ -769,12 +772,18 @@
     .tournament-overview-event-fact {
       display:grid;
       grid-template-columns:72px 1fr;
-      gap:10px;
+      align-items:start;
+      gap:14px;
       margin:0;
+      padding:11px 0;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      box-sizing:border-box;
       font-size:.82rem;
       line-height:1.6;
     }
+    .tournament-overview-event-fact:last-child { border-bottom:0; }
     .tournament-overview-event-fact dt {
+      padding-top:2px;
       color:#F2D16B;
       font:700 .65rem 'Josefin Sans',sans-serif;
       letter-spacing:.1em;
@@ -1207,6 +1216,22 @@
         text-align:center;
       }
      body.schedule-pdf-is-open { overflow:hidden; }
+     @media(min-width:901px){
+       .calendar-primary {
+         position:relative;
+         display:flex;
+         flex-direction:column;
+       }
+       .calendar-primary .public-calendar-shell {
+         flex:1 1 auto;
+       }
+       .calendar-primary .public-calendar-status {
+         position:absolute;
+         top:100%;
+         right:0;
+         left:0;
+       }
+     }
      @media(max-width:900px){
        .calendar-at-a-glance-layout { grid-template-columns:1fr; }
      }
@@ -1883,6 +1908,10 @@
         border-bottom:1px solid rgba(255,255,255,.14);
       }
       .tournament-day-timeline-item:last-child { border-bottom:0; }
+      .tournament-overview-event-card-header,
+      .tournament-overview-event-card > p {
+        min-height:0;
+      }
       .tournament-overview-event-grid { grid-template-columns:1fr; }
       .tournament-overview-event-card-header {
         grid-template-columns:242px minmax(0,1fr);
