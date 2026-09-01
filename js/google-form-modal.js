@@ -66,7 +66,7 @@
       if (trigger.hasAttribute("data-google-form-direct")) {
         if (!formUrl) return;
         event.preventDefault();
-        window.location.assign(formUrl);
+        window.open(formUrl, "_blank", "noopener,noreferrer");
         return;
       }
 
