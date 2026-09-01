@@ -952,6 +952,25 @@
     .resolution-stats  { font-size:0.85rem !important; }
 
     /* ── Season picker ─────────────────────────────────────────── */
+    .cal-section-header {
+      align-items:end;
+      display:grid;
+      gap:16px;
+      grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+      margin-bottom:36px;
+    }
+    .cal-section-header-copy {
+      grid-column:2;
+      text-align:center;
+    }
+    .cal-section-header-copy .section-label,
+    .tournament-overview-section-header .section-label {
+      justify-content:center;
+    }
+    .cal-section-header-picker {
+      grid-column:3;
+      justify-self:end;
+    }
     .season-picker { display:flex; flex-direction:column; gap:6px; min-width:245px; }
     .season-picker-label {
       color:var(--gray-mid); font-family:'Josefin Sans',sans-serif; font-size:0.62rem;
@@ -976,7 +995,7 @@
     .parent-card-text  { font-size:0.97rem !important; }
 
     /* ── Public season calendar ────────────────────────────────── */
-    .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:860px;margin:0 0 22px; }
+    .public-calendar-intro { color:var(--gray-mid);font-size:0.92rem;line-height:1.7;max-width:860px;margin:0 auto 22px;text-align:center; }
     .public-calendar-shell { width:100%; box-sizing:border-box; border:1px solid rgba(101,147,226,.28); border-radius:12px; overflow:hidden; background:#071735; box-shadow:0 16px 36px rgba(0,0,0,.2); }
      .calendar-at-a-glance-layout {
        display:grid;
@@ -1452,8 +1471,11 @@
       .ls-sort-info { font-size:0.72rem; }
       /* Tighter row padding on mobile */
       .result-row { padding:12px 14px; gap:8px; }
-      /* Season header: stack picker below title */
-      .cal-section-header { flex-direction:column; align-items:flex-start !important; }
+      /* Season header: stack the centered copy above the picker */
+      .cal-section-header { align-items:stretch; grid-template-columns:1fr; }
+      .cal-section-header-copy,
+      .cal-section-header-picker { grid-column:1; }
+      .cal-section-header-picker { justify-self:stretch; }
       /* Hide the legend tags on mobile */
       #cal-legend { display:none !important; }
       /* Season picker full-width */
@@ -1562,12 +1584,13 @@
     .tournament-overview-section-header {
       margin:0 auto 30px;
       max-width:920px;
+      text-align:center;
     }
     .tournament-overview-section-header .section-title {
       margin-bottom:12px;
     }
     .tournament-overview-section-header .section-sub {
-      margin:0;
+      margin:0 auto;
       line-height:1.7;
     }
 
@@ -2532,12 +2555,12 @@
 <!-- CALENDAR + LAST SEASON (tabbed) -->
  <section id="calendar-results" class="section tourney-tab-panel" role="tabpanel" aria-labelledby="tourney-tab-calendar" data-tourney-panel>
   <div class="section-wrap">
-    <div class="cal-section-header" style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:36px;flex-wrap:wrap;gap:16px;">
-      <div>
+    <div class="cal-section-header">
+      <div class="cal-section-header-copy">
         <p class="section-label" id="cal-season-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Calendar</h2>
       </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px;">
+      <div class="cal-section-header-picker">
         <div class="season-picker">
           <label class="season-picker-label" for="season-picker">Calendar season</label>
           <select class="season-picker-select" id="season-picker" onchange="showSeason(this.value)">
