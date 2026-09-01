@@ -466,7 +466,7 @@
       margin-top:30px;
     }
     .tournament-day-card {
-      padding:28px;
+      padding:24px;
       border:1px solid rgba(242,209,107,.72);
       border-radius:14px;
       background:#101D3B;
@@ -478,21 +478,33 @@
     }
     .tournament-day-card-main {
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
+      grid-template-columns:minmax(0,47fr) minmax(0,53fr);
       align-items:stretch;
-      gap:36px;
+      gap:31px;
     }
     .tournament-day-card-art {
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:center;
       min-width:0;
-      padding:10px 28px 10px 0;
-      border-right:2px solid rgba(255,255,255,.72);
+      padding:8px 24px 8px 0;
+      border-right:0;
+    }
+    .tournament-day-card-art::after,
+    .tournament-overview-volunteer-art::after {
+      content:"";
+      position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      width:2px;
+      background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 24%,rgba(255,255,255,.92) 50%,rgba(255,255,255,.34) 76%,rgba(255,255,255,0) 100%);
+      pointer-events:none;
     }
     .tournament-day-card-art img {
       display:block;
-      width:min(582px,100%);
+      width:min(495px,100%);
       height:auto;
       object-fit:contain;
     }
@@ -505,8 +517,8 @@
       align-items:flex-start;
       display:flex;
       justify-content:space-between;
-      gap:18px;
-      padding-bottom:18px;
+      gap:15px;
+      padding-bottom:15px;
       border-bottom:1px solid rgba(255,255,255,.16);
     }
     .tournament-day-card-title {
@@ -522,21 +534,21 @@
       text-transform:uppercase;
     }
     .tournament-day-card-kicker {
-      font-size:1.28rem;
+      font-size:1.09rem;
       line-height:1;
     }
     .tournament-day-card h2 {
       margin:0;
       color:#fff;
-      font:700 clamp(1.55rem,3vw,2.1rem)/1.05 'Cormorant Garamond',serif;
+      font:700 clamp(1.32rem,2.55vw,1.79rem)/1.05 'Cormorant Garamond',serif;
     }
     .tournament-day-card-tag {
       flex:0 0 auto;
-      padding:9px 12px;
+      padding:8px 10px;
       border:1px solid rgba(93,225,208,.68);
       border-radius:99px;
       color:#A6FFF1;
-      font:700 .6rem 'Josefin Sans',sans-serif;
+      font:700 .51rem 'Josefin Sans',sans-serif;
       letter-spacing:.1em;
       text-transform:uppercase;
     }
@@ -548,11 +560,11 @@
     }
     .tournament-day-timeline-item {
       min-height:0;
-      padding:16px 0;
+      padding:14px 0;
       border-right:0;
       border-bottom:1px solid rgba(255,255,255,.16);
     }
-    .tournament-day-timeline-item:first-child { padding-top:18px; }
+    .tournament-day-timeline-item:first-child { padding-top:15px; }
     .tournament-day-timeline-item:last-child {
       padding-bottom:0;
       border-bottom:0;
@@ -562,28 +574,28 @@
     .tournament-day-timeline-item:nth-child(3) time { color:#FF8C72; }
     .tournament-day-timeline-item time {
       display:block;
-      margin-bottom:8px;
-      font:700 clamp(1.32rem,2.65vw,1.78rem)/1 'Cormorant Garamond',serif;
+      margin-bottom:7px;
+      font:700 clamp(1.12rem,2.25vw,1.51rem)/1 'Cormorant Garamond',serif;
     }
     .tournament-day-timeline-item h3 {
-      margin:0 0 8px;
+      margin:0 0 7px;
       color:#fff;
-      font:700 .87rem 'Josefin Sans',sans-serif;
+      font:700 .74rem 'Josefin Sans',sans-serif;
       letter-spacing:.08em;
       text-transform:uppercase;
     }
     .tournament-day-timeline-item p {
       margin:0;
       color:#D7E4F7;
-      font-size:.9rem;
-      line-height:1.6;
+      font-size:.77rem;
+      line-height:1.55;
     }
     .tournament-day-card-note {
-      margin:20px 0 0;
-      padding-top:17px;
+      margin:17px 0 0;
+      padding-top:14px;
       border-top:1px solid rgba(255,255,255,.16);
       color:#D7E4F7;
-      font-size:.76rem;
+      font-size:.65rem;
       line-height:1.55;
     }
     .tournament-overview-event-grid {
@@ -629,7 +641,7 @@
       bottom:28px;
       left:329px;
       width:2px;
-      background:#fff;
+      background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 24%,rgba(255,255,255,.92) 50%,rgba(255,255,255,.34) 76%,rgba(255,255,255,0) 100%);
       content:"";
       pointer-events:none;
     }
@@ -745,12 +757,13 @@
       transform:translateX(-50%);
     }
     .tournament-overview-volunteer-art {
+      position:relative;
       display:flex;
       align-items:center;
       justify-content:flex-start;
       min-width:0;
       padding-right:18px;
-      border-right:2px solid rgba(255,255,255,.72);
+      border-right:0;
     }
     .tournament-overview-volunteer-art img {
       display:block;
@@ -1845,6 +1858,7 @@
         border-right:0;
         border-bottom:2px solid rgba(255,255,255,.72);
       }
+      .tournament-day-card-art::after { display:none; }
       .tournament-day-card-art img {
         width:min(440px,100%);
       }
@@ -1875,6 +1889,7 @@
         border-right:0;
         border-bottom:2px solid rgba(255,255,255,.72);
       }
+      .tournament-overview-volunteer-art::after { display:none; }
       .tournament-overview-volunteer-art img {
         width:min(170px,100%);
       }
