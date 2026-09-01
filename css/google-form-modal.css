@@ -1,0 +1,233 @@
+/* ============================================================
+   COOPER DEBATE TEAM — Google Form modal
+   Shared by the homepage and member sign-in page.
+   ============================================================ */
+
+body.google-form-dialog-open {
+  overflow: hidden;
+}
+
+.google-form-dialog {
+  width: min(980px, calc(100vw - 28px));
+  height: min(850px, calc(100dvh - 28px));
+  max-width: none;
+  max-height: calc(100dvh - 28px);
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(242, 209, 107, 0.72);
+  border-radius: 20px;
+  background: #06132f;
+  color: #fff;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.google-form-dialog::backdrop {
+  background: rgba(1, 6, 18, 0.86);
+  backdrop-filter: blur(8px);
+}
+
+.google-form-dialog[open] {
+  animation: google-form-dialog-enter 0.22s ease-out;
+}
+
+@keyframes google-form-dialog-enter {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.google-form-dialog__inner {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(242, 209, 107, 0.12), transparent 27%),
+    linear-gradient(145deg, rgba(11, 32, 76, 0.99), rgba(4, 15, 39, 0.99));
+}
+
+.google-form-dialog__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 20px;
+  align-items: center;
+  padding: 24px 28px 20px;
+  border-bottom: 1px solid rgba(242, 209, 107, 0.22);
+}
+
+.google-form-dialog__kicker {
+  margin: 0 0 6px;
+  color: #f2d16b;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.google-form-dialog__header h2 {
+  margin: 0 0 6px;
+  color: #fff;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(1.8rem, 4vw, 2.7rem);
+  line-height: 1;
+}
+
+.google-form-dialog__description {
+  max-width: 680px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+.google-form-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+}
+
+.google-form-dialog__external,
+.google-form-dialog__close {
+  min-height: 42px;
+  border-radius: 8px;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.google-form-dialog__external {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 13px;
+  border: 1px solid rgba(109, 216, 184, 0.72);
+  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
+  color: #fff;
+  text-decoration: none;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.google-form-dialog__external:hover,
+.google-form-dialog__external:focus-visible {
+  border-color: #8cebd0;
+  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.google-form-dialog__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  transition: border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
+}
+
+.google-form-dialog__close span {
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 0.7;
+}
+
+.google-form-dialog__close:hover,
+.google-form-dialog__close:focus-visible {
+  border-color: #f2d16b;
+  background: rgba(242, 209, 107, 0.1);
+  color: #fff0a6;
+  outline: none;
+}
+
+.google-form-dialog__body {
+  min-height: 0;
+  padding: 14px 18px;
+  background: #f5f7fa;
+}
+
+.google-form-dialog__frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border: 0;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.28);
+}
+
+.google-form-dialog__footer {
+  padding: 10px 18px 13px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.google-form-dialog__footer strong {
+  color: #f2d16b;
+}
+
+@media (max-width: 700px) {
+  .google-form-dialog {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+    max-height: calc(100dvh - 12px);
+    border-radius: 13px;
+  }
+
+  .google-form-dialog__header {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 13px;
+    padding: 17px 14px 14px;
+  }
+
+  .google-form-dialog__header h2 {
+    font-size: clamp(1.7rem, 8vw, 2.25rem);
+  }
+
+  .google-form-dialog__description {
+    font-size: 0.76rem;
+    line-height: 1.4;
+  }
+
+  .google-form-dialog__actions {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    justify-content: stretch;
+  }
+
+  .google-form-dialog__external,
+  .google-form-dialog__close {
+    min-height: 40px;
+  }
+
+  .google-form-dialog__body {
+    padding: 8px;
+  }
+
+  .google-form-dialog__frame {
+    border-radius: 7px;
+  }
+
+  .google-form-dialog__footer {
+    padding: 8px 12px 10px;
+    font-size: 0.64rem;
+  }
+}
