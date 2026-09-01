@@ -291,15 +291,22 @@
     }
     .tournament-overview-external-grid {
       display:grid;
-      grid-template-columns:repeat(4,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,1fr));
       gap:10px;
+      height:100%;
+    }
+    .tournament-overview-resource-row {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(190px,220px);
+      align-items:stretch;
+      gap:16px;
     }
     .tournament-overview-external-card {
       display:flex;
       align-items:center;
       gap:11px;
       min-width:0;
-      min-height:76px;
+      min-height:84px;
       padding:12px;
       border:1px solid rgba(125,166,220,.34);
       border-radius:9px;
@@ -332,8 +339,8 @@
     }
     .tournament-overview-external-card img {
       flex:0 0 auto;
-      width:46px;
-      height:46px;
+      width:64px;
+      height:64px;
       object-fit:contain;
     }
     .tournament-overview-external-card-copy { min-width:0; }
@@ -353,14 +360,24 @@
     }
     .tournament-overview-guide-actions {
       display:flex;
-      flex-wrap:wrap;
-      gap:11px;
-      margin-top:24px;
+      flex-direction:column;
+      gap:12px;
+      justify-content:center;
+      min-width:0;
+      margin-top:0;
     }
     .tournament-overview-guide-actions a {
+      align-items:center;
+      box-sizing:border-box;
+      display:flex;
+      flex:1 1 0;
       font-size:.8rem!important;
+      justify-content:center;
       letter-spacing:.07em;
+      min-height:54px;
       padding:10px 17px!important;
+      text-align:center;
+      width:100%;
     }
     .tournament-overview-guide-actions a:last-child {
       color:#fff!important;
@@ -1700,6 +1717,7 @@
       .tournament-overview-guide { padding:25px 20px; }
       .tournament-overview-timing-list { grid-template-columns:repeat(3,minmax(0,1fr)); }
       .tournament-overview-external-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .tournament-overview-resource-row { grid-template-columns:1fr; }
       .tournament-day-card { padding:22px 19px; }
       .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
       .tournament-day-card-main {
@@ -1817,7 +1835,14 @@
       .tournament-overview-volunteer-art img {
         width:min(170px,100%);
       }
-      .tournament-overview-external-grid { grid-template-columns:1fr; }
+      .tournament-overview-external-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .tournament-overview-external-card {
+        align-items:flex-start;
+        flex-direction:column;
+        gap:8px;
+        min-height:144px;
+        padding:10px;
+      }
       .three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}
       .volunteer-modal{align-items:flex-start;overflow-y:auto;padding:12px;-webkit-overflow-scrolling:touch;}
       .vol-modal-card{border-radius:12px;margin:auto 0;max-height:none;min-height:calc(100vh - 24px);padding:25px 18px 20px;}
@@ -1998,28 +2023,30 @@
       </div>
       <div class="tournament-overview-external">
         <p class="tournament-overview-external-label">Official links</p>
-        <div class="tournament-overview-external-grid">
-          <a class="tournament-overview-external-card" href="https://wacfl.org/" target="_blank" rel="noopener">
-            <img src="images/icon-wasdl-homepage.png" alt="" loading="lazy">
-            <span class="tournament-overview-external-card-copy"><strong>WASDL homepage</strong><span>League home</span></span>
-          </a>
-          <a class="tournament-overview-external-card" href="https://wacfl.org/about-us/" target="_blank" rel="noopener">
-            <img src="images/application-icons/debate.png" alt="" loading="lazy">
-            <span class="tournament-overview-external-card-copy"><strong>WASDL About Us</strong><span>Mission and history</span></span>
-          </a>
-          <a class="tournament-overview-external-card" href="https://wacfl.org/events/" target="_blank" rel="noopener">
-            <img src="images/icon-wasdl-events.png" alt="" loading="lazy">
-            <span class="tournament-overview-external-card-copy"><strong>WASDL Events</strong><span>Tournaments and events</span></span>
-          </a>
-          <a class="tournament-overview-external-card" href="https://www.speechanddebate.org/topics/" target="_blank" rel="noopener">
-            <img src="images/icons/icon-research-nsda.png" alt="" loading="lazy">
-            <span class="tournament-overview-external-card-copy"><strong>National Speech &amp; Debate</strong><span>Official topic center</span></span>
-          </a>
+        <div class="tournament-overview-resource-row">
+          <div class="tournament-overview-external-grid">
+            <a class="tournament-overview-external-card" href="https://wacfl.org/" target="_blank" rel="noopener">
+              <img src="images/icon-wasdl-homepage.png" alt="" loading="lazy">
+              <span class="tournament-overview-external-card-copy"><strong>WASDL homepage</strong><span>League home</span></span>
+            </a>
+            <a class="tournament-overview-external-card" href="https://wacfl.org/about-us/" target="_blank" rel="noopener">
+              <img src="images/icon-wasdl-about-us-large.png" alt="" loading="lazy">
+              <span class="tournament-overview-external-card-copy"><strong>WASDL About Us</strong><span>Mission and history</span></span>
+            </a>
+            <a class="tournament-overview-external-card" href="https://wacfl.org/events/" target="_blank" rel="noopener">
+              <img src="images/icon-wasdl-events.png" alt="" loading="lazy">
+              <span class="tournament-overview-external-card-copy"><strong>WASDL Events</strong><span>Tournaments and events</span></span>
+            </a>
+            <a class="tournament-overview-external-card" href="https://www.speechanddebate.org/topics/" target="_blank" rel="noopener">
+              <img src="images/icons/icon-research-nsda.png" alt="" loading="lazy">
+              <span class="tournament-overview-external-card-copy"><strong>National Speech &amp; Debate</strong><span>Official topic center</span></span>
+            </a>
+          </div>
+          <div class="tournament-overview-guide-actions">
+            <a href="tournaments.html?tab=calendar-results" class="btn btn-gold">See the tournament calendar →</a>
+            <a href="resources.html" class="btn btn-outline">Explore debate resources →</a>
+          </div>
         </div>
-      </div>
-      <div class="tournament-overview-guide-actions">
-        <a href="tournaments.html?tab=calendar-results" class="btn btn-gold">See the tournament calendar →</a>
-        <a href="resources.html" class="btn btn-outline">Explore debate resources →</a>
       </div>
     </div>
     <div class="tournament-overview-events" aria-labelledby="tournament-day-title">
