@@ -17,7 +17,7 @@ body.google-form-dialog-open {
   overflow: hidden;
   border: 1px solid rgba(242, 209, 107, 0.72);
   border-radius: 20px;
-  background: #06132f;
+  background: #0d2166;
   color: #fff;
   box-shadow: 0 28px 90px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
@@ -47,9 +47,7 @@ body.google-form-dialog-open {
   height: 100%;
   min-height: 0;
   grid-template-rows: auto minmax(0, 1fr) auto;
-  background:
-    radial-gradient(circle at 85% 0%, rgba(242, 209, 107, 0.12), transparent 27%),
-    linear-gradient(145deg, rgba(11, 32, 76, 0.99), rgba(4, 15, 39, 0.99));
+  background: #0d2166;
 }
 
 .google-form-dialog__header {
@@ -111,18 +109,19 @@ body.google-form-dialog-open {
   align-items: center;
   justify-content: center;
   padding: 9px 13px;
-  border: 1px solid rgba(109, 216, 184, 0.72);
-  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
-  color: #fff;
+  border: 1px solid #fff0a6;
+  background: #f2d16b;
+  color: #06132f;
   text-decoration: none;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
 }
 
 .google-form-dialog__external:hover,
 .google-form-dialog__external:focus-visible {
-  border-color: #8cebd0;
-  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
+  border-color: #fff;
+  background: #fae07c;
+  color: #06132f;
   transform: translateY(-1px);
   outline: none;
 }
