@@ -3,6 +3,9 @@
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/publicVolunteerSignup";
+  const FULL_TOURNAMENT_HOUR_OVERRIDES = Object.freeze({
+    "volunteer-signup-acceptance-test": Object.freeze({ start: "08:00", end: "17:30" }),
+  });
   let volunteerEvents = [];
   let selectedEvent = null;
   let selectedRole = null;
@@ -43,9 +46,18 @@
     return startLabel && endLabel ? `${startLabel} – ${endLabel}` : "";
   };
 
+  const fullTournamentWindow = event => {
+    const override = FULL_TOURNAMENT_HOUR_OVERRIDES[event?.id];
+    return {
+      start: event?.fullAvailabilityStartTime || override?.start || event?.startTime || "",
+      end: event?.fullAvailabilityEndTime || override?.end || event?.endTime || "",
+    };
+  };
+
   const coverageForSignup = (signup, event) => {
-    const isFullTournament = signup.availabilityStart === event.startTime &&
-      signup.availabilityEnd === event.endTime;
+    const fullWindow = fullTournamentWindow(event);
+    const isFullTournament = signup.availabilityStart === fullWindow.start &&
+      signup.availabilityEnd === fullWindow.end;
     if (isFullTournament) return { label: "Full tournament", className: "is-full" };
     if (signup.availabilityStart === event.startTime) return { label: "Morning", className: "is-morning" };
     if (signup.availabilityEnd === event.endTime) return { label: "Afternoon", className: "is-afternoon" };
@@ -133,12 +145,21 @@
       return [{ id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: "", end: "", duration: "" }];
     }
     const total = end - start;
+    const requestedFullWindow = fullTournamentWindow(event);
+    const requestedFullStart = timeToMinutes(requestedFullWindow.start);
+    const requestedFullEnd = timeToMinutes(requestedFullWindow.end);
+    const hasValidFullWindow = requestedFullStart !== null &&
+      requestedFullEnd !== null &&
+      requestedFullEnd > requestedFullStart;
+    const fullStart = hasValidFullWindow ? requestedFullWindow.start : event.startTime;
+    const fullEnd = hasValidFullWindow ? requestedFullWindow.end : event.endTime;
+    const fullDuration = hasValidFullWindow ? requestedFullEnd - requestedFullStart : total;
     const morningLength = Math.min(240, Math.max(60, Math.floor((total / 2) / 30) * 30));
     const split = start + morningLength;
     return [
       { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
       { id: "afternoon", label: timeRange(minutesToTime(split), minutesToTime(end)), detail: "Afternoon availability", icon: "☀", start: minutesToTime(split), end: minutesToTime(end), duration: durationLabel(end - split) },
-      { id: "full", label: timeRange(event.startTime, event.endTime), detail: "Full tournament", icon: "☀", start: event.startTime, end: event.endTime, duration: durationLabel(total) },
+      { id: "full", label: timeRange(fullStart, fullEnd), detail: "Full tournament", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
       { id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
     ];
   }

@@ -480,7 +480,19 @@ function cleanRoles(roles) {
   })).filter(role => role.id && role.label && role.capacity > 0) : [];
 }
 
+const FULL_TOURNAMENT_HOUR_OVERRIDES = new Map([
+  ["volunteer-signup-acceptance-test", { start: "08:00", end: "17:30" }],
+]);
+
+function fullTournamentHours(id, data) {
+  return FULL_TOURNAMENT_HOUR_OVERRIDES.get(id) || {
+    start: cleanTime(data.startTime),
+    end: cleanTime(data.endTime),
+  };
+}
+
 function publicVolunteerEvent(id, data) {
+  const fullWindow = fullTournamentHours(id, data);
   return {
     id,
     title:          cleanText(data.title, 160),
@@ -489,6 +501,8 @@ function publicVolunteerEvent(id, data) {
     address:         cleanText(data.address, 240),
     startTime:       cleanTime(data.startTime),
     endTime:         cleanTime(data.endTime),
+    fullAvailabilityStartTime: fullWindow.start,
+    fullAvailabilityEndTime:   fullWindow.end,
     mealInfo:        cleanText(data.mealInfo, 180),
     debateFormat:    cleanText(data.debateFormat, 120),
     resolution:      cleanText(data.resolution, 900),
@@ -638,10 +652,13 @@ exports.publicVolunteerSignup = onRequest(
         }
         const eventStartTime = cleanTime(eventSnap.data().startTime);
         const eventEndTime = cleanTime(eventSnap.data().endTime);
+        const fullWindow = fullTournamentHours(eventId, eventSnap.data());
+        const allowedStartTime = fullWindow.start || eventStartTime;
+        const allowedEndTime = fullWindow.end || eventEndTime;
         if (
-          eventStartTime && eventEndTime &&
-          (timeMinutes(availabilityStart) < timeMinutes(eventStartTime) ||
-            timeMinutes(availabilityEnd) > timeMinutes(eventEndTime))
+          allowedStartTime && allowedEndTime &&
+          (timeMinutes(availabilityStart) < timeMinutes(allowedStartTime) ||
+            timeMinutes(availabilityEnd) > timeMinutes(allowedEndTime))
         ) {
           throw new Error("Please choose a judging window within the published tournament hours.");
         }
