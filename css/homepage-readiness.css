@@ -1475,12 +1475,12 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--application {
-  --primary-action-border: rgba(242, 209, 107, 0.72);
-  --primary-action-border-hover: #fff1b5;
-  --primary-action-start: #ffe9a4;
-  --primary-action-end: #f2d16b;
-  --primary-action-hover-start: #fff4c7;
-  --primary-action-hover-end: #f7dc83;
+  --primary-action-border: var(--gold);
+  --primary-action-border-hover: var(--gold-light);
+  --primary-action-start: var(--gold);
+  --primary-action-end: var(--gold);
+  --primary-action-hover-start: var(--gold-light);
+  --primary-action-hover-end: var(--gold-light);
   --primary-action-shadow: rgba(212, 160, 23, 0.4);
   color: #071735 !important;
 }
@@ -1488,10 +1488,10 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--qst {
   --primary-action-border: rgba(255, 215, 107, 0.78);
   --primary-action-border-hover: #fff1b5;
-  --primary-action-start: #b94859;
-  --primary-action-end: #8e2f3e;
-  --primary-action-hover-start: #c95b6a;
-  --primary-action-hover-end: #a74352;
+  --primary-action-start: #a33e4f;
+  --primary-action-end: #802b3b;
+  --primary-action-hover-start: #b64b5c;
+  --primary-action-hover-end: #963243;
   --primary-action-shadow: rgba(142, 47, 62, 0.42);
 }
 
