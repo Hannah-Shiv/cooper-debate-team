@@ -507,6 +507,10 @@
       background:#123B59;
       box-shadow:0 10px 24px rgba(0,0,0,.2);
     }
+    .tournament-overview-event-card:not(.tournament-overview-event-card--training) {
+      border-color:rgba(111,183,255,.68);
+      border-top-color:#6FB7FF;
+    }
     .tournament-overview-event-card--training {
       border-color:rgba(183,233,107,.58);
       border-top-color:#B7E96B;
@@ -515,7 +519,7 @@
     .tournament-overview-event-card-header {
       position:relative;
       display:grid;
-      grid-template-columns:276px minmax(0,1fr);
+      grid-template-columns:345px minmax(0,1fr);
       align-items:start;
       gap:18px;
     }
@@ -523,7 +527,7 @@
       position:absolute;
       top:28px;
       bottom:28px;
-      left:260px;
+      left:329px;
       width:2px;
       background:#fff;
       content:"";
@@ -531,7 +535,7 @@
     }
     .tournament-overview-event-card-header img {
       display:block;
-      width:276px;
+      width:345px;
       height:auto;
       flex:0 0 auto;
       margin-left:-28px;
@@ -539,7 +543,14 @@
       object-fit:contain;
     }
     .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
-      margin-left:-24px;
+      width:317px;
+      margin-left:-40px;
+    }
+    .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header {
+      grid-template-columns:317px minmax(0,1fr);
+    }
+    .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header::after {
+      left:301px;
     }
     .tournament-overview-event-date {
       margin:0 0 9px;
@@ -548,7 +559,10 @@
       letter-spacing:.13em;
       line-height:1.25;
       text-transform:uppercase;
-      white-space:nowrap;
+      white-space:normal;
+    }
+    .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-date {
+      color:#7EC8FF;
     }
     .tournament-overview-event-card--training .tournament-overview-event-date { color:#B7E96B; }
     .tournament-overview-event-card h3 {
@@ -607,6 +621,9 @@
       font-size:.81rem;
       line-height:1.65;
     }
+    .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-note {
+      border-color:rgba(111,183,255,.5);
+    }
     .tournament-overview-event-card--training .tournament-overview-event-note {
       border-color:rgba(183,233,107,.5);
       background:#0D352F;
@@ -614,9 +631,9 @@
     }
     .tournament-overview-volunteer-callout {
       display:grid;
-      grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);
+      grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
       align-items:stretch;
-      gap:36px;
+      gap:28px;
       margin-top:16px;
       padding:22px 28px;
       border:1px solid rgba(242,209,107,.52);
@@ -630,14 +647,14 @@
     .tournament-overview-volunteer-art {
       display:flex;
       align-items:center;
-      justify-content:center;
+      justify-content:flex-start;
       min-width:0;
-      padding-right:28px;
+      padding-right:20px;
       border-right:2px solid rgba(255,255,255,.72);
     }
     .tournament-overview-volunteer-art img {
       display:block;
-      width:min(340px,100%);
+      width:min(170px,100%);
       height:auto;
       object-fit:contain;
     }
@@ -1616,6 +1633,25 @@
         width:242px;
         height:auto;
       }
+      .tournament-overview-event-card--training .tournament-overview-event-card-header {
+        grid-template-columns:303px minmax(0,1fr);
+      }
+      .tournament-overview-event-card--training .tournament-overview-event-card-header::after {
+        left:288px;
+      }
+      .tournament-overview-event-card--training .tournament-overview-event-card-header img {
+        width:303px;
+      }
+      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header {
+        grid-template-columns:278px minmax(0,1fr);
+      }
+      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header::after {
+        left:263px;
+      }
+      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
+        width:278px;
+        margin-left:-34px;
+      }
       .vol-choose-layout{grid-template-columns:1fr;}
       .vol-brief-facts{grid-template-columns:repeat(2,minmax(0,1fr));}
       .vol-brief-facts .vol-event-fact:nth-child(3n){border-right:1px solid rgba(255,255,255,.08);}
@@ -1678,7 +1714,7 @@
         border-bottom:2px solid rgba(255,255,255,.72);
       }
       .tournament-overview-volunteer-art img {
-        width:min(340px,100%);
+        width:min(170px,100%);
       }
       .volunteer-events{grid-template-columns:minmax(0,1fr);}
       .vol-public-summary{grid-template-columns:1fr;}
@@ -1722,8 +1758,17 @@
         width:219px;
         height:auto;
       }
-      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
+      .tournament-overview-event-card--training .tournament-overview-event-card-header,
+      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header {
+        grid-template-columns:1fr;
+      }
+      .tournament-overview-event-card--training .tournament-overview-event-card-header img {
+        width:min(274px,100%);
         margin-left:-20px;
+      }
+      .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
+        width:min(252px,100%);
+        margin-left:-28px;
       }
       .tournament-overview-volunteer-callout { padding:17px 16px; }
       .tournaments-page .resolution-card,
@@ -1733,7 +1778,7 @@
         transform:none;
       }
       .tournament-overview-volunteer-art img {
-        width:min(340px,100%);
+        width:min(170px,100%);
       }
       .tournament-overview-external-grid { grid-template-columns:1fr; }
       .three-col{grid-template-columns:1fr;}.cal-event{grid-template-columns:60px 1fr;}.cal-status{display:none;}
