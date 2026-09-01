@@ -39,10 +39,9 @@
       background: #1c2030;
     }
     .tournaments-page .page-header {
-      padding: 118px 24px 26px;
-      background:
-        radial-gradient(ellipse at 50% 8%, rgba(242,209,107,0.13), transparent 38%),
-        linear-gradient(180deg, rgba(7,26,54,0.98) 0%, #1c2030 100%);
+      padding: 118px 24px 34px;
+      background: #242a33;
+      border-bottom:1px solid rgba(242,209,107,0.2);
     }
     .tournaments-page .page-header::after { display:none; }
     .tournaments-page .page-header-content { max-width:920px; margin:0 auto; }
@@ -75,9 +74,10 @@
       border-top:0;
     }
     .tournaments-page .tourney-section-nav {
-      background:transparent;
-      border-bottom:0;
+      background:#242a33;
+      border-bottom:1px solid rgba(242,209,107,0.28);
       backdrop-filter:none;
+      box-shadow:0 12px 24px rgba(0,0,0,0.22);
     }
     .tournaments-page .resolution-card,
     .tournaments-page .public-calendar-shell,
@@ -1598,20 +1598,20 @@
 
     /* ── Tourneys in-page navigation ─────────────────────────── */
     .tourney-section-nav {
-      position:sticky; top:0; z-index:20; background:rgba(5,17,40,0.94);
-      border-bottom:1px solid rgba(212,160,23,0.2); backdrop-filter:blur(12px);
+      position:sticky; top:0; z-index:20; background:#242a33;
+      border-bottom:1px solid rgba(212,160,23,0.2); backdrop-filter:none;
     }
-    .tourney-section-nav .section-wrap { display:flex; gap:12px; overflow-x:hidden; padding-top:11px; padding-bottom:12px; }
+    .tourney-section-nav .section-wrap { display:flex; gap:12px; overflow-x:hidden; padding-top:16px; padding-bottom:16px; }
     .tourney-section-nav button {
-      align-items:center; display:flex; flex:1; gap:10px; justify-content:center; min-width:0; overflow:hidden; padding:8px 17px; position:relative; border:1px solid transparent; border-radius:8px;
+      align-items:center; display:flex; flex:1; gap:10px; justify-content:center; min-width:0; overflow:hidden; padding:8px 17px; position:relative; border:1px solid rgba(255,255,255,.18); border-radius:10px;
       color:var(--tab-color); font-family:'Josefin Sans',sans-serif; font-size:0.69rem; font-weight:700;
       letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:background .22s ease,border-color .22s ease,box-shadow .22s ease,transform .22s ease;
-      background:linear-gradient(135deg,var(--tab-soft),rgba(7,24,54,.72)); border-color:var(--tab-border); cursor:pointer;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 2px 8px rgba(0,0,0,.18); min-height:54px;
+      background:#2d333d; border-color:var(--tab-border); cursor:pointer;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22); min-height:58px;
     }
     .tourney-section-nav button::before {
-      background:linear-gradient(105deg,transparent 15%,rgba(255,255,255,.18) 50%,transparent 85%);
-      border-radius:inherit; content:""; inset:0; opacity:.35; pointer-events:none; position:absolute; transform:translateX(-55%); transition:transform .35s ease;
+      background:var(--tab-color);
+      border-radius:inherit; content:""; height:3px; left:12px; opacity:.9; pointer-events:none; position:absolute; right:12px; top:0; transform:none;
     }
     .tourney-section-nav button > * { position:relative; z-index:1; }
     .tourney-tab-icon { fill:none; flex:0 0 auto; height:23px; stroke:currentColor; stroke-linecap:round; stroke-linejoin:round; stroke-width:1.8; width:23px; }
@@ -1620,13 +1620,12 @@
     .tourney-section-nav button:nth-child(3) { --tab-color:#ff9a7a; --tab-soft:rgba(224,91,61,.2); --tab-border:rgba(255,135,105,.62); --tab-active:#9a3f2d; --tab-active-deep:#5b1e17; --tab-active-text:#fff; --tab-active-border:#ffad91; --tab-glow:rgba(244,111,78,.38); }
     .tourney-section-nav button:nth-child(4) { --tab-color:#6ce0c8; --tab-soft:rgba(37,178,157,.17); --tab-border:rgba(108,224,200,.48); --tab-active:#17685e; --tab-active-deep:#0a3936; --tab-active-text:#fff; --tab-active-border:#8cf1dc; --tab-glow:rgba(61,210,180,.34); }
     .tourney-section-nav button:nth-child(5) { --tab-color:#ddb0f2; --tab-soft:rgba(184,113,220,.17); --tab-border:rgba(184,113,220,.46); --tab-active:#593475; --tab-active-deep:#2b1848; --tab-active-text:#fff; --tab-active-border:#dda9f3; --tab-glow:rgba(184,113,220,.32); }
-    .tourney-section-nav button:hover, .tourney-section-nav button:focus-visible {
-      border-color:var(--tab-active); background:linear-gradient(135deg,var(--tab-soft),rgba(15,44,89,.88)); outline:none;
-      transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 16px var(--tab-glow),0 5px 14px rgba(0,0,0,.24);
+     .tourney-section-nav button:hover, .tourney-section-nav button:focus-visible {
+       border-color:var(--tab-color); background:#3a424e; outline:none;
+       transform:translateY(-2px); box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 18px var(--tab-glow),0 6px 16px rgba(0,0,0,.28);
     }
-    .tourney-section-nav button:hover::before, .tourney-section-nav button:focus-visible::before { transform:translateX(55%); }
     .tourney-section-nav button[aria-selected="true"] {
-      color:var(--tab-active-text); border-color:var(--tab-active-border); background:linear-gradient(135deg,var(--tab-active) 0%,var(--tab-active-deep) 100%);
+       color:var(--tab-active-text); border-color:var(--tab-active-border); background:var(--tab-active);
       box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.14),0 0 18px var(--tab-glow),0 5px 15px rgba(0,0,0,.28); transform:translateY(-1px);
     }
     .tourney-section-nav button:active { transform:translateY(0); }
