@@ -269,12 +269,12 @@
       text-align:center;
     }
     .tournament-overview-timing-step:not(:last-child)::after {
-      content:"➜";
+      content:"⟶";
       position:absolute;
       top:50%;
-      right:-24px;
+      right:-27px;
       color:#F2C94C;
-      font:700 1.15rem/1 'Josefin Sans',sans-serif;
+      font:400 1.3rem/1 'Josefin Sans',sans-serif;
       text-shadow:0 0 10px rgba(242,201,76,.45);
       transform:translateY(-50%);
     }
@@ -313,12 +313,13 @@
       display:grid;
       grid-template-columns:repeat(2,minmax(0,360px));
       justify-content:center;
-      gap:10px 22px;
+      gap:16px 34px;
       height:100%;
     }
     .tournament-overview-external-item {
-      display:flex;
+      display:grid;
       align-items:stretch;
+      grid-template-columns:74px minmax(0,1fr);
       gap:8px;
       min-width:0;
     }
@@ -336,18 +337,20 @@
       border-radius:9px;
       color:#fff;
       text-decoration:none;
-      flex:0 1 280px;
-      width:min(280px,calc(100% - 72px));
+      flex:1 1 auto;
+      width:auto;
       transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
     }
     .tournament-overview-external-item > img {
       align-self:stretch;
       display:block;
       flex:0 0 auto;
-      width:64px;
+      width:70px;
       height:auto;
+      justify-self:center;
       object-fit:contain;
     }
+    .tournament-overview-external-item:nth-child(1) > img { width:74px; }
     .tournament-overview-external-item:nth-child(1) .tournament-overview-external-card {
       background:linear-gradient(135deg,#1D3557 0%,#0B1F36 100%);
       border-color:#6EA8E6;
@@ -388,11 +391,12 @@
     }
     .tournament-overview-guide-actions {
       display:flex;
-      flex-direction:row;
-      flex-wrap:nowrap;
-      gap:9px;
-      justify-content:flex-end;
+      flex-direction:column;
+      gap:8px;
+      justify-content:flex-start;
+      align-items:stretch;
       min-width:0;
+      width:280px;
       margin-top:0;
     }
     .tournament-overview-guide-actions a {
@@ -407,7 +411,7 @@
       padding:9px 12px!important;
       text-align:center;
       white-space:nowrap;
-      width:auto;
+      width:100%;
     }
     .tournament-overview-guide-action-short { display:none; }
     .tournament-overview-guide-actions a:last-child {
@@ -1753,13 +1757,12 @@
       .tournament-overview-guide-actions {
         gap:6px;
         justify-self:stretch;
+        width:100%;
       }
       .tournament-overview-guide-actions a {
-        flex:1 1 0;
         font-size:.58rem!important;
         letter-spacing:.02em;
         padding:8px 7px!important;
-        width:0;
       }
       .tournament-overview-guide-action-full { display:none; }
       .tournament-overview-guide-action-short { display:inline; }
@@ -1775,8 +1778,11 @@
         flex:0 0 112px;
         width:112px;
       }
-      .tournament-overview-timing-step:not(:last-child)::after { right:-22px; }
-      .tournament-overview-external-grid { grid-template-columns:1fr; }
+      .tournament-overview-timing-step:not(:last-child)::after { right:-24px; }
+      .tournament-overview-external-grid {
+        grid-template-columns:1fr;
+        gap:14px;
+      }
       .tournament-overview-resource-row { grid-template-columns:1fr; }
       .tournament-day-card { padding:22px 19px; }
       .tournament-day-card-header { align-items:flex-start; flex-direction:column; gap:13px; }
@@ -1897,7 +1903,7 @@
       }
       .tournament-overview-external-grid { grid-template-columns:1fr; }
       .tournament-overview-external-item {
-        align-items:center;
+        align-items:stretch;
         gap:8px;
       }
       .tournament-overview-external-card {
