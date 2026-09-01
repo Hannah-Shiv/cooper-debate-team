@@ -1486,13 +1486,14 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--qst {
-  --primary-action-border: rgba(255, 215, 107, 0.78);
-  --primary-action-border-hover: #fff1b5;
-  --primary-action-start: #a33e4f;
-  --primary-action-end: #802b3b;
-  --primary-action-hover-start: #b64b5c;
-  --primary-action-hover-end: #963243;
+  --primary-action-border: rgba(255, 255, 255, 0.9);
+  --primary-action-border-hover: #fff;
+  --primary-action-start: #923442;
+  --primary-action-end: #702532;
+  --primary-action-hover-start: #a43f4e;
+  --primary-action-hover-end: #812c3b;
   --primary-action-shadow: rgba(142, 47, 62, 0.42);
+  color: #fff !important;
 }
 
 .homepage-readiness__primary-action:hover,
@@ -1517,12 +1518,12 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--qst .homepage-readiness__action-icon {
   color: #fff !important;
-  border-color: rgba(255, 255, 255, 0.55) !important;
+  border-color: rgba(255, 255, 255, 0.78) !important;
 }
 
 .homepage-readiness__primary-action--qst .homepage-readiness__primary-arrow {
-  color: #fff7e8 !important;
-  border-color: rgba(255, 247, 232, 0.72) !important;
+  color: #fff !important;
+  border-color: rgba(255, 255, 255, 0.82) !important;
 }
 
 .homepage-readiness__action-icon {
