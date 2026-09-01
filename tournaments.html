@@ -422,6 +422,7 @@
     .tournament-overview-external-card {
       display:flex;
       align-items:center;
+      justify-content:center;
       gap:11px;
       min-width:0;
       min-height:64px;
@@ -470,7 +471,10 @@
       outline:none;
       transform:translateY(-3px);
     }
-    .tournament-overview-external-card-copy { min-width:0; }
+    .tournament-overview-external-card-copy {
+      min-width:0;
+      text-align:center;
+    }
     .tournament-overview-external-card strong {
       display:block;
       color:#fff;
@@ -881,6 +885,9 @@
       color:#D7E4F7;
       font-size:.77rem;
       line-height:1.5;
+    }
+    .tournament-overview-volunteer-callout p.tournament-overview-event-kicker {
+      color:#F2D16B;
     }
     .tournament-overview-volunteer-content > p:not(.tournament-overview-event-kicker) {
       font-size:.89rem;
