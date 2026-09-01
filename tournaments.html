@@ -123,22 +123,19 @@
     }
     .tournaments-page .resolution-actions {
       display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
+      grid-template-columns:repeat(2,minmax(0,250px));
+      justify-content:center;
       gap:8px 14px;
     }
     .tournaments-page .resolution-actions .btn {
       align-items:center;
       justify-content:center;
       min-width:0;
+      width:100%;
+      box-sizing:border-box;
       font-size:.68rem !important;
       padding:8px 17px !important;
       text-align:center;
-    }
-    @media(min-width:701px) and (max-width:1400px){
-      .tournaments-page .resolution-actions {
-        grid-template-columns:repeat(2,minmax(0,250px));
-        justify-content:center;
-      }
     }
     @media(max-width:700px){
       .tournaments-page .resolution-actions {
