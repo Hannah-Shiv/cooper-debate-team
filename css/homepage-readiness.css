@@ -1477,21 +1477,22 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application {
   --primary-action-border: rgba(242, 209, 107, 0.72);
   --primary-action-border-hover: #fff1b5;
-  --primary-action-start: #8d6a1d;
-  --primary-action-end: #5f4815;
-  --primary-action-hover-start: #b08a2c;
-  --primary-action-hover-end: #795b1b;
-  --primary-action-shadow: rgba(95, 72, 21, 0.36);
+  --primary-action-start: #ffe9a4;
+  --primary-action-end: #f2d16b;
+  --primary-action-hover-start: #fff4c7;
+  --primary-action-hover-end: #f7dc83;
+  --primary-action-shadow: rgba(212, 160, 23, 0.4);
+  color: #071735 !important;
 }
 
 .homepage-readiness__primary-action--qst {
-  --primary-action-border: rgba(255, 154, 122, 0.72);
-  --primary-action-border-hover: #ffc1ad;
-  --primary-action-start: #8e2f3e;
-  --primary-action-end: #5b1e2b;
-  --primary-action-hover-start: #a74352;
-  --primary-action-hover-end: #762d3b;
-  --primary-action-shadow: rgba(142, 47, 62, 0.36);
+  --primary-action-border: rgba(255, 215, 107, 0.78);
+  --primary-action-border-hover: #fff1b5;
+  --primary-action-start: #b94859;
+  --primary-action-end: #8e2f3e;
+  --primary-action-hover-start: #c95b6a;
+  --primary-action-hover-end: #a74352;
+  --primary-action-shadow: rgba(142, 47, 62, 0.42);
 }
 
 .homepage-readiness__primary-action:hover,
@@ -1502,6 +1503,11 @@ body.deck-dialog-open {
   box-shadow: 0 9px 22px var(--primary-action-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   outline: none;
   transform: translateY(-1px);
+}
+
+.homepage-readiness__primary-action--application:hover,
+.homepage-readiness__primary-action--application:focus-visible {
+  color: #071735 !important;
 }
 
 .homepage-readiness__primary-action--qst:hover,
@@ -1531,6 +1537,12 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action .homepage-readiness__action-icon {
   color: #fff7e8;
+}
+
+.homepage-readiness__primary-action--application .homepage-readiness__action-icon,
+.homepage-readiness__primary-action--application .homepage-readiness__primary-arrow {
+  border-color: rgba(7, 22, 45, 0.62);
+  color: #071735;
 }
 
 .homepage-readiness__action-icon svg {
