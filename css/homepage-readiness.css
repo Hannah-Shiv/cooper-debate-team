@@ -1644,6 +1644,15 @@ body.deck-dialog-open {
     grid-template-columns: 1fr;
   }
 
+  .homepage-readiness__application-actions {
+    grid-template-columns: 1fr !important;
+  }
+
+  .homepage-readiness__detail-card--format .homepage-readiness__detail-links,
+  .homepage-readiness__detail-card--family .homepage-readiness__detail-cta {
+    margin-top: 14px;
+  }
+
   .homepage-readiness__deck-card {
     grid-template-columns: 1fr;
     gap: 16px;
