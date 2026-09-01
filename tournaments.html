@@ -252,16 +252,27 @@
       line-height:1.65;
     }
     .tournament-overview-timing {
-      margin-top:24px;
-      padding-top:24px;
-      border-top:1px solid rgba(125,166,220,.24);
+      margin-top:30px;
+      padding-top:0;
     }
     .tournament-overview-timing-label {
-      margin:0 0 12px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin:0 0 16px;
       color:#F2D16B;
       font:700 .65rem 'Josefin Sans',sans-serif;
       letter-spacing:.14em;
       text-transform:uppercase;
+    }
+    .tournament-overview-timing-label::before {
+      content:"";
+      display:block;
+      width:28px;
+      height:3px;
+      border-radius:99px;
+      background:linear-gradient(90deg,rgba(242,209,107,.2),#F2D16B);
+      box-shadow:0 0 10px rgba(242,209,107,.2);
     }
     .tournament-overview-timing-list {
       display:flex;
@@ -269,19 +280,25 @@
       justify-content:center;
       gap:48px;
       margin:0;
-      padding:0;
+      padding:0 8px 4px;
       list-style:none;
     }
     .tournament-overview-timing-step {
       position:relative;
       flex:0 1 145px;
       width:145px;
-      padding:13px 10px;
-      border:1px solid rgba(125,166,220,.28);
-      border-radius:8px;
-      background:rgba(4,16,43,.42);
+      padding:15px 10px 12px;
+      border:1px solid rgba(125,166,220,.22);
+      border-top:2px solid rgba(242,209,107,.72);
+      border-radius:12px;
+      background:linear-gradient(160deg,rgba(28,50,87,.56),rgba(4,16,43,.42));
+      box-shadow:0 8px 18px rgba(0,0,0,.16);
       text-align:center;
     }
+    .tournament-overview-timing-step:nth-child(2) { border-top-color:rgba(108,224,200,.8); }
+    .tournament-overview-timing-step:nth-child(3) { border-top-color:rgba(221,176,242,.8); }
+    .tournament-overview-timing-step:nth-child(4) { border-top-color:rgba(242,209,107,.8); }
+    .tournament-overview-timing-step:nth-child(5) { border-top-color:rgba(108,224,200,.8); }
     .tournament-overview-timing-step:not(:last-child)::after {
       content:"";
       position:absolute;
@@ -314,9 +331,8 @@
       line-height:1.5;
     }
     .tournament-overview-external {
-      margin-top:25px;
-      padding-top:24px;
-      border-top:1px solid rgba(125,166,220,.24);
+      margin-top:30px;
+      padding-top:0;
     }
     .tournament-overview-external-label {
       margin:0 0 12px;
