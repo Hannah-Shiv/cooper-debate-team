@@ -12,17 +12,23 @@
     appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
   };
 
-  // These confirmed kickoff dates bridge the calendar until coaches publish
-  // matching events from the member calendar. A matching published event wins.
+  // These confirmed schedule dates bridge the public calendar until coaches
+  // publish matching events from the member calendar. A matching published
+  // event wins.
   const KICKOFF_EVENTS = [
     { id:"kickoff-info", title:"Debate Info Session", type:"meeting", start:"2026-09-10T09:35:00-04:00", end:"2026-09-10T10:25:00-04:00", allDay:false, location:"Lecture Hall" },
     { id:"kickoff-fair", title:"Activity Fair · A Session", type:"meeting", start:"2026-09-14T12:00:00Z", allDay:true, location:"" },
     { id:"kickoff-application", title:"Debate Team Applications Due", type:"deadline", start:"2026-09-16T12:00:00Z", allDay:true, location:"" },
     { id:"kickoff-tryouts-1", title:"Debate Team Tryouts", type:"practice", start:"2026-09-22T14:30:00-04:00", end:"2026-09-22T16:30:00-04:00", allDay:false, location:"Cafeteria" },
     { id:"kickoff-tryouts-2", title:"Debate Team Tryouts", type:"practice", start:"2026-09-23T14:30:00-04:00", end:"2026-09-23T16:30:00-04:00", allDay:false, location:"Lecture Hall" },
-    { id:"kickoff-first-meeting", title:"First Debate Team Meeting", type:"meeting", start:"2026-09-29T12:00:00Z", allDay:true, location:"" },
-    { id:"kickoff-first-tournament", title:"First WASDL PF / Middle School Tournament", type:"tournament", start:"2026-10-24T12:00:00Z", allDay:true, location:"" },
-    { id:"kickoff-cooper-tournament", title:"Cooper Middle School PF Tournament", type:"tournament", start:"2026-11-14T12:00:00Z", allDay:true, location:"Cooper Middle School" }
+    { id:"kickoff-parent-meeting", title:"Parent meeting", type:"meeting", start:"2026-09-29T19:30:00-04:00", allDay:false, location:"Google Meet", isVirtual:true },
+    { id:"kickoff-judge-training", title:"Parent judge training", type:"meeting", start:"2026-10-03T08:30:00-04:00", end:"2026-10-03T12:00:00-04:00", allDay:false, location:"BASIS Independent McLean" },
+    { id:"kickoff-tournament-1", title:"MS PF #1", type:"tournament", start:"2026-10-24T12:00:00Z", allDay:true, location:"Congressional School · Falls Church" },
+    { id:"kickoff-tournament-2", title:"MS PF #2 · Cooper hosts", type:"tournament", start:"2026-11-14T12:00:00Z", allDay:true, location:"Cooper Middle School · McLean" },
+    { id:"kickoff-tournament-3", title:"MS PF #3", type:"tournament", start:"2026-12-05T12:00:00Z", allDay:true, location:"Longfellow Middle School · McLean" },
+    { id:"kickoff-tournament-4", title:"MS PF #4", type:"tournament", start:"2027-01-30T12:00:00Z", allDay:true, location:"Norwood School · Bethesda" },
+    { id:"kickoff-tournament-5", title:"PF #5 · Online", type:"tournament", start:"2027-02-20T12:00:00Z", allDay:true, location:"Virtual extravaganza tournament", isVirtual:true },
+    { id:"kickoff-metro-finals", title:"Public Forum & Policy Metro Finals", type:"tournament", start:"2027-03-12T12:00:00Z", end:"2027-03-14T12:00:00Z", allDay:true, location:"George C. Marshall · PF one day in person; Policy Friday/Saturday" }
   ].map(event => ({ ...event, season: PUBLIC_SEASON, bootstrap: true }));
 
   let calendar = null;
@@ -147,17 +153,28 @@
 
   function publicEventsForSeason() {
     const timestamp = value => value?.toDate ? value.toDate().getTime() : 0;
+    const scheduleKey = event => `${event.type || "tournament"}|${nyDateKey(event.start)}`;
+    const confirmedByKey = new Map(KICKOFF_EVENTS.map(event => [scheduleKey(event), event]));
     const publishedByDate = new Map();
     latestPublishedEvents.forEach(event => {
-      const key = `${event.type || "tournament"}|${nyDateKey(event.start)}`;
+      const key = scheduleKey(event);
       const existing = publishedByDate.get(key);
       if (!existing || timestamp(event.updatedAt) >= timestamp(existing.updatedAt)) {
         publishedByDate.set(key, event);
       }
     });
-    const publishedEvents = [...publishedByDate.values()];
-    const publishedDates = new Set(publishedEvents.map(event => nyDateKey(event.start)));
-    const bootstrap = KICKOFF_EVENTS.filter(event => !publishedDates.has(nyDateKey(event.start)));
+    const publishedEvents = [...publishedByDate.values()].map(event => {
+      const confirmed = confirmedByKey.get(scheduleKey(event));
+      if (!confirmed) return event;
+      return {
+        ...event,
+        ...confirmed,
+        id: event.id,
+        countdownTitle: event.title
+      };
+    });
+    const publishedKeys = new Set(publishedEvents.map(scheduleKey));
+    const bootstrap = KICKOFF_EVENTS.filter(event => !publishedKeys.has(scheduleKey(event)));
     return [...bootstrap, ...publishedEvents]
       .filter(event => event.season === PUBLIC_SEASON)
       .sort((a, b) => eventStart(a) - eventStart(b));
@@ -303,7 +320,7 @@
     const diff = nextStart - now;
     const days = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
-    const titleParts = next.title.split(/:\s*/, 2);
+    const titleParts = (next.countdownTitle || next.title).split(/:\s*/, 2);
     const headline = titleParts[0];
     const resolution = titleParts[1] || "";
     const weekday = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
