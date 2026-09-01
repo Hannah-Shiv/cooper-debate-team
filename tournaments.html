@@ -160,8 +160,35 @@
     }
     .tournament-overview-guide-header {
       display:grid;
-      grid-template-columns:minmax(0,1fr);
+      grid-template-columns:minmax(230px,28%) minmax(0,1fr);
+      gap:34px;
       align-items:start;
+    }
+    .tournament-overview-guide-header-art {
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:0;
+      min-height:250px;
+      padding-right:28px;
+    }
+    .tournament-overview-guide-header-art::after {
+      content:"";
+      position:absolute;
+      top:0;
+      right:0;
+      bottom:0;
+      width:2px;
+      background:linear-gradient(180deg,rgba(255,255,255,0) 0%,rgba(255,255,255,.34) 24%,rgba(255,255,255,.92) 50%,rgba(255,255,255,.34) 76%,rgba(255,255,255,0) 100%);
+      pointer-events:none;
+    }
+    .tournament-overview-guide-header-art img {
+      display:block;
+      width:min(250px,100%);
+      height:auto;
+      object-fit:contain;
+      filter:drop-shadow(0 10px 18px rgba(0,0,0,.24));
     }
     .tournament-overview-guide-header-copy { max-width:820px; }
     .tournament-overview-guide-kicker {
@@ -1789,6 +1816,17 @@
     }
     @media(max-width:900px){
       .two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}
+      .tournament-overview-guide-header {
+        grid-template-columns:minmax(190px,30%) minmax(0,1fr);
+        gap:24px;
+      }
+      .tournament-overview-guide-header-art {
+        min-height:220px;
+        padding-right:20px;
+      }
+      .tournament-overview-guide-header-art img {
+        width:min(210px,100%);
+      }
       .tournament-overview-guide-grid { grid-template-columns:1fr; }
       .tournament-overview-guide-card { min-height:0; }
       .tournament-day-timeline { grid-template-columns:1fr; gap:0; }
@@ -1852,6 +1890,24 @@
     }
     @media(max-width:700px){
       .tournament-overview-guide { padding:25px 20px; }
+      .tournament-overview-guide-header {
+        grid-template-columns:1fr;
+        gap:22px;
+      }
+      .tournament-overview-guide-header-art {
+        min-height:0;
+        padding:0 0 22px;
+        border-bottom:2px solid rgba(255,255,255,.72);
+      }
+      .tournament-overview-guide-header-art::after {
+        display:none;
+      }
+      .tournament-overview-guide-header-art img {
+        width:min(280px,100%);
+      }
+      .tournament-overview-guide-header-copy {
+        max-width:none;
+      }
       .tournament-overview-guide-actions {
         gap:6px;
         width:100%;
@@ -2182,6 +2238,9 @@
     </div>
     <div class="tournament-overview-guide" aria-labelledby="tournament-overview-guide-title">
       <div class="tournament-overview-guide-header">
+        <div class="tournament-overview-guide-header-art" aria-hidden="true">
+          <img src="images/icon-wasdl-public-forum-large.png" alt="" loading="lazy">
+        </div>
         <div class="tournament-overview-guide-header-copy">
           <p class="tournament-overview-guide-kicker">New to the circuit?</p>
           <h2 class="tournament-overview-guide-title" id="tournament-overview-guide-title">WASDL &amp; Middle School Public Forum</h2>
