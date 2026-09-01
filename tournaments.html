@@ -125,14 +125,16 @@
       padding:8px 17px !important;
     }
     .tournaments-page .resolution-card .partner-cta {
-      color:#07162d;
-      background:linear-gradient(100deg,#FF987D,#E86A5C);
-      box-shadow:0 4px 14px rgba(232,106,92,0.24);
+      color:#fff;
+      background:linear-gradient(135deg,#3D424D 0%,#232832 100%);
+      border-color:rgba(255,255,255,.72);
+      box-shadow:0 4px 14px rgba(0,0,0,.24);
     }
     .tournaments-page .resolution-card .partner-cta:hover,
     .tournaments-page .resolution-card .partner-cta:focus-visible {
-      color:#07162d;
-      background:#FF8C72;
+      color:#fff;
+      background:#4A515D;
+      border-color:#fff;
     }
     .tournament-overview-guide {
       position:relative;
@@ -277,11 +279,17 @@
     .tournament-overview-timing-list {
       display:flex;
       align-items:stretch;
-      justify-content:center;
+      justify-content:flex-start;
       gap:48px;
       margin:0;
       padding:0 8px 4px;
       list-style:none;
+    }
+    .tournament-overview-timing-row {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(250px,280px);
+      align-items:center;
+      gap:24px;
     }
     .tournament-overview-timing-step {
       position:relative;
@@ -325,10 +333,26 @@
       text-transform:uppercase;
     }
     .tournament-overview-timing-note {
-      margin:12px 0 0;
-      color:#c8d7eb;
-      font-size:.78rem;
-      line-height:1.5;
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr);
+      align-items:center;
+      gap:12px;
+      margin:0;
+      padding:16px 18px;
+      border:1px solid rgba(255,255,255,.3);
+      border-left:3px solid #F2D16B;
+      border-radius:12px;
+      background:linear-gradient(135deg,#353A45 0%,#222730 100%);
+      box-shadow:0 8px 18px rgba(0,0,0,.18);
+      color:#f2f6fc;
+      font-size:.715rem;
+      line-height:1.55;
+    }
+    .tournament-overview-timing-note::before {
+      content:"≈";
+      color:#F2D16B;
+      font:700 2rem/1 'Cormorant Garamond',serif;
+      text-shadow:0 0 12px rgba(242,209,107,.24);
     }
     .tournament-overview-external {
       margin-top:30px;
@@ -1753,6 +1777,18 @@
 
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+    @media(max-width:1100px){
+      .tournament-overview-timing-row {
+        display:block;
+      }
+      .tournament-overview-timing-list {
+        justify-content:center;
+      }
+      .tournament-overview-timing-note {
+        margin:18px auto 0;
+        max-width:620px;
+      }
+    }
     @media(max-width:900px){
       .two-col{grid-template-columns:1fr;}.three-col{grid-template-columns:1fr 1fr;}.result-row{grid-template-columns:auto 1fr auto;}.result-row .result-r-teams,.result-row .result-r-record{display:none;}
       .tournament-overview-guide-grid { grid-template-columns:1fr; }
@@ -1836,6 +1872,10 @@
         padding:0 2px 8px;
         scrollbar-color:rgba(242,209,107,.45) rgba(255,255,255,.06);
         scrollbar-width:thin;
+      }
+      .tournament-overview-timing-note {
+        margin:16px 0 0;
+        max-width:none;
       }
       .tournament-overview-timing-step {
         flex:0 0 112px;
@@ -2169,14 +2209,16 @@
       </div>
       <div class="tournament-overview-timing">
         <p class="tournament-overview-timing-label">A Public Forum round at a glance</p>
-        <ol class="tournament-overview-timing-list">
-          <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Constructive</span></li>
-          <li class="tournament-overview-timing-step"><strong>3 min</strong><span>Crossfire</span></li>
-          <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Rebuttal</span></li>
-          <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Summary</span></li>
-          <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Final Focus</span></li>
-        </ol>
-        <p class="tournament-overview-timing-note">A full round typically takes about 35 minutes, plus preparation time.</p>
+        <div class="tournament-overview-timing-row">
+          <ol class="tournament-overview-timing-list">
+            <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Constructive</span></li>
+            <li class="tournament-overview-timing-step"><strong>3 min</strong><span>Crossfire</span></li>
+            <li class="tournament-overview-timing-step"><strong>4 min</strong><span>Rebuttal</span></li>
+            <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Summary</span></li>
+            <li class="tournament-overview-timing-step"><strong>2 min</strong><span>Final Focus</span></li>
+          </ol>
+          <p class="tournament-overview-timing-note">A full round typically takes about 35 minutes, plus preparation time.</p>
+        </div>
       </div>
       <div class="tournament-overview-external">
         <p class="tournament-overview-external-label">Official links</p>
