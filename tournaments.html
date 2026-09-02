@@ -2548,6 +2548,14 @@
       font-size:clamp(1.8rem,3vw,2.45rem);
       line-height:1;
     }
+    @media(min-width:821px){
+      .tournaments-page #tournament-overview .tourney-panel-intro-title .section-title,
+      .tournaments-page #calendar-results .tourney-panel-intro-title .section-title,
+      .tournaments-page #partner-signup .tourney-panel-intro-title .section-title,
+      .tournaments-page #parent-info .tourney-panel-intro-title .section-title {
+        text-align:right;
+      }
+    }
     .tournaments-page .tourney-panel-intro-copy .section-label {
       justify-content:flex-start;
       margin:0 0 7px;
@@ -2648,6 +2656,7 @@
       }
       .tournaments-page .tourney-panel-intro-title .section-title {
         font-size:clamp(1.7rem,8vw,2.15rem);
+        text-align:left;
       }
       .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
         justify-self:stretch;
