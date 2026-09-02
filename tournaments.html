@@ -2547,6 +2547,10 @@
       font-size:clamp(1.8rem,3vw,2.45rem);
       line-height:1;
     }
+    .tournaments-page .tourney-panel-intro-copy .section-label {
+      justify-content:flex-start;
+      margin:0 0 7px;
+    }
     .tournaments-page .tourney-panel-intro-copy .section-sub,
     .tournaments-page .tourney-panel-intro-copy .public-calendar-intro,
     .tournaments-page .tourney-panel-intro-copy .volunteer-intro {
@@ -2565,8 +2569,9 @@
       text-align:left;
     }
     .tournaments-page .tourney-panel-intro--calendar {
+      grid-template-columns:minmax(250px,.92fr) minmax(0,1.08fr);
       grid-template-areas:
-        "title copy"
+        "picker title"
         "picker copy";
     }
     .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy,
@@ -2776,10 +2781,10 @@
   <div class="section-wrap">
     <div class="tournament-overview-section-header tourney-panel-intro">
       <div class="tourney-panel-intro-title">
-        <p class="section-label">2026–2027 Season</p>
         <h2 class="section-title">Tournament Overview</h2>
       </div>
       <div class="tourney-panel-intro-copy">
+        <p class="section-label">2026–2027 Season</p>
         <p class="section-sub">WASDL season basics, Public Forum format, and tournament-day guidance for Cooper families.</p>
       </div>
     </div>
@@ -3113,10 +3118,10 @@
   <div class="section-wrap">
     <div class="tourney-panel-intro tourney-panel-intro--volunteer">
       <div class="tourney-panel-intro-title">
-        <p class="section-label">Volunteers Make Tournament Days Possible</p>
         <h2 class="section-title">Tournament Volunteer Signup</h2>
       </div>
       <div class="tourney-panel-intro-copy">
+        <p class="section-label">Volunteers Make Tournament Days Possible</p>
         <p class="volunteer-intro">Choose a tournament and an open volunteer role.</p>
         <p class="volunteer-privacy"><strong>Public:</strong> names, roles, and availability. <strong>Private:</strong> email, phone, and notes.</p>
       </div>
@@ -3133,10 +3138,10 @@
   <div class="section-wrap">
     <div class="tourney-tryout-heading tourney-panel-intro">
       <div class="tourney-panel-intro-title">
-        <p class="section-label">Fall 2026 Team Selection</p>
         <h2 class="section-title">Debate Partner Sign-Up</h2>
       </div>
       <div class="tourney-panel-intro-copy">
+        <p class="section-label">Fall 2026 Team Selection</p>
         <p class="section-sub">Enter student details, choose a session, and rank up to four partner preferences.</p>
       </div>
     </div>
@@ -3235,10 +3240,10 @@
   <div class="section-wrap">
     <div class="tourney-panel-intro tourney-panel-intro--parent">
       <div class="tourney-panel-intro-title">
-        <p class="section-label">For Families</p>
         <h2 class="section-title">Parent &amp; Family Guide</h2>
       </div>
       <div class="tourney-panel-intro-copy">
+        <p class="section-label">For Families</p>
         <p class="section-sub">Tournament-day essentials for Cooper families.</p>
       </div>
     </div>
