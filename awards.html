@@ -1600,6 +1600,13 @@
     .awards-page .aw-champ-dashboard .aw-champ-card-subtitle {
       text-align: center;
     }
+
+    /* Match the lower chart panels to the championship cards above. */
+    .awards-page .aw-champ-chart-grid > .aw-champ-card,
+    .awards-page .aw-chart-grid > .aw-chart-wrap,
+    .awards-page .aw-chart-grid > .aw-chart-wrap:hover {
+      background: #292d34;
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
@@ -2290,7 +2297,11 @@ function renderAwards(tourns) {
       /* large total number */
       ctx.fillStyle = '#ffffff';
       ctx.font = `bold ${Math.round(r*0.11)}px 'Playfair Display', serif`;
+      ctx.shadowColor = 'rgba(255,255,255,0.6)';
+      ctx.shadowBlur = 8;
       ctx.fillText(metroTotal, cx, cy - r*0.04);
+      ctx.shadowColor = 'transparent';
+      ctx.shadowBlur = 0;
       /* gold rule line */
       const lw = r * 0.13;
       ctx.strokeStyle = 'rgba(212,160,23,0.6)';
@@ -2301,7 +2312,9 @@ function renderAwards(tourns) {
       ctx.stroke();
       /* "TOTAL PAIRS" subtitle */
       ctx.font = `700 ${Math.round(r*0.040)}px 'Josefin Sans', sans-serif`;
-      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.fillStyle = '#ffffff';
+      ctx.shadowColor = 'rgba(255,255,255,0.38)';
+      ctx.shadowBlur = 4;
       ctx.letterSpacing = '2px';
       ctx.fillText('TOTAL PAIRS', cx, cy + r*0.11);
       ctx.restore();
@@ -2383,12 +2396,12 @@ function renderAwards(tourns) {
         backgroundColor:[
           'rgba(22,163,74,0.95)',
           'rgba(150,104,10,0.95)',
-          'rgba(30,56,120,0.92)'
+           'rgba(18,40,98,0.98)'
         ],
         borderColor:[
           'rgba(22,163,74,1)',
           'rgba(150,104,10,1)',
-          'rgba(30,56,120,1)'
+           'rgba(18,40,98,1)'
         ],
         borderWidth:0, hoverOffset:6
       }]
