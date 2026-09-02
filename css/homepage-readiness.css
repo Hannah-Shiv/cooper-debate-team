@@ -1503,10 +1503,16 @@ body.deck-dialog-open {
   color: #000 !important;
 }
 
-.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2),
+.btn.btn-outline.homepage-readiness__primary-action--qst > span:nth-child(2) {
   font-size: inherit;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   letter-spacing: inherit;
+  line-height: 1;
+}
+
+.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+  -webkit-text-stroke: 0.2px currentColor;
 }
 
 .homepage-readiness__primary-action--application,
