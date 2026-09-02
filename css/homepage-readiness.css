@@ -1475,7 +1475,7 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--application {
-  --primary-action-border: #87afe9;
+  --primary-action-border: rgba(255, 255, 255, 0.9);
   --primary-action-border-hover: #fff;
   --primary-action-start: #2e67b5;
   --primary-action-end: #123b79;
@@ -1552,7 +1552,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application .homepage-readiness__action-icon,
 .homepage-readiness__primary-action--application .homepage-readiness__primary-arrow {
-  border-color: rgba(255, 255, 255, 0.76) !important;
+  border-color: rgba(255, 255, 255, 0.82) !important;
   color: #fff !important;
   transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
 }
