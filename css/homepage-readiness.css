@@ -1881,10 +1881,6 @@ body.deck-dialog-open {
   transform: translateY(2px) scale(0.99);
 }
 
-.homepage-readiness__action-link::after {
-  display: none;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .homepage-readiness__action-link,
   .homepage-readiness__action-link > *,
