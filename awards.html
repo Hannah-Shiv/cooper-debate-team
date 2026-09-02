@@ -57,6 +57,40 @@
     .awards-page .page-subtitle {
       color: #F2D16B;
     }
+    .awards-page.aw-hide-2025-results #aw-season-highlights-title,
+    .awards-page.aw-hide-2025-results #aw-season-highlights,
+    .awards-page.aw-hide-2025-results .aw-metric-grid,
+    .awards-page.aw-hide-2025-results #aw-champ-section {
+      display: none !important;
+    }
+    .awards-page.aw-hide-2025-results #aw-champ-highlight {
+      display: block !important;
+    }
+    .awards-page.aw-hide-2025-results #aw-champ-highlight .aw-ncfl-award-card {
+      display: none !important;
+    }
+    .awards-page.aw-hide-2025-results #aw-champ-highlight .aw-champ-highlight-grid.aw-two-awards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .awards-page.aw-only-metro-result > section:not(:first-of-type),
+    .awards-page.aw-only-metro-result > footer[data-public-footer],
+    .awards-page.aw-only-metro-result > footer.index-footer,
+    .awards-page.aw-only-metro-result .season-select-wrap,
+    .awards-page.aw-only-metro-result .aw-results-heading-row,
+    .awards-page.aw-only-metro-result #aw-loading,
+    .awards-page.aw-only-metro-result #aw-future,
+    .awards-page.aw-only-metro-result .aw-metric-grid,
+    .awards-page.aw-only-metro-result #aw-regular-season-results,
+    .awards-page.aw-only-metro-result #aw-champ-section,
+    .awards-page.aw-only-metro-result .aw-chart-grid {
+      display: none !important;
+    }
+    .awards-page.aw-only-metro-result #aw-champ-highlight .aw-metro-award-card .aw-award-stats {
+      display: none !important;
+    }
+    .awards-page.aw-only-metro-result #aw-results-content {
+      min-height: 0;
+    }
     .awards-page .aw-season-highlights {
       position: relative;
       overflow: hidden;
@@ -1892,7 +1926,7 @@
     }
   </style>
 </head>
-<body class="awards-page" style="--navy-dark:#1c2030;">
+<body class="awards-page aw-hide-2025-results aw-only-metro-result" style="--navy-dark:#1c2030;">
 
 <!-- SITE BADGE (home link) -->
 <div class="mp-topbar" aria-hidden="true"></div>
@@ -2942,6 +2976,7 @@ async function loadAwards() {
 function filterAndRender() {
   const yearStr = document.getElementById('season-dropdown').value;
   const year    = parseInt(yearStr, 10);
+  document.body.classList.toggle('aw-hide-2025-results', year === 2025);
   const filtered = allTournaments.filter(t=>{
     const d = parseTournDate(t.meta.date);
     return !isNaN(d) && dateToSeasonYear(d) === year;
@@ -2958,6 +2993,7 @@ function chooseSeason(year) {
 function onSeasonChange() {
   const sel   = document.getElementById('season-dropdown');
   const year  = parseInt(sel.value, 10);
+  document.body.classList.toggle('aw-hide-2025-results', year === 2025);
   const label = sel.options[sel.selectedIndex].text;
   document.getElementById('season-label').textContent = label;
   document.querySelectorAll('.season-toggle-btn').forEach(btn => {
