@@ -1585,6 +1585,21 @@
       align-items: center;
       white-space: nowrap;
     }
+
+    /* Championship body copy: strong, bright, and aligned beneath its titles. */
+    .awards-page .aw-champ-dashboard .aw-champ-metric-label,
+    .awards-page .aw-champ-dashboard .aw-champ-card-subtitle,
+    .awards-page .aw-champ-dashboard .aw-record-bar-count,
+    .awards-page .aw-champ-dashboard .aw-record-bar-label,
+    .awards-page .aw-champ-dashboard .aw-record-table th,
+    .awards-page .aw-champ-dashboard .aw-record-table td,
+    .awards-page .aw-champ-dashboard .aw-record-table tfoot td {
+      color: #fff;
+      font-weight: 700;
+    }
+    .awards-page .aw-champ-dashboard .aw-champ-card-subtitle {
+      text-align: center;
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
@@ -2461,7 +2476,7 @@ function renderAwards(tourns) {
               <div class="aw-award-title">${bestMetro.tournName}</div>
               <div class="aw-award-place aw-award-place--trio">
                 2<sup>ND</sup>, 3<sup>RD</sup> &amp; 4<sup>TH</sup>
-                <span class="aw-award-place-label">PLACE</span>
+                &nbsp;<span class="aw-award-place-label">PLACE</span>
               </div>
               ${champDate ? `<div class="aw-award-note">Date · ${champDate}</div>` : ''}
             </div>
