@@ -98,9 +98,17 @@
       .gallery-media-icon { width: 104px; height: 104px; }
     }
     .section { padding: 28px 0 56px; }
+    body.gallery-blank-page {
+      background: #1c2030;
+    }
+    body.gallery-blank-page #gallery-media,
+    body.gallery-blank-page > footer[data-public-footer],
+    body.gallery-blank-page > footer.index-footer {
+      display: none !important;
+    }
   </style>
 </head>
-<body style="--navy-dark:#1c2030;">
+<body class="gallery-blank-page" style="--navy-dark:#1c2030;">
 
 <!-- PUBLIC HEADER BAR — matches the private portal header -->
 <div class="mp-topbar" aria-hidden="true"></div>
