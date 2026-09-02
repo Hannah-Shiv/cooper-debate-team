@@ -638,6 +638,18 @@
     .awards-page .aw-metro-award-media img {
       width: 148px;
     }
+    .awards-page .aw-metro-award-media.aw-metro-award-media--trio {
+      flex: 0 0 218px;
+      width: 218px;
+      gap: 4px;
+      align-items: flex-end;
+    }
+    .awards-page .aw-metro-award-media.aw-metro-award-media--trio img {
+      width: calc((100% - 8px) / 3);
+      height: 174px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
+    }
     .awards-page .aw-ncfl-award-media img {
       width: 148px;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
@@ -879,6 +891,20 @@
       .awards-page .aw-metro-award-media img,
       .awards-page .aw-ncfl-award-media img {
         width: 112px;
+      }
+      .awards-page .aw-metro-award-media.aw-metro-award-media--trio {
+        flex-basis: 136px;
+        width: 136px;
+        height: 155px;
+        gap: 2px;
+      }
+      .awards-page .aw-metro-award-media.aw-metro-award-media--trio img {
+        width: calc((100% - 4px) / 3);
+        height: 142px;
+      }
+      .awards-page .aw-award-place.aw-award-place--trio {
+        font-size: clamp(1.35rem, 6vw, 2rem);
+        white-space: normal;
       }
       .awards-page .aw-award-badge {
         font-size: 0.58rem;
@@ -2318,14 +2344,19 @@ function renderAwards(tourns) {
         </article>
         <article class="aw-award-card aw-metro-award-card">
           <div class="aw-award-content">
-            <div class="aw-award-media aw-metro-award-media">
-              <img src="images/icon-metro-finals-spotlight.png?v=38" alt="WASDL Metro Finals second-place plaque">
+            <div class="aw-award-media aw-metro-award-media aw-metro-award-media--trio" aria-label="WASDL Metro Finals second-, third-, and fourth-place plaques">
+              <img src="images/metro-finals-2nd-place.webp?v=1" alt="WASDL Metro Finals second-place plaque">
+              <img src="images/metro-finals-3rd-place.webp?v=1" alt="WASDL Metro Finals third-place plaque">
+              <img src="images/metro-finals-4th-place.webp?v=1" alt="WASDL Metro Finals fourth-place plaque">
             </div>
             <div class="aw-award-details">
               <div class="aw-award-badge"><span class="aw-award-badge-icon" aria-hidden="true"></span>Metro Finals · Elite Championship</div>
               <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
               <div class="aw-award-title">${bestMetro.tournName}</div>
-              <div class="aw-award-place">${bestRank}<sup>${rankSuffix}</sup> <span class="aw-award-place-label">PLACE</span></div>
+              <div class="aw-award-place aw-award-place--trio">
+                2<sup>ND</sup>, 3<sup>RD</sup> &amp; 4<sup>TH</sup>
+                <span class="aw-award-place-label">PLACE</span>
+              </div>
               ${champDate ? `<div class="aw-award-note">Date · ${champDate}</div>` : ''}
             </div>
           </div>
