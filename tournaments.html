@@ -434,6 +434,8 @@
       gap:26px;
     }
     .tournament-overview-external-card {
+      --cta-x:82%;
+      --cta-y:24%;
       display:flex;
       align-items:center;
       justify-content:center;
@@ -447,7 +449,29 @@
       text-decoration:none;
       flex:1 1 auto;
       width:auto;
-      transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease;
+      position:relative;
+      isolation:isolate;
+      transition:border-color .22s ease,filter .22s ease;
+    }
+    .tournament-overview-external-card::after {
+      position:absolute;
+      inset:0;
+      z-index:0;
+      border-radius:8px;
+      background:radial-gradient(
+        circle 105px at var(--cta-x) var(--cta-y),
+        rgba(255,255,255,.24),
+        rgba(255,255,255,.08) 34%,
+        transparent 70%
+      );
+      content:"";
+      pointer-events:none;
+      opacity:.28;
+      transition:opacity .24s ease;
+    }
+    .tournament-overview-external-card > * {
+      position:relative;
+      z-index:1;
     }
     .tournament-overview-external-item > img {
       align-self:stretch;
@@ -481,9 +505,18 @@
     .tournament-overview-external-card:hover,
     .tournament-overview-external-card:focus-visible {
       border-color:#fff;
-      box-shadow:0 8px 20px rgba(0,0,0,.25);
+      filter:brightness(1.07) saturate(1.06);
       outline:none;
-      transform:translateY(-3px);
+    }
+    .tournament-overview-external-card:hover::after,
+    .tournament-overview-external-card:focus-visible::after {
+      opacity:1;
+    }
+    @media(prefers-reduced-motion:reduce){
+      .tournament-overview-external-card,
+      .tournament-overview-external-card::after {
+        transition:none;
+      }
     }
     .tournament-overview-external-card-copy {
       min-width:0;
@@ -3573,7 +3606,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }());
 </script>
 <script src="js/dome-nav.js?v=2"></script>
-<script src="js/main.js?v=2"></script>
+<script src="js/main.js?v=3"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>

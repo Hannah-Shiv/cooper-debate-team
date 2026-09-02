@@ -117,7 +117,7 @@
 
   /* === HOMEPAGE CTA POINTER SPOTLIGHT === */
   document.querySelectorAll(
-    '.homepage-readiness__primary-action, .homepage-readiness__action-link'
+    '.homepage-readiness__primary-action, .homepage-readiness__action-link, .tournament-overview-external-card'
   ).forEach(function (cta) {
     cta.addEventListener('pointermove', function (event) {
       const rect = cta.getBoundingClientRect();
