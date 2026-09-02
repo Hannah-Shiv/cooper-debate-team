@@ -2421,7 +2421,7 @@ function renderAwards(tourns) {
         <div class="aw-champ-summary">
           ${metric('★', metro.length || '—', 'Pairs<br>Qualified for Metro Finals')}
           ${metric('♟', students || '—', 'Students<br>Represented Cooper')}
-          ${metric('◈', atOrAbove500 || '—', 'of ${metro.length || 0} pairs<br>finished .500 or better')}
+          ${metric('◈', atOrAbove500 || '—', 'of ' + (metro.length || 0) + ' pairs<br>finished .500 or better')}
           ${metric('▣', fieldSize || '—', 'Total Pairs<br>at Metro Finals')}
         </div>
 
