@@ -2187,6 +2187,7 @@ body.deck-dialog-open {
   --cta-x: 82%;
   --cta-y: 24%;
   --cta-marker: #fff;
+  --cta-hover-marker: var(--cta-marker);
   transform: none;
   filter: none;
   box-shadow: none;
@@ -2195,6 +2196,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application {
   --cta-marker: #071735;
+  --cta-hover-marker: #fff;
 }
 
 .homepage-readiness__primary-action--qst {
@@ -2213,11 +2215,13 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--qst::before,
 .homepage-readiness__action-link::before {
   position: absolute;
-  inset: 3px 14px auto;
+  inset: 0;
+  right: 0;
+  bottom: auto;
   width: auto;
-  height: 2px;
+  height: 3px;
   z-index: 1;
-  border-radius: 999px;
+  border-radius: 7px 7px 0 0;
   background: var(--cta-marker);
   content: "";
   pointer-events: none;
@@ -2271,7 +2275,9 @@ body.deck-dialog-open {
 .homepage-readiness__action-link:hover::before,
 .homepage-readiness__action-link:focus-visible::before {
   width: auto;
+  height: 3px;
   opacity: 0.9;
+  background: var(--cta-hover-marker);
   transform: none;
 }
 
