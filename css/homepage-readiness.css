@@ -1493,6 +1493,55 @@ body.deck-dialog-open {
     inset 0 -4px 7px rgba(128, 76, 0, 0.22);
 }
 
+.homepage-readiness__primary-action--application,
+.homepage-readiness__primary-action--qst,
+.homepage-readiness__action-link--partner,
+.homepage-readiness__action-link--calendar {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.homepage-readiness__primary-action--application::after,
+.homepage-readiness__primary-action--qst::after,
+.homepage-readiness__action-link--partner::after,
+.homepage-readiness__action-link--calendar::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: radial-gradient(
+    circle,
+    var(--cta-dot-color) 0 1px,
+    transparent 1.2px
+  );
+  background-size: 6px 6px;
+  content: "";
+  pointer-events: none;
+}
+
+.homepage-readiness__primary-action--application {
+  --cta-dot-color: rgba(7, 23, 53, 0.2);
+}
+
+.homepage-readiness__primary-action--qst {
+  --cta-dot-color: rgba(255, 220, 226, 0.2);
+}
+
+.homepage-readiness__action-link--partner {
+  --cta-dot-color: rgba(192, 255, 237, 0.2);
+}
+
+.homepage-readiness__action-link--calendar {
+  --cta-dot-color: rgba(244, 216, 255, 0.2);
+}
+
+.homepage-readiness__primary-action--qst > *,
+.homepage-readiness__action-link--partner > *,
+.homepage-readiness__action-link--calendar > * {
+  position: relative;
+  z-index: 1;
+}
+
 .btn.btn-gold.homepage-readiness__primary-action--application,
 .btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2),
 .btn.btn-gold.homepage-readiness__primary-action--application:hover > span:nth-child(2),
