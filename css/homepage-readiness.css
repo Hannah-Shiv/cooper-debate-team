@@ -2214,6 +2214,7 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application::before,
 .homepage-readiness__primary-action--qst::before,
 .homepage-readiness__action-link::before {
+  display: none;
   position: absolute;
   inset: 0 10% auto;
   bottom: auto;
