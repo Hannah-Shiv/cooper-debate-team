@@ -115,6 +115,24 @@
     });
   });
 
+  /* === HOMEPAGE CTA POINTER SPOTLIGHT === */
+  document.querySelectorAll(
+    '.homepage-readiness__primary-action, .homepage-readiness__action-link'
+  ).forEach(function (cta) {
+    cta.addEventListener('pointermove', function (event) {
+      const rect = cta.getBoundingClientRect();
+      const x = ((event.clientX - rect.left) / rect.width) * 100;
+      const y = ((event.clientY - rect.top) / rect.height) * 100;
+      cta.style.setProperty('--cta-x', x.toFixed(1) + '%');
+      cta.style.setProperty('--cta-y', y.toFixed(1) + '%');
+    }, { passive: true });
+
+    cta.addEventListener('pointerleave', function () {
+      cta.style.removeProperty('--cta-x');
+      cta.style.removeProperty('--cta-y');
+    });
+  });
+
   /* === MOBILE MENU: push content down when dome opens === */
   const circWrap = document.getElementById('circ-wrap');
   if (circWrap) {

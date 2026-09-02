@@ -2178,3 +2178,172 @@ body.deck-dialog-open {
     font-size: 0.6rem;
   }
 }
+
+/* Magnetic signal treatment for the four primary homepage paths.
+   The buttons stay still; the light field, signal rail, icon, and arrow respond. */
+.homepage-readiness__primary-action--application,
+.homepage-readiness__primary-action--qst,
+.homepage-readiness__action-link {
+  --cta-x: 82%;
+  --cta-y: 24%;
+  --cta-marker: #fff;
+  transform: none;
+  filter: none;
+  box-shadow: none;
+  transition: border-color 0.22s ease, background 0.22s ease, color 0.22s ease, filter 0.22s ease;
+}
+
+.homepage-readiness__primary-action--application {
+  --cta-marker: #071735;
+}
+
+.homepage-readiness__primary-action--qst {
+  --cta-marker: #ffd5dc;
+}
+
+.homepage-readiness__action-link--partner {
+  --cta-marker: #b8ffe9;
+}
+
+.homepage-readiness__action-link--calendar {
+  --cta-marker: #f1d7ff;
+}
+
+.homepage-readiness__primary-action--application::before,
+.homepage-readiness__primary-action--qst::before,
+.homepage-readiness__action-link::before {
+  position: absolute;
+  inset: auto auto 0 14px;
+  width: 34px;
+  height: 3px;
+  z-index: 1;
+  border-radius: 3px 3px 0 0;
+  background: var(--cta-marker);
+  content: "";
+  pointer-events: none;
+  opacity: 0.82;
+  transform: none;
+  transition: width 0.34s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.22s ease;
+}
+
+.homepage-readiness__primary-action--application::after,
+.homepage-readiness__primary-action--qst::after,
+.homepage-readiness__action-link::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    circle 105px at var(--cta-x) var(--cta-y),
+    rgba(255, 255, 255, 0.24),
+    rgba(255, 255, 255, 0.08) 34%,
+    transparent 70%
+  );
+  content: "";
+  pointer-events: none;
+  opacity: 0.28;
+  transform: none;
+  transition: opacity 0.24s ease;
+}
+
+.homepage-readiness__primary-action--application > *,
+.homepage-readiness__primary-action--qst > *,
+.homepage-readiness__action-link > * {
+  position: relative;
+  z-index: 2;
+  transform: none;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.25, 1);
+}
+
+.homepage-readiness__primary-action--application:hover,
+.homepage-readiness__primary-action--application:focus-visible,
+.homepage-readiness__primary-action--qst:hover,
+.homepage-readiness__primary-action--qst:focus-visible,
+.homepage-readiness__action-link:hover,
+.homepage-readiness__action-link:focus-visible {
+  filter: brightness(1.07) saturate(1.06);
+  transform: none;
+}
+
+.homepage-readiness__primary-action--application:hover::before,
+.homepage-readiness__primary-action--application:focus-visible::before,
+.homepage-readiness__primary-action--qst:hover::before,
+.homepage-readiness__primary-action--qst:focus-visible::before,
+.homepage-readiness__action-link:hover::before,
+.homepage-readiness__action-link:focus-visible::before {
+  width: calc(100% - 28px);
+  opacity: 1;
+  transform: none;
+}
+
+.homepage-readiness__primary-action--application:hover::after,
+.homepage-readiness__primary-action--application:focus-visible::after,
+.homepage-readiness__primary-action--qst:hover::after,
+.homepage-readiness__primary-action--qst:focus-visible::after,
+.homepage-readiness__action-link:hover::after,
+.homepage-readiness__action-link:focus-visible::after {
+  opacity: 1;
+  transform: none;
+}
+
+.homepage-readiness__primary-action:hover > *,
+.homepage-readiness__primary-action:focus-visible > *,
+.homepage-readiness__action-link:hover > *,
+.homepage-readiness__action-link:focus-visible > * {
+  transform: none;
+}
+
+.homepage-readiness__primary-action:hover > .homepage-readiness__action-icon,
+.homepage-readiness__primary-action:focus-visible > .homepage-readiness__action-icon,
+.homepage-readiness__action-link:hover > .homepage-readiness__action-icon,
+.homepage-readiness__action-link:focus-visible > .homepage-readiness__action-icon {
+  transform: scale(1.08);
+}
+
+.homepage-readiness__primary-action:hover > .homepage-readiness__primary-arrow,
+.homepage-readiness__primary-action:focus-visible > .homepage-readiness__primary-arrow,
+.homepage-readiness__action-link:hover > .homepage-readiness__action-arrow,
+.homepage-readiness__action-link:focus-visible > .homepage-readiness__action-arrow {
+  transform: translateX(4px);
+}
+
+.homepage-readiness__primary-action--application:active,
+.homepage-readiness__primary-action--qst:active,
+.homepage-readiness__action-link:active {
+  filter: brightness(0.98);
+  transform: scale(0.992);
+}
+
+.homepage-readiness__primary-action--application:focus-visible,
+.homepage-readiness__primary-action--qst:focus-visible,
+.homepage-readiness__action-link:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.96);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .homepage-readiness__primary-action--application,
+  .homepage-readiness__primary-action--qst,
+  .homepage-readiness__action-link,
+  .homepage-readiness__primary-action--application::before,
+  .homepage-readiness__primary-action--qst::before,
+  .homepage-readiness__action-link::before,
+  .homepage-readiness__primary-action--application::after,
+  .homepage-readiness__primary-action--qst::after,
+  .homepage-readiness__action-link::after,
+  .homepage-readiness__primary-action--application > *,
+  .homepage-readiness__primary-action--qst > *,
+  .homepage-readiness__action-link > * {
+    transition: none;
+  }
+
+  .homepage-readiness__primary-action:hover > .homepage-readiness__action-icon,
+  .homepage-readiness__primary-action:focus-visible > .homepage-readiness__action-icon,
+  .homepage-readiness__action-link:hover > .homepage-readiness__action-icon,
+  .homepage-readiness__action-link:focus-visible > .homepage-readiness__action-icon,
+  .homepage-readiness__primary-action:hover > .homepage-readiness__primary-arrow,
+  .homepage-readiness__primary-action:focus-visible > .homepage-readiness__primary-arrow,
+  .homepage-readiness__action-link:hover > .homepage-readiness__action-arrow,
+  .homepage-readiness__action-link:focus-visible > .homepage-readiness__action-arrow {
+    transform: none;
+  }
+}
