@@ -409,23 +409,23 @@
        $("vol-event-list").innerHTML = `<div class="tm-empty">Volunteer events could not be loaded: ${esc(error.message)}</div>`;
     });
   }
-  function showAccess(title, text, login) {
-    $("vol-auth").innerHTML = `<div class="tm-auth-box"><div class="tm-auth-mark">◆</div><h1>${esc(title)}</h1><p>${esc(text)}</p>${login ? `<a class="tm-login" href="members.html">Sign in to Member Portal</a>` : ""}</div>`;
+  function showAccess(title, text, actionLabel) {
+    $("vol-auth").innerHTML = `<div class="tm-auth-box"><div class="tm-auth-mark">◆</div><h1>${esc(title)}</h1><p>${esc(text)}</p><a class="tm-login" href="members.html">${esc(actionLabel)}</a></div>`;
   }
 
   auth.onAuthStateChanged(async user => {
     if (!user) {
-      showAccess("Coach or Website Admin access required", "Sign in through the Member Portal to manage tournament volunteer opportunities.", true);
+      showAccess("Sign in to continue", "Please sign in through the Member Portal to view this page.", "Sign in to Member Portal");
       return;
     }
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
     if (!access.approved) {
-      showAccess("Membership not approved", "This account is not approved for the Cooper Debate Member Portal.", false);
+      showAccess("This page is not visible with current role", "Your account does not currently have access to this member page.", "Okay");
       return;
     }
     if (!isFullAdminRole(role)) {
-      showAccess("Full admin access only", "Volunteer signups contain private contact details and can only be managed by a coach or website admin.", false);
+      showAccess("This page is not visible with current role", "Volunteer signups are available to coaches and Website Admins.", "Okay");
       return;
     }
     currentUser = user;
