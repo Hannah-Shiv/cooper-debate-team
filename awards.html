@@ -1632,6 +1632,13 @@
     .awards-page .aw-champ-summary .aw-champ-metric:last-child {
       border-right: 1.5px solid rgba(242,209,107,0.78);
     }
+    .awards-page .aw-champ-summary > .aw-champ-summary-stat {
+      min-height: 161px;
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+    }
+    .awards-page .aw-champ-summary .aw-stat-lbl {
+      white-space: nowrap;
+    }
     .awards-page .aw-award-stats .aw-award-stat {
       box-shadow: 0 6px 14px rgba(0,0,0,0.28);
     }
@@ -1654,6 +1661,13 @@
       .awards-page .aw-metric-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
+      }
+      .awards-page .aw-champ-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .awards-page .aw-champ-summary > .aw-champ-summary-stat {
+        min-height: 182px;
       }
       .awards-page .aw-champ-highlight-grid.aw-two-awards {
         grid-template-columns: 1fr;
@@ -1693,6 +1707,13 @@
         gap: 12px;
         margin-bottom: 28px;
       }
+      .awards-page .aw-champ-summary {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .awards-page .aw-champ-summary > .aw-champ-summary-stat {
+        min-height: 143px;
+      }
       .awards-page .aw-stat-box {
         padding: 22px 16px 18px;
       }
@@ -1722,10 +1743,6 @@
         max-width: 100%;
         font-size: 0.78rem;
         text-align: center;
-      }
-      .awards-page .aw-champ-summary {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 12px;
       }
       .awards-page .aw-champ-summary .aw-champ-metric {
         min-height: 108px;
@@ -2811,11 +2828,11 @@ function renderAwards(tourns) {
     const topTen = places.filter(p => p <= 10).reduce((sum,p) => sum + placeMap[p], 0);
     const outsideTopTen = metro.length - topTen;
 
-    const metric = (icon, value, label) => `
-      <div class="aw-champ-metric">
-        <div class="aw-champ-metric-icon">${icon}</div>
-        <div class="aw-champ-metric-value">${value}</div>
-        <div class="aw-champ-metric-label">${label}</div>
+    const metric = (value, label) => `
+      <div class="aw-stat-box aw-champ-summary-stat">
+        <div class="aw-stat-num">${value}</div>
+        <div class="aw-stat-divider"></div>
+        <div class="aw-stat-lbl">${label}</div>
       </div>`;
 
     const placeLabel = p => `${p}${ordSuffix(p)}`;
@@ -2835,9 +2852,9 @@ function renderAwards(tourns) {
         <div class="aw-champ-kicker">Championship Results</div>
 
         <div class="aw-champ-summary">
-          ${metric('★', metro.length || '—', 'Pairs<br>Qualified for Metro Finals')}
-          ${metric('♟', students || '—', 'Students<br>Represented Cooper')}
-          ${metric('▣', fieldSize || '—', 'Total Pairs<br>at Metro Finals')}
+          ${metric(metro.length || '—', 'Pairs Qualified for Metro Finals')}
+          ${metric(students || '—', 'Students Represented Cooper')}
+          ${metric(fieldSize || '—', 'Total Pairs at Metro Finals')}
         </div>
 
         <div class="aw-champ-chart-grid">
