@@ -1632,12 +1632,16 @@
     .awards-page .aw-champ-summary .aw-champ-metric:last-child {
       border-right: 1.5px solid rgba(242,209,107,0.78);
     }
-    .awards-page .aw-champ-summary > .aw-champ-summary-stat {
+    .awards-page .aw-champ-summary > .aw-champ-summary-stat,
+    .awards-page #aw-stat-strip > .aw-stat-box,
+    .awards-page #aw-highlights > .aw-stat-box {
       min-height: 161px;
       background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
       isolation: isolate;
     }
-    .awards-page .aw-champ-summary-stat::after {
+    .awards-page .aw-champ-summary-stat::after,
+    .awards-page #aw-stat-strip > .aw-stat-box::after,
+    .awards-page #aw-highlights > .aw-stat-box::after {
       content: '';
       position: absolute;
       inset: 0;
@@ -1651,7 +1655,9 @@
       );
       background-size: 6px 6px;
     }
-    .awards-page .aw-champ-summary-stat > * {
+    .awards-page .aw-champ-summary-stat > *,
+    .awards-page #aw-stat-strip > .aw-stat-box > *,
+    .awards-page #aw-highlights > .aw-stat-box > * {
       position: relative;
       z-index: 1;
     }
