@@ -1638,7 +1638,7 @@
     .tourney-section-nav button {
       align-items:center; display:flex; flex:1; gap:10px; justify-content:center; min-width:0; overflow:hidden; padding:8px 17px; position:relative; border:1px solid rgba(255,255,255,.18); border-radius:10px;
        color:var(--tab-color); font-family:'Josefin Sans',sans-serif; font-size:0.69rem; font-weight:700;
-       letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:background .22s ease,border-color .22s ease,box-shadow .28s ease,transform .34s cubic-bezier(.2,.8,.25,1),filter .28s ease;
+       letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:background .22s ease,border-color .22s ease,box-shadow .28s ease,transform .44s cubic-bezier(.22,1,.36,1),filter .28s ease;
        background:#2d333d; border-color:var(--tab-border); cursor:pointer;
        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22); min-height:58px; transform-origin:center bottom; transform-style:preserve-3d;
     }
@@ -1659,23 +1659,23 @@
     .tourney-section-nav button:nth-child(5) { --tab-color:#ddb0f2; --tab-soft:rgba(184,113,220,.17); --tab-border:rgba(184,113,220,.46); --tab-active:#593475; --tab-active-deep:#2b1848; --tab-active-text:#fff; --tab-active-border:#dda9f3; --tab-glow:rgba(184,113,220,.32); }
      .tourney-section-nav button:hover, .tourney-section-nav button:focus-visible {
        border-color:var(--tab-color); background:radial-gradient(circle at 50% -15%,rgba(255,255,255,.22) 0%,transparent 45%),linear-gradient(135deg,var(--tab-soft),#3a424e 72%); outline:2px solid var(--tab-color); outline-offset:2px;
-       filter:brightness(1.16) saturate(1.28); transform:perspective(720px) rotateX(8deg) rotateY(-2deg) translateY(-6px) scale(1.02); box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 0 0 1px var(--tab-color),0 0 28px var(--tab-glow),0 0 54px var(--tab-soft),0 14px 24px rgba(0,0,0,.34);
+        filter:brightness(1.16) saturate(1.28); transform:perspective(720px) rotateX(6deg) rotateY(-1.5deg) translateY(-5px) scale(1.016); box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 0 0 1px var(--tab-color),0 0 28px var(--tab-glow),0 0 54px var(--tab-soft),0 14px 24px rgba(0,0,0,.34);
     }
      .tourney-section-nav button:hover::after, .tourney-section-nav button:focus-visible::after {
        opacity:1; transform:scale(1.18) translateY(-4%);
      }
      .tourney-section-nav button:hover > *, .tourney-section-nav button:focus-visible > * {
-       transform:translateZ(14px);
+        transform:translateZ(11px);
      }
      .tourney-section-nav button:hover .tourney-tab-icon, .tourney-section-nav button:focus-visible .tourney-tab-icon {
-       filter:drop-shadow(0 0 10px var(--tab-color)); transform:translateZ(18px) rotate(-3deg) scale(1.14);
+        filter:drop-shadow(0 0 10px var(--tab-color)); transform:translateZ(14px) rotate(-2deg) scale(1.10);
      }
      .tourney-section-nav button:hover::before, .tourney-section-nav button:focus-visible::before { box-shadow:0 0 12px var(--tab-color),0 0 24px var(--tab-glow); }
     .tourney-section-nav button[aria-selected="true"] {
        color:var(--tab-active-text); border-color:var(--tab-active-border); background:var(--tab-active);
       box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.14),0 0 18px var(--tab-glow),0 5px 15px rgba(0,0,0,.28); transform:translateY(-1px);
     }
-     .tourney-section-nav button[aria-selected="true"]:hover { transform:perspective(720px) rotateX(8deg) rotateY(-2deg) translateY(-6px) scale(1.02); }
+      .tourney-section-nav button[aria-selected="true"]:hover { transform:perspective(720px) rotateX(6deg) rotateY(-1.5deg) translateY(-5px) scale(1.016); }
      .tourney-section-nav button[aria-selected="true"]::after { opacity:.16; transform:scale(1) translateY(0); }
     .tourney-section-nav button:active { transform:translateY(0); }
      @media (prefers-reduced-motion: reduce) {
