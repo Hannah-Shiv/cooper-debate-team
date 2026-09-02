@@ -10,7 +10,7 @@
   <title>Awards — Cooper Debate Team</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=46"/>
   <link rel="stylesheet" href="css/public-footer.css?v=7"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
@@ -1523,15 +1523,26 @@
     .awards-page .aw-champ-chart-grid .aw-champ-card-title,
     .awards-page .aw-chart-grid .aw-chart-title {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(1.1rem, 1.5vw, 1.3rem);
+      font-size: clamp(1.35rem, 2.25vw, 1.8rem);
       font-style: normal;
-      font-weight: 700;
-      letter-spacing: 0.035em;
-      line-height: 1.2;
+      font-weight: 800;
+      letter-spacing: 0.015em;
+      line-height: 1.12;
       text-transform: none;
-      color: #F2D16B;
-      text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(242,209,107,0.35);
+      color: #FFE05A;
+      text-shadow: 0 2px 2px rgba(0,0,0,0.72), 0 0 7px rgba(255,215,0,0.28);
       text-align: center;
+      padding-bottom: 10px;
+    }
+    .awards-page .aw-champ-chart-grid .aw-champ-card-title::after,
+    .awards-page .aw-chart-grid .aw-chart-title::after {
+      content: '';
+      display: block;
+      width: 72px;
+      height: 2px;
+      margin: 9px auto 0;
+      background: linear-gradient(90deg, transparent, #FFD700 22%, #FFF0A0 50%, #FFD700 78%, transparent);
+      box-shadow: 0 0 8px rgba(255,215,0,0.52);
     }
 
     /* Give the championship award details more breathing room between rows. */
