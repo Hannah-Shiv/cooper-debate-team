@@ -1475,8 +1475,8 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--application {
-  --primary-action-border: rgba(255, 255, 255, 0.9);
-  --primary-action-border-hover: #fff;
+  --primary-action-border: #9b650b;
+  --primary-action-border-hover: #7d4d06;
   --primary-action-start: #ffe28a;
   --primary-action-end: #d59a12;
   --primary-action-hover-start: #ffedaa;
@@ -1531,8 +1531,8 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--qst {
-  --primary-action-border: rgba(255, 255, 255, 0.9);
-  --primary-action-border-hover: #fff;
+  --primary-action-border: #4d1823;
+  --primary-action-border-hover: #351019;
   --primary-action-start: #923442;
   --primary-action-end: #702532;
   --primary-action-hover-start: #a43f4e;
