@@ -1481,7 +1481,6 @@ body.deck-dialog-open {
   --primary-action-end: #d59a12;
   --primary-action-hover-start: #ffedaa;
   --primary-action-hover-end: #e4ae24;
-  --primary-action-strip: #fff0ad;
   position: relative;
   overflow: hidden;
   font-weight: 800 !important;
@@ -1509,21 +1508,6 @@ body.deck-dialog-open {
   transform-origin: center bottom;
   transform-style: preserve-3d;
   transition: border-color 0.22s ease, background 0.22s ease, color 0.22s ease, transform 0.34s cubic-bezier(0.2, 0.8, 0.25, 1), filter 0.28s ease;
-}
-
-.homepage-readiness__primary-action--application::before,
-.homepage-readiness__primary-action--qst::before {
-  position: absolute;
-  top: 0;
-  right: 12px;
-  left: 12px;
-  z-index: 0;
-  height: 3px;
-  border-radius: inherit;
-  background: var(--primary-action-strip);
-  content: "";
-  opacity: 0.9;
-  pointer-events: none;
 }
 
 .homepage-readiness__primary-action--application::after,
@@ -1558,7 +1542,6 @@ body.deck-dialog-open {
   --primary-action-end: #702532;
   --primary-action-hover-start: #a43f4e;
   --primary-action-hover-end: #812c3b;
-  --primary-action-strip: #e38391;
   color: #fff !important;
   box-shadow: none;
 }
