@@ -1504,8 +1504,9 @@ body.deck-dialog-open {
 }
 
 .btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+  font-size: inherit;
   font-weight: 700 !important;
-  letter-spacing: 0.12em;
+  letter-spacing: inherit;
 }
 
 .homepage-readiness__primary-action--application,
