@@ -2508,8 +2508,9 @@
       padding-top:16px;
     }
     .tournaments-page .tourney-panel-intro {
+      position:relative;
       display:grid;
-      grid-template-columns:minmax(330px,.95fr) minmax(0,1.05fr);
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       align-items:center;
       align-content:center;
       gap:10px 48px;
@@ -2518,6 +2519,24 @@
       min-height:120px;
       margin:0 auto 16px;
       text-align:left;
+    }
+    .tournaments-page .tourney-panel-intro::after {
+      position:absolute;
+      top:12px;
+      bottom:12px;
+      left:50%;
+      width:1px;
+      background:linear-gradient(
+        to bottom,
+        rgba(242,209,107,0),
+        rgba(242,209,107,.58) 22%,
+        rgba(255,255,255,.82) 50%,
+        rgba(242,209,107,.58) 78%,
+        rgba(242,209,107,0)
+      );
+      content:"";
+      pointer-events:none;
+      transform:translateX(-50%);
     }
     .tournaments-page .tourney-panel-intro-title .section-label {
       justify-content:flex-start;
@@ -2610,6 +2629,9 @@
       }
       .tournaments-page .tourney-panel-intro--calendar .season-picker {
         width:100%;
+      }
+      .tournaments-page .tourney-panel-intro::after {
+        display:none;
       }
     }
 
