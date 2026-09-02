@@ -1484,6 +1484,11 @@ body.deck-dialog-open {
   box-shadow: 0 4px 10px var(--primary-action-shadow);
 }
 
+.btn.btn-gold.homepage-readiness__primary-action--application,
+.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+  color: #fff !important;
+}
+
 .homepage-readiness__primary-action--qst {
   --primary-action-border: rgba(255, 255, 255, 0.9);
   --primary-action-border-hover: #fff;
