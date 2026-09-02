@@ -1476,7 +1476,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application {
   --primary-action-border: #9b650b;
-  --primary-action-border-hover: #7d4d06;
+  --primary-action-border-hover: #6e4304;
   --primary-action-start: #ffe28a;
   --primary-action-end: #d59a12;
   --primary-action-hover-start: #ffedaa;
@@ -1486,11 +1486,7 @@ body.deck-dialog-open {
   overflow: hidden;
   font-weight: 800 !important;
   color: #071735 !important;
-  box-shadow:
-    0 8px 20px var(--primary-action-shadow),
-    0 0 0 1px rgba(255, 236, 157, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.58),
-    inset 0 -4px 7px rgba(128, 76, 0, 0.22);
+  box-shadow: none;
 }
 
 .btn.btn-gold.homepage-readiness__primary-action--application,
@@ -1532,13 +1528,14 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--qst {
   --primary-action-border: #4d1823;
-  --primary-action-border-hover: #351019;
+  --primary-action-border-hover: #2c0c14;
   --primary-action-start: #923442;
   --primary-action-end: #702532;
   --primary-action-hover-start: #a43f4e;
   --primary-action-hover-end: #812c3b;
   --primary-action-shadow: rgba(142, 47, 62, 0.42);
   color: #fff !important;
+  box-shadow: none;
 }
 
 .homepage-readiness__primary-action:hover,
@@ -1553,17 +1550,14 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application:hover,
 .homepage-readiness__primary-action--application:focus-visible {
-  box-shadow:
-    0 11px 27px var(--primary-action-shadow),
-    0 0 0 3px rgba(255, 224, 117, 0.13),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    inset 0 -4px 7px rgba(128, 76, 0, 0.2);
+  box-shadow: none;
   color: #071735 !important;
 }
 
 .homepage-readiness__primary-action--qst:hover,
 .homepage-readiness__primary-action--qst:focus-visible {
   border-color: var(--primary-action-border-hover) !important;
+  box-shadow: none;
 }
 
 .homepage-readiness__primary-action--qst .homepage-readiness__action-icon {
