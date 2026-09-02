@@ -2180,7 +2180,7 @@ body.deck-dialog-open {
 }
 
 /* Magnetic signal treatment for the four primary homepage paths.
-   The buttons stay still; the light field, signal rail, icon, and arrow respond. */
+   The buttons stay still; the light field, top rail, icon, and arrow respond. */
 .homepage-readiness__primary-action--application,
 .homepage-readiness__primary-action--qst,
 .homepage-readiness__action-link {
@@ -2198,32 +2198,32 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--qst {
-  --cta-marker: #ffd5dc;
+  --cta-marker: #fff;
 }
 
 .homepage-readiness__action-link--partner {
-  --cta-marker: #b8ffe9;
+  --cta-marker: #fff;
 }
 
 .homepage-readiness__action-link--calendar {
-  --cta-marker: #f1d7ff;
+  --cta-marker: #fff;
 }
 
 .homepage-readiness__primary-action--application::before,
 .homepage-readiness__primary-action--qst::before,
 .homepage-readiness__action-link::before {
   position: absolute;
-  inset: auto auto 0 14px;
-  width: 34px;
-  height: 3px;
+  inset: 3px 14px auto;
+  width: auto;
+  height: 2px;
   z-index: 1;
-  border-radius: 3px 3px 0 0;
+  border-radius: 999px;
   background: var(--cta-marker);
   content: "";
   pointer-events: none;
-  opacity: 0.82;
+  opacity: 0.9;
   transform: none;
-  transition: width 0.34s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.22s ease;
+  transition: none;
 }
 
 .homepage-readiness__primary-action--application::after,
@@ -2270,8 +2270,8 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--qst:focus-visible::before,
 .homepage-readiness__action-link:hover::before,
 .homepage-readiness__action-link:focus-visible::before {
-  width: calc(100% - 28px);
-  opacity: 1;
+  width: auto;
+  opacity: 0.9;
   transform: none;
 }
 
