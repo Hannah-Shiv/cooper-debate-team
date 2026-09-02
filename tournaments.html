@@ -2572,41 +2572,47 @@
     .tournaments-page .tourney-panel-intro--calendar {
       grid-template-columns:minmax(0,1fr) minmax(0,1fr);
       grid-template-areas:
-        "title copy"
-        "picker copy";
-      column-gap:72px;
+        "title right";
+      column-gap:48px;
     }
-    .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy,
-    .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
-      grid-column:auto;
-      justify-self:stretch;
-      text-align:left;
+    .tournaments-page .tourney-panel-intro--calendar .cal-section-header-right {
+      display:grid;
+      grid-area:right;
+      grid-template-columns:minmax(0,1fr) 160px;
+      align-items:center;
+      gap:14px;
+      min-width:0;
     }
     .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy {
       grid-area:title;
-    }
-    .tournaments-page .tourney-panel-intro--calendar .tourney-panel-intro-copy {
-      grid-area:copy;
+      justify-self:stretch;
+      text-align:left;
     }
     .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
-      grid-area:picker;
-      justify-self:start;
-      margin-top:4px;
+      grid-area:auto;
+      justify-self:stretch;
+      margin-top:0;
+    }
+    .tournaments-page .tourney-panel-intro--calendar .tourney-panel-intro-copy {
+      min-width:0;
     }
     .tournaments-page .tourney-panel-intro--calendar .season-picker {
-      display:grid;
-      grid-template-columns:auto minmax(150px,1fr);
-      align-items:center;
-      gap:10px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
       min-width:0;
-      width:min(390px,100%);
+      width:100%;
     }
-    .tournaments-page .tourney-panel-intro--calendar .season-picker-label {
+    .tournaments-page .tourney-panel-intro--calendar .season-picker {
       white-space:nowrap;
     }
     .tournaments-page .tourney-panel-intro--calendar .season-picker-select {
+      padding-right:30px;
+      padding-left:10px;
       padding-top:8px;
       padding-bottom:8px;
+      font-size:.68rem;
+      letter-spacing:.03em;
     }
     @media(max-width:820px){
       .tournaments-page .tourney-panel-intro,
@@ -2624,6 +2630,19 @@
       .tournaments-page .tourney-panel-intro:not(.tourney-panel-intro--calendar) {
         grid-template-areas:none;
       }
+      .tournaments-page .tourney-panel-intro--calendar .cal-section-header-right {
+        display:contents;
+      }
+      .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy {
+        grid-area:title;
+      }
+      .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
+        grid-area:picker;
+        justify-self:stretch;
+      }
+      .tournaments-page .tourney-panel-intro--calendar .tourney-panel-intro-copy {
+        grid-area:copy;
+      }
       .tournaments-page .tourney-panel-intro-title .section-label {
         margin-bottom:5px;
       }
@@ -2636,6 +2655,9 @@
       }
       .tournaments-page .tourney-panel-intro--calendar .season-picker {
         width:100%;
+      }
+      .tournaments-page .tourney-panel-intro--calendar .season-picker-label {
+        display:none;
       }
       .tournaments-page .tourney-panel-intro::after {
         display:none;
@@ -2985,20 +3007,23 @@
  <section id="calendar-results" class="section tourney-tab-panel" role="tabpanel" aria-labelledby="tourney-tab-calendar" data-tourney-panel>
   <div class="section-wrap">
     <div class="cal-section-header tourney-panel-intro tourney-panel-intro--calendar">
-      <div class="cal-section-header-copy tourney-panel-intro-title">
-        <h2 class="section-title">Tournament Calendar</h2>
-      </div>
-      <div class="tourney-panel-intro-copy">
-        <p class="section-label" id="cal-season-label">2026–2027 Season</p>
-        <p class="public-calendar-intro">See the 2026–27 schedule and key family dates. Complete the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">team application</a>, then <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" style="color:var(--gold);font-weight:700;">choose a debate partner</a>.</p>
-      </div>
-      <div class="cal-section-header-picker">
-        <div class="season-picker">
-          <label class="season-picker-label" for="season-picker">Calendar season</label>
-          <select class="season-picker-select" id="season-picker" onchange="showSeason(this.value)">
-            <option value="this" selected>This Season - 2026-27</option>
-            <option value="last">Last Season - 2025-26</option>
-          </select>
+        <div class="cal-section-header-copy tourney-panel-intro-title">
+          <h2 class="section-title">Tournament Calendar</h2>
+        </div>
+        <div class="cal-section-header-right">
+          <div class="tourney-panel-intro-copy">
+            <p class="section-label" id="cal-season-label">2026–2027 Season</p>
+            <p class="public-calendar-intro">See the 2026–27 schedule and key family dates. Complete the <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" style="color:var(--gold);font-weight:700;">team application</a>, then <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" style="color:var(--gold);font-weight:700;">choose a debate partner</a>.</p>
+          </div>
+          <div class="cal-section-header-picker">
+            <div class="season-picker">
+              <label class="season-picker-label" for="season-picker">Calendar season</label>
+              <select class="season-picker-select" id="season-picker" aria-label="Calendar season" onchange="showSeason(this.value)">
+                <option value="this" selected>2026–27 Season</option>
+                <option value="last">2025–26 Season</option>
+              </select>
+            </div>
+          </div>
         </div>
       </div>
     </div>
