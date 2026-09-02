@@ -1494,8 +1494,15 @@ body.deck-dialog-open {
 }
 
 .btn.btn-gold.homepage-readiness__primary-action--application,
+.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2),
+.btn.btn-gold.homepage-readiness__primary-action--application:hover > span:nth-child(2),
+.btn.btn-gold.homepage-readiness__primary-action--application:focus-visible > span:nth-child(2) {
+  color: #000 !important;
+}
+
 .btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
-  color: #071735 !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.12em;
 }
 
 .homepage-readiness__primary-action--application::before {
