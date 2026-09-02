@@ -1592,8 +1592,16 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application .homepage-readiness__action-icon,
 .homepage-readiness__primary-action--application .homepage-readiness__primary-arrow {
-  border-color: rgba(7, 22, 45, 0.62);
-  color: #071735;
+  border: 2px solid #000 !important;
+  color: #000 !important;
+}
+
+.homepage-readiness__primary-action--application .homepage-readiness__action-icon svg {
+  stroke-width: 2;
+}
+
+.homepage-readiness__primary-action--application .homepage-readiness__primary-arrow {
+  font-weight: 700;
 }
 
 .homepage-readiness__action-icon svg {
