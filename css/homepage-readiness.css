@@ -1483,8 +1483,8 @@ body.deck-dialog-open {
 }
 
 .homepage-readiness__primary-action--application {
-  --primary-action-border: #9b650b;
-  --primary-action-border-hover: #6e4304;
+  --primary-action-border: rgba(255, 255, 255, 0.72);
+  --primary-action-border-hover: rgba(255, 255, 255, 0.96);
   --primary-action-start: #ffe28a;
   --primary-action-end: #d59a12;
   --primary-action-hover-start: #ffedaa;
