@@ -1475,6 +1475,55 @@
       .aw-chart-grid { grid-template-columns:1fr; }
     }
     @media(max-width:600px){ .aw-stat-strip { grid-template-columns:1fr 1fr; } }
+
+    /* Surface variation — keep the blue/gold identity without making every
+       card use the same navy fill. */
+    .awards-page #aw-stat-strip > .aw-stat-box {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+      border-color: rgba(242,209,107,0.72);
+    }
+    .awards-page #aw-highlights > .aw-stat-box {
+      background: linear-gradient(145deg, #123765 0%, #0a1d42 100%);
+    }
+    .awards-page #aw-stat-strip > .aw-stat-box:hover {
+      background: linear-gradient(145deg, #3a3f48 0%, #252932 100%);
+    }
+    .awards-page #aw-highlights > .aw-stat-box:hover {
+      background: linear-gradient(145deg, #174578 0%, #0d2855 100%);
+    }
+    .awards-page .aw-chart-grid > .aw-chart-wrap:first-child {
+      background: linear-gradient(145deg, #2b2f37 0%, #1f2229 100%);
+    }
+    .awards-page .aw-chart-grid > .aw-chart-wrap:nth-child(2) {
+      background: linear-gradient(145deg, #123765 0%, #0a1d42 100%);
+    }
+    .awards-page .aw-champ-highlight-right {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+    }
+    .awards-page .aw-award-card:nth-child(odd),
+    .awards-page .aw-champ-card:nth-child(odd),
+    .awards-page .aw-place-tile:nth-child(odd) {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+    }
+    .awards-page .aw-award-card:nth-child(even),
+    .awards-page .aw-champ-card:nth-child(even),
+    .awards-page .aw-place-tile:nth-child(even) {
+      background: linear-gradient(145deg, #123765 0%, #0a1d42 100%);
+    }
+    .awards-page .aw-award-stat:nth-child(odd) {
+      background: rgba(48,52,60,0.88);
+    }
+    .awards-page .aw-award-stat:nth-child(even) {
+      background: rgba(10,29,66,0.88);
+    }
+    .awards-page .aw-champ-summary {
+      background: linear-gradient(145deg, #2b2f37 0%, #1f2229 100%);
+    }
+    .awards-page .aw-lb-row:nth-child(odd),
+    .awards-page .metro-banner,
+    .awards-page .aw-future {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
