@@ -1734,7 +1734,7 @@ body.deck-dialog-open {
   padding: 14px 15px;
   border: 1px solid rgba(109, 216, 184, 0.72);
   border-radius: 8px;
-  background: #155e59;
+  background: #114b47;
   color: #fff;
   text-decoration: none;
   position: relative;
@@ -1829,7 +1829,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__action-link--calendar {
   border-color: rgba(221, 169, 243, 0.78);
-  background: #593475;
+  background: #472a5e;
   box-shadow: none;
 }
 
@@ -1841,7 +1841,7 @@ body.deck-dialog-open {
 .homepage-readiness__action-link:hover,
 .homepage-readiness__action-link:focus-visible {
   border-color: #8cebd0;
-  background: #1b786f;
+  background: #166059;
   box-shadow: none;
   outline: none;
 }
@@ -1849,7 +1849,7 @@ body.deck-dialog-open {
 .homepage-readiness__action-link--calendar:hover,
 .homepage-readiness__action-link--calendar:focus-visible {
   border-color: #efcfff;
-  background: #71439a;
+  background: #5a367b;
 }
 
 .homepage-readiness__action-link:hover,
