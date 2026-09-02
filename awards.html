@@ -1802,7 +1802,36 @@
         font-size: 0.62em;
       }
       .awards-page .aw-award-details {
+        display: grid;
+        grid-template-rows: auto auto minmax(2.7rem, auto) minmax(2.35rem, auto) minmax(1.25rem, auto);
+        align-content: start;
+        justify-items: center;
         width: 100%;
+      }
+      .awards-page .aw-award-details .aw-award-badge,
+      .awards-page .aw-award-details .aw-award-hierarchy,
+      .awards-page .aw-award-details .aw-award-title,
+      .awards-page .aw-award-details .aw-award-place,
+      .awards-page .aw-award-details .aw-award-note {
+        width: 100%;
+        margin-bottom: 0;
+        text-align: center;
+      }
+      .awards-page .aw-award-details .aw-award-badge {
+        justify-content: center;
+      }
+      .awards-page .aw-award-details .aw-award-hierarchy {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .awards-page .aw-award-details .aw-award-title,
+      .awards-page .aw-award-details .aw-award-place,
+      .awards-page .aw-award-details .aw-ncfl-award-achievement,
+      .awards-page .aw-award-details .aw-award-note {
+        display: flex;
+        align-items: center;
+        justify-content: center;
       }
       .awards-page .aw-award-badge {
         justify-content: center;
@@ -2692,7 +2721,7 @@ function renderAwards(tourns) {
               <div class="aw-award-hierarchy">Nationals &nbsp;›&nbsp; <span>Metro Finals</span> &nbsp;›&nbsp; Regional / Local</div>
               <div class="aw-award-title">${bestMetro.tournName}</div>
               <div class="aw-award-place aw-award-place--trio">
-                2<sup>ND</sup>, 3<sup>RD</sup> &amp; 4<sup>TH</sup>
+                2<sup>ND</sup>, 3<sup>RD</sup>&nbsp;&amp;&nbsp;4<sup>TH</sup>
                 &nbsp;<span class="aw-award-place-label">PLACE</span>
               </div>
               ${champDate ? `<div class="aw-award-note">Date · ${champDate}</div>` : ''}
