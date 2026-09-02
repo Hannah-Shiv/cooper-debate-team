@@ -1491,7 +1491,7 @@ body.deck-dialog-open {
   --primary-action-hover-end: #e4ae24;
   position: relative;
   overflow: hidden;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   color: #071735 !important;
   box-shadow: none;
 }
@@ -1505,13 +1505,12 @@ body.deck-dialog-open {
 
 .btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2),
 .btn.btn-outline.homepage-readiness__primary-action--qst > span:nth-child(2) {
-  font-size: inherit;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 0.88rem !important;
   font-weight: 700 !important;
-  letter-spacing: inherit;
+  letter-spacing: 0.1em;
   line-height: 1;
-}
-
-.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+  font-synthesis: none;
   -webkit-text-stroke: 0.2px currentColor;
 }
 
