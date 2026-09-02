@@ -1722,8 +1722,37 @@
        .tourney-section-nav button[aria-selected="true"]:focus::after,
        .tourney-section-nav button[aria-selected="true"]:focus-visible::after { opacity:.16; transform:scale(1) translateY(0); }
      }
-    .tourney-tab-panel { display:none; scroll-margin-top:84px; }
-    .tourney-tab-panel.is-active { display:block; }
+     .tourney-tab-panel {
+       display:none;
+       opacity:0;
+       scroll-margin-top:84px;
+       transform:translateY(6px);
+       transition:opacity .2s ease,transform .24s cubic-bezier(.22,1,.36,1);
+     }
+     .tourney-tab-panel.is-active {
+       display:block;
+       opacity:1;
+       transform:none;
+     }
+     .tourney-tab-panel.is-active.is-leaving {
+       opacity:0;
+       pointer-events:none;
+       transform:translateY(-5px);
+     }
+     .tourney-tab-panel.is-active.is-entering {
+       opacity:0;
+       transform:translateY(6px);
+     }
+     @media (prefers-reduced-motion:reduce) {
+       .tourney-tab-panel {
+         transition:none;
+         transform:none;
+       }
+       .tourney-tab-panel.is-active.is-leaving,
+       .tourney-tab-panel.is-active.is-entering {
+         transform:none;
+       }
+     }
 
     /* Give the calendar grid and tab bar more room on desktop without
        stretching the text-heavy tournament information panels. */
@@ -2482,9 +2511,11 @@
       display:grid;
       grid-template-columns:minmax(330px,.95fr) minmax(0,1.05fr);
       align-items:center;
+      align-content:center;
       gap:10px 48px;
       width:100%;
       max-width:1120px;
+      min-height:120px;
       margin:0 auto 16px;
       text-align:left;
     }
@@ -2537,8 +2568,19 @@
       margin-top:4px;
     }
     .tournaments-page .tourney-panel-intro--calendar .season-picker {
+      display:grid;
+      grid-template-columns:auto minmax(150px,1fr);
+      align-items:center;
+      gap:10px;
       min-width:0;
-      width:min(260px,100%);
+      width:min(390px,100%);
+    }
+    .tournaments-page .tourney-panel-intro--calendar .season-picker-label {
+      white-space:nowrap;
+    }
+    .tournaments-page .tourney-panel-intro--calendar .season-picker-select {
+      padding-top:8px;
+      padding-bottom:8px;
     }
     @media(max-width:820px){
       .tournaments-page .tourney-panel-intro,
@@ -2548,7 +2590,9 @@
           "title"
           "picker"
           "copy";
+        align-content:center;
         gap:8px;
+        min-height:182px;
         margin-bottom:13px;
       }
       .tournaments-page .tourney-panel-intro:not(.tourney-panel-intro--calendar) {
@@ -2561,7 +2605,11 @@
         font-size:clamp(1.7rem,8vw,2.15rem);
       }
       .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
-        margin-top:4px;
+        justify-self:stretch;
+        margin-top:0;
+      }
+      .tournaments-page .tourney-panel-intro--calendar .season-picker {
+        width:100%;
       }
     }
 
@@ -3630,6 +3678,10 @@ function renderLastSeason(tourns) {
   const tabs = Array.from(document.querySelectorAll('.tourney-section-nav [role="tab"]'));
   const panels = Array.from(document.querySelectorAll('[data-tourney-panel]'));
   const panelIds = new Set(panels.map(panel => panel.id));
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let activePanel = panels.find(panel => panel.classList.contains('is-active')) || panels[0];
+  let transitionTimer = 0;
+  let transitionToken = 0;
   if (!tabs.length || !panels.length) return;
 
   function tabIdFromHash() {
@@ -3648,22 +3700,63 @@ function renderLastSeason(tourns) {
 
   function activateTab(id, options = {}) {
     const activeId = panelIds.has(id) ? id : panels[0].id;
+    const incomingPanel = panels.find(panel => panel.id === activeId);
+    const outgoingPanel = activePanel;
     tabs.forEach(tab => {
       const selected = tab.getAttribute('aria-controls') === activeId;
       tab.setAttribute('aria-selected', String(selected));
       tab.tabIndex = selected ? 0 : -1;
     });
-    panels.forEach(panel => {
-      const selected = panel.id === activeId;
-      panel.classList.toggle('is-active', selected);
-      panel.hidden = !selected;
-    });
-    window.dispatchEvent(new CustomEvent('public-calendar-visible', { detail: { visible: activeId === 'calendar-results' } }));
     if (options.updateUrl) updateUrl(activeId, false);
     if (options.focus) {
       const activeTab = tabs.find(tab => tab.getAttribute('aria-controls') === activeId);
       if (activeTab) activeTab.focus({ preventScroll: true });
     }
+
+    const showPanelImmediately = () => {
+      window.clearTimeout(transitionTimer);
+      transitionToken += 1;
+      panels.forEach(panel => {
+        const selected = panel === incomingPanel;
+        panel.classList.toggle('is-active', selected);
+        panel.classList.remove('is-leaving', 'is-entering');
+        panel.hidden = !selected;
+      });
+      activePanel = incomingPanel;
+      window.dispatchEvent(new CustomEvent('public-calendar-visible', { detail: { visible: activeId === 'calendar-results' } }));
+    };
+
+    if (
+      !incomingPanel ||
+      incomingPanel === outgoingPanel ||
+      options.animate === false ||
+      prefersReducedMotion.matches ||
+      !outgoingPanel ||
+      outgoingPanel.hidden
+    ) {
+      showPanelImmediately();
+      return;
+    }
+
+    window.clearTimeout(transitionTimer);
+    const token = ++transitionToken;
+    panels.forEach(panel => panel.classList.remove('is-leaving', 'is-entering'));
+    outgoingPanel.classList.add('is-active', 'is-leaving');
+
+    transitionTimer = window.setTimeout(() => {
+      if (token !== transitionToken) return;
+      outgoingPanel.hidden = true;
+      outgoingPanel.classList.remove('is-active', 'is-leaving');
+      incomingPanel.hidden = false;
+      incomingPanel.classList.add('is-active', 'is-entering');
+      activePanel = incomingPanel;
+      window.dispatchEvent(new CustomEvent('public-calendar-visible', { detail: { visible: activeId === 'calendar-results' } }));
+      void incomingPanel.offsetWidth;
+      requestAnimationFrame(() => {
+        if (token !== transitionToken) return;
+        incomingPanel.classList.remove('is-entering');
+      });
+    }, 200);
   }
 
   tabs.forEach((tab, index) => {
@@ -3696,7 +3789,7 @@ function renderLastSeason(tourns) {
   // Keep scrolling for explicit hash deep links and the focused WASDL guide.
   const shouldScrollToInitialPanel = Boolean(window.__TOURNEY_INITIAL_TAB || focusTargetId);
   const shouldAlignPageTitle = panelIds.has(queryTab) && !window.__TOURNEY_INITIAL_TAB && !focusTargetId;
-  activateTab(initialId);
+  activateTab(initialId, { animate: false });
   if (window.__TOURNEY_INITIAL_TAB) updateUrl(initialId, true);
   if (shouldScrollToInitialPanel && initialId !== panels[0].id) {
     const scrollToInitialPanel = () => {
