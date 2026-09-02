@@ -1607,6 +1607,39 @@
     .awards-page .aw-chart-grid > .aw-chart-wrap:hover {
       background: #292d34;
     }
+
+    /* Extend the top metric-card treatment across championship results. */
+    .awards-page .aw-champ-summary {
+      gap: 18px;
+      background: transparent;
+      border: 0;
+      overflow: visible;
+    }
+    .awards-page .aw-champ-summary .aw-champ-metric,
+    .awards-page .aw-award-stats .aw-award-stat,
+    .awards-page .aw-champ-chart-grid > .aw-champ-card,
+    .awards-page .aw-chart-grid > .aw-chart-wrap {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+      border: 1.5px solid rgba(242,209,107,0.78);
+      border-radius: 10px;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.28);
+    }
+    .awards-page .aw-champ-summary .aw-champ-metric {
+      min-height: 142px;
+      padding: 29px 20px 22px;
+      border-right: 1.5px solid rgba(242,209,107,0.78);
+    }
+    .awards-page .aw-champ-summary .aw-champ-metric:last-child {
+      border-right: 1.5px solid rgba(242,209,107,0.78);
+    }
+    .awards-page .aw-award-stats .aw-award-stat {
+      box-shadow: 0 6px 14px rgba(0,0,0,0.28);
+    }
+    .awards-page .aw-champ-chart-grid > .aw-champ-card,
+    .awards-page .aw-chart-grid > .aw-chart-wrap,
+    .awards-page .aw-chart-grid > .aw-chart-wrap:hover {
+      background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
