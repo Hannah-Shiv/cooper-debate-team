@@ -1476,7 +1476,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__primary-action--application {
   --primary-action-border: #dfb94f;
-  --primary-action-border-hover: #f2d477;
+  --primary-action-border-hover: #fff;
   --primary-action-start: #b47d0c;
   --primary-action-end: #774b04;
   --primary-action-hover-start: #c38d18;
@@ -1518,6 +1518,7 @@ body.deck-dialog-open {
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     inset 0 -3px 6px rgba(51, 28, 0, 0.24);
   color: #fff !important;
+  transform: translateY(-2px);
 }
 
 .homepage-readiness__primary-action--qst:hover,
@@ -1553,6 +1554,22 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application .homepage-readiness__primary-arrow {
   border-color: rgba(255, 255, 255, 0.76) !important;
   color: #fff !important;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.18s ease;
+}
+
+.homepage-readiness__primary-action--application:hover .homepage-readiness__action-icon,
+.homepage-readiness__primary-action--application:focus-visible .homepage-readiness__action-icon {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #fff !important;
+  transform: scale(1.06);
+}
+
+.homepage-readiness__primary-action--application:hover .homepage-readiness__primary-arrow,
+.homepage-readiness__primary-action--application:focus-visible .homepage-readiness__primary-arrow {
+  background: #fff;
+  border-color: #fff !important;
+  color: #704500 !important;
+  transform: translateX(3px);
 }
 
 .homepage-readiness__action-icon svg {
