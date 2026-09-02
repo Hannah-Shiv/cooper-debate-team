@@ -1560,10 +1560,10 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--qst {
   --primary-action-border: rgba(255, 255, 255, 0.72);
   --primary-action-border-hover: rgba(255, 255, 255, 0.96);
-  --primary-action-start: #923442;
-  --primary-action-end: #702532;
-  --primary-action-hover-start: #a43f4e;
-  --primary-action-hover-end: #812c3b;
+  --primary-action-start: #752a35;
+  --primary-action-end: #5a1e28;
+  --primary-action-hover-start: #83323e;
+  --primary-action-hover-end: #67232f;
   color: #fff !important;
   box-shadow: none;
 }
