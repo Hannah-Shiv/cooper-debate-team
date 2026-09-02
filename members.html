@@ -567,6 +567,24 @@
       font-size: 1.01rem; color: rgba(255,255,255,0.6); line-height: 1.6;
       grid-column: 1 / -1; margin-top: 8px;
     }
+    .stats-source-highlight {
+      display: inline-flex; align-items: center; gap: 8px;
+      grid-column: 1 / -1; width: fit-content;
+      margin-top: 4px; padding: 7px 11px; border-radius: 6px;
+      background: rgba(232,184,75,0.12);
+      border: 1px solid rgba(232,184,75,0.42);
+      color: #f4d276; font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.08em; line-height: 1.35; text-transform: uppercase;
+    }
+    .stats-source-highlight .stats-source-icon {
+      color: #ffd85c; font-size: 0.9rem; line-height: 1;
+    }
+    .stats-source-highlight a {
+      color: #fff3b0; text-decoration: underline;
+      text-decoration-color: rgba(255,243,176,0.6);
+      text-underline-offset: 2px;
+    }
+    .stats-source-highlight a:hover { color: #fff; }
     .portal-card-status {
       display: inline-block; margin-top: 10px;
       grid-column: 1 / -1; align-self: start;
@@ -1165,6 +1183,10 @@
           <span class="portal-card-icon">📊</span>
           <div class="portal-card-title">Round Tracking &amp; Stats</div>
           <div class="portal-card-desc">Log round results and track your win/loss record across the season.</div>
+          <div class="stats-source-highlight" role="note">
+            <span class="stats-source-icon" aria-hidden="true">↗</span>
+            <span>Data source: <a href="https://www.tabroom.com/" target="_blank" rel="noopener">Tabroom.com</a></span>
+          </div>
           <span class="portal-card-status status-soon">Coming Soon</span>
         </div>
 

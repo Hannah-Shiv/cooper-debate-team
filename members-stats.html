@@ -55,6 +55,25 @@
       margin:10px 0 0; font-family:'Josefin Sans',sans-serif;
       font-size:1rem; color:rgba(255,255,255,0.78); letter-spacing:0.06em;
     }
+    .stats-source-highlight {
+      display:inline-flex; align-items:center; gap:9px;
+      margin-top:18px; padding:10px 14px; border-radius:7px;
+      background:linear-gradient(135deg,rgba(232,184,75,0.16),rgba(212,160,23,0.08));
+      border:1px solid rgba(232,184,75,0.46);
+      box-shadow:0 4px 18px rgba(0,0,0,0.16), inset 0 1px 0 rgba(255,255,255,0.07);
+      color:#f4d276; font-family:'Josefin Sans',sans-serif;
+      font-size:0.72rem; font-weight:700; letter-spacing:0.1em;
+      line-height:1.4; text-transform:uppercase;
+    }
+    .stats-source-highlight .stats-source-icon {
+      color:#ffd85c; font-size:1rem; line-height:1;
+    }
+    .stats-source-highlight a {
+      color:#fff3b0; text-decoration:underline;
+      text-decoration-color:rgba(255,243,176,0.6);
+      text-underline-offset:3px;
+    }
+    .stats-source-highlight a:hover { color:#fff; }
 
     /* ── Section headings ──────────────────────────────────── */
     .stat-section { margin-bottom:56px; }
@@ -1613,6 +1632,10 @@
   <div class="portal-page-title">
     <h1>Statistics</h1>
     <p>Tournament performance · Season analytics · Team leaderboard<span id="season-badge-page" class="season-scope-badge" style="display:none;margin-left:12px"></span></p>
+    <div class="stats-source-highlight" role="note">
+      <span class="stats-source-icon" aria-hidden="true">↗</span>
+      <span>Data source: <a href="https://www.tabroom.com/" target="_blank" rel="noopener">Tabroom.com</a></span>
+    </div>
   </div>
 
   <!-- Empty state (shown if no tournaments imported) -->
