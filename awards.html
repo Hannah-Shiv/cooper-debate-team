@@ -2068,6 +2068,25 @@
         white-space: normal;
       }
     }
+
+    /* Keep the season control centered with the single result panel. */
+    .awards-page.aw-only-metro-result .season-select-wrap {
+      display: flex;
+      width: fit-content;
+      margin: 0 auto 18px;
+      justify-content: center;
+    }
+    @media (max-width: 600px) {
+      .awards-page.aw-only-metro-result .season-select-wrap {
+        width: 100%;
+        align-items: center;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .awards-page.aw-only-metro-result .season-toggle {
+        width: min(100%, 358px);
+      }
+    }
   </style>
 </head>
 <body class="awards-page aw-only-metro-result" style="--navy-dark:#1c2030;">
@@ -2151,12 +2170,12 @@
     <div class="season-select-wrap">
       <span class="season-select-label">Choose a Season</span>
       <select class="season-dropdown season-toggle-select" id="season-dropdown" onchange="onSeasonChange()" aria-hidden="true" tabindex="-1">
-        <option value="2025">2025–26</option>
         <option value="2026" selected>2026–27</option>
+        <option value="2025">2025–26</option>
       </select>
       <div class="season-toggle" role="group" aria-label="Choose season">
-        <button type="button" class="season-toggle-btn" data-season="2025" aria-pressed="false" onclick="chooseSeason(2025)">2025–26</button>
         <button type="button" class="season-toggle-btn active" data-season="2026" aria-pressed="true" onclick="chooseSeason(2026)">2026–27</button>
+        <button type="button" class="season-toggle-btn" data-season="2025" aria-pressed="false" onclick="chooseSeason(2025)">2025–26</button>
       </div>
     </div>
     <div class="aw-results-heading-row">
