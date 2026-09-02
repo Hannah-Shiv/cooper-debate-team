@@ -3496,7 +3496,10 @@ function renderLastSeason(tourns) {
   const focusTargetId = new URLSearchParams(window.location.search).get('focus') === 'wasdl'
     ? 'tournament-overview-guide'
     : null;
-  const shouldScrollToInitialPanel = Boolean(window.__TOURNEY_INITIAL_TAB || panelIds.has(queryTab) || focusTargetId);
+  // Query-based links (such as the homepage's Calendar and Partner Sign Up
+  // actions) should select their tab without jumping past the five-tab nav.
+  // Keep scrolling for explicit hash deep links and the focused WASDL guide.
+  const shouldScrollToInitialPanel = Boolean(window.__TOURNEY_INITIAL_TAB || focusTargetId);
   activateTab(initialId);
   if (window.__TOURNEY_INITIAL_TAB) updateUrl(initialId, true);
   if (shouldScrollToInitialPanel && initialId !== panels[0].id) {
