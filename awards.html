@@ -2579,6 +2579,43 @@ function renderAwards(tourns) {
   const metroEarlyCount= metro.filter(p=>!p.eligible && p.c31===0).length;
   const metroTotal = metroEligCount + metroCloseCount + metroEarlyCount;
 
+  /* Apply the shared 25% Micro-dot field inside each donut segment. */
+  const metroPatternPlugin = {
+    id: 'metroPatternFill',
+    afterDatasetDraw(chart, args) {
+      if (args.index !== 0) return;
+      const { ctx, chartArea } = chart;
+      const meta = chart.getDatasetMeta(0);
+      const fallbackCx = chartArea.left + chartArea.width / 2;
+      const fallbackCy = chartArea.top + chartArea.height / 2;
+
+      meta.data.forEach(arc => {
+        const {
+          startAngle, endAngle, outerRadius, innerRadius,
+          x = fallbackCx, y = fallbackCy
+        } = arc;
+        if (!outerRadius || !innerRadius) return;
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(x, y, outerRadius, startAngle, endAngle);
+        ctx.arc(x, y, innerRadius, endAngle, startAngle, true);
+        ctx.closePath();
+        ctx.clip();
+
+        ctx.fillStyle = 'rgba(242, 209, 107, 0.25)';
+        for (let dotX = x - outerRadius; dotX <= x + outerRadius; dotX += 6) {
+          for (let dotY = y - outerRadius; dotY <= y + outerRadius; dotY += 6) {
+            ctx.beginPath();
+            ctx.arc(dotX, dotY, 1.1, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.restore();
+      });
+    }
+  };
+
   const metroCenterPlugin = {
     id:'metroCenterText',
     beforeDraw(chart) {
@@ -2682,7 +2719,7 @@ function renderAwards(tourns) {
   metroChart = new Chart(
     document.getElementById('aw-metro-chart').getContext('2d'), {
     type:'doughnut',
-    plugins:[metroCenterPlugin, metroLabelPlugin],
+    plugins:[metroPatternPlugin, metroCenterPlugin, metroLabelPlugin],
     data:{
       labels:['Metro Eligible','1 More Needed','In Progress'],
       datasets:[{ data:[metroEligCount, metroCloseCount, metroEarlyCount],
