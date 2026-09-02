@@ -243,7 +243,6 @@ exports.removePublicCalendarOnDelete = onDocumentDeleted(
 // Contact details remain coach-only; writes are validated with the Admin SDK.
 const COACH_EMAILS = new Set([
   "pgkonde@fcps.edu",
-  "hannahbshiv@gmail.com",
   "1806950@fcpsschools.net",
 ]);
 

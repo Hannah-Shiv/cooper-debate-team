@@ -21,10 +21,10 @@ const APPROVED_MEMBERS = [
   // ── Coaches ─────────────────────────────────────────────
   "pgkonde@fcps.edu",
   "pgkonde@fcpsschools.net",
-  "Hannahbshiv@gmail.com",
   "CooperDebateTeam@gmail.com",
 
   // ── Team Members ────────────────────────────────────────
+  "Hannahbshiv@gmail.com",
   // Add student emails below, one per line:
   "1806950@fcpsschools.net",
   // "student1@fcpsschools.net",

@@ -24,10 +24,9 @@
 // remain the security boundary.
 // ============================================================
 
-// Temporary role override for Hannah's linked identities while testing the
-// shared member-header badge. This intentionally lowers access from admin.
+// Protected legacy full-admin identity while testing the shared member-header
+// badge. Directory-managed roles remain authoritative for other identities.
 const PORTAL_ROLE_OVERRIDES = {
-  "hannahbshiv@gmail.com": "website-admin",
   "1806950@fcpsschools.net": "website-admin",
 };
 
