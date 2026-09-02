@@ -1640,6 +1640,160 @@
     .awards-page .aw-chart-grid > .aw-chart-wrap:hover {
       background: linear-gradient(145deg, #30343c 0%, #20232a 100%);
     }
+
+    /* Final responsive pass for tablet portrait and narrow mobile screens. */
+    @media (max-width: 900px) {
+      .awards-page .aw-results-heading-row {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .awards-page .aw-results-heading-row .aw-data-source {
+        align-self: flex-start;
+      }
+      .awards-page .aw-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+      .awards-page .aw-champ-highlight-grid.aw-two-awards {
+        grid-template-columns: 1fr;
+      }
+      .awards-page .aw-champ-chart-grid,
+      .awards-page .aw-chart-grid {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+      .awards-page .aw-champ-card,
+      .awards-page .aw-chart-wrap {
+        padding: 20px 18px;
+      }
+      .awards-page .aw-metro-container {
+        height: 340px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .awards-page > section.section {
+        padding-top: 12px;
+        padding-bottom: 30px;
+      }
+      .awards-page .section-wrap {
+        padding-inline: 16px;
+      }
+      .awards-page .aw-season-highlights {
+        margin-bottom: 28px;
+      }
+      .awards-page .aw-season-highlights-title {
+        max-width: calc(100% - 16px);
+        padding-inline: 12px;
+        font-size: 0.82rem;
+      }
+      .awards-page .aw-metric-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .awards-page .aw-stat-box {
+        padding: 22px 16px 18px;
+      }
+      .awards-page .aw-stat-num {
+        font-size: 3rem;
+      }
+      .awards-page .season-select-wrap {
+        width: 100%;
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .awards-page .season-toggle {
+        width: 100%;
+      }
+      .awards-page .season-toggle-btn {
+        flex: 1 1 0;
+        min-width: 0;
+        padding-inline: 8px;
+        font-size: 0.76rem;
+      }
+      .awards-page .aw-results-heading-row .section-title {
+        font-size: clamp(1.8rem, 8.5vw, 2.55rem);
+        line-height: 1.05;
+      }
+      .awards-page .aw-results-heading-row .aw-data-source {
+        max-width: 100%;
+        font-size: 0.78rem;
+        text-align: center;
+      }
+      .awards-page .aw-champ-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+      .awards-page .aw-champ-summary .aw-champ-metric {
+        min-height: 108px;
+        padding: 16px 8px;
+      }
+      .awards-page .aw-champ-metric-icon {
+        width: 36px;
+        height: 36px;
+        margin-bottom: 6px;
+        font-size: 1rem;
+      }
+      .awards-page .aw-champ-metric-value {
+        font-size: 2.05rem;
+      }
+      .awards-page .aw-champ-metric-label {
+        font-size: 0.59rem;
+        letter-spacing: 0.06em;
+      }
+      .awards-page .aw-champ-card,
+      .awards-page .aw-chart-wrap {
+        padding: 18px 13px;
+      }
+      .awards-page .aw-metro-container {
+        height: 300px;
+      }
+      .awards-page .aw-champ-chart-grid .aw-record-bars {
+        height: 220px;
+        gap: 4px;
+        padding-inline: 0;
+      }
+      .awards-page .aw-champ-chart-grid .aw-record-bar-label {
+        font-size: 0.64rem;
+      }
+      .awards-page .aw-champ-chart-grid .aw-record-table {
+        font-size: 0.78rem;
+      }
+      .awards-page .aw-champ-chart-grid .aw-record-table th,
+      .awards-page .aw-champ-chart-grid .aw-record-table td {
+        padding-inline: 4px;
+      }
+      .awards-page .aw-chart-grid {
+        gap: 14px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .awards-page .aw-award-content {
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 18px 14px;
+        text-align: center;
+      }
+      .awards-page .aw-award-media {
+        flex-basis: 112px;
+        width: 112px;
+        height: 155px;
+      }
+      .awards-page .aw-award-details {
+        width: 100%;
+      }
+      .awards-page .aw-award-badge {
+        justify-content: center;
+      }
+      .awards-page .aw-award-stats {
+        margin-inline: 8px;
+      }
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
