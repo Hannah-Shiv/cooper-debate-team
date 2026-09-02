@@ -1511,7 +1511,10 @@ body.deck-dialog-open {
   letter-spacing: 0.1em;
   line-height: 1;
   font-synthesis: none;
-  -webkit-text-stroke: 0.2px currentColor;
+}
+
+.btn.btn-gold.homepage-readiness__primary-action--application > span:nth-child(2) {
+  -webkit-text-stroke: 0.5px currentColor;
 }
 
 .homepage-readiness__primary-action--application,
