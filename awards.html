@@ -1122,78 +1122,6 @@
       border-color: rgba(212,160,23,0.75);
       box-shadow: 0 0 28px rgba(212,160,23,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
     }
-    .awards-page .aw-stat-box--record {
-      isolation: isolate;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 50% 18%, rgba(47,126,255,0.2), transparent 48%),
-        linear-gradient(145deg, rgba(15,55,112,0.98), rgba(7,24,61,0.98));
-      border-color: rgba(242,209,107,0.82);
-      box-shadow:
-        0 12px 28px rgba(0,0,0,0.3),
-        0 0 25px rgba(47,126,255,0.14),
-        inset 0 1px 0 rgba(255,255,255,0.12);
-    }
-    .awards-page .aw-stat-box--record::before {
-      content: '';
-      position: absolute;
-      inset: 0 0 auto;
-      height: 4px;
-      background: linear-gradient(90deg, #4ade80 0 50%, #ef4444 50% 100%);
-      opacity: 0.95;
-    }
-    .awards-page .aw-stat-box--record::after {
-      content: '✦';
-      position: absolute;
-      top: 10px;
-      right: 14px;
-      color: rgba(242,209,107,0.72);
-      font-size: 1rem;
-      text-shadow: 0 0 12px rgba(242,209,107,0.5);
-    }
-    .awards-page .aw-stat-record-kicker {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      margin-bottom: 12px;
-      color: rgba(255,255,255,0.7);
-      font-family: 'Josefin Sans',sans-serif;
-      font-size: 0.55rem;
-      font-weight: 700;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-    }
-    .awards-page .aw-stat-record-kicker::before,
-    .awards-page .aw-stat-record-kicker::after {
-      content: '';
-      width: 18px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(242,209,107,0.8));
-    }
-    .awards-page .aw-stat-record-kicker::after {
-      background: linear-gradient(90deg, rgba(242,209,107,0.8), transparent);
-    }
-    .awards-page .aw-stat-box--record .aw-stat-num {
-      font-size: clamp(1.6rem,4.5vw,2.6rem);
-      padding-bottom: 14px;
-    }
-    .awards-page .aw-stat-record-win,
-    .awards-page .aw-stat-record-loss {
-      font-weight: 700;
-      text-shadow: 0 0 16px currentColor;
-    }
-    .awards-page .aw-stat-record-win { color: #4ade80; }
-    .awards-page .aw-stat-record-loss { color: #ff5b63; }
-    .awards-page .aw-stat-record-divider {
-      margin: 0 5px;
-      color: rgba(255,255,255,0.48);
-      font-size: 0.9em;
-    }
-    .awards-page .aw-stat-box--record .aw-stat-lbl {
-      color: #F2D16B;
-      letter-spacing: 0.2em;
-      text-shadow: 0 0 10px rgba(242,209,107,0.28);
-    }
     .aw-stat-num { font-family:'Cormorant Garamond',serif; font-size:3.4rem; font-weight:600; color:#F2D16B; line-height:1;
       flex:1; display:flex; align-items:center; justify-content:center;
       text-shadow: 0 1px 3px rgba(255,255,255,0.2), 0 0 14px rgba(242,209,107,0.35);
@@ -2094,8 +2022,6 @@ function renderAwards(tourns) {
   const metroElig     = metro.filter(p => p.eligible).length;
   const metroProgress = metro.filter(p => !p.eligible).length;
   const pairs40 = metro.filter(p => p.c40 >= 1).length;
-  const pairs31 = metro.filter(p => p.c31 >= 1).length;
-  const pairs3plus = metro.filter(p => p.c31 >= 1 && p.c40 === 0).length;
 
   seasonHighlights.style.display = 'block';
   document.getElementById('aw-highlight-metro').textContent = metroElig;
@@ -2103,16 +2029,6 @@ function renderAwards(tourns) {
 
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
-    <div class="aw-stat-box aw-stat-box--record">
-      <div class="aw-stat-record-kicker">Season snapshot</div>
-      <div class="aw-stat-num" style="white-space:nowrap;">
-        <span class="aw-stat-record-win">${stats.w} W</span>
-        <span class="aw-stat-record-divider" aria-hidden="true">–</span>
-        <span class="aw-stat-record-loss">${stats.l} L</span>
-      </div>
-      <div class="aw-stat-divider"></div>
-      <div class="aw-stat-lbl">Team Record</div>
-    </div>
     <div class="aw-stat-box">
       <div class="aw-stat-num">${stats.winRate}%</div>
       <div class="aw-stat-divider"></div>
@@ -2122,21 +2038,13 @@ function renderAwards(tourns) {
   /* ── Achievement highlights ── */
   const highlights = [];
 
-  if (metroElig > 0)
-    highlights.push({ icon:'images/icons/icon-metro-qualified.png', num: metroElig,
-      lbl: `pair${metroElig!==1?'s':''} qualified for Metro Finals` });
-
   if (metroProgress > 0)
     highlights.push({ icon:'images/icons/icon-metro-progress.png', num: metroProgress,
       lbl: `pair${metroProgress!==1?'s':''} progressing toward Metro` });
 
-  if (pairs40 > 0)
-    highlights.push({ icon:'images/icons/icon-shield.png', num: pairs40,
-      lbl: `pair${pairs40!==1?'s':''} went undefeated (4–0)` });
-
-  if (pairs3plus > 0)
-    highlights.push({ icon:'images/icons/icon-target.png', num: pairs3plus,
-      lbl: `pair${pairs3plus!==1?'s':''} finished 3–1 or better` });
+  if (metroElig > 0)
+    highlights.push({ icon:'images/icons/icon-metro-qualified.png', num: metroElig,
+      lbl: `pair${metroElig!==1?'s':''} qualified for Metro Finals` });
 
   document.getElementById('aw-highlights').innerHTML = highlights.length
     ? highlights.map(h => `
