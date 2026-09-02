@@ -1549,6 +1549,42 @@
     .awards-page .aw-ncfl-award-card .aw-award-details {
       row-gap: 18px;
     }
+
+    /* Keep the two championship cards on the same visual rhythm. */
+    .awards-page .aw-champ-highlight-grid.aw-two-awards {
+      align-items: stretch;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-content {
+      align-items: stretch;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-media {
+      align-self: center;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-details {
+      display: grid;
+      grid-template-rows: auto auto minmax(3rem, auto) minmax(2.25rem, auto) auto;
+      align-content: start;
+      align-self: stretch;
+      row-gap: 18px;
+      padding-top: 12px;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-badge {
+      width: max-content;
+      max-width: 100%;
+      margin-bottom: 0;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-hierarchy,
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-title,
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-place,
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-note {
+      margin-bottom: 0;
+    }
+    .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-place {
+      display: flex;
+      min-height: 2.25rem;
+      align-items: center;
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body class="awards-page" style="--navy-dark:#1c2030;">
