@@ -1804,8 +1804,9 @@
       .awards-page .aw-award-details {
         display: grid;
         grid-template-rows: auto auto minmax(2.7rem, auto) minmax(2.35rem, auto) minmax(1.25rem, auto);
+        grid-template-columns: minmax(0, 1fr);
         align-content: start;
-        justify-items: center;
+        justify-items: stretch;
         width: 100%;
       }
       .awards-page .aw-award-details .aw-award-badge,
@@ -1819,6 +1820,11 @@
       }
       .awards-page .aw-award-details .aw-award-badge {
         justify-content: center;
+      }
+      .awards-page .aw-champ-highlight-grid.aw-two-awards .aw-award-details .aw-award-badge {
+        width: max-content;
+        max-width: 100%;
+        justify-self: center;
       }
       .awards-page .aw-award-details .aw-award-hierarchy {
         display: flex;
