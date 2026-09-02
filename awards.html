@@ -641,19 +641,25 @@
     .awards-page .aw-metro-award-media.aw-metro-award-media--trio {
       flex: 0 0 136px;
       width: 136px;
-      flex-direction: column;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
       gap: 2px;
       align-items: center;
-      justify-content: center;
+      justify-items: center;
     }
     .awards-page .aw-metro-award-media.aw-metro-award-media--trio img {
-      width: 92px;
+      width: 100%;
       height: 56px;
       object-fit: contain;
       filter: drop-shadow(0 2px 3px rgba(0,0,0,0.28));
     }
+    .awards-page .aw-metro-award-media.aw-metro-award-media--trio img:nth-child(3) {
+      grid-column: 1 / -1;
+      width: 92px;
+    }
     .awards-page .aw-award-place.aw-award-place--trio {
-      font-size: clamp(2.24rem, 4.24vw, 3.2rem);
+      font-size: clamp(1.904rem, 3.604vw, 2.72rem);
     }
     .awards-page .aw-ncfl-award-media img {
       width: 148px;
@@ -904,11 +910,14 @@
         gap: 1px;
       }
       .awards-page .aw-metro-award-media.aw-metro-award-media--trio img {
-        width: 74px;
+        width: 100%;
         height: 48px;
       }
+      .awards-page .aw-metro-award-media.aw-metro-award-media--trio img:nth-child(3) {
+        width: 74px;
+      }
       .awards-page .aw-award-place.aw-award-place--trio {
-        font-size: clamp(1.08rem, 4.8vw, 1.6rem);
+        font-size: clamp(0.918rem, 4.08vw, 1.36rem);
         white-space: normal;
       }
       .awards-page .aw-award-badge {
@@ -1111,6 +1120,78 @@
     .aw-stat-box:hover {
       border-color: rgba(212,160,23,0.75);
       box-shadow: 0 0 28px rgba(212,160,23,0.18), inset 0 1px 0 rgba(255,255,255,0.06);
+    }
+    .awards-page .aw-stat-box--record {
+      isolation: isolate;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(47,126,255,0.2), transparent 48%),
+        linear-gradient(145deg, rgba(15,55,112,0.98), rgba(7,24,61,0.98));
+      border-color: rgba(242,209,107,0.82);
+      box-shadow:
+        0 12px 28px rgba(0,0,0,0.3),
+        0 0 25px rgba(47,126,255,0.14),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+    .awards-page .aw-stat-box--record::before {
+      content: '';
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, #4ade80 0 50%, #ef4444 50% 100%);
+      opacity: 0.95;
+    }
+    .awards-page .aw-stat-box--record::after {
+      content: '✦';
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      color: rgba(242,209,107,0.72);
+      font-size: 1rem;
+      text-shadow: 0 0 12px rgba(242,209,107,0.5);
+    }
+    .awards-page .aw-stat-record-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 12px;
+      color: rgba(255,255,255,0.7);
+      font-family: 'Josefin Sans',sans-serif;
+      font-size: 0.55rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+    .awards-page .aw-stat-record-kicker::before,
+    .awards-page .aw-stat-record-kicker::after {
+      content: '';
+      width: 18px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(242,209,107,0.8));
+    }
+    .awards-page .aw-stat-record-kicker::after {
+      background: linear-gradient(90deg, rgba(242,209,107,0.8), transparent);
+    }
+    .awards-page .aw-stat-box--record .aw-stat-num {
+      font-size: clamp(1.6rem,4.5vw,2.6rem);
+      padding-bottom: 14px;
+    }
+    .awards-page .aw-stat-record-win,
+    .awards-page .aw-stat-record-loss {
+      font-weight: 700;
+      text-shadow: 0 0 16px currentColor;
+    }
+    .awards-page .aw-stat-record-win { color: #4ade80; }
+    .awards-page .aw-stat-record-loss { color: #ff5b63; }
+    .awards-page .aw-stat-record-divider {
+      margin: 0 5px;
+      color: rgba(255,255,255,0.48);
+      font-size: 0.9em;
+    }
+    .awards-page .aw-stat-box--record .aw-stat-lbl {
+      color: #F2D16B;
+      letter-spacing: 0.2em;
+      text-shadow: 0 0 10px rgba(242,209,107,0.28);
     }
     .aw-stat-num { font-family:'Cormorant Garamond',serif; font-size:3.4rem; font-weight:600; color:#F2D16B; line-height:1;
       flex:1; display:flex; align-items:center; justify-content:center;
@@ -2021,11 +2102,12 @@ function renderAwards(tourns) {
 
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
-    <div class="aw-stat-box">
-      <div class="aw-stat-num" style="font-size:clamp(1.6rem,4.5vw,2.6rem);white-space:nowrap;">
-        <span style="color:#4ade80;">${stats.w} W</span>
-        <span style="color:rgba(255,255,255,0.3);font-size:0.9em;margin:0 4px;">–</span>
-        <span style="color:#E03030;">${stats.l} L</span>
+    <div class="aw-stat-box aw-stat-box--record">
+      <div class="aw-stat-record-kicker">Season snapshot</div>
+      <div class="aw-stat-num" style="white-space:nowrap;">
+        <span class="aw-stat-record-win">${stats.w} W</span>
+        <span class="aw-stat-record-divider" aria-hidden="true">–</span>
+        <span class="aw-stat-record-loss">${stats.l} L</span>
       </div>
       <div class="aw-stat-divider"></div>
       <div class="aw-stat-lbl">Team Record</div>
