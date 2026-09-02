@@ -2215,8 +2215,7 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--qst::before,
 .homepage-readiness__action-link::before {
   position: absolute;
-  inset: 0;
-  right: 0;
+  inset: 0 10% auto;
   bottom: auto;
   width: auto;
   height: 3px;
@@ -2277,7 +2276,7 @@ body.deck-dialog-open {
   width: auto;
   height: 3px;
   opacity: 0.9;
-  background: var(--cta-hover-marker);
+  background: var(--cta-marker);
   transform: none;
 }
 
