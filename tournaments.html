@@ -2480,11 +2480,11 @@
     }
     .tournaments-page .tourney-panel-intro {
       display:grid;
-      grid-template-columns:minmax(250px,.78fr) minmax(0,1.22fr);
+      grid-template-columns:minmax(330px,.95fr) minmax(0,1.05fr);
       align-items:center;
-      gap:8px 34px;
+      gap:10px 48px;
       width:100%;
-      max-width:1180px;
+      max-width:1120px;
       margin:0 auto 16px;
       text-align:left;
     }
@@ -2515,7 +2515,9 @@
       text-align:left;
     }
     .tournaments-page .tourney-panel-intro--calendar {
-      grid-template-columns:minmax(225px,.72fr) minmax(300px,1.15fr) minmax(220px,.68fr);
+      grid-template-areas:
+        "title copy"
+        "picker copy";
     }
     .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy,
     .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
@@ -2523,16 +2525,34 @@
       justify-self:stretch;
       text-align:left;
     }
+    .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy {
+      grid-area:title;
+    }
+    .tournaments-page .tourney-panel-intro--calendar .tourney-panel-intro-copy {
+      grid-area:copy;
+    }
+    .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
+      grid-area:picker;
+      justify-self:start;
+      margin-top:4px;
+    }
     .tournaments-page .tourney-panel-intro--calendar .season-picker {
       min-width:0;
-      width:100%;
+      width:min(260px,100%);
     }
     @media(max-width:820px){
       .tournaments-page .tourney-panel-intro,
       .tournaments-page .tourney-panel-intro--calendar {
         grid-template-columns:1fr;
+        grid-template-areas:
+          "title"
+          "picker"
+          "copy";
         gap:8px;
         margin-bottom:13px;
+      }
+      .tournaments-page .tourney-panel-intro:not(.tourney-panel-intro--calendar) {
+        grid-template-areas:none;
       }
       .tournaments-page .tourney-panel-intro-title .section-label {
         margin-bottom:5px;
@@ -2550,7 +2570,7 @@
       max-width:1800px;
     }
     .tournaments-page .volunteer-section .tourney-panel-intro {
-      max-width:none;
+      max-width:1120px;
     }
     .tournaments-page .volunteer-layout {
       display:block;
