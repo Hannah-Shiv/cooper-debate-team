@@ -239,48 +239,50 @@
 
       return `
         <article class="vol-event-card vol-unified-card">
-          <header class="vol-unified-header">
-            <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
-            <div class="vol-unified-title">
-              <span>Judge volunteer opportunity</span>
-              <h3>${escapeHtml(event.title)}</h3>
-              ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
+          <section class="vol-opportunity-panel" aria-label="Judge volunteer opportunity">
+            <header class="vol-unified-header">
+              <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
+              <div class="vol-unified-title">
+                <span>Judge volunteer opportunity</span>
+                <h3>${escapeHtml(event.title)}</h3>
+                ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
+              </div>
+              <div class="vol-open-status">✓ Signup open</div>
+            </header>
+            <div class="vol-unified-facts">
+              <div><span class="vol-unified-icon">▣</span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
+              <div><span class="vol-unified-icon">◷</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
+              <div><span class="vol-unified-icon">⌖</span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
+              <div><span class="vol-unified-icon">♙</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
             </div>
-            <div class="vol-open-status">✓ Signup open</div>
-          </header>
-          <div class="vol-unified-facts">
-            <div><span class="vol-unified-icon">▣</span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
-            <div><span class="vol-unified-icon">◷</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
-            <div><span class="vol-unified-icon">⌖</span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
-            <div><span class="vol-unified-icon">♙</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
-          </div>
-          <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
-            ${event.resolution ? `<div><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
-            <div><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></div>
-            ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
-          </div>
-          <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
-            <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
-            <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
-            <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
-            <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
-            <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
-          </div>
-          <div class="vol-unified-signup">
-            <div class="vol-role-area">
-              <div class="vol-role-heading"><span>▣</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
-              <div class="vol-availability-options">${availabilityMarkup}</div>
-              <button type="button" class="vol-inline-continue" ${availableRole ? "" : "disabled"} data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
-                ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
-              </button>
+            <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
+              ${event.resolution ? `<div><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></div>` : ""}
+              <div><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></div>
+              ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
             </div>
-            <aside class="vol-public-sidebar">
-              <section><h4>What to expect</h4><ul>${publicExpectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-              ${judgeNotes.length ? `<section><h4>For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
-              <section class="vol-public-secure"><h4>Private &amp; secure</h4><ul><li>Your contact details and notes are visible only to the coaching staff.</li></ul></section>
-              <section class="vol-public-assignment"><h4>Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-            </aside>
-          </div>
+            <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
+              <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
+              <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
+              <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
+              <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
+              <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
+            </div>
+            <div class="vol-unified-signup">
+              <div class="vol-role-area">
+                <div class="vol-role-heading"><span>▣</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
+                <div class="vol-availability-options">${availabilityMarkup}</div>
+                <button type="button" class="vol-inline-continue" ${availableRole ? "" : "disabled"} data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
+                  ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
+                </button>
+              </div>
+              <aside class="vol-public-sidebar">
+                <section><h4>What to expect</h4><ul>${publicExpectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+                ${judgeNotes.length ? `<section><h4>For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
+                <section class="vol-public-secure"><h4>Private &amp; secure</h4><ul><li>Your contact details and notes are visible only to the coaching staff.</li></ul></section>
+                <section class="vol-public-assignment"><h4>Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+              </aside>
+            </div>
+          </section>
           <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-roster-summary">
               <div class="vol-public-roster-heading">
