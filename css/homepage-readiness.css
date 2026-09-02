@@ -1477,17 +1477,17 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application {
   --primary-action-border: rgba(255, 255, 255, 0.9);
   --primary-action-border-hover: #fff;
-  --primary-action-start: #2e67b5;
-  --primary-action-end: #123b79;
-  --primary-action-hover-start: #3d7bcb;
-  --primary-action-hover-end: #1d4f99;
-  --primary-action-shadow: rgba(5, 20, 51, 0.46);
+  --primary-action-start: #2f6b52;
+  --primary-action-end: #163f32;
+  --primary-action-hover-start: #3b8566;
+  --primary-action-hover-end: #205443;
+  --primary-action-shadow: rgba(4, 26, 18, 0.46);
   font-weight: 800 !important;
   color: #fff !important;
   box-shadow:
     0 4px 10px var(--primary-action-shadow),
     inset 0 1px 0 rgba(255, 255, 255, 0.24),
-    inset 0 -3px 6px rgba(2, 13, 39, 0.3);
+    inset 0 -3px 6px rgba(0, 17, 11, 0.3);
 }
 
 .homepage-readiness__primary-action--qst {
@@ -1514,9 +1514,9 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application:hover,
 .homepage-readiness__primary-action--application:focus-visible {
   box-shadow:
-    0 7px 14px rgba(5, 20, 51, 0.52),
+    0 7px 14px rgba(4, 26, 18, 0.52),
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -3px 6px rgba(2, 13, 39, 0.26);
+    inset 0 -3px 6px rgba(0, 17, 11, 0.26);
   color: #fff !important;
   transform: translateY(-2px);
 }
@@ -1568,7 +1568,7 @@ body.deck-dialog-open {
 .homepage-readiness__primary-action--application:focus-visible .homepage-readiness__primary-arrow {
   background: #fff;
   border-color: #fff !important;
-  color: #143765 !important;
+  color: #174333 !important;
   transform: translateX(3px);
 }
 
