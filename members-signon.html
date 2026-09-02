@@ -729,6 +729,152 @@
            letter-spacing: .08em;
          }
      }
+
+      /* ── Access-denied state: keep the sign-in composition, with a calm
+         warning treatment instead of a generic error box. ─────────────── */
+      #state-denied.auth-wrap {
+        justify-content: center;
+      }
+      #state-denied .auth-box {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #state-denied .portal-mark {
+        width: clamp(152px, 24vw, 206px);
+        margin-bottom: 12px;
+      }
+      #state-denied .auth-badge {
+        margin-bottom: 20px !important;
+      }
+      #state-denied .auth-title {
+        max-width: 100%;
+        font-size: clamp(2.85rem, 8vw, 4.15rem) !important;
+        text-wrap: balance;
+      }
+      #state-denied .portal-diamond-divider {
+        margin-top: 15px;
+        margin-bottom: 16px;
+      }
+      #state-denied .auth-sub {
+        max-width: 500px;
+        margin-bottom: 24px !important;
+        color: rgba(247,249,253,.82);
+      }
+      #state-denied .denied-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        width: min(100%, 520px);
+        box-sizing: border-box;
+        margin: 0;
+        padding: 19px 21px;
+        text-align: left;
+        background:
+          radial-gradient(circle at 0 0, rgba(224,104,89,.16), transparent 62%),
+          linear-gradient(145deg, rgba(67,24,43,.9), rgba(23,23,47,.92));
+        border: 1px solid rgba(224,118,105,.58);
+        border-radius: 12px;
+        box-shadow:
+          0 12px 30px rgba(8,13,29,.24),
+          inset 0 1px rgba(255,255,255,.06);
+        color: rgba(247,249,253,.8);
+        font-size: .92rem;
+        line-height: 1.55;
+      }
+      #state-denied .denied-card p {
+        margin: 0;
+      }
+      #state-denied .denied-card-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        border: 1px solid rgba(247,207,85,.75);
+        border-radius: 50%;
+        background: rgba(247,207,85,.1);
+        color: #f7cf55;
+        box-shadow: 0 0 18px rgba(247,207,85,.12);
+      }
+      #state-denied .denied-card-icon svg {
+        width: 27px;
+        height: 27px;
+      }
+      #state-denied .denied-card-label {
+        margin-bottom: 3px !important;
+        color: #f7cf55;
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+      }
+      #state-denied .denied-card strong {
+        color: #fff;
+        font-weight: 700;
+      }
+      #state-denied .denied-help {
+        max-width: 480px;
+        margin: 19px auto 0;
+        color: rgba(247,249,253,.58);
+        font-size: .82rem;
+        line-height: 1.55;
+        text-align: center;
+      }
+      #state-denied .denied-help strong {
+        color: #f5d47a;
+      }
+      #state-denied .denied-return {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        min-width: 252px;
+        margin-top: 22px !important;
+        padding: 12px 20px;
+        border: 1px solid rgba(222,194,125,.78);
+        border-radius: 7px;
+        background: rgba(255,255,255,.035);
+        color: #f7e2a2;
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        box-shadow: 0 4px 14px rgba(4,16,33,.16);
+        transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease, transform .2s ease;
+      }
+      #state-denied .denied-return:hover {
+        background: rgba(212,160,23,.14);
+        border-color: #f0c34f;
+        color: #fff1bd;
+        box-shadow: 0 8px 20px rgba(4,16,33,.24), 0 0 16px rgba(212,160,23,.12);
+        transform: translateY(-2px);
+      }
+      #state-denied .denied-return:focus-visible {
+        outline: 3px solid #f7cf55;
+        outline-offset: 3px;
+      }
+      @media (max-width: 600px) {
+        #state-denied .portal-mark { width: 174px; }
+        #state-denied .auth-badge { margin-bottom: 16px !important; }
+        #state-denied .auth-sub { font-size: .9rem; }
+        #state-denied .denied-card {
+          align-items: flex-start;
+          gap: 12px;
+          padding: 16px;
+          font-size: .86rem;
+        }
+        #state-denied .denied-card-icon {
+          width: 42px;
+          height: 42px;
+          flex-basis: 42px;
+        }
+        #state-denied .denied-card-icon svg { width: 24px; height: 24px; }
+        #state-denied .denied-return {
+          width: 100%;
+          min-width: 0;
+        }
+      }
   </style>
 </head>
 <body>
@@ -858,16 +1004,28 @@
   <!-- ── STATE: access denied ──────────────────────────── -->
   <div id="state-denied" class="auth-wrap" style="display:none;">
     <div class="auth-box">
-      <span class="auth-icon">🚫</span>
+      <img class="portal-mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true"/>
+      <p class="auth-badge">Members Portal</p>
       <h1 class="auth-title">Access Not Approved</h1>
-      <p class="auth-sub" id="denied-message">Your email is not on the approved members list.</p>
+      <div class="portal-diamond-divider" aria-hidden="true"><span></span></div>
+      <p class="auth-sub">Your account is signed in, but this email is not approved for the Members Portal.</p>
 
       <div class="denied-card">
-        <p>If you believe this is an error, contact <strong style="color:var(--white);">Coach Konde</strong> and ask to be added to the portal access list.</p>
+        <span class="denied-card-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <circle cx="16" cy="16" r="11.5" stroke="currentColor" stroke-width="1.8"/>
+            <path d="M8.4 8.4 23.6 23.6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <div>
+          <p class="denied-card-label">Access is currently restricted</p>
+          <p><span id="denied-message">Your email is not on the approved members list.</span> If you believe this is an error, contact <strong>Coach Konde</strong> to be added to the portal access list.</p>
+        </div>
       </div>
 
-      <button onclick="showLogin()" class="btn btn-outline" style="margin-top:24px;">
-        ← Try a different email
+      <p class="denied-help">If you have another approved account, return to sign in and choose the correct email.</p>
+      <button onclick="showLogin()" class="btn btn-outline denied-return">
+        <span aria-hidden="true">←</span> Try a different email
       </button>
     </div>
   </div>
