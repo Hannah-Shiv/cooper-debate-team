@@ -1617,7 +1617,7 @@ body.deck-dialog-open {
   padding: 13px 15px;
   border: 1px solid rgba(109, 216, 184, 0.72);
   border-radius: 8px;
-  background: linear-gradient(135deg, #155e59 0%, #0d3f49 100%);
+  background: #155e59;
   color: #fff;
   text-decoration: none;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.12);
@@ -1671,7 +1671,7 @@ body.deck-dialog-open {
 
 .homepage-readiness__action-link--calendar {
   border-color: rgba(221, 169, 243, 0.78);
-  background: linear-gradient(135deg, #593475 0%, #2b1848 100%);
+  background: #593475;
   box-shadow: 0 6px 16px rgba(27, 9, 45, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
@@ -1683,7 +1683,7 @@ body.deck-dialog-open {
 .homepage-readiness__action-link:hover,
 .homepage-readiness__action-link:focus-visible {
   border-color: #8cebd0;
-  background: linear-gradient(135deg, #1b786f 0%, #115667 100%);
+  background: #1b786f;
   box-shadow: 0 9px 22px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
   transform: translateY(-1px);
   outline: none;
@@ -1692,7 +1692,7 @@ body.deck-dialog-open {
 .homepage-readiness__action-link--calendar:hover,
 .homepage-readiness__action-link--calendar:focus-visible {
   border-color: #efcfff;
-  background: linear-gradient(135deg, #71439a 0%, #3d2263 100%);
+  background: #71439a;
 }
 
 @media (max-width: 900px) {
