@@ -257,6 +257,15 @@
     .awards-page .aw-results-content #aw-data {
       animation: awResultsReveal 0.28s ease both;
     }
+    .awards-page .aw-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-bottom: 40px;
+    }
+    .awards-page .aw-metric-grid > .aw-stat-strip {
+      display: contents;
+    }
     @keyframes awResultsReveal {
       from { opacity: 0; transform: translateY(8px); }
       to { opacity: 1; transform: translateY(0); }
@@ -269,6 +278,9 @@
       }
       .awards-page .aw-results-content {
         min-height: 360px;
+      }
+      .awards-page .aw-metric-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
     @media(max-width:900px) {
@@ -1540,14 +1552,18 @@
     <div id="aw-data" style="display:none;">
 
       <!-- Stat strip -->
-      <div class="aw-stat-strip" id="aw-stat-strip"></div>
+       <div class="aw-metric-grid">
+         <div class="aw-stat-strip" id="aw-stat-strip"></div>
 
-      <!-- Achievement highlight cards -->
-      <div id="aw-highlights" class="aw-stat-strip" style="margin-bottom:32px;"></div>
+         <!-- Achievement highlight cards -->
+         <div id="aw-highlights" class="aw-stat-strip"></div>
+       </div>
 
-      <!-- Tournament cards — full width 2-col grid -->
-      <div class="aw-chart-title" style="margin-bottom:16px;">Regular Season Results</div>
-      <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
+       <!-- Tournament cards — retained for data compatibility but hidden from the page. -->
+       <div id="aw-regular-season-results" style="display:none;">
+         <div class="aw-chart-title" style="margin-bottom:16px;">Regular Season Results</div>
+         <div id="aw-tourn-grid" class="aw-tourn-grid" style="margin-bottom:40px;"></div>
+       </div>
 
       <!-- Concise championship highlight, matching the homepage -->
       <div id="aw-champ-highlight" style="display:none;"></div>
@@ -1975,11 +1991,6 @@ function renderAwards(tourns) {
   /* ── Stat strip ── */
   document.getElementById('aw-stat-strip').innerHTML = `
     <div class="aw-stat-box">
-      <div class="aw-stat-num">${stats.tournaments}</div>
-      <div class="aw-stat-divider"></div>
-      <div class="aw-stat-lbl">Tournaments</div>
-    </div>
-    <div class="aw-stat-box">
       <div class="aw-stat-num" style="font-size:clamp(1.6rem,4.5vw,2.6rem);white-space:nowrap;">
         <span style="color:#4ade80;">${stats.w} W</span>
         <span style="color:rgba(255,255,255,0.3);font-size:0.9em;margin:0 4px;">–</span>
@@ -1992,11 +2003,6 @@ function renderAwards(tourns) {
       <div class="aw-stat-num">${stats.winRate}%</div>
       <div class="aw-stat-divider"></div>
       <div class="aw-stat-lbl">Win Rate</div>
-    </div>
-    <div class="aw-stat-box">
-      <div class="aw-stat-num">${stats.avgSpeak}</div>
-      <div class="aw-stat-divider"></div>
-      <div class="aw-stat-lbl">Avg Speaker Pts</div>
     </div>`;
 
   /* ── Achievement highlights ── */
