@@ -228,14 +228,15 @@
 
   .tourney-section-nav .section-wrap {
     display: grid !important;
-    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-columns: repeat(2, minmax(0, calc(40% - 4px))) !important;
+    justify-content: center;
     gap: 10px !important;
     overflow: visible !important;
   }
 
   .tourney-section-nav button {
     min-width: 0 !important;
-    width: 80% !important;
+    width: 100% !important;
     justify-self: center;
     white-space: normal !important;
   }
@@ -243,7 +244,7 @@
   .tourney-section-nav .section-wrap button:last-child {
     grid-column: 1 / -1;
     justify-self: center;
-    width: calc(40% - 4px) !important;
+    width: calc(50% - 5px) !important;
   }
 
   /* Restore the desktop-style two-column introduction in portrait tablets:
@@ -347,6 +348,49 @@
     width: auto !important;
     height: 1px !important;
     background: linear-gradient(90deg, transparent, rgba(255,255,255,.78), transparent) !important;
+  }
+
+  /* Give the four official-link cards the full reading width, then place the
+     two longer calls to action in their own horizontal row below them. */
+  .tournament-overview-resource-row {
+    display: flex !important;
+    flex-direction: column;
+    gap: 18px !important;
+  }
+
+  .tournament-overview-external-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    justify-content: stretch !important;
+    gap: 14px 18px !important;
+    width: 100%;
+    max-width: none;
+  }
+
+  .tournament-overview-external-grid::after {
+    display: none !important;
+  }
+
+  .tournament-overview-external-card {
+    min-height: 60px;
+    padding: 10px 12px;
+  }
+
+  .tournament-overview-guide-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    grid-template-rows: none !important;
+    gap: 14px !important;
+    width: 100% !important;
+    height: auto !important;
+    margin-top: 0 !important;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, .34);
+    justify-self: stretch !important;
+    align-self: stretch !important;
+  }
+
+  .tournament-overview-guide-actions a {
+    min-height: 48px;
+    white-space: normal;
   }
 
   .tourney-tryout-top-layout {
