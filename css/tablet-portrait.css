@@ -424,7 +424,7 @@
   }
 
   .tournament-overview-volunteer-content .tournament-overview-event-kicker {
-    grid-column: 1;
+    grid-column: 1 / -1;
     grid-row: 1;
   }
 
@@ -434,15 +434,15 @@
   }
 
   .tournament-overview-volunteer-content > p:not(.tournament-overview-event-kicker) {
-    grid-column: 1 / -1;
+    grid-column: 1;
     grid-row: 3;
   }
 
   .tournament-overview-volunteer-content .btn {
     grid-column: 2;
-    grid-row: 1;
+    grid-row: 3;
     justify-self: end;
-    align-self: start;
+    align-self: end;
     margin-top: 0 !important;
   }
 
