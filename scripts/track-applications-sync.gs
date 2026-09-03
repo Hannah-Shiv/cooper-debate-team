@@ -17,7 +17,7 @@
  */
 
 const TRACK_APPLICATIONS_CONFIG = {
-  sheetName: "Track Applications",
+  sheetName: "Form Responses 1",
   headerRow: 1,
   syncEndpoint: "https://us-central1-cooper-debate-team.cloudfunctions.net/syncApplicationFromSheet",
   secretProperty: "APPLICATION_SHEET_SYNC_SECRET",

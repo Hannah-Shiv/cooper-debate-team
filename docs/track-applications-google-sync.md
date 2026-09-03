@@ -12,7 +12,7 @@ The existing coach page (`members-applications.html`) already reads the private 
 
 ## Sheet columns to add
 
-In row 1 of the **Track Applications** sheet, add these exact headers at the end of the form-response columns:
+In row 1 of the **Form Responses 1** tab, add these exact headers at the end of the form-response columns:
 
 ```text
 Firestore sync status
@@ -24,7 +24,7 @@ Do not rename them after installing the script. They are operational columns and
 
 ## Apps Script
 
-Copy `scripts/track-applications-sync.gs` into the Apps Script project attached to the response spreadsheet.
+Copy `scripts/track-applications-sync.gs` into the Apps Script project attached to the response spreadsheet. The current spreadsheet filename is **Debate Application Form - 2026-2027 (Responses)** and the current response tab is **Form Responses 1**. The script uses the tab name.
 
 The script:
 
