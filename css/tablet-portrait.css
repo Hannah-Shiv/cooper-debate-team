@@ -393,6 +393,37 @@
     white-space: normal;
   }
 
+  .tournament-overview-volunteer-content {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-content: center;
+    align-items: start;
+    column-gap: 18px;
+  }
+
+  .tournament-overview-volunteer-content .tournament-overview-event-kicker {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .tournament-overview-volunteer-content h3 {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .tournament-overview-volunteer-content > p:not(.tournament-overview-event-kicker) {
+    grid-column: 1 / -1;
+    grid-row: 3;
+  }
+
+  .tournament-overview-volunteer-content .btn {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+    align-self: start;
+    margin-top: 0 !important;
+  }
+
   .tourney-tryout-top-layout {
     grid-template-columns: minmax(0, 1fr) !important;
   }
@@ -425,18 +456,15 @@
 
   .index-footer-bottom-links {
     display: flex !important;
-    flex-wrap: wrap;
-    gap: 4px 8px;
+    flex-wrap: nowrap;
+    gap: 0;
+    white-space: nowrap;
   }
 
   .index-footer-srr-title {
-    display: block;
-    margin-top: 5px;
-    white-space: normal;
-  }
-
-  .index-footer-srr-title::before {
-    display: none;
+    display: inline;
+    margin-top: 0;
+    white-space: nowrap;
   }
 
   .index-footer-srr,

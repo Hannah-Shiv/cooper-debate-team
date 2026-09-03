@@ -5,7 +5,7 @@
   var footers = document.querySelectorAll("footer");
   if (!footers.length) return;
 
-  fetch("data/public-footer.html?v=1", { credentials: "same-origin" })
+  fetch("data/public-footer.html?v=2", { credentials: "same-origin" })
     .then(function (response) {
       if (!response.ok) throw new Error("Could not load the shared public footer.");
       return response.text();
