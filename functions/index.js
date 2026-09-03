@@ -257,6 +257,7 @@ async function hasFullAdminAccess(email) {
 }
 const turnstileSecret = defineSecret("TURNSTILE_SECRET_KEY");
 const resendSecret = defineSecret("RESEND_API_KEY");
+const applicationSheetSyncSecret = defineSecret("APPLICATION_SHEET_SYNC_SECRET");
 const TURNSTILE_HOSTNAMES = new Set([
   "cooperdebateteam.com",
   "www.cooperdebateteam.com",
@@ -285,6 +286,11 @@ function validEmail(email) {
 
 function cleanEmail(value) {
   return cleanText(value, 160).toLowerCase();
+}
+
+function sameSecret(expected, received) {
+  if (!expected || !received || expected.length !== received.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(received));
 }
 
 function applicationContentHash(application) {
@@ -839,6 +845,110 @@ exports.submitApplication = onRequest(
           error: cleanText(error && error.message, 240) || "Please wait a few minutes before trying again.",
         });
       }
+    }
+  }
+);
+
+// Google Forms write to a response sheet before this endpoint receives the
+// normalized row. The Apps Script caller is authenticated with a shared
+// Secret Manager value; no browser can create or update application records
+// through this endpoint.
+exports.syncApplicationFromSheet = onRequest(
+  {
+    region: "us-central1",
+    cors: true,
+    secrets: [applicationSheetSyncSecret],
+  },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.set("Allow", "POST");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    const expectedSecret = applicationSheetSyncSecret.value();
+    const receivedSecret = cleanText(req.headers["x-application-sheet-secret"], 512);
+    if (!sameSecret(expectedSecret, receivedSecret)) {
+      res.status(expectedSecret ? 401 : 503).json({
+        error: expectedSecret
+          ? "The application sheet sync request could not be authenticated."
+          : "Application sheet sync is not configured yet.",
+      });
+      return;
+    }
+
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const source = body.source && typeof body.source === "object" ? body.source : {};
+    const spreadsheetId = cleanText(source.spreadsheetId, 160);
+    const sheetName = cleanText(source.sheetName, 120);
+    const rowNumber = Number(source.rowNumber);
+    if (
+      !spreadsheetId ||
+      !sheetName ||
+      !Number.isInteger(rowNumber) ||
+      rowNumber < 2 ||
+      rowNumber > 1000000
+    ) {
+      res.status(400).json({ error: "The sheet response source is incomplete." });
+      return;
+    }
+
+    let application;
+    try {
+      application = normalizeApplication({ application: body.application });
+    } catch (error) {
+      res.status(400).json({
+        error: cleanText(error.message, 300) || "The sheet response is missing required application fields.",
+      });
+      return;
+    }
+
+    const sourceKey = `${spreadsheetId}\u001f${sheetName}\u001f${rowNumber}`;
+    const applicationId = `sheet-${crypto.createHash("sha256").update(sourceKey).digest("hex")}`;
+    const applicationRef = getFirestore().collection("applications").doc(applicationId);
+    const sourceRecord = {
+      type: "google-form-sheet",
+      spreadsheetId,
+      sheetName,
+      rowNumber,
+      submittedAt: cleanText(source.submittedAt, 120),
+      sourceKeyHash: crypto.createHash("sha256").update(sourceKey).digest("hex"),
+    };
+    const contentHash = applicationContentHash(application);
+    let created = false;
+    let reviewStatus = "pending";
+
+    try {
+      await getFirestore().runTransaction(async transaction => {
+        const existing = await transaction.get(applicationRef);
+        const existingData = existing.exists ? existing.data() : {};
+        created = !existing.exists;
+        reviewStatus = ["pending", "accepted", "declined"].includes(existingData.reviewStatus)
+          ? existingData.reviewStatus
+          : "pending";
+        transaction.set(applicationRef, {
+          ...application,
+          contentHash,
+          reviewStatus,
+          source: sourceRecord,
+          sheetSyncStatus: "synced",
+          sheetSyncError: FieldValue.delete(),
+          sheetSyncedAt: FieldValue.serverTimestamp(),
+          createdAt: existingData.createdAt || FieldValue.serverTimestamp(),
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
+      });
+      res.status(created ? 201 : 200).json({
+        ok: true,
+        applicationId,
+        reviewStatus,
+      });
+    } catch (error) {
+      console.error("syncApplicationFromSheet failed:", {
+        applicationId,
+        message: cleanText(error && error.message, 400),
+      });
+      res.status(500).json({ error: "The application could not be saved to Firestore." });
     }
   }
 );
