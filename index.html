@@ -893,6 +893,20 @@
           transform: translateY(calc(88px - 50svh - 0.85vw));
         }
       }
+       @media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+         /*
+          * The full tablet hero uses the tall portrait artwork, but its midpoint
+          * is the microphone band. The collapsed banner should match the wide
+          * desktop/mobile result, where the jaguar podium emblems frame the title.
+          */
+         html.home-hero-image-hidden .home-hero > .hero-bg {
+           background-image: none;
+         }
+         html.home-hero-image-hidden .home-hero > .hero-bg::after,
+         html.home-hero-image-hidden .home-hero > .hero-bg::before {
+           display: block;
+         }
+       }
      @media screen and (min-width: 769px) and (max-height: 850px) {
        .home-hero { min-height: 0; }
      }
