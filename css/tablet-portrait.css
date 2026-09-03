@@ -608,9 +608,14 @@
     margin-left: 0;
   }
 
-  .index-footer-motto,
+  .index-footer-school,
   .index-footer-brand-copy {
-    text-align: center;
+    text-align: left;
+  }
+
+  .index-footer-location,
+  .index-footer-motto {
+    justify-content: flex-start;
   }
 }
 

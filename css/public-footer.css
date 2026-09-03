@@ -533,6 +533,31 @@
   }
 }
 
+@media (min-width: 641px) {
+  .index-footer-school {
+    text-align: left;
+  }
+
+  .index-footer-location {
+    justify-content: flex-start;
+  }
+
+  .index-footer-motto {
+    justify-content: flex-start;
+  }
+
+  .index-footer-brand-rule {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .index-footer-brand-copy {
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+}
+
 @media (max-width: 1040px) {
   .index-footer-main {
     grid-template-columns: minmax(0,1fr) minmax(240px,0.72fr);
