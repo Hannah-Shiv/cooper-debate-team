@@ -235,76 +235,76 @@
 
   .tourney-section-nav button {
     min-width: 0 !important;
-    width: 100% !important;
+    width: 80% !important;
+    justify-self: center;
     white-space: normal !important;
   }
 
   .tourney-section-nav .section-wrap button:last-child {
     grid-column: 1 / -1;
     justify-self: center;
-    width: max-content !important;
+    width: calc(40% - 4px) !important;
   }
 
-  /* Match the centered mobile rhythm for the three-line tab introductions:
-     title, season/context label, then the supporting description. */
+  /* Restore the desktop-style two-column introduction in portrait tablets:
+     title on the left, divider in the middle, and context on the right. */
   .tournaments-page .tourney-panel-intro,
   .tournaments-page .tourney-panel-intro--calendar {
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
     grid-template-areas:
       "title"
-      "copy"
       "picker" !important;
     align-items: center;
     align-content: center;
-    gap: 8px !important;
-    min-height: 0 !important;
+    gap: 8px clamp(32px, 5vw, 48px) !important;
+    min-height: 120px !important;
     margin: 0 auto 18px !important;
-    padding: 12px 0 14px;
-    text-align: center;
+    padding: 0;
+    text-align: left;
   }
 
   .tournaments-page .tourney-panel-intro:not(.tourney-panel-intro--calendar) {
     grid-template-areas:
-      "title"
-      "copy" !important;
+      "title copy" !important;
+  }
+
+  .tournaments-page .tourney-panel-intro--calendar {
+    grid-template-areas:
+      "title copy"
+      "title picker" !important;
   }
 
   .tournaments-page .tourney-panel-intro-title,
   .tournaments-page .tourney-panel-intro--calendar .cal-section-header-copy {
     grid-area: title !important;
-    width: 100%;
-    text-align: center;
+    width: auto;
+    text-align: right !important;
   }
 
   .tournaments-page .tourney-panel-intro-title .section-title {
-    text-align: center !important;
+    text-align: right !important;
   }
 
   .tournaments-page .tourney-panel-intro-copy {
     grid-area: copy !important;
-    width: 100%;
-    text-align: center;
+    width: auto;
+    text-align: left !important;
   }
 
   .tournaments-page .tourney-panel-intro-copy .section-label {
-    justify-content: center !important;
+    justify-content: flex-start !important;
     margin-bottom: 6px;
   }
 
   .tournaments-page .tourney-panel-intro-copy .section-label::after {
-    content: "";
-    display: inline-block;
-    flex: 0 0 28px;
-    width: 28px;
-    height: 2px;
-    background: var(--gold);
+    content: none !important;
   }
 
   .tournaments-page .tourney-panel-intro-copy .section-sub,
   .tournaments-page .tourney-panel-intro-copy .public-calendar-intro,
   .tournaments-page .tourney-panel-intro-copy .volunteer-intro,
   .tournaments-page .tourney-panel-intro-copy .volunteer-privacy {
-    text-align: center !important;
+    text-align: left !important;
   }
 
   .tournaments-page .tourney-panel-intro--calendar .cal-section-header-right {
@@ -313,12 +313,12 @@
 
   .tournaments-page .tourney-panel-intro--calendar .cal-section-header-picker {
     grid-area: picker !important;
-    justify-self: center !important;
-    width: min(100%, 320px);
+    justify-self: stretch !important;
+    width: auto;
   }
 
   .tournaments-page .tourney-panel-intro::after {
-    display: none !important;
+    display: block !important;
   }
 
   .tournament-overview-guide {
