@@ -330,9 +330,31 @@
 
   .tournament-overview-guide-header,
   .tournament-day-card-main,
-  .tournament-overview-event-grid,
-  .tournament-overview-volunteer-callout {
+  .tournament-overview-event-grid {
     grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tournament-overview-volunteer-callout {
+    grid-template-columns: clamp(150px, 22vw, 190px) minmax(0, 1fr) !important;
+    align-items: stretch;
+    gap: 20px;
+  }
+
+  .tournament-overview-volunteer-art {
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 18px 0 0 !important;
+  }
+
+  .tournament-overview-volunteer-art::after {
+    display: block !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: auto !important;
+    width: 2px !important;
+    height: auto !important;
+    background: linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,.92) 50%, rgba(255,255,255,0)) !important;
   }
 
   .tournament-overview-guide-header-art {
@@ -396,7 +418,7 @@
   .tournament-overview-volunteer-content {
     display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto;
-    align-content: center;
+    align-content: start;
     align-items: start;
     column-gap: 18px;
   }
