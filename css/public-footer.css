@@ -177,8 +177,8 @@
 }
 
 .index-footer-brand-details {
-  width: calc(100% - clamp(250px,15.05vw,275px));
-  margin-left: clamp(250px,15.05vw,275px);
+  width: calc(100% - clamp(250px, calc(15.05vw + 20px), 275px));
+  margin-left: clamp(250px, calc(15.05vw + 20px), 275px);
 }
 
 .index-footer-motto .star,
@@ -579,6 +579,47 @@
 
   .index-footer-bottom-cell:last-child::before {
     display: none;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1040px) {
+  .index-footer-brand {
+    display: grid;
+    grid-template-columns: 230px minmax(0,1fr);
+    grid-template-rows: auto auto;
+    column-gap: 20px;
+    width: min(100%,676px);
+    max-width: none;
+    margin: 0 auto;
+    padding: 0 28px 42px;
+    box-sizing: border-box;
+    text-align: left;
+  }
+
+  .index-footer-lockup {
+    display: contents;
+  }
+
+  .index-footer-jaguar {
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .index-footer-lockup > div {
+    grid-column: 2;
+    grid-row: 1;
+    min-width: 0;
+  }
+
+  .index-footer-brand-title {
+    text-align: left;
+  }
+
+  .index-footer-brand-details {
+    grid-column: 2;
+    grid-row: 2;
+    width: 100%;
+    margin-left: 0;
   }
 }
 
