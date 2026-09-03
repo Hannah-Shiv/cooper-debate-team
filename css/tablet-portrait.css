@@ -1,0 +1,378 @@
+/* ============================================================
+   COOPER DEBATE TEAM — tablet portrait layout
+   Public pages only; landscape and desktop layouts are unchanged.
+   ============================================================ */
+
+@media screen and (min-width: 601px) and (max-width: 1100px) and (orientation: portrait) {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .page-header-content,
+  .section-wrap,
+  .section-wrap > *,
+  .two-col > *,
+  .three-col > *,
+  .four-col > *,
+  .news-cards > *,
+  .results-grid > *,
+  .stats-grid > * {
+    min-width: 0;
+  }
+
+  .page-title,
+  .page-subtitle,
+  .section-title,
+  .section-sub,
+  .btn,
+  .resource-title,
+  .resource-desc,
+  .ann-card-title,
+  .ann-card-body {
+    overflow-wrap: anywhere;
+  }
+
+  /* Homepage content below the dedicated portrait hero. */
+  .homepage-readiness__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .homepage-readiness__details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .homepage-readiness__card,
+  .homepage-readiness__detail-card {
+    min-width: 0;
+  }
+
+  /* News pages keep the featured callout readable without squeezing its CTA. */
+  .ann-featured-copy,
+  .ann-featured-detail {
+    min-width: 0;
+  }
+
+  .ann-featured-detail {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .ann-featured-cta {
+    min-width: 0;
+    width: min(100%, 280px);
+    transform: none;
+  }
+
+  /* Resources: convert the five-part desktop ribbon into a balanced tablet grid. */
+  .resources-page .research-hub-bar {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 14px;
+  }
+
+  .resources-page .research-hub-step {
+    border-right: 1px solid rgba(255, 222, 125, 0.58);
+    padding: 14px 16px;
+  }
+
+  .resources-page .research-hub-step:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .resources-page .research-hub-step:nth-child(n + 3) {
+    border-top: 1px solid rgba(255, 222, 125, 0.42);
+  }
+
+  .resources-page .research-hub-cta {
+    grid-column: 1 / -1;
+    margin: 14px 0 0;
+    white-space: normal;
+  }
+
+  .resources-page .skills-panel .two-col {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .resources-page .resource-card,
+  .resources-page .template-card,
+  .resources-page .topic-box,
+  .resources-page .skills-panel {
+    min-width: 0;
+  }
+
+  /* Application switcher and forms use a comfortable single reading column. */
+  .application-workspace-switcher {
+    padding: 38px 26px 30px;
+  }
+
+  .entry-choice-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .entry-choice-card {
+    min-height: 0;
+  }
+
+  .entry-choice-swap {
+    display: none;
+  }
+
+  .entry-card-description {
+    margin: 16px 0 22px;
+  }
+
+  .entry-choice-card .entry-link {
+    margin: auto 0 0;
+  }
+
+  .form-steps {
+    width: 100%;
+  }
+
+  .form-step {
+    min-width: 0;
+  }
+
+  .form-step-label {
+    width: auto !important;
+    max-width: 70px;
+    overflow-wrap: anywhere;
+  }
+
+  .form-step-connector {
+    width: auto !important;
+    min-width: 8px;
+    flex: 1 1 18px;
+  }
+
+  /* Debate Prep is embedded by Apply; do not leave its desktop workbench at 820–1024px. */
+  .studio-shell {
+    padding-inline: 24px;
+  }
+
+  .studio-mast {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  .studio-mast-copy,
+  .studio-access-form {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .studio-access-form {
+    justify-self: stretch;
+    width: 100%;
+    margin-top: 22px;
+  }
+
+  .brief-card,
+  .route-grid,
+  .workspace,
+  .essay-row,
+  .paper-grid,
+  .paper-top-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .workspace .case-card,
+  .workspace .sources-card,
+  .workspace .essay-card,
+  .workspace .stats-card {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  .identity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Awards controls and statistics retain comparison without desktop crowding. */
+  .awards-page .aw-results-heading-row {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .awards-page .aw-metric-grid,
+  .awards-page .aw-season-highlight-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .awards-page .aw-season-highlight-item:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .awards-page .aw-season-highlight-item:nth-child(even) {
+    border-left: 1px solid rgba(242, 209, 107, 0.76);
+  }
+
+  /* Gallery cards are large enough to scan and tap in portrait. */
+  .gallery-media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .gallery-media-card {
+    min-width: 0;
+    min-height: 0;
+  }
+
+  /* Tournament page navigation and feature panels become vertical compositions. */
+  .tourney-section-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+
+  .tourney-section-nav .section-wrap {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    overflow: visible !important;
+  }
+
+  .tourney-section-nav button {
+    min-width: 0 !important;
+    width: 100% !important;
+    white-space: normal !important;
+  }
+
+  .tourney-section-nav .section-wrap button:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .tournament-overview-guide {
+    width: 100% !important;
+    margin-left: 0 !important;
+    transform: none !important;
+  }
+
+  .tournament-overview-guide-header,
+  .tournament-day-card-main,
+  .tournament-overview-event-grid,
+  .tournament-overview-volunteer-callout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tournament-overview-guide-header-art {
+    min-height: 190px !important;
+    padding: 0 0 22px !important;
+  }
+
+  .tournament-overview-guide-header-art::after {
+    top: auto !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    width: auto !important;
+    height: 1px !important;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.78), transparent) !important;
+  }
+
+  .tourney-tryout-top-layout {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tourney-tryout-output-heading h3 {
+    white-space: normal !important;
+  }
+
+  .tourney-tryout-side {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Footer legal copy should wrap inside the viewport instead of clipping. */
+  .index-footer .index-footer-bottom-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .index-footer-bottom-cell,
+  .index-footer-bottom-cell:last-child {
+    grid-column: auto !important;
+    min-width: 0;
+    padding: 20px 0 !important;
+    border-top: 1px solid rgba(99, 133, 178, 0.24);
+    border-left: 0 !important;
+  }
+
+  .index-footer-bottom-cell:first-child {
+    border-top: 0;
+  }
+
+  .index-footer-bottom-links {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+  }
+
+  .index-footer-srr-title {
+    display: block;
+    margin-top: 5px;
+    white-space: normal;
+  }
+
+  .index-footer-srr-title::before {
+    display: none;
+  }
+
+  .index-footer-srr,
+  .index-footer-srr-copy,
+  .index-footer-bottom-sub,
+  .index-footer-credit-line {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media screen and (min-width: 601px) and (max-width: 760px) and (orientation: portrait) {
+  .two-col,
+  .three-col,
+  .four-col,
+  .wasdl-grid,
+  .coach-grid,
+  .stats-grid,
+  .results-grid,
+  .gallery-grid,
+  .news-cards {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .ann-featured {
+    grid-template-columns: minmax(0, 1fr);
+    text-align: center;
+  }
+
+  .ann-featured-copy,
+  .ann-featured-detail {
+    align-items: center;
+  }
+
+  .resources-page .research-hub-bar,
+  .gallery-media-grid,
+  .form-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .resources-page .research-hub-step {
+    border-top: 1px solid rgba(255, 222, 125, 0.42);
+    border-right: 0;
+  }
+
+  .resources-page .research-hub-step:first-child {
+    border-top: 0;
+  }
+
+  .gallery-media-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .index-footer-main {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .index-footer-column + .index-footer-column {
+    border-left: 0 !important;
+  }
+}
