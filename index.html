@@ -1183,8 +1183,8 @@
       letter-spacing: 0.04em;
     }
     .index-footer-brand-details {
-      width: calc(100% - clamp(250px,15.05vw,275px));
-      margin-left: clamp(250px,15.05vw,275px);
+      width: calc(100% - clamp(250px, calc(15.05vw + 20px), 275px));
+      margin-left: clamp(250px, calc(15.05vw + 20px), 275px);
     }
     .index-footer-motto .star,
     .index-footer-motto .dot {
@@ -1446,6 +1446,24 @@
       .index-footer-lockup,
       .index-footer-brand-details {
         transform: translateX(-32px);
+      }
+    }
+    @media (min-width: 641px) {
+      .index-footer-school {
+        text-align: left;
+      }
+      .index-footer-location,
+      .index-footer-motto {
+        justify-content: flex-start;
+      }
+      .index-footer-brand-rule {
+        margin-left: 0;
+        margin-right: 0;
+      }
+      .index-footer-brand-copy {
+        margin-left: 0;
+        margin-right: 0;
+        text-align: left;
       }
     }
     @media (max-width: 1040px) {
