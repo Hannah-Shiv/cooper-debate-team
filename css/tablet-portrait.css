@@ -224,6 +224,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 10px !important;
     overflow: visible !important;
+    position: relative !important;
+    top: auto !important;
   }
 
   .tourney-section-nav .section-wrap {
@@ -339,9 +341,13 @@
   }
 
   .tournament-day-card-main {
-    grid-template-columns: minmax(220px, 36%) minmax(0, 1fr) !important;
+    grid-template-columns: minmax(250px, 42%) minmax(0, 1fr) !important;
     align-items: stretch;
     gap: 30px;
+  }
+
+  .tournament-day-card-content {
+    padding-left: clamp(12px, 2vw, 20px);
   }
 
   .tournaments-page .tournament-overview-event-card-header,
@@ -427,7 +433,11 @@
   }
 
   .tournament-day-card-art img {
-    width: min(285px, 100%) !important;
+    width: min(328px, 100%) !important;
+  }
+
+  .tournaments-page .index-footer-main {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
 
   /* Give the four official-link cards the full reading width, then place the
