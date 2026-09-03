@@ -328,10 +328,20 @@
     transform: none !important;
   }
 
-  .tournament-overview-guide-header,
-  .tournament-day-card-main,
   .tournament-overview-event-grid {
     grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tournament-overview-guide-header {
+    grid-template-columns: minmax(230px, 38%) minmax(0, 1fr) !important;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .tournament-day-card-main {
+    grid-template-columns: minmax(220px, 36%) minmax(0, 1fr) !important;
+    align-items: stretch;
+    gap: 30px;
   }
 
   .tournaments-page .tournament-overview-event-card-header,
@@ -366,6 +376,8 @@
   .tournaments-page .tournament-overview-event-card-header > div {
     align-self: center;
     min-width: 0;
+    padding-left: clamp(24px, 4.5vw, 46px);
+    box-sizing: border-box;
   }
 
   .tournament-overview-volunteer-callout {
@@ -392,18 +404,30 @@
   }
 
   .tournament-overview-guide-header-art {
-    min-height: 190px !important;
-    padding: 0 0 22px !important;
+    min-height: 230px !important;
+    padding: 0 28px 0 0 !important;
   }
 
   .tournament-overview-guide-header-art::after {
-    top: auto !important;
+    top: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    left: 0 !important;
-    width: auto !important;
-    height: 1px !important;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,.78), transparent) !important;
+    left: auto !important;
+    width: 2px !important;
+    height: auto !important;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,.92) 50%, transparent) !important;
+  }
+
+  .tournament-overview-guide-header-art img {
+    width: min(250px, 100%) !important;
+  }
+
+  .tournament-day-card-art {
+    padding: 8px 28px 8px 0 !important;
+  }
+
+  .tournament-day-card-art img {
+    width: min(285px, 100%) !important;
   }
 
   /* Give the four official-link cards the full reading width, then place the
