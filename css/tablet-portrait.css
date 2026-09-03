@@ -334,6 +334,40 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 
+  .tournaments-page .tournament-overview-event-card-header,
+  .tournaments-page .tournament-overview-event-card--training .tournament-overview-event-card-header,
+  .tournaments-page .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    align-items: center;
+    gap: 32px;
+    min-height: 180px;
+  }
+
+  .tournaments-page .tournament-overview-event-card-header::after,
+  .tournaments-page .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header::after {
+    top: 18px;
+    bottom: 18px;
+    left: calc(50% - 1px) !important;
+  }
+
+  .tournaments-page .tournament-overview-event-card-header img,
+  .tournaments-page .tournament-overview-event-card--training .tournament-overview-event-card-header img {
+    width: 230px;
+    max-width: 100%;
+    margin: 0 auto !important;
+  }
+
+  .tournaments-page .tournament-overview-event-card:not(.tournament-overview-event-card--training) .tournament-overview-event-card-header img {
+    width: 215px;
+    max-width: 100%;
+    margin: 0 auto !important;
+  }
+
+  .tournaments-page .tournament-overview-event-card-header > div {
+    align-self: center;
+    min-width: 0;
+  }
+
   .tournament-overview-volunteer-callout {
     grid-template-columns: clamp(150px, 22vw, 190px) minmax(0, 1fr) !important;
     align-items: stretch;
