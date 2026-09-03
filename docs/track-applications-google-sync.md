@@ -30,11 +30,14 @@ The script:
 
 - installs an installable form-submit trigger;
 - maps the form response row into the existing Firestore application shape;
+- preserves uploaded essay and Google Doc links from linked sheet cells;
 - writes `Synced` plus the Firestore application ID on success;
 - writes `Error` plus a readable message when validation or delivery fails;
 - provides `syncPendingTrackApplications()` for retrying rows that are not marked `Synced`.
 
-The field aliases near the top of the script cover the current application vocabulary. If a Google Form question uses different wording, add that exact question text to its alias list.
+The field aliases near the top of the script are matched to the current FCPS Google Form headers. Long question headers are matched by their opening text, so line breaks and explanatory text can change without breaking the mapper.
+
+The FCPS form does not collect the separate parent/guardian, Tabroom, fee, judging, transportation, or Google Meet fields used by the website's direct application form. Those values remain blank rather than being invented. The coach page displays every field the FCPS form does collect, including the required essay or Google Doc link, other activities, and comments or concerns.
 
 ## Protecting the sync endpoint
 
@@ -52,7 +55,9 @@ Never put the secret directly in the `.gs` source file or in a spreadsheet cell.
 
 ## Important behavior
 
-The application document ID is deterministic for the spreadsheet, sheet name, and row number. If Apps Script retries the same row, it updates the same Firestore document instead of creating a duplicate.
+The application document ID is deterministic from the spreadsheet, original Form timestamp, school email, and student name. If Apps Script retries the same response—or if someone sorts the sheet and changes its row number—it updates the same Firestore document instead of creating a duplicate.
+
+The coach page uses the original Google Form timestamp as the application submission time, including when older rows are synced later.
 
 If a coach has already accepted, declined, or held an application, a later sheet retry preserves that review decision. The sheet sync only updates the submitted application data and sync metadata.
 

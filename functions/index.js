@@ -435,6 +435,117 @@ function normalizeApplication(body) {
   return application;
 }
 
+function normalizeSheetApplication(source) {
+  const applicationSource = source && typeof source === "object" ? source : {};
+  const studentSource = applicationSource.student && typeof applicationSource.student === "object"
+    ? applicationSource.student
+    : {};
+  const commitmentSource = applicationSource.commitments && typeof applicationSource.commitments === "object"
+    ? applicationSource.commitments
+    : {};
+  const eventSource = applicationSource.eventDetails && typeof applicationSource.eventDetails === "object"
+    ? applicationSource.eventDetails
+    : {};
+  const answerSource = applicationSource.answers && typeof applicationSource.answers === "object"
+    ? applicationSource.answers
+    : {};
+  const schoolEmail = cleanEmail(studentSource.schoolEmail);
+  const responseEmail = cleanEmail(studentSource.responseEmail);
+  const gradeText = cleanText(studentSource.grade, 40);
+  const grade = /\b7(th)?\b/i.test(gradeText)
+    ? "7th Grade"
+    : /\b8(th)?\b/i.test(gradeText)
+      ? "8th Grade"
+      : gradeText;
+  const tournamentDateLabels = new Map([
+    ["October 24th", "October 24th, 2026"],
+    ["November 14th", "November 14th, 2026"],
+    ["December 5th", "December 5th, 2026"],
+    ["January 30th", "January 30th, 2027"],
+    ["February 20th", "February 20th, 2027"],
+  ]);
+  const allowedTournamentDates = new Set(tournamentDateLabels.values());
+  const tournamentDates = [...new Set((Array.isArray(eventSource.tournamentDates)
+    ? eventSource.tournamentDates
+    : [])
+    .map(value => cleanText(value, 80))
+    .map(value => tournamentDateLabels.get(value) || value)
+    .filter(value => allowedTournamentDates.has(value)))];
+  const studentId = cleanText(studentSource.studentId, 64) ||
+    (schoolEmail.endsWith("@fcpsschools.net") ? schoolEmail.split("@")[0] : "");
+  const student = {
+    firstName: cleanText(studentSource.firstName, 60),
+    lastName: cleanText(studentSource.lastName, 60),
+    grade,
+    studentId,
+    schoolEmail,
+    responseEmail,
+    personalEmail: responseEmail && !responseEmail.endsWith("@fcpsschools.net") ? responseEmail : "",
+    debateExperience: cleanText(studentSource.debateExperience, 1800),
+    partner: cleanText(studentSource.partner, 500),
+  };
+  const commitments = {
+    tuesdayMeetings: commitmentSource.tuesdayMeetings === true,
+    saturdayTournaments: commitmentSource.saturdayTournaments === true,
+    partnerCommitment: commitmentSource.partnerCommitment === true,
+    researchPreparation: commitmentSource.researchPreparation === true,
+    teamFee: commitmentSource.teamFee === true,
+    judgeVolunteer: commitmentSource.judgeVolunteer === true,
+    transportation: commitmentSource.transportation === true,
+    googleMeets: commitmentSource.googleMeets === true,
+    etiquette: commitmentSource.etiquette === true,
+  };
+  const eventDetails = {
+    qstSession: cleanText(eventSource.qstSession, 500),
+    september22Attendance: cleanText(eventSource.september22Attendance, 500),
+    september23Attendance: cleanText(eventSource.september23Attendance, 500),
+    tournamentDates,
+    tabroomAccount: cleanText(eventSource.tabroomAccount, 500),
+    contractAgreement: cleanText(eventSource.contractAgreement, 500),
+    contractReturn: cleanText(eventSource.contractReturn, 500),
+  };
+  const answers = {
+    whyJoin: cleanText(answerSource.whyJoin, 5000),
+    experienceDetail: cleanText(answerSource.experienceDetail, 5000),
+    requiredEssay: cleanText(answerSource.requiredEssay, 50000),
+    scheduleConflicts: cleanText(answerSource.scheduleConflicts, 5000),
+    anythingElse: cleanText(answerSource.anythingElse, 5000),
+    questionsForCoach: cleanText(answerSource.questionsForCoach, 5000),
+  };
+  const application = {
+    season: "2026-2027",
+    student,
+    parent: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      relationship: "",
+    },
+    commitments,
+    eventDetails,
+    answers,
+    parentAgreement: false,
+    parentSignature: "",
+  };
+
+  if (
+    !student.firstName ||
+    !student.lastName ||
+    !["7th Grade", "8th Grade"].includes(student.grade) ||
+    !validEmail(student.schoolEmail) ||
+    !student.schoolEmail.endsWith("@fcpsschools.net") ||
+    !student.partner ||
+    !answers.whyJoin ||
+    !answers.requiredEssay
+  ) {
+    throw new Error(
+      "The sheet row must include the student's full name, grade, FCPS school email, partner response, why-debate response, and required essay."
+    );
+  }
+  return application;
+}
+
 function cleanTime(value) {
   const time = cleanText(value, 5);
   return /^([01]\d|2[0-3]):[0-5]\d$/.test(time) ? time : "";
@@ -895,7 +1006,7 @@ exports.syncApplicationFromSheet = onRequest(
 
     let application;
     try {
-      application = normalizeApplication({ application: body.application });
+      application = normalizeSheetApplication(body.application);
     } catch (error) {
       res.status(400).json({
         error: cleanText(error.message, 300) || "The sheet response is missing required application fields.",
@@ -903,15 +1014,29 @@ exports.syncApplicationFromSheet = onRequest(
       return;
     }
 
-    const sourceKey = `${spreadsheetId}\u001f${sheetName}\u001f${rowNumber}`;
+    const sourceSubmittedAt = cleanText(source.submittedAt, 120);
+    const sourceKey = sourceSubmittedAt
+      ? [
+          spreadsheetId,
+          sheetName,
+          sourceSubmittedAt,
+          application.student.schoolEmail,
+          application.student.firstName,
+          application.student.lastName,
+        ].join("\u001f")
+      : `${spreadsheetId}\u001f${sheetName}\u001f${rowNumber}`;
     const applicationId = `sheet-${crypto.createHash("sha256").update(sourceKey).digest("hex")}`;
     const applicationRef = getFirestore().collection("applications").doc(applicationId);
+    const submittedAtMillis = Date.parse(sourceSubmittedAt);
+    const submittedAtTimestamp = Number.isFinite(submittedAtMillis)
+      ? Timestamp.fromMillis(submittedAtMillis)
+      : null;
     const sourceRecord = {
       type: "google-form-sheet",
       spreadsheetId,
       sheetName,
       rowNumber,
-      submittedAt: cleanText(source.submittedAt, 120),
+      submittedAt: sourceSubmittedAt,
       sourceKeyHash: crypto.createHash("sha256").update(sourceKey).digest("hex"),
     };
     const contentHash = applicationContentHash(application);
@@ -934,7 +1059,7 @@ exports.syncApplicationFromSheet = onRequest(
           sheetSyncStatus: "synced",
           sheetSyncError: FieldValue.delete(),
           sheetSyncedAt: FieldValue.serverTimestamp(),
-          createdAt: existingData.createdAt || FieldValue.serverTimestamp(),
+          createdAt: existingData.createdAt || submittedAtTimestamp || FieldValue.serverTimestamp(),
           updatedAt: FieldValue.serverTimestamp(),
         }, { merge: true });
       });

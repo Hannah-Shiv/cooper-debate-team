@@ -34,47 +34,29 @@ const TRACK_APPLICATIONS_DATE_LABELS = [
   "February 20th, 2027",
 ];
 
-/*
- * These aliases are intentionally broad because Google Forms use the
- * question text as the response-sheet header. If the form uses different
- * wording, add that exact wording to the relevant list.
- */
+/* The response-sheet headers use the Google Form's full question text. */
 const TRACK_APPLICATIONS_FIELD_ALIASES = {
-  studentFirstName: ["Student first name", "Student's first name", "First name"],
-  studentLastName: ["Student last name", "Student's last name", "Last name"],
-  studentGrade: ["Student grade", "Grade", "What grade are you in?"],
-  studentId: ["FCPS student ID", "FCPS ID", "Student ID", "Student number"],
-  studentPersonalEmail: ["Student personal email", "Personal email", "Student email"],
-  studentDebateExperience: ["Debate experience", "Previous debate experience"],
-  studentPartner: ["Debate partner", "Partner", "Who is your debate partner?"],
-  parentFirstName: ["Parent first name", "Parent/guardian first name", "Guardian first name"],
-  parentLastName: ["Parent last name", "Parent/guardian last name", "Guardian last name"],
-  parentEmail: ["Parent email", "Parent/guardian email", "Guardian email"],
-  parentPhone: ["Parent phone", "Parent/guardian phone", "Guardian phone", "Phone number"],
-  parentRelationship: ["Parent relationship", "Relationship to student", "Parent/guardian relationship"],
-  qstSession: ["QST session", "QST attendance", "Did you attend the QST?"],
-  september22Attendance: ["September 22 attendance", "September 22"],
-  september23Attendance: ["September 23 attendance", "September 23"],
-  tournamentDates: ["Tournament dates", "Which tournaments can you attend?", "Tournament availability"],
-  tabroomAccount: ["Tabroom account", "Do you have a Tabroom account?"],
-  contractAgreement: ["Contract agreement", "Do you agree to the team contract?"],
-  contractReturn: ["Contract return", "Will you return the contract?"],
-  whyJoin: ["Why do you want to join?", "Why join", "Why do you want to join the team?"],
-  experienceDetail: ["Experience detail", "Tell us about your experience"],
-  scheduleConflicts: ["Schedule conflicts", "Do you have any schedule conflicts?"],
-  anythingElse: ["Anything else", "Anything else you would like us to know"],
-  questionsForCoach: ["Questions for the coach", "Questions for Coach", "Questions"],
-  parentSignature: ["Parent signature", "Parent/guardian signature", "Parent signature or typed name"],
-  parentAgreement: ["Parent agreement", "Parent/guardian agreement", "I agree as a parent or guardian"],
-  tuesdayMeetings: ["Tuesday meetings", "I can attend Tuesday meetings"],
-  saturdayTournaments: ["Saturday tournaments", "I can attend Saturday tournaments"],
-  partnerCommitment: ["Partner commitment", "I will communicate with my partner"],
-  researchPreparation: ["Research and preparation", "Research & preparation", "I will complete research and preparation"],
-  teamFee: ["Team fee", "Team fees", "I understand the team fee"],
-  judgeVolunteer: ["Judge volunteer", "Judge courtesy", "I will help with judging"],
-  transportation: ["Transportation", "I have transportation to tournaments"],
-  googleMeets: ["Google Meets", "Google Meet", "I can attend Google Meets"],
-  etiquette: ["Debate etiquette", "I agree to debate etiquette"],
+  respondentEmail: ["Email Address"],
+  studentFullName: ["First and Last Name"],
+  studentGrade: ["Grade"],
+  studentSchoolEmail: ["SCHOOL Email"],
+  studentDebateExperience: ["EXPERIENCE: Do you have any experience debating?"],
+  whyJoin: ["WHY DEBATE?"],
+  requiredEssay: ["REQUIRED ESSAY:"],
+  studentPartner: ["Do you have a DEBATE PARTNER for Sept 22/23?"],
+  qstSession: ["There will be/was an INFORMATION SESSION on September 10th during QST."],
+  september22Attendance: ["I can attend the DEBATE TRYOUTS from 2:30 - 4:30 pm on Tuesday, September 22nd, 2026."],
+  september23Attendance: ["I can attend DEBATE TRYOUTS from 2:30 - 4:30 pm on Wednesday, September 23rd, 2026"],
+  partnerCommitment: ["COMMUNICATION:"],
+  researchPreparation: ["PUBLIC FORUM DEBATE:"],
+  tuesdayMeetings: ["COMMIT TO TUESDAY PRACTICES:"],
+  tournamentDates: ["ATTEND DEBATE TOURNAMENTS on SATURDAYS:"],
+  etiquette: ["RESPECT:"],
+  contractAgreement: ["I have reviewed the DEBATE TEAM CONTRACT"],
+  contractReturn: ["I will print, complete, and turn in the Debate Team Contract by October 2nd."],
+  anythingElse: ["Anything else you'd like to add?"],
+  questionsForCoach: ["Please note any comments or concerns here."],
+  scheduleConflicts: ["OTHER ACTIVITIES:"],
 };
 
 function onTrackApplicationsFormSubmit(event) {
@@ -119,7 +101,12 @@ function syncTrackApplicationsRow_(sheet, rowNumber) {
   const columns = getTrackingColumns_(sheet);
   const lastColumn = sheet.getLastColumn();
   const headers = sheet.getRange(TRACK_APPLICATIONS_CONFIG.headerRow, 1, 1, lastColumn).getDisplayValues()[0];
-  const values = sheet.getRange(rowNumber, 1, 1, lastColumn).getDisplayValues()[0];
+  const responseRange = sheet.getRange(rowNumber, 1, 1, lastColumn);
+  const values = responseValuesWithLinks_(responseRange);
+  const rawTimestamp = responseRange.getCell(1, 1).getValue();
+  const submittedAt = rawTimestamp instanceof Date && !isNaN(rawTimestamp.getTime())
+    ? rawTimestamp.toISOString()
+    : values[0] || "";
   const secret = PropertiesService.getScriptProperties().getProperty(TRACK_APPLICATIONS_CONFIG.secretProperty);
   if (!secret) throw new Error("Set the APPLICATION_SHEET_SYNC_SECRET script property before syncing.");
 
@@ -136,7 +123,7 @@ function syncTrackApplicationsRow_(sheet, rowNumber) {
           spreadsheetId: SpreadsheetApp.getActive().getId(),
           sheetName: sheet.getName(),
           rowNumber,
-          submittedAt: values[0] || "",
+          submittedAt,
         },
       }),
       muteHttpExceptions: true,
@@ -169,57 +156,61 @@ function buildApplication_(headers, values) {
     row[normalizeHeader_(header)] = values[index] || "";
   });
   const field = key => firstValue_(row, TRACK_APPLICATIONS_FIELD_ALIASES[key]);
-  const studentName = field("studentFirstName") || field("studentLastName")
-    ? null
-    : splitName_(firstValue_(row, ["Student name", "Student's name", "Full name"]));
+  const studentName = splitName_(field("studentFullName"));
+  const responseEmail = field("respondentEmail");
+  const schoolEmail = field("studentSchoolEmail");
+  const tournamentDates = tournamentDates_(field("tournamentDates"));
 
   return {
     season: "2026-2027",
     student: {
-      firstName: field("studentFirstName") || (studentName && studentName.firstName) || "",
-      lastName: field("studentLastName") || (studentName && studentName.lastName) || "",
-      grade: field("studentGrade"),
-      studentId: field("studentId"),
-      personalEmail: field("studentPersonalEmail"),
+      firstName: studentName.firstName,
+      lastName: studentName.lastName,
+      grade: normalizeGrade_(field("studentGrade")),
+      studentId: studentIdFromSchoolEmail_(schoolEmail),
+      schoolEmail,
+      responseEmail,
+      personalEmail: /@fcpsschools\.net$/i.test(responseEmail) ? "" : responseEmail,
       debateExperience: field("studentDebateExperience"),
       partner: field("studentPartner"),
     },
     parent: {
-      firstName: field("parentFirstName"),
-      lastName: field("parentLastName"),
-      email: field("parentEmail"),
-      phone: field("parentPhone"),
-      relationship: field("parentRelationship"),
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      relationship: "",
     },
     commitments: {
       tuesdayMeetings: isConfirmed_(field("tuesdayMeetings")),
-      saturdayTournaments: isConfirmed_(field("saturdayTournaments")),
+      saturdayTournaments: tournamentDates.length >= 3,
       partnerCommitment: isConfirmed_(field("partnerCommitment")),
       researchPreparation: isConfirmed_(field("researchPreparation")),
-      teamFee: isConfirmed_(field("teamFee")),
-      judgeVolunteer: isConfirmed_(field("judgeVolunteer")),
-      transportation: isConfirmed_(field("transportation")),
-      googleMeets: isConfirmed_(field("googleMeets")),
+      teamFee: false,
+      judgeVolunteer: false,
+      transportation: false,
+      googleMeets: false,
       etiquette: isConfirmed_(field("etiquette")),
     },
     eventDetails: {
       qstSession: field("qstSession"),
       september22Attendance: field("september22Attendance"),
       september23Attendance: field("september23Attendance"),
-      tournamentDates: tournamentDates_(field("tournamentDates")),
-      tabroomAccount: field("tabroomAccount"),
+      tournamentDates,
+      tabroomAccount: "",
       contractAgreement: field("contractAgreement"),
       contractReturn: field("contractReturn"),
     },
     answers: {
       whyJoin: field("whyJoin"),
-      experienceDetail: field("experienceDetail"),
+      experienceDetail: field("studentDebateExperience"),
+      requiredEssay: field("requiredEssay"),
       scheduleConflicts: field("scheduleConflicts"),
       anythingElse: field("anythingElse"),
       questionsForCoach: field("questionsForCoach"),
     },
-    parentAgreement: isConfirmed_(field("parentAgreement")),
-    parentSignature: field("parentSignature"),
+    parentAgreement: false,
+    parentSignature: "",
   };
 }
 
@@ -250,10 +241,31 @@ function writeTrackingResult_(sheet, rowNumber, columns, result) {
 
 function firstValue_(row, aliases) {
   for (let index = 0; index < aliases.length; index += 1) {
-    const value = row[normalizeHeader_(aliases[index])];
+    const normalizedAlias = normalizeHeader_(aliases[index]);
+    const exactValue = row[normalizedAlias];
+    if (exactValue) return exactValue;
+    const matchingHeader = Object.keys(row).find(header => header.indexOf(normalizedAlias) === 0);
+    const value = matchingHeader ? row[matchingHeader] : "";
     if (value) return value;
   }
   return "";
+}
+
+function responseValuesWithLinks_(range) {
+  const values = range.getDisplayValues()[0];
+  const richValues = range.getRichTextValues()[0];
+  return values.map((value, index) => {
+    const richValue = richValues[index];
+    if (!richValue) return value;
+    const links = [];
+    const directLink = richValue.getLinkUrl();
+    if (directLink) links.push(directLink);
+    richValue.getRuns().forEach(run => {
+      const link = run.getLinkUrl();
+      if (link && links.indexOf(link) < 0) links.push(link);
+    });
+    return links.length ? links.join("\n") : value;
+  });
 }
 
 function normalizeHeader_(value) {
@@ -267,9 +279,13 @@ function normalizeHeader_(value) {
 
 function isConfirmed_(value) {
   const normalized = normalizeHeader_(value);
-  return ["yes", "true", "checked", "confirmed", "agree", "i agree", "accepted", "will do"].includes(normalized) ||
-    normalized.indexOf("i agree") === 0 ||
-    normalized.indexOf("yes ") === 0;
+  if (
+    !normalized ||
+    /^(no|cannot|i cannot|unable|i am unable|i do not|not available)\b/.test(normalized)
+  ) {
+    return false;
+  }
+  return true;
 }
 
 function tournamentDates_(value) {
@@ -285,4 +301,16 @@ function splitName_(value) {
     firstName: parts.shift() || "",
     lastName: parts.join(" "),
   };
+}
+
+function normalizeGrade_(value) {
+  const normalized = normalizeHeader_(value);
+  if (/\b7(th)?\b/.test(normalized)) return "7th Grade";
+  if (/\b8(th)?\b/.test(normalized)) return "8th Grade";
+  return String(value || "").trim();
+}
+
+function studentIdFromSchoolEmail_(value) {
+  const email = String(value || "").trim().toLowerCase();
+  return email.endsWith("@fcpsschools.net") ? email.split("@")[0] : "";
 }
