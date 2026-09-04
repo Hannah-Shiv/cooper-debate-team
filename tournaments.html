@@ -2221,6 +2221,12 @@
     .vol-availability-card legend { align-items:center; color:#f0c85b; display:flex; font:700 .78rem 'Josefin Sans',sans-serif; gap:9px; letter-spacing:.08em; padding:0 8px; text-transform:uppercase; }
     .vol-availability-card legend .vol-modal-icon { height:30px; width:30px; }
     .vol-availability-card > p { color:#b6c6dd; font-size:.84rem; line-height:1.65; margin:0 0 20px; }
+    .vol-condensed-selection { align-items:center; background:linear-gradient(90deg,rgba(19,91,70,.48),rgba(8,42,55,.56)); border:1px solid rgba(105,207,166,.3); border-radius:8px; display:flex; gap:20px; justify-content:space-between; margin-bottom:15px; padding:13px 16px; }
+    .vol-condensed-selection span { color:#74d8ad; display:block; font:700 .57rem 'Josefin Sans',sans-serif; letter-spacing:.09em; margin-bottom:4px; text-transform:uppercase; }
+    .vol-condensed-selection strong { color:#fff; font:700 1rem 'Cormorant Garamond',serif; }
+    .vol-condensed-selection p { color:#c5d9df; font-size:.69rem; line-height:1.45; margin:0; text-align:right; }
+    .vol-availability-card--compact { margin-bottom:18px; padding:15px 17px 17px; }
+    .vol-availability-card--compact legend { margin-bottom:10px; }
     .vol-time-grid { display:grid; gap:16px; grid-template-columns:1fr 1fr; }
     .vol-time-control { position:relative; }
     .vol-time-control > .vol-modal-icon { background:linear-gradient(145deg,#1c479c,#102b6c); border:0; border-radius:50%; box-shadow:none; height:29px; left:12px; padding:6px; pointer-events:none; position:absolute; top:50%; transform:translateY(-50%); width:29px; }
@@ -3303,6 +3309,8 @@
       .tournaments-page .vol-public-roster .vol-roster-row {
         grid-template-columns:1fr;
       }
+      .vol-condensed-selection { align-items:flex-start; flex-direction:column; gap:6px; }
+      .vol-condensed-selection p { text-align:left; }
     }
 
     /* Keep calendar content inside the same widest rail as the signup cards. */
@@ -3998,40 +4006,31 @@
     <h2 id="vol-modal-title">Judge Volunteer Signup</h2>
     <p id="vol-modal-context" class="vol-modal-context"></p>
     <div class="vol-stepper" aria-label="Signup progress">
-      <span data-vol-progress="1" class="is-active is-current"><b>1</b> Choose time</span>
-      <span data-vol-progress="2"><b>2</b> Your information</span>
-      <span data-vol-progress="3"><b>3</b> Review &amp; confirm</span>
+      <span data-vol-progress="1" class="is-active is-current"><b>1</b> Availability &amp; information</span>
+      <span data-vol-progress="2"><b>2</b> Review &amp; confirm</span>
     </div>
     <form id="volunteer-signup-form">
       <section data-vol-step="1">
-        <div class="vol-choose-layout">
-          <div class="vol-choose-main">
-            <div id="vol-tournament-brief" class="vol-tournament-brief"></div>
-            <fieldset class="vol-availability-card">
-              <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>What hours are you available to judge?</legend>
-              <p>Select the exact start and end time that works for you. Coaches will assign rounds within this window.</p>
-              <div class="vol-time-grid">
-                <div class="vol-form-field">
-                  <label for="vol-availability-start">Available from</label>
-                  <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-start" type="time" required></div>
-                </div>
-                <div class="vol-form-field">
-                  <label for="vol-availability-end">Available until</label>
-                  <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-end" type="time" required></div>
-                </div>
-              </div>
-              <div class="vol-availability-tip"><svg class="vol-modal-icon vol-icon-info" aria-hidden="true" focusable="false"><use href="#vol-icon-info"></use></svg><span>Choose the exact window that works for you, such as 9:00 AM–12:30 PM or 9:00 AM–5:00 PM. We will schedule rounds within those hours.</span></div>
-            </fieldset>
+        <div class="vol-condensed-selection">
+          <div>
+            <span>Your selected judging window</span>
+            <strong id="vol-condensed-event"></strong>
           </div>
-          <aside id="vol-signup-sidebar" class="vol-signup-sidebar" aria-label="Tournament information"></aside>
+          <p>You can adjust the exact hours below before reviewing.</p>
         </div>
-        <div class="vol-modal-actions">
-          <button class="vol-cancel" type="button" data-close-volunteer-modal>Cancel</button>
-          <button class="vol-submit" type="button" data-vol-next="2">Continue →</button>
-        </div>
-      </section>
-
-      <section data-vol-step="2" hidden>
+        <fieldset class="vol-availability-card vol-availability-card--compact">
+          <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>Confirm availability</legend>
+          <div class="vol-time-grid">
+            <div class="vol-form-field">
+              <label for="vol-availability-start">Available from</label>
+              <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-start" type="time" required></div>
+            </div>
+            <div class="vol-form-field">
+              <label for="vol-availability-end">Available until</label>
+              <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-end" type="time" required></div>
+            </div>
+          </div>
+        </fieldset>
         <div class="vol-form-grid">
           <div class="vol-form-field">
             <label for="vol-parent-first-name">Volunteer first name</label>
@@ -4060,17 +4059,17 @@
         </div>
         <div class="vol-public-note">Your name, your debater’s name if provided, volunteer role, and selected availability will appear in the tournament roster so the tournament community can see coverage. Your email, phone, and notes are only shared with the coaching staff.</div>
         <div class="vol-modal-actions">
-          <button class="vol-cancel" type="button" data-vol-back="1">← Back</button>
-          <button class="vol-submit" type="button" data-vol-next="3">Review signup →</button>
+          <button class="vol-cancel" type="button" data-close-volunteer-modal>Cancel</button>
+          <button class="vol-submit" type="button" data-vol-next="2">Review signup →</button>
         </div>
       </section>
 
-      <section data-vol-step="3" hidden>
+      <section data-vol-step="2" hidden>
         <div id="vol-review"></div>
         <div class="vol-secure-note">🔒 Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
         <div id="vol-turnstile" style="margin-top:17px;"></div>
         <div class="vol-modal-actions">
-          <button class="vol-cancel" type="button" data-vol-back="2">← Back</button>
+          <button class="vol-cancel" type="button" data-vol-back="1">← Back</button>
           <button id="vol-submit" class="vol-submit" type="submit">Confirm judge signup</button>
         </div>
       </section>
@@ -4573,7 +4572,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=28"></script>
+<script src="js/volunteer-public.js?v=29"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

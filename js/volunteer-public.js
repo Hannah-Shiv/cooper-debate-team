@@ -551,7 +551,7 @@
   }
 
   function showStep(step) {
-    wizardStep = Math.max(1, Math.min(3, step));
+    wizardStep = Math.max(1, Math.min(2, step));
     document.querySelectorAll("[data-vol-step]").forEach(panel => {
       panel.hidden = Number(panel.dataset.volStep) !== wizardStep;
     });
@@ -560,7 +560,7 @@
       item.classList.toggle("is-active", active);
       item.classList.toggle("is-current", Number(item.dataset.volProgress) === wizardStep);
     });
-    if (wizardStep === 3) {
+    if (wizardStep === 2) {
       renderReview();
       renderTurnstile();
     }
@@ -584,7 +584,7 @@
     if (!selectedEvent || !selectedRole || !form) return;
 
     $("vol-modal-title").textContent = "Judge Volunteer Signup";
-    $("vol-modal-context").textContent = "Choose the hours you are available to judge, then review your signup.";
+    $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
     form.reset();
     $("vol-availability-start").min = selectedEvent.startTime || "";
     $("vol-availability-start").max = selectedEvent.endTime || "";
@@ -592,12 +592,12 @@
     $("vol-availability-end").max = selectedEvent.endTime || "";
     $("vol-availability-start").value = availability?.start || selectedEvent.startTime || "";
     $("vol-availability-end").value = availability?.end || selectedEvent.endTime || "";
-    renderTournamentBrief();
+    $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     $("volunteer-modal").style.display = "flex";
     document.body.classList.add("vol-modal-open");
     showStep(1);
-    $("vol-availability-start").focus();
+    $("vol-parent-first-name").focus();
   }
 
   function closeSignup() {
@@ -626,7 +626,7 @@
   async function submitSignup(event) {
     event.preventDefault();
     if (!selectedEvent || !selectedRole) return;
-    if (wizardStep < 3) {
+    if (wizardStep < 2) {
       if (validateStep(wizardStep)) showStep(wizardStep + 1);
       return;
     }
@@ -650,7 +650,7 @@
       turnstileToken,
     };
 
-    if (!validateStep(1) || !validateStep(2)) return;
+    if (!validateStep(1)) return;
     if (!turnstileToken) {
       setStatus("Please complete the volunteer verification before confirming.", true);
       return;
@@ -701,8 +701,12 @@
       button.addEventListener("click", () => showStep(Number(button.dataset.volBack)));
     });
     ["vol-availability-start", "vol-availability-end"].forEach(id => {
-      $(id)?.addEventListener("input", renderSignupSidebar);
-      $(id)?.addEventListener("change", renderSignupSidebar);
+      const updateCondensedSelection = () => {
+        if (!$("vol-condensed-event") || !selectedRole) return;
+        $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
+      };
+      $(id)?.addEventListener("input", updateCondensedSelection);
+      $(id)?.addEventListener("change", updateCondensedSelection);
     });
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") closeSignup();
