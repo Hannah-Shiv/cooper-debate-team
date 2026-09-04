@@ -3250,14 +3250,18 @@
         min-width:0;
       }
       .vol-panel-purpose-flow i {
-        background:rgba(255,255,255,.82);
+        background:linear-gradient(90deg,rgba(255,255,255,.05),rgba(255,255,255,.42) 42%,rgba(255,255,255,.92));
+        box-shadow:0 0 8px rgba(255,255,255,.12);
         display:block;
         flex:0 1 58px;
         height:1px;
         min-width:22px;
         position:relative;
       }
-      .vol-panel-purpose-flow .vol-purpose-arrow::after { border-right:1px solid rgba(255,255,255,.9); border-top:1px solid rgba(255,255,255,.9); content:""; height:6px; position:absolute; right:0; top:-3px; transform:rotate(45deg); width:6px; }
+      .vol-panel-purpose-flow .vol-purpose-arrow::before { background:rgba(255,255,255,.88); border-radius:50%; box-shadow:0 0 7px rgba(255,255,255,.55); content:""; height:3px; position:absolute; right:0; top:-1px; width:3px; }
+      .vol-panel-purpose-flow .vol-purpose-arrow::after { border-right:1.5px solid rgba(255,255,255,.92); border-top:1.5px solid rgba(255,255,255,.92); content:""; filter:drop-shadow(0 0 3px rgba(255,255,255,.4)); height:7px; position:absolute; right:0; top:-3.5px; transform:rotate(45deg); width:7px; }
+      .vol-panel-purpose--entry .vol-purpose-arrow { background:linear-gradient(90deg,rgba(240,197,87,.04),rgba(240,197,87,.42) 42%,rgba(255,255,255,.92)); }
+      .vol-panel-purpose--results .vol-purpose-arrow { background:linear-gradient(90deg,rgba(101,221,162,.04),rgba(101,221,162,.42) 42%,rgba(255,255,255,.9)); }
       .vol-panel-purpose-flow span,
       .vol-panel-purpose-flow strong {
         margin:0;
@@ -4742,7 +4746,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=35"></script>
+<script src="js/volunteer-public.js?v=36"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

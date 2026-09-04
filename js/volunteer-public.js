@@ -304,7 +304,7 @@
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div class="vol-panel-purpose-flow">
                 <strong>Volunteers already signed up</strong>
-                <i aria-hidden="true"></i>
+                <i class="vol-purpose-arrow" aria-hidden="true"></i>
                 <span>Results panel</span>
               </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
@@ -321,7 +321,6 @@
                 <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
               <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
-                <div class="vol-roster-progress-copy"><div><span>${stats.confirmed} of ${stats.capacity} judge spots filled</span><small>${stats.available} ${stats.available === 1 ? "spot" : "spots"} remaining</small></div></div>
                 <div class="vol-roster-progress"><span style="width:${Math.max(0, Math.min(100, stats.fillRate))}%"></span></div>
                 <div class="vol-roster-progress-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
               </div>
