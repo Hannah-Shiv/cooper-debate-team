@@ -2041,11 +2041,9 @@
     .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:11px; grid-template-columns:auto auto minmax(0,1fr) auto auto; min-height:58px; overflow:hidden; padding:10px 13px; position:relative; transform-origin:center center; transform-style:preserve-3d; transition:border-color .3s ease,background .3s ease,transform .3s ease,box-shadow .3s ease,color .3s ease; }
     .vol-availability-option:hover { border-color:rgba(232,184,75,.6); transform:translateY(-1px); }
     .vol-availability-option.is-selected { background:linear-gradient(105deg,#28578f 0%,#163966 58%,#10294d 100%); border-color:#f0c557; box-shadow:0 0 0 1px rgba(240,197,87,.22) inset,0 7px 18px rgba(0,0,0,.24),0 0 18px rgba(240,197,87,.13); }
-    @media(min-width:981px){
-      .vol-availability-option.is-flipping > span {
-        animation:vol-availability-swipe-content .5s cubic-bezier(.3,.02,.2,1);
-        will-change:opacity,transform;
-      }
+    .vol-availability-option.is-flipping > span {
+      animation:vol-availability-swipe-content .5s cubic-bezier(.3,.02,.2,1);
+      will-change:opacity,transform;
     }
     .vol-availability-option > span { position:relative; z-index:1; }
     @keyframes vol-availability-swipe-content {
@@ -2900,8 +2898,7 @@
     .vol-panel-purpose {
       display:none;
     }
-    @media(min-width:981px){
-      .tournaments-page .vol-opportunity-panel {
+    .tournaments-page .vol-opportunity-panel {
         background:linear-gradient(145deg,#30343a 0%,#22262c 48%,#171a1f 100%);
         border:1px solid rgba(224,229,237,.68);
         border-top:3px solid #f0c557;
@@ -3083,7 +3080,6 @@
         border:1px solid rgba(92,222,160,.42);
         color:#65dda2;
       }
-    }
     .tournaments-page .vol-public-roster .vol-roster-summary {
       grid-template-columns:1fr;
       gap:14px;
@@ -3116,6 +3112,48 @@
         position:static;
         max-height:none;
         overflow:visible;
+      }
+      .vol-panel-purpose {
+        min-height:68px;
+        padding:12px 18px;
+      }
+      .vol-panel-purpose-art {
+        margin:-12px auto -12px -18px;
+        min-width:96px;
+      }
+      .vol-panel-purpose--results {
+        margin:-18px -18px 18px;
+      }
+    }
+    @media(max-width:600px){
+      .vol-panel-purpose {
+        gap:9px;
+        min-height:62px;
+        padding:10px 12px;
+      }
+      .vol-panel-purpose-art {
+        margin:-10px auto -10px -12px;
+        min-width:68px;
+      }
+      .vol-panel-purpose-art::before {
+        height:44px;
+        width:44px;
+      }
+      .vol-panel-purpose-art .vol-modal-icon {
+        height:24px;
+        width:24px;
+      }
+      .vol-panel-purpose strong {
+        font-size:1.08rem;
+      }
+      .vol-panel-purpose span {
+        font-size:.5rem;
+      }
+      .vol-panel-purpose-icon {
+        display:none;
+      }
+      .vol-panel-purpose--results {
+        margin:-18px -16px 18px;
       }
     }
 
