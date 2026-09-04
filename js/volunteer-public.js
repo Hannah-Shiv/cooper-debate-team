@@ -154,7 +154,7 @@
     const fullStart = hasValidFullWindow ? requestedFullWindow.start : event.startTime;
     const fullEnd = hasValidFullWindow ? requestedFullWindow.end : event.endTime;
     const fullDuration = hasValidFullWindow ? requestedFullEnd - requestedFullStart : total;
-    const morningLength = Math.min(240, Math.max(60, Math.floor((total / 2) / 30) * 30));
+    const morningLength = Math.max(60, Math.floor((total / 2) / 30) * 30);
     const split = start + morningLength;
     return [
       { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
