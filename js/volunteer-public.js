@@ -225,6 +225,17 @@
               <div class="vol-roster-debater" role="cell" data-label="Debater">
                 ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Not listed")}</span>
               </div>
+              <div class="vol-roster-action" role="cell" data-label="Details">
+                <button class="vol-roster-details" type="button"
+                  data-volunteer="${escapeHtml(signup.parentName)}"
+                  data-debater="${escapeHtml(signup.studentName || "Not listed")}"
+                  data-availability="${escapeHtml(availability)}"
+                  data-coverage="${escapeHtml(coverage.label)}"
+                  data-role="${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}"
+                  data-event="${escapeHtml(event.title)}"
+                  data-date="${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}"
+                  aria-label="View public details for ${escapeHtml(signup.parentName)}">Details</button>
+              </div>
             </div>`;
         }).join("")
         : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
@@ -308,7 +319,7 @@
             </div>
             <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
               <div class="vol-roster-table-head" role="row">
-                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater</span>
+                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater</span><span role="columnheader">Details</span>
               </div>
               <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
@@ -342,6 +353,56 @@
         });
       });
     });
+  }
+
+  function ensureDetailsModal() {
+    let modal = $("volunteer-details-modal");
+    if (modal) return modal;
+    modal = document.createElement("div");
+    modal.id = "volunteer-details-modal";
+    modal.className = "vol-details-modal";
+    modal.setAttribute("role", "dialog");
+    modal.setAttribute("aria-modal", "true");
+    modal.setAttribute("aria-labelledby", "volunteer-details-title");
+    modal.innerHTML = `
+      <div class="vol-details-card">
+        <button class="vol-details-close" type="button" aria-label="Close volunteer details">×</button>
+        <p class="vol-details-kicker">Public volunteer details</p>
+        <h3 id="volunteer-details-title">Volunteer Details</h3>
+        <div class="vol-details-grid"></div>
+        <p class="vol-details-privacy">For privacy, email, phone number, and notes are available only to authorized coaching staff in the Member Portal.</p>
+      </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener("click", event => {
+      if (event.target === modal || event.target.closest(".vol-details-close")) closeDetailsModal();
+    });
+    return modal;
+  }
+
+  function openDetailsModal(button) {
+    const modal = ensureDetailsModal();
+    const fields = [
+      ["Volunteer", button.dataset.volunteer],
+      ["Debater", button.dataset.debater],
+      ["Volunteer role", button.dataset.role],
+      ["Availability", button.dataset.availability],
+      ["Coverage", button.dataset.coverage],
+      ["Tournament", button.dataset.event],
+      ["Tournament date", button.dataset.date],
+    ];
+    modal.querySelector(".vol-details-grid").innerHTML = fields.map(([label, value]) =>
+      `<div><span>${escapeHtml(label)}</span><strong>${escapeHtml(value || "Not listed")}</strong></div>`
+    ).join("");
+    modal.classList.add("is-open");
+    document.body.classList.add("vol-details-open");
+    modal.querySelector(".vol-details-close").focus();
+  }
+
+  function closeDetailsModal() {
+    const modal = $("volunteer-details-modal");
+    if (!modal?.classList.contains("is-open")) return;
+    modal.classList.remove("is-open");
+    document.body.classList.remove("vol-details-open");
   }
 
   async function loadVolunteerEvents() {
@@ -620,6 +681,10 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     loadVolunteerEvents();
+    $("volunteer-events")?.addEventListener("click", event => {
+      const detailsButton = event.target.closest(".vol-roster-details");
+      if (detailsButton) openDetailsModal(detailsButton);
+    });
     $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
       element.addEventListener("click", closeSignup);
@@ -647,7 +712,8 @@
     });
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
-      if ($("volunteer-thank-you-modal")?.style.display === "flex") closeThankYou();
+      if ($("volunteer-details-modal")?.classList.contains("is-open")) closeDetailsModal();
+      else if ($("volunteer-thank-you-modal")?.style.display === "flex") closeThankYou();
       else closeSignup();
     });
     renderTurnstile();

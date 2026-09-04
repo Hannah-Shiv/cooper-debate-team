@@ -2972,44 +2972,156 @@
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected),
       .tournaments-page .vol-opportunity-panel .vol-role {
-        background:#d6ebe6;
-        border-color:#8ebfb5;
-        box-shadow:0 4px 12px rgba(3,31,35,.16);
+        background:linear-gradient(145deg,#2e3438 0%,#20262b 100%);
+        border-color:rgba(205,218,224,.3);
+        box-shadow:0 4px 12px rgba(3,18,22,.2);
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected):hover {
-        background:#c6e4e7;
-        border-color:#78accd;
+        background:linear-gradient(145deg,#39464d 0%,#27343d 100%);
+        border-color:#6e9fd0;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-radio {
-        border-color:#497d7e;
+        border-color:#b8c6cd;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-icon {
-        color:#126272;
+        color:#f0c557;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-copy strong {
-        color:#103f48;
+        color:#fff;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-copy small {
-        color:#42666a;
+        color:#c3d0d5;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-duration {
-        background:#b5d9d4;
-        color:#174f59;
+        background:rgba(240,197,87,.14);
+        color:#f2cf73;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option.is-selected {
         background:#0c234d;
         border-color:#f0c557;
       }
       .tournaments-page .vol-public-roster .vol-roster-row {
-        background:linear-gradient(90deg,#155f47 0%,#104c3c 100%);
-        border-top-color:rgba(133,230,189,.34);
+        background:linear-gradient(90deg,rgba(23,62,116,.88),rgba(12,42,86,.92));
+        border-top-color:rgba(125,166,220,.3);
+        transition:background .16s ease,box-shadow .16s ease;
+      }
+      .tournaments-page .vol-public-roster .vol-roster-row:nth-child(even) {
+        background:linear-gradient(90deg,rgba(11,39,82,.96),rgba(8,31,68,.98));
+      }
+      .tournaments-page .vol-public-roster .vol-roster-row:hover,
+      .tournaments-page .vol-public-roster .vol-roster-row:focus-within {
+        background:linear-gradient(90deg,rgba(55,101,183,.55),rgba(24,65,131,.46));
+        box-shadow:inset 4px 0 0 #7dd3fc,inset 0 1px 0 rgba(255,255,255,.08);
       }
       .tournaments-page .vol-public-roster .vol-roster-table-head,
       .tournaments-page .vol-public-roster .vol-roster-row {
-        grid-template-columns:1fr 1.42fr .9fr 1.18fr;
+        grid-template-columns:1fr 1.34fr .88fr 1.08fr .72fr;
       }
       .tournaments-page .vol-public-roster .vol-roster-row > div {
-        border-right-color:rgba(179,238,211,.2);
+        border-right-color:rgba(138,178,229,.2);
+      }
+      .vol-roster-details {
+        background:rgba(125,211,252,.1);
+        border:1px solid rgba(125,211,252,.5);
+        border-radius:5px;
+        color:#bde9ff;
+        cursor:pointer;
+        font:700 .58rem 'Josefin Sans',sans-serif;
+        letter-spacing:.07em;
+        padding:8px 10px;
+        text-transform:uppercase;
+        transition:background .16s ease,border-color .16s ease,color .16s ease;
+      }
+      .vol-roster-details:hover,
+      .vol-roster-details:focus-visible {
+        background:#7dd3fc;
+        border-color:#bdeeff;
+        color:#082244;
+        outline:none;
+      }
+      .vol-details-modal {
+        align-items:center;
+        background:rgba(2,8,20,.78);
+        display:none;
+        inset:0;
+        justify-content:center;
+        padding:20px;
+        position:fixed;
+        z-index:10020;
+      }
+      body.vol-details-open { overflow:hidden; }
+      .vol-details-modal.is-open { display:flex; }
+      .vol-details-card {
+        background:linear-gradient(145deg,#123765 0%,#071d3d 100%);
+        border:1px solid rgba(125,211,252,.48);
+        border-top:3px solid #f0c557;
+        border-radius:10px;
+        box-shadow:0 26px 65px rgba(0,0,0,.55);
+        color:#edf6ff;
+        max-width:570px;
+        padding:26px;
+        position:relative;
+        width:100%;
+      }
+      .vol-details-close {
+        align-items:center;
+        background:rgba(255,255,255,.08);
+        border:1px solid rgba(255,255,255,.2);
+        border-radius:50%;
+        color:#fff;
+        cursor:pointer;
+        display:flex;
+        font-size:1.25rem;
+        height:38px;
+        justify-content:center;
+        position:absolute;
+        right:16px;
+        top:16px;
+        width:38px;
+      }
+      .vol-details-kicker {
+        color:#77d9ad;
+        font:700 .62rem 'Josefin Sans',sans-serif;
+        letter-spacing:.12em;
+        margin:0 46px 7px 0;
+        text-transform:uppercase;
+      }
+      .vol-details-card h3 {
+        color:#fff;
+        font:700 1.9rem 'Cormorant Garamond',serif;
+        margin:0 46px 20px 0;
+      }
+      .vol-details-grid {
+        display:grid;
+        gap:1px;
+        grid-template-columns:1fr 1fr;
+        overflow:hidden;
+        border:1px solid rgba(125,166,220,.3);
+        border-radius:7px;
+      }
+      .vol-details-grid > div {
+        background:rgba(4,21,52,.56);
+        min-width:0;
+        padding:14px 16px;
+      }
+      .vol-details-grid span {
+        color:#82b8ff;
+        display:block;
+        font:700 .56rem 'Josefin Sans',sans-serif;
+        letter-spacing:.08em;
+        margin-bottom:5px;
+        text-transform:uppercase;
+      }
+      .vol-details-grid strong {
+        color:#f6f9ff;
+        font-size:.86rem;
+        line-height:1.4;
+      }
+      .vol-details-privacy {
+        color:#b9cce4;
+        font-size:.72rem;
+        line-height:1.5;
+        margin:17px 0 0;
       }
       .tournaments-page .vol-public-roster .vol-roster-availability {
         gap:7px;
@@ -3177,6 +3289,12 @@
       }
       .vol-panel-purpose--results {
         margin:-18px -16px 18px;
+      }
+      .vol-details-modal { padding:12px; }
+      .vol-details-card { padding:23px 17px 18px; }
+      .vol-details-grid { grid-template-columns:1fr; }
+      .tournaments-page .vol-public-roster .vol-roster-row {
+        grid-template-columns:1fr;
       }
     }
 
@@ -4448,7 +4566,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=27"></script>
+<script src="js/volunteer-public.js?v=28"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
