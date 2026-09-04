@@ -647,7 +647,7 @@
       <div>
         <strong>${escapeHtml(item.title)}</strong>
         <p>${escapeHtml(item.label)}</p>
-        ${item.email ? `<a class="vol-info-email-coach" href="mailto:${escapeHtml(item.email)}">${modalIcon("document")}Email Coach</a>` : ""}
+        ${item.email ? `<a class="vol-info-email-coach" href="mailto:${escapeHtml(item.email)}"><img src="assets/icons/volunteer-field-email.png" alt="">Email Coach</a>` : ""}
       </div>`;
     root.innerHTML = `
       <section class="vol-side-card">
