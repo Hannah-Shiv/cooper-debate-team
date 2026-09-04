@@ -804,6 +804,7 @@
     renderSignupSidebar();
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     $("volunteer-modal").style.display = "flex";
+    $("volunteer-exit-modal").style.display = "none";
     document.body.classList.add("vol-modal-open");
     showStep(1);
     $("vol-parent-first-name").focus();
@@ -816,6 +817,34 @@
     selectedEvent = null;
     selectedRole = null;
     wizardStep = 1;
+  }
+
+  function hasEnteredSignupData() {
+    return [
+      "vol-parent-first-name",
+      "vol-parent-last-name",
+      "vol-phone",
+      "vol-email",
+      "vol-student-name",
+      "vol-notes",
+    ].some(id => Boolean($(id)?.value.trim()));
+  }
+
+  function hideExitConfirmation() {
+    const modal = $("volunteer-exit-modal");
+    if (modal) modal.style.display = "none";
+  }
+
+  function requestCloseSignup() {
+    if ($("volunteer-modal")?.style.display !== "flex") return;
+    if (!hasEnteredSignupData()) {
+      closeSignup();
+      return;
+    }
+    const modal = $("volunteer-exit-modal");
+    if (!modal) return;
+    modal.style.display = "flex";
+    setTimeout(() => $("vol-exit-stay")?.focus(), 0);
   }
 
   function openThankYou() {
@@ -905,7 +934,12 @@
     emailField?.addEventListener("input", () => validateEmailField(emailField));
     emailField?.addEventListener("blur", () => validateEmailField(emailField));
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
-      element.addEventListener("click", closeSignup);
+      element.addEventListener("click", requestCloseSignup);
+    });
+    $("vol-exit-stay")?.addEventListener("click", hideExitConfirmation);
+    $("vol-exit-discard")?.addEventListener("click", () => {
+      hideExitConfirmation();
+      closeSignup();
     });
     document.querySelectorAll("[data-close-volunteer-thank-you]").forEach(element => {
       element.addEventListener("click", closeThankYou);
@@ -942,16 +976,20 @@
     });
     window.addEventListener("afterprint", () => document.body.classList.remove("vol-print-itinerary"));
     $("volunteer-modal")?.addEventListener("click", event => {
-      if (event.target.id === "volunteer-modal") closeSignup();
+      if (event.target.id === "volunteer-modal") requestCloseSignup();
+    });
+    $("volunteer-exit-modal")?.addEventListener("click", event => {
+      if (event.target.id === "volunteer-exit-modal") hideExitConfirmation();
     });
     $("volunteer-thank-you-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-thank-you-modal") closeThankYou();
     });
     document.addEventListener("keydown", event => {
       if (event.key !== "Escape") return;
-      if ($("volunteer-details-modal")?.classList.contains("is-open")) closeDetailsModal();
+      if ($("volunteer-exit-modal")?.style.display === "flex") hideExitConfirmation();
+      else if ($("volunteer-details-modal")?.classList.contains("is-open")) closeDetailsModal();
       else if ($("volunteer-thank-you-modal")?.style.display === "flex") closeThankYou();
-      else closeSignup();
+      else requestCloseSignup();
     });
     renderTurnstile();
   });

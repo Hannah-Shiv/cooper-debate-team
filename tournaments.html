@@ -2369,6 +2369,17 @@
     .vol-form-field textarea { min-height:100px; resize:vertical; }
     .vol-form-field input:focus,.vol-form-field textarea:focus { background:rgba(16,55,104,.72); border-color:#72b8f4; box-shadow:0 0 0 2px rgba(74,145,220,.14); outline:0; }
     .vol-form-field input.is-complete,.vol-form-field textarea.is-complete { background:linear-gradient(135deg,rgba(18,67,125,.74),rgba(10,48,91,.78)); border-color:rgba(111,177,238,.58); }
+    #volunteer-modal .vol-form-field input:-webkit-autofill,
+    #volunteer-modal .vol-form-field input:-webkit-autofill:hover,
+    #volunteer-modal .vol-form-field input:-webkit-autofill:focus,
+    #volunteer-modal .vol-form-field input:autofill {
+      -webkit-text-fill-color:#fff!important;
+      background-color:#0f4678!important;
+      -webkit-box-shadow:0 0 0 1000px #0f4678 inset,0 0 0 1px rgba(111,177,238,.58)!important;
+      box-shadow:0 0 0 1000px #0f4678 inset,0 0 0 1px rgba(111,177,238,.58)!important;
+      caret-color:#fff;
+      transition:background-color 9999s ease-out 0s;
+    }
     .vol-print-button { border-color:rgba(111,204,169,.55); color:#a7ebcf; margin-right:auto; }
     .vol-honeypot { height:0; left:-10000px; overflow:hidden; position:absolute; width:0; }
     .vol-form-status { font-size:.8rem; line-height:1.5; margin:14px 0 0; min-height:1.2em; }
@@ -2388,6 +2399,13 @@
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
     .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
+    .vol-exit-card { max-width:520px; padding:42px 38px 34px; text-align:center; }
+    .vol-exit-card .vol-exit-icon { align-items:center; background:rgba(245,197,66,.12); border:1px solid rgba(245,197,66,.42); border-radius:50%; color:#f5c542; display:flex; font:700 1.4rem/1 Arial,sans-serif; height:54px; justify-content:center; margin:0 auto 17px; width:54px; }
+    .vol-exit-card h2 { color:#fff; font:700 2rem/1.05 'Cormorant Garamond',serif; margin:0 0 12px; }
+    .vol-exit-card > p { color:#c9d9ef; font-size:.9rem; line-height:1.65; margin:0 auto; max-width:410px; }
+    .vol-exit-card .vol-modal-actions { justify-content:center; margin-top:26px; }
+    .vol-exit-card .vol-cancel,.vol-exit-card .vol-submit { min-width:170px; }
+    #volunteer-exit-modal { z-index:10060; }
 
     /* Judge signup / step one: a calm, landscape-first blue workspace. */
     .volunteer-modal { z-index:10050; padding:12px; }
@@ -5025,6 +5043,18 @@
     </form>
   </div>
 </div>
+<div id="volunteer-exit-modal" class="volunteer-modal" role="alertdialog" aria-modal="true" aria-labelledby="vol-exit-title" aria-describedby="vol-exit-message">
+  <div class="vol-modal-card vol-exit-card">
+    <div class="vol-exit-icon" aria-hidden="true">!</div>
+    <p class="vol-modal-kicker">Unsaved signup</p>
+    <h2 id="vol-exit-title">Leave this signup?</h2>
+    <p id="vol-exit-message">Your signup has not been submitted. If you leave now, the information you entered will be lost.</p>
+    <div class="vol-modal-actions">
+      <button id="vol-exit-stay" class="vol-submit" type="button">Keep editing</button>
+      <button id="vol-exit-discard" class="vol-cancel" type="button">Discard and exit</button>
+    </div>
+  </div>
+</div>
 <div id="volunteer-thank-you-modal" class="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="vol-thank-you-title" aria-describedby="vol-thank-you-message">
   <div class="vol-modal-card vol-thank-you-card">
     <button class="vol-modal-close" type="button" aria-label="Close confirmation" data-close-volunteer-thank-you>&times;</button>
@@ -5515,7 +5545,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=58"></script>
+<script src="js/volunteer-public.js?v=59"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
