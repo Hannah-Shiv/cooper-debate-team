@@ -647,7 +647,7 @@
           <div class="vol-info-callout">
             <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">${modalIcon(item.icon)}</button>
             <div><strong>${escapeHtml(item.title)}</strong></div>
-            <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
+            <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip"><strong class="vol-info-tooltip-title">${escapeHtml(item.title)}:</strong><span class="vol-info-tooltip-answer">${escapeHtml(item.label)}</span></p>
           </div>`).join("")}
       </section>`;
   }

@@ -2691,6 +2691,7 @@
         background:#012838;
       }
       #volunteer-modal .vol-modal-heading {
+        grid-template-columns:minmax(0,1fr) minmax(360px,1fr);
         padding-bottom:11px;
       }
       #volunteer-modal .vol-modal-kicker {
@@ -2700,11 +2701,12 @@
         font-size:2.05rem;
       }
       #volunteer-modal .vol-modal-context {
-        font-size:.78rem;
-      }
-      #volunteer-modal .vol-modal-brandmark {
-        height:54px;
-        width:64px;
+        align-self:center;
+        color:#f5c542;
+        font:700 1.38rem/1.16 'Cormorant Garamond',serif;
+        letter-spacing:.01em;
+        max-width:440px;
+        text-align:right;
       }
       #volunteer-modal .vol-stepper {
         padding:9px 0;
@@ -2732,7 +2734,11 @@
         font-size:1.08rem;
       }
       #volunteer-modal .vol-condensed-selection p {
-        font-size:.68rem;
+        color:#f5c542;
+        font-size:.82rem;
+        font-weight:700;
+        line-height:1.4;
+        max-width:330px;
       }
       #volunteer-modal .vol-condensed-main {
         grid-template-columns:minmax(0,1fr) 322px;
@@ -2798,10 +2804,10 @@
       }
       #volunteer-modal .vol-public-note {
         background:#033950;
-        font-size:.65rem;
-        line-height:1.45;
-        min-height:43px;
-        padding:10px 13px;
+        font-size:.78rem;
+        line-height:1.55;
+        min-height:51px;
+        padding:11px 14px;
       }
       #volunteer-modal .vol-side-card {
         background:#022333;
@@ -2888,7 +2894,9 @@
           border-color:rgba(140,199,232,.8);
           color:#fff;
           display:flex;
+          flex-direction:column;
           font-size:.82rem;
+          gap:8px;
           justify-content:center;
           line-height:1.55;
           height:100%;
@@ -2896,6 +2904,19 @@
           padding:16px 20px;
           text-align:center;
           width:calc(500% + 24px);
+        }
+        #volunteer-modal .vol-info-tooltip .vol-info-tooltip-title {
+          color:#f5c542;
+          display:block;
+          font:700 .9rem/1.2 'Josefin Sans',sans-serif;
+          letter-spacing:.06em;
+          text-transform:uppercase;
+        }
+        #volunteer-modal .vol-info-tooltip .vol-info-tooltip-answer {
+          color:#fff;
+          display:block;
+          font-size:.84rem;
+          line-height:1.5;
         }
         #volunteer-modal .vol-side-card > .vol-info-callout:nth-child(4) .vol-info-tooltip,
         #volunteer-modal .vol-side-card > .vol-info-callout:nth-child(9) .vol-info-tooltip { left:0!important; right:auto!important; }
@@ -4748,7 +4769,6 @@
         <p class="vol-modal-kicker">Judge Volunteer Signup</p>
         <h2 id="vol-modal-title">Judge Volunteer Signup</h2>
       </div>
-      <img class="vol-modal-brandmark" src="images/index-footer-jaguar.png" alt="">
       <p id="vol-modal-context" class="vol-modal-context"></p>
     </div>
     <div class="vol-stepper" aria-label="Signup progress">
@@ -5325,7 +5345,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=49"></script>
+<script src="js/volunteer-public.js?v=50"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
