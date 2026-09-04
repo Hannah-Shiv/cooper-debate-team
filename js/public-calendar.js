@@ -99,8 +99,7 @@
     const mount = byId("public-calendar");
     if (!mount) return;
     mount.querySelectorAll("td.fc-daygrid-day").forEach(cell => {
-      const background = cell.classList.contains("fc-day-today") ? "#1a4b82" : "#123e73";
-      cell.style.setProperty("background", background, "important");
+      cell.style.setProperty("background", "#050e28", "important");
       cell.style.removeProperty("opacity");
       const dateNumber = cell.querySelector(".fc-daygrid-day-number");
       if (dateNumber) dateNumber.style.setProperty("color", "#ffffff", "important");
@@ -246,7 +245,7 @@
           return { html:`<span class="public-cal-event-title">${esc(info.event.title)}</span>` };
         },
         dayCellDidMount(info) {
-          info.el.style.setProperty("background", info.isToday ? "#1a4b82" : "#123e73", "important");
+          info.el.style.setProperty("background", "#050e28", "important");
           if (info.isToday) {
             const frame = info.el.querySelector(".fc-daygrid-day-frame");
             if (frame && !frame.querySelector(".public-cal-today-watermark")) {
