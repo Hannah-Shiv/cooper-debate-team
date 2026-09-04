@@ -849,7 +849,7 @@
     ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 92);
     ctx.fillStyle = gold; ctx.fillRect(0, 90, W, 2);
     const [badge, jaguar] = await Promise.all([pdfImage("attached_assets/image_1788564262840.png"), pdfImage("images/index-footer-jaguar.png")]);
-    if (badge) ctx.drawImage(badge, 20, 10, 64, 64);
+    if (badge) ctx.drawImage(badge, 20, 11, 984, 980, 9, 5, 80, 80);
     if (jaguar) ctx.drawImage(jaguar, 540, 14, 52, 62);
     ctx.textAlign = "center";
     ctx.font = "700 22px Georgia"; ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
