@@ -268,8 +268,8 @@
                 ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
               </div>
               <div class="vol-entry-status">
-                <div class="vol-open-status">✓ Signup open</div>
-                <div class="vol-entry-deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong></div>
+                <div class="vol-open-status"><b aria-hidden="true">✎</b><span>Sign Up Open</span></div>
+                <div class="vol-entry-deadline"><b aria-hidden="true">▣</b><div><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong></div></div>
               </div>
             </header>
             <div class="vol-unified-facts">
