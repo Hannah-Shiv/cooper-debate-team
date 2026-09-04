@@ -58,10 +58,10 @@
     const fullWindow = fullTournamentWindow(event);
     const isFullTournament = signup.availabilityStart === fullWindow.start &&
       signup.availabilityEnd === fullWindow.end;
-    if (isFullTournament) return { label: "Full tournament", className: "is-full" };
+    if (isFullTournament) return { label: "Full", className: "is-full" };
     if (signup.availabilityStart === event.startTime) return { label: "Morning", className: "is-morning" };
     if (signup.availabilityEnd === event.endTime) return { label: "Afternoon", className: "is-afternoon" };
-    return { label: "Custom window", className: "is-custom" };
+    return { label: "Custom", className: "is-custom" };
   };
 
   const lineItems = value => String(value || "")
@@ -292,7 +292,6 @@
               </div>
               <div class="vol-roster-coverage" role="cell" data-label="Coverage">
                 <span class="vol-coverage-tag ${coverage.className}">${escapeHtml(coverage.label)}</span>
-                <small>${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}</small>
               </div>
               <div class="vol-roster-debater" role="cell" data-label="Debater">
                 ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Not listed")}</span>
