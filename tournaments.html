@@ -2937,13 +2937,32 @@
         margin:9px auto 7px;
         width:68px;
       }
-      .tournaments-page .vol-opportunity-panel .vol-unified-metrics .confirmed strong,
-      .tournaments-page .vol-opportunity-panel .vol-unified-metrics .fill-rate strong {
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div:first-child span,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div:first-child strong {
+        color:#82b8ff;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div:first-child strong {
+        background:rgba(130,184,255,.07);
+        border-color:rgba(130,184,255,.54);
+        box-shadow:inset 0 0 18px rgba(130,184,255,.05);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .confirmed span,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .confirmed strong,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .fill-rate span,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .fill-rate strong {
+        color:#65dfaa;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div.confirmed strong,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div.fill-rate strong {
         background:rgba(101,223,170,.07);
         border-color:rgba(101,223,170,.52);
         box-shadow:inset 0 0 18px rgba(101,223,170,.05);
       }
-      .tournaments-page .vol-opportunity-panel .vol-unified-metrics .available strong {
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .available span,
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div.available strong {
+        color:#d8b6f4;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics > .available strong {
         background:rgba(216,182,244,.07);
         border-color:rgba(216,182,244,.5);
         box-shadow:inset 0 0 18px rgba(216,182,244,.05);
