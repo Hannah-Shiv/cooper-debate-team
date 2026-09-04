@@ -172,8 +172,11 @@
   }
 
   function applyRosterControls(controls) {
-    const body = controls.closest(".vol-public-roster")?.querySelector(".vol-roster-table-body");
+    const roster = controls.closest(".vol-public-roster");
+    const body = roster?.querySelector(".vol-roster-table-body");
+    const pagination = roster?.querySelector(".vol-roster-pagination");
     if (!body) return;
+    const pageSize = 8;
     const search = controls.querySelector(".vol-roster-search-input")?.value.trim().toLowerCase() || "";
     const activeFilter = controls.querySelector(".vol-roster-filter-btn.active")?.dataset.coverage || "";
     const activeSort = controls.querySelector(".vol-roster-sort-btn.active");
@@ -188,13 +191,23 @@
       }) * direction
     );
 
-    let visible = 0;
-    rows.forEach(row => {
+    const matches = rows.filter(row => {
       const matchesSearch = !search || `${row.dataset.name} ${row.dataset.debater}`.toLowerCase().includes(search);
       const matchesFilter = !activeFilter || row.dataset.coverage === activeFilter;
-      const show = matchesSearch && matchesFilter;
-      row.hidden = !show;
-      if (show) visible += 1;
+      return matchesSearch && matchesFilter;
+    });
+    const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
+    const currentPage = Math.min(totalPages, Math.max(1, Number(controls.dataset.page || 1)));
+    const pageStart = (currentPage - 1) * pageSize;
+    const pageEnd = pageStart + pageSize;
+    controls.dataset.page = String(currentPage);
+
+    rows.forEach(row => {
+      row.hidden = true;
+      body.appendChild(row);
+    });
+    matches.slice(pageStart, pageEnd).forEach(row => {
+      row.hidden = false;
       body.appendChild(row);
     });
 
@@ -205,7 +218,29 @@
       empty.textContent = "No volunteers match these controls.";
       body.appendChild(empty);
     }
-    empty.hidden = visible > 0;
+    empty.hidden = matches.length > 0;
+
+    if (pagination) {
+      const info = pagination.querySelector(".vol-roster-page-info");
+      const nav = pagination.querySelector(".vol-roster-page-nav");
+      const first = matches.length ? pageStart + 1 : 0;
+      const last = Math.min(pageEnd, matches.length);
+      if (info) info.textContent = `${first}–${last} of ${matches.length} volunteers`;
+      if (nav) {
+        const visiblePages = Array.from({ length: totalPages }, (_, index) => index + 1)
+          .filter(page => totalPages <= 7 || page === 1 || page === totalPages || Math.abs(page - currentPage) <= 1);
+        const pageItems = [];
+        visiblePages.forEach((page, index) => {
+          if (index && page - visiblePages[index - 1] > 1) pageItems.push(`<span aria-hidden="true">…</span>`);
+          pageItems.push(`<button type="button" data-page="${page}" class="${page === currentPage ? "active" : ""}" aria-label="Page ${page}" ${page === currentPage ? 'aria-current="page"' : ""}>${page}</button>`);
+        });
+        nav.innerHTML = `
+          <button type="button" data-page="${currentPage - 1}" aria-label="Previous page" ${currentPage === 1 ? "disabled" : ""}>←</button>
+          ${pageItems.join("")}
+          <button type="button" data-page="${currentPage + 1}" aria-label="Next page" ${currentPage === totalPages ? "disabled" : ""}>→</button>`;
+      }
+      pagination.hidden = matches.length <= pageSize;
+    }
   }
 
   function renderEvents() {
@@ -293,9 +328,9 @@
             <div class="vol-panel-purpose vol-panel-purpose--entry">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("clock")}</div>
               <div class="vol-panel-purpose-flow">
-                <strong class="vol-purpose-primary">Judge volunteer opportunity</strong>
+                <strong>Judge volunteer opportunity</strong>
                 <i class="vol-purpose-arrow" aria-hidden="true"></i>
-                <strong>Enter Your Availability</strong>
+                <span>Enter Your Availability</span>
               </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">⚖</div>
             </div>
@@ -379,6 +414,7 @@
               </div>
               <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
+            ${publicSignups.length ? `<div class="vol-roster-pagination" hidden><span class="vol-roster-page-info"></span><div class="vol-roster-page-nav" aria-label="Volunteer roster pages"></div></div>` : ""}
             <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to the tournament community. Contact details and notes remain private.</p>
           </section>
         </article>`;
@@ -400,7 +436,10 @@
       });
     });
     root.querySelectorAll(".vol-roster-controls").forEach(controls => {
-      controls.querySelector(".vol-roster-search-input")?.addEventListener("input", () => applyRosterControls(controls));
+      controls.querySelector(".vol-roster-search-input")?.addEventListener("input", () => {
+        controls.dataset.page = "1";
+        applyRosterControls(controls);
+      });
       controls.querySelectorAll(".vol-roster-sort-btn").forEach(button => {
         button.addEventListener("click", () => {
           const wasActive = button.classList.contains("active");
@@ -411,6 +450,7 @@
           button.classList.add("active");
           button.dataset.direction = wasActive && button.dataset.direction === "asc" ? "desc" : "asc";
           button.textContent = `${button.dataset.label} ${button.dataset.direction === "asc" ? "↑" : "↓"}`;
+          controls.dataset.page = "1";
           applyRosterControls(controls);
         });
       });
@@ -426,8 +466,16 @@
             selected.classList.add("active");
             selected.setAttribute("aria-pressed", "true");
           }
+          controls.dataset.page = "1";
           applyRosterControls(controls);
         });
+      });
+      controls.closest(".vol-public-roster")?.querySelector(".vol-roster-pagination")?.addEventListener("click", event => {
+        const button = event.target.closest("button[data-page]");
+        if (!button || button.disabled) return;
+        controls.dataset.page = button.dataset.page;
+        applyRosterControls(controls);
+        controls.closest(".vol-public-roster")?.querySelector(".vol-roster-table")?.scrollIntoView({ behavior:"smooth", block:"nearest" });
       });
       applyRosterControls(controls);
     });
