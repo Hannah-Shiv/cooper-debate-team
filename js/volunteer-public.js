@@ -484,11 +484,11 @@
     const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
     const expectations = lineItems(selectedEvent.expectations);
     const expectationItems = expectations.length
-      ? expectations.map(label => ({ icon: "star", label }))
+      ? expectations.map(label => ({ title: "Tournament expectation", label }))
       : [
-        { icon: "users", label: "Judge at least 3 preliminary rounds" },
-        { icon: "document", label: "Round times will be shared the week of the tournament" },
-        { icon: "gift", label: "Light refreshments provided" },
+        { title: "Round assignments", label: "Plan to judge at least three preliminary rounds within your selected availability." },
+        { title: "Tournament schedule", label: "Detailed round times and final assignments will be shared closer to the tournament." },
+        { title: "Meals and refreshments", label: selectedEvent.mealInfo || "Refreshment details will be shared before tournament day." },
       ];
     const contact = [
       selectedEvent.coachName,
@@ -496,23 +496,25 @@
       selectedEvent.coachPhone,
     ].filter(Boolean);
     root.innerHTML = `
-      <section class="vol-side-card vol-selection-card">
-        <h4>${modalIcon("clipboard")}<span>Your selection</span></h4>
-        <div class="vol-side-row"><span>Event</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
-        <div class="vol-side-row"><span>Role</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))}</strong></div>
-        <div class="vol-side-row"><span>Selected availability</span><strong>${escapeHtml(chosenTime || "Choose your start and end time")}</strong></div>
-        <div class="vol-side-reassurance">${modalIcon("check")}<span>We’ll do our best to assign rounds within your availability.</span></div>
-      </section>
       <section class="vol-side-card">
-        <h4>${modalIcon("star")}<span>What to expect</span></h4>
-        <ul class="vol-expectations">${expectationItems.map(item => `<li>${modalIcon(item.icon)}<span>${escapeHtml(item.label)}</span></li>`).join("")}</ul>
+        <h4>${modalIcon("info")}<span>Helpful information</span></h4>
+        <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
+        <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
+        ${expectationItems.map(item => `
+          <div class="vol-info-callout">
+            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}">i</button>
+            <div><strong>${escapeHtml(item.title)}</strong><span>Hover or tap for more information</span></div>
+            <p class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
+          </div>`).join("")}
       </section>
       ${contact.length ? `
         <section class="vol-side-card">
-          <h4>${modalIcon("question")}<span>Questions?</span></h4>
-          ${selectedEvent.coachName ? `<p class="vol-contact-name">${escapeHtml(selectedEvent.coachName)}</p>` : ""}
-          ${selectedEvent.coachEmail ? `<p><a href="mailto:${encodeURIComponent(selectedEvent.coachEmail)}">${escapeHtml(selectedEvent.coachEmail)}</a></p>` : ""}
-          ${selectedEvent.coachPhone ? `<p>${escapeHtml(selectedEvent.coachPhone)}</p>` : ""}
+          <h4>${modalIcon("question")}<span>Need help?</span></h4>
+          <div class="vol-info-callout">
+            <button class="vol-info-trigger" type="button" aria-label="Show coach contact information">i</button>
+            <div><strong>Coach contact</strong><span>Hover or tap for contact details</span></div>
+            <p class="vol-info-tooltip" role="tooltip">${escapeHtml(contact.join(" · "))}</p>
+          </div>
         </section>` : ""}`;
   }
 
@@ -593,6 +595,7 @@
     $("vol-availability-start").value = availability?.start || selectedEvent.startTime || "";
     $("vol-availability-end").value = availability?.end || selectedEvent.endTime || "";
     $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
+    renderSignupSidebar();
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
     $("volunteer-modal").style.display = "flex";
     document.body.classList.add("vol-modal-open");
@@ -704,6 +707,7 @@
       const updateCondensedSelection = () => {
         if (!$("vol-condensed-event") || !selectedRole) return;
         $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
+        renderSignupSidebar();
       };
       $(id)?.addEventListener("input", updateCondensedSelection);
       $(id)?.addEventListener("change", updateCondensedSelection);

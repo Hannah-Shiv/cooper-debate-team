@@ -2227,6 +2227,20 @@
     .vol-condensed-selection p { color:#c5d9df; font-size:.69rem; line-height:1.45; margin:0; text-align:right; }
     .vol-availability-card--compact { margin-bottom:18px; padding:15px 17px 17px; }
     .vol-availability-card--compact legend { margin-bottom:10px; }
+    .vol-condensed-form-layout { align-items:start; display:grid; gap:24px; grid-template-columns:minmax(0,1fr) 280px; }
+    .vol-condensed-main { min-width:0; }
+    .vol-condensed-main .vol-form-grid { gap:14px; grid-template-columns:repeat(6,minmax(0,1fr)); }
+    .vol-condensed-main .vol-form-field:not(.full) { grid-column:span 3; }
+    .vol-condensed-main .vol-form-field.full { grid-column:1/-1; }
+    .vol-condensed-main .vol-form-field input { width:100%; }
+    .vol-info-rail { position:sticky; top:0; }
+    .vol-info-callout { align-items:center; background:rgba(14,47,91,.55); border:1px solid rgba(113,164,229,.25); border-radius:8px; display:grid; gap:10px; grid-template-columns:34px 1fr; margin-top:10px; padding:10px; position:relative; }
+    .vol-info-trigger { align-items:center; background:linear-gradient(145deg,#2b67b6,#17447f); border:1px solid rgba(164,207,255,.5); border-radius:50%; color:#fff; cursor:help; display:flex; font:bold .9rem Georgia,serif; height:32px; justify-content:center; padding:0; width:32px; }
+    .vol-info-callout strong { color:#eef6ff; display:block; font-size:.72rem; line-height:1.35; }
+    .vol-info-callout > div > span { color:#8faed2; display:block; font-size:.58rem; line-height:1.4; margin-top:2px; }
+    .vol-info-tooltip { background:#071a37; border:1px solid rgba(125,211,252,.55); border-radius:8px; box-shadow:0 16px 36px rgba(0,0,0,.45); color:#dcecff; font-size:.73rem; line-height:1.55; opacity:0; padding:13px 14px; pointer-events:none; position:absolute; right:calc(100% + 11px); top:0; transform:translateX(8px); transition:opacity .15s ease,transform .15s ease; visibility:hidden; width:290px; z-index:20; }
+    .vol-info-callout:hover .vol-info-tooltip,
+    .vol-info-callout:focus-within .vol-info-tooltip { opacity:1; transform:translateX(0); visibility:visible; }
     .vol-time-grid { display:grid; gap:16px; grid-template-columns:1fr 1fr; }
     .vol-time-control { position:relative; }
     .vol-time-control > .vol-modal-icon { background:linear-gradient(145deg,#1c479c,#102b6c); border:0; border-radius:50%; box-shadow:none; height:29px; left:12px; padding:6px; pointer-events:none; position:absolute; top:50%; transform:translateY(-50%); width:29px; }
@@ -3272,6 +3286,9 @@
       .vol-panel-purpose--results {
         margin:-18px -18px 18px;
       }
+      .vol-condensed-form-layout { grid-template-columns:1fr; }
+      .vol-info-rail { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); position:static; }
+      .vol-info-tooltip { left:0; right:auto; top:calc(100% + 7px); width:min(290px,calc(100vw - 64px)); }
     }
     @media(max-width:600px){
       .vol-panel-purpose {
@@ -3311,6 +3328,13 @@
       }
       .vol-condensed-selection { align-items:flex-start; flex-direction:column; gap:6px; }
       .vol-condensed-selection p { text-align:left; }
+      .vol-condensed-main .vol-form-grid { grid-template-columns:1fr; }
+      .vol-condensed-main .vol-form-field:not(.full),
+      .vol-condensed-main .vol-form-field.full { grid-column:auto; }
+      .vol-info-rail { grid-template-columns:1fr; }
+      .vol-info-tooltip { display:none; grid-column:1/-1; position:static; transform:translateY(-5px); width:auto; }
+      .vol-info-callout:hover .vol-info-tooltip,
+      .vol-info-callout:focus-within .vol-info-tooltip { display:block; transform:translateY(0); }
     }
 
     /* Keep calendar content inside the same widest rail as the signup cards. */
@@ -4011,53 +4035,58 @@
     </div>
     <form id="volunteer-signup-form">
       <section data-vol-step="1">
-        <div class="vol-condensed-selection">
-          <div>
-            <span>Your selected judging window</span>
-            <strong id="vol-condensed-event"></strong>
-          </div>
-          <p>You can adjust the exact hours below before reviewing.</p>
-        </div>
-        <fieldset class="vol-availability-card vol-availability-card--compact">
-          <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>Confirm availability</legend>
-          <div class="vol-time-grid">
-            <div class="vol-form-field">
-              <label for="vol-availability-start">Available from</label>
-              <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-start" type="time" required></div>
+        <div class="vol-condensed-form-layout">
+          <div class="vol-condensed-main">
+            <div class="vol-condensed-selection">
+              <div>
+                <span>Your selected judging window</span>
+                <strong id="vol-condensed-event"></strong>
+              </div>
+              <p>You can adjust the exact hours below before reviewing.</p>
             </div>
-            <div class="vol-form-field">
-              <label for="vol-availability-end">Available until</label>
-              <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-end" type="time" required></div>
+            <fieldset class="vol-availability-card vol-availability-card--compact">
+              <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>Confirm availability</legend>
+              <div class="vol-time-grid">
+                <div class="vol-form-field">
+                  <label for="vol-availability-start">Available from</label>
+                  <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-start" type="time" required></div>
+                </div>
+                <div class="vol-form-field">
+                  <label for="vol-availability-end">Available until</label>
+                  <div class="vol-time-control"><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg><input id="vol-availability-end" type="time" required></div>
+                </div>
+              </div>
+            </fieldset>
+            <div class="vol-form-grid">
+              <div class="vol-form-field">
+                <label for="vol-parent-first-name">Volunteer first name</label>
+                <input id="vol-parent-first-name" type="text" autocomplete="given-name" maxlength="60" required>
+              </div>
+              <div class="vol-form-field">
+                <label for="vol-parent-last-name">Volunteer last name</label>
+                <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
+              </div>
+              <div class="vol-form-field">
+                <label for="vol-student-name">Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
+                <input id="vol-student-name" type="text" maxlength="120">
+              </div>
+              <div class="vol-form-field">
+                <label for="vol-email">Volunteer's Email</label>
+                <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
+              </div>
+              <div class="vol-form-field">
+                <label for="vol-phone">Volunteer's Phone</label>
+                <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
+              </div>
+              <div class="vol-form-field full">
+                <label for="vol-notes">Notes for the coach <span style="opacity:.65;">(optional)</span></label>
+                <textarea id="vol-notes" maxlength="600" placeholder="Questions, judging experience, or anything the coach should know"></textarea>
+              </div>
             </div>
+            <div class="vol-public-note">Your name, your debater’s name if provided, volunteer role, and selected availability will appear in the tournament roster. Your email, phone, and notes remain coach-only.</div>
           </div>
-        </fieldset>
-        <div class="vol-form-grid">
-          <div class="vol-form-field">
-            <label for="vol-parent-first-name">Volunteer first name</label>
-            <input id="vol-parent-first-name" type="text" autocomplete="given-name" maxlength="60" required>
-          </div>
-          <div class="vol-form-field">
-            <label for="vol-parent-last-name">Volunteer last name</label>
-            <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
-          </div>
-          <div class="vol-form-field">
-            <label for="vol-student-name">Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
-            <input id="vol-student-name" type="text" maxlength="120">
-          </div>
-          <div class="vol-form-field">
-            <label for="vol-email">Volunteer's Email</label>
-            <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
-          </div>
-          <div class="vol-form-field">
-            <label for="vol-phone">Volunteer's Phone</label>
-            <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
-          </div>
-          <div class="vol-form-field full">
-            <label for="vol-notes">Notes for the coach <span style="opacity:.65;">(optional)</span></label>
-            <textarea id="vol-notes" maxlength="600" placeholder="Questions, judging experience, or anything the coach should know"></textarea>
-          </div>
+          <aside id="vol-signup-sidebar" class="vol-signup-sidebar vol-info-rail" aria-label="Helpful signup information"></aside>
         </div>
-        <div class="vol-public-note">Your name, your debater’s name if provided, volunteer role, and selected availability will appear in the tournament roster so the tournament community can see coverage. Your email, phone, and notes are only shared with the coaching staff.</div>
         <div class="vol-modal-actions">
           <button class="vol-cancel" type="button" data-close-volunteer-modal>Cancel</button>
           <button class="vol-submit" type="button" data-vol-next="2">Review signup →</button>
@@ -4572,7 +4601,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=29"></script>
+<script src="js/volunteer-public.js?v=30"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
