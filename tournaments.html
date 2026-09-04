@@ -2393,6 +2393,89 @@
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
     .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
+
+    /* Judge signup / step one: a calm, landscape-first blue workspace. */
+    .volunteer-modal { z-index:10050; padding:12px; }
+    .vol-judge-modal {
+      background:
+        radial-gradient(circle at 8% 0,rgba(61,133,224,.16),transparent 34%),
+        linear-gradient(145deg,#081f46 0%,#071a39 58%,#06152e 100%);
+      border-color:rgba(111,174,248,.55);
+      max-height:calc(100dvh - 24px);
+      max-width:1220px;
+      overflow:visible;
+      padding:22px 28px 14px;
+    }
+    .vol-modal-heading { align-items:end; display:flex; gap:18px; justify-content:space-between; margin:0 42px 9px 0; }
+    .vol-judge-modal .vol-modal-kicker { color:#8dc6ff; margin-bottom:3px; }
+    .vol-judge-modal h2 { font-size:1.75rem; margin:0; }
+    .vol-judge-modal .vol-modal-context { color:#a9c7ec; margin:0 0 2px; text-align:right; }
+    .vol-judge-modal .vol-icon-question,
+    .vol-judge-modal .vol-icon-clipboard { color:#8dc6ff; }
+    .vol-judge-modal .vol-stepper { margin-bottom:8px; padding:7px 0; }
+    .vol-judge-modal .vol-stepper .is-active { color:#a8d1ff; }
+    .vol-judge-modal .vol-stepper .is-current b { background:#4b91dc; border-color:#8dc6ff; color:#071a39; }
+    .vol-condensed-form-layout { gap:20px; grid-template-columns:minmax(0,1fr) 400px; }
+    .vol-condensed-main { display:grid; grid-template-columns:minmax(0,1fr) 280px; gap:13px 16px; align-items:start; }
+    .vol-condensed-selection { grid-column:1/-1; background:rgba(31,91,166,.28); border-color:rgba(112,173,250,.35); margin:0; padding:10px 14px; }
+    .vol-condensed-selection span { color:#9bcaff; }
+    .vol-condensed-selection strong { font-size:.94rem; }
+    .vol-condensed-selection p { color:#b9d3f2; }
+    .vol-availability-card--compact { border-color:rgba(111,174,248,.5)!important; grid-column:2; grid-row:2; align-self:stretch; margin:0; max-width:none; padding:13px 14px 14px; }
+    .vol-availability-card legend { color:#a8d1ff; font-size:.68rem; }
+    .vol-availability-card > p { display:none; }
+    .vol-availability-card--compact .vol-time-grid { gap:9px; grid-template-columns:1fr !important; width:auto; }
+    .vol-time-grid input { font-size:.88rem !important; min-height:40px; padding-left:42px !important; }
+    .vol-time-control > .vol-modal-icon { height:24px; left:9px; width:24px; }
+    .vol-condensed-main > .vol-form-grid { grid-column:1; grid-row:2; gap:10px 12px; }
+    .vol-condensed-main .vol-form-field { gap:5px; }
+    .vol-condensed-main .vol-form-field label { font-size:.58rem; }
+    .vol-condensed-main .vol-form-field input,
+    .vol-condensed-main .vol-form-field textarea { background:rgba(5,25,61,.72); border-color:rgba(130,181,239,.28); font-size:.78rem; padding:9px 10px; }
+    .vol-condensed-main .vol-form-field textarea { min-height:54px; }
+    .vol-condensed-main .vol-form-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .vol-condensed-main > .vol-form-grid > .vol-form-field:not(.full) { grid-column:auto; }
+    .vol-condensed-main > .vol-form-grid > .vol-form-field.full { grid-column:1/-1; }
+    .vol-public-note { grid-column:1/-1; background:rgba(30,91,166,.18); border-color:rgba(105,165,236,.27); color:#bad5f6; font-size:.68rem; line-height:1.45; margin:0; padding:9px 11px; }
+    .vol-judge-modal .vol-submit { background:#4b91dc; border-color:#79b8f2; color:#061b3b; }
+    .vol-judge-modal .vol-submit:hover { background:#68a9ed; border-color:#a8d4ff; }
+    .vol-signup-sidebar { gap:10px; min-width:0; }
+    .vol-info-rail { max-height:none; overflow:visible; padding:0; position:static; }
+    .vol-side-card { background:rgba(4,18,48,.42); border-color:rgba(111,174,248,.25); padding:13px; }
+    .vol-side-card h4 { color:#a8d1ff; font-size:.65rem; margin-bottom:9px; }
+    .vol-side-row { margin-bottom:8px; padding-bottom:8px; }
+    .vol-side-row span { color:#83acd9; font-size:.5rem; }
+    .vol-side-row strong { font-size:.72rem; }
+    .vol-info-callout { background:rgba(21,71,135,.28); border-color:rgba(111,174,248,.2); gap:7px; grid-template-columns:25px 1fr; margin-top:6px; padding:6px; }
+    .vol-info-trigger { background:#1d579f; border-color:rgba(157,207,255,.55); font-size:.72rem; height:24px; width:24px; }
+    .vol-info-callout strong { font-size:.62rem; }
+    .vol-info-callout > div > span { font-size:.5rem; }
+    .vol-info-tooltip { background:#0b2753; border-color:#6eaceb; font-size:.67rem; padding:10px 11px; right:auto; left:32px; top:calc(100% + 6px); transform:translateY(-4px); width:250px; }
+    .vol-info-callout:hover .vol-info-tooltip,
+    .vol-info-callout:focus-within .vol-info-tooltip { transform:translateY(0); }
+    .vol-signup-sidebar > .vol-side-card:first-child { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); column-gap:6px; }
+    .vol-signup-sidebar > .vol-side-card:first-child h4,
+    .vol-signup-sidebar > .vol-side-card:first-child > .vol-side-row { grid-column:1/-1; }
+    .vol-signup-sidebar > .vol-side-card:first-child .vol-info-callout { min-width:0; }
+    .vol-signup-sidebar > .vol-side-card:first-child .vol-info-callout:nth-child(5n+3) .vol-info-tooltip { left:auto; right:0; }
+    .vol-signup-sidebar > .vol-side-card:first-child .vol-info-callout:nth-child(n+9) .vol-info-tooltip { bottom:calc(100% + 6px); top:auto; }
+    .vol-modal-actions { margin-top:14px; }
+    .vol-cancel,.vol-submit { padding:10px 17px; }
+    @media(max-width:980px){
+      .vol-judge-modal { max-height:calc(100dvh - 24px); overflow:auto; padding:27px 22px 20px; }
+      .vol-condensed-main { display:block; }
+      .vol-condensed-selection { margin-bottom:12px; }
+      .vol-availability-card--compact { margin-bottom:12px; }
+      .vol-condensed-main .vol-form-grid { margin-bottom:12px; }
+      .vol-info-rail { display:grid; }
+    }
+    @media(max-width:600px){
+      .volunteer-modal { align-items:flex-start; padding:10px; }
+      .vol-judge-modal { padding:25px 15px 16px; }
+      .vol-modal-heading { align-items:flex-start; display:block; margin:0 42px 12px 0; }
+      .vol-judge-modal .vol-modal-context { margin-top:5px; text-align:left; }
+      .vol-signup-sidebar > .vol-side-card:first-child { display:block; }
+    }
     body.vol-modal-open { overflow:hidden; }
 
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
@@ -4221,9 +4304,13 @@
 <div id="volunteer-modal" class="volunteer-modal" role="dialog" aria-modal="true" aria-labelledby="vol-modal-title">
   <div class="vol-modal-card vol-judge-modal">
     <button class="vol-modal-close" type="button" aria-label="Close signup form" data-close-volunteer-modal>&times;</button>
-    <p class="vol-modal-kicker">Judge Volunteer Signup</p>
-    <h2 id="vol-modal-title">Judge Volunteer Signup</h2>
-    <p id="vol-modal-context" class="vol-modal-context"></p>
+    <div class="vol-modal-heading">
+      <div>
+        <p class="vol-modal-kicker">Judge Volunteer Signup</p>
+        <h2 id="vol-modal-title">Judge Volunteer Signup</h2>
+      </div>
+      <p id="vol-modal-context" class="vol-modal-context"></p>
+    </div>
     <div class="vol-stepper" aria-label="Signup progress">
       <span data-vol-progress="1" class="is-active is-current"><b>1</b> Availability &amp; information</span>
       <span data-vol-progress="2"><b>2</b> Review &amp; confirm</span>
@@ -4290,7 +4377,7 @@
 
       <section data-vol-step="2" hidden>
         <div id="vol-review"></div>
-        <div class="vol-secure-note">🔒 Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
+        <div class="vol-secure-note">Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
         <div id="vol-turnstile" style="margin-top:17px;"></div>
         <div class="vol-modal-actions">
           <button id="vol-print-itinerary" class="vol-cancel vol-print-button" type="button">Print / Save PDF</button>
@@ -4797,7 +4884,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=46"></script>
+<script src="js/volunteer-public.js?v=47"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

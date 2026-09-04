@@ -635,27 +635,21 @@
       selectedEvent.coachEmail,
       selectedEvent.coachPhone,
     ].filter(Boolean);
+    if (contact.length) {
+      informationItems.push({ title: "Coach contact", label: contact.join(" · ") });
+    }
     root.innerHTML = `
       <section class="vol-side-card">
         <h4>${modalIcon("info")}<span>Helpful information</span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
-        ${informationItems.map(item => `
+        ${informationItems.map((item, index) => `
           <div class="vol-info-callout">
-            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}">i</button>
+            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">i</button>
             <div><strong>${escapeHtml(item.title)}</strong><span>Hover or tap for more information</span></div>
-            <p class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
+            <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
           </div>`).join("")}
-      </section>
-      ${contact.length ? `
-        <section class="vol-side-card">
-          <h4>${modalIcon("question")}<span>Need help?</span></h4>
-          <div class="vol-info-callout">
-            <button class="vol-info-trigger" type="button" aria-label="Show coach contact information">i</button>
-            <div><strong>Coach contact</strong><span>Hover or tap for contact details</span></div>
-            <p class="vol-info-tooltip" role="tooltip">${escapeHtml(contact.join(" · "))}</p>
-          </div>
-        </section>` : ""}`;
+      </section>`;
   }
 
   function renderReview() {
