@@ -801,20 +801,20 @@
       "Be prepared for a day of thoughtful discussion, engaged students, and great debates!",
       "If you have questions during the event, please ask a coach or tournament volunteer.",
     ];
-    const meal = "A complimentary lunch will be provided for all judges. Light refreshments (coffee, water, snacks) will be available throughout the day.";
-    const coach = "Coach Pamela Konde · pgkonde@fcps.edu";
     const wrap = (text, maxWidth, font) => {
       ctx.font = font;
       ctx.letterSpacing = "0px";
-      const words = String(text || "").split(/\s+/);
       const rows = [];
-      let row = "";
-      words.forEach(word => {
-        const next = row ? `${row} ${word}` : word;
-        if (ctx.measureText(next).width > maxWidth && row) { rows.push(row); row = word; }
-        else row = next;
+      String(text || "").split(/\n/).forEach(paragraph => {
+        const words = paragraph.trim().split(/\s+/).filter(Boolean);
+        let row = "";
+        words.forEach(word => {
+          const next = row ? `${row} ${word}` : word;
+          if (ctx.measureText(next).width > maxWidth && row) { rows.push(row); row = word; }
+          else row = next;
+        });
+        if (row) rows.push(row);
       });
-      if (row) rows.push(row);
       return rows;
     };
     const text = (str, x, y, maxWidth, font, color = ink, maxLines = 4, leading = 11) => {
@@ -848,7 +848,7 @@
     ctx.textBaseline = "top";
     ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 92);
     ctx.fillStyle = gold; ctx.fillRect(0, 90, W, 2);
-    const [badge, jaguar] = await Promise.all([pdfImage("images/cooper-debate-badge.png"), pdfImage("images/index-footer-jaguar.png")]);
+    const [badge, jaguar] = await Promise.all([pdfImage("attached_assets/image_1788564262840.png"), pdfImage("images/index-footer-jaguar.png")]);
     if (badge) ctx.drawImage(badge, 20, 10, 64, 64);
     if (jaguar) ctx.drawImage(jaguar, 540, 14, 52, 62);
     ctx.textAlign = "center";
@@ -899,25 +899,28 @@
     const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
     const boxTitles = ["Arrival & Parking", "Meals & Refreshments", "Important Information", "Contact & Support"];
     const boxItems = [
-      ["Please arrive early for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot."],
-      [meal, "Please let us know about dietary restrictions in advance if possible."],
+      ["Please arrive early, 8:00 AM for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot.", "Look for signage and student volunteers if you need assistance."],
+      ["A complimentary lunch will be provided for all judges.", "Light refreshments (coffee, water, snacks) will be available throughout the day.", "Please let us know about any dietary restrictions in advance if possible."],
       importantItems,
-      [`If you have questions before the tournament, contact:`, coach, "On tournament day, ask a coach or student volunteer for help."],
+      ["If you have questions before the tournament, please contact:", "Coach Pamela Konde\npgkonde@fcps.edu", "On tournament day, look for a coach or any student volunteer — we're here to help!"],
     ];
     boxTitles.forEach((title, index) => {
       const x = 22 + index * (boxW + boxGap);
       bar(x, boxY, boxW, title, gold);
-      rounded(x, boxY + 24, boxW, 137, 5, "#f5f9fc", line);
-      bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, "6.8px Arial", 14, 3, 8);
+      rounded(x, boxY + 24, boxW, 151, 5, "#f5f9fc", line);
+      bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, "6.5px Arial", 14, 3, 7.5);
     });
-    rounded(22, 660, 278, 68, 6, "#e9f5f0", "#c8e1d6");
-    bar(22, 660, 278, "Privacy Note", "#1f785e");
-    text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 695, 252, "8px Arial", ink, 3, 10);
-    rounded(308, 660, 282, 68, 6, "#fff0b9", "#f0d36b");
-    ctx.fillStyle = navy; ctx.font = "700 14px Georgia"; ctx.fillText("Thank you again for representing", 322, 674);
-    ctx.fillText("the Cooper Debate Team!", 322, 691);
-    ctx.font = "italic 700 9px Georgia"; ctx.fillText("We look forward to seeing you at the tournament!", 322, 710);
-    ctx.font = "700 9px Georgia"; ctx.fillText("— Cooper Debate Team", 470, 721);
+    rounded(22, 697, 278, 69, 6, "#e9f5f0", "#c8e1d6");
+    bar(22, 697, 278, "Privacy Note", "#1f785e");
+    text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, 252, "7.5px Arial", ink, 3, 9);
+    rounded(308, 697, 282, 69, 6, "#fff0b9", "#f0d36b");
+    ctx.textAlign = "left";
+    ctx.fillStyle = navy; ctx.font = "700 13px Georgia"; ctx.fillText("Thank you again for representing", 322, 706);
+    ctx.fillText("the Cooper Debate Team!", 322, 721);
+    ctx.font = "italic 700 8.5px Georgia"; ctx.fillText("We look forward to seeing you at the tournament!", 322, 741);
+    ctx.textAlign = "right";
+    ctx.font = "700 8.5px Georgia"; ctx.fillText("— Cooper Debate Team", 576, 753);
+    ctx.textAlign = "left";
 
     const jpeg = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .92));
     const bytes = new Uint8Array(await jpeg.arrayBuffer());
