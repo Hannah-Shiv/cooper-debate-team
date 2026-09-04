@@ -171,6 +171,43 @@
     root.innerHTML = "";
   }
 
+  function applyRosterControls(controls) {
+    const body = controls.closest(".vol-public-roster")?.querySelector(".vol-roster-table-body");
+    if (!body) return;
+    const search = controls.querySelector(".vol-roster-search-input")?.value.trim().toLowerCase() || "";
+    const fullOnly = controls.querySelector(".vol-roster-filter-btn")?.classList.contains("active");
+    const activeSort = controls.querySelector(".vol-roster-sort-btn.active");
+    const sortKey = activeSort?.dataset.sort || "name";
+    const direction = activeSort?.dataset.direction === "desc" ? -1 : 1;
+    const rows = Array.from(body.querySelectorAll(".vol-roster-row"));
+
+    rows.sort((a, b) =>
+      (a.dataset[sortKey] || "").localeCompare(b.dataset[sortKey] || "", undefined, {
+        numeric: true,
+        sensitivity: "base",
+      }) * direction
+    );
+
+    let visible = 0;
+    rows.forEach(row => {
+      const matchesSearch = !search || `${row.dataset.name} ${row.dataset.debater}`.toLowerCase().includes(search);
+      const matchesFilter = !fullOnly || row.dataset.fullCoverage === "true";
+      const show = matchesSearch && matchesFilter;
+      row.hidden = !show;
+      if (show) visible += 1;
+      body.appendChild(row);
+    });
+
+    let empty = body.querySelector(".vol-roster-filter-empty");
+    if (!empty) {
+      empty = document.createElement("div");
+      empty.className = "vol-roster-filter-empty";
+      empty.textContent = "No volunteers match these controls.";
+      body.appendChild(empty);
+    }
+    empty.hidden = visible > 0;
+  }
+
   function renderEvents() {
     const root = $("volunteer-events");
     if (!root) return;
@@ -211,7 +248,7 @@
           const availability = timeRange(signup.availabilityStart, signup.availabilityEnd) || "Availability shared with coaches";
           const coverage = coverageForSignup(signup, event);
           return `
-            <div class="vol-roster-row" role="row">
+            <div class="vol-roster-row" role="row" data-name="${escapeHtml(signup.parentName)}" data-debater="${escapeHtml(signup.studentName || "")}" data-time="${escapeHtml(signup.availabilityStart || "")}" data-full-coverage="${coverage.className === "is-full"}">
               <div class="vol-roster-volunteer" role="cell" data-label="Volunteer">
                 <strong>${escapeHtml(signup.parentName)}</strong>
               </div>
@@ -317,6 +354,21 @@
                 <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
                 <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
+              ${publicSignups.length ? `
+              <div class="vol-roster-controls" aria-label="Search, sort, and filter volunteers">
+                <label class="vol-roster-search-box">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                  <input class="vol-roster-search-input" type="search" placeholder="Volunteer or debater…" aria-label="Search volunteers or debaters">
+                </label>
+                <div class="vol-roster-sort-box" aria-label="Sort volunteers">
+                  <button type="button" class="vol-roster-sort-btn active" data-sort="name" data-label="Name" data-direction="asc">Name ↑</button>
+                  <button type="button" class="vol-roster-sort-btn" data-sort="time" data-label="Time" data-direction="asc">Time</button>
+                  <button type="button" class="vol-roster-sort-btn" data-sort="debater" data-label="Debater" data-direction="asc">Debater</button>
+                </div>
+                <div class="vol-roster-filter-box">
+                  <button type="button" class="vol-roster-filter-btn" aria-pressed="false">✓ Full Coverage</button>
+                </div>
+              </div>` : ""}
             </div>
             <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
               <div class="vol-roster-table-head" role="row">
@@ -343,6 +395,28 @@
           selectedOption.classList.remove("is-flipping");
         }, { once:true });
       });
+    });
+    root.querySelectorAll(".vol-roster-controls").forEach(controls => {
+      controls.querySelector(".vol-roster-search-input")?.addEventListener("input", () => applyRosterControls(controls));
+      controls.querySelectorAll(".vol-roster-sort-btn").forEach(button => {
+        button.addEventListener("click", () => {
+          const wasActive = button.classList.contains("active");
+          controls.querySelectorAll(".vol-roster-sort-btn").forEach(item => {
+            item.classList.remove("active");
+            item.textContent = item.dataset.label;
+          });
+          button.classList.add("active");
+          button.dataset.direction = wasActive && button.dataset.direction === "asc" ? "desc" : "asc";
+          button.textContent = `${button.dataset.label} ${button.dataset.direction === "asc" ? "↑" : "↓"}`;
+          applyRosterControls(controls);
+        });
+      });
+      controls.querySelector(".vol-roster-filter-btn")?.addEventListener("click", event => {
+        event.currentTarget.classList.toggle("active");
+        event.currentTarget.setAttribute("aria-pressed", String(event.currentTarget.classList.contains("active")));
+        applyRosterControls(controls);
+      });
+      applyRosterControls(controls);
     });
     root.querySelectorAll(".vol-inline-continue:not(:disabled)").forEach(button => {
       button.addEventListener("click", () => {
