@@ -757,6 +757,125 @@
       </aside>`);
   }
 
+  const printablePdfText = value => String(value || "")
+    .normalize("NFKD")
+    .replace(/[^\x20-\x7E]/g, "")
+    .replace(/\\/g, "\\\\")
+    .replace(/\(/g, "\\(")
+    .replace(/\)/g, "\\)");
+
+  function buildVolunteerReviewPdf() {
+    const firstName = $("vol-parent-first-name").value.trim();
+    const lastName = $("vol-parent-last-name").value.trim();
+    const volunteerName = `${firstName} ${lastName}`.trim();
+    const availability = timeRange($("vol-availability-start").value, $("vol-availability-end").value);
+    const details = [
+      ["Tournament", selectedEvent?.title],
+      ["Volunteer role", roleDisplayLabel(selectedRole)],
+      ["Date", selectedEvent?.date ? dateLabel(selectedEvent.date) : "To be announced"],
+      ["Availability", availability],
+      ["Location", selectedEvent?.location || "To be announced"],
+      ["Volunteer", volunteerName],
+      ["Debater", $("vol-student-name").value.trim() || "Not provided"],
+      ["Email", $("vol-email").value.trim()],
+      ["Phone", $("vol-phone").value.trim()],
+    ];
+    const commands = [
+      "0.008 0.157 0.22 rg 0 0 612 792 re f",
+      "0.961 0.773 0.259 rg 0 650 612 142 re f",
+      "0.008 0.157 0.22 rg",
+      `BT /F1 11 Tf 46 754 Td (${printablePdfText("COOPER DEBATE TEAM")}) Tj ET`,
+      `BT /F2 25 Tf 46 716 Td (${printablePdfText("Volunteer Judge Signup Review")}) Tj ET`,
+      `BT /F1 12 Tf 46 688 Td (${printablePdfText(selectedEvent?.title || "Tournament")}) Tj ET`,
+      "0.933 0.969 0.945 rg",
+    ];
+    let y = 610;
+    details.forEach(([label, value], index) => {
+      const column = index % 2;
+      const x = column ? 316 : 46;
+      if (column === 0 && index > 0) y -= 72;
+      commands.push(
+        "0.018 0.239 0.247 rg",
+        `${x} ${y - 9} 250 58 re f`,
+        "0.961 0.773 0.259 rg",
+        `BT /F2 8 Tf ${x + 14} ${y + 28} Td (${printablePdfText(label.toUpperCase())}) Tj ET`,
+        "0.933 0.969 0.945 rg",
+        `BT /F1 11 Tf ${x + 14} ${y + 8} Td (${printablePdfText(value || "Not provided")}) Tj ET`
+      );
+    });
+    y -= 84;
+    const notes = $("vol-notes").value.trim();
+    if (notes) {
+      const shortenedNotes = notes.length > 145 ? `${notes.slice(0, 142)}...` : notes;
+      commands.push(
+        "0.018 0.239 0.247 rg",
+        `46 ${y - 24} 520 68 re f`,
+        "0.961 0.773 0.259 rg",
+        `BT /F2 8 Tf 60 ${y + 22} Td (${printablePdfText("NOTES FOR THE COACH")}) Tj ET`,
+        "0.933 0.969 0.945 rg",
+        `BT /F1 10 Tf 60 ${y + 2} Td (${printablePdfText(shortenedNotes)}) Tj ET`
+      );
+    }
+    commands.push(
+      "0.522 0.843 0.737 rg",
+      `BT /F1 9 Tf 46 48 Td (${printablePdfText("Review these details before confirming your signup. Contact information remains coach-only.")}) Tj ET`
+    );
+
+    const content = commands.join("\n");
+    const objects = [
+      "<< /Type /Catalog /Pages 2 0 R >>",
+      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>",
+      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
+    ];
+    let pdf = "%PDF-1.4\n";
+    const offsets = [0];
+    objects.forEach((object, index) => {
+      offsets.push(new TextEncoder().encode(pdf).length);
+      pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+    });
+    const xrefOffset = new TextEncoder().encode(pdf).length;
+    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+    offsets.slice(1).forEach(offset => {
+      pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+    });
+    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+    return new Blob([pdf], { type: "application/pdf" });
+  }
+
+  async function saveVolunteerReviewPdf() {
+    const filenameBase = String(selectedEvent?.title || "volunteer-signup")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    const filename = `${filenameBase || "volunteer-signup"}-review.pdf`;
+    const blob = buildVolunteerReviewPdf();
+    try {
+      if ("showSaveFilePicker" in window) {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: filename,
+          types: [{ description: "PDF document", accept: { "application/pdf": [".pdf"] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } else {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      }
+      setStatus("Your signup review PDF has been saved.");
+    } catch (error) {
+      if (error?.name !== "AbortError") setStatus("The PDF could not be saved. Please try again.", true);
+    }
+  }
+
   function showStep(step) {
     wizardStep = Math.max(1, Math.min(2, step));
     document.querySelectorAll("[data-vol-step]").forEach(panel => {
@@ -970,10 +1089,12 @@
       field.addEventListener("change", updateCompletion);
       field.addEventListener("blur", updateCompletion);
     });
-    $("vol-print-itinerary")?.addEventListener("click", () => {
+    const printItinerary = () => {
       document.body.classList.add("vol-print-itinerary");
       window.print();
-    });
+    };
+    $("vol-print-itinerary")?.addEventListener("click", printItinerary);
+    $("vol-save-pdf")?.addEventListener("click", saveVolunteerReviewPdf);
     window.addEventListener("afterprint", () => document.body.classList.remove("vol-print-itinerary"));
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") requestCloseSignup();
