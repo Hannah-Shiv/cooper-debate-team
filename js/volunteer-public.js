@@ -801,8 +801,9 @@
       "Be prepared for a day of thoughtful discussion, engaged students, and great debates!",
       "If you have questions during the event, please ask a coach or tournament volunteer.",
     ];
+    const scaledFont = font => font.replace(/(\d+(?:\.\d+)?)px/, (_, size) => `${Number(size) * 1.1}px`);
     const wrap = (text, maxWidth, font) => {
-      ctx.font = font;
+      ctx.font = scaledFont(font);
       ctx.letterSpacing = "0px";
       const rows = [];
       String(text || "").split(/\n/).forEach(paragraph => {
@@ -819,7 +820,7 @@
     };
     const text = (str, x, y, maxWidth, font, color = ink, maxLines = 4, leading = 11) => {
       const rows = wrap(str, maxWidth, font).slice(0, maxLines);
-      ctx.font = font; ctx.letterSpacing = "0px"; ctx.fillStyle = color; ctx.textBaseline = "top";
+      ctx.font = scaledFont(font); ctx.letterSpacing = "0px"; ctx.fillStyle = color; ctx.textBaseline = "top";
       rows.forEach((row, index) => ctx.fillText(row, x, y + index * leading));
       return y + rows.length * leading;
     };
@@ -832,14 +833,20 @@
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
       const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
-      ctx.font = `700 ${titleSize}px Arial`; ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
+      let fittedSize = titleSize * 1.1;
+      ctx.font = `700 ${fittedSize}px Arial`;
+      while (ctx.measureText(title.toUpperCase()).width > w - 20 && fittedSize > 6.5) {
+        fittedSize -= .25;
+        ctx.font = `700 ${fittedSize}px Arial`;
+      }
+      ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
       ctx.fillText(title.toUpperCase(), x + 14, y + 7);
     };
     const bullets = (items, x, y, width, font = "7.7px Arial", gap = 17, maxLines = 2, leading = 9) => {
       let cursor = y;
       items.slice(0, 6).forEach(item => {
         ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = navy; ctx.font = "700 7px Arial"; ctx.letterSpacing = "0px"; ctx.fillText("✓", x + 1.5, cursor + 1.5);
+        ctx.fillStyle = navy; ctx.font = scaledFont("700 7px Arial"); ctx.letterSpacing = "0px"; ctx.fillText("✓", x + 1.5, cursor + 1.5);
         cursor = text(item, x + 14, cursor, width - 14, font, ink, maxLines, leading) + 4;
       });
       return cursor;
@@ -852,13 +859,13 @@
     if (badge) ctx.drawImage(badge, 20, 11, 984, 980, 9, 5, 80, 80);
     if (jaguar) ctx.drawImage(jaguar, 540, 14, 52, 62);
     ctx.textAlign = "center";
-    ctx.font = "700 22px Georgia"; ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
-    ctx.font = "700 9px Arial"; ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("THINK  ·  SPEAK  ·  LEAD", 306, 49);
-    ctx.font = "8px Arial"; ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
+    ctx.font = scaledFont("700 22px Georgia"); ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
+    ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("THINK  ·  SPEAK  ·  LEAD", 306, 49);
+    ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
     ctx.textAlign = "left";
-    ctx.font = "700 8px Arial"; ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
-    ctx.font = "700 24px Georgia"; ctx.fillStyle = navy;
+    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
+    ctx.font = scaledFont("700 24px Georgia"); ctx.fillStyle = navy;
     const headline = wrap(`Thank You for Representing the Cooper Debate Team!`, 368, "700 24px Georgia").slice(0, 2);
     headline.forEach((row, i) => ctx.fillText(row, 22, 114 + i * 25));
     text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
@@ -885,8 +892,8 @@
     rows.forEach(([label, val], index) => {
       const h = index >= 6 ? (index === 7 ? 58 : 36) : 19;
       if (index % 2 === 0) { ctx.fillStyle = "#d9eafa"; ctx.fillRect(left, rowY, colW, h); }
-      ctx.font = "700 7.5px Arial"; ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
-      text(val, left + 91, rowY + 5, colW - 101, "7.5px Arial", ink, index === 7 ? 5 : index === 6 ? 3 : 2, 9);
+      ctx.font = scaledFont("700 7.5px Arial"); ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
+      text(val, left + 91, rowY + 5, colW - 101, "7.5px Arial", ink, index === 7 ? 6 : index === 6 ? 3 : 2, 9);
       rowY += h;
     });
     bar(right, 254, colW, "Tournament Resolution");
@@ -915,11 +922,11 @@
     text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, 252, "7.5px Arial", ink, 3, 9);
     rounded(308, 697, 282, 69, 6, "#fff0b9", "#f0d36b");
     ctx.textAlign = "left";
-    ctx.fillStyle = navy; ctx.font = "700 13px Georgia"; ctx.fillText("Thank you again for representing", 322, 706);
+    ctx.fillStyle = navy; ctx.font = scaledFont("700 13px Georgia"); ctx.fillText("Thank you again for representing", 322, 706);
     ctx.fillText("the Cooper Debate Team!", 322, 721);
-    ctx.font = "italic 700 8.5px Georgia"; ctx.fillText("We look forward to seeing you at the tournament!", 322, 741);
+    ctx.font = scaledFont("italic 700 8.5px Georgia"); ctx.fillText("We look forward to seeing you at the tournament!", 322, 741);
     ctx.textAlign = "right";
-    ctx.font = "700 8.5px Georgia"; ctx.fillText("— Cooper Debate Team", 576, 753);
+    ctx.font = scaledFont("700 8.5px Georgia"); ctx.fillText("— Cooper Debate Team", 576, 753);
     ctx.textAlign = "left";
 
     const jpeg = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .92));
