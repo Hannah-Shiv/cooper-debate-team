@@ -864,11 +864,15 @@
   }
 
   async function saveVolunteerReviewPdf() {
-    const filenameBase = String(selectedEvent?.title || "volunteer-signup")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-|-$/g, "");
-    const filename = `${filenameBase || "volunteer-signup"}-judge-signup.pdf`;
+    const tournamentName = String(selectedEvent?.title || "Tournament")
+      .trim()
+      .replace(/[^a-zA-Z0-9]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    const tournamentDate = String(selectedEvent?.date || "Date_To_Be_Announced")
+      .trim()
+      .replace(/[^a-zA-Z0-9-]+/g, "_")
+      .replace(/^_+|_+$/g, "");
+    const filename = `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate || "Date_To_Be_Announced"}.pdf`;
     const blob = buildVolunteerReviewPdf();
     try {
       if ("showSaveFilePicker" in window) {
