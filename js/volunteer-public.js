@@ -317,10 +317,6 @@
                 <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
                 <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
-              <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
-                <div class="vol-roster-progress"><span style="width:${Math.max(0, Math.min(100, stats.fillRate))}%"></span></div>
-                <div class="vol-roster-progress-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
-              </div>
             </div>
             <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
               <div class="vol-roster-table-head" role="row">
