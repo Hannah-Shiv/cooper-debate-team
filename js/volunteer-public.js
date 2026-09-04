@@ -324,11 +324,11 @@
 
       return `
         <article class="vol-event-card vol-unified-card">
-          <section class="vol-opportunity-panel" aria-label="Judge volunteer opportunity">
+          <section class="vol-opportunity-panel" aria-label="Judge Volunteer Opportunity">
             <div class="vol-panel-purpose vol-panel-purpose--entry">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("clock")}</div>
               <div class="vol-panel-purpose-flow">
-                <strong>Judge volunteer opportunity</strong>
+                <strong>Judge Volunteer Opportunity</strong>
                 <i class="vol-purpose-arrow" aria-hidden="true"></i>
                 <span>Enter Your Availability</span>
               </div>
@@ -376,7 +376,7 @@
             <div class="vol-panel-purpose vol-panel-purpose--results">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div class="vol-panel-purpose-flow">
-                <strong>Volunteers already signed up</strong>
+                <strong>Volunteers Already Signed Up</strong>
                 <i class="vol-purpose-arrow" aria-hidden="true"></i>
                 <span>Results panel</span>
               </div>
