@@ -2131,7 +2131,11 @@
     .vol-roster-metrics .fill-rate .vol-metric-circle strong { background:#071b3e; border:1px solid rgba(169,130,255,.22); border-radius:50%; display:grid; font-size:1.48rem; height:54px; place-items:center; position:relative; width:54px; }
     .vol-roster-metrics .available { color:#b9cfff; }
     .vol-roster-metrics .available .vol-metric-circle { background:rgba(185,207,255,.11); box-shadow:0 0 18px rgba(185,207,255,.11); }
-    .vol-roster-controls { align-items:stretch; display:grid; gap:9px; grid-template-columns:minmax(120px,1.05fr) minmax(205px,1.65fr) minmax(108px,.85fr); margin:18px 0 16px; }
+    .vol-roster-control-divider { align-items:center; display:flex; gap:11px; margin:19px 0 23px; }
+    .vol-roster-control-divider::before,.vol-roster-control-divider::after { background:linear-gradient(90deg,transparent,rgba(239,197,88,.78)); content:""; flex:1; height:1px; }
+    .vol-roster-control-divider::after { background:linear-gradient(90deg,rgba(239,197,88,.78),transparent); }
+    .vol-roster-control-divider span { color:#efc558; font-size:.82rem; line-height:1; text-shadow:0 0 5px rgba(239,197,88,.38); }
+    .vol-roster-controls { align-items:stretch; display:grid; gap:9px; grid-template-columns:minmax(120px,1.05fr) minmax(205px,1.65fr) minmax(108px,.85fr); margin:0 0 16px; }
     .vol-roster-search-box,.vol-roster-sort-box,.vol-roster-filter-box { background:rgba(4,8,28,.72); border-radius:8px; min-height:42px; position:relative; }
     .vol-roster-search-box { border:1px solid rgba(125,211,252,.65); display:flex; padding:9px 9px 8px 31px; }
     .vol-roster-search-box::before,.vol-roster-sort-box::before,.vol-roster-filter-box::before { background:#071b3e; font:700 .58rem/1 'Josefin Sans',sans-serif; left:8px; letter-spacing:.14em; padding:0 5px; pointer-events:none; position:absolute; top:-6px; user-select:none; }
@@ -2147,10 +2151,11 @@
     .vol-roster-sort-btn { flex:1 1 0; min-width:0; }
     .vol-roster-sort-btn:hover { background:rgba(167,139,250,.1); color:rgba(196,181,253,.92); }
     .vol-roster-sort-btn.active { background:rgba(167,139,250,.18); color:#c4b5fd; }
-    .vol-roster-filter-btn { width:100%; }
+    .vol-roster-filter-btn { flex:1 1 0; font-size:.52rem; min-width:0; padding-inline:3px; width:auto; }
     .vol-roster-filter-btn:hover { background:rgba(34,197,94,.1); color:rgba(74,222,128,.92); }
     .vol-roster-filter-btn.active { background:rgba(34,197,94,.15); color:#4ade80; }
     .vol-roster-filter-empty { color:#aec7e8; font-size:.76rem; padding:20px; text-align:center; }
+    .vol-roster-row[hidden],.vol-roster-filter-empty[hidden] { display:none!important; }
     .vol-public-roster-heading { align-items:center; display:flex; gap:15px; }
     .vol-public-roster-heading .vol-modal-icon { color:#f0b62c; height:52px; width:52px; }
     .vol-public-roster-heading h4 { color:#fff; font:700 1.18rem 'Josefin Sans',sans-serif; letter-spacing:.025em; margin:0 0 6px; text-transform:uppercase; }
@@ -4782,7 +4787,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=43"></script>
+<script src="js/volunteer-public.js?v=44"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

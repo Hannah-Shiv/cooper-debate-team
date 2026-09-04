@@ -175,7 +175,7 @@
     const body = controls.closest(".vol-public-roster")?.querySelector(".vol-roster-table-body");
     if (!body) return;
     const search = controls.querySelector(".vol-roster-search-input")?.value.trim().toLowerCase() || "";
-    const fullOnly = controls.querySelector(".vol-roster-filter-btn")?.classList.contains("active");
+    const activeFilter = controls.querySelector(".vol-roster-filter-btn.active")?.dataset.coverage || "";
     const activeSort = controls.querySelector(".vol-roster-sort-btn.active");
     const sortKey = activeSort?.dataset.sort || "name";
     const direction = activeSort?.dataset.direction === "desc" ? -1 : 1;
@@ -191,7 +191,7 @@
     let visible = 0;
     rows.forEach(row => {
       const matchesSearch = !search || `${row.dataset.name} ${row.dataset.debater}`.toLowerCase().includes(search);
-      const matchesFilter = !fullOnly || row.dataset.fullCoverage === "true";
+      const matchesFilter = !activeFilter || row.dataset.coverage === activeFilter;
       const show = matchesSearch && matchesFilter;
       row.hidden = !show;
       if (show) visible += 1;
@@ -248,7 +248,7 @@
           const availability = timeRange(signup.availabilityStart, signup.availabilityEnd) || "Availability shared with coaches";
           const coverage = coverageForSignup(signup, event);
           return `
-            <div class="vol-roster-row" role="row" data-name="${escapeHtml(signup.parentName)}" data-debater="${escapeHtml(signup.studentName || "")}" data-time="${escapeHtml(signup.availabilityStart || "")}" data-full-coverage="${coverage.className === "is-full"}">
+            <div class="vol-roster-row" role="row" data-name="${escapeHtml(signup.parentName)}" data-debater="${escapeHtml(signup.studentName || "")}" data-time="${escapeHtml(signup.availabilityStart || "")}" data-coverage="${escapeHtml(coverage.className)}">
               <div class="vol-roster-volunteer" role="cell" data-label="Volunteer">
                 <strong>${escapeHtml(signup.parentName)}</strong>
               </div>
@@ -354,6 +354,7 @@
                 <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
                 <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
+              <div class="vol-roster-control-divider" aria-hidden="true"><span>✦</span></div>
               ${publicSignups.length ? `
               <div class="vol-roster-controls" aria-label="Search, sort, and filter volunteers">
                 <label class="vol-roster-search-box">
@@ -366,7 +367,9 @@
                   <button type="button" class="vol-roster-sort-btn" data-sort="debater" data-label="Debater" data-direction="asc">Debater</button>
                 </div>
                 <div class="vol-roster-filter-box">
-                  <button type="button" class="vol-roster-filter-btn" aria-pressed="false">✓ Full Coverage</button>
+                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-morning" aria-pressed="false" aria-label="Filter by morning coverage">Morning</button>
+                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-full" aria-pressed="false" aria-label="Filter by full coverage">Full</button>
+                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-afternoon" aria-pressed="false" aria-label="Filter by afternoon coverage">Afternoon</button>
                 </div>
               </div>` : ""}
             </div>
@@ -411,10 +414,20 @@
           applyRosterControls(controls);
         });
       });
-      controls.querySelector(".vol-roster-filter-btn")?.addEventListener("click", event => {
-        event.currentTarget.classList.toggle("active");
-        event.currentTarget.setAttribute("aria-pressed", String(event.currentTarget.classList.contains("active")));
-        applyRosterControls(controls);
+      controls.querySelectorAll(".vol-roster-filter-btn").forEach(button => {
+        button.addEventListener("click", event => {
+          const selected = event.currentTarget;
+          const shouldActivate = !selected.classList.contains("active");
+          controls.querySelectorAll(".vol-roster-filter-btn").forEach(item => {
+            item.classList.remove("active");
+            item.setAttribute("aria-pressed", "false");
+          });
+          if (shouldActivate) {
+            selected.classList.add("active");
+            selected.setAttribute("aria-pressed", "true");
+          }
+          applyRosterControls(controls);
+        });
       });
       applyRosterControls(controls);
     });
