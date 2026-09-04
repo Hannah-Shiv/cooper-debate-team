@@ -239,11 +239,12 @@
             </div>`;
         }).join("")
         : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
+      const availabilityIconNames = ["morning", "afternoon", "full-day", "other"];
       const availabilityMarkup = choices.map((choice, index) => `
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
           <span class="vol-availability-radio" aria-hidden="true"></span>
-          <span class="vol-availability-icon" aria-hidden="true">${modalIcon("clock")}</span>
+          <span class="vol-availability-icon" aria-hidden="true"><img src="assets/icons/volunteer-${availabilityIconNames[index] || "other"}.png" alt=""></span>
           <span class="vol-availability-copy"><strong>${escapeHtml(choice.label)}</strong><small>${escapeHtml(choice.detail)}</small></span>
            <span class="vol-selection-check" aria-hidden="true">✓</span>
           ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
