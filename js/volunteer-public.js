@@ -277,13 +277,6 @@
               <div><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></div>
               ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
             </div>
-            <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
-              <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
-              <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
-              <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
-              <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
-              <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
-            </div>
             <div class="vol-unified-signup">
               <div class="vol-role-area">
                 <div class="vol-role-heading"><span>▣</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
@@ -305,6 +298,13 @@
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div><span>Results panel</span><strong>Volunteer Sign-Up Results</strong></div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
+            </div>
+            <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
+              <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
+              <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
+              <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
+              <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
+              <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
             </div>
             <div class="vol-roster-summary">
               <div class="vol-public-roster-heading">

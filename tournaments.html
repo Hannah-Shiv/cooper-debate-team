@@ -2037,8 +2037,8 @@
     .vol-unified-card .vol-role:hover { border-color:rgba(232,184,75,.6); }
     .vol-unified-card .vol-role-copy h4 { font-size:.8rem; }
     .vol-unified-card .vol-signup-btn { border-radius:4px; padding:9px 12px; }
-    .vol-availability-options { display:grid; flex:1; gap:8px; grid-template-rows:repeat(4,minmax(58px,1fr)); }
-    .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:11px; grid-template-columns:auto auto minmax(0,1fr) auto auto; min-height:58px; overflow:hidden; padding:10px 13px; position:relative; transform-origin:center center; transform-style:preserve-3d; transition:border-color .3s ease,background .3s ease,transform .3s ease,box-shadow .3s ease,color .3s ease; }
+    .vol-availability-options { display:grid; flex:1; gap:9px; grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(82px,1fr)); }
+    .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:6px 9px; grid-template-columns:auto auto minmax(0,1fr) auto; min-height:82px; overflow:hidden; padding:11px 12px; position:relative; transform-origin:center center; transform-style:preserve-3d; transition:border-color .3s ease,background .3s ease,transform .3s ease,box-shadow .3s ease,color .3s ease; }
     .vol-availability-option:hover { border-color:rgba(232,184,75,.6); transform:translateY(-1px); }
     .vol-availability-option.is-selected { background:linear-gradient(105deg,#28578f 0%,#163966 58%,#10294d 100%); border-color:#f0c557; box-shadow:0 0 0 1px rgba(240,197,87,.22) inset,0 7px 18px rgba(0,0,0,.24),0 0 18px rgba(240,197,87,.13); }
     .vol-availability-option.is-flipping > span {
@@ -2064,7 +2064,7 @@
     .vol-availability-option.is-selected .vol-availability-copy small { color:#d9e9ff; }
     .vol-selection-check { align-items:center; background:rgba(64,205,139,.12); border:1px solid rgba(88,224,158,.26); border-radius:50%; color:#64e0a2; display:flex; font:bold .76rem/1 Arial,sans-serif; height:22px; justify-content:center; opacity:0; transform:scale(.65); transition:opacity .2s ease,transform .25s ease,background .2s ease; width:22px; }
     .vol-availability-option.is-selected .vol-selection-check { background:#42c98a; border-color:#82efbb; box-shadow:0 0 12px rgba(66,201,138,.34); color:#062e20; opacity:1; transform:scale(1); }
-    .vol-availability-duration { background:rgba(212,160,23,.16); border-radius:99px; color:#f2c658; font:700 .87rem 'Josefin Sans',sans-serif; letter-spacing:.04em; padding:6px 9px; white-space:nowrap; }
+    .vol-availability-duration { background:rgba(212,160,23,.16); border-radius:99px; color:#f2c658; font:700 .75rem 'Josefin Sans',sans-serif; grid-column:3/-1; justify-self:start; letter-spacing:.04em; padding:5px 8px; white-space:nowrap; }
     .vol-availability-option.is-selected .vol-availability-duration { background:#f0c557; color:#102846; box-shadow:0 2px 8px rgba(0,0,0,.2); }
     @media(prefers-reduced-motion:reduce){
       .vol-availability-option.is-flipping > span { animation:none; }
@@ -2088,6 +2088,7 @@
     .vol-public-assignment h4 { color:#a9d1ff; }
     .vol-public-sidebar .vol-public-assignment { margin-top:auto; }
     .vol-public-roster { background:linear-gradient(135deg,rgba(7,30,71,.72),rgba(2,17,43,.64)); border-top:1px solid rgba(132,181,242,.2); padding:28px; }
+    .vol-public-roster > .vol-unified-metrics { background:linear-gradient(135deg,rgba(4,30,69,.88),rgba(3,22,54,.92)); border:1px solid rgba(125,166,220,.34); border-radius:8px; margin-bottom:22px; overflow:hidden; padding:0; }
     .vol-roster-summary { align-items:center; display:grid; gap:32px; grid-template-columns:minmax(0,1fr) minmax(330px,.92fr); margin-bottom:21px; }
     .vol-public-roster-heading { align-items:center; display:flex; gap:15px; }
     .vol-public-roster-heading .vol-modal-icon { color:#f0b62c; height:52px; width:52px; }
@@ -2409,6 +2410,7 @@
       .vol-unified-facts,.vol-unified-metrics{grid-template-columns:repeat(2,minmax(0,1fr));}
       .vol-unified-facts > div:nth-child(2n),.vol-unified-metrics > div:nth-child(2n){border-right:0;}
       .vol-unified-facts > div:nth-child(-n+2),.vol-unified-metrics > div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.11);}
+      .vol-public-roster > .vol-unified-metrics .deadline{border-right:0;grid-column:1/-1;min-height:88px;}
       .vol-unified-signup{grid-template-columns:1fr;}
       .vol-public-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
     }
@@ -2666,8 +2668,10 @@
       .vol-unified-brief{grid-template-columns:1fr;padding:0 20px;}.vol-unified-brief > div,.vol-unified-brief > div + div{border-bottom:1px solid rgba(255,255,255,.1);border-right:0;padding:14px 0;}.vol-unified-brief a{align-self:auto;margin:14px 0;padding:11px;text-align:center;}
       .vol-unified-metrics strong{font-size:1.65rem;}.vol-unified-metrics .deadline strong{font-size:.88rem;}
       .vol-unified-signup{padding:18px;}.vol-public-sidebar{display:flex;height:auto;}
-      .vol-availability-option{gap:8px;grid-template-columns:auto auto minmax(0,1fr) auto auto;padding:10px;}
-      .vol-availability-duration{grid-column:auto;justify-self:start;padding:4px 7px;}
+      .vol-availability-options{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(92px,1fr));}
+      .vol-availability-option{align-content:center;gap:6px;grid-template-columns:auto minmax(0,1fr) auto;min-height:92px;padding:10px;}
+      .vol-availability-icon{display:none;}
+      .vol-availability-duration{grid-column:1/-1;justify-self:start;padding:4px 7px;}
       .vol-availability-copy strong{font-size:.88rem;}
       .vol-public-roster{padding:22px 16px;}
       .vol-roster-summary{gap:19px;grid-template-columns:1fr;}
@@ -4661,7 +4665,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=31"></script>
+<script src="js/volunteer-public.js?v=32"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
