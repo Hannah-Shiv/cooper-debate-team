@@ -2913,7 +2913,9 @@
         background:rgba(28,30,35,.2);
       }
       .tournaments-page .vol-opportunity-panel .vol-unified-metrics {
-        background:rgba(16,18,22,.28);
+        background:linear-gradient(135deg,#073f39 0%,#052f31 100%);
+        border-bottom-color:rgba(112,209,178,.25);
+        border-top-color:rgba(112,209,178,.25);
       }
       .tournaments-page .vol-opportunity-panel .vol-unified-metrics > div:not(.deadline) {
         min-height:132px;
@@ -2970,23 +2972,44 @@
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected),
       .tournaments-page .vol-opportunity-panel .vol-role {
-        background:rgba(22,24,29,.58);
-        border-color:rgba(207,214,225,.25);
+        background:#d6ebe6;
+        border-color:#8ebfb5;
+        box-shadow:0 4px 12px rgba(3,31,35,.16);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected):hover {
+        background:#c6e4e7;
+        border-color:#78accd;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-radio {
+        border-color:#497d7e;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-icon {
+        color:#126272;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-copy strong {
+        color:#103f48;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-copy small {
+        color:#42666a;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected) .vol-availability-duration {
+        background:#b5d9d4;
+        color:#174f59;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option.is-selected {
         background:#0c234d;
         border-color:#f0c557;
       }
       .tournaments-page .vol-public-roster .vol-roster-row {
-        background:#30343a;
-        border-top-color:rgba(224,229,237,.3);
+        background:linear-gradient(90deg,#155f47 0%,#104c3c 100%);
+        border-top-color:rgba(133,230,189,.34);
       }
       .tournaments-page .vol-public-roster .vol-roster-table-head,
       .tournaments-page .vol-public-roster .vol-roster-row {
         grid-template-columns:1fr 1.42fr .9fr 1.18fr;
       }
       .tournaments-page .vol-public-roster .vol-roster-row > div {
-        border-right-color:rgba(224,229,237,.2);
+        border-right-color:rgba(179,238,211,.2);
       }
       .tournaments-page .vol-public-roster .vol-roster-availability {
         gap:7px;
