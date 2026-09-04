@@ -234,6 +234,7 @@
           <span class="vol-availability-radio" aria-hidden="true"></span>
           <span class="vol-availability-icon" aria-hidden="true">${choice.icon}</span>
           <span class="vol-availability-copy"><strong>${escapeHtml(choice.label)}</strong><small>${escapeHtml(choice.detail)}</small></span>
+           <span class="vol-selection-check" aria-hidden="true">✓</span>
           ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
         </label>`).join("");
 
