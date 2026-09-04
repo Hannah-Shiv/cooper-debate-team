@@ -757,110 +757,193 @@
       </aside>`);
   }
 
-  const printablePdfText = value => String(value || "")
-    .replace(/[–—]/g, "-")
-    .replace(/[‘’]/g, "'")
-    .replace(/[“”]/g, "\"")
-    .normalize("NFKD")
-    .replace(/[^\x20-\x7E]/g, "")
-    .replace(/\\/g, "\\\\")
-    .replace(/\(/g, "\\(")
-    .replace(/\)/g, "\\)");
+  // The review sheet is intentionally drawn as one fixed US Letter image. This
+  // keeps long names/notes inside the template and guarantees one PDF page.
+  const pdfImage = src => new Promise(resolve => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => resolve(null);
+    image.src = src;
+  });
 
-  function buildVolunteerReviewPdf() {
-    const firstName = $("vol-parent-first-name").value.trim();
-    const lastName = $("vol-parent-last-name").value.trim();
-    const volunteerName = `${firstName} ${lastName}`.trim();
-    const availability = timeRange($("vol-availability-start").value, $("vol-availability-end").value);
-    const details = [
-      ["Tournament", selectedEvent?.title],
-      ["Role", roleDisplayLabel(selectedRole)],
-      ["Date", selectedEvent?.date ? dateLabel(selectedEvent.date) : "To be announced"],
-      ["Availability", availability],
-      ["Location", selectedEvent?.location || "To be announced"],
-      ["Volunteer", volunteerName],
-      ["Debater", $("vol-student-name").value.trim() || "Not provided"],
-      ["Email", $("vol-email").value.trim()],
-      ["Phone", $("vol-phone").value.trim()],
+  async function buildVolunteerReviewPdf() {
+    const scale = 2.083333;
+    const canvas = document.createElement("canvas");
+    canvas.width = 1275;
+    canvas.height = 1650;
+    const ctx = canvas.getContext("2d");
+    ctx.scale(scale, scale);
+    const W = 612;
+    const navy = "#062451";
+    const gold = "#f6c928";
+    const ink = "#102b59";
+    const pale = "#eaf4fc";
+    const line = "#c6dced";
+    const white = "#fffdf7";
+    const firstName = $("vol-parent-first-name")?.value.trim() || "";
+    const volunteerName = `${firstName} ${$("vol-parent-last-name")?.value.trim() || ""}`.trim();
+    const event = selectedEvent || {};
+    const value = (item, fallback) => String(item || fallback || "Not provided");
+    const availability = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value) || "To be announced";
+    const location = value(event.location, "Location to be announced");
+    const address = event.address || "";
+    const resolution = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+    const expected = [
+      "You will be assigned to multiple rounds throughout the day.",
+      "Each round is about a 60-minute session, followed by a short feedback period.",
+      "You will evaluate constructive speeches, crossfire, and rebuttals using a provided ballot.",
+      "Coaches and student volunteers will be available to answer questions and provide support.",
+      "You may be paired with another judge for certain rounds.",
     ];
-    const eventTitle = selectedEvent?.title || "Tournament";
-    const commands = [
-      "1 1 1 rg 0 0 612 792 re f",
-      "0.02 0.10 0.20 rg 0 650 612 142 re f",
-      "0.95 0.78 0.18 rg",
-      `BT /F3 19 Tf 44 746 Td (${printablePdfText("Cooper Debate Team")}) Tj ET`,
-      "1 1 1 rg",
-      `BT /F2 23 Tf 44 706 Td (${printablePdfText("Volunteer Judge Signup")}) Tj ET`,
-      "0.95 0.78 0.18 rg",
-      `BT /F2 8 Tf 382 746 Td (${printablePdfText("TOURNAMENT")}) Tj ET`,
-      "1 1 1 rg",
-      `BT /F2 13 Tf 382 724 Td (${printablePdfText(eventTitle)}) Tj ET`,
-      "0 0 0 rg",
-      `BT /F2 12 Tf 48 612 Td (${printablePdfText(`Dear ${firstName || "Volunteer"},`)}) Tj ET`,
-      `BT /F1 10.5 Tf 48 586 Td (${printablePdfText("Thank you for volunteering as a judge for the Cooper Debate Team. Your time and")}) Tj ET`,
-      `BT /F1 10.5 Tf 48 569 Td (${printablePdfText("support help make a great tournament experience possible for every debater.")}) Tj ET`,
-      `BT /F1 10.5 Tf 48 545 Td (${printablePdfText("Please confirm that the signup details below are correct.")}) Tj ET`,
-      "0 0 0 RG 0.8 w 48 515 m 564 515 l S",
-      `BT /F2 11 Tf 48 494 Td (${printablePdfText("SIGNUP DETAILS")}) Tj ET`,
+    const importantItems = [
+      "Tournament schedule and judge pairings will be provided at check-in.",
+      "This is a middle school tournament. Rounds may include novice debaters.",
+      "Be prepared for a day of thoughtful discussion, engaged students, and great debates!",
+      "If you have questions during the event, please ask a coach or tournament volunteer.",
     ];
-    let y = 462;
-    details.forEach(([label, value]) => {
-      commands.push(
-        `0 0 0 rg 66 ${y + 3} 3 3 re f`,
-        `BT /F2 10 Tf 82 ${y} Td (${printablePdfText(label)}) Tj ET`,
-        `BT /F1 10 Tf 194 ${y} Td (${printablePdfText(value || "Not provided")}) Tj ET`
-      );
-      y -= 31;
-    });
-    const notes = $("vol-notes").value.trim();
-    if (notes) {
-      const shortenedNotes = notes.length > 150 ? `${notes.slice(0, 147)}...` : notes;
-      const words = shortenedNotes.split(/\s+/);
-      const noteLines = [""];
+    const meal = "A complimentary lunch will be provided for all judges. Light refreshments (coffee, water, snacks) will be available throughout the day.";
+    const coach = "Coach Pamela Konde · pgkonde@fcps.edu";
+    const wrap = (text, maxWidth, font) => {
+      ctx.font = font;
+      ctx.letterSpacing = "0px";
+      const words = String(text || "").split(/\s+/);
+      const rows = [];
+      let row = "";
       words.forEach(word => {
-        const current = noteLines[noteLines.length - 1];
-        if (`${current} ${word}`.trim().length > 72 && noteLines.length < 2) noteLines.push(word);
-        else noteLines[noteLines.length - 1] = `${current} ${word}`.trim();
+        const next = row ? `${row} ${word}` : word;
+        if (ctx.measureText(next).width > maxWidth && row) { rows.push(row); row = word; }
+        else row = next;
       });
-      commands.push(
-        `0 0 0 rg 66 ${y + 3} 3 3 re f`,
-        `BT /F2 10 Tf 82 ${y} Td (${printablePdfText("Notes")}) Tj ET`,
-        `BT /F1 10 Tf 194 ${y} Td (${printablePdfText(noteLines[0])}) Tj ET`
-      );
-      if (noteLines[1]) commands.push(
-        `BT /F1 10 Tf 194 ${y - 15} Td (${printablePdfText(noteLines[1])}) Tj ET`
-      );
-    }
-    commands.push(
-      "0 0 0 RG 0.8 w 48 108 m 564 108 l S",
-      "0 0 0 rg",
-      `BT /F2 10.5 Tf 48 82 Td (${printablePdfText("Thank you for stepping up to judge - we are glad to have you with us!")}) Tj ET`,
-      `BT /F1 8.5 Tf 48 56 Td (${printablePdfText("Cooper Debate Team  |  Volunteer contact information is shared only with the coaching staff.")}) Tj ET`
-    );
+      if (row) rows.push(row);
+      return rows;
+    };
+    const text = (str, x, y, maxWidth, font, color = ink, maxLines = 4, leading = 11) => {
+      const rows = wrap(str, maxWidth, font).slice(0, maxLines);
+      ctx.font = font; ctx.letterSpacing = "0px"; ctx.fillStyle = color; ctx.textBaseline = "top";
+      rows.forEach((row, index) => ctx.fillText(row, x, y + index * leading));
+      return y + rows.length * leading;
+    };
+    const rounded = (x, y, w, h, r, fill, stroke) => {
+      ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
+      ctx.fillStyle = fill; ctx.fill();
+      if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = .7; ctx.stroke(); }
+    };
+    const bar = (x, y, w, title, accent = gold) => {
+      ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
+      ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
+      const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
+      ctx.font = `700 ${titleSize}px Arial`; ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
+      ctx.fillText(title.toUpperCase(), x + 14, y + 7);
+    };
+    const bullets = (items, x, y, width, font = "7.7px Arial", gap = 17, maxLines = 2, leading = 9) => {
+      let cursor = y;
+      items.slice(0, 6).forEach(item => {
+        ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = navy; ctx.font = "700 7px Arial"; ctx.letterSpacing = "0px"; ctx.fillText("✓", x + 1.5, cursor + 1.5);
+        cursor = text(item, x + 14, cursor, width - 14, font, ink, maxLines, leading) + 4;
+      });
+      return cursor;
+    };
+    ctx.fillStyle = white; ctx.fillRect(0, 0, W, 792);
+    ctx.textBaseline = "top";
+    ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 92);
+    ctx.fillStyle = gold; ctx.fillRect(0, 90, W, 2);
+    const [badge, jaguar] = await Promise.all([pdfImage("images/cooper-debate-badge.png"), pdfImage("images/index-footer-jaguar.png")]);
+    if (badge) ctx.drawImage(badge, 20, 10, 64, 64);
+    if (jaguar) ctx.drawImage(jaguar, 540, 14, 52, 62);
+    ctx.textAlign = "center";
+    ctx.font = "700 22px Georgia"; ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
+    ctx.font = "700 9px Arial"; ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("THINK  ·  SPEAK  ·  LEAD", 306, 49);
+    ctx.font = "8px Arial"; ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
+    ctx.letterSpacing = "0px";
+    ctx.textAlign = "left";
+    ctx.font = "700 8px Arial"; ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
+    ctx.font = "700 24px Georgia"; ctx.fillStyle = navy;
+    const headline = wrap(`Thank You for Representing the Cooper Debate Team!`, 368, "700 24px Georgia").slice(0, 2);
+    headline.forEach((row, i) => ctx.fillText(row, 22, 114 + i * 25));
+    text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
+    text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, 365, "9px Arial", ink, 2, 11);
+    rounded(402, 106, 188, 127, 8, "#dceefa");
+    ctx.fillStyle = gold; ctx.fillRect(411, 115, 3, 109);
+    ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 425, 116);
+    text(value(event.title, "Upcoming Tournament"), 425, 131, 151, "700 13px Georgia", navy, 2, 14);
+    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 425, 166, 151, "8.5px Arial", ink, 2, 10);
+    text(`${location}${address ? `\n${address}` : ""}`, 425, 188, 151, "8px Arial", ink, 3, 10);
+    text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 218, 151, "700 7.5px Arial", ink, 2, 9);
 
-    const content = commands.join("\n");
+    const left = 22, right = 304, colW = 276;
+    bar(left, 254, colW, "Your Signup Details");
+    rounded(left, 278, colW, 224, 5, pale, line);
+    const rows = [
+      ["Role", roleDisplayLabel(selectedRole)], ["Volunteer Name", volunteerName],
+      ["Debater's Name", $("vol-student-name")?.value.trim() || "Not provided"],
+      ["Email", $("vol-email")?.value.trim() || "Not provided"], ["Phone", $("vol-phone")?.value.trim() || "Not provided"],
+      ["Availability", availability], ["Location", `${location}${address ? `\n${address}` : ""}`],
+      ["Notes", $("vol-notes")?.value.trim() || "No notes provided."],
+    ];
+    let rowY = 282;
+    rows.forEach(([label, val], index) => {
+      const h = index >= 6 ? (index === 7 ? 58 : 36) : 19;
+      if (index % 2 === 0) { ctx.fillStyle = "#d9eafa"; ctx.fillRect(left, rowY, colW, h); }
+      ctx.font = "700 7.5px Arial"; ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
+      text(val, left + 91, rowY + 5, colW - 101, "7.5px Arial", ink, index === 7 ? 5 : index === 6 ? 3 : 2, 9);
+      rowY += h;
+    });
+    bar(right, 254, colW, "Tournament Resolution");
+    rounded(right, 278, colW, 74, 5, "#f5f9fc", line);
+    text(`Resolved: ${resolution}`, right + 10, 290, colW - 20, "8px Arial", ink, 5, 10);
+    bar(right, 362, colW, "What to Expect");
+    rounded(right, 386, colW, 116, 5, "#f5f9fc", line);
+    bullets(expected, right + 10, 395, colW - 20, "7.5px Arial", 15);
+
+    const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
+    const boxTitles = ["Arrival & Parking", "Meals & Refreshments", "Important Information", "Contact & Support"];
+    const boxItems = [
+      ["Please arrive early for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot."],
+      [meal, "Please let us know about dietary restrictions in advance if possible."],
+      importantItems,
+      [`If you have questions before the tournament, contact:`, coach, "On tournament day, ask a coach or student volunteer for help."],
+    ];
+    boxTitles.forEach((title, index) => {
+      const x = 22 + index * (boxW + boxGap);
+      bar(x, boxY, boxW, title, gold);
+      rounded(x, boxY + 24, boxW, 137, 5, "#f5f9fc", line);
+      bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, "6.8px Arial", 14, 3, 8);
+    });
+    rounded(22, 660, 278, 68, 6, "#e9f5f0", "#c8e1d6");
+    bar(22, 660, 278, "Privacy Note", "#1f785e");
+    text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 695, 252, "8px Arial", ink, 3, 10);
+    rounded(308, 660, 282, 68, 6, "#fff0b9", "#f0d36b");
+    ctx.fillStyle = navy; ctx.font = "700 14px Georgia"; ctx.fillText("Thank you again for representing", 322, 674);
+    ctx.fillText("the Cooper Debate Team!", 322, 691);
+    ctx.font = "italic 700 9px Georgia"; ctx.fillText("We look forward to seeing you at the tournament!", 322, 710);
+    ctx.font = "700 9px Georgia"; ctx.fillText("— Cooper Debate Team", 470, 721);
+
+    const jpeg = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .92));
+    const bytes = new Uint8Array(await jpeg.arrayBuffer());
+    const stream = `q\n612 0 0 792 0 0 cm\n/Im0 Do\nQ`;
+    const encoder = new TextEncoder();
     const objects = [
       "<< /Type /Catalog /Pages 2 0 R >>",
       "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R >>",
-      `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
-      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
-      "<< /Type /Font /Subtype /Type1 /BaseFont /Times-BoldItalic >>",
+      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /XObject << /Im0 5 0 R >> >> /Contents 4 0 R >>",
+      `<< /Length ${encoder.encode(stream).length} >>\nstream\n${stream}\nendstream`,
+      `<< /Type /XObject /Subtype /Image /Width 1275 /Height 1650 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${bytes.length} >>\nstream\n`,
     ];
-    let pdf = "%PDF-1.4\n";
+    const chunks = [encoder.encode("%PDF-1.4\n")];
     const offsets = [0];
+    let offset = chunks[0].length;
     objects.forEach((object, index) => {
-      offsets.push(new TextEncoder().encode(pdf).length);
-      pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+      offsets.push(offset);
+      const prefix = encoder.encode(`${index + 1} 0 obj\n${object}`);
+      const suffix = encoder.encode(index === 4 ? "\nendstream\nendobj\n" : "\nendobj\n");
+      chunks.push(prefix, index === 4 ? bytes : new Uint8Array(0), suffix);
+      offset += prefix.length + (index === 4 ? bytes.length : 0) + suffix.length;
     });
-    const xrefOffset = new TextEncoder().encode(pdf).length;
-    pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
-    offsets.slice(1).forEach(offset => {
-      pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
-    });
-    pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
-    return new Blob([pdf], { type: "application/pdf" });
+    const xrefOffset = offset;
+    const xref = `xref\n0 6\n0000000000 65535 f \n${offsets.slice(1).map(item => `${String(item).padStart(10, "0")} 00000 n \n`).join("")}trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+    chunks.push(encoder.encode(xref));
+    return new Blob(chunks, { type: "application/pdf" });
   }
 
   async function saveVolunteerReviewPdf() {
@@ -873,7 +956,7 @@
       .replace(/[^a-zA-Z0-9-]+/g, "_")
       .replace(/^_+|_+$/g, "");
     const filename = `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate || "Date_To_Be_Announced"}.pdf`;
-    const blob = buildVolunteerReviewPdf();
+    const blob = await buildVolunteerReviewPdf();
     try {
       if ("showSaveFilePicker" in window) {
         const handle = await window.showSaveFilePicker({
