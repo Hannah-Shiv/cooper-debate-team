@@ -284,6 +284,10 @@ function validEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function validPhone(phone) {
+  return String(phone || "").replace(/\D/g, "").length === 10;
+}
+
 function cleanEmail(value) {
   return cleanText(value, 160).toLowerCase();
 }
@@ -730,7 +734,7 @@ exports.publicVolunteerSignup = onRequest(
       return;
     }
 
-    if (!eventId || !roleId || !parentFirstName || !parentLastName || !validEmail(email) || !phone || !availabilityStart || !availabilityEnd) {
+    if (!eventId || !roleId || !parentFirstName || !parentLastName || !validEmail(email) || !validPhone(phone) || !availabilityStart || !availabilityEnd) {
       res.status(400).json({ error: "Please provide your first and last name, contact details, and judging availability." });
       return;
     }

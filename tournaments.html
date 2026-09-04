@@ -4979,7 +4979,7 @@
               </div>
               <div class="vol-form-field">
                 <label for="vol-phone"><img class="vol-field-art" src="assets/icons/volunteer-field-phone.png" alt="">Volunteer's Phone</label>
-                <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
+                <input id="vol-phone" type="tel" autocomplete="tel-national" inputmode="numeric" maxlength="14" pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(###) ###-####" required>
               </div>
               <div class="vol-form-field">
                 <label for="vol-email"><img class="vol-field-art" src="assets/icons/volunteer-field-email.png" alt="">Volunteer's Email</label>
@@ -5513,7 +5513,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=57"></script>
+<script src="js/volunteer-public.js?v=58"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

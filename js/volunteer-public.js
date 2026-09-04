@@ -46,6 +46,30 @@
     return startLabel && endLabel ? `${startLabel} – ${endLabel}` : "";
   };
 
+  const formatPhoneNumber = value => {
+    const digits = String(value || "").replace(/\D/g, "").slice(0, 10);
+    if (digits.length < 4) return digits;
+    if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+  };
+
+  const validatePhoneField = field => {
+    if (!field) return;
+    const digits = field.value.replace(/\D/g, "");
+    field.setCustomValidity(field.value && digits.length !== 10
+      ? "Enter a 10-digit phone number."
+      : "");
+  };
+
+  const validateEmailField = field => {
+    if (!field) return;
+    const email = field.value.trim();
+    const hasCompleteFormat = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
+    field.setCustomValidity(email && !hasCompleteFormat
+      ? "Enter a complete email address, such as name@example.com."
+      : "");
+  };
+
   const fullTournamentWindow = event => {
     const override = FULL_TOURNAMENT_HOUR_OVERRIDES[event?.id];
     return {
@@ -871,6 +895,15 @@
       if (detailsButton) openDetailsModal(detailsButton);
     });
     $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
+    const phoneField = $("vol-phone");
+    const emailField = $("vol-email");
+    phoneField?.addEventListener("input", () => {
+      phoneField.value = formatPhoneNumber(phoneField.value);
+      validatePhoneField(phoneField);
+    });
+    phoneField?.addEventListener("blur", () => validatePhoneField(phoneField));
+    emailField?.addEventListener("input", () => validateEmailField(emailField));
+    emailField?.addEventListener("blur", () => validateEmailField(emailField));
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
       element.addEventListener("click", closeSignup);
     });
