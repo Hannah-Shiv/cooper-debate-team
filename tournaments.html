@@ -2478,6 +2478,118 @@
     }
     body.vol-modal-open { overflow:hidden; }
 
+     /* Step one: Cooper teal / marigold event-workspace treatment.  Kept scoped
+        to the judge panel so the review step retains its existing language. */
+     #volunteer-modal .vol-judge-modal {
+       background:
+         radial-gradient(circle at 4% 0,rgba(54,156,126,.22),transparent 27%),
+         linear-gradient(135deg,#073f3d 0%,#063535 52%,#052a31 100%);
+       border:1px solid rgba(246,202,73,.64);
+       border-radius:10px;
+       box-shadow:0 28px 90px rgba(0,17,20,.72), inset 0 1px 0 rgba(255,255,255,.08);
+       max-width:1024px;
+       padding:20px 20px 14px;
+     }
+     #volunteer-modal .vol-modal-heading { border-bottom:1px solid rgba(246,202,73,.18); display:grid; grid-template-columns:1fr auto 1fr; margin-right:30px; padding-bottom:8px; }
+     #volunteer-modal .vol-modal-brandmark { filter:grayscale(1); height:44px; object-fit:contain; opacity:.34; width:52px; }
+     #volunteer-modal .vol-modal-context { justify-self:end; }
+     #volunteer-modal .vol-modal-kicker { color:#f6ca49; font-size:.57rem; letter-spacing:.16em; }
+     #volunteer-modal .vol-judge-modal h2 { color:#f7f4e9; font-size:1.72rem; letter-spacing:.01em; }
+     #volunteer-modal .vol-modal-context { color:#b9ddd3; font-size:.69rem; }
+     #volunteer-modal .vol-stepper { border-color:rgba(189,230,213,.22); margin-bottom:10px; padding:7px 0; }
+     #volunteer-modal .vol-stepper span { color:#87b6ad; font-size:.57rem; }
+     #volunteer-modal .vol-stepper .is-active { color:#f6ca49; }
+     #volunteer-modal .vol-stepper b { background:rgba(255,255,255,.07); border-color:rgba(185,224,210,.35); }
+     #volunteer-modal .vol-stepper .is-current b { background:#f6ca49; border-color:#ffe28a; color:#143d3b; }
+     #volunteer-modal .vol-condensed-form-layout { gap:14px; grid-template-columns:minmax(0,1fr) 344px; }
+     #volunteer-modal .vol-condensed-main { gap:10px 12px; grid-template-columns:minmax(0,1fr) 250px; }
+     #volunteer-modal .vol-condensed-selection {
+       align-items:center;
+       background:linear-gradient(105deg,rgba(20,102,88,.72),rgba(8,62,61,.72));
+       border-color:rgba(99,191,161,.62); border-radius:6px; padding:10px 12px;
+       box-shadow:inset 3px 0 #f6ca49; display:grid; gap:10px; grid-template-columns:32px 1fr auto;
+     }
+     #volunteer-modal .vol-selection-icon { color:#f6ca49; height:28px; width:28px; }
+     #volunteer-modal .vol-condensed-selection span { color:#f6ca49; font-size:.51rem; }
+     #volunteer-modal .vol-condensed-selection strong { font-size:.9rem; }
+     #volunteer-modal .vol-condensed-selection p { color:#c4e1d9; font-size:.58rem; }
+     #volunteer-modal .vol-availability-card--compact {
+       background:rgba(2,32,41,.44); border-color:rgba(246,202,73,.64)!important; border-radius:7px;
+       padding:11px 12px 12px;
+     }
+     #volunteer-modal .vol-availability-card legend { color:#d8eee5; font-size:.6rem; }
+     #volunteer-modal .vol-availability-card legend .vol-modal-icon { color:#f6ca49; height:26px; width:26px; }
+     #volunteer-modal .vol-time-grid { gap:8px; }
+     #volunteer-modal .vol-time-grid input {
+       background:rgba(3,44,58,.9); border-color:rgba(107,187,169,.52); color:#f9f6e8;
+       min-height:38px; padding-left:39px!important;
+     }
+     #volunteer-modal .vol-time-control > .vol-modal-icon { background:transparent; color:#f6ca49; height:22px; left:8px; padding:3px; width:22px; }
+     #volunteer-modal .vol-form-grid { gap:9px 11px; }
+     #volunteer-modal .vol-condensed-main .vol-form-field { gap:4px; }
+     #volunteer-modal .vol-form-field label { align-items:center; color:#d6eee6; display:flex; font-size:.53rem; gap:5px; }
+     #volunteer-modal .vol-form-field label .vol-field-icon { color:#f6ca49; height:15px; width:15px; }
+     #volunteer-modal .vol-condensed-main .vol-form-field input,
+     #volunteer-modal .vol-condensed-main .vol-form-field textarea {
+       background:rgba(2,35,48,.78); border-color:rgba(103,182,166,.44); border-radius:5px;
+       color:#f7f6ed; font-size:.72rem; padding:8px 9px;
+     }
+     #volunteer-modal .vol-condensed-main .vol-form-field textarea { min-height:50px; }
+     #volunteer-modal .vol-form-field input::placeholder,
+     #volunteer-modal .vol-form-field textarea::placeholder { color:#86aaa4; }
+     #volunteer-modal .vol-form-field input:hover,
+     #volunteer-modal .vol-form-field textarea:hover { border-color:rgba(246,202,73,.7); background:rgba(4,48,58,.9); }
+     #volunteer-modal .vol-form-field input:focus,
+     #volunteer-modal .vol-form-field textarea:focus {
+       background:rgba(4,54,63,.98); border-color:#f6ca49; box-shadow:0 0 0 2px rgba(246,202,73,.16); transform:translateY(-1px);
+     }
+     #volunteer-modal .vol-public-note {
+       background:rgba(17,90,91,.34); border-color:rgba(93,192,166,.45); color:#bfe2d7;
+       border-radius:5px; font-size:.57rem; padding:8px 10px;
+     }
+     #volunteer-modal .vol-signup-sidebar { gap:8px; }
+     #volunteer-modal .vol-side-card {
+       background:rgba(3,38,47,.68); border-color:rgba(246,202,73,.7); border-radius:7px; padding:11px;
+       box-shadow:inset 0 0 0 1px rgba(255,255,255,.035);
+     }
+     #volunteer-modal .vol-side-card h4 { color:#dcefe8; font-size:.59rem; margin-bottom:7px; }
+     #volunteer-modal .vol-side-card h4 .vol-modal-icon { color:#f6ca49; height:23px; width:23px; }
+     #volunteer-modal .vol-side-row { border-color:rgba(164,218,199,.18); margin-bottom:6px; padding-bottom:6px; }
+     #volunteer-modal .vol-side-row span { color:#f6ca49; font-size:.46rem; }
+     #volunteer-modal .vol-side-row strong { color:#edf6ef; font-size:.66rem; }
+     #volunteer-modal .vol-info-callout {
+       align-items:center; background:linear-gradient(180deg,rgba(12,79,87,.82),rgba(5,54,66,.78));
+       border-color:rgba(94,181,163,.42); border-radius:5px; display:flex; flex-direction:column;
+       gap:3px; justify-content:flex-start; margin-top:5px; min-height:75px; padding:7px 3px 5px; text-align:center;
+       transition:border-color .18s ease,background .18s ease,transform .18s ease;
+     }
+     #volunteer-modal .vol-info-callout:hover,
+     #volunteer-modal .vol-info-callout:focus-within { background:linear-gradient(180deg,rgba(17,100,102,.95),rgba(6,62,72,.9)); border-color:#f6ca49; transform:translateY(-1px); }
+     #volunteer-modal .vol-info-trigger { background:transparent; border:0; color:#f6ca49; height:23px; padding:0; width:27px; }
+     #volunteer-modal .vol-info-trigger .vol-modal-icon { height:22px; stroke-width:1.8; width:22px; }
+     #volunteer-modal .vol-info-callout strong { color:#f2f7f2; display:block; font-size:.53rem; line-height:1.08; }
+     #volunteer-modal .vol-info-callout > div > span { color:#a9cbc4; display:block; font-size:.4rem; line-height:1.22; margin-top:3px; }
+     #volunteer-modal .vol-info-tooltip { background:#062f39; border-color:#f6ca49; font-size:.62rem; width:230px; }
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-cancel,
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-submit { border-radius:5px; font-size:.59rem; padding:9px 16px; }
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-cancel { border-color:rgba(159,214,197,.5); color:#c6e4da; }
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-cancel:hover { background:rgba(118,194,166,.12); border-color:#f6ca49; color:#fff; }
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-submit { background:#f6ca49; border-color:#ffe18a; color:#173f3a; box-shadow:0 5px 15px rgba(246,202,73,.18); }
+     #volunteer-modal section[data-vol-step="1"] .vol-modal-actions .vol-submit:hover { background:#ffda63; border-color:#fff0b0; transform:translateY(-1px); }
+     @media(max-width:980px){
+       #volunteer-modal .vol-judge-modal { max-height:calc(100dvh - 24px); overflow:auto; }
+       #volunteer-modal .vol-condensed-form-layout { grid-template-columns:minmax(0,1fr) 300px; }
+     }
+     @media(max-width:600px){
+       #volunteer-modal .vol-judge-modal { padding:23px 15px 16px; }
+       #volunteer-modal .vol-modal-heading { display:block; }
+       #volunteer-modal .vol-modal-brandmark { display:none; }
+       #volunteer-modal .vol-condensed-form-layout { display:block; }
+       #volunteer-modal .vol-condensed-main { display:block; }
+       #volunteer-modal .vol-availability-card--compact { margin:10px 0 12px; }
+       #volunteer-modal .vol-info-rail { margin-top:12px; }
+     }
+
     .two-col { display:grid; grid-template-columns:1fr 1fr; gap:48px; }
     .three-col { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
     @media(max-width:1100px){
@@ -4309,6 +4421,7 @@
         <p class="vol-modal-kicker">Judge Volunteer Signup</p>
         <h2 id="vol-modal-title">Judge Volunteer Signup</h2>
       </div>
+      <img class="vol-modal-brandmark" src="images/index-footer-jaguar.png" alt="">
       <p id="vol-modal-context" class="vol-modal-context"></p>
     </div>
     <div class="vol-stepper" aria-label="Signup progress">
@@ -4320,6 +4433,7 @@
         <div class="vol-condensed-form-layout">
           <div class="vol-condensed-main">
             <div class="vol-condensed-selection">
+              <svg class="vol-selection-icon vol-modal-icon" aria-hidden="true" focusable="false"><use href="#vol-icon-calendar"></use></svg>
               <div>
                 <span>Your selected judging window</span>
                 <strong id="vol-condensed-event"></strong>
@@ -4341,27 +4455,27 @@
             </fieldset>
             <div class="vol-form-grid">
               <div class="vol-form-field">
-                <label for="vol-parent-first-name">Volunteer first name</label>
+                <label for="vol-parent-first-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-users"></use></svg>Volunteer first name</label>
                 <input id="vol-parent-first-name" type="text" autocomplete="given-name" maxlength="60" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-parent-last-name">Volunteer last name</label>
+                <label for="vol-parent-last-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-users"></use></svg>Volunteer last name</label>
                 <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-student-name">Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
+                <label for="vol-student-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-debate"></use></svg>Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
                 <input id="vol-student-name" type="text" maxlength="120">
               </div>
               <div class="vol-form-field">
-                <label for="vol-email">Volunteer's Email</label>
+                <label for="vol-email"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-document"></use></svg>Volunteer's Email</label>
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-phone">Volunteer's Phone</label>
+                <label for="vol-phone"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-info"></use></svg>Volunteer's Phone</label>
                 <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
               </div>
               <div class="vol-form-field full">
-                <label for="vol-notes">Notes for the coach <span style="opacity:.65;">(optional)</span></label>
+                <label for="vol-notes"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-info"></use></svg>Notes for the coach <span style="opacity:.65;">(optional)</span></label>
                 <textarea id="vol-notes" maxlength="600" placeholder="Questions, judging experience, or anything the coach should know"></textarea>
               </div>
             </div>
@@ -4884,7 +4998,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=47"></script>
+<script src="js/volunteer-public.js?v=48"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

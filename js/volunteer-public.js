@@ -620,15 +620,15 @@
     const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
     const expectations = lineItems(selectedEvent.expectations);
     const informationItems = [
-      { title: "Date", label: selectedEvent.date ? dateLabel(selectedEvent.date) : "The tournament date will be announced." },
-      { title: "Tournament hours", label: timeRange(selectedEvent.startTime, selectedEvent.endTime) || "Tournament hours will be announced." },
-      { title: "Debate format", label: selectedEvent.debateFormat || "The debate format will be shared before the tournament." },
-      { title: "Meals", label: selectedEvent.mealInfo || "Meal and refreshment details will be shared before tournament day." },
-      { title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
-      { title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
-      { title: "Resolution / topic", label: selectedEvent.resolution || "The resolution will be shared when available." },
-      { title: "Important information", label: selectedEvent.judgeInstructions || selectedEvent.details || "Please arrive early and check the tournament page before leaving." },
-      { title: "What to expect", label: expectations.join(" ") || "Plan to judge preliminary rounds within your selected availability. Final assignments will be shared closer to the tournament." },
+      { icon: "calendar", title: "Date", label: selectedEvent.date ? dateLabel(selectedEvent.date) : "The tournament date will be announced." },
+      { icon: "clock", title: "Tournament hours", label: timeRange(selectedEvent.startTime, selectedEvent.endTime) || "Tournament hours will be announced." },
+      { icon: "users", title: "Debate format", label: selectedEvent.debateFormat || "The debate format will be shared before the tournament." },
+      { icon: "utensils", title: "Meals", label: selectedEvent.mealInfo || "Meal and refreshment details will be shared before tournament day." },
+      { icon: "pin", title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
+      { icon: "trophy", title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
+      { icon: "document", title: "Resolution / topic", label: selectedEvent.resolution || "The resolution will be shared when available." },
+      { icon: "info", title: "Important information", label: selectedEvent.judgeInstructions || selectedEvent.details || "Please arrive early and check the tournament page before leaving." },
+      { icon: "question", title: "What to expect", label: expectations.join(" ") || "Plan to judge preliminary rounds within your selected availability. Final assignments will be shared closer to the tournament." },
     ];
     const contact = [
       selectedEvent.coachName,
@@ -636,7 +636,7 @@
       selectedEvent.coachPhone,
     ].filter(Boolean);
     if (contact.length) {
-      informationItems.push({ title: "Coach contact", label: contact.join(" · ") });
+      informationItems.push({ icon: "users", title: "Coach contact", label: contact.join(" · ") });
     }
     root.innerHTML = `
       <section class="vol-side-card">
@@ -645,7 +645,7 @@
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
         ${informationItems.map((item, index) => `
           <div class="vol-info-callout">
-            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">i</button>
+            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">${modalIcon(item.icon)}</button>
             <div><strong>${escapeHtml(item.title)}</strong><span>Hover or tap for more information</span></div>
             <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
           </div>`).join("")}
