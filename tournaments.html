@@ -2753,6 +2753,14 @@
         height:18px;
         width:18px;
       }
+      #volunteer-modal .vol-form-field label .vol-field-art {
+        display:block;
+        filter:drop-shadow(0 0 5px rgba(246,202,73,.22));
+        flex:0 0 auto;
+        height:24px;
+        object-fit:contain;
+        width:24px;
+      }
       #volunteer-modal .vol-condensed-main .vol-form-field input {
         background:#022437;
         font-size:.84rem;
@@ -4962,23 +4970,23 @@
             </fieldset>
             <div class="vol-form-grid">
               <div class="vol-form-field">
-                <label for="vol-parent-first-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-users"></use></svg>Volunteer first name</label>
+                <label for="vol-parent-first-name"><img class="vol-field-art" src="assets/icons/volunteer-field-id.png" alt="">Volunteer first name</label>
                 <input id="vol-parent-first-name" type="text" autocomplete="given-name" maxlength="60" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-parent-last-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-users"></use></svg>Volunteer last name</label>
+                <label for="vol-parent-last-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Volunteer last name</label>
                 <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-phone"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-info"></use></svg>Volunteer's Phone</label>
+                <label for="vol-phone"><img class="vol-field-art" src="assets/icons/volunteer-field-phone.png" alt="">Volunteer's Phone</label>
                 <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-email"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-document"></use></svg>Volunteer's Email</label>
+                <label for="vol-email"><img class="vol-field-art" src="assets/icons/volunteer-field-email.png" alt="">Volunteer's Email</label>
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-student-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-debate"></use></svg>Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
+                <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-notes.png" alt="">Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
                 <input id="vol-student-name" type="text" maxlength="120">
               </div>
             </div>
