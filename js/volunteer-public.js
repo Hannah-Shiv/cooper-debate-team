@@ -758,6 +758,9 @@
   }
 
   const printablePdfText = value => String(value || "")
+    .replace(/[–—]/g, "-")
+    .replace(/[‘’]/g, "'")
+    .replace(/[“”]/g, "\"")
     .normalize("NFKD")
     .replace(/[^\x20-\x7E]/g, "")
     .replace(/\\/g, "\\\\")
@@ -771,7 +774,7 @@
     const availability = timeRange($("vol-availability-start").value, $("vol-availability-end").value);
     const details = [
       ["Tournament", selectedEvent?.title],
-      ["Volunteer role", roleDisplayLabel(selectedRole)],
+      ["Role", roleDisplayLabel(selectedRole)],
       ["Date", selectedEvent?.date ? dateLabel(selectedEvent.date) : "To be announced"],
       ["Availability", availability],
       ["Location", selectedEvent?.location || "To be announced"],
@@ -780,55 +783,70 @@
       ["Email", $("vol-email").value.trim()],
       ["Phone", $("vol-phone").value.trim()],
     ];
+    const eventTitle = selectedEvent?.title || "Tournament";
     const commands = [
-      "0.008 0.157 0.22 rg 0 0 612 792 re f",
-      "0.961 0.773 0.259 rg 0 650 612 142 re f",
-      "0.008 0.157 0.22 rg",
-      `BT /F1 11 Tf 46 754 Td (${printablePdfText("COOPER DEBATE TEAM")}) Tj ET`,
-      `BT /F2 25 Tf 46 716 Td (${printablePdfText("Volunteer Judge Signup Review")}) Tj ET`,
-      `BT /F1 12 Tf 46 688 Td (${printablePdfText(selectedEvent?.title || "Tournament")}) Tj ET`,
-      "0.933 0.969 0.945 rg",
+      "1 1 1 rg 0 0 612 792 re f",
+      "0.02 0.10 0.20 rg 0 650 612 142 re f",
+      "0.95 0.78 0.18 rg",
+      `BT /F3 19 Tf 44 746 Td (${printablePdfText("Cooper Debate Team")}) Tj ET`,
+      "1 1 1 rg",
+      `BT /F2 23 Tf 44 706 Td (${printablePdfText("Volunteer Judge Signup")}) Tj ET`,
+      "0.95 0.78 0.18 rg",
+      `BT /F2 8 Tf 382 746 Td (${printablePdfText("TOURNAMENT")}) Tj ET`,
+      "1 1 1 rg",
+      `BT /F2 13 Tf 382 724 Td (${printablePdfText(eventTitle)}) Tj ET`,
+      "0 0 0 rg",
+      `BT /F2 12 Tf 48 612 Td (${printablePdfText(`Dear ${firstName || "Volunteer"},`)}) Tj ET`,
+      `BT /F1 10.5 Tf 48 586 Td (${printablePdfText("Thank you for volunteering as a judge for the Cooper Debate Team. Your time and")}) Tj ET`,
+      `BT /F1 10.5 Tf 48 569 Td (${printablePdfText("support help make a great tournament experience possible for every debater.")}) Tj ET`,
+      `BT /F1 10.5 Tf 48 545 Td (${printablePdfText("Please confirm that the signup details below are correct.")}) Tj ET`,
+      "0 0 0 RG 0.8 w 48 515 m 564 515 l S",
+      `BT /F2 11 Tf 48 494 Td (${printablePdfText("SIGNUP DETAILS")}) Tj ET`,
     ];
-    let y = 610;
-    details.forEach(([label, value], index) => {
-      const column = index % 2;
-      const x = column ? 316 : 46;
-      if (column === 0 && index > 0) y -= 72;
+    let y = 462;
+    details.forEach(([label, value]) => {
       commands.push(
-        "0.018 0.239 0.247 rg",
-        `${x} ${y - 9} 250 58 re f`,
-        "0.961 0.773 0.259 rg",
-        `BT /F2 8 Tf ${x + 14} ${y + 28} Td (${printablePdfText(label.toUpperCase())}) Tj ET`,
-        "0.933 0.969 0.945 rg",
-        `BT /F1 11 Tf ${x + 14} ${y + 8} Td (${printablePdfText(value || "Not provided")}) Tj ET`
+        `0 0 0 rg 66 ${y + 3} 3 3 re f`,
+        `BT /F2 10 Tf 82 ${y} Td (${printablePdfText(label)}) Tj ET`,
+        `BT /F1 10 Tf 194 ${y} Td (${printablePdfText(value || "Not provided")}) Tj ET`
       );
+      y -= 31;
     });
-    y -= 84;
     const notes = $("vol-notes").value.trim();
     if (notes) {
-      const shortenedNotes = notes.length > 145 ? `${notes.slice(0, 142)}...` : notes;
+      const shortenedNotes = notes.length > 150 ? `${notes.slice(0, 147)}...` : notes;
+      const words = shortenedNotes.split(/\s+/);
+      const noteLines = [""];
+      words.forEach(word => {
+        const current = noteLines[noteLines.length - 1];
+        if (`${current} ${word}`.trim().length > 72 && noteLines.length < 2) noteLines.push(word);
+        else noteLines[noteLines.length - 1] = `${current} ${word}`.trim();
+      });
       commands.push(
-        "0.018 0.239 0.247 rg",
-        `46 ${y - 24} 520 68 re f`,
-        "0.961 0.773 0.259 rg",
-        `BT /F2 8 Tf 60 ${y + 22} Td (${printablePdfText("NOTES FOR THE COACH")}) Tj ET`,
-        "0.933 0.969 0.945 rg",
-        `BT /F1 10 Tf 60 ${y + 2} Td (${printablePdfText(shortenedNotes)}) Tj ET`
+        `0 0 0 rg 66 ${y + 3} 3 3 re f`,
+        `BT /F2 10 Tf 82 ${y} Td (${printablePdfText("Notes")}) Tj ET`,
+        `BT /F1 10 Tf 194 ${y} Td (${printablePdfText(noteLines[0])}) Tj ET`
+      );
+      if (noteLines[1]) commands.push(
+        `BT /F1 10 Tf 194 ${y - 15} Td (${printablePdfText(noteLines[1])}) Tj ET`
       );
     }
     commands.push(
-      "0.522 0.843 0.737 rg",
-      `BT /F1 9 Tf 46 48 Td (${printablePdfText("Review these details before confirming your signup. Contact information remains coach-only.")}) Tj ET`
+      "0 0 0 RG 0.8 w 48 108 m 564 108 l S",
+      "0 0 0 rg",
+      `BT /F2 10.5 Tf 48 82 Td (${printablePdfText("Thank you for stepping up to judge - we are glad to have you with us!")}) Tj ET`,
+      `BT /F1 8.5 Tf 48 56 Td (${printablePdfText("Cooper Debate Team  |  Volunteer contact information is shared only with the coaching staff.")}) Tj ET`
     );
 
     const content = commands.join("\n");
     const objects = [
       "<< /Type /Catalog /Pages 2 0 R >>",
       "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R >> >> /Contents 4 0 R >>",
+      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R /F2 6 0 R /F3 7 0 R >> >> /Contents 4 0 R >>",
       `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
       "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
       "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Times-BoldItalic >>",
     ];
     let pdf = "%PDF-1.4\n";
     const offsets = [0];
@@ -850,7 +868,7 @@
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
-    const filename = `${filenameBase || "volunteer-signup"}-review.pdf`;
+    const filename = `${filenameBase || "volunteer-signup"}-judge-signup.pdf`;
     const blob = buildVolunteerReviewPdf();
     try {
       if ("showSaveFilePicker" in window) {
