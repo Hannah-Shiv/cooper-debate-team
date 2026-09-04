@@ -640,13 +640,13 @@
     }
     root.innerHTML = `
       <section class="vol-side-card">
-        <h4>${modalIcon("info")}<span>Helpful information</span></h4>
+        <h4>${modalIcon("info")}<span class="vol-info-heading-copy"><span>Helpful information</span><small>Hover, focus, or tap an icon for details</small></span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
         ${informationItems.map((item, index) => `
           <div class="vol-info-callout">
             <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">${modalIcon(item.icon)}</button>
-            <div><strong>${escapeHtml(item.title)}</strong><span>Hover or tap for more information</span></div>
+            <div><strong>${escapeHtml(item.title)}</strong></div>
             <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip">${escapeHtml(item.label)}</p>
           </div>`).join("")}
       </section>`;
