@@ -2896,6 +2896,85 @@
       background:var(--tournaments-panel-deep);
       border-top:1px solid rgba(242,209,107,.62);
     }
+    .vol-panel-purpose {
+      display:none;
+    }
+    @media(min-width:981px){
+      .tournaments-page .vol-opportunity-panel {
+        background:linear-gradient(145deg,#3b3e45 0%,#272a30 55%,#202329 100%);
+        border-color:rgba(225,229,235,.48);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-header {
+        background:rgba(20,22,27,.24);
+        border-bottom-color:rgba(255,255,255,.14);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-facts,
+      .tournaments-page .vol-opportunity-panel .vol-unified-brief {
+        background:rgba(28,30,35,.2);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-metrics {
+        background:rgba(16,18,22,.28);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-unified-signup {
+        background:rgba(27,29,34,.22);
+      }
+      .tournaments-page .vol-opportunity-panel .vol-availability-option:not(.is-selected),
+      .tournaments-page .vol-opportunity-panel .vol-role {
+        background:rgba(22,24,29,.58);
+        border-color:rgba(207,214,225,.25);
+      }
+      .vol-panel-purpose {
+        align-items:center;
+        display:flex;
+        gap:14px;
+        justify-content:flex-end;
+        min-height:72px;
+        padding:14px 24px;
+        text-align:right;
+      }
+      .vol-panel-purpose span {
+        font:800 .62rem 'Josefin Sans',sans-serif;
+        letter-spacing:.13em;
+        text-transform:uppercase;
+      }
+      .vol-panel-purpose strong {
+        display:block;
+        font:700 1.45rem/1.05 'Cormorant Garamond',serif;
+        letter-spacing:.01em;
+      }
+      .vol-panel-purpose-icon {
+        align-items:center;
+        border-radius:50%;
+        display:flex;
+        flex:0 0 42px;
+        font:800 1.15rem Arial,sans-serif;
+        height:42px;
+        justify-content:center;
+      }
+      .vol-panel-purpose--entry {
+        background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.07));
+        border-bottom:1px solid rgba(255,255,255,.14);
+      }
+      .vol-panel-purpose--entry span { color:#f0c557; }
+      .vol-panel-purpose--entry strong { color:#fff; }
+      .vol-panel-purpose--entry .vol-panel-purpose-icon {
+        background:rgba(240,197,87,.14);
+        border:1px solid rgba(240,197,87,.5);
+        color:#f0c557;
+      }
+      .vol-panel-purpose--results {
+        margin:-22px -22px 20px;
+        background:linear-gradient(90deg,rgba(70,130,213,0),rgba(70,130,213,.2));
+        border-bottom:1px solid rgba(125,174,239,.28);
+      }
+      .vol-panel-purpose--results span { color:#75dba8; }
+      .vol-panel-purpose--results strong { color:#fff; }
+      .vol-panel-purpose--results .vol-panel-purpose-icon {
+        background:rgba(73,205,142,.13);
+        border:1px solid rgba(92,222,160,.42);
+        color:#65dda2;
+      }
+    }
     .tournaments-page .vol-public-roster .vol-roster-summary {
       grid-template-columns:1fr;
       gap:14px;
@@ -4199,7 +4278,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=25"></script>
+<script src="js/volunteer-public.js?v=26"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

@@ -241,6 +241,10 @@
       return `
         <article class="vol-event-card vol-unified-card">
           <section class="vol-opportunity-panel" aria-label="Judge volunteer opportunity">
+            <div class="vol-panel-purpose vol-panel-purpose--entry">
+              <div><span>Entry panel</span><strong>Enter Your Availability</strong></div>
+              <div class="vol-panel-purpose-icon" aria-hidden="true">✎</div>
+            </div>
             <header class="vol-unified-header">
               <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
               <div class="vol-unified-title">
@@ -285,6 +289,10 @@
             </div>
           </section>
           <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
+            <div class="vol-panel-purpose vol-panel-purpose--results">
+              <div><span>Results panel</span><strong>Volunteer Sign-Up Results</strong></div>
+              <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
+            </div>
             <div class="vol-roster-summary">
               <div class="vol-public-roster-heading">
                 ${modalIcon("users")}
