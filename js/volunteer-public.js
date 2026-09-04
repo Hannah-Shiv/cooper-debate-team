@@ -635,20 +635,68 @@
       selectedEvent.coachPhone,
     ].filter(Boolean);
     if (contact.length) {
-      informationItems.push({ icon: "users", title: "Coach contact", label: contact.join(" · ") });
+      informationItems.push({
+        icon: "users",
+        title: "Coach contact",
+        label: contact.join(" · "),
+        email: selectedEvent.coachEmail || "",
+      });
     }
+    const informationDetailMarkup = item => `
+      <span class="vol-info-reader-icon">${modalIcon(item.icon)}</span>
+      <div>
+        <strong>${escapeHtml(item.title)}</strong>
+        <p>${escapeHtml(item.label)}</p>
+        ${item.email ? `<a class="vol-info-email-coach" href="mailto:${escapeHtml(item.email)}">${modalIcon("document")}Email Coach</a>` : ""}
+      </div>`;
     root.innerHTML = `
       <section class="vol-side-card">
         <h4>${modalIcon("info")}<span class="vol-info-heading-copy"><span>Helpful information</span><small>Hover, focus, or tap an icon for details</small></span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
-        ${informationItems.map((item, index) => `
-          <div class="vol-info-callout">
-            <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}" aria-describedby="vol-info-detail-${index}">${modalIcon(item.icon)}</button>
-            <div><strong>${escapeHtml(item.title)}</strong></div>
-            <p id="vol-info-detail-${index}" class="vol-info-tooltip" role="tooltip"><strong class="vol-info-tooltip-title">${escapeHtml(item.title)}:</strong><span class="vol-info-tooltip-answer">${escapeHtml(item.label)}</span></p>
-          </div>`).join("")}
+        <div class="vol-info-tabs" role="tablist" aria-label="Helpful information topics">
+          ${informationItems.map((item, index) => `
+            <button id="vol-info-tab-${index}" class="vol-info-callout${index === 0 ? " is-active" : ""}" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="vol-info-reader" data-info-index="${index}">
+              <span class="vol-info-trigger" aria-hidden="true">${modalIcon(item.icon)}</span>
+              <strong>${escapeHtml(item.title)}</strong>
+            </button>`).join("")}
+        </div>
+        <div id="vol-info-reader" class="vol-info-reader" role="tabpanel" aria-labelledby="vol-info-tab-0" aria-live="polite">
+          ${informationDetailMarkup(informationItems[0])}
+        </div>
       </section>`;
+    const tabs = Array.from(root.querySelectorAll(".vol-info-callout"));
+    const reader = root.querySelector("#vol-info-reader");
+    const activateInformation = (index, moveFocus = false) => {
+      const item = informationItems[index];
+      const tab = tabs[index];
+      if (!item || !tab || !reader) return;
+      tabs.forEach((candidate, candidateIndex) => {
+        const active = candidateIndex === index;
+        candidate.classList.toggle("is-active", active);
+        candidate.setAttribute("aria-selected", String(active));
+        candidate.tabIndex = active ? 0 : -1;
+      });
+      reader.setAttribute("aria-labelledby", tab.id);
+      reader.innerHTML = informationDetailMarkup(item);
+      if (moveFocus) tab.focus();
+    };
+    tabs.forEach((tab, index) => {
+      tab.tabIndex = index === 0 ? 0 : -1;
+      tab.addEventListener("mouseenter", () => activateInformation(index));
+      tab.addEventListener("focus", () => activateInformation(index));
+      tab.addEventListener("click", () => activateInformation(index));
+      tab.addEventListener("keydown", event => {
+        let nextIndex = null;
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") nextIndex = (index + 1) % tabs.length;
+        if (event.key === "ArrowLeft" || event.key === "ArrowUp") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabs.length - 1;
+        if (nextIndex === null) return;
+        event.preventDefault();
+        activateInformation(nextIndex, true);
+      });
+    });
   }
 
   function renderReview() {
