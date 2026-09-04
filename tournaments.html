@@ -1442,9 +1442,43 @@
     #public-calendar .fc { font-family:'Josefin Sans',sans-serif; }
      #public-calendar .fc-toolbar { background:#0b2f5b; border-bottom:1px solid rgba(101,147,226,.42); margin:0!important; padding:14px 16px; }
     #public-calendar .fc-toolbar-title { color:#fff!important; font-family:'Cormorant Garamond',serif!important; font-size:2.1rem!important; font-weight:800; letter-spacing:.01em; }
-    #public-calendar .fc-button { background:rgba(255,255,255,.07)!important; border:1px solid rgba(255,255,255,.16)!important; box-shadow:none!important; color:#e2edff!important; font:700 .65rem 'Josefin Sans',sans-serif!important; letter-spacing:.08em!important; padding:7px 11px!important; text-transform:uppercase; }
-    #public-calendar .fc-button:hover, #public-calendar .fc-button:focus { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:#fff!important; }
-    #public-calendar .fc-button-active { background:rgba(212,160,23,.2)!important; border-color:rgba(212,160,23,.65)!important; color:var(--gold)!important; }
+    #public-calendar .fc-button {
+      background:linear-gradient(180deg,#24588d 0%,#173d69 100%)!important;
+      border:1px solid rgba(147,195,236,.66)!important;
+      border-radius:5px!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 8px rgba(0,0,0,.25)!important;
+      color:#f4f8ff!important;
+      font:700 .65rem 'Josefin Sans',sans-serif!important;
+      letter-spacing:.08em!important;
+      padding:7px 11px!important;
+      text-transform:uppercase;
+      transition:background .18s ease,border-color .18s ease,color .18s ease,box-shadow .18s ease;
+    }
+    #public-calendar .fc-button:hover,
+    #public-calendar .fc-button:focus {
+      background:linear-gradient(180deg,#3472ad 0%,#205184 100%)!important;
+      border-color:#b7dcfa!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 2px rgba(147,195,236,.16),0 5px 12px rgba(0,0,0,.3)!important;
+      color:#fff!important;
+    }
+    #public-calendar .fc-today-button {
+      background:rgba(242,209,107,.12)!important;
+      border-color:rgba(242,209,107,.72)!important;
+      color:#F2D16B!important;
+    }
+    #public-calendar .fc-today-button:disabled {
+      background:linear-gradient(180deg,rgba(242,209,107,.2) 0%,rgba(212,160,23,.12) 100%)!important;
+      border-color:rgba(242,209,107,.62)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 3px 8px rgba(0,0,0,.2)!important;
+      color:#F2D16B!important;
+      opacity:.9!important;
+    }
+    #public-calendar .fc-button-active {
+      background:linear-gradient(180deg,#F7DF8C 0%,#D4A017 100%)!important;
+      border-color:#ffe9a4!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 9px rgba(0,0,0,.28)!important;
+      color:#102846!important;
+    }
      #public-calendar .fc-scrollgrid, #public-calendar td, #public-calendar th { border-color:rgba(72,112,187,.34)!important; }
      #public-calendar .fc-col-header-cell { background:#152034!important; border-color:rgba(242,209,107,.6)!important; }
     #public-calendar .fc-col-header-cell-cushion { color:#F2D16B!important; font:700 .62rem 'Josefin Sans',sans-serif; letter-spacing:.1em; padding:10px 0!important; text-decoration:none!important; text-transform:uppercase; }
