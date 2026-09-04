@@ -483,13 +483,17 @@
     if (!root || !selectedEvent || !selectedRole) return;
     const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
     const expectations = lineItems(selectedEvent.expectations);
-    const expectationItems = expectations.length
-      ? expectations.map(label => ({ title: "Tournament expectation", label }))
-      : [
-        { title: "Round assignments", label: "Plan to judge at least three preliminary rounds within your selected availability." },
-        { title: "Tournament schedule", label: "Detailed round times and final assignments will be shared closer to the tournament." },
-        { title: "Meals and refreshments", label: selectedEvent.mealInfo || "Refreshment details will be shared before tournament day." },
-      ];
+    const informationItems = [
+      { title: "Date", label: selectedEvent.date ? dateLabel(selectedEvent.date) : "The tournament date will be announced." },
+      { title: "Tournament hours", label: timeRange(selectedEvent.startTime, selectedEvent.endTime) || "Tournament hours will be announced." },
+      { title: "Debate format", label: selectedEvent.debateFormat || "The debate format will be shared before the tournament." },
+      { title: "Meals", label: selectedEvent.mealInfo || "Meal and refreshment details will be shared before tournament day." },
+      { title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
+      { title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
+      { title: "Resolution / topic", label: selectedEvent.resolution || "The resolution will be shared when available." },
+      { title: "Important information", label: selectedEvent.judgeInstructions || selectedEvent.details || "Please arrive early and check the tournament page before leaving." },
+      { title: "What to expect", label: expectations.join(" ") || "Plan to judge preliminary rounds within your selected availability. Final assignments will be shared closer to the tournament." },
+    ];
     const contact = [
       selectedEvent.coachName,
       selectedEvent.coachEmail,
@@ -500,7 +504,7 @@
         <h4>${modalIcon("info")}<span>Helpful information</span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
-        ${expectationItems.map(item => `
+        ${informationItems.map(item => `
           <div class="vol-info-callout">
             <button class="vol-info-trigger" type="button" aria-label="Read more about ${escapeHtml(item.title)}">i</button>
             <div><strong>${escapeHtml(item.title)}</strong><span>Hover or tap for more information</span></div>
@@ -588,6 +592,7 @@
     $("vol-modal-title").textContent = "Judge Volunteer Signup";
     $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
     form.reset();
+    form.querySelectorAll(".is-complete").forEach(field => field.classList.remove("is-complete"));
     $("vol-availability-start").min = selectedEvent.startTime || "";
     $("vol-availability-start").max = selectedEvent.endTime || "";
     $("vol-availability-end").min = selectedEvent.startTime || "";
@@ -712,6 +717,20 @@
       $(id)?.addEventListener("input", updateCondensedSelection);
       $(id)?.addEventListener("change", updateCondensedSelection);
     });
+    document.querySelectorAll("#volunteer-signup-form input, #volunteer-signup-form textarea").forEach(field => {
+      const updateCompletion = () => {
+        const hasValue = Boolean(field.value.trim());
+        field.classList.toggle("is-complete", hasValue && field.checkValidity());
+      };
+      field.addEventListener("input", updateCompletion);
+      field.addEventListener("change", updateCompletion);
+      field.addEventListener("blur", updateCompletion);
+    });
+    $("vol-print-itinerary")?.addEventListener("click", () => {
+      document.body.classList.add("vol-print-itinerary");
+      window.print();
+    });
+    window.addEventListener("afterprint", () => document.body.classList.remove("vol-print-itinerary"));
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") closeSignup();
     });

@@ -1,4 +1,5 @@
 const crypto = require("node:crypto");
+const PDFDocument = require("pdfkit");
 const { FieldValue } = require("firebase-admin/firestore");
 
 const SENDER = "Cooper Debate Team <admin@cooperdebateteam.com>";
@@ -200,6 +201,99 @@ function calendarAttachment(event, signupId, cancelled = false) {
   };
 }
 
+function itineraryAttachment(event, signup) {
+  return new Promise((resolve, reject) => {
+    const document = new PDFDocument({
+      size: "LETTER",
+      margins: { top: 42, right: 46, bottom: 44, left: 46 },
+      info: {
+        Title: `${cleanText(event.title, 160) || "Tournament"} volunteer itinerary`,
+        Author: "Cooper Debate Team",
+        Subject: "Volunteer judge itinerary",
+      },
+    });
+    const chunks = [];
+    document.on("data", chunk => chunks.push(chunk));
+    document.on("error", reject);
+    document.on("end", () => {
+      resolve({
+        filename: "cooper-debate-volunteer-itinerary.pdf",
+        content: Buffer.concat(chunks).toString("base64"),
+      });
+    });
+
+    const pageWidth = document.page.width;
+    const contentWidth = pageWidth - 92;
+    const eventName = cleanText(event.title, 160) || "Cooper Debate Tournament";
+    const volunteerName = cleanText(signup.parentName, 120) ||
+      [cleanText(signup.parentFirstName, 60), cleanText(signup.parentLastName, 60)].filter(Boolean).join(" ") ||
+      "Volunteer";
+    const rows = [
+      ["Volunteer", volunteerName],
+      ["Debater", cleanText(signup.studentName, 120) || "Not provided"],
+      ["Volunteer role", roleForSignup(event, signup)],
+      ["Your availability", timeRange(signup.availabilityStart, signup.availabilityEnd)],
+      ["Date", displayDate(event.date)],
+      ["Tournament hours", timeRange(event.startTime, event.endTime)],
+      ["Debate format", cleanText(event.debateFormat, 120)],
+      ["Location", [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join(" · ")],
+      ["Hosted by", cleanText(event.host, 160)],
+      ["Meals", cleanText(event.mealInfo, 180)],
+    ].filter(([, value]) => value);
+
+    const ensureSpace = height => {
+      if (document.y + height <= document.page.height - 44) return;
+      document.addPage();
+    };
+    const section = (title, text) => {
+      if (!text) return;
+      ensureSpace(90);
+      document.moveDown(0.65);
+      document.font("Helvetica-Bold").fontSize(9).fillColor("#0f7256").text(title.toUpperCase(), { characterSpacing: 0.8 });
+      document.moveDown(0.25);
+      document.font("Helvetica").fontSize(10).fillColor("#243b3a").text(text, { lineGap: 3 });
+    };
+
+    document.rect(0, 0, pageWidth, 132).fill("#073c33");
+    document.rect(0, 128, pageWidth, 4).fill("#e8bc4f");
+    document.fillColor("#e8bc4f").font("Helvetica-Bold").fontSize(10)
+      .text("COOPER DEBATE TEAM", 46, 35, { characterSpacing: 1.2 });
+    document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(23)
+      .text("Volunteer Judge Itinerary", 46, 57, { width: contentWidth });
+    document.fillColor("#cde6dd").font("Helvetica").fontSize(12)
+      .text(eventName, 46, 91, { width: contentWidth });
+
+    document.y = 154;
+    const cardGap = 9;
+    const cardWidth = (contentWidth - cardGap) / 2;
+    const gridTop = document.y;
+    rows.forEach(([label, value], index) => {
+      const column = index % 2;
+      const top = gridTop + Math.floor(index / 2) * 55;
+      const left = 46 + column * (cardWidth + cardGap);
+      document.roundedRect(left, top, cardWidth, 48, 5)
+        .fill(Math.floor(index / 2) % 2 === 0 ? "#edf6f2" : "#e3f0eb");
+      document.fillColor("#197258").font("Helvetica-Bold").fontSize(7.5)
+        .text(label.toUpperCase(), left + 12, top + 8, { width: cardWidth - 24, characterSpacing: 0.4 });
+      document.fillColor("#173531").font("Helvetica").fontSize(9.2)
+        .text(value, left + 12, top + 22, { width: cardWidth - 24, height: 22, lineGap: 1 });
+    });
+    document.y = gridTop + Math.ceil(rows.length / 2) * 55;
+
+    section("Resolution / topic", cleanText(event.resolution, 900));
+    section("Important information", cleanText(event.judgeInstructions, 900) || cleanText(event.details, 700));
+    section("What to expect", cleanText(event.expectations, 1200));
+    section("Coach contact", coachContact(event));
+
+    ensureSpace(58);
+    document.moveDown(1);
+    document.roundedRect(46, document.y, contentWidth, 45, 5).fill("#0d4e42");
+    document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(9)
+      .text("Please check the tournament page before leaving for the event.", 60, document.y + 15, { width: contentWidth - 28 });
+    document.end();
+  });
+}
+
 function notificationKey(signupId, kind, version = "") {
   return crypto.createHash("sha256")
     .update(`${signupId}:${kind}:${version}`)
@@ -263,7 +357,7 @@ function changedEventFields(before, after) {
   return [...changes];
 }
 
-function buildMessage(kind, event, signup, changes = []) {
+async function buildMessage(kind, event, signup, changes = []) {
   const name = cleanText(signup.parentFirstName, 60) || cleanText(signup.parentName, 120) || "Volunteer";
   const eventName = cleanText(event.title, 160) || "Cooper Debate tournament";
   const rows = eventSummary(event, signup);
@@ -280,6 +374,7 @@ function buildMessage(kind, event, signup, changes = []) {
   );
 
   if (kind === "confirmation") {
+    const itinerary = await itineraryAttachment(event, signup);
     const text = [
       `Hi ${name},`,
       "",
@@ -289,7 +384,7 @@ function buildMessage(kind, event, signup, changes = []) {
       instructions ? `\nJudge instructions:\n${instructions}` : "",
       expectations ? `\nArrival and event expectations:\n${expectations}` : "",
       `\nTournament details: ${pageUrl}`,
-      "A calendar file is attached. If you need to change your availability or contact information, please contact the coach listed above.",
+      "A calendar file and printable PDF itinerary are attached. If you need to change your availability or contact information, please contact the coach listed above.",
     ].filter(Boolean).join("\n");
     const html = emailShell(
       "Your volunteer signup is confirmed",
@@ -297,9 +392,9 @@ function buildMessage(kind, event, signup, changes = []) {
       `${eventRowsHtml}${instructions ? `<h2 style="font-size:17px;">Judge instructions</h2><p style="line-height:1.55;">${escapeHtml(instructions).replaceAll("\n", "<br>")}</p>` : ""}` +
       `${expectations ? `<h2 style="font-size:17px;">Arrival and event expectations</h2><p style="line-height:1.55;">${escapeHtml(expectations).replaceAll("\n", "<br>")}</p>` : ""}` +
       `${pageHtml}`,
-      "A calendar file is attached. To change your availability or contact information, please contact the coach listed above."
+      "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above."
     );
-    return { subject: `Confirmed: ${eventName} volunteer signup`, text, html, attachments: calendar ? [calendar] : [] };
+    return { subject: `Confirmed: ${eventName} volunteer signup`, text, html, attachments: [calendar, itinerary].filter(Boolean) };
   }
 
   if (kind === "three-day-reminder") {
@@ -449,7 +544,7 @@ function createVolunteerEmailService({ db, resendSecret }) {
     try {
       const apiKey = resendSecret.value();
       if (!apiKey) throw new Error("The Resend email secret is not available.");
-      const message = buildMessage(kind, event, signup, changes);
+      const message = await buildMessage(kind, event, signup, changes);
       const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
@@ -585,4 +680,7 @@ function createVolunteerEmailService({ db, resendSecret }) {
   };
 }
 
-module.exports = { createVolunteerEmailService };
+module.exports = {
+  createVolunteerEmailService,
+  createVolunteerItineraryAttachment: itineraryAttachment,
+};

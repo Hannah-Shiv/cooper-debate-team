@@ -2159,7 +2159,7 @@
     .vol-empty p { font-size:.84rem; line-height:1.65; margin:0 auto; max-width:480px; }
     .vol-empty a { color:var(--gold); }
     .volunteer-modal { align-items:center; background:rgba(1,7,19,.86); backdrop-filter:blur(8px); display:none; inset:0; justify-content:center; padding:30px; position:fixed; z-index:1000; }
-    .vol-modal-card { background:radial-gradient(circle at 82% 0,rgba(30,74,143,.18),transparent 32%),linear-gradient(145deg,#071c40 0%,#041630 62%,#031126 100%); border:1px solid rgba(232,184,75,.58); border-radius:16px; box-shadow:0 28px 82px rgba(0,0,0,.68); max-height:calc(100vh - 60px); max-width:570px; overflow:auto; padding:38px 40px 32px; position:relative; width:100%; }
+    .vol-modal-card { background:radial-gradient(circle at 82% 0,rgba(35,122,93,.18),transparent 32%),linear-gradient(145deg,#083b32 0%,#052b29 56%,#031f24 100%); border:1px solid rgba(232,184,75,.58); border-radius:16px; box-shadow:0 28px 82px rgba(0,0,0,.68); max-height:calc(100vh - 60px); max-width:570px; overflow:auto; padding:38px 40px 32px; position:relative; width:100%; }
     .vol-judge-modal { max-width:1140px; }
     .vol-modal-close { background:rgba(2,12,32,.35); border:1px solid rgba(255,255,255,.12); border-radius:50%; color:var(--gray-mid); cursor:pointer; font-size:1.45rem; height:34px; line-height:1; padding:0; position:absolute; right:22px; top:20px; width:34px; }
     .vol-modal-close:hover { border-color:rgba(232,184,75,.65); color:#fff; }
@@ -2225,17 +2225,18 @@
     .vol-condensed-selection span { color:#74d8ad; display:block; font:700 .57rem 'Josefin Sans',sans-serif; letter-spacing:.09em; margin-bottom:4px; text-transform:uppercase; }
     .vol-condensed-selection strong { color:#fff; font:700 1rem 'Cormorant Garamond',serif; }
     .vol-condensed-selection p { color:#c5d9df; font-size:.69rem; line-height:1.45; margin:0; text-align:right; }
-    .vol-availability-card--compact { margin-bottom:18px; padding:15px 17px 17px; }
+    .vol-availability-card--compact { margin-bottom:18px; max-width:430px; padding:15px 17px 17px; }
     .vol-availability-card--compact legend { margin-bottom:10px; }
+    .vol-availability-card--compact .vol-time-grid { grid-template-columns:repeat(2,180px) !important; width:max-content; }
     .vol-condensed-form-layout { align-items:start; display:grid; gap:24px; grid-template-columns:minmax(0,1fr) 280px; }
     .vol-condensed-main { min-width:0; }
     .vol-condensed-main .vol-form-grid { gap:14px; grid-template-columns:repeat(6,minmax(0,1fr)); }
-    .vol-condensed-main .vol-form-field:not(.full) { grid-column:span 3; }
-    .vol-condensed-main .vol-form-field.full { grid-column:1/-1; }
+    .vol-condensed-main > .vol-form-grid > .vol-form-field:not(.full) { grid-column:span 3; }
+    .vol-condensed-main > .vol-form-grid > .vol-form-field.full { grid-column:1/-1; }
     .vol-condensed-main .vol-form-field input { width:100%; }
-    .vol-info-rail { position:sticky; top:0; }
+    .vol-info-rail { max-height:620px; overflow:auto; padding-right:4px; position:sticky; scrollbar-color:rgba(118,180,166,.5) transparent; top:0; }
     .vol-info-callout { align-items:center; background:rgba(14,47,91,.55); border:1px solid rgba(113,164,229,.25); border-radius:8px; display:grid; gap:10px; grid-template-columns:34px 1fr; margin-top:10px; padding:10px; position:relative; }
-    .vol-info-trigger { align-items:center; background:linear-gradient(145deg,#2b67b6,#17447f); border:1px solid rgba(164,207,255,.5); border-radius:50%; color:#fff; cursor:help; display:flex; font:bold .9rem Georgia,serif; height:32px; justify-content:center; padding:0; width:32px; }
+    .vol-info-trigger { align-items:center; background:linear-gradient(145deg,#17664f,#0b453a); border:1px solid rgba(145,226,194,.5); border-radius:50%; color:#fff; cursor:help; display:flex; font:bold .9rem Georgia,serif; height:32px; justify-content:center; padding:0; width:32px; }
     .vol-info-callout strong { color:#eef6ff; display:block; font-size:.72rem; line-height:1.35; }
     .vol-info-callout > div > span { color:#8faed2; display:block; font-size:.58rem; line-height:1.4; margin-top:2px; }
     .vol-info-tooltip { background:#071a37; border:1px solid rgba(125,211,252,.55); border-radius:8px; box-shadow:0 16px 36px rgba(0,0,0,.45); color:#dcecff; font-size:.73rem; line-height:1.55; opacity:0; padding:13px 14px; pointer-events:none; position:absolute; right:calc(100% + 11px); top:0; transform:translateX(8px); transition:opacity .15s ease,transform .15s ease; visibility:hidden; width:290px; z-index:20; }
@@ -2294,9 +2295,11 @@
     .vol-form-field { display:flex; flex-direction:column; gap:8px; }
     .vol-form-field.full { grid-column:1/-1; }
     .vol-form-field label { color:#d4deef; font-family:'Josefin Sans',sans-serif; font-size:.65rem; font-weight:700; letter-spacing:.09em; text-transform:uppercase; }
-    .vol-form-field input,.vol-form-field textarea { background:rgba(2,12,32,.54); border:1px solid rgba(255,255,255,.15); border-radius:7px; color:white; font:inherit; font-size:.88rem; padding:13px; }
+    .vol-form-field input,.vol-form-field textarea { background:rgba(3,30,29,.68); border:1px solid rgba(176,221,205,.2); border-radius:7px; color:white; font:inherit; font-size:.88rem; padding:13px; transition:background .18s ease,border-color .18s ease,box-shadow .18s ease; }
     .vol-form-field textarea { min-height:100px; resize:vertical; }
-    .vol-form-field input:focus,.vol-form-field textarea:focus { border-color:var(--gold); outline:0; }
+    .vol-form-field input:focus,.vol-form-field textarea:focus { background:rgba(16,55,104,.72); border-color:#72b8f4; box-shadow:0 0 0 2px rgba(74,145,220,.14); outline:0; }
+    .vol-form-field input.is-complete,.vol-form-field textarea.is-complete { background:linear-gradient(135deg,rgba(18,67,125,.74),rgba(10,48,91,.78)); border-color:rgba(111,177,238,.58); }
+    .vol-print-button { border-color:rgba(111,204,169,.55); color:#a7ebcf; margin-right:auto; }
     .vol-honeypot { height:0; left:-10000px; overflow:hidden; position:absolute; width:0; }
     .vol-form-status { font-size:.8rem; line-height:1.5; margin:14px 0 0; min-height:1.2em; }
     .vol-form-status.is-error { color:#ffb3b3; }
@@ -3329,8 +3332,9 @@
       .vol-condensed-selection { align-items:flex-start; flex-direction:column; gap:6px; }
       .vol-condensed-selection p { text-align:left; }
       .vol-condensed-main .vol-form-grid { grid-template-columns:1fr; }
-      .vol-condensed-main .vol-form-field:not(.full),
-      .vol-condensed-main .vol-form-field.full { grid-column:auto; }
+      .vol-condensed-main > .vol-form-grid > .vol-form-field:not(.full),
+      .vol-condensed-main > .vol-form-grid > .vol-form-field.full { grid-column:auto; }
+      .vol-availability-card--compact .vol-time-grid { grid-template-columns:repeat(2,minmax(0,1fr)) !important; width:100%; }
       .vol-info-rail { grid-template-columns:1fr; }
       .vol-info-tooltip { display:none; grid-column:1/-1; position:static; transform:translateY(-5px); width:auto; }
       .vol-info-callout:hover .vol-info-tooltip,
@@ -3368,6 +3372,61 @@
         padding-left:28px;
         padding-right:28px;
       }
+    }
+    @media print {
+      body.vol-print-itinerary {
+        background:#fff !important;
+        print-color-adjust:exact;
+        -webkit-print-color-adjust:exact;
+      }
+      body.vol-print-itinerary > * { visibility:hidden !important; }
+      body.vol-print-itinerary #volunteer-modal,
+      body.vol-print-itinerary #volunteer-modal *,
+      body.vol-print-itinerary #volunteer-modal [data-vol-step="2"] {
+        visibility:visible !important;
+      }
+      body.vol-print-itinerary #volunteer-modal {
+        background:#fff !important;
+        display:block !important;
+        inset:0;
+        overflow:visible;
+        padding:0;
+        position:absolute;
+      }
+      body.vol-print-itinerary .vol-modal-card {
+        background:#fff !important;
+        border:0;
+        box-shadow:none;
+        color:#173531;
+        max-height:none;
+        max-width:none;
+        overflow:visible;
+        padding:30px 36px;
+      }
+      body.vol-print-itinerary .vol-modal-close,
+      body.vol-print-itinerary .vol-modal-kicker,
+      body.vol-print-itinerary .vol-modal-context,
+      body.vol-print-itinerary .vol-stepper,
+      body.vol-print-itinerary [data-vol-step="1"],
+      body.vol-print-itinerary .vol-secure-note,
+      body.vol-print-itinerary #vol-turnstile,
+      body.vol-print-itinerary .vol-modal-actions,
+      body.vol-print-itinerary .vol-form-status {
+        display:none !important;
+      }
+      body.vol-print-itinerary [data-vol-step="2"] { display:block !important; }
+      body.vol-print-itinerary .vol-review-intro h3,
+      body.vol-print-itinerary .vol-review-primary strong,
+      body.vol-print-itinerary .vol-review-detail strong,
+      body.vol-print-itinerary .vol-review-contact strong { color:#123a32 !important; }
+      body.vol-print-itinerary .vol-review-intro p,
+      body.vol-print-itinerary .vol-review-detail p,
+      body.vol-print-itinerary .vol-review-contact p { color:#405d58 !important; }
+      body.vol-print-itinerary .vol-review-card {
+        background:#edf6f2 !important;
+        border-color:#8bbdaf !important;
+      }
+      body.vol-print-itinerary .vol-review-primary { background:#dceee7 !important; }
     }
   </style>
   <link rel="stylesheet" href="css/tablet-portrait.css?v=9"/>
@@ -4098,6 +4157,7 @@
         <div class="vol-secure-note">🔒 Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
         <div id="vol-turnstile" style="margin-top:17px;"></div>
         <div class="vol-modal-actions">
+          <button id="vol-print-itinerary" class="vol-cancel vol-print-button" type="button">Print / Save PDF</button>
           <button class="vol-cancel" type="button" data-vol-back="1">← Back</button>
           <button id="vol-submit" class="vol-submit" type="submit">Confirm judge signup</button>
         </div>
@@ -4601,7 +4661,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=30"></script>
+<script src="js/volunteer-public.js?v=31"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
