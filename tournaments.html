@@ -2045,20 +2045,6 @@
         animation:vol-availability-swipe-content .5s cubic-bezier(.3,.02,.2,1);
         will-change:opacity,transform;
       }
-      .vol-availability-option.is-flipping::after {
-        animation:vol-availability-swipe-light .5s cubic-bezier(.3,.02,.2,1);
-      }
-    }
-    .vol-availability-option::after {
-      background:linear-gradient(90deg,transparent,rgba(240,197,87,.42),rgba(111,211,255,.3),transparent);
-      content:"";
-      inset:-20% auto -20% 0;
-      opacity:0;
-      pointer-events:none;
-      position:absolute;
-      transform:translateX(-150%) skewX(-18deg);
-      width:42%;
-      z-index:0;
     }
     .vol-availability-option > span { position:relative; z-index:1; }
     @keyframes vol-availability-swipe-content {
@@ -2066,12 +2052,6 @@
       38% { opacity:0; transform:translateX(-22px); }
       39% { opacity:0; transform:translateX(22px); }
       100% { opacity:1; transform:translateX(0); }
-    }
-    @keyframes vol-availability-swipe-light {
-      0% { opacity:0; transform:translateX(-150%) skewX(-18deg); }
-      20% { opacity:1; }
-      78% { opacity:.9; }
-      100% { opacity:0; transform:translateX(360%) skewX(-18deg); }
     }
     .vol-availability-option input { height:1px; opacity:0; position:absolute; width:1px; }
     .vol-availability-radio { border:1.5px solid #aebbd3; border-radius:50%; display:block; height:15px; position:relative; width:15px; }
@@ -2088,8 +2068,7 @@
     .vol-availability-duration { background:rgba(212,160,23,.16); border-radius:99px; color:#f2c658; font:700 .87rem 'Josefin Sans',sans-serif; letter-spacing:.04em; padding:6px 9px; white-space:nowrap; }
     .vol-availability-option.is-selected .vol-availability-duration { background:#f0c557; color:#102846; box-shadow:0 2px 8px rgba(0,0,0,.2); }
     @media(prefers-reduced-motion:reduce){
-      .vol-availability-option.is-flipping > span,
-      .vol-availability-option.is-flipping::after { animation:none; }
+      .vol-availability-option.is-flipping > span { animation:none; }
     }
     .vol-assignment-note { align-items:flex-start; background:rgba(50,101,190,.16); border:1px solid rgba(109,157,238,.26); border-radius:6px; color:#cfdef7; display:flex; gap:10px; margin-top:12px; padding:10px 12px; }
     .vol-assignment-note > span { align-items:center; background:#4b85da; border-radius:50%; color:#fff; display:inline-flex; flex:0 0 15px; font:bold .65rem Arial,sans-serif; height:15px; justify-content:center; margin-top:2px; width:15px; }
