@@ -1440,8 +1440,40 @@
     .public-calendar-legend i { border-radius:50%; display:inline-block; height:10px; margin-right:7px; width:10px; }
     #public-calendar { min-height:650px; }
     #public-calendar .fc { font-family:'Josefin Sans',sans-serif; }
-     #public-calendar .fc-toolbar { background:#0b2f5b; border-bottom:1px solid rgba(101,147,226,.42); margin:0!important; padding:14px 16px; }
-    #public-calendar .fc-toolbar-title { color:#fff!important; font-family:'Cormorant Garamond',serif!important; font-size:2.1rem!important; font-weight:800; letter-spacing:.01em; }
+     #public-calendar .fc-toolbar {
+       align-items:center;
+       background:#0b2f5b;
+       border-bottom:1px solid rgba(101,147,226,.42);
+       box-sizing:border-box;
+       display:grid!important;
+       grid-template-columns:minmax(190px,1fr) auto minmax(190px,1fr);
+       margin:0!important;
+       padding:14px 16px;
+       width:100%;
+     }
+    #public-calendar .fc-toolbar-chunk { min-width:0; }
+    #public-calendar .fc-toolbar-chunk:first-child {
+      align-items:center;
+      display:flex;
+      gap:9px;
+      justify-self:start;
+      width:190px;
+    }
+    #public-calendar .fc-toolbar-chunk:nth-child(2) { justify-self:center; }
+    #public-calendar .fc-toolbar-chunk:last-child {
+      justify-self:end;
+      width:190px;
+    }
+    #public-calendar .fc-toolbar-title {
+      color:#fff!important;
+      font-family:'Cormorant Garamond',serif!important;
+      font-size:2.1rem!important;
+      font-weight:800;
+      letter-spacing:.01em;
+      min-width:250px;
+      text-align:center;
+      white-space:nowrap;
+    }
     #public-calendar .fc-button {
       background:linear-gradient(180deg,#24588d 0%,#173d69 100%)!important;
       border:1px solid rgba(147,195,236,.66)!important;
@@ -1477,6 +1509,66 @@
       background:linear-gradient(180deg,#F7DF8C 0%,#D4A017 100%)!important;
       border-color:#ffe9a4!important;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.45),0 3px 9px rgba(0,0,0,.28)!important;
+      color:#102846!important;
+    }
+    #public-calendar .fc-toolbar-chunk:first-child .fc-button-group {
+      display:inline-flex;
+      flex:0 0 auto;
+      padding:3px;
+      border:1px solid rgba(147,195,236,.6);
+      border-radius:999px;
+      background:#071b36;
+      box-shadow:inset 0 1px 4px rgba(0,0,0,.42),0 3px 10px rgba(0,0,0,.22);
+    }
+    #public-calendar .fc-toolbar-chunk:first-child .fc-button-group .fc-button {
+      width:38px;
+      min-height:34px;
+      padding:6px!important;
+      border:0!important;
+      border-radius:999px!important;
+      background:transparent!important;
+      box-shadow:none!important;
+      color:#dcecff!important;
+    }
+    #public-calendar .fc-toolbar-chunk:first-child .fc-button-group .fc-button:hover,
+    #public-calendar .fc-toolbar-chunk:first-child .fc-button-group .fc-button:focus-visible {
+      background:#2f6fa8!important;
+      color:#fff!important;
+      box-shadow:0 0 0 1px rgba(183,220,250,.5),0 3px 9px rgba(0,0,0,.25)!important;
+    }
+    #public-calendar .fc-today-button,
+    #public-calendar .fc-today-button:disabled {
+      min-height:40px;
+      padding:8px 13px!important;
+      border-radius:999px!important;
+    }
+    #public-calendar .fc-toolbar-chunk:last-child .fc-button-group {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      width:100%;
+      padding:3px;
+      border:1px solid rgba(242,209,107,.66);
+      border-radius:999px;
+      background:#071b36;
+      box-shadow:inset 0 1px 4px rgba(0,0,0,.46),0 3px 10px rgba(0,0,0,.24);
+    }
+    #public-calendar .fc-toolbar-chunk:last-child .fc-button {
+      min-height:36px;
+      padding:7px 12px!important;
+      border:0!important;
+      border-radius:999px!important;
+      background:transparent!important;
+      box-shadow:none!important;
+      color:#dcecff!important;
+    }
+    #public-calendar .fc-toolbar-chunk:last-child .fc-button:hover,
+    #public-calendar .fc-toolbar-chunk:last-child .fc-button:focus-visible {
+      background:#204f7e!important;
+      color:#fff!important;
+    }
+    #public-calendar .fc-toolbar-chunk:last-child .fc-button-active {
+      background:linear-gradient(180deg,#F7DF8C 0%,#D4A017 100%)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.48),0 2px 7px rgba(0,0,0,.3)!important;
       color:#102846!important;
     }
      #public-calendar .fc-scrollgrid, #public-calendar td, #public-calendar th { border-color:rgba(72,112,187,.34)!important; }
@@ -1553,12 +1645,12 @@
       #public-calendar .fc-dayGridMonth-view .fc-scrollgrid { min-width:640px; }
       #public-calendar .fc-toolbar {
         align-items:center; display:grid!important; gap:10px; grid-template-areas:"title title" "nav view";
-        grid-template-columns:1fr auto; padding:12px;
+        grid-template-columns:minmax(0,1fr) minmax(0,1fr); padding:12px;
       }
-      #public-calendar .fc-toolbar-chunk:nth-child(1) { grid-area:nav; }
+      #public-calendar .fc-toolbar-chunk:nth-child(1) { grid-area:nav; justify-self:start; width:100%; }
       #public-calendar .fc-toolbar-chunk:nth-child(2) { grid-area:title; text-align:center; }
-      #public-calendar .fc-toolbar-chunk:nth-child(3) { grid-area:view; }
-      #public-calendar .fc-toolbar-title { font-size:1.65rem!important; }
+      #public-calendar .fc-toolbar-chunk:nth-child(3) { grid-area:view; justify-self:end; width:min(100%,190px); }
+      #public-calendar .fc-toolbar-title { font-size:1.65rem!important; min-width:0; }
       #public-calendar .fc-button { font-size:.59rem!important; padding:7px 9px!important; }
       #public-calendar .fc-daygrid-day-frame { min-height:84px!important; }
       .public-cal-today-watermark { font-size:.88rem; }
