@@ -2000,14 +2000,14 @@
     .vol-unified-title h3 { font-size:2rem; line-height:1; margin:0; }
     .vol-unified-title p { color:#c7d4ed; font-size:.79rem; margin:4px 0 0; }
     .vol-open-status { background:rgba(38,190,127,.13); border:1px solid rgba(73,214,153,.48); border-radius:5px; color:#81e6b1; font:700 .61rem 'Josefin Sans',sans-serif; letter-spacing:.08em; padding:9px 11px; text-transform:uppercase; white-space:nowrap; }
-    .vol-entry-status { align-items:stretch; background:linear-gradient(145deg,rgba(4,39,37,.92),rgba(2,25,29,.94)); border:1px solid rgba(240,197,87,.24); border-radius:7px; box-shadow:0 7px 18px rgba(0,0,0,.22); display:flex; flex-direction:column; gap:7px; justify-self:center; min-width:180px; padding:7px; text-align:left; }
-    .vol-entry-status .vol-open-status { align-items:center; background:linear-gradient(100deg,#f2c94f,#ffd76a); border:0; box-shadow:0 3px 10px rgba(240,197,87,.2); color:#102328; display:flex; font-size:.66rem; gap:9px; justify-content:center; min-width:0; padding:9px 12px; text-align:center; }
+    .vol-entry-status { align-items:stretch; background:linear-gradient(145deg,rgba(4,39,37,.92),rgba(2,25,29,.94)); border:1px solid rgba(240,197,87,.24); border-radius:7px; box-shadow:0 7px 18px rgba(0,0,0,.22); display:flex; flex-direction:column; gap:8px; justify-self:center; min-width:207px; padding:8px; text-align:left; }
+    .vol-entry-status .vol-open-status { align-items:center; background:linear-gradient(100deg,#f2c94f,#ffd76a); border:0; box-shadow:0 3px 10px rgba(240,197,87,.2); color:#102328; display:flex; font-size:.72rem; gap:9px; justify-content:center; min-width:0; padding:10px 13px; text-align:center; }
     .vol-entry-status .vol-open-status b { font:700 1rem/1 Arial,sans-serif; transform:rotate(-8deg); }
     .vol-entry-status .vol-open-status span { white-space:nowrap; }
-    .vol-entry-deadline { align-items:center; border-left:2px solid #f2c94f; display:flex; gap:9px; padding:4px 5px 4px 9px; width:100%; }
-    .vol-entry-deadline > b { color:#ffd34f; flex:0 0 auto; font:700 1.15rem/1 Arial,sans-serif; text-shadow:0 0 10px rgba(255,211,79,.35); }
-    .vol-entry-deadline span { color:#f4ce5b; display:block; font:800 .5rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; }
-    .vol-entry-deadline strong { color:#f3f7ed; display:block; font:600 .68rem 'Cormorant Garamond',serif; line-height:1.25; margin-top:2px; }
+    .vol-entry-deadline { align-items:center; border-left:2px solid #f2c94f; display:flex; gap:10px; padding:5px 5px 5px 10px; width:100%; }
+    .vol-entry-deadline > b { color:#ffd34f; flex:0 0 auto; font:700 1.3rem/1 Arial,sans-serif; text-shadow:0 0 10px rgba(255,211,79,.35); }
+    .vol-entry-deadline span { color:#f4ce5b; display:block; font:800 .56rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; }
+    .vol-entry-deadline strong { color:#f3f7ed; display:block; font:600 .78rem 'Cormorant Garamond',serif; line-height:1.25; margin-top:3px; }
     .vol-unified-facts { border-bottom:1px solid rgba(255,255,255,.11); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); padding:0 22px; }
     .vol-unified-facts > div { align-items:flex-start; border-right:1px solid rgba(255,255,255,.11); display:flex; gap:10px; min-height:93px; padding:18px 14px; }
     .vol-unified-facts > div:last-child { border-right:0; }
@@ -2106,16 +2106,17 @@
     .vol-roster-section-heading i { background:rgba(255,255,255,.76); display:block; height:1px; width:100%; }
     .vol-roster-metrics { display:grid; gap:12px; grid-template-columns:repeat(4,minmax(0,1fr)); margin-bottom:18px; }
     .vol-roster-metrics > div { align-items:center; display:flex; flex-direction:column; gap:8px; text-align:center; }
-    .vol-metric-circle { align-items:center; background:rgba(46,109,202,.14); border:2px solid currentColor; border-radius:50%; box-shadow:0 0 18px rgba(45,112,211,.13); color:#78b8ff; display:flex; height:72px; justify-content:center; width:72px; }
+    .vol-metric-circle { align-items:center; background:rgba(46,109,202,.14); border:2px solid currentColor; border-radius:50%; box-shadow:0 0 18px rgba(45,112,211,.13); color:inherit; display:flex; height:72px; justify-content:center; width:72px; }
     .vol-metric-circle strong { color:inherit; font:700 1.75rem/1 'Cormorant Garamond',serif; }
     .vol-roster-metrics span { color:inherit; font:700 .59rem 'Josefin Sans',sans-serif; letter-spacing:.08em; text-transform:uppercase; }
-    .vol-roster-metrics .capacity { color:#78b8ff; }
-    .vol-roster-metrics .confirmed { color:#69dfa6; }
+    .vol-roster-metrics .capacity { color:#f3cf59; }
+    .vol-roster-metrics .capacity .vol-metric-circle { background:rgba(243,207,89,.11); box-shadow:0 0 18px rgba(243,207,89,.12); }
+    .vol-roster-metrics .confirmed { color:#63e2bd; }
     .vol-roster-metrics .confirmed .vol-metric-circle { background:rgba(35,170,112,.13); box-shadow:0 0 18px rgba(35,170,112,.12); }
-    .vol-roster-metrics .fill-rate { color:#8ee9bb; }
-    .vol-roster-metrics .fill-rate .vol-metric-circle { background:rgba(45,190,127,.13); box-shadow:0 0 18px rgba(45,190,127,.12); }
-    .vol-roster-metrics .available { color:#d1a5f4; }
-    .vol-roster-metrics .available .vol-metric-circle { background:rgba(154,92,210,.14); box-shadow:0 0 18px rgba(154,92,210,.12); }
+    .vol-roster-metrics .fill-rate { color:#a982ff; }
+    .vol-roster-metrics .fill-rate .vol-metric-circle { background:rgba(169,130,255,.13); box-shadow:0 0 18px rgba(169,130,255,.12); }
+    .vol-roster-metrics .available { color:#b9cfff; }
+    .vol-roster-metrics .available .vol-metric-circle { background:rgba(185,207,255,.11); box-shadow:0 0 18px rgba(185,207,255,.11); }
     .vol-public-roster-heading { align-items:center; display:flex; gap:15px; }
     .vol-public-roster-heading .vol-modal-icon { color:#f0b62c; height:52px; width:52px; }
     .vol-public-roster-heading h4 { color:#fff; font:700 1.18rem 'Josefin Sans',sans-serif; letter-spacing:.025em; margin:0 0 6px; text-transform:uppercase; }
