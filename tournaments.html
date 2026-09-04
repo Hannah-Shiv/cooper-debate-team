@@ -2706,6 +2706,7 @@
         font:700 1.38rem/1.16 'Cormorant Garamond',serif;
         letter-spacing:.01em;
         max-width:440px;
+        padding-right:24px;
         text-align:right;
       }
       #volunteer-modal .vol-stepper {
@@ -3643,15 +3644,15 @@
         color:#f2cf73;
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option.is-selected {
-        background:linear-gradient(135deg,#0b4a3a 0%,#06362f 55%,#052b29 100%);
+        background:linear-gradient(135deg,#07506a 0%,#063d50 55%,#032f40 100%);
         border-color:#f0c557;
-        box-shadow:0 0 0 1px rgba(240,197,87,.16) inset,0 8px 20px rgba(1,22,19,.34);
+        box-shadow:0 0 0 1px rgba(240,197,87,.16) inset,0 8px 20px rgba(1,20,30,.34);
       }
       .tournaments-page .vol-opportunity-panel .vol-availability-option.is-selected .vol-selection-check {
-        background:#b8f3d4;
-        border-color:#e0ffef;
-        box-shadow:0 0 13px rgba(139,240,190,.42);
-        color:#07432f;
+        background:#f0c557;
+        border-color:#ffe69a;
+        box-shadow:0 0 13px rgba(240,197,87,.34);
+        color:#063d50;
       }
       .tournaments-page .vol-public-roster .vol-roster-row {
         background:linear-gradient(90deg,rgba(23,62,116,.88),rgba(12,42,86,.92));
@@ -4810,16 +4811,16 @@
                 <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-student-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-debate"></use></svg>Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
-                <input id="vol-student-name" type="text" maxlength="120">
+                <label for="vol-phone"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-info"></use></svg>Volunteer's Phone</label>
+                <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
               </div>
               <div class="vol-form-field">
                 <label for="vol-email"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-document"></use></svg>Volunteer's Email</label>
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-phone"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-info"></use></svg>Volunteer's Phone</label>
-                <input id="vol-phone" type="tel" autocomplete="tel" maxlength="40" required>
+                <label for="vol-student-name"><svg class="vol-field-icon vol-modal-icon" aria-hidden="true"><use href="#vol-icon-debate"></use></svg>Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
+                <input id="vol-student-name" type="text" maxlength="120">
               </div>
             </div>
             <div class="vol-form-field full vol-notes-wide">
