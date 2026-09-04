@@ -1213,14 +1213,15 @@
      }
      .calendar-glance-note strong { color:#F2D16B; }
      .calendar-glance-link {
-        display:inline-flex;
+        display:flex;
         align-items:center;
         justify-content:center;
-        width:100%;
+        width:max-content;
+        max-width:100%;
         box-sizing:border-box;
         min-height:44px;
-       margin-top:16px;
-        padding:11px 14px;
+       margin:16px auto 0;
+        padding:11px 20px;
         border:1px solid #F2D16B;
         border-radius:7px;
         background:linear-gradient(135deg,#F2D16B 0%,#D4A017 100%);
@@ -1393,14 +1394,14 @@
       align-items:stretch; background:#850000;
       border:2px solid #d9aa3c; border-radius:18px; box-shadow:0 12px 28px rgba(47,0,0,.34),inset 0 0 0 5px rgba(255,218,122,.13);
        width:100%; box-sizing:border-box; color:#fff; display:none; gap:0; margin:0 0 16px; min-width:0; overflow:hidden; padding:5px;
-      grid-template-areas:"label name date countdown";
-      grid-template-columns:170px minmax(0,1fr) 126px 142px;
+      grid-template-areas:"label name" "date countdown"!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
     }
     .public-countdown > * {
       align-items:center; display:flex; min-height:104px; padding:14px 18px;
     }
     .public-countdown-label {
-      background:rgba(48,0,0,.19); border-right:1px solid rgba(255,232,159,.56); color:#fff3bf;
+      background:rgba(48,0,0,.19); border-right:1px solid rgba(255,232,159,.56); border-bottom:1px solid rgba(255,232,159,.48); color:#fff3bf;
       flex-direction:column; font-family:'Josefin Sans',sans-serif; gap:4px; grid-area:label;
       justify-content:center; letter-spacing:.15em; text-align:center; text-transform:uppercase;
     }
@@ -1408,7 +1409,7 @@
     .public-countdown-label span { font-size:.58rem; font-weight:700; }
     .public-countdown-label strong { color:#fff; font-size:.86rem; font-weight:800; }
     .public-countdown-name {
-      align-items:flex-start; flex-direction:column; gap:7px; grid-area:name; justify-content:center;
+      align-items:flex-start; border-bottom:1px solid rgba(255,232,159,.48); flex-direction:column; gap:7px; grid-area:name; justify-content:center;
       min-width:0; padding-left:24px; padding-right:24px;
     }
     .public-countdown-headline {
@@ -1422,7 +1423,7 @@
       border-left:1px solid rgba(255,232,159,.48); color:#fff; flex-direction:column;
       font-family:'Josefin Sans',sans-serif; justify-content:center; text-align:center; text-transform:uppercase;
     }
-    .public-countdown-date { gap:2px; grid-area:date; padding:9px!important; }
+    .public-countdown-date { border-left:0; gap:2px; grid-area:date; padding:9px!important; }
     .public-countdown-weekday { color:#ffe58f; font-size:.55rem; font-weight:800; letter-spacing:.1em; }
     .public-countdown-month { color:#fff; font-size:.68rem; font-weight:800; letter-spacing:.14em; }
     .public-countdown-day {
@@ -1498,8 +1499,8 @@
       /* The renderer sets display:flex inline when a tournament exists.
          !important intentionally switches that live banner to this phone layout. */
       .public-countdown {
-        display:grid!important; grid-template-areas:"label label" "name name" "date countdown";
-        grid-template-columns:1fr auto;
+        display:grid!important; grid-template-areas:"label name" "date countdown"!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
       }
       .public-countdown > * { min-height:0; padding:11px 13px; }
       .public-countdown-label { border-bottom:1px solid rgba(255,255,255,.48); flex-direction:row; gap:9px; justify-content:flex-start; }
@@ -1646,11 +1647,11 @@
       align-items:center; display:flex; flex:1; gap:10px; justify-content:center; min-width:0; overflow:hidden; padding:8px 17px; position:relative; border:1px solid rgba(255,255,255,.18); border-radius:10px;
        color:var(--tab-color); font-family:'Josefin Sans',sans-serif; font-size:0.69rem; font-weight:700;
        letter-spacing:0.08em; text-align:center; text-transform:uppercase; transition:background .22s ease,border-color .22s ease,box-shadow .28s ease,transform .44s cubic-bezier(.22,1,.36,1),filter .28s ease;
-       background:#2d333d; border-color:var(--tab-border); cursor:pointer;
+       background:#161a20; border-color:var(--tab-border); cursor:pointer;
        box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22); min-height:58px; transform-origin:center bottom; transform-style:preserve-3d;
     }
     .tourney-section-nav button::before {
-      background:var(--tab-color);
+      background:#080a0d;
       border-radius:inherit; content:""; height:3px; left:12px; opacity:.9; pointer-events:none; position:absolute; right:12px; top:0; transform:none;
     }
      .tourney-section-nav button::after {
@@ -1671,6 +1672,11 @@
      .tourney-section-nav button:hover::after, .tourney-section-nav button:focus-visible::after {
        opacity:1; transform:scale(1.18) translateY(-4%);
      }
+      .tourney-section-nav button:hover::before,
+      .tourney-section-nav button:focus-visible::before,
+      .tourney-section-nav button[aria-selected="true"]::before {
+        background:var(--tab-color);
+      }
      .tourney-section-nav button:hover > *, .tourney-section-nav button:focus-visible > * {
         transform:translateZ(11px);
      }
@@ -1696,7 +1702,7 @@
        .tourney-section-nav button:hover,
        .tourney-section-nav button:focus,
        .tourney-section-nav button:focus-visible {
-         outline:none; outline-offset:0; border-color:var(--tab-border); background:#2d333d;
+          outline:none; outline-offset:0; border-color:var(--tab-border); background:#161a20;
          filter:none; transform:none; box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22);
        }
        .tourney-section-nav button:hover::after,
