@@ -311,14 +311,10 @@
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
             </div>
             <div class="vol-roster-summary">
-              <div class="vol-roster-section-heading">
-                <h4>Volunteers registered for this tournament</h4>
-                <i aria-hidden="true"></i>
-              </div>
               <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
                 <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
                 <div class="confirmed"><div class="vol-metric-circle"><strong>${stats.confirmed}</strong></div><span>Confirmed</span></div>
-                <div class="fill-rate"><div class="vol-metric-circle"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
+                <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
                 <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
               <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
