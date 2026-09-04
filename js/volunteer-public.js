@@ -254,17 +254,23 @@
           <section class="vol-opportunity-panel" aria-label="Judge volunteer opportunity">
             <div class="vol-panel-purpose vol-panel-purpose--entry">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("clock")}</div>
-              <div><span>Entry panel</span><strong>Enter Your Availability</strong></div>
+              <div class="vol-panel-purpose-flow">
+                <span>Judge volunteer opportunity</span>
+                <i aria-hidden="true"></i>
+                <strong>Enter Your Availability</strong>
+              </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✎</div>
             </div>
             <header class="vol-unified-header">
               <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
               <div class="vol-unified-title">
-                <span>Judge volunteer opportunity</span>
                 <h3>${escapeHtml(event.title)}</h3>
                 ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
               </div>
-              <div class="vol-open-status">✓ Signup open</div>
+              <div class="vol-entry-status">
+                <div class="vol-open-status">✓ Signup open</div>
+                <div class="vol-entry-deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong></div>
+              </div>
             </header>
             <div class="vol-unified-facts">
               <div><span class="vol-unified-icon">▣</span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
@@ -296,23 +302,26 @@
           <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-panel-purpose vol-panel-purpose--results">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
-              <div><span>Results panel</span><strong>Volunteer Sign-Up Results</strong></div>
+              <div class="vol-panel-purpose-flow">
+                <strong>Volunteers already signed up</strong>
+                <i aria-hidden="true"></i>
+                <span>Results panel</span>
+              </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
             </div>
-            <div class="vol-unified-metrics" aria-label="Volunteer signup progress">
-              <div><span>Judge capacity</span><strong>${stats.capacity}</strong><small>Total openings</small></div>
-              <div class="confirmed"><span>Confirmed</span><strong>${stats.confirmed}</strong><small>Volunteer signups</small></div>
-              <div class="fill-rate"><span>% filled</span><strong>${stats.fillRate}%</strong><small>Volunteer coverage</small></div>
-              <div class="available"><span>Open spots</span><strong>${stats.available}</strong><small>Still available</small></div>
-              <div class="deadline"><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong><small>Sign up as soon as possible</small></div>
-            </div>
             <div class="vol-roster-summary">
-              <div class="vol-public-roster-heading">
-                ${modalIcon("users")}
-                <div><h4>Volunteers already signed up</h4><p>People who have volunteered to judge this tournament.</p></div>
+              <div class="vol-roster-section-heading">
+                <h4>Volunteers registered for this tournament</h4>
+                <i aria-hidden="true"></i>
+              </div>
+              <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
+                <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
+                <div class="confirmed"><div class="vol-metric-circle"><strong>${stats.confirmed}</strong></div><span>Confirmed</span></div>
+                <div class="fill-rate"><div class="vol-metric-circle"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
+                <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
               </div>
               <div class="vol-roster-progress-wrap" aria-label="${stats.fillRate}% of judge spots filled">
-                <div class="vol-roster-progress-copy"><strong>${stats.fillRate}%</strong><div><span>${stats.confirmed} of ${stats.capacity} judge spots filled</span><small>${stats.available} ${stats.available === 1 ? "spot" : "spots"} remaining</small></div></div>
+                <div class="vol-roster-progress-copy"><div><span>${stats.confirmed} of ${stats.capacity} judge spots filled</span><small>${stats.available} ${stats.available === 1 ? "spot" : "spots"} remaining</small></div></div>
                 <div class="vol-roster-progress"><span style="width:${Math.max(0, Math.min(100, stats.fillRate))}%"></span></div>
                 <div class="vol-roster-progress-scale"><span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span></div>
               </div>
