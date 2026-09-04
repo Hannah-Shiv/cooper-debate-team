@@ -2006,16 +2006,16 @@
     .vol-entry-status .vol-open-status span { white-space:nowrap; }
     .vol-entry-deadline { align-items:center; border-left:2px solid #f2c94f; display:flex; gap:10px; padding:5px 5px 5px 10px; width:100%; }
     .vol-entry-deadline > b { color:#ffd34f; flex:0 0 auto; font:700 1.3rem/1 Arial,sans-serif; text-shadow:0 0 10px rgba(255,211,79,.35); }
-    .vol-entry-deadline > b img { display:block; filter:brightness(1.28) saturate(1.25) drop-shadow(0 0 6px rgba(255,211,72,.42)); height:29px; object-fit:contain; width:29px; }
+    .vol-entry-deadline > b img { display:block; filter:none; height:32px; object-fit:contain; width:32px; }
     .vol-entry-deadline span { color:#f4ce5b; display:block; font:800 .56rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; }
     .vol-entry-deadline strong { color:#f3f7ed; display:block; font:600 .78rem 'Cormorant Garamond',serif; line-height:1.25; margin-top:3px; }
     .vol-unified-facts { border-bottom:1px solid rgba(255,255,255,.11); display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); padding:0 22px; }
     .vol-unified-facts > div { align-items:flex-start; border-right:1px solid rgba(255,255,255,.11); display:flex; gap:10px; min-height:93px; padding:18px 14px; }
     .vol-unified-facts > div:last-child { border-right:0; }
     .vol-unified-icon { align-items:center; background:rgba(240,197,87,.11); border:1px solid rgba(240,197,87,.32); border-radius:5px; color:#ffd348; display:flex; flex:0 0 35px; font-size:1.35rem; height:35px; justify-content:center; line-height:1; margin-top:0; text-shadow:0 0 12px rgba(255,205,59,.42); }
-    .vol-unified-icon,.vol-brief-icon { background:none; border:0; color:#ffd348; }
-    .vol-unified-icon img,.vol-brief-icon img { display:block; filter:brightness(1.28) saturate(1.25) drop-shadow(0 0 7px rgba(255,211,72,.48)); height:31px; object-fit:contain; width:31px; }
-    .vol-unified-icon .vol-modal-icon { color:#ffd348; filter:drop-shadow(0 0 7px rgba(255,211,72,.48)); height:31px; width:31px; }
+    .vol-unified-icon,.vol-brief-icon { background:none; border:0; color:#efc558; flex-basis:40px; font-size:1.7rem; font-weight:800; height:40px; text-shadow:none; }
+    .vol-unified-icon img,.vol-brief-icon img { display:block; filter:none; height:37px; object-fit:contain; width:37px; }
+    .vol-unified-icon .vol-modal-icon { color:#efc558; filter:none; height:37px; stroke-width:2.25; width:37px; }
     .vol-unified-facts p { margin:0; min-width:0; }
     .vol-unified-facts small,.vol-unified-brief span { color:#efc558; display:block; font:700 .57rem 'Josefin Sans',sans-serif; letter-spacing:.09em; margin-bottom:5px; text-transform:uppercase; }
     .vol-unified-facts strong { color:#fff; display:block; font-family:'Cormorant Garamond',serif; font-size:1.05rem; line-height:1.22; }
@@ -2029,7 +2029,7 @@
     .vol-brief-item { align-items:flex-start; display:flex; gap:12px; }
     .vol-brief-item section { min-width:0; }
     .vol-brief-icon { align-items:center; background:rgba(240,197,87,.1); border:1px solid rgba(240,197,87,.3); border-radius:5px; color:#ffd348; display:flex; flex:0 0 35px; font-size:1.3rem; height:35px; justify-content:center; text-shadow:0 0 12px rgba(255,205,59,.4); }
-    .vol-brief-icon { background:none; border:0; }
+    .vol-brief-icon { background:none; border:0; color:#efc558; text-shadow:none; }
     .vol-unified-brief a { align-self:center; border:1px solid rgba(232,184,75,.72); border-radius:5px; color:#f2c657; font:700 .62rem 'Josefin Sans',sans-serif; letter-spacing:.07em; margin-left:20px; padding:10px 13px; text-transform:uppercase; white-space:nowrap; }
     .vol-unified-brief a:hover { background:rgba(232,184,75,.13); }
     .vol-unified-metrics { background:rgba(2,10,28,.25); border-bottom:1px solid rgba(255,255,255,.12); display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); padding:0 22px; }
@@ -2045,8 +2045,8 @@
     .vol-unified-signup { align-items:stretch; display:grid; gap:22px; grid-template-columns:minmax(0,1fr) 270px; padding:22px; }
     .vol-role-area { display:flex; flex-direction:column; min-width:0; }
     .vol-role-heading { align-items:flex-start; display:flex; gap:10px; margin:0 0 13px; }
-    .vol-role-heading > span { color:#ffd348; display:flex; flex:0 0 31px; line-height:1; }
-    .vol-role-heading > span .vol-modal-icon { color:#ffd348; filter:drop-shadow(0 0 7px rgba(255,211,72,.48)); height:31px; width:31px; }
+    .vol-role-heading > span { color:#efc558; display:flex; flex:0 0 36px; line-height:1; }
+    .vol-role-heading > span .vol-modal-icon { color:#efc558; filter:none; height:36px; stroke-width:2.25; width:36px; }
     .vol-role-heading h4 { color:#fff; font:700 1.2rem 'Cormorant Garamond',serif; margin:0 0 3px; }
     .vol-role-heading p { color:#becce2; font-size:.73rem; margin:0; }
     .vol-unified-card .vol-roles { border:0; margin:0; padding:0; }
@@ -2073,8 +2073,8 @@
     .vol-availability-radio { border:1.5px solid #aebbd3; border-radius:50%; display:block; height:15px; position:relative; width:15px; }
     .vol-availability-option.is-selected .vol-availability-radio { border-color:#f0c557; }
     .vol-availability-option.is-selected .vol-availability-radio::after { background:#f0c557; border-radius:50%; content:""; inset:3px; position:absolute; }
-    .vol-availability-icon { color:#ffd348; font-size:1.55rem; line-height:1; }
-    .vol-availability-icon .vol-modal-icon { color:#ffd348; filter:drop-shadow(0 0 6px rgba(255,211,72,.42)); height:26px; width:26px; }
+    .vol-availability-icon { color:#efc558; font-size:1.55rem; line-height:1; }
+    .vol-availability-icon .vol-modal-icon { color:#efc558; filter:none; height:29px; stroke-width:2.25; width:29px; }
     .vol-availability-copy { min-width:0; }
     .vol-availability-copy strong { color:#fff; display:block; font:700 1.03rem 'Josefin Sans',sans-serif; line-height:1.15; }
     .vol-availability-copy small { color:#b9c9e2; display:block; font-size:.67rem; margin-top:2px; }
@@ -2097,10 +2097,11 @@
     .vol-public-sidebar section { background:rgba(3,13,34,.42); border:1px solid rgba(232,184,75,.34); border-radius:8px; padding:15px; }
     .vol-public-sidebar h4 { align-items:center; color:#efc65a; display:flex; font:700 .66rem 'Josefin Sans',sans-serif; gap:8px; letter-spacing:.09em; margin:0 0 10px; text-transform:uppercase; }
     .vol-public-sidebar h4 b { align-items:center; background:rgba(240,197,87,.12); border:1px solid rgba(240,197,87,.3); border-radius:4px; color:#ffd348; display:flex; flex:0 0 25px; font-size:.9rem; height:25px; justify-content:center; text-shadow:0 0 10px rgba(255,205,59,.42); }
-    .vol-public-sidebar h4 b { background:none; border:0; color:#ffd348; }
-    .vol-public-sidebar h4 b img { display:block; filter:brightness(1.3) saturate(1.28) drop-shadow(0 0 7px rgba(64,224,133,.5)); height:24px; object-fit:contain; width:24px; }
-    .vol-public-sidebar .vol-public-secure h4 b { flex-basis:36px; height:36px; width:36px; }
-    .vol-public-sidebar .vol-public-secure h4 b img { height:36px; width:36px; }
+    .vol-public-sidebar h4 b { background:none; border:0; color:#efc558; flex-basis:34px; font-size:1.35rem; font-weight:800; height:34px; text-shadow:none; width:34px; }
+    .vol-public-sidebar h4 b .vol-modal-icon { color:#efc558; filter:none; height:32px; stroke-width:2.25; width:32px; }
+    .vol-public-sidebar h4 b img { display:block; filter:none; height:32px; object-fit:contain; width:32px; }
+    .vol-public-sidebar .vol-public-secure h4 b { color:#1ea45b; flex-basis:42px; height:42px; width:42px; }
+    .vol-public-sidebar .vol-public-secure h4 b img { height:42px; width:42px; }
     .vol-public-sidebar p { color:#d4e0f0; font-size:.72rem; line-height:1.55; margin:0; }
     .vol-public-sidebar ul { color:#d4e0f0; display:grid; font-size:.72rem; gap:9px; line-height:1.45; list-style:none; margin:0; padding:0; }
     .vol-public-sidebar li { padding-left:15px; position:relative; }
@@ -4757,7 +4758,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=38"></script>
+<script src="js/volunteer-public.js?v=39"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

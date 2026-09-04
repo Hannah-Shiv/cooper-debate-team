@@ -293,7 +293,7 @@
               </div>
               <aside class="vol-public-sidebar">
                 <section><h4><b aria-hidden="true">♟</b> What to expect</h4><ul>${publicExpectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-                ${judgeNotes.length ? `<section><h4><b aria-hidden="true">●</b> For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
+                ${judgeNotes.length ? `<section><h4><b aria-hidden="true">${modalIcon("clock")}</b> For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
                 <section class="vol-public-secure"><h4><b aria-hidden="true"><img src="assets/icons/volunteer-privacy.png" alt=""></b> Private &amp; secure</h4><ul><li>Your contact details and notes are visible only to the coaching staff.</li></ul></section>
                 <section class="vol-public-assignment"><h4><b aria-hidden="true">✓</b> Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
               </aside>
