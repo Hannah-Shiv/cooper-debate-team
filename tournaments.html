@@ -3008,7 +3008,35 @@
         justify-content:flex-end;
         min-height:72px;
         padding:14px 24px;
+        position:relative;
         text-align:right;
+      }
+      .vol-panel-purpose-art {
+        align-items:center;
+        align-self:stretch;
+        background-image:radial-gradient(circle,rgba(255,255,255,.2) 1px,transparent 1.5px);
+        background-size:9px 9px;
+        border-right:1px solid rgba(255,255,255,.14);
+        display:flex;
+        justify-content:center;
+        margin:-14px auto -14px -24px;
+        min-width:116px;
+        position:relative;
+      }
+      .vol-panel-purpose-art::before {
+        background:radial-gradient(circle,rgba(255,255,255,.11),rgba(255,255,255,.025) 62%,transparent 64%);
+        border:1px solid rgba(255,255,255,.16);
+        border-radius:50%;
+        content:"";
+        height:58px;
+        position:absolute;
+        width:58px;
+      }
+      .vol-panel-purpose-art .vol-modal-icon {
+        height:31px;
+        position:relative;
+        width:31px;
+        z-index:1;
       }
       .vol-panel-purpose span {
         font:800 .62rem 'Josefin Sans',sans-serif;
@@ -3035,6 +3063,7 @@
       }
       .vol-panel-purpose--entry span { color:#f0c557; }
       .vol-panel-purpose--entry strong { color:#fff; }
+      .vol-panel-purpose--entry .vol-panel-purpose-art { color:#f0c557; }
       .vol-panel-purpose--entry .vol-panel-purpose-icon {
         background:rgba(240,197,87,.14);
         border:1px solid rgba(240,197,87,.5);
@@ -3047,6 +3076,7 @@
       }
       .vol-panel-purpose--results span { color:#75dba8; }
       .vol-panel-purpose--results strong { color:#fff; }
+      .vol-panel-purpose--results .vol-panel-purpose-art { color:#65dda2; }
       .vol-panel-purpose--results .vol-panel-purpose-icon {
         background:rgba(73,205,142,.13);
         border:1px solid rgba(92,222,160,.42);
@@ -4356,7 +4386,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=26"></script>
+<script src="js/volunteer-public.js?v=27"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

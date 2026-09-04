@@ -242,6 +242,7 @@
         <article class="vol-event-card vol-unified-card">
           <section class="vol-opportunity-panel" aria-label="Judge volunteer opportunity">
             <div class="vol-panel-purpose vol-panel-purpose--entry">
+              <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("clock")}</div>
               <div><span>Entry panel</span><strong>Enter Your Availability</strong></div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✎</div>
             </div>
@@ -290,6 +291,7 @@
           </section>
           <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-panel-purpose vol-panel-purpose--results">
+              <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div><span>Results panel</span><strong>Volunteer Sign-Up Results</strong></div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
             </div>
