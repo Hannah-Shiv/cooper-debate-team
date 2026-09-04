@@ -2040,13 +2040,17 @@
     .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:11px; grid-template-columns:auto auto minmax(0,1fr) auto auto; min-height:58px; padding:10px 13px; transform-origin:center center; transform-style:preserve-3d; transition:border-color .3s ease,background .3s ease,transform .3s ease,box-shadow .3s ease,color .3s ease; }
     .vol-availability-option:hover { border-color:rgba(232,184,75,.6); transform:translateY(-1px); }
     .vol-availability-option.is-selected { background:linear-gradient(105deg,#28578f 0%,#163966 58%,#10294d 100%); border-color:#f0c557; box-shadow:0 0 0 1px rgba(240,197,87,.22) inset,0 7px 18px rgba(0,0,0,.24),0 0 18px rgba(240,197,87,.13); }
-    .vol-availability-option.is-flipping { animation:vol-availability-flip .72s cubic-bezier(.45,.02,.2,1); will-change:transform; }
-    @keyframes vol-availability-flip {
-      0% { transform:perspective(1000px) rotateX(0deg) scale(1); }
-      42% { transform:perspective(1000px) rotateX(-150deg) scale(.985); }
-      50% { transform:perspective(1000px) rotateX(-180deg) scale(.982); }
-      58% { transform:perspective(1000px) rotateX(-210deg) scale(.985); }
-      100% { transform:perspective(1000px) rotateX(-360deg) scale(1); }
+    @media(min-width:981px){
+      .vol-availability-option.is-flipping {
+        animation:vol-availability-reveal .54s cubic-bezier(.22,.7,.22,1);
+        will-change:opacity,filter,transform;
+      }
+    }
+    @keyframes vol-availability-reveal {
+      0% { filter:brightness(1); opacity:1; transform:scale(1); }
+      38% { filter:brightness(.78); opacity:.42; transform:scale(.992); }
+      62% { filter:brightness(1.12); opacity:.78; transform:scale(.996); }
+      100% { filter:brightness(1); opacity:1; transform:scale(1); }
     }
     .vol-availability-option input { height:1px; opacity:0; position:absolute; width:1px; }
     .vol-availability-radio { border:1.5px solid #aebbd3; border-radius:50%; display:block; height:15px; position:relative; width:15px; }
