@@ -243,7 +243,7 @@
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
           <span class="vol-availability-radio" aria-hidden="true"></span>
-          <span class="vol-availability-icon" aria-hidden="true">${choice.icon}</span>
+          <span class="vol-availability-icon" aria-hidden="true">${modalIcon("clock")}</span>
           <span class="vol-availability-copy"><strong>${escapeHtml(choice.label)}</strong><small>${escapeHtml(choice.detail)}</small></span>
            <span class="vol-selection-check" aria-hidden="true">✓</span>
           ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
@@ -274,7 +274,7 @@
             </header>
             <div class="vol-unified-facts">
               <div><span class="vol-unified-icon"><img src="assets/icons/volunteer-calendar.png" alt=""></span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
-              <div><span class="vol-unified-icon">◷</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
+              <div><span class="vol-unified-icon">${modalIcon("clock")}</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
               <div><span class="vol-unified-icon"><img src="assets/icons/volunteer-location.png" alt=""></span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
               <div><span class="vol-unified-icon">♟</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
             </div>
@@ -285,7 +285,7 @@
             </div>
             <div class="vol-unified-signup">
               <div class="vol-role-area">
-                <div class="vol-role-heading"><span>◷</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
+                <div class="vol-role-heading"><span>${modalIcon("clock")}</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
                 <div class="vol-availability-options">${availabilityMarkup}</div>
                 <button type="button" class="vol-inline-continue" ${availableRole ? "" : "disabled"} data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
                   ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
