@@ -913,6 +913,15 @@
       });
       return rows;
     };
+    const fitHeadline = (headline, maxWidth, maxLines = 2) => {
+      for (let size = 22; size >= 16; size -= .5) {
+        const font = `700 ${size}px Georgia`;
+        const rows = wrap(headline, maxWidth, font);
+        if (rows.length <= maxLines) return { font, rows, leading: size + 2 };
+      }
+      const font = "700 16px Georgia";
+      return { font, rows: wrap(headline, maxWidth, font).slice(0, maxLines), leading: 18 };
+    };
     const text = (str, x, y, maxWidth, font, color = ink, maxLines = 4, leading = 11) => {
       const rows = wrap(str, maxWidth, font).slice(0, maxLines);
       ctx.font = scaledFont(font); ctx.letterSpacing = "0px"; ctx.fillStyle = color; ctx.textBaseline = "top";
@@ -992,9 +1001,10 @@
     ctx.textAlign = "center";
     ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 306, 102);
     ctx.textAlign = "left";
-    ctx.font = scaledFont("700 24px Georgia"); ctx.fillStyle = navy;
-    const headline = wrap("Thank you for representing Cooper.", 368, "700 24px Georgia").slice(0, 2);
-    headline.forEach((row, i) => ctx.fillText(row, 22, 114 + i * 25));
+    const personalizedHeadline = `${firstName ? `${firstName}, thank you` : "Thank you"} for representing Cooper.`;
+    const headline = fitHeadline(personalizedHeadline, 368);
+    ctx.font = scaledFont(headline.font); ctx.fillStyle = navy;
+    headline.rows.forEach((row, i) => ctx.fillText(row, 22, 114 + i * headline.leading));
     text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
     text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, 365, "9px Arial", ink, 2, 11);
     rounded(402, 114, 188, 127, 8, "#dceefa");

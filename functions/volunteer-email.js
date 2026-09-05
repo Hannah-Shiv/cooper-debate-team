@@ -298,6 +298,8 @@ function itineraryAttachment(event, signup) {
     const volunteerName = cleanText(signup.parentName, 120) ||
       [cleanText(signup.parentFirstName, 60), cleanText(signup.parentLastName, 60)].filter(Boolean).join(" ") ||
       "Volunteer";
+    const firstName = cleanText(signup.parentFirstName, 60) || volunteerName.split(/\s+/)[0] || "";
+    const personalizedHeadline = `${firstName && firstName !== "Volunteer" ? `${firstName}, thank you` : "Thank you"} for representing Cooper.`;
     const icons = {
       signup: asset("signup-details.png"),
       resolution: asset("tournament-resolution.png"),
@@ -333,6 +335,28 @@ function itineraryAttachment(event, signup) {
           .text(item, x + 14, top, { width: width - 14, height, ellipsis: true, lineGap: 1 });
       });
     };
+    const fitHeadline = (headline, maxWidth, maxLines = 2) => {
+      let smallestRows = [];
+      for (let size = 22; size >= 16; size -= .5) {
+        document.font("Times-Bold").fontSize(size);
+        const words = headline.split(/\s+/);
+        const rows = [];
+        let row = "";
+        words.forEach(word => {
+          const next = row ? `${row} ${word}` : word;
+          if (document.widthOfString(next) > maxWidth && row) {
+            rows.push(row);
+            row = word;
+          } else {
+            row = next;
+          }
+        });
+        if (row) rows.push(row);
+        smallestRows = rows;
+        if (rows.length <= maxLines) return { size, rows, leading: size + 2 };
+      }
+      return { size: 16, rows: smallestRows.slice(0, maxLines), leading: 18 };
+    };
 
     document.rect(0, 0, pageWidth, 92).fill(navy);
     document.rect(0, 90, pageWidth, 2).fill(gold);
@@ -346,9 +370,11 @@ function itineraryAttachment(event, signup) {
 
     document.fillColor("#a87900").font("Helvetica-Bold").fontSize(8)
       .text("TOURNAMENT JUDGE CONFIRMATION", 0, 102, { width: pageWidth, align: "center", lineBreak: false });
-    document.fillColor(navy).font("Times-Bold").fontSize(24)
-      .text("Thank you for representing", 22, 114, { width: 368, height: 26, lineBreak: false });
-    document.text("Cooper.", 22, 139, { width: 368, height: 26, lineBreak: false });
+    const headline = fitHeadline(personalizedHeadline, 368);
+    document.fillColor(navy).font("Times-Bold").fontSize(headline.size);
+    headline.rows.forEach((row, index) => {
+      document.text(row, 22, 114 + index * headline.leading, { width: 368, height: headline.leading, lineBreak: false });
+    });
     document.fillColor(ink).font("Helvetica").fontSize(9)
       .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, { width: 365, height: 44, lineGap: 2 });
     document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, { width: 365, height: 24, lineGap: 2 });

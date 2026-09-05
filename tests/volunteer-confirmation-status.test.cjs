@@ -287,7 +287,10 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /const boxTitles = \["Arrival & Parking", "Refreshments", "Information", "Contact Support"\]/);
   assert.match(publicScript, /const privacyGreen = "#2f9b62"/);
   assert.match(publicScript, /bar\(22, 697, 278, "Privacy", icons\.privacy, privacyGreen\)/);
-  assert.match(publicScript, /wrap\("Thank you for representing Cooper\."/);
+  assert.match(publicScript, /const personalizedHeadline = `\$\{firstName \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper\.`/);
+  assert.match(publicScript, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
+  assert.match(publicScript, /for \(let size = 22; size >= 16; size -= \.5\)/);
+  assert.match(publicScript, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
@@ -306,7 +309,9 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /\["Contact Support", icons\.contact/);
   assert.match(emailService, /const privacyGreen = "#2f9b62"/);
   assert.match(emailService, /sectionBar\(22, 697, 278, "Privacy", icons\.privacy, privacyGreen\)/);
-  assert.match(emailService, /\.text\("Thank you for representing"/);
+  assert.match(emailService, /const personalizedHeadline = `\$\{firstName && firstName !== "Volunteer" \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper\.`/);
+  assert.match(emailService, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
+  assert.match(emailService, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
 });
 
 test("the four lower information cards use distinct muted fills", () => {
