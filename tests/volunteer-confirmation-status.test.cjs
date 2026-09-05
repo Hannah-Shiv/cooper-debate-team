@@ -95,7 +95,7 @@ test("the public judge signup logistics match the one-pager and ignore editable 
   ]) {
     assert.match(publicScript, new RegExp(constant));
   }
-  for (const heading of ["Arrival & Parking", "Meals & Refreshments", "Important information", "Coach contact"]) {
+  for (const heading of ["Arrival & Parking", "Refreshments", "Information", "Coach contact"]) {
     assert.match(publicScript, new RegExp(heading));
   }
   assert.doesNotMatch(publicScript, /<aside class="vol-public-sidebar">/);
@@ -263,18 +263,24 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
   assert.match(emailService, /Judge_Volunteer_For_\$\{tournamentName\}_On_\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}\.pdf/);
 });
 
-test("confirmation PDF uses fitted icons, blue circles, yellow stars, and the approved headline", () => {
-  assert.match(publicScript, /rounded\(x \+ 10, y \+ 5, 14, 14, 3, gold\)/);
-  assert.match(publicScript, /barIconSymbol\(title\)/);
-  assert.match(publicScript, /ctx\.fillStyle = "#1857a6"; ctx\.beginPath\(\); ctx\.arc/);
+test("confirmation PDF uses supplied title icons, navy circles, yellow stars, and the approved headline", () => {
+  assert.match(publicScript, /drawContainedImage\(icon, x \+ 9, y \+ 3, 18, 18\)/);
+  assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
+  assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
   assert.match(publicScript, /ctx\.fillStyle = gold; drawStar/);
+  assert.match(publicScript, /const boxTitles = \["Arrival & Parking", "Refreshments", "Information", "Contact Support"\]/);
+  assert.match(publicScript, /bar\(22, 697, 278, "Privacy", icons\.privacy\)/);
   assert.match(publicScript, /wrap\("Thank you for representing Cooper\."/);
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
-  assert.match(emailService, /roundedRect\(x \+ 10, y \+ 5, 14, 14, 3\)\.fill\(gold\)/);
-  assert.match(emailService, /sectionBarIcon\(title\)/);
-  assert.match(emailService, /document\.circle\(x, y, 4\.5\)\.fill\(blue\)/);
+  assert.match(emailService, /document\.image\(icon, x \+ 9, y \+ 3, \{ fit: \[18, 18\]/);
+  assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
+  assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
   assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
+  assert.match(emailService, /\["Refreshments", icons\.meals/);
+  assert.match(emailService, /\["Information", icons\.information/);
+  assert.match(emailService, /\["Contact Support", icons\.contact/);
+  assert.match(emailService, /sectionBar\(22, 697, 278, "Privacy", icons\.privacy\)/);
   assert.match(emailService, /\.text\("Thank you for representing"/);
 });
 

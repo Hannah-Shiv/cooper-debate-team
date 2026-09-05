@@ -905,17 +905,7 @@
       const renderedHeight = image.naturalHeight * ratio;
       ctx.drawImage(image, x + (width - renderedWidth) / 2, y + (height - renderedHeight) / 2, renderedWidth, renderedHeight);
     };
-    const barIconSymbol = title => ({
-      "Your Signup Details": "+",
-      "Tournament Resolution": "=",
-      "What to Expect": "*",
-      "Arrival & Parking": "P",
-      "Meals & Refreshments": "C",
-      "Important Information": "!",
-      "Contact & Support": "@",
-      "Privacy Note": "S",
-    }[title] || "•");
-    const bar = (x, y, w, title, _icon, accent = gold) => {
+    const bar = (x, y, w, title, icon, accent = gold) => {
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
       const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
@@ -925,17 +915,11 @@
         fittedSize -= .25;
         ctx.font = `700 ${fittedSize}px Arial`;
       }
-      rounded(x + 10, y + 5, 14, 14, 3, gold);
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.letterSpacing = "0px";
-      ctx.fillStyle = navy;
-      ctx.font = "700 8px Arial";
-      ctx.fillText(barIconSymbol(title), x + 17, y + 12.25);
+      drawContainedImage(icon, x + 9, y + 3, 18, 18);
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
-      ctx.fillText(title.toUpperCase(), x + 34, y + 7);
+      ctx.fillText(title.toUpperCase(), x + 33, y + 7);
     };
     const drawStar = (centerX, centerY, outerRadius, innerRadius) => {
       ctx.beginPath();
@@ -955,7 +939,7 @@
       items.slice(0, 6).forEach(item => {
         const itemText = typeof item === "object" ? item.text : item;
         const itemFont = typeof item === "object" && item.font ? item.font : font;
-        ctx.fillStyle = "#1857a6"; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = navy; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 5.2, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = gold; drawStar(x + 4, cursor + 5, 2.8, 1.25);
         cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
@@ -1020,7 +1004,7 @@
     bullets(expected, right + 10, 395, colW - 20, "7.5px Arial", 15);
 
     const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
-    const boxTitles = ["Arrival & Parking", "Meals & Refreshments", "Important Information", "Contact & Support"];
+    const boxTitles = ["Arrival & Parking", "Refreshments", "Information", "Contact Support"];
     const boxIcons = [icons.arrival, icons.meals, icons.information, icons.contact];
     const boxFills = ["#eef5fb", "#fff8df", "#f3effa", "#fff2e5"];
     const boxLines = ["#c9deed", "#eadca7", "#d9cdec", "#ebcfb1"];
@@ -1038,7 +1022,7 @@
       bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, sectionBodyFont("6.5px Arial"), 14, maxItemLines, 8.65);
     });
     rounded(22, 697, 278, 69, 6, "#e9f5f0", "#c8e1d6");
-    bar(22, 697, 278, "Privacy Note", icons.privacy, "#1f785e");
+    bar(22, 697, 278, "Privacy", icons.privacy);
     text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, 252, "7.5px Arial", ink, 3, 9);
     rounded(308, 697, 282, 69, 6, "#fff0b9", "#f0d36b");
     ctx.textAlign = "left";

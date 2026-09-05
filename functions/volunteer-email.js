@@ -286,7 +286,6 @@ function itineraryAttachment(event, signup) {
 
     const pageWidth = document.page.width;
     const navy = "#062451";
-    const blue = "#1857a6";
     const gold = "#f6c928";
     const ink = "#102b59";
     const pale = "#eaf4fc";
@@ -307,27 +306,15 @@ function itineraryAttachment(event, signup) {
       contact: asset("contact-support.png"),
       privacy: asset("privacy.png"),
     };
-    const sectionBarIcon = title => ({
-      "Your Signup Details": "+",
-      "Tournament Resolution": "=",
-      "What to Expect": "*",
-      "Arrival & Parking": "P",
-      "Meals & Refreshments": "C",
-      "Important Information": "!",
-      "Contact & Support": "@",
-      "Privacy Note": "S",
-    }[title] || "•");
-    const sectionBar = (x, y, width, title, _icon, accent = gold) => {
+    const sectionBar = (x, y, width, title, icon, accent = gold) => {
       document.rect(x, y, width, 24).fill(navy);
       document.rect(x, y, 5, 24).fill(accent);
-      document.roundedRect(x + 10, y + 5, 14, 14, 3).fill(gold);
-      document.fillColor(navy).font("Helvetica-Bold").fontSize(8)
-        .text(sectionBarIcon(title), x + 10, y + 7.5, { width: 14, height: 9, align: "center", lineBreak: false });
+      document.image(icon, x + 9, y + 3, { fit: [18, 18], align: "center", valign: "center" });
       document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10)
-        .text(title.toUpperCase(), x + 34, y + 7, { width: width - 40, height: 12, lineBreak: false, characterSpacing: 0 });
+        .text(title.toUpperCase(), x + 33, y + 7, { width: width - 39, height: 12, lineBreak: false, characterSpacing: 0 });
     };
     const starBullet = (x, y) => {
-      document.circle(x, y, 4.5).fill(blue);
+      document.circle(x, y, 5.2).fill(navy);
       const points = [];
       for (let point = 0; point < 10; point += 1) {
         const angle = -Math.PI / 2 + point * Math.PI / 5;
@@ -410,9 +397,9 @@ function itineraryAttachment(event, signup) {
     const boxW = (pageWidth - 44 - boxGap * 3) / 4;
     const boxData = [
       ["Arrival & Parking", icons.arrival, APPROVED_ARRIVAL, "#eef5fb", "#c9deed"],
-      ["Meals & Refreshments", icons.meals, APPROVED_MEAL_ITEMS, "#fff8df", "#eadca7"],
-      ["Important Information", icons.information, APPROVED_IMPORTANT_INFORMATION, "#f3effa", "#d9cdec"],
-      ["Contact & Support", icons.contact, APPROVED_CONTACT, "#fff2e5", "#ebcfb1"],
+      ["Refreshments", icons.meals, APPROVED_MEAL_ITEMS, "#fff8df", "#eadca7"],
+      ["Information", icons.information, APPROVED_IMPORTANT_INFORMATION, "#f3effa", "#d9cdec"],
+      ["Contact Support", icons.contact, APPROVED_CONTACT, "#fff2e5", "#ebcfb1"],
     ];
     boxData.forEach(([title, icon, items, fill, border], index) => {
       const x = 22 + index * (boxW + boxGap);
@@ -422,7 +409,7 @@ function itineraryAttachment(event, signup) {
     });
 
     document.roundedRect(22, 697, 278, 69, 6).fillAndStroke("#e9f5f0", "#c8e1d6");
-    sectionBar(22, 697, 278, "Privacy Note", icons.privacy, "#1f785e");
+    sectionBar(22, 697, 278, "Privacy", icons.privacy);
     document.fillColor(ink).font("Helvetica").fontSize(7.5)
       .text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, { width: 252, height: 29, lineGap: 2 });
     document.roundedRect(308, 697, 282, 69, 6).fillAndStroke("#fff0b9", "#f0d36b");
