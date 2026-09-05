@@ -197,7 +197,7 @@ function emailShell(title, intro, contentHtml, footerText) {
   return [
     "<!doctype html><html><body style=\"margin:0;padding:0;background:#f5f7fa;font-family:Arial,sans-serif;color:#1d2733;\">",
     "<div style=\"max-width:620px;margin:0 auto;padding:28px 16px;\">",
-    "<div style=\"background:#0e3b2e;padding:20px 24px;color:#fff;border-radius:8px 8px 0 0;\">",
+    "<div style=\"background:#062451;padding:20px 24px;color:#fff;border-radius:8px 8px 0 0;\">",
     "<strong style=\"font-size:18px;\">Cooper Debate Team</strong>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
     `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
@@ -510,7 +510,7 @@ async function buildMessage(kind, event, signup, changes = []) {
     : cleanText(event.expectations, 1200);
   const eventRowsHtml = `<table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 20px;">${rowsAsHtml(rows)}</table>`;
   const eventRowsText = rowsAsText(rows);
-  const pageHtml = `<p style="margin:20px 0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#0e3b2e;color:#fff;text-decoration:none;border-radius:5px;padding:11px 16px;font-weight:700;">View tournament details</a></p>`;
+  const pageHtml = `<p style="margin:20px 0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#062451;color:#fff;text-decoration:none;border-radius:5px;padding:11px 16px;font-weight:700;">View tournament details</a></p>`;
   const approvedSections = [
     ["Arrival & parking", APPROVED_ARRIVAL],
     ["Meals & refreshments", APPROVED_MEAL_ITEMS],

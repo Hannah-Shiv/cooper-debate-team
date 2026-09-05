@@ -84,6 +84,22 @@ test("the approved meal information is identical in signup UI and email content"
   assert.match(emailService, /APPROVED_CONTACT/);
 });
 
+test("confirmation email uses navy bars and only approved one-pager logistics", () => {
+  assert.equal((emailService.match(/background:#062451/g) || []).length, 2);
+  assert.doesNotMatch(emailService, /background:#0e3b2e/);
+  assert.match(emailService, /const useApprovedOnePager = kind === "confirmation"/);
+  assert.match(emailService, /useApprovedOnePager \? APPROVED_RESOLUTION/);
+  assert.match(emailService, /useApprovedOnePager \? APPROVED_CONTACT\[1\]/);
+  assert.match(emailService, /\["Arrival & parking", APPROVED_ARRIVAL\]/);
+  assert.match(emailService, /\["Meals & refreshments", APPROVED_MEAL_ITEMS\]/);
+  assert.match(emailService, /\["What to expect", APPROVED_EXPECTATIONS\]/);
+  assert.match(emailService, /\["Important information", APPROVED_IMPORTANT_INFORMATION\]/);
+  assert.match(emailService, /\["Contact & support", APPROVED_CONTACT\]/);
+  assert.doesNotMatch(emailService, /Lunch will not be provided/);
+  assert.doesNotMatch(emailService, /moratorium on hyperscale data center construction/);
+  assert.doesNotMatch(emailService, /Judge at least 3 preliminary rounds/);
+});
+
 test("the automatic email attaches the exact browser-generated one-pager", async () => {
   const supplied = Buffer.from("%PDF-1.4\nexact-browser-one-pager\n", "utf8").toString("base64");
   const attachment = await createVolunteerItineraryAttachment(
