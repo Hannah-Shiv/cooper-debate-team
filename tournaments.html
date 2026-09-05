@@ -5311,6 +5311,137 @@
       #volunteer-modal .vol-stepper span { font-size:.56rem; }
       #volunteer-modal .vol-availability-card legend { font-size:.69rem; }
     }
+
+    /* Final responsive signup layout: phone time fields need their own rows,
+       while portrait tablets have enough width for a compact information rail. */
+    @media (min-width:701px) and (max-width:980px) {
+      #volunteer-modal .vol-condensed-form-layout {
+        align-items:start;
+        display:grid;
+        gap:14px;
+        grid-template-columns:minmax(0,1fr) 310px;
+      }
+      #volunteer-modal .vol-condensed-main {
+        display:block;
+      }
+      #volunteer-modal .vol-condensed-main > .vol-form-grid {
+        align-content:start;
+        align-items:start;
+        display:grid;
+        gap:10px;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        grid-template-rows:repeat(4,auto);
+        height:auto;
+      }
+      #volunteer-modal .vol-condensed-main > .vol-form-grid > .vol-form-field:not(.full) {
+        grid-column:auto;
+      }
+      #volunteer-modal .vol-condensed-selection {
+        display:grid;
+        grid-template-columns:34px minmax(0,1fr);
+        min-height:0;
+        padding:10px 12px;
+      }
+      #volunteer-modal .vol-condensed-selection p {
+        grid-column:1/-1;
+        white-space:normal;
+      }
+      #volunteer-modal .vol-availability-card--compact {
+        margin:12px 0;
+        min-height:0;
+        padding:12px;
+      }
+      #volunteer-modal .vol-time-grid input {
+        font-size:1rem!important;
+        min-height:48px;
+      }
+      #volunteer-modal .vol-condensed-main .vol-form-field {
+        gap:4px;
+      }
+      #volunteer-modal .vol-form-field label {
+        font-size:.64rem;
+      }
+      #volunteer-modal .vol-condensed-main .vol-form-field input {
+        min-height:46px;
+        padding:9px 10px;
+      }
+      #volunteer-modal .vol-condensed-main .vol-form-field textarea {
+        min-height:72px;
+        padding:10px;
+      }
+      #volunteer-modal .vol-public-note {
+        font-size:.7rem;
+        line-height:1.4;
+        min-height:0;
+        padding:9px 11px;
+      }
+      #volunteer-modal .vol-signup-sidebar {
+        align-self:start;
+        height:auto;
+        margin-top:0;
+      }
+      #volunteer-modal .vol-signup-sidebar > .vol-side-card:first-child {
+        height:auto;
+      }
+      #volunteer-modal .vol-info-reader {
+        height:310px;
+        min-height:310px;
+        max-height:310px;
+      }
+      #volunteer-modal .vol-info-tabs {
+        gap:6px;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      #volunteer-modal .vol-info-tabs .vol-info-callout {
+        height:58px;
+        min-height:58px;
+        padding:5px 4px;
+      }
+      #volunteer-modal .vol-info-trigger,
+      #volunteer-modal .vol-info-trigger .vol-modal-icon {
+        height:24px;
+        width:24px;
+      }
+      #volunteer-modal .vol-info-callout strong {
+        font-size:.58rem;
+        line-height:1.15;
+      }
+      #volunteer-modal section[data-vol-step="1"] .vol-modal-actions {
+        margin-top:22px;
+      }
+    }
+
+    @media (max-width:700px) {
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid {
+        display:grid;
+        gap:14px;
+        grid-template-columns:1fr!important;
+        width:100%;
+      }
+      #volunteer-modal .vol-time-control,
+      #volunteer-modal .vol-time-control input {
+        box-sizing:border-box;
+        min-width:0;
+        width:100%;
+      }
+      #volunteer-modal .vol-info-reader {
+        height:auto;
+        min-height:240px;
+        max-height:none;
+        overflow:visible;
+      }
+      #volunteer-modal .vol-info-tabs {
+        gap:8px;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+      #volunteer-modal .vol-signup-sidebar,
+      #volunteer-modal .vol-signup-sidebar > .vol-side-card:first-child {
+        height:auto;
+      }
+      #volunteer-modal section[data-vol-step="1"] .vol-modal-actions {
+        margin-top:24px;
+      }
+    }
     /* Final review palette applies at every width, outside portrait-only rules. */
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back {
       background:linear-gradient(145deg,#0a4d58,#073845);
