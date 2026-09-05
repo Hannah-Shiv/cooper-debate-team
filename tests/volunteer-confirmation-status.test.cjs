@@ -84,6 +84,33 @@ test("the approved meal information is identical in signup UI and email content"
   assert.match(emailService, /APPROVED_CONTACT/);
 });
 
+test("the public judge signup logistics match the one-pager and ignore editable legacy instructions", () => {
+  for (const constant of [
+    "APPROVED_RESOLUTION",
+    "APPROVED_EXPECTATIONS",
+    "APPROVED_ARRIVAL",
+    "APPROVED_MEAL_ITEMS",
+    "APPROVED_IMPORTANT_INFORMATION",
+    "APPROVED_CONTACT",
+  ]) {
+    assert.match(publicScript, new RegExp(constant));
+  }
+  for (const heading of [
+    "Arrival &amp; parking",
+    "Meals &amp; refreshments",
+    "Important information",
+    "Contact &amp; support",
+  ]) {
+    assert.match(publicScript, new RegExp(heading));
+  }
+  assert.doesNotMatch(publicScript, /Judge at least 3 preliminary rounds/);
+  assert.doesNotMatch(publicScript, /Please arrive 20 minutes early/);
+  assert.doesNotMatch(publicScript, /walking from the parking lot takes about 5 minutes/);
+  assert.doesNotMatch(publicScript, /publicExpectations|judgeNotes|assignmentNotes/);
+  assert.doesNotMatch(publicScript, /selectedEvent\.judgeInstructions|selectedEvent\.expectations/);
+  assert.match(publicScript, /title: "Coach contact", label: APPROVED_CONTACT\.join\(" "\), email: "pgkonde@fcps\.edu"/);
+});
+
 test("confirmation email uses navy bars and only approved one-pager logistics", () => {
   assert.equal((emailService.match(/background:#062451/g) || []).length, 2);
   assert.doesNotMatch(emailService, /background:#0e3b2e/);

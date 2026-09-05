@@ -9,6 +9,32 @@
     "Please let us know about any dietary restrictions in advance if possible.",
   ]);
   const APPROVED_MEAL_INFO = APPROVED_MEAL_ITEMS.join(" ");
+  const APPROVED_RESOLUTION = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+  const APPROVED_EXPECTATIONS = Object.freeze([
+    "You will be assigned to multiple rounds throughout the day.",
+    "Each round is about a 60-minute session, followed by a short feedback period.",
+    "You will evaluate constructive speeches, crossfire, and rebuttals using a provided ballot.",
+    "Coaches and student volunteers will be available to answer questions and provide support.",
+    "You may be paired with another judge for certain rounds.",
+  ]);
+  const APPROVED_ARRIVAL = Object.freeze([
+    "Please arrive early, 8:00 AM for check-in.",
+    "Enter through the main entrance from the parking lot.",
+    "Check in at the Judge Registration table in the lobby.",
+    "Parking is available in the main school parking lot.",
+    "Look for signage and student volunteers if you need assistance.",
+  ]);
+  const APPROVED_IMPORTANT_INFORMATION = Object.freeze([
+    "Tournament schedule and judge pairings will be provided at check-in.",
+    "This is a middle school tournament. Rounds may include novice debaters.",
+    "Be prepared for a day of thoughtful discussion, engaged students, and great debates!",
+    "If you have questions during the event, please ask a coach or tournament volunteer.",
+  ]);
+  const APPROVED_CONTACT = Object.freeze([
+    "If you have questions before the tournament, please contact:",
+    "Coach Pamela Konde · pgkonde@fcps.edu",
+    "On tournament day, look for a coach or any student volunteer — we're here to help!",
+  ]);
   const FULL_TOURNAMENT_HOUR_OVERRIDES = Object.freeze({
     "volunteer-signup-acceptance-test": Object.freeze({ start: "08:00", end: "17:30" }),
   });
@@ -297,16 +323,7 @@
     root.innerHTML = volunteerEvents.map(event => {
       const stats = eventSignupStats(event);
       const invitationUrl = safeExternalUrl(event.invitationUrl);
-      const expectations = lineItems(event.expectations);
       const formatMark = (event.debateFormat || "Judge").split(/\s+/).map(word => word[0]).join("").slice(0, 2).toUpperCase();
-      const publicExpectations = expectations.length
-        ? expectations
-        : ["Arrive 15–20 minutes early", "We’ll assign rounds within your availability", "Bring a device for electronic ballots when required"];
-      const judgeNotes = bulletItems(event.judgeInstructions);
-      const assignmentNotes = [
-        "You may be assigned to one or more rounds within your availability.",
-        "Please arrive 20 minutes early; walking from the parking lot takes about 5 minutes.",
-      ];
       const availableRole = event.roles
         .filter(role => role.label !== "Duplicate-check test")
         .find(role => Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0)) > 0);
@@ -387,7 +404,7 @@
               <div><span class="vol-unified-icon">♟</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
             </div>
             <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
-              ${event.resolution ? `<div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true">▤</b><section><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></section></div>` : ""}
+              <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true">▤</b><section><span>Resolution / topic</span><p>${escapeHtml(APPROVED_RESOLUTION)}</p></section></div>
               <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b><section><span>Meals / refreshments</span><p>${escapeHtml(APPROVED_MEAL_INFO)}</p></section></div>
               ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
             </div>
@@ -400,10 +417,10 @@
                 </button>
               </div>
               <aside class="vol-public-sidebar">
-                <section><h4><b aria-hidden="true">♟</b> What to expect</h4><ul>${publicExpectations.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-                ${judgeNotes.length ? `<section><h4><b aria-hidden="true">${modalIcon("clock")}</b> For judges</h4><ul>${judgeNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>` : ""}
-                <section class="vol-public-secure"><h4><b aria-hidden="true"><img src="assets/icons/volunteer-privacy.png" alt=""></b> Private &amp; secure</h4><ul><li>Your contact details and notes are visible only to the coaching staff.</li></ul></section>
-                <section class="vol-public-assignment"><h4><b aria-hidden="true">✓</b> Judge assignment</h4><ul>${assignmentNotes.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+                <section><h4><b aria-hidden="true">${modalIcon("clock")}</b> Arrival &amp; parking</h4><ul>${APPROVED_ARRIVAL.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+                <section><h4><b aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b> Meals &amp; refreshments</h4><ul>${APPROVED_MEAL_ITEMS.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+                <section class="vol-public-secure"><h4><b aria-hidden="true">!</b> Important information</h4><ul>${APPROVED_IMPORTANT_INFORMATION.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
+                <section class="vol-public-assignment"><h4><b aria-hidden="true">@</b> Contact &amp; support</h4><ul>${APPROVED_CONTACT.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
               </aside>
             </div>
           </section>
@@ -684,8 +701,8 @@
       <div class="vol-brief-grid">
         <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
         <div class="vol-brief-debate">
-          ${selectedEvent.resolution ? `<div class="vol-brief-resolution">${modalIcon("document")}<div><span>Resolution / topic</span><p>${escapeHtml(selectedEvent.resolution)}</p></div></div>` : ""}
-          ${selectedEvent.judgeInstructions ? `<div class="vol-brief-callout">${modalIcon("info")}<div><strong>Important information</strong><p>${escapeHtml(selectedEvent.judgeInstructions)}</p></div></div>` : ""}
+          <div class="vol-brief-resolution">${modalIcon("document")}<div><span>Resolution / topic</span><p>${escapeHtml(APPROVED_RESOLUTION)}</p></div></div>
+          <div class="vol-brief-callout">${modalIcon("info")}<div><strong>Important information</strong><p>${escapeHtml(APPROVED_IMPORTANT_INFORMATION.join(" "))}</p></div></div>
           ${invitationUrl ? `<a class="vol-invitation-link" href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
         </div>
       </div>`;
@@ -696,7 +713,6 @@
     const root = $("vol-signup-sidebar");
     if (!root || !selectedEvent || !selectedRole) return;
     const chosenTime = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value);
-    const expectations = lineItems(selectedEvent.expectations);
     const informationItems = [
       { icon: "calendar", title: "Date", label: selectedEvent.date ? dateLabel(selectedEvent.date) : "The tournament date will be announced." },
       { icon: "clock", title: "Tournament hours", label: timeRange(selectedEvent.startTime, selectedEvent.endTime) || "Tournament hours will be announced." },
@@ -704,23 +720,11 @@
       { icon: "utensils", title: "Meals", label: APPROVED_MEAL_INFO },
       { icon: "pin", title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
       { icon: "trophy", title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
-      { icon: "document", title: "Resolution / topic", label: selectedEvent.resolution || "The resolution will be shared when available." },
-      { icon: "info", title: "Important information", label: selectedEvent.judgeInstructions || selectedEvent.details || "Please arrive early and check the tournament page before leaving." },
-      { icon: "question", title: "What to expect", label: expectations.join(" ") || "Plan to judge preliminary rounds within your selected availability. Final assignments will be shared closer to the tournament." },
+      { icon: "document", title: "Resolution / topic", label: APPROVED_RESOLUTION },
+      { icon: "info", title: "Important information", label: APPROVED_IMPORTANT_INFORMATION.join(" ") },
+      { icon: "question", title: "What to expect", label: APPROVED_EXPECTATIONS.join(" ") },
+      { icon: "users", title: "Coach contact", label: APPROVED_CONTACT.join(" "), email: "pgkonde@fcps.edu" },
     ];
-    const contact = [
-      selectedEvent.coachName,
-      selectedEvent.coachEmail,
-      selectedEvent.coachPhone,
-    ].filter(Boolean);
-    if (contact.length) {
-      informationItems.push({
-        icon: "users",
-        title: "Coach contact",
-        label: contact.join(" · "),
-        email: selectedEvent.coachEmail || "",
-      });
-    }
     const informationDetailMarkup = item => `
       <span class="vol-info-reader-icon">${modalIcon(item.icon)}</span>
       <div>
@@ -857,7 +861,7 @@
     const availability = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value) || "To be announced";
     const location = value(event.location, "Location to be announced");
     const address = event.address || "";
-    const resolution = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+    const resolution = APPROVED_RESOLUTION;
     const expected = [
       "You will be assigned to multiple rounds throughout the day.",
       "Each round is about a 60-minute session, followed by a short feedback period.",
