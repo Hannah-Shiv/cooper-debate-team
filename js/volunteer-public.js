@@ -88,7 +88,7 @@
     const fullWindow = fullTournamentWindow(event);
     const isFullTournament = signup.availabilityStart === fullWindow.start &&
       signup.availabilityEnd === fullWindow.end;
-    if (isFullTournament) return { label: "Full", className: "is-full" };
+    if (isFullTournament) return { label: "All day", className: "is-full" };
     if (signup.availabilityStart === event.startTime) return { label: "Morning", className: "is-morning" };
     if (signup.availabilityEnd === event.endTime) return { label: "Afternoon", className: "is-afternoon" };
     return { label: "Custom", className: "is-custom" };
@@ -189,7 +189,7 @@
     return [
       { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
       { id: "afternoon", label: timeRange(minutesToTime(split), minutesToTime(end)), detail: "Afternoon availability", icon: "☀", start: minutesToTime(split), end: minutesToTime(end), duration: durationLabel(end - split) },
-      { id: "full", label: timeRange(fullStart, fullEnd), detail: "Full tournament", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
+      { id: "full", label: timeRange(fullStart, fullEnd), detail: "All-day availability", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
       { id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
     ];
   }
@@ -443,7 +443,7 @@
                 </div>
                 <div class="vol-roster-filter-box">
                   <button type="button" class="vol-roster-filter-btn" data-coverage="is-morning" aria-pressed="false" aria-label="Filter by morning coverage">Morning</button>
-                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-full" aria-pressed="false" aria-label="Filter by full coverage">Full</button>
+                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-full" aria-pressed="false" aria-label="Filter by all-day coverage">All day</button>
                   <button type="button" class="vol-roster-filter-btn" data-coverage="is-afternoon" aria-pressed="false" aria-label="Filter by afternoon coverage">Afternoon</button>
                 </div>
                 <button type="button" class="vol-roster-reset-btn" aria-label="Reset volunteer search, sort, and filter">Reset</button>

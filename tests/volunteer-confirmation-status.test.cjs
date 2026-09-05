@@ -130,6 +130,13 @@ test("volunteer roster coverage uses full-size and half-day visual states", () =
   assert.match(tournamentPage, /\.vol-coverage-tag\.is-custom\s*\{[^}]*rgba\(128,75,212/);
 });
 
+test("all-day coverage is labeled consistently without visible full wording", () => {
+  assert.match(publicScript, /label:\s*"All day",\s*className:\s*"is-full"/);
+  assert.match(publicScript, /detail:\s*"All-day availability"/);
+  assert.match(publicScript, /aria-label="Filter by all-day coverage">All day<\/button>/);
+  assert.doesNotMatch(publicScript, /label:\s*"Full"|detail:\s*"Full tournament"|>Full<\/button>/);
+});
+
 test("volunteer roster reset clears search, sort, filter, and pagination", () => {
   assert.match(publicScript, /class="vol-roster-reset-btn"/);
   assert.match(publicScript, /search\.value = ""/);
