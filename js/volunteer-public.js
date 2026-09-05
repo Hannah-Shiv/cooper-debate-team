@@ -848,9 +848,11 @@
     const bullets = (items, x, y, width, font = "7.7px Arial", gap = 17, maxLines = 2, leading = 9) => {
       let cursor = y;
       items.slice(0, 6).forEach(item => {
+        const itemText = typeof item === "object" ? item.text : item;
+        const itemFont = typeof item === "object" && item.font ? item.font : font;
         ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = navy; ctx.font = scaledFont("700 7px Arial"); ctx.letterSpacing = "0px"; ctx.fillText("✓", x + 1.5, cursor + 1.5);
-        cursor = text(item, x + 14, cursor, width - 14, font, ink, maxLines, leading) + 4;
+        cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
       return cursor;
     };
@@ -858,12 +860,12 @@
     ctx.textBaseline = "top";
     ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 92);
     ctx.fillStyle = gold; ctx.fillRect(0, 90, W, 2);
-    const [badge, jaguar] = await Promise.all([pdfImage("attached_assets/image_1788564262840.png"), pdfImage("images/index-footer-jaguar.png")]);
-    if (badge) ctx.drawImage(badge, 20, 11, 984, 980, 9, 5, 80, 80);
-    if (jaguar) ctx.drawImage(jaguar, 540, 14, 52, 62);
+    const [badge, jaguar] = await Promise.all([pdfImage("attached_assets/image_1788568486813.png"), pdfImage("images/index-footer-jaguar.png")]);
+    if (badge) ctx.drawImage(badge, 9, 5, 80, 80);
+    if (jaguar) ctx.drawImage(jaguar, 537.4, 10.9, 57.2, 68.2);
     ctx.textAlign = "center";
     ctx.font = scaledFont("700 22px Georgia"); ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
-    ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("THINK  ·  SPEAK  ·  LEAD", 306, 49);
+    ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("SPEAK  ·  REASON  ·  LEAD", 306, 49);
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
     ctx.textAlign = "left";
@@ -912,7 +914,7 @@
       ["Please arrive early, 8:00 AM for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot.", "Look for signage and student volunteers if you need assistance."],
       ["A complimentary lunch will be provided for all judges.", "Light refreshments (coffee, water, snacks) will be available throughout the day.", "Please let us know about any dietary restrictions in advance if possible."],
       importantItems,
-      ["If you have questions before the tournament, please contact:", "Coach Pamela Konde\npgkonde@fcps.edu", "On tournament day, look for a coach or any student volunteer — we're here to help!"],
+      ["If you have questions before the tournament, please contact:", { text: "Coach Pamela Konde\npgkonde@fcps.edu", font: sectionBodyFont("700 6.5px Arial") }, "On tournament day, look for a coach or any student volunteer — we're here to help!"],
     ];
     boxTitles.forEach((title, index) => {
       const x = 22 + index * (boxW + boxGap);
