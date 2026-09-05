@@ -164,9 +164,19 @@ test("invalid and throttled retry capabilities return honest errors", () => {
 test("confirmation modal previews the complete generated letter above its actions", () => {
   assert.match(tournamentPage, /id="vol-confirmation-letter-preview"/);
   assert.match(tournamentPage, /Thank you for confirming\./);
+  assert.match(tournamentPage, /class="vol-confirmation-summary"/);
+  assert.match(tournamentPage, /grid-template-columns:66px minmax\(210px,.85fr\) minmax\(170px,.75fr\) minmax\(280px,1.4fr\)/);
   assert.ok(
-    tournamentPage.indexOf('id="vol-confirmation-letter-preview"') <
+    tournamentPage.indexOf('class="vol-thank-you-icon"') <
+      tournamentPage.indexOf('id="vol-thank-you-title"')
+  );
+  assert.ok(
+    tournamentPage.indexOf('id="vol-thank-you-title"') <
       tournamentPage.indexOf('id="vol-thank-you-email-note"')
+  );
+  assert.ok(
+    tournamentPage.indexOf('id="vol-thank-you-email-note"') <
+      tournamentPage.indexOf('id="vol-confirmation-letter-preview"')
   );
   assert.match(publicScript, /confirmedLetterPreviewUrl = canvas\.toDataURL/);
   assert.match(publicScript, /preview\.src = confirmedLetterPreviewUrl/);
