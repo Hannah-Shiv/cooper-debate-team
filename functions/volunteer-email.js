@@ -309,16 +309,16 @@ function itineraryAttachment(event, signup) {
     const sectionBar = (x, y, width, title, icon, accent = gold) => {
       document.rect(x, y, width, 24).fill(navy);
       document.rect(x, y, 5, 24).fill(accent);
-      document.image(icon, x + 9, y + 3, { fit: [18, 18], align: "center", valign: "center" });
-      document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10)
-        .text(title.toUpperCase(), x + 33, y + 7, { width: width - 39, height: 12, lineBreak: false, characterSpacing: 0 });
+      document.image(icon, x + 9, y + 4, { fit: [16, 16], align: "center", valign: "center" });
+      document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(8.2)
+        .text(title.toUpperCase(), x + 31, y + 7, { width: width - 37, height: 12, lineBreak: false, characterSpacing: 0 });
     };
     const starBullet = (x, y) => {
       document.circle(x, y, 5.2).fill(navy);
       const points = [];
       for (let point = 0; point < 10; point += 1) {
         const angle = -Math.PI / 2 + point * Math.PI / 5;
-        const radius = point % 2 === 0 ? 2.8 : 1.25;
+        const radius = point % 2 === 0 ? 3.22 : 1.44;
         points.push([x + Math.cos(angle) * radius, y + Math.sin(angle) * radius]);
       }
       document.polygon(...points).fill(gold);

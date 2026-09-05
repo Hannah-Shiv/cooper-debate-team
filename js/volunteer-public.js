@@ -908,18 +908,17 @@
     const bar = (x, y, w, title, icon, accent = gold) => {
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
-      const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
-      let fittedSize = titleSize * 1.1;
+      let fittedSize = 8.2;
       ctx.font = `700 ${fittedSize}px Arial`;
-      while (ctx.measureText(title.toUpperCase()).width > w - 43 && fittedSize > 6.5) {
+      while (ctx.measureText(title.toUpperCase()).width > w - 40 && fittedSize > 6.5) {
         fittedSize -= .25;
         ctx.font = `700 ${fittedSize}px Arial`;
       }
-      drawContainedImage(icon, x + 9, y + 3, 18, 18);
+      drawContainedImage(icon, x + 9, y + 4, 16, 16);
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
-      ctx.fillText(title.toUpperCase(), x + 33, y + 7);
+      ctx.fillText(title.toUpperCase(), x + 31, y + 7);
     };
     const drawStar = (centerX, centerY, outerRadius, innerRadius) => {
       ctx.beginPath();
@@ -940,7 +939,7 @@
         const itemText = typeof item === "object" ? item.text : item;
         const itemFont = typeof item === "object" && item.font ? item.font : font;
         ctx.fillStyle = navy; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 5.2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = gold; drawStar(x + 4, cursor + 5, 2.8, 1.25);
+        ctx.fillStyle = gold; drawStar(x + 4, cursor + 5, 3.22, 1.44);
         cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
       return cursor;

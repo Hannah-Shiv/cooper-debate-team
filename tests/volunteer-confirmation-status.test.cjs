@@ -264,18 +264,21 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
 });
 
 test("confirmation PDF uses supplied title icons, navy circles, yellow stars, and the approved headline", () => {
-  assert.match(publicScript, /drawContainedImage\(icon, x \+ 9, y \+ 3, 18, 18\)/);
+  assert.match(publicScript, /let fittedSize = 8\.2/);
+  assert.match(publicScript, /drawContainedImage\(icon, x \+ 9, y \+ 4, 16, 16\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
-  assert.match(publicScript, /ctx\.fillStyle = gold; drawStar/);
+  assert.match(publicScript, /ctx\.fillStyle = gold; drawStar\(x \+ 4, cursor \+ 5, 3\.22, 1\.44\)/);
   assert.match(publicScript, /const boxTitles = \["Arrival & Parking", "Refreshments", "Information", "Contact Support"\]/);
   assert.match(publicScript, /bar\(22, 697, 278, "Privacy", icons\.privacy\)/);
   assert.match(publicScript, /wrap\("Thank you for representing Cooper\."/);
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
-  assert.match(emailService, /document\.image\(icon, x \+ 9, y \+ 3, \{ fit: \[18, 18\]/);
+  assert.match(emailService, /document\.image\(icon, x \+ 9, y \+ 4, \{ fit: \[16, 16\]/);
+  assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
+  assert.match(emailService, /point % 2 === 0 \? 3\.22 : 1\.44/);
   assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
   assert.match(emailService, /\["Refreshments", icons\.meals/);
   assert.match(emailService, /\["Information", icons\.information/);
