@@ -687,6 +687,7 @@
     turnstileWidgetId = window.turnstile.render(root, {
       sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
       theme: "dark",
+      appearance: "interaction-only",
       callback: () => {
         setStatus("");
         if (!submitPendingTurnstile || signupSubmitting) return;
@@ -867,6 +868,7 @@
     const W = 612;
     const navy = "#062451";
     const gold = "#f6c928";
+    const starYellow = "#ffd84d";
     const privacyGreen = "#2f9b62";
     const ink = "#102b59";
     const pale = "#eaf4fc";
@@ -963,7 +965,7 @@
         const itemText = typeof item === "object" ? item.text : item;
         const itemFont = typeof item === "object" && item.font ? item.font : font;
         ctx.fillStyle = navy; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 5.2, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = gold; drawStar(x + 4, cursor + 5, 3.22, 1.44);
+        ctx.fillStyle = starYellow; drawStar(x + 4, cursor + 5, 3.22, 1.44);
         cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
       return cursor;
@@ -982,7 +984,8 @@
     drawContainedImage(badge, 13, 7, 76, 76);
     if (jaguar) ctx.drawImage(jaguar, 537.4, 10.9, 57.2, 68.2);
     ctx.textAlign = "center";
-    ctx.font = "400 31px 'Great Vibes', cursive"; ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 13);
+    ctx.font = "400 31px 'Great Vibes', cursive"; ctx.fillStyle = "#fffdf1"; ctx.wordSpacing = "3px"; ctx.fillText("Cooper Debate Team", 306, 13);
+    ctx.wordSpacing = "0px";
     ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("SPEAK  ·  REASON  ·  LEAD", 306, 49);
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
@@ -1053,8 +1056,6 @@
     ctx.fillStyle = navy; ctx.font = scaledFont("700 13px Georgia"); ctx.fillText("Thank you again for representing", 322, 706);
     ctx.fillText("the Cooper Debate Team!", 322, 721);
     ctx.font = scaledFont("italic 700 8.5px Georgia"); ctx.fillText("We look forward to seeing you at the tournament!", 322, 741);
-    ctx.textAlign = "right";
-    ctx.font = scaledFont("700 8.5px Georgia"); ctx.fillText("— Cooper Debate Team", 576, 753);
     ctx.textAlign = "left";
 
     confirmedLetterPreviewUrl = canvas.toDataURL("image/jpeg", .92);

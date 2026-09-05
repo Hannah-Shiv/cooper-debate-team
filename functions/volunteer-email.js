@@ -287,6 +287,7 @@ function itineraryAttachment(event, signup) {
     const pageWidth = document.page.width;
     const navy = "#062451";
     const gold = "#f6c928";
+    const starYellow = "#ffd84d";
     const ink = "#102b59";
     const pale = "#eaf4fc";
     const line = "#c6dced";
@@ -322,7 +323,7 @@ function itineraryAttachment(event, signup) {
         const radius = point % 2 === 0 ? 3.22 : 1.44;
         points.push([x + Math.cos(angle) * radius, y + Math.sin(angle) * radius]);
       }
-      document.polygon(...points).fill(gold);
+      document.polygon(...points).fill(starYellow);
     };
     const bullets = (items, x, y, width, fontSize = 7.2, gap = 15, height = 10) => {
       items.slice(0, 6).forEach((item, index) => {
@@ -337,7 +338,7 @@ function itineraryAttachment(event, signup) {
     document.rect(0, 90, pageWidth, 2).fill(gold);
     document.image(asset("cooper-debate-badge.png"), 13, 7, { fit: [76, 76], align: "center", valign: "center" });
     document.fillColor("#fffdf1").font("GreatVibes").fontSize(31)
-      .text("Cooper Debate Team", 110, 12, { width: 392, align: "center", lineBreak: false });
+      .text("Cooper Debate Team", 110, 12, { width: 392, align: "center", lineBreak: false, wordSpacing: 3 });
     document.fillColor(gold).font("Helvetica-Bold").fontSize(9)
       .text("SPEAK  ·  REASON  ·  LEAD", 110, 49, { width: 392, align: "center", characterSpacing: 2 });
     document.fillColor("#d9e6f5").font("Helvetica").fontSize(8)
@@ -418,8 +419,6 @@ function itineraryAttachment(event, signup) {
       .text("Thank you again for representing\nthe Cooper Debate Team!", 322, 706, { width: 254, lineGap: 1 });
     document.font("Times-BoldItalic").fontSize(8.5)
       .text("We look forward to seeing you at the tournament!", 322, 741, { width: 254 });
-    document.font("Times-Bold").fontSize(8.5)
-      .text("— Cooper Debate Team", 322, 753, { width: 254, align: "right" });
     document.end();
   });
 }

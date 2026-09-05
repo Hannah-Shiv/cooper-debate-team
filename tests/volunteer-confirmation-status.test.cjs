@@ -169,7 +169,9 @@ test("confirmation modal previews the complete generated letter above its action
   assert.match(tournamentPage, /id="vol-confirmation-letter-preview"/);
   assert.match(tournamentPage, /Thank you for confirming\./);
   assert.match(tournamentPage, /class="vol-confirmation-summary"/);
-  assert.match(tournamentPage, /grid-template-columns:66px minmax\(210px,.85fr\) minmax\(170px,.75fr\) minmax\(280px,1.4fr\)/);
+  assert.match(tournamentPage, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(tournamentPage, /class="vol-confirmation-summary-status"/);
+  assert.match(tournamentPage, /\.vol-confirmation-summary-status\s*\{[^}]*grid-template-columns:54px minmax\(0,1fr\);[^}]*padding:5px 22px 5px 0;/s);
   assert.ok(
     tournamentPage.indexOf('class="vol-thank-you-icon"') <
       tournamentPage.indexOf('id="vol-thank-you-title"')
@@ -259,7 +261,7 @@ test("browser and email PDF builders include every supplied letter asset and loc
   assert.match(publicScript, /drawStar/);
   assert.match(publicScript, /privacy: "images\/volunteer-letter\/privacy\.png\?v=3"/);
   assert.match(emailService, /registerFont\("GreatVibes"/);
-  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
+  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(starYellow\)/);
 });
 
 test("confirmation PDFs use the tournament name and an ordinal long-form date", () => {
@@ -278,7 +280,10 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /rounded\(402, 114, 188, 127, 8, "#dceefa"\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
-  assert.match(publicScript, /ctx\.fillStyle = gold; drawStar\(x \+ 4, cursor \+ 5, 3\.22, 1\.44\)/);
+  assert.match(publicScript, /const starYellow = "#ffd84d"/);
+  assert.match(publicScript, /ctx\.fillStyle = starYellow; drawStar\(x \+ 4, cursor \+ 5, 3\.22, 1\.44\)/);
+  assert.match(publicScript, /ctx\.wordSpacing = "3px"; ctx\.fillText\("Cooper Debate Team"/);
+  assert.doesNotMatch(publicScript, /— Cooper Debate Team/);
   assert.match(publicScript, /const boxTitles = \["Arrival & Parking", "Refreshments", "Information", "Contact Support"\]/);
   assert.match(publicScript, /const privacyGreen = "#2f9b62"/);
   assert.match(publicScript, /bar\(22, 697, 278, "Privacy", icons\.privacy, privacyGreen\)/);
@@ -292,7 +297,10 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
   assert.match(emailService, /point % 2 === 0 \? 3\.22 : 1\.44/);
-  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
+  assert.match(emailService, /const starYellow = "#ffd84d"/);
+  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(starYellow\)/);
+  assert.match(emailService, /wordSpacing: 3/);
+  assert.doesNotMatch(emailService, /— Cooper Debate Team/);
   assert.match(emailService, /\["Refreshments", icons\.meals/);
   assert.match(emailService, /\["Information", icons\.information/);
   assert.match(emailService, /\["Contact Support", icons\.contact/);
@@ -337,6 +345,7 @@ test("phone signup stacks time controls and keeps information readable", () => {
 });
 
 test("the narrow review card keeps the Cloudflare widget fully inside its bounds", () => {
+  assert.match(publicScript, /appearance: "interaction-only"/);
   assert.match(tournamentPage, /\.vol-review-side #vol-turnstile\s*\{[^}]*border-radius:8px;[^}]*display:flex;[^}]*justify-content:center;[^}]*overflow:hidden;[^}]*width:100%;/s);
   assert.match(tournamentPage, /\.vol-review-side #vol-turnstile > div\s*\{[^}]*border-radius:8px;[^}]*overflow:hidden;[^}]*transform:scale\(\.88\);[^}]*transform-origin:center top;/s);
   assert.match(tournamentPage, /\.vol-review-side #vol-turnstile iframe\s*\{[^}]*border-radius:8px !important;/s);

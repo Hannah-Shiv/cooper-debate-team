@@ -2445,10 +2445,11 @@
     .vol-submit { background:var(--gold); border:1px solid var(--gold); color:#081833; }
     .vol-submit:disabled { cursor:wait; opacity:.7; }
     .vol-thank-you-card { max-height:calc(100dvh - 24px); max-width:980px; overflow:auto; padding:24px 28px 28px; text-align:left; width:min(980px,calc(100vw - 24px)); }
-    .vol-confirmation-summary { align-items:center; background:rgba(5,27,58,.62); border:1px solid rgba(118,173,230,.28); border-radius:12px; display:grid; gap:0; grid-template-columns:66px minmax(210px,.85fr) minmax(170px,.75fr) minmax(280px,1.4fr); min-height:92px; overflow:hidden; padding:14px 18px; }
+    .vol-confirmation-summary { align-items:stretch; background:rgba(5,27,58,.62); border:1px solid rgba(118,173,230,.28); border-radius:12px; display:grid; gap:0; grid-template-columns:repeat(3,minmax(0,1fr)); min-height:92px; overflow:hidden; padding:14px 18px; }
+    .vol-confirmation-summary-status { align-items:center; display:grid; grid-template-columns:54px minmax(0,1fr); padding:5px 22px 5px 0; }
     .vol-thank-you-icon { align-items:center; background:rgba(34,181,132,.14); border:1px solid rgba(100,220,174,.38); border-radius:50%; color:#6de0b7; display:flex; height:50px; justify-content:center; margin:0; width:50px; }
     .vol-thank-you-icon .vol-modal-icon { height:32px; width:32px; }
-    .vol-confirmation-summary-copy { padding:0 20px 0 4px; }
+    .vol-confirmation-summary-copy { padding:0 0 0 4px; }
     .vol-confirmation-summary .vol-modal-kicker { margin:0 0 5px; }
     .vol-confirmation-summary h2 { font-size:1.65rem; line-height:1.05; margin:0; }
     .vol-confirmation-summary-message { border-left:1px solid rgba(134,180,228,.3); color:#c9d9ef; font-size:.88rem; line-height:1.5; margin:0; padding:5px 22px; }
@@ -2456,7 +2457,7 @@
     .vol-confirmation-summary-message p { margin:0; }
     .vol-confirmation-letter-stage { background:#061c3a; border:1px solid rgba(246,202,73,.48); border-radius:12px; box-shadow:inset 0 0 34px rgba(0,0,0,.28); margin:16px auto 0; padding:14px; }
     .vol-confirmation-letter-stage img { background:#fff; box-shadow:0 15px 38px rgba(0,0,0,.5); display:block; height:auto; margin:0 auto; max-width:100%; width:816px; }
-    .vol-thank-you-email-note { align-items:flex-start; align-self:stretch; background:transparent; border:0; border-left:1px solid rgba(134,180,228,.3); border-radius:0; color:#cce2ff; display:flex; font-size:.78rem; gap:10px; line-height:1.45; margin:0; padding:8px 0 8px 22px; text-align:left; }
+    .vol-thank-you-email-note { align-items:flex-start; align-self:stretch; background:transparent; border:0; border-left:1px solid rgba(134,180,228,.3); border-radius:0; color:#cce2ff; display:flex; font-size:.78rem; gap:10px; line-height:1.45; margin:0; padding:8px 22px; text-align:left; }
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; flex:0 0 auto; height:24px; width:24px; }
     .vol-thank-you-card .vol-modal-actions { background:rgba(3,20,43,.62); border:1px solid rgba(131,177,225,.22); border-radius:10px; justify-content:center; margin-top:14px; padding:18px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
@@ -2479,12 +2480,13 @@
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel:active { background:#222831; transform:translateY(0); }
     @media(max-width:700px) {
       .vol-thank-you-card { padding:28px 12px 18px; }
-      .vol-confirmation-summary { grid-template-columns:48px minmax(0,1fr); padding:13px; }
+      .vol-confirmation-summary { grid-template-columns:1fr; padding:13px; }
+      .vol-confirmation-summary-status { grid-template-columns:48px minmax(0,1fr); padding:0; }
       .vol-thank-you-icon { height:40px; width:40px; }
       .vol-thank-you-icon .vol-modal-icon { height:26px; width:26px; }
       .vol-confirmation-summary-copy { padding:0 4px 0 8px; }
       .vol-confirmation-summary h2 { font-size:1.4rem; }
-      .vol-confirmation-summary-message,.vol-thank-you-email-note { border-left:0; border-top:1px solid rgba(134,180,228,.3); grid-column:1/-1; margin-top:11px; padding:11px 2px 0; }
+      .vol-confirmation-summary-message,.vol-thank-you-email-note { border-left:0; border-top:1px solid rgba(134,180,228,.3); margin-top:11px; padding:11px 2px 0; }
       .vol-confirmation-letter-stage { border-radius:8px; margin-top:12px; padding:6px; }
       .vol-thank-you-card .vol-modal-actions { display:grid; grid-template-columns:1fr 1fr; padding:12px; }
       .vol-thank-you-card .vol-confirmation-actions .vol-cancel { min-width:0; }
@@ -6439,10 +6441,12 @@
   <div class="vol-modal-card vol-thank-you-card">
     <button class="vol-modal-close" type="button" aria-label="Close confirmation" data-close-volunteer-thank-you>&times;</button>
     <header class="vol-confirmation-summary">
-      <div class="vol-thank-you-icon"><svg class="vol-modal-icon vol-icon-check" aria-hidden="true" focusable="false"><use href="#vol-icon-check"></use></svg></div>
-      <div class="vol-confirmation-summary-copy">
-        <p class="vol-modal-kicker">Signup Confirmed</p>
-        <h2 id="vol-thank-you-title">Thank you for confirming.</h2>
+      <div class="vol-confirmation-summary-status">
+        <div class="vol-thank-you-icon"><svg class="vol-modal-icon vol-icon-check" aria-hidden="true" focusable="false"><use href="#vol-icon-check"></use></svg></div>
+        <div class="vol-confirmation-summary-copy">
+          <p class="vol-modal-kicker">Signup Confirmed</p>
+          <h2 id="vol-thank-you-title">Thank you for confirming.</h2>
+        </div>
       </div>
       <div class="vol-confirmation-summary-message">
         <strong>Confirmation letter</strong>
@@ -6938,7 +6942,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=92"></script>
+<script src="js/volunteer-public.js?v=93"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
