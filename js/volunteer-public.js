@@ -1241,7 +1241,7 @@
       ? "Your confirmation email and calendar invitation were accepted for delivery. If they do not arrive soon, check your spam or junk folder."
       : "Your signup is saved, but the confirmation email has not been accepted for delivery yet. You can safely retry without creating another signup.";
     note.classList.toggle("is-email-delayed", !accepted);
-    if (retry) retry.hidden = accepted || !confirmedSignupId || !confirmedRetryToken;
+    if (retry) retry.hidden = !confirmedSignupId || !confirmedRetryToken;
   }
   function openThankYou(emailStatus) {
     const modal = $("volunteer-thank-you-modal");
@@ -1341,7 +1341,7 @@
     const button = $("vol-retry-email");
     if (!button || !confirmedSignupId || !confirmedRetryToken) return;
     button.disabled = true;
-    button.textContent = "Retrying…";
+    button.textContent = "Resending…";
     try {
       const response = await fetch(ENDPOINT, {
         method: "POST",
@@ -1362,7 +1362,7 @@
         `${error.message || "The email retry could not be completed."} Your signup is still saved; please try again shortly.`;
     } finally {
       button.disabled = false;
-      button.textContent = "Retry Email";
+      button.textContent = "Resend Email";
     }
   }
 

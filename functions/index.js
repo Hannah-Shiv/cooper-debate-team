@@ -730,7 +730,7 @@ exports.publicVolunteerSignup = onRequest(
       let retryEvent;
       try {
         const retrySignupRef = db.collection("volunteer_signups").doc(retrySignupId);
-        const retrySignupSnap = await db.runTransaction(async transaction => {
+        retrySignup = await db.runTransaction(async transaction => {
           const signupSnap = await transaction.get(retrySignupRef);
           if (!signupSnap.exists) throw new Error("This volunteer signup could not be found.");
           const signup = signupSnap.data();
@@ -743,13 +743,17 @@ exports.publicVolunteerSignup = onRequest(
           if (lastRetryAtMs && Date.now() - lastRetryAtMs < 30 * 1000) {
             throw new Error("Please wait 30 seconds before retrying the email again.");
           }
+          const manualRetryAtMs = Date.now();
           transaction.set(retrySignupRef, {
-            lastManualEmailRetryAtMs: Date.now(),
+            lastManualEmailRetryAtMs: manualRetryAtMs,
             updatedAt: FieldValue.serverTimestamp(),
           }, { merge: true });
-          return signupSnap;
+          return {
+            id: signupSnap.id,
+            ...signup,
+            lastManualEmailRetryAtMs: manualRetryAtMs,
+          };
         });
-        retrySignup = { id: retrySignupSnap.id, ...retrySignupSnap.data() };
         const retryEventSnap = await db.collection("volunteer_events").doc(retrySignup.eventId).get();
         if (!retryEventSnap.exists) {
           res.status(409).json({ error: "The tournament details are temporarily unavailable." });
@@ -781,7 +785,11 @@ exports.publicVolunteerSignup = onRequest(
       }
 
       try {
-        const emailResult = await volunteerEmail.sendSignupConfirmation(retrySignup, retryEvent);
+        const emailResult = await volunteerEmail.sendSignupConfirmation(
+          retrySignup,
+          retryEvent,
+          `manual-${retrySignup.lastManualEmailRetryAtMs}`
+        );
         console.info("Volunteer confirmation email retry completed.", {
           signupId: retrySignupId,
           accepted: emailResult.accepted === true,

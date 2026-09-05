@@ -45,6 +45,10 @@ test("email retry uses the saved signup reference and cannot submit signup field
   assert.match(functionsIndex, /collection\("volunteer_signups"\)\.doc\(retrySignupId\)/);
   assert.match(functionsIndex, /emailRetryTokenHash/);
   assert.match(functionsIndex, /Please wait 30 seconds before retrying/);
+  assert.match(functionsIndex, /`manual-\$\{retrySignup\.lastManualEmailRetryAtMs\}`/);
+  assert.match(emailService, /notificationKey\(signup\.id,\s*"confirmation",\s*cleanText\(deliveryVersion,\s*120\)\)/);
+  assert.match(publicScript, /retry\.hidden = !confirmedSignupId \|\| !confirmedRetryToken/);
+  assert.match(tournamentPage, />Resend Email<\/button>/);
 });
 
 test("a repeat signup reopens the saved confirmation and rotates retry access", () => {

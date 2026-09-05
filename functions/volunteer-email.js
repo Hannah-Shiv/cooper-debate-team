@@ -681,9 +681,9 @@ function createVolunteerEmailService({ db, resendSecret }) {
     }
   }
 
-  async function sendSignupConfirmation(signup, event) {
+  async function sendSignupConfirmation(signup, event, deliveryVersion = "") {
     return deliver({
-      key: notificationKey(signup.id, "confirmation"),
+      key: notificationKey(signup.id, "confirmation", cleanText(deliveryVersion, 120)),
       kind: "confirmation",
       signup,
       event,
