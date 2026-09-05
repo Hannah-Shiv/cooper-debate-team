@@ -691,15 +691,15 @@
         <h4>${modalIcon("info")}<span class="vol-info-heading-copy"><span>Helpful information</span><small>Hover, focus, or tap an icon for details</small></span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
         <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
+        <div id="vol-info-reader" class="vol-info-reader" role="tabpanel" aria-labelledby="vol-info-tab-0" aria-live="polite">
+          ${informationDetailMarkup(informationItems[0])}
+        </div>
         <div class="vol-info-tabs" role="tablist" aria-label="Helpful information topics">
           ${informationItems.map((item, index) => `
             <button id="vol-info-tab-${index}" class="vol-info-callout${index === 0 ? " is-active" : ""}" type="button" role="tab" aria-selected="${index === 0 ? "true" : "false"}" aria-controls="vol-info-reader" data-info-index="${index}">
               <span class="vol-info-trigger" aria-hidden="true">${modalIcon(item.icon)}</span>
               <strong>${escapeHtml(item.title)}</strong>
             </button>`).join("")}
-        </div>
-        <div id="vol-info-reader" class="vol-info-reader" role="tabpanel" aria-labelledby="vol-info-tab-0" aria-live="polite">
-          ${informationDetailMarkup(informationItems[0])}
         </div>
       </section>`;
     const tabs = Array.from(root.querySelectorAll(".vol-info-callout"));
