@@ -2544,7 +2544,7 @@
      #volunteer-modal .vol-stepper b { background:rgba(255,255,255,.07); border-color:rgba(185,224,210,.35); }
      #volunteer-modal .vol-stepper .is-current b { background:#f6ca49; border-color:#ffe28a; color:#143d3b; }
      #volunteer-modal .vol-condensed-form-layout { gap:18px; grid-template-columns:minmax(0,1fr) 400px; }
-     #volunteer-modal section[data-vol-step="1"] { display:grid; grid-template-rows:1fr auto; }
+      #volunteer-modal section[data-vol-step="1"] { display:grid; grid-template-rows:auto auto; }
      #volunteer-modal section[data-vol-step][hidden] { display:none!important; }
      #volunteer-modal .vol-condensed-form-layout {
        align-items:stretch;
@@ -2706,7 +2706,7 @@
         }
         #volunteer-modal section[data-vol-step="1"] .vol-modal-actions {
           justify-content:flex-end;
-          margin-top:14px;
+          margin-top:70px;
           padding-top:0;
         }
       }
@@ -2920,6 +2920,9 @@
         #volunteer-modal .vol-condensed-form-layout {
           height:480px;
         }
+      }
+      #volunteer-modal #volunteer-signup-form:has(section[data-vol-step="1"]:not([hidden])) > .vol-form-status {
+        display:none;
       }
       @media(min-width:981px){
         #volunteer-modal .vol-condensed-main {
