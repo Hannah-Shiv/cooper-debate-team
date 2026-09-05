@@ -195,7 +195,7 @@ test("signup information reader shows complete guidance without an internal scro
 });
 
 test("coach contact email action is a compact teal button with clear contrast", () => {
-  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach\s*\{[^}]*background:#118b80;[^}]*color:#fff;[^}]*justify-self:start;[^}]*width:auto;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach\s*\{[^}]*background:#075b5a;[^}]*color:#fff;[^}]*justify-self:start;[^}]*width:auto;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach \.vol-modal-icon\s*\{[^}]*color:#f5c542;/s);
 });
 
@@ -207,7 +207,7 @@ test("signup information topic buttons prioritize readable labels over oversized
 });
 
 test("signup actions keep visible breathing room below the information panel", () => {
-  assert.match(tournamentPage, /#volunteer-modal section\[data-vol-step="1"\] \.vol-modal-actions\s*\{[^}]*margin-top:18px;/s);
+  assert.match(tournamentPage, /#volunteer-modal section\[data-vol-step="1"\] \.vol-modal-actions\s*\{[^}]*margin-top:30px;/s);
 });
 
 test("judge opportunity header uses teal instead of the results-panel navy", () => {
