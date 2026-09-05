@@ -75,6 +75,22 @@ test("confirmation modal previews the complete generated letter above its action
   assert.match(publicScript, /card\.scrollTop = 0/);
 });
 
+test("Turnstile completion resumes a pending signup automatically", () => {
+  assert.match(publicScript, /submitPendingTurnstile = true/);
+  assert.match(publicScript, /if \(!submitPendingTurnstile \|\| signupSubmitting\) return/);
+  assert.match(publicScript, /volunteer-signup-form"\)\?\.requestSubmit\(\)/);
+});
+
+test("confirmation opens before PDF generation and roster refresh finish", () => {
+  const successBlock = publicScript.slice(
+    publicScript.indexOf('confirmedSignupId = result.signupId'),
+    publicScript.indexOf('} catch (error)', publicScript.indexOf('confirmedSignupId = result.signupId'))
+  );
+  assert.ok(successBlock.indexOf("openThankYou(result.emailStatus)") < successBlock.indexOf("pdfPromise.then"));
+  assert.ok(successBlock.indexOf("openThankYou(result.emailStatus)") < successBlock.indexOf("loadVolunteerEvents()"));
+  assert.doesNotMatch(successBlock, /await pdfPromise|await loadVolunteerEvents/);
+});
+
 test("browser and email PDF builders include every supplied letter asset and local font", () => {
   assert.equal(fs.existsSync("fonts/GreatVibes-Regular.ttf"), true);
   assert.equal(fs.existsSync("functions/assets/volunteer-letter/GreatVibes-Regular.ttf"), true);

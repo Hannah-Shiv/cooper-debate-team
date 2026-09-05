@@ -14,6 +14,8 @@
   let wizardStep = 1;
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
+  let submitPendingTurnstile = false;
+  let signupSubmitting = false;
 
   let confirmedSignupId = "";
   let confirmedRetryToken = "";
@@ -642,7 +644,12 @@
     turnstileWidgetId = window.turnstile.render(root, {
       sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
       theme: "dark",
-      callback: () => setStatus(""),
+      callback: () => {
+        setStatus("");
+        if (!submitPendingTurnstile || signupSubmitting) return;
+        submitPendingTurnstile = false;
+        $("volunteer-signup-form")?.requestSubmit();
+      },
       "error-callback": () => setStatus("Volunteer verification could not load. Please try again.", true),
       "expired-callback": () => setStatus("Verification expired. Please complete it again.", true),
     });
@@ -1258,7 +1265,7 @@
 
   async function submitSignup(event) {
     event.preventDefault();
-    if (!selectedEvent || !selectedRole) return;
+    if (!selectedEvent || !selectedRole || signupSubmitting) return;
     if (wizardStep < 2) {
       if (validateStep(wizardStep)) showStep(wizardStep + 1);
       return;
@@ -1285,9 +1292,12 @@
 
     if (!validateStep(1)) return;
     if (!turnstileToken) {
-      setStatus("Please complete the volunteer verification before confirming.", true);
+      submitPendingTurnstile = true;
+      setStatus("Complete the volunteer verification to continue your signup.", false);
       return;
     }
+    submitPendingTurnstile = false;
+    signupSubmitting = true;
     button.disabled = true;
     button.textContent = "Saving…";
     setStatus("");
@@ -1303,17 +1313,22 @@
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
       confirmedSignupId = result.signupId || "";
       confirmedRetryToken = result.retryToken || "";
-      confirmedPdfBlob = await pdfPromise;
       setStatus(result.message || "You’re signed up. Thank you!", false);
-      await loadVolunteerEvents();
       $("volunteer-modal").style.display = "none";
       openThankYou(result.emailStatus);
+      pdfPromise.then(blob => {
+        confirmedPdfBlob = blob;
+        const preview = $("vol-confirmation-letter-preview");
+        if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
+      });
+      loadVolunteerEvents().catch(() => {});
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
     } finally {
       if (window.turnstile && turnstileWidgetId !== null) {
         window.turnstile.reset(turnstileWidgetId);
       }
+      signupSubmitting = false;
       button.disabled = false;
       button.textContent = "Confirm judge signup";
     }
