@@ -2400,27 +2400,32 @@
     .vol-cancel { background:transparent; border:1px solid rgba(255,255,255,.25); color:var(--gray-mid); }
     .vol-submit { background:var(--gold); border:1px solid var(--gold); color:#081833; }
     .vol-submit:disabled { cursor:wait; opacity:.7; }
-    .vol-thank-you-card { max-width:520px; padding:48px 42px 38px; text-align:center; }
+    .vol-thank-you-card { max-width:624px; padding:48px 42px 38px; text-align:center; width:min(624px,calc(100vw - 32px)); }
     .vol-thank-you-icon { align-items:center; background:rgba(34,181,132,.14); border:1px solid rgba(100,220,174,.38); border-radius:50%; color:#6de0b7; display:flex; height:76px; justify-content:center; margin:0 auto 22px; width:76px; }
     .vol-thank-you-icon .vol-modal-icon { height:48px; width:48px; }
-    .vol-thank-you-card h2 { margin:0 32px 12px; }
-    .vol-thank-you-card > p { color:#c9d9ef; font-size:.92rem; line-height:1.65; margin:0 auto; max-width:410px; }
-    .vol-thank-you-email-note { align-items:flex-start; background:rgba(43,104,188,.16); border:1px solid rgba(119,177,251,.28); border-radius:9px; color:#cce2ff; display:flex; font-size:.8rem; gap:11px; line-height:1.55; margin:25px 0 0; padding:14px 15px; text-align:left; }
+    .vol-thank-you-card h2 { margin:0 0 12px; white-space:nowrap; }
+    .vol-thank-you-card > p { color:#c9d9ef; font-size:.88rem; line-height:1.65; margin:0 auto; max-width:none; white-space:nowrap; }
+    .vol-thank-you-email-note { align-items:flex-start; background:rgba(43,104,188,.16); border:1px solid rgba(119,177,251,.28); border-radius:9px; color:#cce2ff; display:flex; font-size:.92rem; gap:13px; line-height:1.55; margin:25px 0 0; padding:16px 18px; text-align:left; }
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
     .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
     .vol-thank-you-card .vol-confirmation-actions { flex-wrap:wrap; }
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel {
-      background:linear-gradient(180deg,#18202b 0%,#05070a 100%);
-      border-color:rgba(255,255,255,.28);
-      color:#fff;
+      background:#292f38;
+      border:1px solid rgba(246,202,73,.7);
+      box-shadow:0 8px 20px rgba(0,0,0,.28),inset 0 1px rgba(255,255,255,.08);
+      color:#f6ca49;
       min-width:170px;
     }
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel:hover,
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel:focus-visible {
-      background:linear-gradient(180deg,#263142 0%,#090d12 100%);
-      border-color:rgba(255,255,255,.55);
+      background:#373f4a;
+      border-color:#ffe38d;
+      box-shadow:0 10px 24px rgba(0,0,0,.34),0 0 0 2px rgba(246,202,73,.12);
+      color:#ffe38d;
+      transform:translateY(-2px);
     }
+    .vol-thank-you-card .vol-confirmation-actions .vol-cancel:active { background:#222831; transform:translateY(0); }
     .vol-exit-card { max-width:520px; padding:42px 38px 34px; text-align:center; }
     .vol-exit-card .vol-exit-icon { align-items:center; background:rgba(245,197,66,.12); border:1px solid rgba(245,197,66,.42); border-radius:50%; color:#f5c542; display:flex; font:700 1.4rem/1 Arial,sans-serif; height:54px; justify-content:center; margin:0 auto 17px; width:54px; }
     .vol-exit-card h2 { color:#fff; font:700 2rem/1.05 'Cormorant Garamond',serif; margin:0 0 12px; }
@@ -2904,7 +2909,8 @@
           height:100%;
         }
         #volunteer-modal .vol-signup-sidebar > .vol-side-card:first-child {
-          grid-template-rows:auto auto auto repeat(2,minmax(100px,1fr));
+          display:flex;
+          flex-direction:column;
           row-gap:12px;
         }
         #volunteer-modal .vol-info-callout {
@@ -3019,6 +3025,7 @@
           gap:7px;
           grid-template-columns:repeat(5,minmax(0,1fr));
           grid-template-rows:repeat(2,82px);
+          margin-top:auto;
         }
         #volunteer-modal .vol-info-tabs .vol-info-callout {
           height:82px;
@@ -3029,11 +3036,14 @@
         display:grid;
         gap:7px;
         grid-template-columns:repeat(5,minmax(0,1fr));
+        margin-top:auto;
         min-width:0;
         width:100%;
       }
       #volunteer-modal .vol-signup-sidebar > .vol-side-card:first-child {
-        grid-template-columns:minmax(0,1fr);
+        align-items:stretch;
+        display:flex;
+        flex-direction:column;
         min-width:0;
         width:100%;
       }
@@ -3075,12 +3085,16 @@
         background:#032f43;
         border:1px solid rgba(245,197,66,.72);
         border-radius:6px;
+        box-sizing:border-box;
         color:#fff;
         display:grid;
         gap:15px;
         grid-template-columns:auto minmax(0,1fr);
-        min-height:112px;
+        height:132px;
+        min-height:132px;
+        max-height:132px;
         min-width:0;
+        overflow-y:auto;
         padding:14px 17px;
         width:100%;
       }
@@ -3146,11 +3160,26 @@
         width:18px;
       }
       @media(max-width:980px){
+        #volunteer-modal .vol-info-rail {
+          display:flex;
+          flex-direction:column;
+          grid-template-columns:none;
+        }
         #volunteer-modal .vol-info-tabs {
           grid-template-columns:repeat(2,minmax(0,1fr));
         }
         #volunteer-modal .vol-info-reader {
+          height:150px;
+          min-height:150px;
+          max-height:150px;
           margin-top:10px;
+        }
+      }
+      @media(min-width:601px) and (max-width:980px){
+        #volunteer-modal .vol-info-reader {
+          height:178px;
+          min-height:178px;
+          max-height:178px;
         }
       }
       @media(max-width:600px){
@@ -4901,9 +4930,18 @@
       border:1px solid rgba(145,211,191,.22); border-radius:10px; padding:14px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-actions,
-    #volunteer-exit-modal .vol-modal-actions,
-    #volunteer-thank-you-modal .vol-confirmation-actions {
+    #volunteer-exit-modal .vol-modal-actions {
       display:grid; grid-template-columns:1fr; gap:9px;
+    }
+    #volunteer-thank-you-modal .vol-confirmation-actions {
+      display:grid;
+      gap:12px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+    #volunteer-thank-you-modal .vol-confirmation-actions .vol-submit {
+      grid-column:1/-1;
+      justify-self:center;
+      max-width:180px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-actions .vol-action-back { order:1; }
     #volunteer-modal section[data-vol-step="2"] .vol-review-actions .vol-action-confirm,
@@ -4963,6 +5001,13 @@
       #volunteer-modal .vol-review-side { padding:12px; }
       #volunteer-exit-modal .vol-modal-card,
       #volunteer-thank-you-modal .vol-modal-card { padding:24px 18px 20px; }
+      #volunteer-thank-you-modal .vol-thank-you-card h2 {
+        font-size:clamp(1.35rem,6vw,1.65rem);
+      }
+      #volunteer-thank-you-modal .vol-thank-you-card > p {
+        font-size:.82rem;
+        white-space:normal;
+      }
     }
     @media (max-width:430px) {
       #volunteer-modal .vol-modal-heading {
@@ -6249,7 +6294,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=80"></script>
+  <script src="js/volunteer-public.js?v=81"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
