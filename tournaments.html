@@ -2056,11 +2056,26 @@
     .vol-unified-card .vol-signup-btn { border-radius:4px; padding:9px 12px; }
     .vol-availability-options { display:grid; flex:1; gap:8px; grid-template-columns:1fr; grid-template-rows:repeat(4,minmax(58px,1fr)); }
     .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:10px; grid-template-columns:auto auto minmax(0,1fr) auto auto; min-height:58px; overflow:hidden; padding:10px 13px; position:relative; transform-origin:center center; transform-style:preserve-3d; transition:border-color .42s ease,transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s ease,color .36s ease; }
-    .vol-availability-option::before { background:linear-gradient(105deg,#28578f 0%,#163966 58%,#10294d 100%); content:""; inset:0; opacity:0; pointer-events:none; position:absolute; transform:scale(.985); transition:opacity .42s ease,transform .48s cubic-bezier(.22,.61,.36,1); z-index:0; }
+    .vol-availability-option::before { background:linear-gradient(105deg,#28578f 0%,#163966 58%,#10294d 100%); content:""; inset:0; opacity:0; pointer-events:none; position:absolute; transform:translateX(-104%); transition:opacity .26s ease,transform .52s cubic-bezier(.22,.72,.24,1); z-index:0; }
     .vol-availability-option:hover { border-color:rgba(232,184,75,.6); transform:translateY(-1px); }
     .vol-availability-option.is-selected { border-color:#f0c557; box-shadow:0 0 0 1px rgba(240,197,87,.22) inset,0 7px 18px rgba(0,0,0,.24),0 0 18px rgba(240,197,87,.13); transform:translateZ(0) scale(1); }
-    .vol-availability-option.is-selected::before { opacity:1; transform:scale(1); }
+    .vol-availability-option.is-selected::before { opacity:1; transform:translateX(0); }
+    .vol-availability-option.is-entering > span {
+      animation:vol-availability-content-in .52s cubic-bezier(.22,.72,.24,1);
+    }
+    .vol-availability-option.is-leaving::before {
+      animation:vol-availability-surface-out .32s ease-in forwards;
+    }
     .vol-availability-option > span { position:relative; z-index:1; }
+    @keyframes vol-availability-content-in {
+      0% { opacity:.42; transform:translateX(-15px); }
+      58% { opacity:.9; }
+      100% { opacity:1; transform:translateX(0); }
+    }
+    @keyframes vol-availability-surface-out {
+      0% { opacity:1; transform:translateX(0); }
+      100% { opacity:0; transform:translateX(38%); }
+    }
     .vol-availability-option input { height:1px; opacity:0; position:absolute; width:1px; }
     .vol-availability-radio { border:1.5px solid #aebbd3; border-radius:50%; display:block; height:15px; position:relative; width:15px; }
     .vol-availability-option.is-selected .vol-availability-radio { border-color:#f0c557; }
@@ -2080,6 +2095,8 @@
     @media(prefers-reduced-motion:reduce){
       .vol-availability-option,
       .vol-availability-option::before { transition-duration:.01ms; }
+      .vol-availability-option.is-entering > span,
+      .vol-availability-option.is-leaving::before { animation:none; }
     }
     .vol-assignment-note { align-items:flex-start; background:rgba(50,101,190,.16); border:1px solid rgba(109,157,238,.26); border-radius:6px; color:#cfdef7; display:flex; gap:10px; margin-top:12px; padding:10px 12px; }
     .vol-assignment-note > span { align-items:center; background:#4b85da; border-radius:50%; color:#fff; display:inline-flex; flex:0 0 15px; font:bold .65rem Arial,sans-serif; height:15px; justify-content:center; margin-top:2px; width:15px; }
@@ -6232,7 +6249,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=79"></script>
+  <script src="js/volunteer-public.js?v=80"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

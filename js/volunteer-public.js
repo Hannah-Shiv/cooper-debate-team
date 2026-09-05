@@ -459,9 +459,22 @@
     root.querySelectorAll(".vol-availability-option input").forEach(input => {
       input.addEventListener("change", () => {
         const options = input.closest(".vol-availability-options");
+        const previousOption = options.querySelector(".vol-availability-option.is-selected");
+        const selectedOption = input.closest(".vol-availability-option");
+        if (previousOption && previousOption !== selectedOption) {
+          previousOption.classList.remove("is-entering");
+          previousOption.classList.add("is-leaving");
+          window.setTimeout(() => previousOption.classList.remove("is-leaving"), 340);
+        }
         options.querySelectorAll(".vol-availability-option").forEach(option => {
           option.classList.toggle("is-selected", option.contains(input));
         });
+        selectedOption.classList.remove("is-leaving", "is-entering");
+        void selectedOption.offsetWidth;
+        selectedOption.classList.add("is-entering");
+        selectedOption.addEventListener("animationend", () => {
+          selectedOption.classList.remove("is-entering");
+        }, { once:true });
       });
     });
     root.querySelectorAll(".vol-roster-controls").forEach(controls => {
