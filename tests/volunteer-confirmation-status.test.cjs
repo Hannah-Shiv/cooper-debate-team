@@ -182,13 +182,15 @@ test("confirmation modal previews the complete generated letter above its action
 
 test("signup information reader shows complete guidance without an internal scrollbar", () => {
   assert.match(tournamentPage, /\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 420px/s);
-  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*display:flex;[^}]*flex-direction:column;[^}]*height:210px;[^}]*min-height:210px;[^}]*max-height:210px;[^}]*overflow:hidden;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*display:grid;[^}]*grid-template-columns:32px minmax\(0,1fr\);[^}]*grid-template-rows:32px minmax\(0,1fr\);[^}]*height:210px;[^}]*min-height:210px;[^}]*max-height:210px;[^}]*overflow:hidden;/s);
   assert.match(tournamentPage, /\.vol-judge-modal\s*\{[^}]*max-width:1320px;[^}]*overflow:hidden;[^}]*width:calc\(100vw - 12px\);/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:730px\)\{[^}]*\.vol-condensed-form-layout\s*\{[^}]*height:auto;/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:650px\)\{[^}]*\.vol-judge-modal\s*\{[^}]*max-height:none;[^}]*overflow:visible;[^}]*width:136%;[^}]*zoom:\.73;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-condensed-main\s*\{[^}]*align-content:start;[^}]*align-self:stretch;/s);
   assert.match(tournamentPage, /grid-template-rows:auto auto 210px auto;/);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader-icon\s*\{[^}]*height:32px;[^}]*width:32px;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader strong\s*\{[^}]*grid-column:2;[^}]*grid-row:1;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader p\s*\{[^}]*grid-column:1\/-1;[^}]*grid-row:2;/s);
 });
 
 test("signup information topic buttons prioritize readable labels over oversized icons", () => {

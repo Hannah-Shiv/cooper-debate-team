@@ -3150,9 +3150,10 @@
         border-radius:6px;
         box-sizing:border-box;
         color:#fff;
-        display:flex;
-        flex-direction:column;
-        gap:8px;
+        display:grid;
+        gap:7px 9px;
+        grid-template-columns:32px minmax(0,1fr);
+        grid-template-rows:32px minmax(0,1fr);
         height:210px;
         min-height:210px;
         max-height:210px;
@@ -3160,6 +3161,9 @@
         overflow:hidden;
         padding:14px 17px;
         width:100%;
+      }
+      #volunteer-modal .vol-info-reader > div {
+        display:contents;
       }
       #volunteer-modal .vol-info-reader-icon {
         align-items:center;
@@ -3178,16 +3182,21 @@
         width:20px;
       }
       #volunteer-modal .vol-info-reader strong {
+        align-self:center;
         color:#f5c542;
         display:block;
         font:700 .76rem/1.2 'Josefin Sans',sans-serif;
+        grid-column:2;
+        grid-row:1;
         letter-spacing:.07em;
-        margin-bottom:6px;
+        margin:0;
         text-transform:uppercase;
       }
       #volunteer-modal .vol-info-reader p {
         color:#fff;
         font-size:.78rem;
+        grid-column:1/-1;
+        grid-row:2;
         line-height:1.5;
         margin:0;
       }
@@ -3205,6 +3214,8 @@
         padding:8px 10px;
         text-decoration:none;
         text-transform:uppercase;
+        grid-column:1/-1;
+        grid-row:3;
       }
       #volunteer-modal .vol-info-reader .vol-info-email-coach:hover,
       #volunteer-modal .vol-info-reader .vol-info-email-coach:focus-visible {
@@ -3340,6 +3351,8 @@
         }
         #volunteer-modal .vol-info-reader {
           gap:6px;
+          grid-template-columns:27px minmax(0,1fr);
+          grid-template-rows:27px minmax(0,1fr);
           height:210px;
           min-height:210px;
           max-height:210px;
