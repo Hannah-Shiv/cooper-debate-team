@@ -14,6 +14,8 @@
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
 
+  let confirmedSignupId = "";
+  let confirmedRetryToken = "";
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value || "")
     .replace(/&/g, "&amp;")
@@ -1087,6 +1089,8 @@
     const form = $("volunteer-signup-form");
     if (!selectedEvent || !selectedRole || !form) return;
     confirmedPdfBlob = null;
+    confirmedSignupId = "";
+    confirmedRetryToken = "";
 
     $("vol-modal-title").textContent = "Judge Volunteer Signup";
     $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
@@ -1145,9 +1149,21 @@
     setTimeout(() => $("vol-exit-stay")?.focus(), 0);
   }
 
-  function openThankYou() {
+  function renderThankYouEmailStatus(emailStatus) {
+    const note = $("vol-thank-you-email-note");
+    const retry = $("vol-retry-email");
+    if (!note) return;
+    const accepted = emailStatus === "accepted";
+    note.querySelector("span").textContent = accepted
+      ? "Your confirmation email and calendar invitation were accepted for delivery. If they do not arrive soon, check your spam or junk folder."
+      : "Your signup is saved, but the confirmation email has not been accepted for delivery yet. You can safely retry without creating another signup.";
+    note.classList.toggle("is-email-delayed", !accepted);
+    if (retry) retry.hidden = accepted || !confirmedSignupId || !confirmedRetryToken;
+  }
+  function openThankYou(emailStatus) {
     const modal = $("volunteer-thank-you-modal");
     if (!modal) return;
+    renderThankYouEmailStatus(emailStatus);
     modal.style.display = "flex";
     document.body.classList.add("vol-modal-open");
     setTimeout(() => $("vol-thank-you-done")?.focus(), 0);
@@ -1205,16 +1221,50 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
+      confirmedSignupId = result.signupId || "";
+      confirmedRetryToken = result.retryToken || "";
       confirmedPdfBlob = await pdfPromise;
       setStatus(result.message || "You’re signed up. Thank you!", false);
       await loadVolunteerEvents();
       $("volunteer-modal").style.display = "none";
-      openThankYou();
+      openThankYou(result.emailStatus);
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
     } finally {
+      if (window.turnstile && turnstileWidgetId !== null) {
+        window.turnstile.reset(turnstileWidgetId);
+      }
       button.disabled = false;
       button.textContent = "Confirm judge signup";
+    }
+  }
+
+  async function retryConfirmationEmail() {
+    const button = $("vol-retry-email");
+    if (!button || !confirmedSignupId || !confirmedRetryToken) return;
+    button.disabled = true;
+    button.textContent = "Retrying…";
+    try {
+      const response = await fetch(ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          action: "retry-confirmation-email",
+          signupId: confirmedSignupId,
+          retryToken: confirmedRetryToken,
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to retry the confirmation email.");
+      renderThankYouEmailStatus(result.emailStatus);
+    } catch (error) {
+      renderThankYouEmailStatus("failed");
+      const note = $("vol-thank-you-email-note");
+      if (note) note.querySelector("span").textContent =
+        `${error.message || "The email retry could not be completed."} Your signup is still saved; please try again shortly.`;
+    } finally {
+      button.disabled = false;
+      button.textContent = "Retry Email";
     }
   }
 
@@ -1225,6 +1275,7 @@
       if (detailsButton) openDetailsModal(detailsButton);
     });
     $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
+    $("vol-retry-email")?.addEventListener("click", retryConfirmationEmail);
     const phoneField = $("vol-phone");
     const emailField = $("vol-email");
     phoneField?.addEventListener("input", () => {

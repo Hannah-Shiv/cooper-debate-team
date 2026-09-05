@@ -1,0 +1,53 @@
+const assert = require("node:assert/strict");
+const fs = require("node:fs");
+const test = require("node:test");
+
+const publicScript = fs.readFileSync("js/volunteer-public.js", "utf8");
+const functionsIndex = fs.readFileSync("functions/index.js", "utf8");
+const emailService = fs.readFileSync("functions/volunteer-email.js", "utf8");
+const tournamentPage = fs.readFileSync("tournaments.html", "utf8");
+
+test("signup response reports saved and provider email status separately", () => {
+  assert.match(functionsIndex, /signupSaved:\s*true/);
+  assert.match(functionsIndex, /emailStatus:\s*emailResult\.accepted\s*\?\s*"accepted"\s*:\s*"delayed"/);
+  assert.match(functionsIndex, /emailStatus\s*=\s*"failed"/);
+});
+
+test("confirmation delivery treats prior provider acceptance as accepted", () => {
+  assert.match(emailService, /reservation === "sent"\)\s*return \{ accepted: true, alreadyAccepted: true \}/);
+  assert.match(emailService, /reservation === "sending"\)\s*return \{ accepted: false, pending: true \}/);
+  assert.match(emailService, /"Idempotency-Key": key/);
+});
+
+test("thank-you dialog only claims provider acceptance when reported", () => {
+  assert.match(publicScript, /emailStatus === "accepted"/);
+  assert.match(publicScript, /accepted for delivery/);
+  assert.match(publicScript, /signup is saved, but the confirmation email has not been accepted/);
+  assert.match(tournamentPage, /id="vol-retry-email"/);
+});
+
+test("email retry uses the saved signup reference and cannot submit signup fields", () => {
+  assert.match(publicScript, /action:\s*"retry-confirmation-email"/);
+  assert.match(publicScript, /signupId:\s*confirmedSignupId/);
+  assert.match(publicScript, /retryToken:\s*confirmedRetryToken/);
+  assert.match(functionsIndex, /body\.action === "retry-confirmation-email"/);
+  assert.match(functionsIndex, /collection\("volunteer_signups"\)\.doc\(retrySignupId\)/);
+  assert.match(functionsIndex, /emailRetryTokenHash/);
+  assert.match(functionsIndex, /Please wait 30 seconds before retrying/);
+});
+
+test("an exact resubmission recovers the saved signup and rotates retry access", () => {
+  assert.match(functionsIndex, /if \(signupSnap\.exists\)/);
+  assert.match(functionsIndex, /const isExactRetry/);
+  assert.match(functionsIndex, /savedSignupData = signupSnap\.data\(\)/);
+  assert.match(functionsIndex, /retryToken: emailRetryToken/);
+  assert.match(publicScript, /window\.turnstile\.reset\(turnstileWidgetId\)/);
+});
+
+test("invalid and throttled retry capabilities return honest errors", () => {
+  assert.match(functionsIndex, /status\(403\)\.json\(\{ error: retryError \}\)/);
+  assert.match(functionsIndex, /status\(429\)\.json\(\{ error: retryError \}\)/);
+  assert.match(functionsIndex, /status\(503\)\.json/);
+  assert.match(functionsIndex, /retry authorization failed/);
+  assert.match(functionsIndex, /retry delivery failed/);
+});

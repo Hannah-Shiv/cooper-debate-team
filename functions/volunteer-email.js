@@ -514,9 +514,9 @@ function createVolunteerEmailService({ db, resendSecret }) {
       const existing = await transaction.get(reference);
       if (existing.exists) {
         const data = existing.data();
-        if (data.status === "sent") return false;
+        if (data.status === "sent") return "sent";
         const startedAt = data.startedAt && data.startedAt.toMillis ? data.startedAt.toMillis() : 0;
-        if (data.status === "sending" && startedAt && Date.now() - startedAt < STALE_SEND_MS) return false;
+        if (data.status === "sending" && startedAt && Date.now() - startedAt < STALE_SEND_MS) return "sending";
       }
       transaction.set(reference, {
         kind,
@@ -528,7 +528,7 @@ function createVolunteerEmailService({ db, resendSecret }) {
         startedAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
-      return true;
+      return "reserved";
     });
   }
 
@@ -537,8 +537,9 @@ function createVolunteerEmailService({ db, resendSecret }) {
       console.error("Volunteer email skipped because the signup has no valid email address.", { kind, signupId: signup && signup.id });
       return { skipped: true };
     }
-    const reserved = await reserveNotification({ key, kind, signup, event });
-    if (!reserved) return { skipped: true };
+    const reservation = await reserveNotification({ key, kind, signup, event });
+    if (reservation === "sent") return { accepted: true, alreadyAccepted: true };
+    if (reservation === "sending") return { accepted: false, pending: true };
 
     const notificationRef = db.collection("volunteer_email_notifications").doc(key);
     try {
@@ -576,7 +577,10 @@ function createVolunteerEmailService({ db, resendSecret }) {
         sentAt: FieldValue.serverTimestamp(),
         updatedAt: FieldValue.serverTimestamp(),
       }, { merge: true });
-      return { sent: true };
+      return {
+        accepted: true,
+        providerId: cleanText(result.id, 160),
+      };
     } catch (error) {
       await notificationRef.set({
         status: "failed",

@@ -297,6 +297,10 @@ function sameSecret(expected, received) {
   return crypto.timingSafeEqual(Buffer.from(expected), Buffer.from(received));
 }
 
+function volunteerRetryTokenHash(token) {
+  return crypto.createHash("sha256").update(token).digest("hex");
+}
+
 function applicationContentHash(application) {
   return crypto.createHash("sha256").update(JSON.stringify(application)).digest("hex");
 }
@@ -676,7 +680,7 @@ async function verifyTurnstile(token) {
 }
 
 exports.publicVolunteerSignup = onRequest(
-  { region: "us-central1", cors: true, secrets: [turnstileSecret] },
+  { region: "us-central1", cors: true, secrets: [turnstileSecret, resendSecret] },
   async (req, res) => {
     const db = getFirestore();
 
@@ -715,6 +719,97 @@ exports.publicVolunteerSignup = onRequest(
     }
 
     const body = req.body || {};
+    if (body.action === "retry-confirmation-email") {
+      const retrySignupId = cleanText(body.signupId, 64);
+      const retryToken = cleanText(body.retryToken, 256);
+      if (!/^[a-f0-9]{64}$/.test(retrySignupId) || !/^[a-f0-9]{64}$/.test(retryToken)) {
+        res.status(400).json({ error: "This email retry link is invalid." });
+        return;
+      }
+      let retrySignup;
+      let retryEvent;
+      try {
+        const retrySignupRef = db.collection("volunteer_signups").doc(retrySignupId);
+        const retrySignupSnap = await db.runTransaction(async transaction => {
+          const signupSnap = await transaction.get(retrySignupRef);
+          if (!signupSnap.exists) throw new Error("This volunteer signup could not be found.");
+          const signup = signupSnap.data();
+          const expectedHash = cleanText(signup.emailRetryTokenHash, 64);
+          const receivedHash = volunteerRetryTokenHash(retryToken);
+          if (!sameSecret(expectedHash, receivedHash)) {
+            throw new Error("This email retry link is invalid.");
+          }
+          const lastRetryAtMs = Number(signup.lastManualEmailRetryAtMs) || 0;
+          if (lastRetryAtMs && Date.now() - lastRetryAtMs < 30 * 1000) {
+            throw new Error("Please wait 30 seconds before retrying the email again.");
+          }
+          transaction.set(retrySignupRef, {
+            lastManualEmailRetryAtMs: Date.now(),
+            updatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+          return signupSnap;
+        });
+        retrySignup = { id: retrySignupSnap.id, ...retrySignupSnap.data() };
+        const retryEventSnap = await db.collection("volunteer_events").doc(retrySignup.eventId).get();
+        if (!retryEventSnap.exists) {
+          res.status(409).json({ error: "The tournament details are temporarily unavailable." });
+          return;
+        }
+        retryEvent = { id: retryEventSnap.id, ...retryEventSnap.data() };
+      } catch (error) {
+        const retryError = cleanText(error && error.message, 400);
+        console.error("Volunteer confirmation email retry authorization failed.", {
+          signupId: retrySignupId,
+          error: retryError,
+        });
+        if (retryError === "This email retry link is invalid.") {
+          res.status(403).json({ error: retryError });
+          return;
+        }
+        if (retryError === "This volunteer signup could not be found.") {
+          res.status(404).json({ error: retryError });
+          return;
+        }
+        if (retryError === "Please wait 30 seconds before retrying the email again.") {
+          res.status(429).json({ error: retryError });
+          return;
+        }
+        res.status(503).json({
+          error: "The saved signup could not be checked right now. Please try again shortly.",
+        });
+        return;
+      }
+
+      try {
+        const emailResult = await volunteerEmail.sendSignupConfirmation(retrySignup, retryEvent);
+        console.info("Volunteer confirmation email retry completed.", {
+          signupId: retrySignupId,
+          accepted: emailResult.accepted === true,
+          pending: emailResult.pending === true,
+        });
+        res.status(200).json({
+          ok: true,
+          signupSaved: true,
+          signupId: retrySignupId,
+          retryToken,
+          emailStatus: emailResult.accepted ? "accepted" : "delayed",
+        });
+      } catch (error) {
+        console.error("Volunteer confirmation email retry delivery failed.", {
+          signupId: retrySignupId,
+          error: cleanText(error && error.message, 400),
+        });
+        res.status(200).json({
+          ok: true,
+          signupSaved: true,
+          signupId: retrySignupId,
+          retryToken,
+          emailStatus: "failed",
+        });
+      }
+      return;
+    }
+
     const eventId = cleanText(body.eventId, 160);
     const roleId = cleanText(body.roleId, 80);
     const parentFirstName = cleanText(body.parentFirstName, 60);
@@ -756,10 +851,14 @@ exports.publicVolunteerSignup = onRequest(
       .update(`${eventId}:${email}`)
       .digest("hex");
     const duplicateRef = db.collection("volunteer_signup_keys").doc(duplicateKey);
+    const emailRetryToken = crypto.randomBytes(32).toString("hex");
+    const emailRetryTokenHash = volunteerRetryTokenHash(emailRetryToken);
 
     try {
       await verifyTurnstile(turnstileToken);
       let selectedRole;
+      let selectedEvent;
+      let savedSignupData;
       await db.runTransaction(async transaction => {
         const [eventSnap, signupSnap, duplicateSnap] = await Promise.all([
           transaction.get(eventRef),
@@ -770,9 +869,10 @@ exports.publicVolunteerSignup = onRequest(
         if (!eventSnap.exists || !eventSnap.data().published) {
           throw new Error("This volunteer opportunity is no longer available.");
         }
-        const eventStartTime = cleanTime(eventSnap.data().startTime);
-        const eventEndTime = cleanTime(eventSnap.data().endTime);
-        const fullWindow = fullTournamentHours(eventId, eventSnap.data());
+        selectedEvent = { id: eventSnap.id, ...eventSnap.data() };
+        const eventStartTime = cleanTime(selectedEvent.startTime);
+        const eventEndTime = cleanTime(selectedEvent.endTime);
+        const fullWindow = fullTournamentHours(eventId, selectedEvent);
         const allowedStartTime = fullWindow.start || eventStartTime;
         const allowedEndTime = fullWindow.end || eventEndTime;
         if (
@@ -782,17 +882,37 @@ exports.publicVolunteerSignup = onRequest(
         ) {
           throw new Error("Please choose a judging window within the published tournament hours.");
         }
-        if (signupSnap.exists || duplicateSnap.exists) {
-          throw new Error("You are already signed up for this tournament.");
-        }
-
-        const roles = cleanRoles(eventSnap.data().roles);
+        const roles = cleanRoles(selectedEvent.roles);
         const roleIndex = roles.findIndex(role => role.id === roleId);
         if (roleIndex < 0) {
           throw new Error("That volunteer role is no longer available.");
         }
 
         selectedRole = roles[roleIndex];
+        if (signupSnap.exists) {
+          savedSignupData = signupSnap.data();
+          const isExactRetry = [
+            ["parentFirstName", parentFirstName],
+            ["parentLastName", parentLastName],
+            ["email", email],
+            ["phone", phone],
+            ["studentName", studentName],
+            ["notes", notes],
+            ["availabilityStart", availabilityStart],
+            ["availabilityEnd", availabilityEnd],
+          ].every(([field, value]) => cleanText(savedSignupData[field], 600) === value);
+          if (!isExactRetry) {
+            throw new Error("You are already signed up for this tournament.");
+          }
+          transaction.set(signupRef, {
+            emailRetryTokenHash,
+            updatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+          return;
+        }
+        if (duplicateSnap.exists) {
+          throw new Error("You are already signed up for this tournament.");
+        }
         if (selectedRole.signedUp >= selectedRole.capacity) {
           throw new Error("That volunteer role was just filled. Please choose another opening.");
         }
@@ -816,6 +936,7 @@ exports.publicVolunteerSignup = onRequest(
           availabilityStart,
           availabilityEnd,
           duplicateKey,
+          emailRetryTokenHash,
           createdAt: FieldValue.serverTimestamp(),
         });
         transaction.set(duplicateRef, {
@@ -825,7 +946,52 @@ exports.publicVolunteerSignup = onRequest(
         });
       });
 
-      res.status(201).json({ ok: true, message: "You’re signed up. Thank you for supporting Cooper Debate!" });
+      const savedSignup = savedSignupData ? {
+        id: signupId,
+        ...savedSignupData,
+      } : {
+        id: signupId,
+        eventId,
+        roleId,
+        roleLabel: selectedRole.label,
+        parentFirstName,
+        parentLastName,
+        parentName,
+        email,
+        phone,
+        studentName,
+        notes,
+        availabilityStart,
+        availabilityEnd,
+        duplicateKey,
+      };
+      let emailStatus = "delayed";
+      try {
+        const emailResult = await volunteerEmail.sendSignupConfirmation(
+          savedSignup,
+          selectedEvent
+        );
+        emailStatus = emailResult.accepted ? "accepted" : "delayed";
+        console.info("Volunteer signup saved and confirmation email processed.", {
+          signupId,
+          emailStatus,
+          pending: emailResult.pending === true,
+        });
+      } catch (emailError) {
+        emailStatus = "failed";
+        console.error("Volunteer signup saved but confirmation email failed.", {
+          signupId,
+          error: cleanText(emailError && emailError.message, 400),
+        });
+      }
+      res.status(201).json({
+        ok: true,
+        signupSaved: true,
+        signupId,
+        retryToken: emailRetryToken,
+        emailStatus,
+        message: "You’re signed up. Thank you for supporting Cooper Debate!",
+      });
     } catch (error) {
       const message = error && error.message
         ? error.message
@@ -1225,7 +1391,20 @@ exports.emailVolunteerSignupConfirmation = onDocumentCreated(
       console.error("Confirmation email skipped because its volunteer event is missing.", { signupId: signup.id });
       return null;
     }
-    await volunteerEmail.sendSignupConfirmation(signup, { id: eventSnap.id, ...eventSnap.data() });
+    try {
+      const result = await volunteerEmail.sendSignupConfirmation(signup, { id: eventSnap.id, ...eventSnap.data() });
+      console.info("Volunteer confirmation email trigger completed.", {
+        signupId: signup.id,
+        accepted: result.accepted === true,
+        pending: result.pending === true,
+      });
+    } catch (error) {
+      console.error("Volunteer confirmation email trigger failed.", {
+        signupId: signup.id,
+        error: cleanText(error && error.message, 400),
+      });
+      throw error;
+    }
     return null;
   }
 );
