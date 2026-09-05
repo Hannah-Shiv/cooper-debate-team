@@ -2399,6 +2399,18 @@
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
     .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
+    .vol-thank-you-card .vol-confirmation-actions { flex-wrap:wrap; }
+    .vol-thank-you-card .vol-confirmation-actions .vol-cancel {
+      background:linear-gradient(180deg,#18202b 0%,#05070a 100%);
+      border-color:rgba(255,255,255,.28);
+      color:#fff;
+      min-width:170px;
+    }
+    .vol-thank-you-card .vol-confirmation-actions .vol-cancel:hover,
+    .vol-thank-you-card .vol-confirmation-actions .vol-cancel:focus-visible {
+      background:linear-gradient(180deg,#263142 0%,#090d12 100%);
+      border-color:rgba(255,255,255,.55);
+    }
     .vol-exit-card { max-width:520px; padding:42px 38px 34px; text-align:center; }
     .vol-exit-card .vol-exit-icon { align-items:center; background:rgba(245,197,66,.12); border:1px solid rgba(245,197,66,.42); border-radius:50%; color:#f5c542; display:flex; font:700 1.4rem/1 Arial,sans-serif; height:54px; justify-content:center; margin:0 auto 17px; width:54px; }
     .vol-exit-card h2 { color:#fff; font:700 2rem/1.05 'Cormorant Garamond',serif; margin:0 0 12px; }
@@ -5501,8 +5513,6 @@
           <div class="vol-secure-note">Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
           <div id="vol-turnstile"></div>
           <div class="vol-modal-actions vol-review-actions" aria-label="Review actions">
-            <button id="vol-print-itinerary" class="vol-cancel vol-action-print" type="button">Print</button>
-            <button id="vol-save-pdf" class="vol-cancel vol-action-pdf" type="button">Save PDF</button>
             <button class="vol-cancel vol-action-back" type="button" data-vol-back="1">Back</button>
             <button id="vol-submit" class="vol-submit vol-action-confirm" type="submit">Confirm judge signup</button>
           </div>
@@ -5535,12 +5545,14 @@
     <div class="vol-thank-you-icon"><svg class="vol-modal-icon vol-icon-check" aria-hidden="true" focusable="false"><use href="#vol-icon-check"></use></svg></div>
     <p class="vol-modal-kicker">Signup Confirmed</p>
     <h2 id="vol-thank-you-title">Thank you for volunteering!</h2>
-    <p id="vol-thank-you-message">Your judge signup has been received. We’re grateful for the time you are giving to the tournament community.</p>
+    <p id="vol-thank-you-message">Your judge signup has been confirmed. You can print or save a copy below.</p>
     <div class="vol-thank-you-email-note">
       <svg class="vol-modal-icon vol-icon-document" aria-hidden="true" focusable="false"><use href="#vol-icon-document"></use></svg>
-      <span>Please check the email address you provided for your confirmation and calendar invitation. If it does not arrive soon, please check your spam or junk folder.</span>
+      <span>A copy of your judge confirmation and calendar invitation has already been emailed to you. If it does not arrive soon, please check your spam or junk folder.</span>
     </div>
-    <div class="vol-modal-actions">
+    <div class="vol-modal-actions vol-confirmation-actions">
+      <button id="vol-print-itinerary" class="vol-cancel vol-action-print" type="button">Print Confirmation</button>
+      <button id="vol-save-pdf" class="vol-cancel vol-action-pdf" type="button">Save PDF</button>
       <button id="vol-thank-you-done" class="vol-submit" type="button" data-close-volunteer-thank-you>Done</button>
     </div>
   </div>
@@ -6019,7 +6031,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=69"></script>
+  <script src="js/volunteer-public.js?v=70"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

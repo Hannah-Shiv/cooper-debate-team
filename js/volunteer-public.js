@@ -9,6 +9,7 @@
   let volunteerEvents = [];
   let selectedEvent = null;
   let selectedRole = null;
+  let confirmedPdfBlob = null;
   let wizardStep = 1;
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
@@ -972,17 +973,18 @@
       .replace(/[^a-zA-Z0-9-]+/g, "_")
       .replace(/^_+|_+$/g, "");
     const filename = `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate || "Date_To_Be_Announced"}.pdf`;
-    const blob = await buildVolunteerReviewPdf();
     try {
       if ("showSaveFilePicker" in window) {
         const handle = await window.showSaveFilePicker({
           suggestedName: filename,
           types: [{ description: "PDF document", accept: { "application/pdf": [".pdf"] } }],
         });
+        const blob = confirmedPdfBlob || await buildVolunteerReviewPdf();
         const writable = await handle.createWritable();
         await writable.write(blob);
         await writable.close();
       } else {
+        const blob = confirmedPdfBlob || await buildVolunteerReviewPdf();
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = filename;
@@ -994,6 +996,32 @@
       setStatus("Your signup review PDF has been saved.");
     } catch (error) {
       if (error?.name !== "AbortError") setStatus("The PDF could not be saved. Please try again.", true);
+    }
+  }
+
+  async function printVolunteerReviewPdf() {
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      setStatus("Please allow pop-ups to print your confirmation.", true);
+      return;
+    }
+    printWindow.document.write("<title>Preparing judge confirmation…</title><p style=\"font-family:Arial,sans-serif;padding:24px\">Preparing your judge confirmation…</p>");
+    try {
+      const blob = confirmedPdfBlob || await buildVolunteerReviewPdf();
+      const url = URL.createObjectURL(blob);
+      printWindow.location.replace(url);
+      setTimeout(() => {
+        try {
+          printWindow.focus();
+          printWindow.print();
+        } catch (_) {
+          // The PDF is already open and can still be printed from its viewer.
+        }
+      }, 900);
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    } catch (_) {
+      printWindow.close();
+      setStatus("The PDF could not be prepared for printing. Please try again.", true);
     }
   }
 
@@ -1029,6 +1057,7 @@
     selectedRole = selectedEvent && selectedEvent.roles.find(role => role.id === roleId);
     const form = $("volunteer-signup-form");
     if (!selectedEvent || !selectedRole || !form) return;
+    confirmedPdfBlob = null;
 
     $("vol-modal-title").textContent = "Judge Volunteer Signup";
     $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
@@ -1098,7 +1127,8 @@
   function closeThankYou() {
     const modal = $("volunteer-thank-you-modal");
     if (modal) modal.style.display = "none";
-    document.body.classList.remove("vol-modal-open");
+    closeSignup();
+    confirmedPdfBlob = null;
   }
 
   async function submitSignup(event) {
@@ -1136,6 +1166,7 @@
     button.disabled = true;
     button.textContent = "Saving…";
     setStatus("");
+    const pdfPromise = buildVolunteerReviewPdf().catch(() => null);
 
     try {
       const response = await fetch(ENDPOINT, {
@@ -1145,9 +1176,10 @@
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
+      confirmedPdfBlob = await pdfPromise;
       setStatus(result.message || "You’re signed up. Thank you!", false);
       await loadVolunteerEvents();
-      closeSignup();
+      $("volunteer-modal").style.display = "none";
       openThankYou();
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
@@ -1210,13 +1242,8 @@
       field.addEventListener("change", updateCompletion);
       field.addEventListener("blur", updateCompletion);
     });
-    const printItinerary = () => {
-      document.body.classList.add("vol-print-itinerary");
-      window.print();
-    };
-    $("vol-print-itinerary")?.addEventListener("click", printItinerary);
+    $("vol-print-itinerary")?.addEventListener("click", printVolunteerReviewPdf);
     $("vol-save-pdf")?.addEventListener("click", saveVolunteerReviewPdf);
-    window.addEventListener("afterprint", () => document.body.classList.remove("vol-print-itinerary"));
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") requestCloseSignup();
     });
