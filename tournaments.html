@@ -3144,18 +3144,18 @@
         outline-offset:2px;
       }
       #volunteer-modal .vol-info-reader {
-        align-items:center;
+        align-content:start;
         background:#032f43;
         border:1px solid rgba(245,197,66,.72);
         border-radius:6px;
         box-sizing:border-box;
         color:#fff;
-        display:grid;
-        gap:15px;
-        grid-template-columns:auto minmax(0,1fr);
-        height:250px;
-        min-height:250px;
-        max-height:250px;
+        display:flex;
+        flex-direction:column;
+        gap:8px;
+        height:210px;
+        min-height:210px;
+        max-height:210px;
         min-width:0;
         overflow:hidden;
         padding:14px 17px;
@@ -3168,14 +3168,14 @@
         border-radius:50%;
         color:#f5c542;
         display:flex;
-        height:48px;
+        height:32px;
         justify-content:center;
-        width:48px;
+        width:32px;
       }
       #volunteer-modal .vol-info-reader-icon .vol-modal-icon {
         color:#f5c542;
-        height:29px;
-        width:29px;
+        height:20px;
+        width:20px;
       }
       #volunteer-modal .vol-info-reader strong {
         color:#f5c542;
@@ -3254,6 +3254,7 @@
         }
         #volunteer-modal .vol-condensed-main {
           align-content:start;
+          align-self:stretch;
           gap:7px 12px;
           grid-template-columns:minmax(0,1fr) 300px;
         }
@@ -3312,10 +3313,13 @@
           padding:7px 10px;
         }
         #volunteer-modal .vol-side-card {
+          align-content:start;
+          box-sizing:border-box;
           display:grid!important;
           gap:5px 8px;
           grid-template-columns:repeat(2,minmax(0,1fr));
-          grid-template-rows:auto auto 250px auto;
+          grid-template-rows:auto auto 210px auto;
+          height:100%;
           padding:9px;
         }
         #volunteer-modal .vol-side-card > h4,
@@ -3335,15 +3339,19 @@
           padding:4px 6px;
         }
         #volunteer-modal .vol-info-reader {
-          gap:10px;
-          height:250px;
-          min-height:250px;
-          max-height:250px;
+          gap:6px;
+          height:210px;
+          min-height:210px;
+          max-height:210px;
           padding:9px 11px;
         }
         #volunteer-modal .vol-info-reader-icon {
-          height:38px;
-          width:38px;
+          height:27px;
+          width:27px;
+        }
+        #volunteer-modal .vol-info-reader-icon .vol-modal-icon {
+          height:17px;
+          width:17px;
         }
         #volunteer-modal .vol-info-reader p {
           font-size:.7rem;
