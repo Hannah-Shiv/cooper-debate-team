@@ -3153,9 +3153,9 @@
         display:grid;
         gap:15px;
         grid-template-columns:auto minmax(0,1fr);
-        height:185px;
-        min-height:185px;
-        max-height:185px;
+        height:250px;
+        min-height:250px;
+        max-height:250px;
         min-width:0;
         overflow:hidden;
         padding:14px 17px;
@@ -3228,8 +3228,8 @@
           max-width:1660px;
           overflow:visible;
           padding:8px 14px 7px;
-          width:126%;
-          zoom:.79;
+          width:136%;
+          zoom:.73;
         }
         #volunteer-modal .vol-modal-heading {
           margin-bottom:4px;
@@ -3312,11 +3312,33 @@
           padding:7px 10px;
         }
         #volunteer-modal .vol-side-card {
+          display:grid!important;
+          gap:5px 8px;
+          grid-template-columns:repeat(2,minmax(0,1fr));
+          grid-template-rows:auto auto 250px auto;
           padding:9px;
+        }
+        #volunteer-modal .vol-side-card > h4,
+        #volunteer-modal .vol-info-reader,
+        #volunteer-modal .vol-info-tabs {
+          grid-column:1/-1;
+        }
+        #volunteer-modal .vol-side-card > h4 {
+          margin-bottom:0;
+        }
+        #volunteer-modal .vol-info-heading-copy small {
+          display:none;
+        }
+        #volunteer-modal .vol-side-card > .vol-side-row {
+          margin:0;
+          min-width:0;
+          padding:4px 6px;
         }
         #volunteer-modal .vol-info-reader {
           gap:10px;
-          min-height:132px;
+          height:250px;
+          min-height:250px;
+          max-height:250px;
           padding:9px 11px;
         }
         #volunteer-modal .vol-info-reader-icon {
@@ -3330,6 +3352,7 @@
         #volunteer-modal .vol-info-tabs {
           gap:5px;
           grid-template-rows:repeat(2,54px);
+          margin-top:0;
         }
         #volunteer-modal .vol-info-tabs .vol-info-callout {
           height:54px;
