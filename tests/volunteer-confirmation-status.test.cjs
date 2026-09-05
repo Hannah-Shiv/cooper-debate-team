@@ -95,3 +95,10 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
   assert.match(emailService, /confirmationPdfFilename\(event\)/);
   assert.match(emailService, /Judge_Volunteer_For_\$\{tournamentName\}_On_\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}\.pdf/);
 });
+
+test("volunteer roster coverage uses full-size and half-day visual states", () => {
+  assert.match(tournamentPage, /\.vol-coverage-tag\s*\{[^}]*height:49px;[^}]*width:100%;/s);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-morning\s*\{[^}]*linear-gradient\(to bottom[^}]*50%/s);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-afternoon\s*\{[^}]*rgba\(221,151,28/);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-custom\s*\{[^}]*rgba\(128,75,212/);
+});
