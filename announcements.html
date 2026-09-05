@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/kickoff-schedule.css?v=3"/>
+  <link rel="stylesheet" href="css/kickoff-schedule.css?v=4"/>
   <style>
     .ann-card {
       position: relative;
@@ -165,10 +165,56 @@
       border-radius: 12px;
       box-shadow: 0 5px 18px rgba(0,0,0,0.18);
     }
-    .kickoff-schedule-mount .kickoff-schedule__weekly,
-    .kickoff-schedule-mount .kickoff-schedule__weekly-card,
+    .kickoff-schedule-mount .kickoff-schedule__dates {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly {
+      margin-top: 28px;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly-heading {
+      margin-top: 0;
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly-subtitle {
+      margin: 5px 0 14px;
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly-columns {
+      padding: 0;
+    }
+    .kickoff-schedule-mount .kickoff-schedule__weekly-card {
+      border: 0;
+      border-left: 3px solid rgba(242,196,61,0.82);
+      border-radius: 8px;
+      background: linear-gradient(90deg, rgba(14,45,96,0.82), rgba(7,24,59,0.56));
+      box-shadow: 0 6px 18px rgba(0,0,0,0.16);
+    }
     .kickoff-schedule-mount .kickoff-schedule__footer {
-      border-color: rgba(242,209,107,0.58);
+      margin-top: 18px;
+      padding: 15px 4px 0;
+      border: 0;
+      border-top: 1px solid rgba(242,209,107,0.34);
+      border-radius: 0;
+      background: transparent;
+    }
+    .kickoff-schedule-mount .kickoff-schedule__footer-icon {
+      flex-basis: 32px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: rgba(242,196,61,0.1);
+      font-size: 1.05rem;
+    }
+    @media (max-width: 980px) {
+      .kickoff-schedule-mount .kickoff-schedule__dates {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 620px) {
+      .kickoff-schedule-mount .kickoff-schedule__dates {
+        grid-template-columns: 1fr;
+      }
     }
     .ann-card-header {
       display: block;
@@ -353,7 +399,7 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=5"></script>
-<script src="js/kickoff-schedule.js?v=5"></script>
+<script src="js/kickoff-schedule.js?v=7"></script>
 <script src="data/announcements.js?v=2"></script>
 <script>
   const tagClasses = {

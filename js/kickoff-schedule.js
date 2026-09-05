@@ -122,12 +122,12 @@
 
       <div class="kickoff-schedule__weekly">
         <h3 class="kickoff-schedule__weekly-heading">Weekly Debate Meetings <span aria-hidden="true">★</span></h3>
-        <p class="kickoff-schedule__weekly-subtitle">Starting September 29, members should keep Tuesday afternoons clear for team meetings.</p>
+        <p class="kickoff-schedule__weekly-subtitle">Starting September 29, members should keep Tuesday and Wednesday afternoons clear for team meetings.</p>
         <div class="kickoff-schedule__weekly-columns kickoff-schedule__weekly-columns--single">
           <div class="kickoff-schedule__weekly-card">
             <div class="kickoff-schedule__optional-copy">
               <span class="kickoff-schedule__event-icon" data-icon="people" aria-hidden="true"></span>
-              <span><strong>Tuesday team meetings</strong>Exact meeting time and location will be shared with team members.</span>
+              <span><strong>Tuesday and Wednesday team meetings</strong>Exact meeting time and location will be shared with team members.</span>
             </div>
           </div>
         </div>
@@ -135,7 +135,7 @@
 
       <div class="kickoff-schedule__footer">
         <span class="kickoff-schedule__footer-icon" aria-hidden="true">⌁</span>
-        <span><strong>Stay informed</strong>Check the Tournament Calendar for the October 24 WASDL tournament and Cooper’s hosted November 14 Middle School PF tournament.</span>
+        <span><strong>Stay informed</strong>Check the Tournament Calendar for the October 24 WASDL tournament and Cooper is hosting the November 14 Middle School PF tournament.</span>
       </div>
     </section>
   `;
