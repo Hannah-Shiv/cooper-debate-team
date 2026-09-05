@@ -444,6 +444,7 @@
                   <button type="button" class="vol-roster-filter-btn" data-coverage="is-full" aria-pressed="false" aria-label="Filter by full coverage">Full</button>
                   <button type="button" class="vol-roster-filter-btn" data-coverage="is-afternoon" aria-pressed="false" aria-label="Filter by afternoon coverage">Afternoon</button>
                 </div>
+                <button type="button" class="vol-roster-reset-btn" aria-label="Reset volunteer search, sort, and filter">Reset</button>
               </div>` : ""}
             </div>
             <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
@@ -514,6 +515,22 @@
           controls.dataset.page = "1";
           applyRosterControls(controls);
         });
+      });
+      controls.querySelector(".vol-roster-reset-btn")?.addEventListener("click", () => {
+        const search = controls.querySelector(".vol-roster-search-input");
+        if (search) search.value = "";
+        controls.querySelectorAll(".vol-roster-sort-btn").forEach(button => {
+          button.classList.remove("active");
+          button.dataset.direction = "asc";
+          button.textContent = button.dataset.label;
+        });
+        controls.querySelectorAll(".vol-roster-filter-btn").forEach(button => {
+          button.classList.remove("active");
+          button.setAttribute("aria-pressed", "false");
+        });
+        controls.dataset.page = "1";
+        applyRosterControls(controls);
+        search?.focus();
       });
       controls.closest(".vol-public-roster")?.querySelector(".vol-roster-pagination")?.addEventListener("click", event => {
         const button = event.target.closest("button[data-page]");

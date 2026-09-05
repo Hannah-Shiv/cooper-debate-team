@@ -102,3 +102,12 @@ test("volunteer roster coverage uses full-size and half-day visual states", () =
   assert.match(tournamentPage, /\.vol-coverage-tag\.is-afternoon\s*\{[^}]*rgba\(221,151,28/);
   assert.match(tournamentPage, /\.vol-coverage-tag\.is-custom\s*\{[^}]*rgba\(128,75,212/);
 });
+
+test("volunteer roster reset clears search, sort, filter, and pagination", () => {
+  assert.match(publicScript, /class="vol-roster-reset-btn"/);
+  assert.match(publicScript, /search\.value = ""/);
+  assert.match(publicScript, /button\.classList\.remove\("active"\)/);
+  assert.match(publicScript, /button\.setAttribute\("aria-pressed", "false"\)/);
+  assert.match(publicScript, /controls\.dataset\.page = "1"/);
+  assert.match(tournamentPage, /grid-template-columns:minmax\(82px,\.7fr\)[^;]*minmax\(68px,\.55fr\)/);
+});
