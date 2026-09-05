@@ -844,14 +844,14 @@
     image.src = src;
   });
   const LETTER_ICON_PATHS = Object.freeze({
-    signup: "images/volunteer-letter/signup-details.png",
-    resolution: "images/volunteer-letter/tournament-resolution.png",
-    expectations: "images/volunteer-letter/what-to-expect.png",
-    arrival: "images/volunteer-letter/arrival-parking.png",
-    meals: "images/volunteer-letter/meals-refreshments.png",
-    information: "images/volunteer-letter/important-information.png",
-    contact: "images/volunteer-letter/contact-support.png",
-    privacy: "images/volunteer-letter/privacy.png",
+    signup: "images/volunteer-letter/signup-details.png?v=2",
+    resolution: "images/volunteer-letter/tournament-resolution.png?v=2",
+    expectations: "images/volunteer-letter/what-to-expect.png?v=2",
+    arrival: "images/volunteer-letter/arrival-parking.png?v=2",
+    meals: "images/volunteer-letter/meals-refreshments.png?v=2",
+    information: "images/volunteer-letter/important-information.png?v=2",
+    contact: "images/volunteer-letter/contact-support.png?v=2",
+    privacy: "images/volunteer-letter/privacy.png?v=2",
   });
 
   async function buildVolunteerReviewPdf() {
@@ -867,6 +867,7 @@
     const W = 612;
     const navy = "#062451";
     const gold = "#f6c928";
+    const privacyGreen = "#2f9b62";
     const ink = "#102b59";
     const pale = "#eaf4fc";
     const line = "#c6dced";
@@ -937,11 +938,11 @@
         fittedSize -= .25;
         ctx.font = `700 ${fittedSize}px Arial`;
       }
-      drawContainedImage(icon, x + 9, y + 4, 16, 16);
+      drawContainedImage(icon, x + 8, y + 3, 18, 18);
       ctx.textAlign = "left";
       ctx.textBaseline = "top";
       ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
-      ctx.fillText(title.toUpperCase(), x + 31, y + 7);
+      ctx.fillText(title.toUpperCase(), x + 30, y + 7);
     };
     const drawStar = (centerX, centerY, outerRadius, innerRadius) => {
       ctx.beginPath();
@@ -985,20 +986,21 @@
     ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("SPEAK  ·  REASON  ·  LEAD", 306, 49);
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
+    ctx.textAlign = "center";
+    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 204.5, 102);
     ctx.textAlign = "left";
-    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
     ctx.font = scaledFont("700 24px Georgia"); ctx.fillStyle = navy;
     const headline = wrap("Thank you for representing Cooper.", 368, "700 24px Georgia").slice(0, 2);
     headline.forEach((row, i) => ctx.fillText(row, 22, 114 + i * 25));
     text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
     text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, 365, "9px Arial", ink, 2, 11);
-    rounded(402, 106, 188, 127, 8, "#dceefa");
-    ctx.fillStyle = gold; ctx.fillRect(411, 115, 3, 109);
-    ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 425, 116);
-    text(value(event.title, "Upcoming Tournament"), 425, 131, 151, "700 13px Georgia", navy, 2, 14);
-    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 425, 166, 151, "8.5px Arial", ink, 2, 10);
-    text(`${location}${address ? `\n${address}` : ""}`, 425, 188, 151, "8px Arial", ink, 3, 10);
-    text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 218, 151, "700 7.5px Arial", ink, 2, 9);
+    rounded(402, 114, 188, 127, 8, "#dceefa");
+    ctx.fillStyle = gold; ctx.fillRect(411, 123, 3, 109);
+    ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 425, 124);
+    text(value(event.title, "Upcoming Tournament"), 425, 139, 151, "700 13px Georgia", navy, 2, 14);
+    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 425, 174, 151, "8.5px Arial", ink, 2, 10);
+    text(`${location}${address ? `\n${address}` : ""}`, 425, 196, 151, "8px Arial", ink, 3, 10);
+    text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 226, 151, "700 7.5px Arial", ink, 2, 9);
 
     const left = 22, right = 304, colW = 276;
     bar(left, 254, colW, "Your Signup Details", icons.signup);
@@ -1044,7 +1046,7 @@
       bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, sectionBodyFont("6.5px Arial"), 14, maxItemLines, 8.65);
     });
     rounded(22, 697, 278, 69, 6, "#e9f5f0", "#c8e1d6");
-    bar(22, 697, 278, "Privacy", icons.privacy);
+    bar(22, 697, 278, "Privacy", icons.privacy, privacyGreen);
     text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, 252, "7.5px Arial", ink, 3, 9);
     rounded(308, 697, 282, 69, 6, "#fff0b9", "#f0d36b");
     ctx.textAlign = "left";
