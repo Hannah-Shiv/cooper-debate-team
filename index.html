@@ -2362,6 +2362,73 @@
       }
     }
 
+    /* Compact desktop closing composition: smaller stage art, join actions
+       stacked at left, and the philosophy pulled into a ruled right column. */
+    @media (min-width: 901px) {
+      #idx-phi-join-panel {
+        grid-template-columns: minmax(250px, 30%) minmax(0, 1fr);
+        grid-template-rows: minmax(450px, auto) auto;
+      }
+      #idx-closing-art img {
+        inset: 7% 5% 0;
+        width: 90%;
+        height: 93%;
+      }
+      #idx-phi-join-copy {
+        display: grid;
+        grid-template-columns: minmax(0, 1.12fr) minmax(250px, .88fr);
+        gap: 28px;
+        align-items: center;
+        padding: 28px 28px 24px 8px;
+      }
+      #idx-join-box {
+        grid-column: 1;
+        grid-row: 1;
+        margin-top: 0 !important;
+      }
+      #idx-phi-box {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .idx-closing-quote {
+        width: 100%;
+        max-width: none;
+        padding: 8px 0 8px 44px;
+      }
+      .idx-closing-quote p {
+        font-size: clamp(1rem, 1.45vw, 1.24rem);
+        line-height: 1.42;
+      }
+      .idx-closing-quote-open {
+        left: 14px;
+      }
+      .idx-closing-title {
+        font-size: clamp(2.1rem, 3.3vw, 3rem);
+        white-space: normal;
+      }
+      .idx-closing-gold-rule {
+        margin: 17px 0 15px;
+      }
+      .idx-closing-description {
+        line-height: 1.58;
+      }
+      .idx-closing-actions {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        width: min(100%, 390px);
+        margin-top: 17px;
+      }
+      .idx-closing-action {
+        min-height: 56px;
+      }
+      .idx-closing-benefits {
+        min-height: 58px;
+      }
+      .idx-closing-benefits > div {
+        margin-block: 10px;
+      }
+    }
+
     /* Center the season-pulse split on the same midpoint as the readiness
        panel above it. The previous column gap placed the resolution rule
        noticeably to the right of center. */
