@@ -194,6 +194,11 @@ test("signup information reader shows complete guidance without an internal scro
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader p\s*\{[^}]*grid-column:1\/-1;[^}]*grid-row:2;/s);
 });
 
+test("coach contact email action is a compact teal button with clear contrast", () => {
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach\s*\{[^}]*background:#118b80;[^}]*color:#fff;[^}]*justify-self:start;[^}]*width:auto;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach \.vol-modal-icon\s*\{[^}]*color:#f5c542;/s);
+});
+
 test("signup information topic buttons prioritize readable labels over oversized icons", () => {
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger\s*\{[^}]*height:33px;[^}]*width:37px;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger \.vol-modal-icon\s*\{[^}]*height:31px;[^}]*width:31px;/s);
