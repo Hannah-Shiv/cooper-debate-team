@@ -108,6 +108,29 @@
       : "");
   };
 
+  const fitEmailFieldText = field => {
+    if (!field) return;
+    field.style.removeProperty("font-size");
+    if (!field.value || field.clientWidth <= 0) return;
+
+    const style = getComputedStyle(field);
+    const baseFontSize = Number.parseFloat(style.fontSize) || 14;
+    const horizontalPadding = Number.parseFloat(style.paddingLeft) +
+      Number.parseFloat(style.paddingRight);
+    const availableWidth = Math.max(0, field.clientWidth - horizontalPadding - 8);
+    const context = document.createElement("canvas").getContext("2d");
+    context.font = `${style.fontStyle} ${style.fontWeight} ${baseFontSize}px ${style.fontFamily}`;
+    const textWidth = context.measureText(field.value).width;
+    if (textWidth <= availableWidth) {
+      field.scrollLeft = 0;
+      return;
+    }
+
+    const fittedFontSize = Math.max(8.3, Math.floor((baseFontSize * availableWidth / textWidth) * 10) / 10);
+    field.style.setProperty("font-size", `${fittedFontSize}px`, "important");
+    field.scrollLeft = 0;
+  };
+
   const fullTournamentWindow = event => {
     const override = FULL_TOURNAMENT_HOUR_OVERRIDES[event?.id];
     return {
@@ -1396,8 +1419,16 @@
       validatePhoneField(phoneField);
     });
     phoneField?.addEventListener("blur", () => validatePhoneField(phoneField));
-    emailField?.addEventListener("input", () => validateEmailField(emailField));
-    emailField?.addEventListener("blur", () => validateEmailField(emailField));
+    emailField?.addEventListener("input", () => {
+      validateEmailField(emailField);
+      fitEmailFieldText(emailField);
+    });
+    emailField?.addEventListener("change", () => fitEmailFieldText(emailField));
+    emailField?.addEventListener("blur", () => {
+      validateEmailField(emailField);
+      fitEmailFieldText(emailField);
+    });
+    window.addEventListener("resize", () => fitEmailFieldText(emailField));
     document.querySelectorAll("[data-close-volunteer-modal]").forEach(element => {
       element.addEventListener("click", requestCloseSignup);
     });

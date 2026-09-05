@@ -197,8 +197,8 @@ test("confirmation preview uses one navy shell with charcoal utility actions", (
 });
 
 test("signup information reader shows complete guidance without an internal scrollbar", () => {
-  assert.match(tournamentPage, /\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 610px/s);
-  assert.match(tournamentPage, /#volunteer-modal \.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 610px;/s);
+  assert.match(tournamentPage, /\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 545px/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 545px;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*display:grid;[^}]*grid-template-columns:32px minmax\(0,1fr\);[^}]*grid-template-rows:32px minmax\(0,1fr\);[^}]*height:210px;[^}]*min-height:210px;[^}]*max-height:210px;[^}]*overflow:hidden;/s);
   assert.match(tournamentPage, /\.vol-judge-modal\s*\{[^}]*max-width:1320px;[^}]*overflow:hidden;[^}]*width:calc\(100vw - 12px\);/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:730px\)\{[^}]*\.vol-condensed-form-layout\s*\{[^}]*height:auto;/s);
@@ -327,6 +327,23 @@ test("all-day availability is the first and initially selected signup choice", (
 
 test("phone signup stacks time controls and keeps information readable", () => {
   assert.match(tournamentPage, /@media \(max-width:700px\)[^]*?\.vol-time-grid\s*\{[^}]*grid-template-columns:1fr!important;[^]*?\.vol-info-reader\s*\{[^}]*height:auto;[^}]*min-height:240px;[^}]*max-height:none;[^}]*overflow:visible;/s);
+});
+
+test("long volunteer emails shrink to remain visible in their input", () => {
+  assert.match(publicScript, /const fitEmailFieldText = field =>/);
+  assert.match(publicScript, /Math\.max\(8\.3, Math\.floor\(\(baseFontSize \* availableWidth \/ textWidth\)/);
+  assert.match(publicScript, /field\.style\.setProperty\("font-size", `\$\{fittedFontSize\}px`, "important"\)/);
+  assert.match(publicScript, /emailField\?\.addEventListener\("input", \(\) => \{[^}]*fitEmailFieldText\(emailField\)/s);
+  assert.match(publicScript, /window\.addEventListener\("resize", \(\) => fitEmailFieldText\(emailField\)\)/);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-email-field\s*\{[^}]*grid-column:1\/-1!important;/s);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-phone-field\s*\{[^}]*grid-column:1!important;[^}]*grid-row:2!important;[^]*?\.vol-debater-field\s*\{[^}]*display:flex;[^}]*grid-column:2!important;[^}]*grid-row:2!important;/s);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-form-grid\s*\{[^}]*grid-template-rows:repeat\(3,minmax\(0,1fr\)\);[^}]*min-height:0;/s);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-debater-field \.vol-field-guidance\s*\{[^}]*bottom:8px;[^}]*display:block;[^}]*font-size:\.43rem;[^}]*position:absolute;/s);
+  assert.match(tournamentPage, /\.vol-debater-field:focus-within \.vol-field-guidance,[^]*?\.vol-debater-field:has\(input:not\(:placeholder-shown\)\) \.vol-field-guidance\s*\{[^}]*opacity:0!important;/s);
+  assert.match(tournamentPage, /@media \(min-width:981px\)[^]*?\.vol-availability-card--compact\s*\{[^}]*align-self:stretch;[^}]*box-sizing:border-box;[^}]*height:100%;/s);
+  assert.match(tournamentPage, /id="vol-student-name"[^>]*placeholder=" "/);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-phone-field label,[^]*?\.vol-debater-field label\s*\{[^}]*font-size:\.56rem;[^}]*letter-spacing:\.05em;/s);
+  assert.match(tournamentPage, /<div class="vol-form-field vol-email-field">\s*<label for="vol-email">/);
 });
 
 test("portrait tablet signup uses a compact two-column layout without stretched information", () => {
