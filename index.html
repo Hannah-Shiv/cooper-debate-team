@@ -2411,6 +2411,7 @@
         margin: 20px 0 22px;
       }
       .idx-closing-description {
+        font-size: clamp(.88rem, 1.5vw, 1.04rem);
         line-height: 1.72;
       }
       .idx-closing-actions {
@@ -2474,6 +2475,24 @@
       }
       .idx-closing-benefits > div {
         margin-block: 10px;
+      }
+    }
+    .idx-closing-quote {
+      border-left: 0;
+    }
+    .idx-closing-quote::before {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(232,168,40,.88) 22%, rgba(232,168,40,.88) 78%, transparent);
+      content: "";
+      pointer-events: none;
+    }
+    @media (max-width: 900px) {
+      .idx-closing-description {
+        font-size: 1.04rem;
       }
     }
 
