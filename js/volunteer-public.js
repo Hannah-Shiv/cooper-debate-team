@@ -802,6 +802,7 @@
       "If you have questions during the event, please ask a coach or tournament volunteer.",
     ];
     const scaledFont = font => font.replace(/(\d+(?:\.\d+)?)px/, (_, size) => `${Number(size) * 1.1}px`);
+    const sectionBodyFont = font => font.replace(/(\d+(?:\.\d+)?)px/, (_, size) => `${Number(size) * 1.15}px`);
     const wrap = (text, maxWidth, font) => {
       ctx.font = scaledFont(font);
       ctx.letterSpacing = "0px";
@@ -890,15 +891,15 @@
     ];
     let rowY = 282;
     rows.forEach(([label, val], index) => {
-      const h = index >= 6 ? (index === 7 ? 58 : 36) : 19;
+      const h = index >= 6 ? (index === 7 ? 61 : 39) : 20;
       if (index % 2 === 0) { ctx.fillStyle = "#d9eafa"; ctx.fillRect(left, rowY, colW, h); }
-      ctx.font = scaledFont("700 7.5px Arial"); ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
-      text(val, left + 91, rowY + 5, colW - 101, "7.5px Arial", ink, index === 7 ? 6 : index === 6 ? 3 : 2, 9);
+      ctx.font = scaledFont(sectionBodyFont("700 7.5px Arial")); ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
+      text(val, left + 91, rowY + 5, colW - 101, sectionBodyFont("7.5px Arial"), ink, index === 7 ? 6 : index === 6 ? 3 : 2, 10.35);
       rowY += h;
     });
     bar(right, 254, colW, "Tournament Resolution");
     rounded(right, 278, colW, 74, 5, "#f5f9fc", line);
-    text(`Resolved: ${resolution}`, right + 10, 290, colW - 20, "8px Arial", ink, 5, 10);
+    text(`Resolved: ${resolution}`, right + 10, 290, colW - 20, sectionBodyFont("8px Arial"), ink, 5, 11.5);
     bar(right, 362, colW, "What to Expect");
     rounded(right, 386, colW, 116, 5, "#f5f9fc", line);
     bullets(expected, right + 10, 395, colW - 20, "7.5px Arial", 15);
@@ -915,7 +916,8 @@
       const x = 22 + index * (boxW + boxGap);
       bar(x, boxY, boxW, title, gold);
       rounded(x, boxY + 24, boxW, 151, 5, "#f5f9fc", line);
-      bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, "6.5px Arial", 14, 3, 7.5);
+      const maxItemLines = index >= 2 ? 4 : 3;
+      bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, sectionBodyFont("6.5px Arial"), 14, maxItemLines, 8.65);
     });
     rounded(22, 697, 278, 69, 6, "#e9f5f0", "#c8e1d6");
     bar(22, 697, 278, "Privacy Note", "#1f785e");
