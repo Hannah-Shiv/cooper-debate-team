@@ -398,9 +398,14 @@
           </section>
           <div class="vol-results-column">
             <section class="vol-roster-stats-panel" aria-label="Volunteer signup statistics">
-              <div class="vol-stats-panel-heading">
-                ${modalIcon("users")}
-                <div><span>Current signup progress</span><strong>Volunteer Statistics</strong></div>
+              <div class="vol-panel-purpose vol-panel-purpose--stats">
+                <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
+                <div class="vol-panel-purpose-flow">
+                  <strong>Volunteer Statistics</strong>
+                  <i class="vol-purpose-arrow" aria-hidden="true"></i>
+                  <span>Current Signup Progress</span>
+                </div>
+                <div class="vol-panel-purpose-icon" aria-hidden="true">%</div>
               </div>
               <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
                 <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
