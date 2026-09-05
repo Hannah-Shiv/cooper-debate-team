@@ -2051,7 +2051,7 @@
     .vol-unified-metrics .fill-rate strong { color:#65dfaa; }
     .vol-unified-metrics .available strong { color:#d8b6f4; }
     .vol-unified-metrics .deadline strong { color:#f3d578; font-size:1.02rem; line-height:1.25; margin-top:8px; }
-    .vol-unified-signup { align-items:stretch; display:grid; gap:22px; grid-template-columns:minmax(0,1fr) 270px; padding:22px; }
+    .vol-unified-signup { display:grid; grid-template-columns:minmax(0,1fr); padding:22px; }
     .vol-role-area { display:flex; flex-direction:column; min-width:0; }
     .vol-role-heading { align-items:flex-start; display:flex; gap:10px; margin:0 0 13px; }
     .vol-role-heading > span { color:#efc558; display:flex; flex:0 0 36px; line-height:1; }
@@ -2063,7 +2063,7 @@
     .vol-unified-card .vol-role:hover { border-color:rgba(232,184,75,.6); }
     .vol-unified-card .vol-role-copy h4 { font-size:.8rem; }
     .vol-unified-card .vol-signup-btn { border-radius:4px; padding:9px 12px; }
-    .vol-availability-options { display:grid; flex:1; gap:8px; grid-template-columns:1fr; grid-template-rows:repeat(4,minmax(58px,1fr)); }
+    .vol-availability-options { display:grid; gap:10px; grid-template-columns:repeat(2,minmax(0,1fr)); grid-template-rows:repeat(2,minmax(78px,auto)); }
     .vol-availability-option { align-items:center; backface-visibility:visible; background:rgba(3,13,34,.46); border:1px solid rgba(140,164,205,.3); border-radius:7px; cursor:pointer; display:grid; gap:10px; grid-template-columns:auto auto minmax(0,1fr) auto auto; min-height:58px; overflow:hidden; padding:10px 13px; position:relative; transform-origin:center center; transform-style:preserve-3d; transition:border-color .42s ease,transform .42s cubic-bezier(.22,.61,.36,1),box-shadow .42s ease,color .36s ease; }
     .vol-availability-option::before { background:linear-gradient(105deg,#0d6870 0%,#075361 58%,#063d50 100%); content:""; inset:0; opacity:0; pointer-events:none; position:absolute; transform:translateX(-104%); transition:opacity .26s ease,transform .52s cubic-bezier(.22,.72,.24,1); z-index:0; }
     .vol-availability-option:hover { border-color:rgba(232,184,75,.6); transform:translateY(-1px); }
@@ -3356,7 +3356,7 @@
       .vol-unified-facts > div:nth-child(-n+2),.vol-unified-metrics > div:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.11);}
       .vol-public-roster > .vol-unified-metrics .deadline{border-right:0;grid-column:1/-1;min-height:88px;}
       .vol-unified-signup{grid-template-columns:1fr;}
-      .vol-public-sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}
+      .vol-public-sidebar{display:none;}
     }
     @media(max-width:700px){
       .tournament-overview-guide { padding:25px 20px; }
@@ -3611,11 +3611,11 @@
       .vol-unified-facts strong{font-size:.96rem;}.vol-unified-icon{font-size:1.3rem;}
       .vol-unified-brief{grid-template-columns:1fr;padding:0 20px;}.vol-unified-brief > div,.vol-unified-brief > div + div{border-bottom:1px solid rgba(255,255,255,.1);border-right:0;padding:14px 0;}.vol-unified-brief a{align-self:auto;margin:14px 0;padding:11px;text-align:center;}
       .vol-unified-metrics strong{font-size:1.65rem;}.vol-unified-metrics .deadline strong{font-size:.88rem;}
-      .vol-unified-signup{padding:18px;}.vol-public-sidebar{display:flex;height:auto;}
-      .vol-availability-options{gap:8px;grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(74px,auto));}
-      .vol-availability-option{align-content:center;gap:6px 8px;grid-template-columns:auto auto minmax(0,1fr) auto;min-height:74px;padding:10px;}
+      .vol-unified-signup{padding:18px;}.vol-public-sidebar{display:none;}
+      .vol-availability-options{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(2,minmax(74px,auto));}
+      .vol-availability-option{align-content:center;gap:6px 8px;min-height:74px;padding:10px;}
       .vol-availability-icon{display:block;font-size:1.3rem;}
-      .vol-availability-duration{grid-column:3/-1;justify-self:start;padding:4px 7px;}
+      .vol-availability-duration{grid-column:auto;justify-self:start;padding:4px 7px;}
       .vol-availability-copy strong{font-size:.88rem;}
       .vol-public-roster{padding:22px 16px;}
       .vol-roster-summary{gap:19px;grid-template-columns:1fr;}
@@ -3641,6 +3641,10 @@
       .vol-review-details{grid-template-columns:1fr;}
       .vol-review-detail,.vol-review-detail:last-child{border-bottom:1px solid rgba(255,255,255,.09);border-right:0;min-height:0;}
       .vol-review-detail:last-child{border-bottom:0;}
+    }
+    @media(max-width:520px){
+      .vol-availability-options{grid-template-columns:1fr;grid-template-rows:repeat(4,minmax(68px,auto));}
+      .vol-availability-option{min-height:68px;}
     }
     @media(max-width:390px){
       .vol-stepper span{font-size:0;gap:0;}

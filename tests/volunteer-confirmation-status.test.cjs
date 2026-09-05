@@ -95,14 +95,11 @@ test("the public judge signup logistics match the one-pager and ignore editable 
   ]) {
     assert.match(publicScript, new RegExp(constant));
   }
-  for (const heading of [
-    "Arrival &amp; parking",
-    "Meals &amp; refreshments",
-    "Important information",
-    "Contact &amp; support",
-  ]) {
+  for (const heading of ["Arrival & Parking", "Meals & Refreshments", "Important information", "Coach contact"]) {
     assert.match(publicScript, new RegExp(heading));
   }
+  assert.doesNotMatch(publicScript, /<aside class="vol-public-sidebar">/);
+  assert.match(tournamentPage, /\.vol-availability-options\s*\{[^}]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)[^}]*grid-template-rows:repeat\(2,minmax\(78px,auto\)\)/s);
   assert.doesNotMatch(publicScript, /Judge at least 3 preliminary rounds/);
   assert.doesNotMatch(publicScript, /Please arrive 20 minutes early/);
   assert.doesNotMatch(publicScript, /walking from the parking lot takes about 5 minutes/);

@@ -416,12 +416,6 @@
                   ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
                 </button>
               </div>
-              <aside class="vol-public-sidebar">
-                <section><h4><b aria-hidden="true">${modalIcon("clock")}</b> Arrival &amp; parking</h4><ul>${APPROVED_ARRIVAL.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-                <section><h4><b aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b> Meals &amp; refreshments</h4><ul>${APPROVED_MEAL_ITEMS.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-                <section class="vol-public-secure"><h4><b aria-hidden="true">!</b> Important information</h4><ul>${APPROVED_IMPORTANT_INFORMATION.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-                <section class="vol-public-assignment"><h4><b aria-hidden="true">@</b> Contact &amp; support</h4><ul>${APPROVED_CONTACT.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></section>
-              </aside>
             </div>
           </section>
           <div class="vol-results-column">
