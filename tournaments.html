@@ -1558,7 +1558,7 @@
     }
     #public-calendar .fc-toolbar-chunk:last-child .fc-button-group {
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
       width:100%;
       padding:3px;
       border:1px solid rgba(242,209,107,.66);
@@ -4590,17 +4590,23 @@
       border:0;
       box-shadow:none;
       display:grid;
-      grid-template-columns:1fr 1fr;
+      grid-template-columns:1fr;
+      gap:10px;
       margin:0;
       padding:0;
+      width:100%;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-review-actions button {
       border-radius:7px;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.28),inset 0 -1px 0 rgba(0,0,0,.5),0 5px 13px rgba(0,0,0,.34);
       letter-spacing:.08em;
       min-height:43px;
+      min-width:0;
+      padding-left:10px;
+      padding-right:10px;
       text-shadow:0 1px 1px rgba(0,0,0,.7);
       transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
+      white-space:nowrap;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-print {
       background:linear-gradient(180deg,#1a3347 0%,#0b1a27 52%,#061019 100%);
@@ -4618,15 +4624,11 @@
       color:#fff;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
-      background:linear-gradient(180deg,#fff19a 0%,#f6d65e 48%,#deb437 100%);
-      border-color:#fff3ae;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.78),inset 0 -2px 0 rgba(132,94,5,.36),0 6px 16px rgba(230,185,42,.28);
-      color:#080a09;
-      text-shadow:0 1px 0 rgba(255,255,255,.42);
-    }
-    #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
-      grid-column:2;
-      grid-row:2;
+      background:#f6ca49;
+      border-color:#ffe18a;
+      box-shadow:0 5px 15px rgba(246,202,73,.22);
+      color:#173f3a;
+      text-shadow:none;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-print:hover,
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-print:focus-visible {
@@ -4677,7 +4679,7 @@
     }
     @media(max-width:980px) and (min-width:601px) {
       #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
-        grid-template-columns:repeat(4,minmax(0,1fr));
+        grid-template-columns:1fr;
       }
     }
     @media(max-width:600px) {
@@ -6031,7 +6033,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=70"></script>
+  <script src="js/volunteer-public.js?v=72"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
