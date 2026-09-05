@@ -307,6 +307,11 @@ test("portrait tablet signup uses a compact two-column layout without stretched 
   assert.match(tournamentPage, /@media \(min-width:701px\) and \(max-width:980px\)[^]*?\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 310px;[^]*?\.vol-condensed-main > \.vol-form-grid\s*\{[^}]*grid-template-rows:repeat\(4,auto\);[^}]*height:auto;[^]*?\.vol-signup-sidebar > \.vol-side-card:first-child\s*\{[^}]*height:auto;[^]*?\.vol-info-reader\s*\{[^}]*height:310px;[^}]*min-height:310px;[^}]*max-height:310px;/s);
 });
 
+test("phone and portrait tablet modals retain the desktop teal background", () => {
+  assert.match(tournamentPage, /@media\(max-width:980px\)[^]*?#volunteer-modal \.vol-judge-modal,[^]*?#volunteer-thank-you-modal \.vol-modal-card\s*\{[^}]*background:#012838;/s);
+  assert.doesNotMatch(tournamentPage, /background:linear-gradient\(145deg,#102d59 0%,#071d41 100%\)/);
+});
+
 test("volunteer roster reset clears search, sort, filter, and pagination", () => {
   assert.match(publicScript, /class="vol-roster-reset-btn"/);
   assert.match(publicScript, /search\.value = ""/);
