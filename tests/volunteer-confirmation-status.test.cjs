@@ -237,8 +237,9 @@ test("the four lower information cards use distinct muted fills", () => {
 
 test("volunteer roster coverage uses full-size and half-day visual states", () => {
   assert.match(tournamentPage, /\.vol-coverage-tag\s*\{[^}]*height:49px;[^}]*width:100%;/s);
-  assert.match(tournamentPage, /\.vol-coverage-tag\.is-morning\s*\{[^}]*linear-gradient\(to bottom[^}]*50%/s);
-  assert.match(tournamentPage, /\.vol-coverage-tag\.is-afternoon\s*\{[^}]*rgba\(221,151,28/);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-morning\s*\{[^}]*#f6c928[^}]*color:#121820/s);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-afternoon\s*\{[^}]*#d9931d[^}]*color:#17120a/s);
+  assert.match(tournamentPage, /\.vol-coverage-tag\.is-full\s*\{[^}]*#169c7c[^}]*color:#fff/s);
   assert.match(tournamentPage, /\.vol-coverage-tag\.is-custom\s*\{[^}]*rgba\(128,75,212/);
 });
 
