@@ -88,6 +88,8 @@ test("browser and email PDF builders include every supplied letter asset and loc
 });
 
 test("confirmation PDFs use the tournament name and an ordinal long-form date", () => {
+  assert.match(publicScript, /function confirmationPdfFilename\(event\)/);
+  assert.match(publicScript, /confirmationPdfFilename\(selectedEvent\)/);
   assert.match(publicScript, /Judge_Volunteer_For_\$\{tournamentName/);
   assert.match(publicScript, /`\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}`/);
   assert.match(emailService, /confirmationPdfFilename\(event\)/);

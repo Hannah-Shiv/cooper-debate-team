@@ -1026,12 +1026,12 @@
     return new Blob(chunks, { type: "application/pdf" });
   }
 
-  async function saveVolunteerReviewPdf() {
-    const tournamentName = String(selectedEvent?.title || "Tournament")
+  function confirmationPdfFilename(event) {
+    const tournamentName = String(event?.title || "Tournament")
       .trim()
       .replace(/[^a-zA-Z0-9]+/g, "_")
       .replace(/^_+|_+$/g, "");
-    const rawDate = String(selectedEvent?.date || "");
+    const rawDate = String(event?.date || "");
     const dateMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
     let tournamentDate = "Date_To_Be_Announced";
     if (dateMatch) {
@@ -1044,7 +1044,11 @@
         .format(new Date(Date.UTC(Number(year), Number(monthValue) - 1, day)));
       tournamentDate = `${month}_${day}${suffix}_${year}`;
     }
-    const filename = `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate || "Date_To_Be_Announced"}.pdf`;
+    return `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate}.pdf`;
+  }
+
+  async function saveVolunteerReviewPdf() {
+    const filename = confirmationPdfFilename(selectedEvent);
     try {
       if ("showSaveFilePicker" in window) {
         const handle = await window.showSaveFilePicker({
