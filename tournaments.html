@@ -11,6 +11,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    @font-face {
+      font-family:"Great Vibes";
+      src:url("fonts/GreatVibes-Regular.ttf") format("truetype");
+      font-display:swap;
+      font-style:normal;
+      font-weight:400;
+    }
+  </style>
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
@@ -2400,14 +2409,16 @@
     .vol-cancel { background:transparent; border:1px solid rgba(255,255,255,.25); color:var(--gray-mid); }
     .vol-submit { background:var(--gold); border:1px solid var(--gold); color:#081833; }
     .vol-submit:disabled { cursor:wait; opacity:.7; }
-    .vol-thank-you-card { max-width:624px; padding:48px 42px 38px; text-align:center; width:min(624px,calc(100vw - 32px)); }
+    .vol-thank-you-card { max-height:calc(100dvh - 24px); max-width:980px; overflow:auto; padding:38px 42px 34px; text-align:center; width:min(980px,calc(100vw - 24px)); }
     .vol-thank-you-icon { align-items:center; background:rgba(34,181,132,.14); border:1px solid rgba(100,220,174,.38); border-radius:50%; color:#6de0b7; display:flex; height:76px; justify-content:center; margin:0 auto 22px; width:76px; }
     .vol-thank-you-icon .vol-modal-icon { height:48px; width:48px; }
-    .vol-thank-you-card h2 { margin:0 0 12px; white-space:nowrap; }
-    .vol-thank-you-card > p { color:#c9d9ef; font-size:.88rem; line-height:1.65; margin:0 auto; max-width:none; white-space:nowrap; }
+    .vol-thank-you-card h2 { margin:0 0 12px; }
+    .vol-thank-you-card > p { color:#c9d9ef; font-size:1rem; line-height:1.65; margin:0 auto; max-width:700px; }
+    .vol-confirmation-letter-stage { background:#061c3a; border:1px solid rgba(246,202,73,.48); border-radius:12px; box-shadow:inset 0 0 34px rgba(0,0,0,.28); margin:27px auto 0; padding:20px; }
+    .vol-confirmation-letter-stage img { background:#fff; box-shadow:0 15px 38px rgba(0,0,0,.5); display:block; height:auto; margin:0 auto; max-width:100%; width:816px; }
     .vol-thank-you-email-note { align-items:flex-start; background:rgba(43,104,188,.16); border:1px solid rgba(119,177,251,.28); border-radius:9px; color:#cce2ff; display:flex; font-size:.92rem; gap:13px; line-height:1.55; margin:25px 0 0; padding:16px 18px; text-align:left; }
     .vol-thank-you-email-note .vol-modal-icon { color:#9bcaff; height:28px; width:28px; }
-    .vol-thank-you-card .vol-modal-actions { justify-content:center; margin-top:27px; }
+    .vol-thank-you-card .vol-modal-actions { background:rgba(3,20,43,.62); border:1px solid rgba(131,177,225,.22); border-radius:10px; justify-content:center; margin-top:14px; padding:18px; }
     .vol-thank-you-card .vol-submit { min-width:150px; }
     .vol-thank-you-card .vol-confirmation-actions { flex-wrap:wrap; }
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel {
@@ -2426,6 +2437,17 @@
       transform:translateY(-2px);
     }
     .vol-thank-you-card .vol-confirmation-actions .vol-cancel:active { background:#222831; transform:translateY(0); }
+    @media(max-width:700px) {
+      .vol-thank-you-card { padding:28px 12px 18px; }
+      .vol-thank-you-icon { height:62px; margin-bottom:16px; width:62px; }
+      .vol-thank-you-icon .vol-modal-icon { height:40px; width:40px; }
+      .vol-thank-you-card h2 { font-size:1.75rem; line-height:1.05; }
+      .vol-confirmation-letter-stage { border-radius:8px; margin-top:20px; padding:6px; }
+      .vol-thank-you-email-note { font-size:.9rem; margin-top:16px; padding:14px; }
+      .vol-thank-you-card .vol-modal-actions { display:grid; grid-template-columns:1fr 1fr; padding:12px; }
+      .vol-thank-you-card .vol-confirmation-actions .vol-cancel { min-width:0; }
+      .vol-thank-you-card .vol-confirmation-actions .vol-submit { grid-column:1/-1; justify-self:center; width:min(180px,100%); }
+    }
     .vol-exit-card { max-width:520px; padding:42px 38px 34px; text-align:center; }
     .vol-exit-card .vol-exit-icon { align-items:center; background:rgba(245,197,66,.12); border:1px solid rgba(245,197,66,.42); border-radius:50%; color:#f5c542; display:flex; font:700 1.4rem/1 Arial,sans-serif; height:54px; justify-content:center; margin:0 auto 17px; width:54px; }
     .vol-exit-card h2 { color:#fff; font:700 2rem/1.05 'Cormorant Garamond',serif; margin:0 0 12px; }
@@ -5808,8 +5830,11 @@
     <button class="vol-modal-close" type="button" aria-label="Close confirmation" data-close-volunteer-thank-you>&times;</button>
     <div class="vol-thank-you-icon"><svg class="vol-modal-icon vol-icon-check" aria-hidden="true" focusable="false"><use href="#vol-icon-check"></use></svg></div>
     <p class="vol-modal-kicker">Signup Confirmed</p>
-    <h2 id="vol-thank-you-title">Thank you for volunteering!</h2>
-    <p id="vol-thank-you-message">Your judge signup has been confirmed. You can print or save a copy below.</p>
+    <h2 id="vol-thank-you-title">Thank you for confirming.</h2>
+    <p id="vol-thank-you-message">Your complete judge confirmation letter is ready below.</p>
+    <div class="vol-confirmation-letter-stage">
+      <img id="vol-confirmation-letter-preview" alt="Complete tournament judge confirmation letter">
+    </div>
     <div id="vol-thank-you-email-note" class="vol-thank-you-email-note">
       <svg class="vol-modal-icon vol-icon-document" aria-hidden="true" focusable="false"><use href="#vol-icon-document"></use></svg>
       <span>Your confirmation email status is being checked.</span>
@@ -6296,7 +6321,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=81"></script>
+  <script src="js/volunteer-public.js?v=82"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

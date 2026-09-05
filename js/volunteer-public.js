@@ -10,6 +10,7 @@
   let selectedEvent = null;
   let selectedRole = null;
   let confirmedPdfBlob = null;
+  let confirmedLetterPreviewUrl = "";
   let wizardStep = 1;
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
@@ -788,8 +789,21 @@
     image.onerror = () => resolve(null);
     image.src = src;
   });
+  const LETTER_ICON_PATHS = Object.freeze({
+    signup: "images/volunteer-letter/signup-details.png",
+    resolution: "images/volunteer-letter/tournament-resolution.png",
+    expectations: "images/volunteer-letter/what-to-expect.png",
+    arrival: "images/volunteer-letter/arrival-parking.png",
+    meals: "images/volunteer-letter/meals-refreshments.png",
+    information: "images/volunteer-letter/important-information.png",
+    contact: "images/volunteer-letter/contact-support.png",
+    privacy: "images/volunteer-letter/privacy.png",
+  });
 
   async function buildVolunteerReviewPdf() {
+    if (document.fonts?.load) {
+      await document.fonts.load("48px 'Great Vibes'").catch(() => {});
+    }
     const scale = 2.083333;
     const canvas = document.createElement("canvas");
     canvas.width = 1275;
@@ -853,26 +867,47 @@
       ctx.fillStyle = fill; ctx.fill();
       if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = .7; ctx.stroke(); }
     };
-    const bar = (x, y, w, title, accent = gold) => {
+    const drawContainedImage = (image, x, y, width, height) => {
+      if (!image) return;
+      const ratio = Math.min(width / image.naturalWidth, height / image.naturalHeight);
+      const renderedWidth = image.naturalWidth * ratio;
+      const renderedHeight = image.naturalHeight * ratio;
+      ctx.drawImage(image, x + (width - renderedWidth) / 2, y + (height - renderedHeight) / 2, renderedWidth, renderedHeight);
+    };
+    const bar = (x, y, w, title, icon, accent = gold) => {
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
       const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
       let fittedSize = titleSize * 1.1;
       ctx.font = `700 ${fittedSize}px Arial`;
-      while (ctx.measureText(title.toUpperCase()).width > w - 20 && fittedSize > 6.5) {
+      while (ctx.measureText(title.toUpperCase()).width > w - 43 && fittedSize > 6.5) {
         fittedSize -= .25;
         ctx.font = `700 ${fittedSize}px Arial`;
       }
+      drawContainedImage(icon, x + 10, y + 3, 18, 18);
       ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
-      ctx.fillText(title.toUpperCase(), x + 14, y + 7);
+      ctx.fillText(title.toUpperCase(), x + 34, y + 7);
+    };
+    const drawStar = (centerX, centerY, outerRadius, innerRadius) => {
+      ctx.beginPath();
+      for (let point = 0; point < 10; point += 1) {
+        const angle = -Math.PI / 2 + point * Math.PI / 5;
+        const radius = point % 2 === 0 ? outerRadius : innerRadius;
+        const x = centerX + Math.cos(angle) * radius;
+        const y = centerY + Math.sin(angle) * radius;
+        if (point === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fill();
     };
     const bullets = (items, x, y, width, font = "7.7px Arial", gap = 17, maxLines = 2, leading = 9) => {
       let cursor = y;
       items.slice(0, 6).forEach(item => {
         const itemText = typeof item === "object" ? item.text : item;
         const itemFont = typeof item === "object" && item.font ? item.font : font;
-        ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = navy; ctx.font = scaledFont("700 7px Arial"); ctx.letterSpacing = "0px"; ctx.fillText("✓", x + 1.5, cursor + 1.5);
+        ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#1857a6"; drawStar(x + 4, cursor + 5, 2.8, 1.25);
         cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
       return cursor;
@@ -881,11 +916,17 @@
     ctx.textBaseline = "top";
     ctx.fillStyle = navy; ctx.fillRect(0, 0, W, 92);
     ctx.fillStyle = gold; ctx.fillRect(0, 90, W, 2);
-    const [badge, jaguar] = await Promise.all([pdfImage("images/cooper-debate-team-badge.png"), pdfImage("images/index-footer-jaguar.png")]);
-    if (badge) ctx.drawImage(badge, 17.4, 10.9, 68.2, 68.2);
+    const loadedAssets = await Promise.all([
+      pdfImage("images/volunteer-letter/cooper-debate-badge.png"),
+      pdfImage("images/index-footer-jaguar.png"),
+      ...Object.values(LETTER_ICON_PATHS).map(pdfImage),
+    ]);
+    const [badge, jaguar, ...iconImages] = loadedAssets;
+    const icons = Object.fromEntries(Object.keys(LETTER_ICON_PATHS).map((key, index) => [key, iconImages[index]]));
+    drawContainedImage(badge, 13, 7, 76, 76);
     if (jaguar) ctx.drawImage(jaguar, 537.4, 10.9, 57.2, 68.2);
     ctx.textAlign = "center";
-    ctx.font = scaledFont("700 22px Georgia"); ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 19);
+    ctx.font = "400 31px 'Great Vibes', cursive"; ctx.fillStyle = "#fffdf1"; ctx.fillText("Cooper Debate Team", 306, 13);
     ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("SPEAK  ·  REASON  ·  LEAD", 306, 49);
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
@@ -905,7 +946,7 @@
     text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 218, 151, "700 7.5px Arial", ink, 2, 9);
 
     const left = 22, right = 304, colW = 276;
-    bar(left, 254, colW, "Your Signup Details");
+    bar(left, 254, colW, "Your Signup Details", icons.signup);
     rounded(left, 278, colW, 224, 5, pale, line);
     const rows = [
       ["Role", roleDisplayLabel(selectedRole)], ["Volunteer Name", volunteerName],
@@ -922,15 +963,16 @@
       text(val, left + 91, rowY + 5, colW - 101, sectionBodyFont("7.5px Arial"), ink, index === 7 ? 6 : index === 6 ? 3 : 2, 10.35);
       rowY += h;
     });
-    bar(right, 254, colW, "Tournament Resolution");
+    bar(right, 254, colW, "Tournament Resolution", icons.resolution);
     rounded(right, 278, colW, 74, 5, "#f5f9fc", line);
     text(`Resolved: ${resolution}`, right + 10, 290, colW - 20, sectionBodyFont("8px Arial"), ink, 5, 11.5);
-    bar(right, 362, colW, "What to Expect");
+    bar(right, 362, colW, "What to Expect", icons.expectations);
     rounded(right, 386, colW, 116, 5, "#f5f9fc", line);
     bullets(expected, right + 10, 395, colW - 20, "7.5px Arial", 15);
 
     const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
     const boxTitles = ["Arrival & Parking", "Meals & Refreshments", "Important Information", "Contact & Support"];
+    const boxIcons = [icons.arrival, icons.meals, icons.information, icons.contact];
     const boxItems = [
       ["Please arrive early, 8:00 AM for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot.", "Look for signage and student volunteers if you need assistance."],
       ["A complimentary lunch will be provided for all judges.", "Light refreshments (coffee, water, snacks) will be available throughout the day.", "Please let us know about any dietary restrictions in advance if possible."],
@@ -939,13 +981,13 @@
     ];
     boxTitles.forEach((title, index) => {
       const x = 22 + index * (boxW + boxGap);
-      bar(x, boxY, boxW, title, gold);
+      bar(x, boxY, boxW, title, boxIcons[index], gold);
       rounded(x, boxY + 24, boxW, 151, 5, "#f5f9fc", line);
       const maxItemLines = index >= 2 ? 4 : 3;
       bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, sectionBodyFont("6.5px Arial"), 14, maxItemLines, 8.65);
     });
     rounded(22, 697, 278, 69, 6, "#e9f5f0", "#c8e1d6");
-    bar(22, 697, 278, "Privacy Note", "#1f785e");
+    bar(22, 697, 278, "Privacy Note", icons.privacy, "#1f785e");
     text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, 252, "7.5px Arial", ink, 3, 9);
     rounded(308, 697, 282, 69, 6, "#fff0b9", "#f0d36b");
     ctx.textAlign = "left";
@@ -956,6 +998,7 @@
     ctx.font = scaledFont("700 8.5px Georgia"); ctx.fillText("— Cooper Debate Team", 576, 753);
     ctx.textAlign = "left";
 
+    confirmedLetterPreviewUrl = canvas.toDataURL("image/jpeg", .92);
     const jpeg = await new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", .92));
     const bytes = new Uint8Array(await jpeg.arrayBuffer());
     const stream = `q\n612 0 0 792 0 0 cm\n/Im0 Do\nQ`;
@@ -1164,9 +1207,15 @@
     const modal = $("volunteer-thank-you-modal");
     if (!modal) return;
     renderThankYouEmailStatus(emailStatus);
+    const preview = $("vol-confirmation-letter-preview");
+    if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
     modal.style.display = "flex";
     document.body.classList.add("vol-modal-open");
-    setTimeout(() => $("vol-thank-you-done")?.focus(), 0);
+    requestAnimationFrame(() => {
+      const card = modal.querySelector(".vol-thank-you-card");
+      if (card) card.scrollTop = 0;
+      modal.querySelector(".vol-modal-close")?.focus({ preventScroll:true });
+    });
   }
 
   function closeThankYou() {
@@ -1174,6 +1223,7 @@
     if (modal) modal.style.display = "none";
     closeSignup();
     confirmedPdfBlob = null;
+    confirmedLetterPreviewUrl = "";
   }
 
   async function submitSignup(event) {

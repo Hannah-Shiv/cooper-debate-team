@@ -1,4 +1,5 @@
 const crypto = require("node:crypto");
+const path = require("node:path");
 const PDFDocument = require("pdfkit");
 const { FieldValue } = require("firebase-admin/firestore");
 
@@ -205,11 +206,11 @@ function itineraryAttachment(event, signup) {
   return new Promise((resolve, reject) => {
     const document = new PDFDocument({
       size: "LETTER",
-      margins: { top: 42, right: 46, bottom: 44, left: 46 },
+      margins: { top: 0, right: 0, bottom: 0, left: 0 },
       info: {
-        Title: `${cleanText(event.title, 160) || "Tournament"} volunteer itinerary`,
+        Title: `${cleanText(event.title, 160) || "Tournament"} judge confirmation`,
         Author: "Cooper Debate Team",
-        Subject: "Volunteer judge itinerary",
+        Subject: "Volunteer judge confirmation letter",
       },
     });
     const chunks = [];
@@ -217,79 +218,151 @@ function itineraryAttachment(event, signup) {
     document.on("error", reject);
     document.on("end", () => {
       resolve({
-        filename: "cooper-debate-volunteer-itinerary.pdf",
+        filename: "cooper-debate-judge-confirmation.pdf",
         content: Buffer.concat(chunks).toString("base64"),
       });
     });
 
     const pageWidth = document.page.width;
-    const contentWidth = pageWidth - 92;
+    const navy = "#062451";
+    const blue = "#1857a6";
+    const gold = "#f6c928";
+    const ink = "#102b59";
+    const pale = "#eaf4fc";
+    const line = "#c6dced";
+    const asset = name => path.join(__dirname, "assets", "volunteer-letter", name);
+    document.registerFont("GreatVibes", asset("GreatVibes-Regular.ttf"));
     const eventName = cleanText(event.title, 160) || "Cooper Debate Tournament";
     const volunteerName = cleanText(signup.parentName, 120) ||
       [cleanText(signup.parentFirstName, 60), cleanText(signup.parentLastName, 60)].filter(Boolean).join(" ") ||
       "Volunteer";
+    const icons = {
+      signup: asset("signup-details.png"),
+      resolution: asset("tournament-resolution.png"),
+      expectations: asset("what-to-expect.png"),
+      arrival: asset("arrival-parking.png"),
+      meals: asset("meals-refreshments.png"),
+      information: asset("important-information.png"),
+      contact: asset("contact-support.png"),
+      privacy: asset("privacy.png"),
+    };
+    const sectionBar = (x, y, width, title, icon, accent = gold) => {
+      document.rect(x, y, width, 24).fill(navy);
+      document.rect(x, y, 5, 24).fill(accent);
+      document.image(icon, x + 9, y + 3, { fit: [18, 18], align: "center", valign: "center" });
+      document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10)
+        .text(title.toUpperCase(), x + 34, y + 7, { width: width - 40, height: 12, lineBreak: false, characterSpacing: 0 });
+    };
+    const starBullet = (x, y) => {
+      document.circle(x, y, 4.5).fill(gold);
+      const points = [];
+      for (let point = 0; point < 10; point += 1) {
+        const angle = -Math.PI / 2 + point * Math.PI / 5;
+        const radius = point % 2 === 0 ? 2.8 : 1.25;
+        points.push([x + Math.cos(angle) * radius, y + Math.sin(angle) * radius]);
+      }
+      document.polygon(...points).fill(blue);
+    };
+    const bullets = (items, x, y, width, fontSize = 7.2, gap = 15, height = 10) => {
+      items.slice(0, 6).forEach((item, index) => {
+        const top = y + index * gap;
+        starBullet(x + 4, top + 5);
+        document.fillColor(ink).font("Helvetica").fontSize(fontSize)
+          .text(item, x + 14, top, { width: width - 14, height, ellipsis: true, lineGap: 1 });
+      });
+    };
+
+    document.rect(0, 0, pageWidth, 92).fill(navy);
+    document.rect(0, 90, pageWidth, 2).fill(gold);
+    document.image(asset("cooper-debate-badge.png"), 13, 7, { fit: [76, 76], align: "center", valign: "center" });
+    document.fillColor("#fffdf1").font("GreatVibes").fontSize(31)
+      .text("Cooper Debate Team", 110, 12, { width: 392, align: "center", lineBreak: false });
+    document.fillColor(gold).font("Helvetica-Bold").fontSize(9)
+      .text("SPEAK  ·  REASON  ·  LEAD", 110, 49, { width: 392, align: "center", characterSpacing: 2 });
+    document.fillColor("#d9e6f5").font("Helvetica").fontSize(8)
+      .text("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 110, 68, { width: 392, align: "center", characterSpacing: 1.2 });
+
+    document.fillColor("#a87900").font("Helvetica-Bold").fontSize(8)
+      .text("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
+    document.fillColor(navy).font("Times-Bold").fontSize(24)
+      .text("Thank You for Representing the Cooper Debate Team!", 22, 114, { width: 368, height: 52 });
+    document.fillColor(ink).font("Helvetica").fontSize(9)
+      .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, { width: 365, height: 44, lineGap: 2 });
+    document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, { width: 365, height: 24, lineGap: 2 });
+
+    document.roundedRect(402, 106, 188, 127, 8).fill("#dceefa");
+    document.rect(411, 115, 3, 109).fill(gold);
+    document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 425, 116);
+    document.font("Times-Bold").fontSize(13).text(eventName, 425, 131, { width: 151, height: 31, ellipsis: true });
+    document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 425, 166, { width: 151 });
+    const location = [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join("\n") || "Location to be announced";
+    document.fontSize(8).text(location, 425, 188, { width: 151, height: 29, ellipsis: true });
+    document.font("Helvetica-Bold").fontSize(7.5).text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 425, 218, { width: 151, height: 12, ellipsis: true });
+
+    const left = 22;
+    const right = 304;
+    const colW = 276;
+    sectionBar(left, 254, colW, "Your Signup Details", icons.signup);
+    document.roundedRect(left, 278, colW, 224, 5).fillAndStroke(pale, line);
     const rows = [
-      ["Volunteer", volunteerName],
-      ["Debater", cleanText(signup.studentName, 120) || "Not provided"],
-      ["Volunteer role", roleForSignup(event, signup)],
-      ["Your availability", timeRange(signup.availabilityStart, signup.availabilityEnd)],
-      ["Date", displayDate(event.date)],
-      ["Tournament hours", timeRange(event.startTime, event.endTime)],
-      ["Debate format", cleanText(event.debateFormat, 120)],
-      ["Location", [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join(" · ")],
-      ["Hosted by", cleanText(event.host, 160)],
-      ["Meals", cleanText(event.mealInfo, 180)],
-    ].filter(([, value]) => value);
-
-    const ensureSpace = height => {
-      if (document.y + height <= document.page.height - 44) return;
-      document.addPage();
-    };
-    const section = (title, text) => {
-      if (!text) return;
-      ensureSpace(90);
-      document.moveDown(0.65);
-      document.font("Helvetica-Bold").fontSize(9).fillColor("#0f7256").text(title.toUpperCase(), { characterSpacing: 0.8 });
-      document.moveDown(0.25);
-      document.font("Helvetica").fontSize(10).fillColor("#243b3a").text(text, { lineGap: 3 });
-    };
-
-    document.rect(0, 0, pageWidth, 132).fill("#073c33");
-    document.rect(0, 128, pageWidth, 4).fill("#e8bc4f");
-    document.fillColor("#e8bc4f").font("Helvetica-Bold").fontSize(10)
-      .text("COOPER DEBATE TEAM", 46, 35, { characterSpacing: 1.2 });
-    document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(23)
-      .text("Volunteer Judge Itinerary", 46, 57, { width: contentWidth });
-    document.fillColor("#cde6dd").font("Helvetica").fontSize(12)
-      .text(eventName, 46, 91, { width: contentWidth });
-
-    document.y = 154;
-    const cardGap = 9;
-    const cardWidth = (contentWidth - cardGap) / 2;
-    const gridTop = document.y;
+      ["Role", roleForSignup(event, signup)],
+      ["Volunteer Name", volunteerName],
+      ["Your Debater", cleanText(signup.studentName, 120) || "Not provided"],
+      ["Email", cleanText(signup.email, 160) || "Not provided"],
+      ["Phone", cleanText(signup.phone, 40) || "Not provided"],
+      ["Availability", timeRange(signup.availabilityStart, signup.availabilityEnd) || "To be announced"],
+      ["Location", location.replace("\n", " · ")],
+      ["Notes", cleanText(signup.notes, 600) || "No notes provided."],
+    ];
+    let rowY = 282;
     rows.forEach(([label, value], index) => {
-      const column = index % 2;
-      const top = gridTop + Math.floor(index / 2) * 55;
-      const left = 46 + column * (cardWidth + cardGap);
-      document.roundedRect(left, top, cardWidth, 48, 5)
-        .fill(Math.floor(index / 2) % 2 === 0 ? "#edf6f2" : "#e3f0eb");
-      document.fillColor("#197258").font("Helvetica-Bold").fontSize(7.5)
-        .text(label.toUpperCase(), left + 12, top + 8, { width: cardWidth - 24, characterSpacing: 0.4 });
-      document.fillColor("#173531").font("Helvetica").fontSize(9.2)
-        .text(value, left + 12, top + 22, { width: cardWidth - 24, height: 22, lineGap: 1 });
+      const height = index >= 6 ? (index === 7 ? 61 : 39) : 20;
+      if (index % 2 === 0) document.rect(left, rowY, colW, height).fill("#d9eafa");
+      document.fillColor(ink).font("Helvetica-Bold").fontSize(7.5).text(label, left + 9, rowY + 6, { width: 78 });
+      document.font("Helvetica").fontSize(7.5).text(value, left + 91, rowY + 5, { width: colW - 101, height: height - 7, ellipsis: true, lineGap: 1 });
+      rowY += height;
     });
-    document.y = gridTop + Math.ceil(rows.length / 2) * 55;
 
-    section("Resolution / topic", cleanText(event.resolution, 900));
-    section("Important information", cleanText(event.judgeInstructions, 900) || cleanText(event.details, 700));
-    section("What to expect", cleanText(event.expectations, 1200));
-    section("Coach contact", coachContact(event));
+    sectionBar(right, 254, colW, "Tournament Resolution", icons.resolution);
+    document.roundedRect(right, 278, colW, 74, 5).fillAndStroke("#f5f9fc", line);
+    document.fillColor(ink).font("Helvetica").fontSize(8)
+      .text(`Resolved: ${cleanText(event.resolution, 900) || "Tournament resolution will be provided by the coaching staff."}`, right + 10, 290, { width: colW - 20, height: 52, ellipsis: true, lineGap: 2 });
+    sectionBar(right, 362, colW, "What to Expect", icons.expectations);
+    document.roundedRect(right, 386, colW, 116, 5).fillAndStroke("#f5f9fc", line);
+    const expectations = cleanText(event.expectations, 1200)
+      ? cleanText(event.expectations, 1200).split(/\n+/).filter(Boolean)
+      : ["You will be assigned to multiple rounds throughout the day.", "Each round is about 60 minutes, followed by feedback.", "You will evaluate speeches, crossfire, and rebuttals using a provided ballot.", "Coaches and student volunteers will be available to help.", "You may be paired with another judge for certain rounds."];
+    bullets(expectations, right + 10, 395, colW - 20, 7.2, 20, 17);
 
-    ensureSpace(58);
-    document.moveDown(1);
-    document.roundedRect(46, document.y, contentWidth, 45, 5).fill("#0d4e42");
-    document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(9)
-      .text("Please check the tournament page before leaving for the event.", 60, document.y + 15, { width: contentWidth - 28 });
+    const boxY = 512;
+    const boxGap = 8;
+    const boxW = (pageWidth - 44 - boxGap * 3) / 4;
+    const important = cleanText(event.judgeInstructions, 900) || cleanText(event.details, 700) ||
+      "Tournament schedule and judge pairings will be provided at check-in.";
+    const boxData = [
+      ["Arrival & Parking", icons.arrival, ["Please arrive early for check-in.", "Enter through the main parking-lot entrance.", "Check in at Judge Registration.", "Parking is available in the main school lot."]],
+      ["Meals & Refreshments", icons.meals, [cleanText(event.mealInfo, 180) || "A complimentary lunch will be provided.", "Coffee, water, and light snacks will be available.", "Share dietary restrictions in advance when possible."]],
+      ["Important Information", icons.information, important.split(/\n+/).filter(Boolean)],
+      ["Contact & Support", icons.contact, ["Questions before the tournament:", coachContact(event) || "Contact the Cooper Debate coaching staff.", "On tournament day, ask any coach or student volunteer for help."]],
+    ];
+    boxData.forEach(([title, icon, items], index) => {
+      const x = 22 + index * (boxW + boxGap);
+      sectionBar(x, boxY, boxW, title, icon);
+      document.roundedRect(x, boxY + 24, boxW, 151, 5).fillAndStroke("#f5f9fc", line);
+      bullets(items, x + 8, boxY + 35, boxW - 16, 6.5, 29, 25);
+    });
+
+    document.roundedRect(22, 697, 278, 69, 6).fillAndStroke("#e9f5f0", "#c8e1d6");
+    sectionBar(22, 697, 278, "Privacy Note", icons.privacy, "#1f785e");
+    document.fillColor(ink).font("Helvetica").fontSize(7.5)
+      .text("Your contact information and notes are shared only with the Cooper Debate coaching staff and are used solely for tournament-related communication.", 34, 730, { width: 252, height: 29, lineGap: 2 });
+    document.roundedRect(308, 697, 282, 69, 6).fillAndStroke("#fff0b9", "#f0d36b");
+    document.fillColor(navy).font("Times-Bold").fontSize(13)
+      .text("Thank you again for representing\nthe Cooper Debate Team!", 322, 706, { width: 254, lineGap: 1 });
+    document.font("Times-BoldItalic").fontSize(8.5)
+      .text("We look forward to seeing you at the tournament!", 322, 741, { width: 254 });
+    document.font("Times-Bold").fontSize(8.5)
+      .text("— Cooper Debate Team", 322, 753, { width: 254, align: "right" });
     document.end();
   });
 }
