@@ -604,6 +604,14 @@ function cleanRoles(roles) {
   })).filter(role => role.id && role.label && role.capacity > 0) : [];
 }
 
+function cleanConfirmationPdfBase64(value) {
+  const encoded = cleanText(value, 900000);
+  if (!/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) return "";
+  const bytes = Buffer.from(encoded, "base64");
+  if (bytes.length > 700000 || bytes.subarray(0, 5).toString("ascii") !== "%PDF-") return "";
+  return encoded;
+}
+
 const FULL_TOURNAMENT_HOUR_OVERRIDES = new Map([
   ["volunteer-signup-acceptance-test", { start: "08:00", end: "17:30" }],
 ]);
@@ -830,6 +838,7 @@ exports.publicVolunteerSignup = onRequest(
     const availabilityStart = cleanTime(body.availabilityStart);
     const availabilityEnd = cleanTime(body.availabilityEnd);
     const turnstileToken = cleanText(body.turnstileToken, 4096);
+    const confirmationPdfBase64 = cleanConfirmationPdfBase64(body.confirmationPdfBase64);
 
     // Hidden honeypot field. Bots should not receive a useful success response.
     if (body.company) {
@@ -839,6 +848,10 @@ exports.publicVolunteerSignup = onRequest(
 
     if (!eventId || !roleId || !parentFirstName || !parentLastName || !validEmail(email) || !validPhone(phone) || !availabilityStart || !availabilityEnd) {
       res.status(400).json({ error: "Please provide your first and last name, contact details, and judging availability." });
+      return;
+    }
+    if (!confirmationPdfBase64) {
+      res.status(400).json({ error: "The confirmation one-pager could not be verified. Please refresh and try again." });
       return;
     }
     if (timeMinutes(availabilityStart) >= timeMinutes(availabilityEnd)) {
@@ -861,12 +874,14 @@ exports.publicVolunteerSignup = onRequest(
     const duplicateRef = db.collection("volunteer_signup_keys").doc(duplicateKey);
     const emailRetryToken = crypto.randomBytes(32).toString("hex");
     const emailRetryTokenHash = volunteerRetryTokenHash(emailRetryToken);
+    const confirmationRequestId = crypto.randomBytes(12).toString("hex");
 
     try {
       await verifyTurnstile(turnstileToken);
       let selectedRole;
       let selectedEvent;
       let savedSignupData;
+      let updatedExistingSignup = false;
       let resolvedSignupId = signupId;
       await db.runTransaction(async transaction => {
         const [eventSnap, signupSnap, duplicateSnap] = await Promise.all([
@@ -898,12 +913,48 @@ exports.publicVolunteerSignup = onRequest(
         }
 
         selectedRole = roles[roleIndex];
-        if (signupSnap.exists) {
-          savedSignupData = signupSnap.data();
-          transaction.set(signupRef, {
+        const updateExistingSignup = (existingRef, existingData) => {
+          const previousRoleIndex = roles.findIndex(role => role.id === cleanText(existingData.roleId, 80));
+          if (previousRoleIndex !== roleIndex) {
+            if (selectedRole.signedUp >= selectedRole.capacity) {
+              throw new Error("That volunteer role was just filled. Please choose another opening.");
+            }
+            if (previousRoleIndex >= 0) {
+              roles[previousRoleIndex].signedUp = Math.max(0, roles[previousRoleIndex].signedUp - 1);
+            }
+            roles[roleIndex].signedUp += 1;
+            transaction.update(eventRef, {
+              roles,
+              updatedAt: FieldValue.serverTimestamp(),
+            });
+          }
+          savedSignupData = {
+            ...existingData,
+            eventId,
+            roleId,
+            roleLabel: selectedRole.label,
+            parentFirstName,
+            parentLastName,
+            parentName,
+            email,
+            phone,
+            studentName,
+            notes,
+            availabilityStart,
+            availabilityEnd,
+            duplicateKey,
+            confirmationPdfBase64,
+            confirmationRequestId,
             emailRetryTokenHash,
+          };
+          transaction.set(existingRef, {
+            ...savedSignupData,
             updatedAt: FieldValue.serverTimestamp(),
           }, { merge: true });
+          updatedExistingSignup = true;
+        };
+        if (signupSnap.exists) {
+          updateExistingSignup(signupRef, signupSnap.data());
           return;
         }
         if (duplicateSnap.exists) {
@@ -917,12 +968,7 @@ exports.publicVolunteerSignup = onRequest(
             throw new Error("Your existing signup could not be reopened. Please contact the coach for help.");
           }
           resolvedSignupId = existingSignupId;
-          savedSignupData = existingSignupSnap.data();
-          selectedRole = roles.find(role => role.id === savedSignupData.roleId) || selectedRole;
-          transaction.set(existingSignupRef, {
-            emailRetryTokenHash,
-            updatedAt: FieldValue.serverTimestamp(),
-          }, { merge: true });
+          updateExistingSignup(existingSignupRef, existingSignupSnap.data());
           return;
         }
         if (selectedRole.signedUp >= selectedRole.capacity) {
@@ -948,6 +994,8 @@ exports.publicVolunteerSignup = onRequest(
           availabilityStart,
           availabilityEnd,
           duplicateKey,
+          confirmationPdfBase64,
+          confirmationRequestId,
           emailRetryTokenHash,
           createdAt: FieldValue.serverTimestamp(),
         });
@@ -976,12 +1024,15 @@ exports.publicVolunteerSignup = onRequest(
         availabilityStart,
         availabilityEnd,
         duplicateKey,
+        confirmationPdfBase64,
+        confirmationRequestId,
       };
       let emailStatus = "delayed";
       try {
         const emailResult = await volunteerEmail.sendSignupConfirmation(
           savedSignup,
-          selectedEvent
+          selectedEvent,
+          `confirm-${savedSignup.confirmationRequestId}`
         );
         emailStatus = emailResult.accepted ? "accepted" : "delayed";
         console.info("Volunteer signup saved and confirmation email processed.", {
@@ -1002,8 +1053,8 @@ exports.publicVolunteerSignup = onRequest(
         signupId: resolvedSignupId,
         retryToken: emailRetryToken,
         emailStatus,
-        message: savedSignupData
-          ? "You’re already signed up. Your confirmation has been reopened."
+        message: updatedExistingSignup
+          ? "Your existing signup has been updated and a new confirmation email has been sent."
           : "You’re signed up. Thank you for supporting Cooper Debate!",
       });
     } catch (error) {
@@ -1406,11 +1457,20 @@ exports.emailVolunteerSignupConfirmation = onDocumentCreated(
       return null;
     }
     try {
-      const result = await volunteerEmail.sendSignupConfirmation(signup, { id: eventSnap.id, ...eventSnap.data() });
+      const confirmationRequestId = cleanText(signup.confirmationRequestId, 24);
+      const deliveryVersion = confirmationRequestId ? `confirm-${confirmationRequestId}` : "";
+      const result = await volunteerEmail.sendSignupConfirmation(
+        signup,
+        { id: eventSnap.id, ...eventSnap.data() },
+        deliveryVersion
+      );
+      if (result.pending) {
+        throw new Error("Confirmation email delivery is still in progress.");
+      }
       console.info("Volunteer confirmation email trigger completed.", {
         signupId: signup.id,
         accepted: result.accepted === true,
-        pending: result.pending === true,
+        pending: false,
       });
     } catch (error) {
       console.error("Volunteer confirmation email trigger failed.", {

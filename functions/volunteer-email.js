@@ -7,6 +7,38 @@ const SENDER = "Cooper Debate Team <admin@cooperdebateteam.com>";
 const TIME_ZONE = "America/New_York";
 const TOURNAMENT_PAGE_URL = "https://cooperdebateteam.com/tournaments.html";
 const STALE_SEND_MS = 10 * 60 * 1000;
+const APPROVED_MEAL_ITEMS = Object.freeze([
+  "A complimentary lunch will be provided for all judges.",
+  "Light refreshments (coffee, water, snacks) will be available throughout the day.",
+  "Please let us know about any dietary restrictions in advance if possible.",
+]);
+const APPROVED_MEAL_INFO = APPROVED_MEAL_ITEMS.join(" ");
+const APPROVED_RESOLUTION = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+const APPROVED_EXPECTATIONS = Object.freeze([
+  "You will be assigned to multiple rounds throughout the day.",
+  "Each round is about a 60-minute session, followed by a short feedback period.",
+  "You will evaluate constructive speeches, crossfire, and rebuttals using a provided ballot.",
+  "Coaches and student volunteers will be available to answer questions and provide support.",
+  "You may be paired with another judge for certain rounds.",
+]);
+const APPROVED_ARRIVAL = Object.freeze([
+  "Please arrive early, 8:00 AM for check-in.",
+  "Enter through the main entrance from the parking lot.",
+  "Check in at the Judge Registration table in the lobby.",
+  "Parking is available in the main school parking lot.",
+  "Look for signage and student volunteers if you need assistance.",
+]);
+const APPROVED_IMPORTANT_INFORMATION = Object.freeze([
+  "Tournament schedule and judge pairings will be provided at check-in.",
+  "This is a middle school tournament. Rounds may include novice debaters.",
+  "Be prepared for a day of thoughtful discussion, engaged students, and great debates!",
+  "If you have questions during the event, please ask a coach or tournament volunteer.",
+]);
+const APPROVED_CONTACT = Object.freeze([
+  "If you have questions before the tournament, please contact:",
+  "Coach Pamela Konde · pgkonde@fcps.edu",
+  "On tournament day, look for a coach or any student volunteer — we're here to help!",
+]);
 
 function cleanText(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -134,7 +166,7 @@ function coachContact(event) {
   return parts.join(" · ");
 }
 
-function eventSummary(event, signup) {
+function eventSummary(event, signup, useApprovedOnePager = false) {
   const rows = [
     ["Tournament", cleanText(event.title, 160)],
     ["Date", displayDate(event.date)],
@@ -143,9 +175,9 @@ function eventSummary(event, signup) {
     ["Your role", roleForSignup(event, signup)],
     ["Location", cleanText(event.location, 200)],
     ["Address", cleanText(event.address, 240)],
-    ["Meals", cleanText(event.mealInfo, 180)],
-    ["Topic / resolution", cleanText(event.resolution, 900)],
-    ["Coach contact", coachContact(event)],
+    ["Meals", APPROVED_MEAL_INFO],
+    ["Topic / resolution", useApprovedOnePager ? APPROVED_RESOLUTION : cleanText(event.resolution, 900)],
+    ["Coach contact", useApprovedOnePager ? APPROVED_CONTACT[1] : coachContact(event)],
   ].filter(([, value]) => value);
   return rows;
 }
@@ -219,6 +251,16 @@ function calendarAttachment(event, signupId, cancelled = false) {
 }
 
 function itineraryAttachment(event, signup) {
+  const suppliedPdf = cleanText(signup.confirmationPdfBase64, 900000);
+  if (/^[A-Za-z0-9+/]+={0,2}$/.test(suppliedPdf)) {
+    const bytes = Buffer.from(suppliedPdf, "base64");
+    if (bytes.length <= 700000 && bytes.subarray(0, 5).toString("ascii") === "%PDF-") {
+      return Promise.resolve({
+        filename: confirmationPdfFilename(event),
+        content: suppliedPdf,
+      });
+    }
+  }
   return new Promise((resolve, reject) => {
     const document = new PDFDocument({
       size: "LETTER",
@@ -301,7 +343,8 @@ function itineraryAttachment(event, signup) {
     document.fillColor("#a87900").font("Helvetica-Bold").fontSize(8)
       .text("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
     document.fillColor(navy).font("Times-Bold").fontSize(24)
-      .text("Thank You for Representing the Cooper Debate Team!", 22, 114, { width: 368, height: 52 });
+      .text("Thank You for Representing", 22, 114, { width: 368, height: 26, lineBreak: false });
+    document.text("the Cooper Debate Team!", 22, 139, { width: 368, height: 26, lineBreak: false });
     document.fillColor(ink).font("Helvetica").fontSize(9)
       .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, { width: 365, height: 44, lineGap: 2 });
     document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, { width: 365, height: 24, lineGap: 2 });
@@ -342,24 +385,19 @@ function itineraryAttachment(event, signup) {
     sectionBar(right, 254, colW, "Tournament Resolution", icons.resolution);
     document.roundedRect(right, 278, colW, 74, 5).fillAndStroke("#f5f9fc", line);
     document.fillColor(ink).font("Helvetica").fontSize(8)
-      .text(`Resolved: ${cleanText(event.resolution, 900) || "Tournament resolution will be provided by the coaching staff."}`, right + 10, 290, { width: colW - 20, height: 52, ellipsis: true, lineGap: 2 });
+      .text(`Resolved: ${APPROVED_RESOLUTION}`, right + 10, 290, { width: colW - 20, height: 52, ellipsis: true, lineGap: 2 });
     sectionBar(right, 362, colW, "What to Expect", icons.expectations);
     document.roundedRect(right, 386, colW, 116, 5).fillAndStroke("#f5f9fc", line);
-    const expectations = cleanText(event.expectations, 1200)
-      ? cleanText(event.expectations, 1200).split(/\n+/).filter(Boolean)
-      : ["You will be assigned to multiple rounds throughout the day.", "Each round is about 60 minutes, followed by feedback.", "You will evaluate speeches, crossfire, and rebuttals using a provided ballot.", "Coaches and student volunteers will be available to help.", "You may be paired with another judge for certain rounds."];
-    bullets(expectations, right + 10, 395, colW - 20, 7.2, 20, 17);
+    bullets(APPROVED_EXPECTATIONS, right + 10, 395, colW - 20, 7.2, 20, 17);
 
     const boxY = 512;
     const boxGap = 8;
     const boxW = (pageWidth - 44 - boxGap * 3) / 4;
-    const important = cleanText(event.judgeInstructions, 900) || cleanText(event.details, 700) ||
-      "Tournament schedule and judge pairings will be provided at check-in.";
     const boxData = [
-      ["Arrival & Parking", icons.arrival, ["Please arrive early for check-in.", "Enter through the main parking-lot entrance.", "Check in at Judge Registration.", "Parking is available in the main school lot."]],
-      ["Meals & Refreshments", icons.meals, [cleanText(event.mealInfo, 180) || "A complimentary lunch will be provided.", "Coffee, water, and light snacks will be available.", "Share dietary restrictions in advance when possible."]],
-      ["Important Information", icons.information, important.split(/\n+/).filter(Boolean)],
-      ["Contact & Support", icons.contact, ["Questions before the tournament:", coachContact(event) || "Contact the Cooper Debate coaching staff.", "On tournament day, ask any coach or student volunteer for help."]],
+      ["Arrival & Parking", icons.arrival, APPROVED_ARRIVAL],
+      ["Meals & Refreshments", icons.meals, APPROVED_MEAL_ITEMS],
+      ["Important Information", icons.information, APPROVED_IMPORTANT_INFORMATION],
+      ["Contact & Support", icons.contact, APPROVED_CONTACT],
     ];
     boxData.forEach(([title, icon, items], index) => {
       const x = 22 + index * (boxW + boxGap);
@@ -449,13 +487,33 @@ function changedEventFields(before, after) {
 async function buildMessage(kind, event, signup, changes = []) {
   const name = cleanText(signup.parentFirstName, 60) || cleanText(signup.parentName, 120) || "Volunteer";
   const eventName = cleanText(event.title, 160) || "Cooper Debate tournament";
-  const rows = eventSummary(event, signup);
+  const useApprovedOnePager = kind === "confirmation";
+  const rows = eventSummary(event, signup, useApprovedOnePager);
   const pageUrl = publicEventLink(event);
-  const instructions = cleanText(event.judgeInstructions, 900);
-  const expectations = cleanText(event.expectations, 1200);
+  const instructions = useApprovedOnePager
+    ? APPROVED_IMPORTANT_INFORMATION.join("\n")
+    : cleanText(event.judgeInstructions, 900);
+  const expectations = useApprovedOnePager
+    ? APPROVED_EXPECTATIONS.join("\n")
+    : cleanText(event.expectations, 1200);
   const eventRowsHtml = `<table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 20px;">${rowsAsHtml(rows)}</table>`;
   const eventRowsText = rowsAsText(rows);
   const pageHtml = `<p style="margin:20px 0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#0e3b2e;color:#fff;text-decoration:none;border-radius:5px;padding:11px 16px;font-weight:700;">View tournament details</a></p>`;
+  const approvedSections = [
+    ["Arrival & parking", APPROVED_ARRIVAL],
+    ["Meals & refreshments", APPROVED_MEAL_ITEMS],
+    ["What to expect", APPROVED_EXPECTATIONS],
+    ["Important information", APPROVED_IMPORTANT_INFORMATION],
+    ["Contact & support", APPROVED_CONTACT],
+  ];
+  const approvedSectionsText = approvedSections
+    .map(([title, items]) => `${title}:\n${items.map(item => `- ${item}`).join("\n")}`)
+    .join("\n\n");
+  const approvedSectionsHtml = approvedSections
+    .map(([title, items]) =>
+      `<h2 style="font-size:17px;">${escapeHtml(title)}</h2>` +
+      `<ul style="line-height:1.55;">${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
+    ).join("");
   const calendar = calendarAttachment(
     event,
     signup.id,
@@ -470,16 +528,14 @@ async function buildMessage(kind, event, signup, changes = []) {
       `Thank you for volunteering with Cooper Debate. Your signup for ${eventName} is confirmed.`,
       "",
       eventRowsText,
-      instructions ? `\nJudge instructions:\n${instructions}` : "",
-      expectations ? `\nArrival and event expectations:\n${expectations}` : "",
+       `\n${approvedSectionsText}`,
       `\nTournament details: ${pageUrl}`,
       "A calendar file and printable PDF itinerary are attached. If you need to change your availability or contact information, please contact the coach listed above.",
     ].filter(Boolean).join("\n");
     const html = emailShell(
       "Your volunteer signup is confirmed",
       `Hi ${name}, thank you for volunteering with Cooper Debate. Your signup is confirmed.`,
-      `${eventRowsHtml}${instructions ? `<h2 style="font-size:17px;">Judge instructions</h2><p style="line-height:1.55;">${escapeHtml(instructions).replaceAll("\n", "<br>")}</p>` : ""}` +
-      `${expectations ? `<h2 style="font-size:17px;">Arrival and event expectations</h2><p style="line-height:1.55;">${escapeHtml(expectations).replaceAll("\n", "<br>")}</p>` : ""}` +
+      `${eventRowsHtml}${approvedSectionsHtml}` +
       `${pageHtml}`,
       "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above."
     );

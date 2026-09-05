@@ -3,6 +3,12 @@
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/publicVolunteerSignup";
+  const APPROVED_MEAL_ITEMS = Object.freeze([
+    "A complimentary lunch will be provided for all judges.",
+    "Light refreshments (coffee, water, snacks) will be available throughout the day.",
+    "Please let us know about any dietary restrictions in advance if possible.",
+  ]);
+  const APPROVED_MEAL_INFO = APPROVED_MEAL_ITEMS.join(" ");
   const FULL_TOURNAMENT_HOUR_OVERRIDES = Object.freeze({
     "volunteer-signup-acceptance-test": Object.freeze({ start: "08:00", end: "17:30" }),
   });
@@ -127,7 +133,7 @@
       event.date && { icon: "calendar", label: "Date", value: dateLabel(event.date) },
       timeRange(event.startTime, event.endTime) && { icon: "clock", label: "Tournament hours", value: timeRange(event.startTime, event.endTime) },
       event.debateFormat && { icon: "debate", label: "Debate format", value: event.debateFormat },
-      event.mealInfo && { icon: "utensils", label: "Meals", value: event.mealInfo },
+      { icon: "utensils", label: "Meals", value: APPROVED_MEAL_INFO },
       (event.location || event.address) && { icon: "pin", label: "Location", value: [event.location, event.address].filter(Boolean).join(" · ") },
       event.host && { icon: "users", label: "Hosted by", value: event.host },
     ].filter(Boolean);
@@ -382,7 +388,7 @@
             </div>
             <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
               ${event.resolution ? `<div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true">▤</b><section><span>Resolution / topic</span><p>${escapeHtml(event.resolution)}</p></section></div>` : ""}
-              <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b><section><span>Meals / refreshments</span><p>${escapeHtml(event.mealInfo || "Meal details will be shared before tournament day.")}</p></section></div>
+              <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b><section><span>Meals / refreshments</span><p>${escapeHtml(APPROVED_MEAL_INFO)}</p></section></div>
               ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
             </div>
             <div class="vol-unified-signup">
@@ -695,7 +701,7 @@
       { icon: "calendar", title: "Date", label: selectedEvent.date ? dateLabel(selectedEvent.date) : "The tournament date will be announced." },
       { icon: "clock", title: "Tournament hours", label: timeRange(selectedEvent.startTime, selectedEvent.endTime) || "Tournament hours will be announced." },
       { icon: "users", title: "Debate format", label: selectedEvent.debateFormat || "The debate format will be shared before the tournament." },
-      { icon: "utensils", title: "Meals", label: selectedEvent.mealInfo || "Meal and refreshment details will be shared before tournament day." },
+      { icon: "utensils", title: "Meals", label: APPROVED_MEAL_INFO },
       { icon: "pin", title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
       { icon: "trophy", title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
       { icon: "document", title: "Resolution / topic", label: selectedEvent.resolution || "The resolution will be shared when available." },
@@ -1002,7 +1008,7 @@
     const boxIcons = [icons.arrival, icons.meals, icons.information, icons.contact];
     const boxItems = [
       ["Please arrive early, 8:00 AM for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot.", "Look for signage and student volunteers if you need assistance."],
-      ["A complimentary lunch will be provided for all judges.", "Light refreshments (coffee, water, snacks) will be available throughout the day.", "Please let us know about any dietary restrictions in advance if possible."],
+      APPROVED_MEAL_ITEMS,
       importantItems,
       ["If you have questions before the tournament, please contact:", { text: "Coach Pamela Konde\npgkonde@fcps.edu", font: sectionBodyFont("700 6.5px Arial") }, "On tournament day, look for a coach or any student volunteer — we're here to help!"],
     ];
@@ -1302,11 +1308,21 @@
     submitPendingTurnstile = false;
     signupSubmitting = true;
     button.disabled = true;
-    button.textContent = "Saving…";
+    button.textContent = "Preparing confirmation…";
     setStatus("");
     const pdfPromise = buildVolunteerReviewPdf().catch(() => null);
 
     try {
+      const preparedPdf = await pdfPromise;
+      if (!preparedPdf) throw new Error("The confirmation one-pager could not be prepared. Please try again.");
+      const pdfDataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result || ""));
+        reader.onerror = () => reject(new Error("The confirmation one-pager could not be prepared. Please try again."));
+        reader.readAsDataURL(preparedPdf);
+      });
+      payload.confirmationPdfBase64 = pdfDataUrl.split(",", 2)[1] || "";
+      button.textContent = "Saving & emailing…";
       const response = await fetch(ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -1316,14 +1332,12 @@
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
       confirmedSignupId = result.signupId || "";
       confirmedRetryToken = result.retryToken || "";
+      confirmedPdfBlob = preparedPdf;
       setStatus(result.message || "You’re signed up. Thank you!", false);
       $("volunteer-modal").style.display = "none";
       openThankYou(result.emailStatus);
-      pdfPromise.then(blob => {
-        confirmedPdfBlob = blob;
-        const preview = $("vol-confirmation-letter-preview");
-        if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
-      });
+      const preview = $("vol-confirmation-letter-preview");
+      if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
       loadVolunteerEvents().catch(() => {});
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);

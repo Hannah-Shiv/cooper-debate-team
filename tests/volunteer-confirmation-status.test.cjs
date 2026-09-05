@@ -6,6 +6,7 @@ const publicScript = fs.readFileSync("js/volunteer-public.js", "utf8");
 const functionsIndex = fs.readFileSync("functions/index.js", "utf8");
 const emailService = fs.readFileSync("functions/volunteer-email.js", "utf8");
 const tournamentPage = fs.readFileSync("tournaments.html", "utf8");
+const { createVolunteerItineraryAttachment } = require("../functions/volunteer-email.js");
 const letterAssetNames = [
   "signup-details.png",
   "tournament-resolution.png",
@@ -51,13 +52,48 @@ test("email retry uses the saved signup reference and cannot submit signup field
   assert.match(tournamentPage, />Resend Email<\/button>/);
 });
 
-test("a repeat signup reopens the saved confirmation and rotates retry access", () => {
+test("a repeat signup overwrites the saved record and triggers a fresh automatic email", () => {
   assert.match(functionsIndex, /if \(signupSnap\.exists\)/);
-  assert.match(functionsIndex, /savedSignupData = signupSnap\.data\(\)/);
+  assert.match(functionsIndex, /updateExistingSignup\(signupRef,\s*signupSnap\.data\(\)\)/);
   assert.match(functionsIndex, /resolvedSignupId = existingSignupId/);
-  assert.match(functionsIndex, /Your confirmation has been reopened/);
+  assert.match(functionsIndex, /existing signup has been updated and a new confirmation email has been sent/);
+  assert.match(functionsIndex, /`confirm-\$\{savedSignup\.confirmationRequestId\}`/);
+  assert.match(functionsIndex, /const deliveryVersion = confirmationRequestId \? `confirm-\$\{confirmationRequestId\}` : ""/);
+  assert.match(functionsIndex, /if \(result\.pending\)/);
+  assert.match(functionsIndex, /Confirmation email delivery is still in progress/);
+  assert.match(functionsIndex, /roles\[previousRoleIndex\]\.signedUp = Math\.max\(0,/);
+  assert.match(functionsIndex, /roles\[roleIndex\]\.signedUp \+= 1/);
   assert.match(functionsIndex, /retryToken: emailRetryToken/);
   assert.match(publicScript, /window\.turnstile\.reset\(turnstileWidgetId\)/);
+});
+
+test("the approved meal information is identical in signup UI and email content", () => {
+  for (const sentence of [
+    "A complimentary lunch will be provided for all judges.",
+    "Light refreshments (coffee, water, snacks) will be available throughout the day.",
+    "Please let us know about any dietary restrictions in advance if possible.",
+  ]) {
+    assert.match(publicScript, new RegExp(sentence.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+    assert.match(emailService, new RegExp(sentence.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  }
+  assert.match(emailService, /useApprovedOnePager\s*=\s*kind === "confirmation"/);
+  assert.match(emailService, /useApprovedOnePager \? APPROVED_RESOLUTION/);
+  assert.match(emailService, /\? APPROVED_IMPORTANT_INFORMATION\.join\("\\n"\)/);
+  assert.match(emailService, /\? APPROVED_EXPECTATIONS\.join\("\\n"\)/);
+  assert.match(emailService, /APPROVED_ARRIVAL/);
+  assert.match(emailService, /APPROVED_CONTACT/);
+});
+
+test("the automatic email attaches the exact browser-generated one-pager", async () => {
+  const supplied = Buffer.from("%PDF-1.4\nexact-browser-one-pager\n", "utf8").toString("base64");
+  const attachment = await createVolunteerItineraryAttachment(
+    { title: "Hyperscale Data Centers", date: "2026-09-26" },
+    { confirmationPdfBase64: supplied }
+  );
+  assert.equal(attachment.content, supplied);
+  assert.match(publicScript, /payload\.confirmationPdfBase64 = pdfDataUrl\.split/);
+  assert.match(functionsIndex, /confirmationPdfBase64,/);
+  assert.match(functionsIndex, /if \(!confirmationPdfBase64\)/);
 });
 
 test("signup failures are shown beside the visible confirm action", () => {
@@ -92,14 +128,15 @@ test("Turnstile completion resumes a pending signup automatically", () => {
   assert.match(publicScript, /volunteer-signup-form"\)\?\.requestSubmit\(\)/);
 });
 
-test("confirmation opens before PDF generation and roster refresh finish", () => {
+test("confirmation PDF is prepared before submit and the modal opens before roster refresh", () => {
+  assert.match(publicScript, /const preparedPdf = await pdfPromise/);
+  assert.match(publicScript, /payload\.confirmationPdfBase64 = pdfDataUrl\.split/);
   const successBlock = publicScript.slice(
     publicScript.indexOf('confirmedSignupId = result.signupId'),
     publicScript.indexOf('} catch (error)', publicScript.indexOf('confirmedSignupId = result.signupId'))
   );
-  assert.ok(successBlock.indexOf("openThankYou(result.emailStatus)") < successBlock.indexOf("pdfPromise.then"));
   assert.ok(successBlock.indexOf("openThankYou(result.emailStatus)") < successBlock.indexOf("loadVolunteerEvents()"));
-  assert.doesNotMatch(successBlock, /await pdfPromise|await loadVolunteerEvents/);
+  assert.doesNotMatch(successBlock, /await loadVolunteerEvents/);
 });
 
 test("browser and email PDF builders include every supplied letter asset and local font", () => {
