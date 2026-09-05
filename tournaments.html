@@ -4551,17 +4551,19 @@
       margin-bottom:10px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side {
+      align-self:stretch;
       background:#062f38;
       border:1px solid rgba(240,207,98,.42);
       border-radius:9px;
       display:flex;
       flex-direction:column;
-      gap:12px;
-      margin-top:67px;
-      padding:12px;
+      gap:9px;
+      margin-top:90px;
+      padding:10px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-email-check {
       min-height:0;
+      padding:14px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-secure-note {
       margin:0;
@@ -4581,22 +4583,31 @@
       padding:0;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-review-actions button {
+      border-radius:7px;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 5px 12px rgba(0,12,18,.2);
+      letter-spacing:.08em;
       min-height:43px;
+      transition:background .18s ease,border-color .18s ease,box-shadow .18s ease;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-print {
-      background:#294d6b;
-      border-color:#527b9b;
+      background:linear-gradient(180deg,#3c6687,#2d526f);
+      border-color:#668ba7;
       color:#f4f8fb;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-pdf {
-      background:#514664;
-      border-color:#786b8d;
+      background:linear-gradient(180deg,#6a5a7b,#514560);
+      border-color:#8a789a;
       color:#faf7ff;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back {
-      background:#3f4a50;
-      border-color:#68777e;
+      background:linear-gradient(180deg,#59646a,#424c51);
+      border-color:#77858b;
       color:#f4f6f7;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
+      background:linear-gradient(180deg,#f3d873,#dfbd50);
+      border-color:#ffe99a;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.38),0 6px 15px rgba(214,177,55,.2);
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
       grid-column:2;
@@ -4620,6 +4631,31 @@
       font-size:.62rem;
       line-height:1.4;
       margin:3px 0 6px;
+    }
+    @media(min-width:981px) {
+      #volunteer-modal .vol-condensed-main > .vol-form-grid > .vol-debater-field {
+        align-items:center;
+        display:grid;
+        gap:2px 16px;
+        grid-column:1/-1;
+        grid-template-columns:minmax(180px,.8fr) minmax(0,1.2fr);
+      }
+      #volunteer-modal .vol-debater-field label {
+        align-self:end;
+        grid-column:1;
+        grid-row:1;
+      }
+      #volunteer-modal .vol-debater-field .vol-field-guidance {
+        align-self:start;
+        grid-column:1;
+        grid-row:2;
+        margin:1px 0 0;
+      }
+      #volunteer-modal .vol-debater-field input {
+        grid-column:2;
+        grid-row:1/3;
+        width:100%;
+      }
     }
     @media(max-width:980px) and (min-width:601px) {
       #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
@@ -5432,7 +5468,7 @@
                 <label for="vol-email"><img class="vol-field-art" src="assets/icons/volunteer-field-email.png" alt="">Volunteer's Email</label>
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
-              <div class="vol-form-field">
+              <div class="vol-form-field vol-debater-field">
                 <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Your Debater <span style="opacity:.65;">(optional)</span></label>
                 <small class="vol-field-guidance">Name of the student debater connected to your volunteer signup.</small>
                 <input id="vol-student-name" type="text" maxlength="120">
