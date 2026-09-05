@@ -57,6 +57,22 @@ function displayDate(date) {
   }).format(new Date(`${date}T12:00:00Z`));
 }
 
+function confirmationPdfFilename(event) {
+  const tournamentName = (cleanText(event.title, 160) || "Tournament")
+    .replace(/[^a-zA-Z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  const match = String(event.date || "").match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return `Judge_Volunteer_For_${tournamentName}_On_Date_To_Be_Announced.pdf`;
+  const [, year, monthValue, dayValue] = match;
+  const day = Number(dayValue);
+  const suffix = day % 100 >= 11 && day % 100 <= 13
+    ? "th"
+    : ({ 1:"st", 2:"nd", 3:"rd" }[day % 10] || "th");
+  const month = new Intl.DateTimeFormat("en-US", { month:"long", timeZone:"UTC" })
+    .format(new Date(Date.UTC(Number(year), Number(monthValue) - 1, day)));
+  return `Judge_Volunteer_For_${tournamentName}_On_${month}_${day}${suffix}_${year}.pdf`;
+}
+
 function displayTime(time) {
   if (!validTime(time)) return "";
   const [hour, minute] = time.split(":").map(Number);
@@ -218,7 +234,7 @@ function itineraryAttachment(event, signup) {
     document.on("error", reject);
     document.on("end", () => {
       resolve({
-        filename: "cooper-debate-judge-confirmation.pdf",
+        filename: confirmationPdfFilename(event),
         content: Buffer.concat(chunks).toString("base64"),
       });
     });

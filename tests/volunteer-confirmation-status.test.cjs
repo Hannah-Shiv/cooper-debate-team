@@ -86,3 +86,10 @@ test("browser and email PDF builders include every supplied letter asset and loc
   assert.match(emailService, /registerFont\("GreatVibes"/);
   assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(blue\)/);
 });
+
+test("confirmation PDFs use the tournament name and an ordinal long-form date", () => {
+  assert.match(publicScript, /Judge_Volunteer_For_\$\{tournamentName/);
+  assert.match(publicScript, /`\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}`/);
+  assert.match(emailService, /confirmationPdfFilename\(event\)/);
+  assert.match(emailService, /Judge_Volunteer_For_\$\{tournamentName\}_On_\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}\.pdf/);
+});

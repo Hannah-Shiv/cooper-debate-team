@@ -1031,10 +1031,19 @@
       .trim()
       .replace(/[^a-zA-Z0-9]+/g, "_")
       .replace(/^_+|_+$/g, "");
-    const tournamentDate = String(selectedEvent?.date || "Date_To_Be_Announced")
-      .trim()
-      .replace(/[^a-zA-Z0-9-]+/g, "_")
-      .replace(/^_+|_+$/g, "");
+    const rawDate = String(selectedEvent?.date || "");
+    const dateMatch = rawDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    let tournamentDate = "Date_To_Be_Announced";
+    if (dateMatch) {
+      const [, year, monthValue, dayValue] = dateMatch;
+      const day = Number(dayValue);
+      const suffix = day % 100 >= 11 && day % 100 <= 13
+        ? "th"
+        : ({ 1:"st", 2:"nd", 3:"rd" }[day % 10] || "th");
+      const month = new Intl.DateTimeFormat("en-US", { month:"long", timeZone:"UTC" })
+        .format(new Date(Date.UTC(Number(year), Number(monthValue) - 1, day)));
+      tournamentDate = `${month}_${day}${suffix}_${year}`;
+    }
     const filename = `Judge_Volunteer_For_${tournamentName || "Tournament"}_On_${tournamentDate || "Date_To_Be_Announced"}.pdf`;
     try {
       if ("showSaveFilePicker" in window) {
