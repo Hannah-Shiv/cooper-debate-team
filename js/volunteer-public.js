@@ -1052,7 +1052,7 @@
     }
     setStatus("");
     const modal = $("volunteer-modal");
-    if (modal && modal.style.display === "flex") {
+    if (modal && modal.style.display === "flex" && window.matchMedia("(max-width: 980px)").matches) {
       requestAnimationFrame(() => {
         const card = modal.querySelector(".vol-judge-modal");
         if (card) card.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
