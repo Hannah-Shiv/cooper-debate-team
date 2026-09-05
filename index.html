@@ -2378,8 +2378,8 @@
         display: grid;
         grid-template-columns: minmax(0, 1.12fr) minmax(250px, .88fr);
         gap: 28px;
-        align-items: center;
-        padding: 28px 28px 24px 8px;
+        align-items: start;
+        padding: 40px 28px 92px 8px;
       }
       #idx-join-box {
         grid-column: 1;
@@ -2389,6 +2389,7 @@
       #idx-phi-box {
         grid-column: 2;
         grid-row: 1;
+        margin-top: 58px !important;
       }
       .idx-closing-quote {
         width: 100%;
@@ -2407,19 +2408,42 @@
         white-space: normal;
       }
       .idx-closing-gold-rule {
-        margin: 17px 0 15px;
+        margin: 20px 0 22px;
       }
       .idx-closing-description {
-        line-height: 1.58;
+        line-height: 1.72;
       }
       .idx-closing-actions {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        width: min(100%, 390px);
-        margin-top: 17px;
+        position: absolute;
+        right: 28px;
+        bottom: 22px;
+        left: 8px;
+        grid-template-columns: repeat(2, minmax(0, 230px));
+        justify-content: start;
+        gap: 12px;
+        width: auto;
+        max-width: none;
+        margin: 0;
       }
       .idx-closing-action {
-        min-height: 56px;
+        grid-template-columns: 29px minmax(0, 1fr) auto;
+        gap: 9px;
+        min-height: 52px;
+        padding: 7px 11px;
+      }
+      .idx-closing-action svg {
+        width: 24px;
+        height: 24px;
+      }
+      .idx-closing-action-secondary {
+        color: #f0b62c;
+        background: #07162f;
+        border-color: #d99a18;
+      }
+      .idx-closing-action-secondary:hover {
+        color: #ffd66d;
+        background: #0a2043;
+        border-color: #f0b62c;
       }
       .idx-closing-benefits {
         min-height: 58px;
