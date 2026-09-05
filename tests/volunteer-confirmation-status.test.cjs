@@ -212,7 +212,8 @@ test("signup actions keep visible breathing room below the information panel", (
 });
 
 test("judge opportunity header uses teal instead of the results-panel navy", () => {
-  assert.match(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*linear-gradient\(90deg,#0b5554 0%,#073d44 100%\)/s);
+  assert.match(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*linear-gradient\(90deg,#0b6b61 0%,#075f58 100%\)/s);
+  assert.doesNotMatch(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*#0c234d/s);
 });
 
 test("Turnstile completion resumes a pending signup automatically", () => {
