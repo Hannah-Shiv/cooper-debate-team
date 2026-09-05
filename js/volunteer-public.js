@@ -878,6 +878,7 @@
     const volunteerName = `${firstName} ${$("vol-parent-last-name")?.value.trim() || ""}`.trim();
     const event = selectedEvent || {};
     const value = (item, fallback) => String(item || fallback || "Not provided");
+    const compactNotes = notes => String(notes || "").replace(/\s+/g, " ").trim();
     const availability = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value) || "To be announced";
     const location = value(event.location, "Location to be announced");
     const address = event.address || "";
@@ -921,6 +922,16 @@
       }
       const font = "700 16px Georgia";
       return { font, rows: wrap(headline, maxWidth, font).slice(0, maxLines), leading: 18 };
+    };
+    const fitNotes = (notes, maxWidth, maxHeight) => {
+      for (let size = 7.5; size >= 2; size -= .25) {
+        const font = `${size}px Arial`;
+        const rows = wrap(notes, maxWidth, font);
+        const leading = size * 1.35;
+        if (rows.length * leading <= maxHeight) return { font, rows, leading };
+      }
+      const font = "2px Arial";
+      return { font, rows: wrap(notes, maxWidth, font), leading: 2.7 };
     };
     const text = (str, x, y, maxWidth, font, color = ink, maxLines = 4, leading = 11) => {
       const rows = wrap(str, maxWidth, font).slice(0, maxLines);
@@ -1023,14 +1034,20 @@
       ["Your Debater", $("vol-student-name")?.value.trim() || "Not provided"],
       ["Email", $("vol-email")?.value.trim() || "Not provided"], ["Phone", $("vol-phone")?.value.trim() || "Not provided"],
       ["Availability", availability], ["Location", `${location}${address ? `\n${address}` : ""}`],
-      ["Notes", $("vol-notes")?.value.trim() || "No notes provided."],
+      ["Notes", compactNotes($("vol-notes")?.value) || "No notes provided."],
     ];
     let rowY = 282;
     rows.forEach(([label, val], index) => {
       const h = index >= 6 ? (index === 7 ? 61 : 39) : 20;
       if (index % 2 === 0) { ctx.fillStyle = "#d9eafa"; ctx.fillRect(left, rowY, colW, h); }
       ctx.font = scaledFont(sectionBodyFont("700 7.5px Arial")); ctx.fillStyle = ink; ctx.fillText(label, left + 9, rowY + 6);
-      text(val, left + 91, rowY + 5, colW - 101, sectionBodyFont("7.5px Arial"), ink, index === 7 ? 6 : index === 6 ? 3 : 2, 10.35);
+      if (index === 7) {
+        const fittedNotes = fitNotes(val, colW - 18, h - 24);
+        ctx.font = scaledFont(fittedNotes.font); ctx.fillStyle = ink;
+        fittedNotes.rows.forEach((row, lineIndex) => ctx.fillText(row, left + 9, rowY + 19 + lineIndex * fittedNotes.leading));
+      } else {
+        text(val, left + 91, rowY + 5, colW - 101, sectionBodyFont("7.5px Arial"), ink, index === 6 ? 3 : 2, 10.35);
+      }
       rowY += h;
     });
     bar(right, 254, colW, "Tournament Resolution", icons.resolution);

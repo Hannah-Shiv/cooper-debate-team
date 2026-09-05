@@ -357,6 +357,15 @@ function itineraryAttachment(event, signup) {
       }
       return { size: 16, rows: smallestRows.slice(0, maxLines), leading: 18 };
     };
+    const fitNotes = (notes, maxWidth, maxHeight) => {
+      for (let size = 7.5; size >= 2; size -= .25) {
+        const lineGap = Math.max(.2, size * .18);
+        document.font("Helvetica").fontSize(size);
+        const height = document.heightOfString(notes, { width: maxWidth, lineGap });
+        if (height <= maxHeight) return { size, lineGap };
+      }
+      return { size: 2, lineGap: .2 };
+    };
 
     document.rect(0, 0, pageWidth, 92).fill(navy);
     document.rect(0, 90, pageWidth, 2).fill(gold);
@@ -393,6 +402,7 @@ function itineraryAttachment(event, signup) {
     const colW = 276;
     sectionBar(left, 254, colW, "Your Signup Details", icons.signup);
     document.roundedRect(left, 278, colW, 224, 5).fillAndStroke(pale, line);
+    const compactNotes = cleanText(signup.notes, 600).replace(/\s+/g, " ").trim();
     const rows = [
       ["Role", roleForSignup(event, signup)],
       ["Volunteer Name", volunteerName],
@@ -401,14 +411,21 @@ function itineraryAttachment(event, signup) {
       ["Phone", cleanText(signup.phone, 40) || "Not provided"],
       ["Availability", timeRange(signup.availabilityStart, signup.availabilityEnd) || "To be announced"],
       ["Location", location.replace("\n", " · ")],
-      ["Notes", cleanText(signup.notes, 600) || "No notes provided."],
+      ["Notes", compactNotes || "No notes provided."],
     ];
     let rowY = 282;
     rows.forEach(([label, value], index) => {
       const height = index >= 6 ? (index === 7 ? 61 : 39) : 20;
       if (index % 2 === 0) document.rect(left, rowY, colW, height).fill("#d9eafa");
       document.fillColor(ink).font("Helvetica-Bold").fontSize(7.5).text(label, left + 9, rowY + 6, { width: 78 });
-      document.font("Helvetica").fontSize(7.5).text(value, left + 91, rowY + 5, { width: colW - 101, height: height - 7, ellipsis: true, lineGap: 1 });
+      if (index === 7) {
+        const fittedNotes = fitNotes(value, colW - 18, height - 24);
+        document.font("Helvetica").fontSize(fittedNotes.size)
+          .text(value, left + 9, rowY + 19, { width: colW - 18, height: height - 24, lineGap: fittedNotes.lineGap });
+      } else {
+        document.font("Helvetica").fontSize(7.5)
+          .text(value, left + 91, rowY + 5, { width: colW - 101, height: height - 7, ellipsis: true, lineGap: 1 });
+      }
       rowY += height;
     });
 

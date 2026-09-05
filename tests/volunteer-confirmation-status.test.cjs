@@ -291,6 +291,12 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
   assert.match(publicScript, /for \(let size = 22; size >= 16; size -= \.5\)/);
   assert.match(publicScript, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
+  assert.match(publicScript, /const fitNotes = \(notes, maxWidth, maxHeight\) =>/);
+  assert.match(publicScript, /const compactNotes = notes => String\(notes \|\| ""\)\.replace\(\/\\s\+\/g, " "\)\.trim\(\)/);
+  assert.match(publicScript, /\["Notes", compactNotes\(\$\("vol-notes"\)\?\.value\) \|\| "No notes provided\."\]/);
+  assert.match(publicScript, /for \(let size = 7\.5; size >= 2; size -= \.25\)/);
+  assert.match(publicScript, /const fittedNotes = fitNotes\(val, colW - 18, h - 24\)/);
+  assert.match(publicScript, /fittedNotes\.rows\.forEach/);
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
@@ -312,6 +318,11 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /const personalizedHeadline = `\$\{firstName && firstName !== "Volunteer" \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper\.`/);
   assert.match(emailService, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
   assert.match(emailService, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
+  assert.match(emailService, /const fitNotes = \(notes, maxWidth, maxHeight\) =>/);
+  assert.match(emailService, /const compactNotes = cleanText\(signup\.notes, 600\)\.replace\(\/\\s\+\/g, " "\)\.trim\(\)/);
+  assert.match(emailService, /document\.heightOfString\(notes, \{ width: maxWidth, lineGap \}\)/);
+  assert.match(emailService, /const fittedNotes = fitNotes\(value, colW - 18, height - 24\)/);
+  assert.match(emailService, /\.text\(value, left \+ 9, rowY \+ 19, \{ width: colW - 18, height: height - 24, lineGap: fittedNotes\.lineGap \}\)/);
 });
 
 test("the four lower information cards use distinct muted fills", () => {
