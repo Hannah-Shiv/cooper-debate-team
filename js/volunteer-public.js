@@ -751,11 +751,12 @@
           <div class="vol-review-row is-private is-notes">${modalIcon("document")}<dt>Notes <small>Coach-only</small></dt><dd>${escapeHtml(notes)}</dd></div>
         </dl>
         <div class="vol-review-privacy">${modalIcon("info")}<div><strong>Public roster preview</strong><p>${escapeHtml(parentName)}, ${studentName ? `${escapeHtml(studentName)}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)} will be public. Contact details and notes stay private.</p></div></div>
-      </section>
-      <aside class="vol-review-email-check" role="note">
+      </section>`;
+    const emailCheck = $("vol-review-email-check");
+    if (emailCheck) emailCheck.innerHTML = `
         ${modalIcon("document")}
         <div><strong>Double-check your email address</strong><p>Your confirmation and calendar invitation will be sent to <b>${escapeHtml(email)}</b>. Please make sure it is correct before you confirm.</p></div>
-      </aside>`;
+      `;
   }
 
   // The review sheet is intentionally drawn as one fixed US Letter image. This
