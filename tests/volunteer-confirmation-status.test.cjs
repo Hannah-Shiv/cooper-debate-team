@@ -189,6 +189,13 @@ test("signup information reader shows complete guidance without an internal scro
   assert.match(tournamentPage, /grid-template-rows:auto auto 250px auto;/);
 });
 
+test("signup information topic buttons prioritize readable labels over oversized icons", () => {
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger\s*\{[^}]*height:33px;[^}]*width:37px;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger \.vol-modal-icon\s*\{[^}]*height:31px;[^}]*width:31px;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-callout strong\s*\{[^}]*font-size:\.68rem;[^}]*line-height:1.25;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger,\s*#volunteer-modal \.vol-info-trigger \.vol-modal-icon\s*\{[^}]*height:24px;[^}]*width:25px;/s);
+});
+
 test("judge opportunity header uses teal instead of the results-panel navy", () => {
   assert.match(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*linear-gradient\(90deg,#0b5554 0%,#073d44 100%\)/s);
 });
