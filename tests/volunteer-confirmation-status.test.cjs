@@ -180,6 +180,15 @@ test("confirmation modal previews the complete generated letter above its action
   assert.match(publicScript, /card\.scrollTop = 0/);
 });
 
+test("confirmation preview uses one navy shell with charcoal utility actions", () => {
+  assert.match(tournamentPage, /#volunteer-thank-you-modal \.vol-thank-you-card\s*\{[^}]*background:#071b34;/s);
+  assert.match(tournamentPage, /#volunteer-thank-you-modal \.vol-confirmation-summary\s*\{[^}]*background:#071b34;/s);
+  assert.match(tournamentPage, /#volunteer-thank-you-modal \.vol-confirmation-letter-stage\s*\{[^}]*background:#071b34;/s);
+  assert.match(tournamentPage, /#volunteer-thank-you-modal \.vol-confirmation-actions\s*\{[^}]*background:#071b34;/s);
+  assert.match(tournamentPage, /#volunteer-thank-you-modal \.vol-confirmation-actions \.vol-cancel\s*\{[^}]*background:#292d33;[^}]*color:#ffd84d;/s);
+  assert.match(tournamentPage, /id="vol-thank-you-done"[^>]*>Close<\/button>/);
+});
+
 test("signup information reader shows complete guidance without an internal scrollbar", () => {
   assert.match(tournamentPage, /\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 610px/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 610px;/s);

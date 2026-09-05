@@ -5511,6 +5511,38 @@
       #volunteer-modal .vol-modal-actions button { transition:none; }
       #volunteer-modal section[data-vol-step].is-entering { animation:none; }
     }
+
+    /* Confirmation preview: one restrained navy shell around the white letter. */
+    #volunteer-thank-you-modal .vol-thank-you-card {
+      background:#071b34;
+      border-color:rgba(246,202,73,.5);
+    }
+    #volunteer-thank-you-modal .vol-confirmation-summary {
+      background:#071b34;
+      border-color:rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    #volunteer-thank-you-modal .vol-confirmation-letter-stage {
+      background:#071b34;
+      border-color:rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    #volunteer-thank-you-modal .vol-confirmation-actions {
+      background:#071b34;
+      border-color:rgba(255,255,255,.14);
+      box-shadow:none;
+    }
+    #volunteer-thank-you-modal .vol-confirmation-actions .vol-cancel {
+      background:#292d33;
+      border-color:#f6ca49;
+      color:#ffd84d;
+    }
+    #volunteer-thank-you-modal .vol-confirmation-actions .vol-cancel:hover,
+    #volunteer-thank-you-modal .vol-confirmation-actions .vol-cancel:focus-visible {
+      background:#383d45;
+      border-color:#ffe38d;
+      color:#ffe38d;
+    }
   </style>
   <link rel="stylesheet" href="css/tablet-portrait.css?v=9"/>
 </head>
@@ -6300,7 +6332,7 @@
       <button id="vol-print-itinerary" class="vol-cancel vol-action-print" type="button">Print Confirmation</button>
       <button id="vol-save-pdf" class="vol-cancel vol-action-pdf" type="button">Save PDF</button>
       <button id="vol-retry-email" class="vol-cancel" type="button" hidden>Resend Email</button>
-      <button id="vol-thank-you-done" class="vol-submit" type="button" data-close-volunteer-thank-you>Done</button>
+      <button id="vol-thank-you-done" class="vol-submit" type="button" data-close-volunteer-thank-you>Close</button>
     </div>
   </div>
 </div>
