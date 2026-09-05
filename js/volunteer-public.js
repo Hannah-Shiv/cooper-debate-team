@@ -851,7 +851,7 @@
     meals: "images/volunteer-letter/meals-refreshments.png?v=2",
     information: "images/volunteer-letter/important-information.png?v=2",
     contact: "images/volunteer-letter/contact-support.png?v=2",
-    privacy: "images/volunteer-letter/privacy.png?v=2",
+    privacy: "images/volunteer-letter/privacy.png?v=3",
   });
 
   async function buildVolunteerReviewPdf() {
@@ -987,7 +987,7 @@
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
     ctx.textAlign = "center";
-    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 204.5, 102);
+    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 306, 102);
     ctx.textAlign = "left";
     ctx.font = scaledFont("700 24px Georgia"); ctx.fillStyle = navy;
     const headline = wrap("Thank you for representing Cooper.", 368, "700 24px Georgia").slice(0, 2);

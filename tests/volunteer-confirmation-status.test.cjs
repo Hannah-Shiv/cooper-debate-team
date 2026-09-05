@@ -257,7 +257,7 @@ test("browser and email PDF builders include every supplied letter asset and loc
     assert.equal(fs.existsSync(`functions/assets/volunteer-letter/${filename}`), true, `missing email asset ${filename}`);
   }
   assert.match(publicScript, /drawStar/);
-  assert.match(publicScript, /privacy: "images\/volunteer-letter\/privacy\.png\?v=2"/);
+  assert.match(publicScript, /privacy: "images\/volunteer-letter\/privacy\.png\?v=3"/);
   assert.match(emailService, /registerFont\("GreatVibes"/);
   assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
 });
@@ -274,7 +274,7 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
 test("confirmation PDF uses supplied title icons, navy circles, yellow stars, and the approved headline", () => {
   assert.match(publicScript, /let fittedSize = 8\.2/);
   assert.match(publicScript, /drawContainedImage\(icon, x \+ 8, y \+ 3, 18, 18\)/);
-  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 204\.5, 102\)/);
+  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 306, 102\)/);
   assert.match(publicScript, /rounded\(402, 114, 188, 127, 8, "#dceefa"\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
@@ -286,7 +286,7 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
-  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 22, 102, \{ width: 365, align: "center"/);
+  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 0, 102, \{ width: pageWidth, align: "center"/);
   assert.match(emailService, /document\.roundedRect\(402, 114, 188, 127, 8\)\.fill\("#dceefa"\)/);
   assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
@@ -337,8 +337,9 @@ test("phone signup stacks time controls and keeps information readable", () => {
 });
 
 test("the narrow review card keeps the Cloudflare widget fully inside its bounds", () => {
-  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile\s*\{[^}]*overflow:hidden;[^}]*width:100%;/s);
-  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile > div\s*\{[^}]*transform:scale\(\.88\);[^}]*transform-origin:left top;/s);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile\s*\{[^}]*border-radius:8px;[^}]*display:flex;[^}]*justify-content:center;[^}]*overflow:hidden;[^}]*width:100%;/s);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile > div\s*\{[^}]*border-radius:8px;[^}]*overflow:hidden;[^}]*transform:scale\(\.88\);[^}]*transform-origin:center top;/s);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile iframe\s*\{[^}]*border-radius:8px !important;/s);
 });
 
 test("long volunteer emails shrink to remain visible in their input", () => {

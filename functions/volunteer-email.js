@@ -344,7 +344,7 @@ function itineraryAttachment(event, signup) {
       .text("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 110, 68, { width: 392, align: "center", characterSpacing: 1.2 });
 
     document.fillColor("#a87900").font("Helvetica-Bold").fontSize(8)
-      .text("TOURNAMENT JUDGE CONFIRMATION", 22, 102, { width: 365, align: "center", lineBreak: false });
+      .text("TOURNAMENT JUDGE CONFIRMATION", 0, 102, { width: pageWidth, align: "center", lineBreak: false });
     document.fillColor(navy).font("Times-Bold").fontSize(24)
       .text("Thank you for representing", 22, 114, { width: 368, height: 26, lineBreak: false });
     document.text("Cooper.", 22, 139, { width: 368, height: 26, lineBreak: false });
