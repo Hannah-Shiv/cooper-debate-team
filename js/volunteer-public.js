@@ -745,7 +745,7 @@
           <div class="vol-review-row">${modalIcon("debate")}<dt>Volunteer role</dt><dd>${escapeHtml(roleDisplayLabel(selectedRole))}</dd></div>
           <div class="vol-review-row">${modalIcon("clock")}<dt>Judging availability</dt><dd>${escapeHtml(availability)}</dd></div>
           <div class="vol-review-row">${modalIcon("users")}<dt>Volunteer name</dt><dd>${escapeHtml(parentName)}</dd></div>
-          <div class="vol-review-row">${modalIcon("debate")}<dt>Debater</dt><dd>${escapeHtml(studentName || "Not provided")}</dd></div>
+          <div class="vol-review-row">${modalIcon("debate")}<dt>Your debater <small>Optional</small></dt><dd>${escapeHtml(studentName || "Not provided")}</dd></div>
           <div class="vol-review-row is-private">${modalIcon("document")}<dt>Email <small>Coach-only</small></dt><dd>${escapeHtml(email)}</dd></div>
           <div class="vol-review-row is-private">${modalIcon("info")}<dt>Phone <small>Coach-only</small></dt><dd>${escapeHtml(phone)}</dd></div>
           <div class="vol-review-row is-private is-notes">${modalIcon("document")}<dt>Notes <small>Coach-only</small></dt><dd>${escapeHtml(notes)}</dd></div>
@@ -886,7 +886,7 @@
     rounded(left, 278, colW, 224, 5, pale, line);
     const rows = [
       ["Role", roleDisplayLabel(selectedRole)], ["Volunteer Name", volunteerName],
-      ["Debater's Name", $("vol-student-name")?.value.trim() || "Not provided"],
+      ["Your Debater", $("vol-student-name")?.value.trim() || "Not provided"],
       ["Email", $("vol-email")?.value.trim() || "Not provided"], ["Phone", $("vol-phone")?.value.trim() || "Not provided"],
       ["Availability", availability], ["Location", `${location}${address ? `\n${address}` : ""}`],
       ["Notes", $("vol-notes")?.value.trim() || "No notes provided."],

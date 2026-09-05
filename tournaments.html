@@ -4611,6 +4611,13 @@
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back:focus-visible {
       background:#566268;
     }
+    #volunteer-modal .vol-field-guidance {
+      color:#9eb9b4;
+      display:block;
+      font-size:.62rem;
+      line-height:1.4;
+      margin:3px 0 6px;
+    }
     @media(max-width:980px) and (min-width:601px) {
       #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
         grid-template-columns:repeat(4,minmax(0,1fr));
@@ -5423,7 +5430,8 @@
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
               <div class="vol-form-field">
-                <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Debater's Full Name <span style="opacity:.65;">(optional)</span></label>
+                <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Your Debater <span style="opacity:.65;">(optional)</span></label>
+                <small class="vol-field-guidance">Name of the student debater connected to your volunteer signup.</small>
                 <input id="vol-student-name" type="text" maxlength="120">
               </div>
             </div>
@@ -5966,7 +5974,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=67"></script>
+  <script src="js/volunteer-public.js?v=68"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
