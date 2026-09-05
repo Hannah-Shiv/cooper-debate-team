@@ -182,10 +182,14 @@ test("confirmation modal previews the complete generated letter above its action
 
 test("signup information reader shows complete guidance without an internal scrollbar", () => {
   assert.match(tournamentPage, /\.vol-condensed-form-layout\s*\{[^}]*grid-template-columns:minmax\(0,1fr\) 420px/s);
-  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*height:auto;[^}]*min-height:146px;[^}]*max-height:none;[^}]*overflow:visible;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*height:185px;[^}]*min-height:185px;[^}]*max-height:185px;[^}]*overflow:hidden;/s);
   assert.match(tournamentPage, /\.vol-judge-modal\s*\{[^}]*max-width:1320px;[^}]*overflow:hidden;[^}]*width:calc\(100vw - 12px\);/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:730px\)\{[^}]*\.vol-condensed-form-layout\s*\{[^}]*height:auto;/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:650px\)\{[^}]*\.vol-judge-modal\s*\{[^}]*max-height:none;[^}]*overflow:visible;[^}]*width:126%;[^}]*zoom:\.79;/s);
+});
+
+test("judge opportunity header uses teal instead of the results-panel navy", () => {
+  assert.match(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*linear-gradient\(90deg,#0b5554 0%,#073d44 100%\)/s);
 });
 
 test("Turnstile completion resumes a pending signup automatically", () => {
