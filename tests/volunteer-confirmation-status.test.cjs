@@ -186,7 +186,7 @@ test("signup information reader shows complete guidance without an internal scro
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader\s*\{[^}]*display:grid;[^}]*grid-template-columns:32px minmax\(0,1fr\);[^}]*grid-template-rows:32px minmax\(0,1fr\);[^}]*height:210px;[^}]*min-height:210px;[^}]*max-height:210px;[^}]*overflow:hidden;/s);
   assert.match(tournamentPage, /\.vol-judge-modal\s*\{[^}]*max-width:1320px;[^}]*overflow:hidden;[^}]*width:calc\(100vw - 12px\);/s);
   assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:730px\)\{[^}]*\.vol-condensed-form-layout\s*\{[^}]*height:auto;/s);
-  assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:650px\)\{[^}]*\.vol-judge-modal\s*\{[^}]*max-height:none;[^}]*overflow:visible;[^}]*width:136%;[^}]*zoom:\.73;/s);
+  assert.match(tournamentPage, /@media\(min-width:981px\) and \(max-height:720px\)\{[^}]*\.vol-judge-modal\s*\{[^}]*max-height:none;[^}]*overflow:visible;[^}]*width:136%;[^}]*zoom:\.73;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-condensed-main\s*\{[^}]*align-content:start;[^}]*align-self:stretch;/s);
   assert.match(tournamentPage, /grid-template-rows:auto auto 210px auto;/);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader-icon\s*\{[^}]*height:32px;[^}]*width:32px;/s);
@@ -195,7 +195,7 @@ test("signup information reader shows complete guidance without an internal scro
 });
 
 test("coach contact email action is a compact teal button with clear contrast", () => {
-  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach\s*\{[^}]*background:#075b5a;[^}]*color:#fff;[^}]*justify-self:start;[^}]*width:auto;/s);
+  assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach\s*\{[^}]*background:linear-gradient\(135deg,#043e48,#032f43\);[^}]*color:#fff;[^}]*font:700 \.68rem\/1[^}]*padding:10px 16px;[^}]*width:auto;/s);
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-reader \.vol-info-email-coach \.vol-modal-icon\s*\{[^}]*color:#f5c542;/s);
 });
 
@@ -208,6 +208,7 @@ test("signup information topic buttons prioritize readable labels over oversized
 
 test("signup actions keep visible breathing room below the information panel", () => {
   assert.match(tournamentPage, /#volunteer-modal section\[data-vol-step="1"\] \.vol-modal-actions\s*\{[^}]*margin-top:30px;/s);
+  assert.match(tournamentPage, /@media\(min-width:981px\)\{[^]*?#volunteer-modal \.vol-condensed-form-layout\s*\{[^}]*height:auto;[^]*?#volunteer-modal section\[data-vol-step="1"\] \.vol-modal-actions\s*\{[^}]*margin-top:30px;/s);
 });
 
 test("judge opportunity header uses teal instead of the results-panel navy", () => {

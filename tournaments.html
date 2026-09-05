@@ -2766,7 +2766,7 @@
         }
         #volunteer-modal .vol-condensed-form-layout {
           align-items:stretch;
-          height:clamp(450px,calc(100dvh - 228px),515px);
+          height:auto;
         }
         #volunteer-modal .vol-condensed-main {
           align-content:start;
@@ -2795,7 +2795,7 @@
         }
         #volunteer-modal section[data-vol-step="1"] .vol-modal-actions {
           justify-content:flex-end;
-          margin-top:70px;
+          margin-top:30px;
           padding-top:0;
         }
       }
@@ -3202,18 +3202,18 @@
       }
       #volunteer-modal .vol-info-reader .vol-info-email-coach {
         align-items:center;
-        background:#075b5a;
-        border:1px solid #188f88;
-        border-radius:5px;
-        box-shadow:0 2px 8px rgba(0,0,0,.18);
+        background:linear-gradient(135deg,#043e48,#032f43);
+        border:1px solid #1ca59d;
+        border-radius:6px;
+        box-shadow:0 5px 12px rgba(0,0,0,.26),inset 0 1px rgba(255,255,255,.07);
         color:#fff;
         display:inline-flex;
-        font:700 .62rem/1 'Josefin Sans',sans-serif;
-        gap:6px;
+        font:700 .68rem/1 'Josefin Sans',sans-serif;
+        gap:8px;
         letter-spacing:.08em;
         justify-self:start;
         margin-top:5px;
-        padding:8px 12px;
+        padding:10px 16px;
         text-decoration:none;
         text-transform:uppercase;
         grid-column:1/-1;
@@ -3222,23 +3222,24 @@
       }
       #volunteer-modal .vol-info-reader .vol-info-email-coach:hover,
       #volunteer-modal .vol-info-reader .vol-info-email-coach:focus-visible {
-        background:#0a716e;
-        border-color:#27b3a8;
+        background:linear-gradient(135deg,#07545d,#03404f);
+        border-color:#3bd0c3;
+        box-shadow:0 7px 16px rgba(0,0,0,.3),inset 0 1px rgba(255,255,255,.1);
         color:#fff;
       }
       #volunteer-modal .vol-info-reader .vol-info-email-coach .vol-modal-icon {
         color:#f5c542;
-        height:16px;
-        width:16px;
+        height:18px;
+        width:18px;
       }
       #volunteer-modal .vol-info-reader .vol-info-email-coach img {
         display:block;
         filter:drop-shadow(0 0 4px rgba(246,202,73,.2));
-        height:18px;
+        height:20px;
         object-fit:contain;
-        width:18px;
+        width:20px;
       }
-      @media(min-width:981px) and (max-height:650px){
+      @media(min-width:981px) and (max-height:720px){
         #volunteer-modal .vol-judge-modal {
           max-height:none;
           max-width:1660px;
@@ -3374,6 +3375,16 @@
         #volunteer-modal .vol-info-reader p {
           font-size:.7rem;
           line-height:1.4;
+        }
+        #volunteer-modal .vol-info-reader .vol-info-email-coach {
+          font-size:.74rem;
+          gap:9px;
+          padding:12px 17px;
+        }
+        #volunteer-modal .vol-info-reader .vol-info-email-coach img,
+        #volunteer-modal .vol-info-reader .vol-info-email-coach .vol-modal-icon {
+          height:22px;
+          width:22px;
         }
         #volunteer-modal .vol-info-tabs {
           gap:5px;
