@@ -2426,14 +2426,38 @@
         margin: 0;
       }
       .idx-closing-action {
-        grid-template-columns: 29px minmax(0, 1fr) auto;
+        grid-template-columns: 29px minmax(0, 1fr);
         gap: 9px;
         min-height: 52px;
         padding: 7px 11px;
+        position: relative;
       }
       .idx-closing-action svg {
         width: 24px;
         height: 24px;
+      }
+      .idx-closing-action span {
+        padding-right: 23px;
+      }
+      .idx-closing-action i {
+        position: absolute;
+        top: 9px;
+        right: 11px;
+        color: currentColor;
+        font-size: 1.18rem;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .idx-closing-action-primary {
+        color: #06142e;
+      }
+      .idx-closing-action-primary b {
+        color: #041027;
+        font-weight: 800;
+      }
+      .idx-closing-action-primary small {
+        color: #10284c;
+        opacity: 1;
       }
       .idx-closing-action-secondary {
         color: #f0b62c;
