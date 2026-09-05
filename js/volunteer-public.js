@@ -219,9 +219,9 @@
     const morningLength = Math.max(60, Math.floor((total / 2) / 30) * 30);
     const split = start + morningLength;
     return [
+      { id: "full", label: timeRange(fullStart, fullEnd), detail: "All-day availability", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
       { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
       { id: "afternoon", label: timeRange(minutesToTime(split), minutesToTime(end)), detail: "Afternoon availability", icon: "☀", start: minutesToTime(split), end: minutesToTime(end), duration: durationLabel(end - split) },
-      { id: "full", label: timeRange(fullStart, fullEnd), detail: "All-day availability", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
       { id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
     ];
   }
@@ -363,7 +363,7 @@
             </div>`;
         }).join("")
         : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
-      const availabilityIconNames = ["morning", "afternoon", "full-day", "other"];
+      const availabilityIconNames = ["full-day", "morning", "afternoon", "other"];
       const availabilityMarkup = choices.map((choice, index) => `
         <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
           <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>

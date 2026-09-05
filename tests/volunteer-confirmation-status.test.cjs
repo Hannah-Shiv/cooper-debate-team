@@ -206,6 +206,10 @@ test("signup information topic buttons prioritize readable labels over oversized
   assert.match(tournamentPage, /#volunteer-modal \.vol-info-trigger,\s*#volunteer-modal \.vol-info-trigger \.vol-modal-icon\s*\{[^}]*height:24px;[^}]*width:25px;/s);
 });
 
+test("signup actions keep visible breathing room below the information panel", () => {
+  assert.match(tournamentPage, /#volunteer-modal section\[data-vol-step="1"\] \.vol-modal-actions\s*\{[^}]*margin-top:18px;/s);
+});
+
 test("judge opportunity header uses teal instead of the results-panel navy", () => {
   assert.match(tournamentPage, /\.vol-panel-purpose--entry\s*\{[^}]*linear-gradient\(90deg,#0b5554 0%,#073d44 100%\)/s);
 });
@@ -285,6 +289,13 @@ test("all-day coverage is labeled consistently without visible full wording", ()
   assert.match(publicScript, /detail:\s*"All-day availability"/);
   assert.match(publicScript, /aria-label="Filter by all-day coverage">All day<\/button>/);
   assert.doesNotMatch(publicScript, /label:\s*"Full"|detail:\s*"Full tournament"|>Full<\/button>/);
+});
+
+test("all-day availability is the first and initially selected signup choice", () => {
+  assert.match(publicScript, /return \[\s*\{ id: "full"[^]*?\{ id: "morning"[^]*?\{ id: "afternoon"[^]*?\{ id: "custom"/);
+  assert.match(publicScript, /const availabilityIconNames = \["full-day", "morning", "afternoon", "other"\]/);
+  assert.match(publicScript, /vol-availability-option\$\{index === 0 \? " is-selected" : ""\}/);
+  assert.match(publicScript, /\$\{index === 0 \? "checked" : ""\}/);
 });
 
 test("volunteer roster reset clears search, sort, filter, and pagination", () => {
