@@ -148,7 +148,7 @@ test("browser and email PDF builders include every supplied letter asset and loc
   }
   assert.match(publicScript, /drawStar/);
   assert.match(emailService, /registerFont\("GreatVibes"/);
-  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(blue\)/);
+  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
 });
 
 test("confirmation PDFs use the tournament name and an ordinal long-form date", () => {
@@ -158,6 +158,21 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
   assert.match(publicScript, /`\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}`/);
   assert.match(emailService, /confirmationPdfFilename\(event\)/);
   assert.match(emailService, /Judge_Volunteer_For_\$\{tournamentName\}_On_\$\{month\}_\$\{day\}\$\{suffix\}_\$\{year\}\.pdf/);
+});
+
+test("confirmation PDF uses fitted icons, blue circles, yellow stars, and the approved headline", () => {
+  assert.match(publicScript, /rounded\(x \+ 10, y \+ 5, 14, 14, 3, gold\)/);
+  assert.match(publicScript, /barIconSymbol\(title\)/);
+  assert.match(publicScript, /ctx\.fillStyle = "#1857a6"; ctx\.beginPath\(\); ctx\.arc/);
+  assert.match(publicScript, /ctx\.fillStyle = gold; drawStar/);
+  assert.match(publicScript, /wrap\("Thank you for representing Cooper\."/);
+  assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
+
+  assert.match(emailService, /roundedRect\(x \+ 10, y \+ 5, 14, 14, 3\)\.fill\(gold\)/);
+  assert.match(emailService, /sectionBarIcon\(title\)/);
+  assert.match(emailService, /document\.circle\(x, y, 4\.5\)\.fill\(blue\)/);
+  assert.match(emailService, /document\.polygon\(\.\.\.points\)\.fill\(gold\)/);
+  assert.match(emailService, /\.text\("Thank you for representing"/);
 });
 
 test("volunteer roster coverage uses full-size and half-day visual states", () => {

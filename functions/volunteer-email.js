@@ -304,22 +304,34 @@ function itineraryAttachment(event, signup) {
       contact: asset("contact-support.png"),
       privacy: asset("privacy.png"),
     };
-    const sectionBar = (x, y, width, title, icon, accent = gold) => {
+    const sectionBarIcon = title => ({
+      "Your Signup Details": "+",
+      "Tournament Resolution": "=",
+      "What to Expect": "*",
+      "Arrival & Parking": "P",
+      "Meals & Refreshments": "C",
+      "Important Information": "!",
+      "Contact & Support": "@",
+      "Privacy Note": "S",
+    }[title] || "•");
+    const sectionBar = (x, y, width, title, _icon, accent = gold) => {
       document.rect(x, y, width, 24).fill(navy);
       document.rect(x, y, 5, 24).fill(accent);
-      document.image(icon, x + 9, y + 3, { fit: [18, 18], align: "center", valign: "center" });
+      document.roundedRect(x + 10, y + 5, 14, 14, 3).fill(gold);
+      document.fillColor(navy).font("Helvetica-Bold").fontSize(8)
+        .text(sectionBarIcon(title), x + 10, y + 7.5, { width: 14, height: 9, align: "center", lineBreak: false });
       document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10)
         .text(title.toUpperCase(), x + 34, y + 7, { width: width - 40, height: 12, lineBreak: false, characterSpacing: 0 });
     };
     const starBullet = (x, y) => {
-      document.circle(x, y, 4.5).fill(gold);
+      document.circle(x, y, 4.5).fill(blue);
       const points = [];
       for (let point = 0; point < 10; point += 1) {
         const angle = -Math.PI / 2 + point * Math.PI / 5;
         const radius = point % 2 === 0 ? 2.8 : 1.25;
         points.push([x + Math.cos(angle) * radius, y + Math.sin(angle) * radius]);
       }
-      document.polygon(...points).fill(blue);
+      document.polygon(...points).fill(gold);
     };
     const bullets = (items, x, y, width, fontSize = 7.2, gap = 15, height = 10) => {
       items.slice(0, 6).forEach((item, index) => {
@@ -343,8 +355,8 @@ function itineraryAttachment(event, signup) {
     document.fillColor("#a87900").font("Helvetica-Bold").fontSize(8)
       .text("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
     document.fillColor(navy).font("Times-Bold").fontSize(24)
-      .text("Thank You for Representing", 22, 114, { width: 368, height: 26, lineBreak: false });
-    document.text("the Cooper Debate Team!", 22, 139, { width: 368, height: 26, lineBreak: false });
+      .text("Thank you for representing", 22, 114, { width: 368, height: 26, lineBreak: false });
+    document.text("Cooper.", 22, 139, { width: 368, height: 26, lineBreak: false });
     document.fillColor(ink).font("Helvetica").fontSize(9)
       .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, { width: 365, height: 44, lineGap: 2 });
     document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, { width: 365, height: 24, lineGap: 2 });

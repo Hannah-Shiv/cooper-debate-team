@@ -907,7 +907,17 @@
       const renderedHeight = image.naturalHeight * ratio;
       ctx.drawImage(image, x + (width - renderedWidth) / 2, y + (height - renderedHeight) / 2, renderedWidth, renderedHeight);
     };
-    const bar = (x, y, w, title, icon, accent = gold) => {
+    const barIconSymbol = title => ({
+      "Your Signup Details": "+",
+      "Tournament Resolution": "=",
+      "What to Expect": "*",
+      "Arrival & Parking": "P",
+      "Meals & Refreshments": "C",
+      "Important Information": "!",
+      "Contact & Support": "@",
+      "Privacy Note": "S",
+    }[title] || "•");
+    const bar = (x, y, w, title, _icon, accent = gold) => {
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
       const titleSize = title.length > 20 ? 7.2 : title.length > 16 ? 8.2 : 10;
@@ -917,7 +927,15 @@
         fittedSize -= .25;
         ctx.font = `700 ${fittedSize}px Arial`;
       }
-      drawContainedImage(icon, x + 10, y + 3, 18, 18);
+      rounded(x + 10, y + 5, 14, 14, 3, gold);
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.letterSpacing = "0px";
+      ctx.fillStyle = navy;
+      ctx.font = "700 8px Arial";
+      ctx.fillText(barIconSymbol(title), x + 17, y + 12.25);
+      ctx.textAlign = "left";
+      ctx.textBaseline = "top";
       ctx.letterSpacing = "0px"; ctx.fillStyle = "#fff";
       ctx.fillText(title.toUpperCase(), x + 34, y + 7);
     };
@@ -939,8 +957,8 @@
       items.slice(0, 6).forEach(item => {
         const itemText = typeof item === "object" ? item.text : item;
         const itemFont = typeof item === "object" && item.font ? item.font : font;
-        ctx.fillStyle = gold; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4.5, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "#1857a6"; drawStar(x + 4, cursor + 5, 2.8, 1.25);
+        ctx.fillStyle = "#1857a6"; ctx.beginPath(); ctx.arc(x + 4, cursor + 5, 4.5, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = gold; drawStar(x + 4, cursor + 5, 2.8, 1.25);
         cursor = text(itemText, x + 14, cursor, width - 14, itemFont, ink, maxLines, leading) + 4;
       });
       return cursor;
@@ -966,7 +984,7 @@
     ctx.textAlign = "left";
     ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 22, 102);
     ctx.font = scaledFont("700 24px Georgia"); ctx.fillStyle = navy;
-    const headline = wrap(`Thank You for Representing the Cooper Debate Team!`, 368, "700 24px Georgia").slice(0, 2);
+    const headline = wrap("Thank you for representing Cooper.", 368, "700 24px Georgia").slice(0, 2);
     headline.forEach((row, i) => ctx.fillText(row, 22, 114 + i * 25));
     text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
     text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, 365, "9px Arial", ink, 2, 11);
