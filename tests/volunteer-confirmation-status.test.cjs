@@ -100,6 +100,14 @@ test("confirmation email uses navy bars and only approved one-pager logistics", 
   assert.doesNotMatch(emailService, /Judge at least 3 preliminary rounds/);
 });
 
+test("confirmation email uses the approved subject, greeting, and square C banner logo", () => {
+  assert.match(emailService, /subject: `Confirmed: \$\{eventName\} Volunteer Signup`/);
+  assert.match(emailService, /Hi \$\{name\}, thank you for volunteering for the Cooper Debate Team\./);
+  assert.doesNotMatch(emailService, /thank you for volunteering with Cooper Debate\. Your signup is confirmed\./);
+  assert.match(emailService, /https:\/\/cooperdebateteam\.com\/images\/index-footer-jaguar\.png/);
+  assert.match(emailService, /width=\\"46\\" height=\\"46\\"/);
+});
+
 test("the automatic email attaches the exact browser-generated one-pager", async () => {
   const supplied = Buffer.from("%PDF-1.4\nexact-browser-one-pager\n", "utf8").toString("base64");
   const attachment = await createVolunteerItineraryAttachment(

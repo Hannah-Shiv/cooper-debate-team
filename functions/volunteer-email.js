@@ -197,8 +197,11 @@ function emailShell(title, intro, contentHtml, footerText) {
   return [
     "<!doctype html><html><body style=\"margin:0;padding:0;background:#f5f7fa;font-family:Arial,sans-serif;color:#1d2733;\">",
     "<div style=\"max-width:620px;margin:0 auto;padding:28px 16px;\">",
-    "<div style=\"background:#062451;padding:20px 24px;color:#fff;border-radius:8px 8px 0 0;\">",
-    "<strong style=\"font-size:18px;\">Cooper Debate Team</strong>",
+    "<div style=\"background:#062451;padding:14px 20px;color:#fff;border-radius:8px 8px 0 0;\">",
+    "<table role=\"presentation\" style=\"border-collapse:collapse;width:100%;\"><tr>",
+    "<td style=\"vertical-align:middle;\"><strong style=\"font-size:18px;\">Cooper Debate Team</strong></td>",
+    "<td style=\"vertical-align:middle;text-align:right;width:54px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"46\" height=\"46\" alt=\"Cooper Debate Team\" style=\"display:block;margin-left:auto;width:46px;height:46px;object-fit:contain;\"></td>",
+    "</tr></table>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
     `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
     `<p style="line-height:1.55;margin:0 0 20px;">${escapeHtml(intro).replaceAll("\n", "<br>")}</p>`,
@@ -535,9 +538,7 @@ async function buildMessage(kind, event, signup, changes = []) {
   if (kind === "confirmation") {
     const itinerary = await itineraryAttachment(event, signup);
     const text = [
-      `Hi ${name},`,
-      "",
-      `Thank you for volunteering with Cooper Debate. Your signup for ${eventName} is confirmed.`,
+      `Hi ${name}, thank you for volunteering for the Cooper Debate Team.`,
       "",
       eventRowsText,
        `\n${approvedSectionsText}`,
@@ -546,12 +547,12 @@ async function buildMessage(kind, event, signup, changes = []) {
     ].filter(Boolean).join("\n");
     const html = emailShell(
       "Your volunteer signup is confirmed",
-      `Hi ${name}, thank you for volunteering with Cooper Debate. Your signup is confirmed.`,
+      `Hi ${name}, thank you for volunteering for the Cooper Debate Team.`,
       `${eventRowsHtml}${approvedSectionsHtml}` +
       `${pageHtml}`,
       "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above."
     );
-    return { subject: `Confirmed: ${eventName} volunteer signup`, text, html, attachments: [calendar, itinerary].filter(Boolean) };
+    return { subject: `Confirmed: ${eventName} Volunteer Signup`, text, html, attachments: [calendar, itinerary].filter(Boolean) };
   }
 
   if (kind === "three-day-reminder") {
