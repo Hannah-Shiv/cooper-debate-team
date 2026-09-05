@@ -628,9 +628,12 @@
 
   function setStatus(message, isError) {
     const status = $("vol-form-status");
-    if (!status) return;
-    status.textContent = message || "";
-    status.className = `vol-form-status${message ? (isError ? " is-error" : " is-success") : ""}`;
+    const reviewStatus = $("vol-review-submit-status");
+    [status, reviewStatus].forEach(element => {
+      if (!element) return;
+      element.textContent = message || "";
+      element.className = `vol-form-status${message ? (isError ? " is-error" : " is-success") : ""}`;
+    });
   }
 
   function isTurnstileConfigured() {

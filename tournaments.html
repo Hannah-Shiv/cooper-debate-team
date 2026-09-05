@@ -4555,6 +4555,24 @@
       margin-top:0 !important;
       min-height:0;
     }
+    #volunteer-modal section[data-vol-step="2"] #vol-review-submit-status {
+      background:rgba(3,35,43,.72);
+      border:1px solid transparent;
+      border-radius:6px;
+      margin:8px 0 0;
+      min-height:0;
+      padding:0;
+    }
+    #volunteer-modal section[data-vol-step="2"] #vol-review-submit-status.is-error,
+    #volunteer-modal section[data-vol-step="2"] #vol-review-submit-status.is-success {
+      padding:9px 11px;
+    }
+    #volunteer-modal section[data-vol-step="2"] #vol-review-submit-status.is-error {
+      border-color:rgba(255,151,151,.55);
+    }
+    #volunteer-modal section[data-vol-step="2"] #vol-review-submit-status.is-success {
+      border-color:rgba(158,229,177,.42);
+    }
     #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
       align-items:stretch;
       background:rgba(1,31,38,.68);
@@ -5831,6 +5849,7 @@
           <div id="vol-review-email-check" class="vol-review-email-check" role="note"></div>
           <div class="vol-secure-note">Your email, phone, and notes are only shared with the Cooper Debate coaching staff.</div>
           <div id="vol-turnstile"></div>
+          <p id="vol-review-submit-status" class="vol-form-status" role="status"></p>
           <div class="vol-modal-actions vol-review-actions" aria-label="Review actions">
             <button class="vol-cancel vol-action-back" type="button" data-vol-back="1">Back</button>
             <button id="vol-submit" class="vol-submit vol-action-confirm" type="submit">Confirm judge signup</button>
@@ -6354,7 +6373,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=83"></script>
+  <script src="js/volunteer-public.js?v=84"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

@@ -859,6 +859,7 @@ exports.publicVolunteerSignup = onRequest(
       let selectedRole;
       let selectedEvent;
       let savedSignupData;
+      let resolvedSignupId = signupId;
       await db.runTransaction(async transaction => {
         const [eventSnap, signupSnap, duplicateSnap] = await Promise.all([
           transaction.get(eventRef),
@@ -891,19 +892,6 @@ exports.publicVolunteerSignup = onRequest(
         selectedRole = roles[roleIndex];
         if (signupSnap.exists) {
           savedSignupData = signupSnap.data();
-          const isExactRetry = [
-            ["parentFirstName", parentFirstName],
-            ["parentLastName", parentLastName],
-            ["email", email],
-            ["phone", phone],
-            ["studentName", studentName],
-            ["notes", notes],
-            ["availabilityStart", availabilityStart],
-            ["availabilityEnd", availabilityEnd],
-          ].every(([field, value]) => cleanText(savedSignupData[field], 600) === value);
-          if (!isExactRetry) {
-            throw new Error("You are already signed up for this tournament.");
-          }
           transaction.set(signupRef, {
             emailRetryTokenHash,
             updatedAt: FieldValue.serverTimestamp(),
@@ -911,7 +899,23 @@ exports.publicVolunteerSignup = onRequest(
           return;
         }
         if (duplicateSnap.exists) {
-          throw new Error("You are already signed up for this tournament.");
+          const existingSignupId = cleanText(duplicateSnap.data().signupId, 64);
+          if (!/^[a-f0-9]{64}$/.test(existingSignupId)) {
+            throw new Error("Your existing signup could not be reopened. Please contact the coach for help.");
+          }
+          const existingSignupRef = db.collection("volunteer_signups").doc(existingSignupId);
+          const existingSignupSnap = await transaction.get(existingSignupRef);
+          if (!existingSignupSnap.exists) {
+            throw new Error("Your existing signup could not be reopened. Please contact the coach for help.");
+          }
+          resolvedSignupId = existingSignupId;
+          savedSignupData = existingSignupSnap.data();
+          selectedRole = roles.find(role => role.id === savedSignupData.roleId) || selectedRole;
+          transaction.set(existingSignupRef, {
+            emailRetryTokenHash,
+            updatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+          return;
         }
         if (selectedRole.signedUp >= selectedRole.capacity) {
           throw new Error("That volunteer role was just filled. Please choose another opening.");
@@ -947,10 +951,10 @@ exports.publicVolunteerSignup = onRequest(
       });
 
       const savedSignup = savedSignupData ? {
-        id: signupId,
+        id: resolvedSignupId,
         ...savedSignupData,
       } : {
-        id: signupId,
+        id: resolvedSignupId,
         eventId,
         roleId,
         roleLabel: selectedRole.label,
@@ -973,24 +977,26 @@ exports.publicVolunteerSignup = onRequest(
         );
         emailStatus = emailResult.accepted ? "accepted" : "delayed";
         console.info("Volunteer signup saved and confirmation email processed.", {
-          signupId,
+          signupId: resolvedSignupId,
           emailStatus,
           pending: emailResult.pending === true,
         });
       } catch (emailError) {
         emailStatus = "failed";
         console.error("Volunteer signup saved but confirmation email failed.", {
-          signupId,
+          signupId: resolvedSignupId,
           error: cleanText(emailError && emailError.message, 400),
         });
       }
       res.status(201).json({
         ok: true,
         signupSaved: true,
-        signupId,
+        signupId: resolvedSignupId,
         retryToken: emailRetryToken,
         emailStatus,
-        message: "You’re signed up. Thank you for supporting Cooper Debate!",
+        message: savedSignupData
+          ? "You’re already signed up. Your confirmation has been reopened."
+          : "You’re signed up. Thank you for supporting Cooper Debate!",
       });
     } catch (error) {
       const message = error && error.message

@@ -47,12 +47,19 @@ test("email retry uses the saved signup reference and cannot submit signup field
   assert.match(functionsIndex, /Please wait 30 seconds before retrying/);
 });
 
-test("an exact resubmission recovers the saved signup and rotates retry access", () => {
+test("a repeat signup reopens the saved confirmation and rotates retry access", () => {
   assert.match(functionsIndex, /if \(signupSnap\.exists\)/);
-  assert.match(functionsIndex, /const isExactRetry/);
   assert.match(functionsIndex, /savedSignupData = signupSnap\.data\(\)/);
+  assert.match(functionsIndex, /resolvedSignupId = existingSignupId/);
+  assert.match(functionsIndex, /Your confirmation has been reopened/);
   assert.match(functionsIndex, /retryToken: emailRetryToken/);
   assert.match(publicScript, /window\.turnstile\.reset\(turnstileWidgetId\)/);
+});
+
+test("signup failures are shown beside the visible confirm action", () => {
+  assert.match(tournamentPage, /id="vol-review-submit-status"/);
+  assert.match(publicScript, /\[status, reviewStatus\]\.forEach/);
+  assert.match(tournamentPage, /vol-review-submit-status\.is-error/);
 });
 
 test("invalid and throttled retry capabilities return honest errors", () => {
