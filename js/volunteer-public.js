@@ -730,31 +730,32 @@
     const lastName = $("vol-parent-last-name").value.trim();
     const parentName = `${firstName} ${lastName}`.trim();
     const studentName = $("vol-student-name").value.trim();
+    const email = $("vol-email").value.trim();
+    const phone = $("vol-phone").value.trim();
+    const notes = $("vol-notes").value.trim() || "No notes provided";
     const availability = timeRange($("vol-availability-start").value, $("vol-availability-end").value);
     root.innerHTML = `
       <div class="vol-review-intro">
         ${modalIcon("check")}
         <div><span>Almost finished</span><h3>Review your judge signup</h3><p>Confirm the details below, then complete the verification to reserve your availability.</p></div>
       </div>
-      <section class="vol-review-card">
-        <div class="vol-review-primary">
-          ${modalIcon("trophy")}
-          <div><span>You’re volunteering for</span><strong>${escapeHtml(selectedEvent.title)}</strong><small>${escapeHtml(roleDisplayLabel(selectedRole))}</small></div>
-        </div>
-        <div class="vol-review-details">
-          <div class="vol-review-detail">${modalIcon("clock")}<div><span>Judging availability</span><strong>${escapeHtml(availability)}</strong></div></div>
-          <div class="vol-review-detail">${modalIcon("users")}<div><span>Volunteer</span><strong>${escapeHtml(parentName)}</strong></div></div>
-          <div class="vol-review-detail">${modalIcon("debate")}<div><span>Debater</span><strong>${escapeHtml(studentName || "Not provided")}</strong></div></div>
-        </div>
-        <div class="vol-review-privacy">${modalIcon("info")}<div><strong>What will be shown publicly</strong><p>${escapeHtml(parentName)}, ${studentName ? `${studentName}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)}. Your email, phone, and notes remain coach-only.</p></div></div>
-        <div class="vol-review-contact"><span>Private contact for coaches</span><strong>${escapeHtml($("vol-email").value.trim())} <i>·</i> ${escapeHtml($("vol-phone").value.trim())}</strong></div>
-      </section>`;
-    const email = $("vol-email").value.trim();
-    root.insertAdjacentHTML("beforeend", `
+      <section class="vol-review-card" aria-label="Judge signup details">
+        <div class="vol-review-table-heading">${modalIcon("trophy")}<div><span>Signup verification</span><strong>${escapeHtml(selectedEvent.title)}</strong></div></div>
+        <dl class="vol-review-table">
+          <div class="vol-review-row">${modalIcon("debate")}<dt>Volunteer role</dt><dd>${escapeHtml(roleDisplayLabel(selectedRole))}</dd></div>
+          <div class="vol-review-row">${modalIcon("clock")}<dt>Judging availability</dt><dd>${escapeHtml(availability)}</dd></div>
+          <div class="vol-review-row">${modalIcon("users")}<dt>Volunteer name</dt><dd>${escapeHtml(parentName)}</dd></div>
+          <div class="vol-review-row">${modalIcon("debate")}<dt>Debater</dt><dd>${escapeHtml(studentName || "Not provided")}</dd></div>
+          <div class="vol-review-row is-private">${modalIcon("document")}<dt>Email <small>Coach-only</small></dt><dd>${escapeHtml(email)}</dd></div>
+          <div class="vol-review-row is-private">${modalIcon("info")}<dt>Phone <small>Coach-only</small></dt><dd>${escapeHtml(phone)}</dd></div>
+          <div class="vol-review-row is-private is-notes">${modalIcon("document")}<dt>Notes <small>Coach-only</small></dt><dd>${escapeHtml(notes)}</dd></div>
+        </dl>
+        <div class="vol-review-privacy">${modalIcon("info")}<div><strong>Public roster preview</strong><p>${escapeHtml(parentName)}, ${studentName ? `${escapeHtml(studentName)}, ` : ""}${escapeHtml(roleDisplayLabel(selectedRole))}, and ${escapeHtml(availability)} will be public. Contact details and notes stay private.</p></div></div>
+      </section>
       <aside class="vol-review-email-check" role="note">
         ${modalIcon("document")}
         <div><strong>Double-check your email address</strong><p>Your confirmation and calendar invitation will be sent to <b>${escapeHtml(email)}</b>. Please make sure it is correct before you confirm.</p></div>
-      </aside>`);
+      </aside>`;
   }
 
   // The review sheet is intentionally drawn as one fixed US Letter image. This

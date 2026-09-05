@@ -4420,6 +4420,118 @@
       background:#f0d87d;
       border-color:#fff0b0;
     }
+    /* Clean tabular review sheet */
+    #volunteer-modal section[data-vol-step="2"] #vol-review {
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 320px;
+      gap:14px 18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-intro {
+      grid-column:1/-1;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-intro .vol-modal-icon,
+    #volunteer-modal section[data-vol-step="2"] .vol-review-card .vol-modal-icon,
+    #volunteer-modal section[data-vol-step="2"] .vol-review-email-check .vol-modal-icon {
+      color:#f0cf62;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-card {
+      background:#073943;
+      border:1px solid rgba(240,207,98,.42);
+      border-radius:9px;
+      box-shadow:none;
+      overflow:hidden;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-table-heading {
+      align-items:center;
+      background:#0a4650;
+      border-bottom:1px solid rgba(240,207,98,.42);
+      display:flex;
+      gap:13px;
+      padding:15px 18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-table-heading .vol-modal-icon {
+      flex:0 0 auto;
+      height:32px;
+      width:32px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-table-heading span {
+      color:#f0cf62;
+      display:block;
+      font:700 .61rem 'Josefin Sans',sans-serif;
+      letter-spacing:.11em;
+      margin-bottom:4px;
+      text-transform:uppercase;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-table-heading strong {
+      color:#fff;
+      display:block;
+      font:700 1.2rem 'Cormorant Garamond',serif;
+      line-height:1.15;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-table {
+      margin:0;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row {
+      align-items:center;
+      border-bottom:1px solid rgba(181,213,207,.14);
+      display:grid;
+      grid-template-columns:24px minmax(145px,.7fr) minmax(0,1.3fr);
+      min-height:45px;
+      padding:8px 18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row:last-child {
+      border-bottom:0;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row:nth-child(even) {
+      background:rgba(255,255,255,.025);
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row > .vol-modal-icon {
+      height:18px;
+      width:18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row dt {
+      color:#a9c9c2;
+      font:700 .62rem 'Josefin Sans',sans-serif;
+      letter-spacing:.06em;
+      margin:0;
+      text-transform:uppercase;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row dt small {
+      color:#f0cf62;
+      display:inline-block;
+      font-size:.48rem;
+      margin-left:6px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row dd {
+      color:#f7fbf8;
+      font-size:.82rem;
+      font-weight:600;
+      line-height:1.35;
+      margin:0;
+      overflow-wrap:anywhere;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-row.is-notes {
+      align-items:start;
+      min-height:58px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-privacy {
+      background:#0a4650;
+      border-top:1px solid rgba(240,207,98,.35);
+      padding:12px 18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-privacy strong {
+      color:#f0cf62;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-email-check {
+      background:#083c44;
+      border:1px solid rgba(240,207,98,.65);
+      box-shadow:inset 4px 0 #f0cf62;
+      margin:0;
+      padding:18px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-email-check strong {
+      color:#f0cf62;
+    }
     @media(max-width:980px) and (min-width:601px) {
       #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
         grid-template-columns:repeat(4,minmax(0,1fr));
@@ -5766,7 +5878,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=65"></script>
+  <script src="js/volunteer-public.js?v=66"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
