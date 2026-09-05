@@ -461,14 +461,7 @@
         const options = input.closest(".vol-availability-options");
         options.querySelectorAll(".vol-availability-option").forEach(option => {
           option.classList.toggle("is-selected", option.contains(input));
-          option.classList.remove("is-flipping");
         });
-        const selectedOption = input.closest(".vol-availability-option");
-        void selectedOption.offsetWidth;
-        selectedOption.classList.add("is-flipping");
-        selectedOption.addEventListener("animationend", () => {
-          selectedOption.classList.remove("is-flipping");
-        }, { once:true });
       });
     });
     root.querySelectorAll(".vol-roster-controls").forEach(controls => {
