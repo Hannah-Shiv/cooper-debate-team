@@ -5441,29 +5441,75 @@
         letter-spacing:.05em;
         line-height:1.2;
       }
-      #volunteer-modal .vol-debater-field label,
+      #volunteer-modal .vol-debater-field label {
+        align-self:flex-start!important;
+        grid-column:auto;
+        grid-row:auto;
+        justify-content:flex-start;
+        width:100%;
+      }
+      #volunteer-modal .vol-compact-entry-field input {
+        flex:0 0 34px;
+        height:34px;
+        min-height:34px;
+      }
       #volunteer-modal .vol-debater-field input {
         grid-column:auto;
         grid-row:auto;
       }
-      #volunteer-modal .vol-debater-field .vol-field-guidance {
-        bottom:8px;
-        color:#89a9bf;
-        display:block;
-        font-size:.43rem;
-        left:10px;
-        line-height:1.2;
-        margin:0;
-        opacity:1;
+      #volunteer-modal .vol-debater-help {
+        align-items:center;
+        background:rgba(246,202,73,.14);
+        border:1px solid rgba(246,202,73,.72);
+        border-radius:50%;
+        color:#f6ca49;
+        cursor:help;
+        display:inline-flex;
+        flex:0 0 17px;
+        font:700 .58rem/1 'Josefin Sans',sans-serif;
+        height:17px;
+        justify-content:center;
+        margin-left:auto;
+        position:relative;
+        text-transform:none;
+        width:17px;
+        z-index:20;
+      }
+      #volunteer-modal .vol-debater-help:hover,
+      #volunteer-modal .vol-debater-help:focus-visible {
+        background:#f6ca49;
+        color:#082d3d;
+        outline:2px solid rgba(246,202,73,.28);
+        outline-offset:2px;
+      }
+      #volunteer-modal .vol-debater-help-tooltip {
+        background:#075457;
+        border:1px solid rgba(246,202,73,.78);
+        border-radius:6px;
+        box-shadow:0 8px 22px rgba(0,0,0,.38);
+        color:#edf5f6;
+        font:.62rem/1.45 'Josefin Sans',sans-serif;
+        letter-spacing:.01em;
+        opacity:0;
+        padding:8px 9px;
         pointer-events:none;
         position:absolute;
-        right:8px;
-        transition:opacity .15s ease;
+        right:0;
+        text-align:left;
+        text-transform:none;
+        top:calc(100% + 7px);
+        transform:translateY(-3px);
+        transition:opacity .15s ease,transform .15s ease,visibility .15s ease;
+        visibility:hidden;
+        white-space:normal;
+        width:220px;
+        z-index:40;
       }
-      #volunteer-modal .vol-debater-field:focus-within .vol-field-guidance,
-      #volunteer-modal .vol-debater-field:has(input:not(:placeholder-shown)) .vol-field-guidance {
-        opacity:0!important;
-        transition:none;
+      #volunteer-modal .vol-debater-help:hover .vol-debater-help-tooltip,
+      #volunteer-modal .vol-debater-help:focus-visible .vol-debater-help-tooltip {
+        opacity:1;
+        transform:translateY(0);
+        visibility:visible;
       }
       #volunteer-modal .vol-condensed-main > .vol-form-grid > .vol-email-field {
         grid-column:1/-1!important;
@@ -6305,15 +6351,15 @@
               </div>
             </fieldset>
             <div class="vol-form-grid">
-              <div class="vol-form-field">
+              <div class="vol-form-field vol-compact-entry-field">
                 <label for="vol-parent-first-name"><img class="vol-field-art" src="assets/icons/volunteer-field-id.png" alt="">Volunteer first name</label>
                 <input id="vol-parent-first-name" type="text" autocomplete="given-name" maxlength="60" required>
               </div>
-              <div class="vol-form-field">
+              <div class="vol-form-field vol-compact-entry-field">
                 <label for="vol-parent-last-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Volunteer last name</label>
                 <input id="vol-parent-last-name" type="text" autocomplete="family-name" maxlength="60" required>
               </div>
-              <div class="vol-form-field vol-phone-field">
+              <div class="vol-form-field vol-phone-field vol-compact-entry-field">
                 <label for="vol-phone"><img class="vol-field-art" src="assets/icons/volunteer-field-phone.png" alt="">Volunteer's Phone</label>
                 <input id="vol-phone" type="tel" autocomplete="tel-national" inputmode="numeric" maxlength="14" pattern="\(\d{3}\) \d{3}-\d{4}" placeholder="(###) ###-####" required>
               </div>
@@ -6321,10 +6367,9 @@
                 <label for="vol-email"><img class="vol-field-art" src="assets/icons/volunteer-field-email.png" alt="">Volunteer's Email</label>
                 <input id="vol-email" type="email" autocomplete="email" maxlength="160" required>
               </div>
-              <div class="vol-form-field vol-debater-field">
-                <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Your Debater <span style="opacity:.65;">(optional)</span></label>
-                <small class="vol-field-guidance">Name of the student debater connected to your volunteer signup.</small>
-                <input id="vol-student-name" type="text" maxlength="120" placeholder=" ">
+              <div class="vol-form-field vol-debater-field vol-compact-entry-field">
+                <label for="vol-student-name"><img class="vol-field-art" src="assets/icons/volunteer-field-person.png" alt="">Your Debater <span style="opacity:.65;">(optional)</span><span class="vol-debater-help" tabindex="0" role="button" aria-label="About the optional debater field">i<span id="vol-debater-help-text" class="vol-debater-help-tooltip" role="tooltip">Name of the student debater connected to your volunteer signup.</span></span></label>
+                <input id="vol-student-name" type="text" maxlength="120" aria-describedby="vol-debater-help-text">
               </div>
             </div>
             <div class="vol-form-field full vol-notes-wide">
@@ -6878,7 +6923,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=89"></script>
+  <script src="js/volunteer-public.js?v=90"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

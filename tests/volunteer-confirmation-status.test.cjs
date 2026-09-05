@@ -338,10 +338,14 @@ test("long volunteer emails shrink to remain visible in their input", () => {
   assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-email-field\s*\{[^}]*grid-column:1\/-1!important;/s);
   assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-phone-field\s*\{[^}]*grid-column:1!important;[^}]*grid-row:2!important;[^]*?\.vol-debater-field\s*\{[^}]*display:flex;[^}]*grid-column:2!important;[^}]*grid-row:2!important;/s);
   assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-form-grid\s*\{[^}]*grid-template-rows:repeat\(3,minmax\(0,1fr\)\);[^}]*min-height:0;/s);
-  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-debater-field \.vol-field-guidance\s*\{[^}]*bottom:8px;[^}]*display:block;[^}]*font-size:\.43rem;[^}]*position:absolute;/s);
-  assert.match(tournamentPage, /\.vol-debater-field:focus-within \.vol-field-guidance,[^]*?\.vol-debater-field:has\(input:not\(:placeholder-shown\)\) \.vol-field-guidance\s*\{[^}]*opacity:0!important;/s);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-debater-field label\s*\{[^}]*align-self:flex-start!important;[^}]*justify-content:flex-start;[^}]*width:100%;/s);
+  assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-compact-entry-field input\s*\{[^}]*height:34px;[^}]*min-height:34px;/s);
+  assert.match(tournamentPage, /\.vol-debater-help\s*\{[^}]*border:1px solid rgba\(246,202,73,.72\);[^}]*color:#f6ca49;[^}]*cursor:help;/s);
+  assert.match(tournamentPage, /\.vol-debater-help-tooltip\s*\{[^}]*background:#075457;[^}]*font:\.62rem\/1\.45[^}]*width:220px;/s);
+  assert.match(tournamentPage, /\.vol-debater-help:hover \.vol-debater-help-tooltip,[^]*?\.vol-debater-help:focus-visible \.vol-debater-help-tooltip\s*\{[^}]*opacity:1;[^}]*visibility:visible;/s);
+  assert.match(tournamentPage, /class="vol-debater-help" tabindex="0" role="button" aria-label="About the optional debater field">i/);
+  assert.match(tournamentPage, /id="vol-student-name"[^>]*aria-describedby="vol-debater-help-text"/);
   assert.match(tournamentPage, /@media \(min-width:981px\)[^]*?\.vol-availability-card--compact\s*\{[^}]*align-self:stretch;[^}]*box-sizing:border-box;[^}]*height:100%;/s);
-  assert.match(tournamentPage, /id="vol-student-name"[^>]*placeholder=" "/);
   assert.match(tournamentPage, /@media \(min-width:701px\)[^]*?\.vol-phone-field label,[^]*?\.vol-debater-field label\s*\{[^}]*font-size:\.56rem;[^}]*letter-spacing:\.05em;/s);
   assert.match(tournamentPage, /<div class="vol-form-field vol-email-field">\s*<label for="vol-email">/);
 });
