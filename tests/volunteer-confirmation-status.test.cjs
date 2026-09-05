@@ -175,6 +175,15 @@ test("confirmation PDF uses fitted icons, blue circles, yellow stars, and the ap
   assert.match(emailService, /\.text\("Thank you for representing"/);
 });
 
+test("the four lower information cards use distinct muted fills", () => {
+  for (const color of ["#eef5fb", "#fff8df", "#f3effa", "#fff2e5"]) {
+    assert.match(publicScript, new RegExp(color));
+    assert.match(emailService, new RegExp(color));
+  }
+  assert.match(publicScript, /boxFills\[index\], boxLines\[index\]/);
+  assert.match(emailService, /fillAndStroke\(fill, border\)/);
+});
+
 test("volunteer roster coverage uses full-size and half-day visual states", () => {
   assert.match(tournamentPage, /\.vol-coverage-tag\s*\{[^}]*height:49px;[^}]*width:100%;/s);
   assert.match(tournamentPage, /\.vol-coverage-tag\.is-morning\s*\{[^}]*linear-gradient\(to bottom[^}]*50%/s);

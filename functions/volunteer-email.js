@@ -406,15 +406,15 @@ function itineraryAttachment(event, signup) {
     const boxGap = 8;
     const boxW = (pageWidth - 44 - boxGap * 3) / 4;
     const boxData = [
-      ["Arrival & Parking", icons.arrival, APPROVED_ARRIVAL],
-      ["Meals & Refreshments", icons.meals, APPROVED_MEAL_ITEMS],
-      ["Important Information", icons.information, APPROVED_IMPORTANT_INFORMATION],
-      ["Contact & Support", icons.contact, APPROVED_CONTACT],
+      ["Arrival & Parking", icons.arrival, APPROVED_ARRIVAL, "#eef5fb", "#c9deed"],
+      ["Meals & Refreshments", icons.meals, APPROVED_MEAL_ITEMS, "#fff8df", "#eadca7"],
+      ["Important Information", icons.information, APPROVED_IMPORTANT_INFORMATION, "#f3effa", "#d9cdec"],
+      ["Contact & Support", icons.contact, APPROVED_CONTACT, "#fff2e5", "#ebcfb1"],
     ];
-    boxData.forEach(([title, icon, items], index) => {
+    boxData.forEach(([title, icon, items, fill, border], index) => {
       const x = 22 + index * (boxW + boxGap);
       sectionBar(x, boxY, boxW, title, icon);
-      document.roundedRect(x, boxY + 24, boxW, 151, 5).fillAndStroke("#f5f9fc", line);
+      document.roundedRect(x, boxY + 24, boxW, 151, 5).fillAndStroke(fill, border);
       bullets(items, x + 8, boxY + 35, boxW - 16, 6.5, 29, 25);
     });
 

@@ -1024,6 +1024,8 @@
     const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
     const boxTitles = ["Arrival & Parking", "Meals & Refreshments", "Important Information", "Contact & Support"];
     const boxIcons = [icons.arrival, icons.meals, icons.information, icons.contact];
+    const boxFills = ["#eef5fb", "#fff8df", "#f3effa", "#fff2e5"];
+    const boxLines = ["#c9deed", "#eadca7", "#d9cdec", "#ebcfb1"];
     const boxItems = [
       ["Please arrive early, 8:00 AM for check-in.", "Enter through the main entrance from the parking lot.", "Check in at the Judge Registration table in the lobby.", "Parking is available in the main school parking lot.", "Look for signage and student volunteers if you need assistance."],
       APPROVED_MEAL_ITEMS,
@@ -1033,7 +1035,7 @@
     boxTitles.forEach((title, index) => {
       const x = 22 + index * (boxW + boxGap);
       bar(x, boxY, boxW, title, boxIcons[index], gold);
-      rounded(x, boxY + 24, boxW, 151, 5, "#f5f9fc", line);
+      rounded(x, boxY + 24, boxW, 151, 5, boxFills[index], boxLines[index]);
       const maxItemLines = index >= 2 ? 4 : 3;
       bullets(boxItems[index], x + 8, boxY + 35, boxW - 16, sectionBodyFont("6.5px Arial"), 14, maxItemLines, 8.65);
     });
