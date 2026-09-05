@@ -5111,30 +5111,35 @@
     }
     /* Final review palette applies at every width, outside portrait-only rules. */
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back {
-      background:linear-gradient(145deg,#176b78,#105267);
-      border:1px solid rgba(134,220,220,.68);
-      box-shadow:0 4px 12px rgba(1,18,35,.22),inset 0 1px rgba(255,255,255,.08);
+      background:linear-gradient(145deg,#0a4d58,#073845);
+      border:1px solid rgba(113,189,190,.52);
+      box-shadow:0 4px 12px rgba(1,18,35,.26),inset 0 1px rgba(255,255,255,.055);
       color:#f2fffd;
       min-height:39px;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back:hover,
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-back:focus-visible {
-      background:linear-gradient(145deg,#1d7d87,#176579);
-      border-color:#b8f0e8;
+      background:linear-gradient(145deg,#10606a,#0a4654);
+      border-color:#91cfca;
       color:#fff;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
-      background:linear-gradient(135deg,#f3ce58,#dfad27);
-      border:1px solid #f7db82;
+      background:#e8a828;
+      border:1px solid #f3c65a;
       border-radius:5px;
       box-sizing:border-box;
-      box-shadow:0 4px 12px rgba(218,163,28,.18);
-      color:#102f39;
+      box-shadow:0 8px 20px rgba(232,168,40,.2);
+      color:#132f3f;
       font-size:.66rem;
-      height:39px;
+      height:39px !important;
       letter-spacing:.075em;
       min-height:39px !important;
       padding:6px 12px !important;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm:hover,
+    #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm:focus-visible {
+      background:#f2b737;
+      border-color:#f7d77c;
     }
     #volunteer-modal section[data-vol-step="2"] .vol-review-card {
       background:#052f3b;
@@ -5911,7 +5916,7 @@
           <div id="vol-turnstile"></div>
           <p id="vol-review-submit-status" class="vol-form-status" role="status"></p>
           <div class="vol-modal-actions vol-review-actions" aria-label="Review actions">
-            <button class="vol-cancel vol-action-back" type="button" data-vol-back="1">Back</button>
+            <button class="vol-cancel vol-action-back" type="button" data-vol-back="1">Back to edit</button>
             <button id="vol-submit" class="vol-submit vol-action-confirm" type="submit">Confirm judge signup</button>
           </div>
         </aside>
