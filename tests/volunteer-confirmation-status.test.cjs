@@ -108,6 +108,13 @@ test("the public judge signup logistics match the one-pager and ignore editable 
   assert.match(publicScript, /title: "Coach contact", label: APPROVED_CONTACT\.join\(" "\), email: "pgkonde@fcps\.edu"/);
 });
 
+test("the public WASDL schedule modal uses a published PDF path", () => {
+  const publicSchedulePath = "docs/wasdl-tournament-schedule-2026-2027.pdf";
+  assert.equal((tournamentPage.match(new RegExp(publicSchedulePath.replaceAll(".", "\\."), "g")) || []).length, 2);
+  assert.doesNotMatch(tournamentPage, /attached_assets\/WASDL_Tournament_Schedule/);
+  assert.ok(fs.existsSync(publicSchedulePath));
+});
+
 test("confirmation email uses navy bars and only approved one-pager logistics", () => {
   assert.equal((emailService.match(/background:#062451/g) || []).length, 2);
   assert.doesNotMatch(emailService, /background:#0e3b2e/);

@@ -1567,22 +1567,25 @@
     }
     #public-calendar .fc-toolbar-chunk:last-child .fc-button-group {
       display:grid;
-      grid-template-columns:1fr;
+      grid-template-columns:repeat(2,minmax(0,1fr));
       width:100%;
-      padding:3px;
-      border:1px solid rgba(242,209,107,.66);
-      border-radius:999px;
-      background:#071b36;
-      box-shadow:inset 0 1px 4px rgba(0,0,0,.46),0 3px 10px rgba(0,0,0,.24);
+      padding:4px;
+      gap:3px;
+      border:1px solid rgba(147,195,236,.48);
+      border-radius:11px;
+      background:rgba(7,27,54,.88);
+      box-shadow:inset 0 1px 3px rgba(0,0,0,.36),0 3px 10px rgba(0,0,0,.2);
     }
     #public-calendar .fc-toolbar-chunk:last-child .fc-button {
-      min-height:36px;
-      padding:7px 12px!important;
+      min-width:0;
+      min-height:32px;
+      padding:6px 10px!important;
       border:0!important;
-      border-radius:999px!important;
+      border-radius:7px!important;
       background:transparent!important;
       box-shadow:none!important;
       color:#dcecff!important;
+      white-space:nowrap;
     }
     #public-calendar .fc-toolbar-chunk:last-child .fc-button:hover,
     #public-calendar .fc-toolbar-chunk:last-child .fc-button:focus-visible {
@@ -1591,7 +1594,7 @@
     }
     #public-calendar .fc-toolbar-chunk:last-child .fc-button-active {
       background:linear-gradient(180deg,#F7DF8C 0%,#D4A017 100%)!important;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.48),0 2px 7px rgba(0,0,0,.3)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 5px rgba(0,0,0,.26)!important;
       color:#102846!important;
     }
     #public-calendar .fc-toolbar .fc-toolbar-chunk:last-child .fc-button-group .fc-button.fc-button-active,
@@ -1599,7 +1602,7 @@
     #public-calendar .fc-toolbar .fc-toolbar-chunk:last-child .fc-button-group .fc-button.fc-button-active:focus,
     #public-calendar .fc-toolbar .fc-toolbar-chunk:last-child .fc-button-group .fc-button.fc-button-active:focus-visible {
       background:linear-gradient(180deg,#F7DF8C 0%,#D4A017 100%)!important;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.48),0 2px 7px rgba(0,0,0,.3)!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 2px 5px rgba(0,0,0,.26)!important;
       color:#102846!important;
       opacity:1!important;
     }
@@ -6115,7 +6118,7 @@
       <h2 class="schedule-pdf-modal-title" id="schedule-pdf-title">2026–2027 WASDL Tournament Schedule</h2>
     </div>
     <div class="schedule-pdf-modal-actions">
-      <a class="schedule-pdf-new-tab" href="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788215435064.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
+      <a class="schedule-pdf-new-tab" href="docs/wasdl-tournament-schedule-2026-2027.pdf" target="_blank" rel="noopener">Open PDF in new tab</a>
       <button class="schedule-pdf-close" id="close-schedule-pdf" type="button" aria-label="Close schedule PDF">×</button>
     </div>
   </div>
@@ -6127,7 +6130,7 @@
     class="schedule-pdf-frame"
     id="schedule-pdf-frame"
     title="2026–2027 WASDL Tournament Schedule PDF"
-    data-src="attached_assets/WASDL_Tournament_Schedule_2026-2027_1788215435064.pdf#view=FitH"
+    data-src="docs/wasdl-tournament-schedule-2026-2027.pdf#view=FitH"
     hidden
   ></iframe>
 </dialog>
