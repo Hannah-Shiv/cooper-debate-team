@@ -396,7 +396,20 @@
               </aside>
             </div>
           </section>
-          <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
+          <div class="vol-results-column">
+            <section class="vol-roster-stats-panel" aria-label="Volunteer signup statistics">
+              <div class="vol-stats-panel-heading">
+                ${modalIcon("users")}
+                <div><span>Current signup progress</span><strong>Volunteer Statistics</strong></div>
+              </div>
+              <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
+                <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
+                <div class="confirmed"><div class="vol-metric-circle"><strong>${stats.confirmed}</strong></div><span>Confirmed</span></div>
+                <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
+                <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
+              </div>
+            </section>
+            <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-panel-purpose vol-panel-purpose--results">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div class="vol-panel-purpose-flow">
@@ -407,13 +420,6 @@
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
             </div>
             <div class="vol-roster-summary">
-              <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
-                <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
-                <div class="confirmed"><div class="vol-metric-circle"><strong>${stats.confirmed}</strong></div><span>Confirmed</span></div>
-                <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
-                <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
-              </div>
-              <div class="vol-roster-control-divider" aria-hidden="true"><span>✦</span></div>
               ${publicSignups.length ? `
               <div class="vol-roster-controls" aria-label="Search, sort, and filter volunteers">
                 <label class="vol-roster-search-box">
@@ -440,7 +446,8 @@
             </div>
             ${publicSignups.length ? `<div class="vol-roster-pagination" hidden><span class="vol-roster-page-info"></span><div class="vol-roster-page-nav" aria-label="Volunteer roster pages"></div></div>` : ""}
             <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to the tournament community. Contact details and notes remain private.</p>
-          </section>
+            </section>
+          </div>
         </article>`;
     }).join("");
 
