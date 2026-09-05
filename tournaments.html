@@ -4710,16 +4710,16 @@
         margin-top:12px;
       }
       #volunteer-modal section[data-vol-step="2"] .vol-review-actions {
-        grid-template-columns:1fr 1fr;
+        grid-template-columns:1fr;
         margin-top:12px;
       }
       #volunteer-modal section[data-vol-step="2"] .vol-action-back {
         grid-column:1;
-        grid-row:2;
+        grid-row:auto;
       }
       #volunteer-modal section[data-vol-step="2"] .vol-review-side .vol-action-confirm {
-        grid-column:2;
-        grid-row:2;
+        grid-column:1;
+        grid-row:auto;
       }
     }
 
@@ -4777,6 +4777,122 @@
         border-color:#8bbdaf !important;
       }
       body.vol-print-itinerary .vol-review-primary { background:#dceee7 !important; }
+    }
+    /* Portrait volunteer flow: keep every surface readable and every action
+       inside the viewport while preserving the desktop composition. */
+    #volunteer-modal,
+    #volunteer-exit-modal,
+    #volunteer-thank-you-modal { box-sizing:border-box; overscroll-behavior:contain; }
+    #volunteer-modal .vol-judge-modal,
+    #volunteer-exit-modal .vol-modal-card,
+    #volunteer-thank-you-modal .vol-modal-card {
+      box-sizing:border-box; width:min(100%,1080px);
+    }
+    #volunteer-modal .vol-judge-modal,
+    #volunteer-exit-modal .vol-modal-card,
+    #volunteer-thank-you-modal .vol-modal-card {
+      background:linear-gradient(145deg,#102d59 0%,#071d41 100%);
+      border:1px solid rgba(246,202,73,.62);
+      box-shadow:0 24px 70px rgba(2,10,28,.58),0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    #volunteer-modal .vol-modal-context,
+    #volunteer-modal .vol-condensed-main,
+    #volunteer-modal .vol-signup-sidebar,
+    #volunteer-modal .vol-review-side { min-width:0; }
+    #volunteer-modal .vol-modal-context,
+    #volunteer-modal .vol-condensed-selection p,
+    #volunteer-modal .vol-public-note,
+    #volunteer-modal .vol-info-callout p,
+    #volunteer-modal .vol-review-row dd,
+    #volunteer-modal .vol-review-privacy p,
+    #volunteer-modal .vol-review-email-check p { overflow-wrap:anywhere; }
+    #volunteer-modal section[data-vol-step="2"] {
+      display:grid; grid-template-columns:minmax(0,1fr) minmax(235px,280px);
+      gap:16px; align-items:start;
+    }
+    #volunteer-modal section[data-vol-step="2"][hidden] { display:none!important; }
+    #volunteer-modal section[data-vol-step].is-entering {
+      animation:volunteer-step-in .26s ease-out both;
+    }
+    @keyframes volunteer-step-in {
+      from { opacity:0; transform:translateY(7px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+    #volunteer-modal .vol-review-side {
+      align-self:start; background:rgba(4,25,52,.34);
+      border:1px solid rgba(145,211,191,.22); border-radius:10px; padding:14px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-actions,
+    #volunteer-exit-modal .vol-modal-actions,
+    #volunteer-thank-you-modal .vol-confirmation-actions {
+      display:grid; grid-template-columns:1fr; gap:9px;
+    }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-actions .vol-action-back { order:1; }
+    #volunteer-modal section[data-vol-step="2"] .vol-review-actions .vol-action-confirm,
+    #volunteer-exit-modal .vol-submit,
+    #volunteer-thank-you-modal .vol-submit {
+      order:2; background:#f6ca49; border-color:#ffe28a; color:#132f3f;
+      box-shadow:0 8px 20px rgba(246,202,73,.2);
+    }
+    #volunteer-modal .vol-modal-actions button,
+    #volunteer-exit-modal .vol-modal-actions button,
+    #volunteer-thank-you-modal .vol-confirmation-actions button {
+      min-height:44px; width:100%;
+      transition:transform .2s ease,background-color .2s ease,border-color .2s ease;
+    }
+    #volunteer-modal .vol-form-field input,
+    #volunteer-modal .vol-form-field textarea { min-height:44px; }
+    #volunteer-modal .vol-form-field textarea { min-height:104px; }
+    @media (max-width:980px) {
+      #volunteer-modal,#volunteer-exit-modal,#volunteer-thank-you-modal { padding:12px; align-items:flex-start; }
+      #volunteer-modal .vol-judge-modal {
+        max-height:calc(100dvh - 24px); overflow-y:auto; overscroll-behavior:contain;
+      }
+      #volunteer-modal section[data-vol-step="2"] { grid-template-columns:1fr; }
+      #volunteer-modal .vol-review-side { width:100%; }
+    }
+    @media (max-width:700px) {
+      #volunteer-modal,#volunteer-exit-modal,#volunteer-thank-you-modal { padding:8px; }
+      #volunteer-modal .vol-judge-modal,
+      #volunteer-exit-modal .vol-modal-card,
+      #volunteer-thank-you-modal .vol-modal-card {
+        border-radius:12px; max-height:calc(100dvh - 16px); padding:18px 14px 16px;
+      }
+      #volunteer-modal .vol-modal-heading { padding-right:32px; }
+      #volunteer-modal .vol-modal-heading h2 { font-size:1.45rem; line-height:1.05; }
+      #volunteer-modal .vol-stepper { gap:6px; }
+      #volunteer-modal .vol-stepper span { flex:1 1 0; line-height:1.25; }
+      #volunteer-modal .vol-condensed-selection {
+        align-items:start; display:grid; gap:8px 10px;
+        grid-template-columns:34px minmax(0,1fr); padding:12px;
+      }
+      #volunteer-modal .vol-condensed-selection p { grid-column:2; text-align:left; }
+      #volunteer-modal .vol-availability-card--compact { max-width:none; padding:13px 11px 14px; }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid {
+        grid-template-columns:repeat(2,minmax(0,1fr)) !important; width:auto;
+      }
+      #volunteer-modal .vol-time-control,
+      #volunteer-modal .vol-time-control input { min-width:0; width:100%; }
+      #volunteer-modal .vol-condensed-main > .vol-form-grid {
+        display:grid; grid-template-columns:1fr;
+      }
+      #volunteer-modal .vol-condensed-main > .vol-form-grid > .vol-form-field:not(.full) { grid-column:1; }
+      #volunteer-modal .vol-review-intro h3 { font-size:1.22rem!important; }
+      #volunteer-modal .vol-review-row { grid-template-columns:24px minmax(0,1fr); }
+      #volunteer-modal .vol-review-row dd { grid-column:2; margin-top:2px; text-align:left; }
+      #volunteer-modal .vol-review-card,
+      #volunteer-modal .vol-review-side { padding:12px; }
+      #volunteer-exit-modal .vol-modal-card,
+      #volunteer-thank-you-modal .vol-modal-card { padding:24px 18px 20px; }
+    }
+    @media (max-width:430px) {
+      #volunteer-modal .vol-stepper b { height:25px; width:25px; }
+      #volunteer-modal .vol-stepper span { font-size:.56rem; }
+      #volunteer-modal .vol-availability-card legend { font-size:.69rem; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      #volunteer-modal .vol-modal-actions button { transition:none; }
+      #volunteer-modal section[data-vol-step].is-entering { animation:none; }
     }
   </style>
   <link rel="stylesheet" href="css/tablet-portrait.css?v=9"/>
@@ -6033,7 +6149,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-  <script src="js/volunteer-public.js?v=72"></script>
+  <script src="js/volunteer-public.js?v=73"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

@@ -1029,6 +1029,10 @@
     wizardStep = Math.max(1, Math.min(2, step));
     document.querySelectorAll("[data-vol-step]").forEach(panel => {
       panel.hidden = Number(panel.dataset.volStep) !== wizardStep;
+      if (!panel.hidden) {
+        panel.classList.remove("is-entering");
+        requestAnimationFrame(() => panel.classList.add("is-entering"));
+      }
     });
     document.querySelectorAll("[data-vol-progress]").forEach(item => {
       const active = Number(item.dataset.volProgress) <= wizardStep;
@@ -1040,6 +1044,13 @@
       renderTurnstile();
     }
     setStatus("");
+    const modal = $("volunteer-modal");
+    if (modal && modal.style.display === "flex") {
+      requestAnimationFrame(() => {
+        const card = modal.querySelector(".vol-judge-modal");
+        if (card) card.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+      });
+    }
   }
 
   function validateStep(step) {
