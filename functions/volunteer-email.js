@@ -588,7 +588,7 @@ async function buildMessage(kind, event, signup, changes = []) {
     "<div style=\"margin:22px 0 14px;padding:13px 15px;background:#ffd84d;color:#062451;border-radius:6px;font-weight:700;line-height:1.5;\">" +
     "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above or refill the volunteer signup form." +
     "</div>" +
-    `<p style="margin:0 0 12px;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;">&#128101;&nbsp;&nbsp; VOLUNTEER SIGNUP</a></p>`;
+    `<p style="margin:0 0 12px;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;"><img src="https://cooperdebateteam.com/images/volunteer-signup-people-white.png" width="24" height="15" alt="" style="display:inline-block;width:24px;height:15px;vertical-align:middle;border:0;">&nbsp;&nbsp; <span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP</span></a></p>`;
   const approvedSections = [
     ["Arrival & parking", APPROVED_ARRIVAL],
     ["Meals & refreshments", APPROVED_MEAL_ITEMS],

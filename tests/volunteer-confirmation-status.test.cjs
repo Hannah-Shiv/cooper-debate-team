@@ -153,7 +153,10 @@ test("confirmation email highlights change instructions and places signup before
   assert.match(emailService, new RegExp(highlightedCopy.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(emailService, /background:#ffd84d;color:#062451;[^"]*font-weight:700/);
   assert.match(emailService, /const VOLUNTEER_SIGNUP_URL = `\$\{TOURNAMENT_PAGE_URL\}\?tab=volunteer-signup`/);
-  assert.match(emailService, /background:#a94332;color:#fff;[^"]*">.*VOLUNTEER SIGNUP/);
+  assert.match(emailService, /background:#a94332;color:#fff;[^"]*">.*volunteer-signup-people-white\.png.*VOLUNTEER SIGNUP/);
+  assert.match(emailService, /width="24" height="15" alt=""[^>]*vertical-align:middle/);
+  assert.match(emailService, /<span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP<\/span>/);
+  assert.doesNotMatch(emailService, /&#128101;/);
   assert.ok(
     emailService.indexOf("confirmationChangeHtml") <
       emailService.indexOf("${confirmationChangeHtml}${pageHtml}")
