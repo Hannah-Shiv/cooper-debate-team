@@ -276,6 +276,8 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
 
 test("confirmation PDF uses supplied title icons, navy circles, yellow stars, and the approved headline", () => {
   assert.match(publicScript, /let fittedSize = 8\.2/);
+  assert.match(publicScript, /ctx\.roundRect\(x, y, w, 24, 5\)/);
+  assert.match(publicScript, /ctx\.clip\(\)/);
   assert.match(publicScript, /drawContainedImage\(icon, x \+ 8, y \+ 3, 18, 18\)/);
   assert.match(publicScript, /confirmation: "images\/volunteer-letter\/judge-confirmation-gavel\.png\?v=1"/);
   assert.match(publicScript, /rounded\(22, 100, 365, 44, 8, gold\)/);
@@ -308,6 +310,8 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
+  assert.match(emailService, /document\.roundedRect\(x, y, width, 24, 5\)\.clip\(\)/);
+  assert.match(emailService, /document\.restore\(\)/);
   assert.match(emailService, /confirmation: asset\("judge-confirmation-gavel\.png"\)/);
   assert.match(emailService, /document\.roundedRect\(22, 100, 365, 44, 8\)\.fill\(gold\)/);
   assert.match(emailService, /document\.roundedRect\(29, 104, 36, 36, 6\)\.fill\(navy\)/);

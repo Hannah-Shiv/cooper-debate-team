@@ -953,8 +953,13 @@
       ctx.drawImage(image, x + (width - renderedWidth) / 2, y + (height - renderedHeight) / 2, renderedWidth, renderedHeight);
     };
     const bar = (x, y, w, title, icon, accent = gold) => {
+      ctx.save();
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, 24, 5);
+      ctx.clip();
       ctx.fillStyle = navy; ctx.fillRect(x, y, w, 24);
       ctx.fillStyle = accent; ctx.fillRect(x, y, 5, 24);
+      ctx.restore();
       let fittedSize = 8.2;
       ctx.font = `700 ${fittedSize}px Arial`;
       while (ctx.measureText(title.toUpperCase()).width > w - 40 && fittedSize > 6.5) {

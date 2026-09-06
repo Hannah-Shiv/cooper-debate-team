@@ -312,8 +312,11 @@ function itineraryAttachment(event, signup) {
       privacy: asset("privacy.png"),
     };
     const sectionBar = (x, y, width, title, icon, accent = gold) => {
+      document.save();
+      document.roundedRect(x, y, width, 24, 5).clip();
       document.rect(x, y, width, 24).fill(navy);
       document.rect(x, y, 5, 24).fill(accent);
+      document.restore();
       document.image(icon, x + 8, y + 3, { fit: [18, 18], align: "center", valign: "center" });
       document.fillColor("#ffffff").font("Helvetica-Bold").fontSize(8.2)
         .text(title.toUpperCase(), x + 30, y + 7, { width: width - 36, height: 12, lineBreak: false, characterSpacing: 0 });
