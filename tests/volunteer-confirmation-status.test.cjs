@@ -138,6 +138,27 @@ test("confirmation email uses the approved subject, greeting, and square C banne
   assert.doesNotMatch(emailService, /thank you for volunteering with Cooper Debate\. Your signup is confirmed\./);
   assert.match(emailService, /https:\/\/cooperdebateteam\.com\/images\/index-footer-jaguar\.png/);
   assert.match(emailService, /width=\\"46\\" height=\\"46\\"/);
+  assert.match(emailService, /text-align:left;width:54px;\\"><img/);
+  assert.match(emailService, /margin-right:auto;width:46px/);
+  assert.match(emailService, /text-align:center;\\"><strong style=\\"font-size:18px;\\">Cooper Debate Team/);
+  assert.match(emailService, /<td aria-hidden=\\"true\\" style=\\"vertical-align:middle;width:54px;\\">&nbsp;<\/td>/);
+  assert.ok(
+    emailService.indexOf("index-footer-jaguar.png") <
+      emailService.indexOf('<strong style=\\"font-size:18px;\\">Cooper Debate Team')
+  );
+});
+
+test("confirmation email highlights change instructions and places signup before tournament details", () => {
+  const highlightedCopy = "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above or refill the volunteer signup form.";
+  assert.match(emailService, new RegExp(highlightedCopy.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
+  assert.match(emailService, /background:#ffd84d;color:#062451;[^"]*font-weight:700/);
+  assert.match(emailService, /const VOLUNTEER_SIGNUP_URL = `\$\{TOURNAMENT_PAGE_URL\}\?tab=volunteer-signup`/);
+  assert.match(emailService, /background:#a94332;color:#fff;[^"]*">.*VOLUNTEER SIGNUP/);
+  assert.ok(
+    emailService.indexOf("confirmationChangeHtml") <
+      emailService.indexOf("${confirmationChangeHtml}${pageHtml}")
+  );
+  assert.match(emailService, /\$\{confirmationChangeHtml\}\$\{pageHtml\}/);
 });
 
 test("the automatic email attaches the exact browser-generated one-pager", async () => {
@@ -284,10 +305,15 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /rounded\(29, 104, 36, 36, 6, navy\)/);
   assert.match(publicScript, /drawContainedImage\(icons\.confirmation, 31, 106, 32, 32\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.fillRect\(74, 106, 2, 32\)/);
-  assert.match(publicScript, /scaledFont\("700 12\.5px Georgia"\)/);
-  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 88, 113\)/);
+  assert.match(publicScript, /scaledFont\("700 11\.5px Georgia"\)/);
+  assert.match(publicScript, /fillText\("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114\)/);
   assert.match(publicScript, /rounded\(402, 100, 188, 141, 8, "#dceefa", navy\)/);
   assert.doesNotMatch(publicScript, /ctx\.fillRect\(411, 109, 3, 123\)/);
+  assert.match(publicScript, /const fitTournamentTitle = \(title, maxWidth\) =>/);
+  assert.match(publicScript, /for \(let size = 13; size >= 4\.5; size -= \.25\)/);
+  assert.match(publicScript, /const font = `italic 700 \$\{size\}px Georgia`/);
+  assert.match(publicScript, /ctx\.measureText\(title\)\.width <= maxWidth/);
+  assert.match(publicScript, /ctx\.fillText\(tournamentTitle, 416, 126\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
   assert.match(publicScript, /const starYellow = "#ffd84d"/);
@@ -317,10 +343,15 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /document\.roundedRect\(29, 104, 36, 36, 6\)\.fill\(navy\)/);
   assert.match(emailService, /document\.image\(icons\.confirmation, 31, 106, \{ fit: \[32, 32\]/);
   assert.match(emailService, /document\.rect\(74, 106, 2, 32\)\.fill\(navy\)/);
-  assert.match(emailService, /\.fontSize\(12\.5\)/);
-  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 88, 113, \{ width: 285/);
+  assert.match(emailService, /\.fontSize\(11\.5\)/);
+  assert.match(emailService, /\.text\("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114, \{ width: 285/);
   assert.match(emailService, /document\.roundedRect\(402, 100, 188, 141, 8\)\.fillAndStroke\("#dceefa", navy\)/);
   assert.doesNotMatch(emailService, /document\.rect\(411, 109, 3, 123\)/);
+  assert.match(emailService, /const fitTournamentTitle = \(title, maxWidth\) =>/);
+  assert.match(emailService, /for \(let size = 13; size >= 4\.5; size -= \.25\)/);
+  assert.match(emailService, /document\.font\("Times-BoldItalic"\)\.fontSize\(size\)/);
+  assert.match(emailService, /document\.widthOfString\(title\) <= maxWidth/);
+  assert.match(emailService, /\.text\(eventName, 416, 126, \{ width: 160, height: 16, lineBreak: false \}\)/);
   assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
@@ -342,6 +373,15 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /document\.heightOfString\(notes, \{ width: maxWidth, lineGap \}\)/);
   assert.match(emailService, /const fittedNotes = fitNotes\(value, colW - 18, height - 24\)/);
   assert.match(emailService, /\.text\(value, left \+ 9, rowY \+ 19, \{ width: colW - 18, height: height - 24, lineGap: fittedNotes\.lineGap \}\)/);
+  assert.match(publicScript, /const left = 22, right = 304, colW = 276, rightW = 286/);
+  assert.match(publicScript, /bar\(right, 254, rightW, "Tournament Resolution"/);
+  assert.match(publicScript, /bar\(right, 362, rightW, "What to Expect"/);
+  assert.match(publicScript, /fillText\("Resolved:", right \+ 10, 290\)/);
+  assert.match(emailService, /const rightW = 286/);
+  assert.match(emailService, /sectionBar\(right, 254, rightW, "Tournament Resolution"/);
+  assert.match(emailService, /sectionBar\(right, 362, rightW, "What to Expect"/);
+  assert.match(emailService, /\.font\("Helvetica-Bold"\)\.fontSize\(8\)\s*\.text\("Resolved:", right \+ 10, 290/);
+  assert.match(emailService, /\.text\(APPROVED_RESOLUTION, right \+ 52, 290/);
 });
 
 test("the four lower information cards use distinct muted fills", () => {

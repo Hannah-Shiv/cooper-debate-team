@@ -6,6 +6,7 @@ const { FieldValue } = require("firebase-admin/firestore");
 const SENDER = "Cooper Debate Team <admin@cooperdebateteam.com>";
 const TIME_ZONE = "America/New_York";
 const TOURNAMENT_PAGE_URL = "https://cooperdebateteam.com/tournaments.html";
+const VOLUNTEER_SIGNUP_URL = `${TOURNAMENT_PAGE_URL}?tab=volunteer-signup`;
 const STALE_SEND_MS = 10 * 60 * 1000;
 const APPROVED_MEAL_ITEMS = Object.freeze([
   "A complimentary lunch will be provided for all judges.",
@@ -199,8 +200,9 @@ function emailShell(title, intro, contentHtml, footerText) {
     "<div style=\"max-width:620px;margin:0 auto;padding:28px 16px;\">",
     "<div style=\"background:#062451;padding:14px 20px;color:#fff;border-radius:8px 8px 0 0;\">",
     "<table role=\"presentation\" style=\"border-collapse:collapse;width:100%;\"><tr>",
-    "<td style=\"vertical-align:middle;\"><strong style=\"font-size:18px;\">Cooper Debate Team</strong></td>",
-    "<td style=\"vertical-align:middle;text-align:right;width:54px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"46\" height=\"46\" alt=\"Cooper Debate Team\" style=\"display:block;margin-left:auto;width:46px;height:46px;object-fit:contain;\"></td>",
+    "<td style=\"vertical-align:middle;text-align:left;width:54px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"46\" height=\"46\" alt=\"Cooper Debate Team\" style=\"display:block;margin-right:auto;width:46px;height:46px;object-fit:contain;\"></td>",
+    "<td style=\"vertical-align:middle;text-align:center;\"><strong style=\"font-size:18px;\">Cooper Debate Team</strong></td>",
+    "<td aria-hidden=\"true\" style=\"vertical-align:middle;width:54px;\">&nbsp;</td>",
     "</tr></table>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
     `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
@@ -361,6 +363,13 @@ function itineraryAttachment(event, signup) {
       }
       return { size: 12, rows: smallestRows.slice(0, maxLines), leading: 14 };
     };
+    const fitTournamentTitle = (title, maxWidth) => {
+      for (let size = 13; size >= 4.5; size -= .25) {
+        document.font("Times-BoldItalic").fontSize(size);
+        if (document.widthOfString(title) <= maxWidth) return size;
+      }
+      return 4.5;
+    };
     const fitNotes = (notes, maxWidth, maxHeight) => {
       for (let size = 7.5; size >= 2; size -= .25) {
         const lineGap = Math.max(.2, size * .18);
@@ -385,8 +394,8 @@ function itineraryAttachment(event, signup) {
     document.roundedRect(29, 104, 36, 36, 6).fill(navy);
     document.image(icons.confirmation, 31, 106, { fit: [32, 32], align: "center", valign: "center" });
     document.rect(74, 106, 2, 32).fill(navy);
-    document.fillColor(navy).font("Times-Bold").fontSize(12.5)
-      .text("TOURNAMENT JUDGE CONFIRMATION", 88, 113, { width: 285, lineBreak: false });
+    document.fillColor(navy).font("Times-Bold").fontSize(11.5)
+      .text("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114, { width: 285, lineBreak: false });
     const headline = fitHeadline(personalizedHeadline, 365);
     document.fillColor(navy).font("Times-Bold").fontSize(headline.size);
     headline.rows.forEach((row, index) => {
@@ -398,7 +407,8 @@ function itineraryAttachment(event, signup) {
 
     document.roundedRect(402, 100, 188, 141, 8).fillAndStroke("#dceefa", navy);
     document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 416, 110);
-    document.font("Times-Bold").fontSize(13).text(eventName, 416, 126, { width: 160, height: 31, ellipsis: true });
+    document.font("Times-BoldItalic").fontSize(fitTournamentTitle(eventName, 160))
+      .text(eventName, 416, 126, { width: 160, height: 16, lineBreak: false });
     document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 416, 163, { width: 160, height: 20 });
     const location = [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join("\n") || "Location to be announced";
     document.fontSize(8).text(location, 416, 187, { width: 160, height: 29, ellipsis: true });
@@ -407,6 +417,7 @@ function itineraryAttachment(event, signup) {
     const left = 22;
     const right = 304;
     const colW = 276;
+    const rightW = 286;
     sectionBar(left, 254, colW, "Your Signup Details", icons.signup);
     document.roundedRect(left, 278, colW, 224, 5).fillAndStroke(pale, line);
     const compactNotes = cleanText(signup.notes, 600).replace(/\s+/g, " ").trim();
@@ -436,13 +447,15 @@ function itineraryAttachment(event, signup) {
       rowY += height;
     });
 
-    sectionBar(right, 254, colW, "Tournament Resolution", icons.resolution);
-    document.roundedRect(right, 278, colW, 74, 5).fillAndStroke("#f5f9fc", line);
-    document.fillColor(ink).font("Helvetica").fontSize(8)
-      .text(`Resolved: ${APPROVED_RESOLUTION}`, right + 10, 290, { width: colW - 20, height: 52, ellipsis: true, lineGap: 2 });
-    sectionBar(right, 362, colW, "What to Expect", icons.expectations);
-    document.roundedRect(right, 386, colW, 116, 5).fillAndStroke("#f5f9fc", line);
-    bullets(APPROVED_EXPECTATIONS, right + 10, 395, colW - 20, 7.2, 20, 17);
+    sectionBar(right, 254, rightW, "Tournament Resolution", icons.resolution);
+    document.roundedRect(right, 278, rightW, 74, 5).fillAndStroke("#f5f9fc", line);
+    document.fillColor(ink).font("Helvetica-Bold").fontSize(8)
+      .text("Resolved:", right + 10, 290, { width: 42, lineBreak: false });
+    document.font("Helvetica").fontSize(8)
+      .text(APPROVED_RESOLUTION, right + 52, 290, { width: rightW - 62, height: 52, ellipsis: true, lineGap: 2 });
+    sectionBar(right, 362, rightW, "What to Expect", icons.expectations);
+    document.roundedRect(right, 386, rightW, 116, 5).fillAndStroke("#f5f9fc", line);
+    bullets(APPROVED_EXPECTATIONS, right + 10, 395, rightW - 20, 7.2, 20, 17);
 
     const boxY = 512;
     const boxGap = 8;
@@ -551,6 +564,11 @@ async function buildMessage(kind, event, signup, changes = []) {
   const eventRowsHtml = `<table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 20px;">${rowsAsHtml(rows)}</table>`;
   const eventRowsText = rowsAsText(rows);
   const pageHtml = `<p style="margin:20px 0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#062451;color:#fff;text-decoration:none;border-radius:5px;padding:11px 16px;font-weight:700;">View tournament details</a></p>`;
+  const confirmationChangeHtml =
+    "<div style=\"margin:22px 0 14px;padding:13px 15px;background:#ffd84d;color:#062451;border-radius:6px;font-weight:700;line-height:1.5;\">" +
+    "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above or refill the volunteer signup form." +
+    "</div>" +
+    `<p style="margin:0 0 12px;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;">&#128101;&nbsp;&nbsp; VOLUNTEER SIGNUP</a></p>`;
   const approvedSections = [
     ["Arrival & parking", APPROVED_ARRIVAL],
     ["Meals & refreshments", APPROVED_MEAL_ITEMS],
@@ -586,8 +604,8 @@ async function buildMessage(kind, event, signup, changes = []) {
       "Your volunteer signup is confirmed",
       `Hi ${name}, thank you for volunteering for the Cooper Debate Team.`,
       `${eventRowsHtml}${approvedSectionsHtml}` +
-      `${pageHtml}`,
-      "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above."
+      `${confirmationChangeHtml}${pageHtml}`,
+      ""
     );
     return { subject: `Confirmed: ${eventName} Volunteer Signup`, text, html, attachments: [calendar, itinerary].filter(Boolean) };
   }

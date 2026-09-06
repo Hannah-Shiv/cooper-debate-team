@@ -924,6 +924,14 @@
       const font = "700 12px Georgia";
       return { font, rows: wrap(headline, maxWidth, font).slice(0, maxLines), leading: 14 };
     };
+    const fitTournamentTitle = (title, maxWidth) => {
+      for (let size = 13; size >= 4.5; size -= .25) {
+        const font = `italic 700 ${size}px Georgia`;
+        ctx.font = scaledFont(font);
+        if (ctx.measureText(title).width <= maxWidth) return font;
+      }
+      return "italic 700 4.5px Georgia";
+    };
     const fitNotes = (notes, maxWidth, maxHeight) => {
       for (let size = 7.5; size >= 2; size -= .25) {
         const font = `${size}px Arial`;
@@ -1020,7 +1028,7 @@
     drawContainedImage(icons.confirmation, 31, 106, 32, 32);
     ctx.fillStyle = navy; ctx.fillRect(74, 106, 2, 32);
     ctx.textAlign = "left";
-    ctx.font = scaledFont("700 12.5px Georgia"); ctx.fillStyle = navy; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 88, 113);
+    ctx.font = scaledFont("700 11.5px Georgia"); ctx.fillStyle = navy; ctx.fillText("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114);
     const personalizedHeadline = `${firstName ? `${firstName}, thank you` : "Thank you"} for representing Cooper!`;
     const headline = fitHeadline(personalizedHeadline, 365);
     ctx.font = scaledFont(headline.font); ctx.fillStyle = navy;
@@ -1029,12 +1037,14 @@
     text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 226, 365, "8.5px Arial", ink, 2, 10.5);
     rounded(402, 100, 188, 141, 8, "#dceefa", navy);
     ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 416, 110);
-    text(value(event.title, "Upcoming Tournament"), 416, 126, 160, "700 13px Georgia", navy, 2, 14);
+    const tournamentTitle = value(event.title, "Upcoming Tournament");
+    ctx.font = scaledFont(fitTournamentTitle(tournamentTitle, 160)); ctx.fillStyle = navy;
+    ctx.fillText(tournamentTitle, 416, 126);
     text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 416, 163, 160, "8.5px Arial", ink, 2, 10);
     text(`${location}${address ? `\n${address}` : ""}`, 416, 187, 160, "8px Arial", ink, 3, 10);
     text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 416, 222, 160, "700 7.5px Arial", ink, 2, 9);
 
-    const left = 22, right = 304, colW = 276;
+    const left = 22, right = 304, colW = 276, rightW = 286;
     bar(left, 254, colW, "Your Signup Details", icons.signup);
     rounded(left, 278, colW, 224, 5, pale, line);
     const rows = [
@@ -1058,12 +1068,13 @@
       }
       rowY += h;
     });
-    bar(right, 254, colW, "Tournament Resolution", icons.resolution);
-    rounded(right, 278, colW, 74, 5, "#f5f9fc", line);
-    text(`Resolved: ${resolution}`, right + 10, 290, colW - 20, sectionBodyFont("8px Arial"), ink, 5, 11.5);
-    bar(right, 362, colW, "What to Expect", icons.expectations);
-    rounded(right, 386, colW, 116, 5, "#f5f9fc", line);
-    bullets(expected, right + 10, 395, colW - 20, "7.5px Arial", 15);
+    bar(right, 254, rightW, "Tournament Resolution", icons.resolution);
+    rounded(right, 278, rightW, 74, 5, "#f5f9fc", line);
+    ctx.font = scaledFont(sectionBodyFont("700 8px Arial")); ctx.fillStyle = ink; ctx.fillText("Resolved:", right + 10, 290);
+    text(resolution, right + 52, 290, rightW - 62, sectionBodyFont("8px Arial"), ink, 5, 11.5);
+    bar(right, 362, rightW, "What to Expect", icons.expectations);
+    rounded(right, 386, rightW, 116, 5, "#f5f9fc", line);
+    bullets(expected, right + 10, 395, rightW - 20, "7.5px Arial", 15);
 
     const boxY = 512, boxGap = 8, boxW = (W - 44 - boxGap * 3) / 4;
     const boxTitles = ["Arrival & Parking", "Refreshments", "Information", "Contact Support"];
