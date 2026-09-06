@@ -17,6 +17,7 @@ const letterAssetNames = [
   "contact-support.png",
   "privacy.png",
   "cooper-debate-badge.png",
+  "judge-confirmation-gavel.png",
 ];
 
 test("signup response reports saved and provider email status separately", () => {
@@ -276,8 +277,13 @@ test("confirmation PDFs use the tournament name and an ordinal long-form date", 
 test("confirmation PDF uses supplied title icons, navy circles, yellow stars, and the approved headline", () => {
   assert.match(publicScript, /let fittedSize = 8\.2/);
   assert.match(publicScript, /drawContainedImage\(icon, x \+ 8, y \+ 3, 18, 18\)/);
-  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 306, 102\)/);
-  assert.match(publicScript, /rounded\(402, 114, 188, 127, 8, "#dceefa"\)/);
+  assert.match(publicScript, /confirmation: "images\/volunteer-letter\/judge-confirmation-gavel\.png\?v=1"/);
+  assert.match(publicScript, /rounded\(22, 100, 568, 44, 8, gold\)/);
+  assert.match(publicScript, /rounded\(29, 104, 36, 36, 6, navy\)/);
+  assert.match(publicScript, /drawContainedImage\(icons\.confirmation, 31, 106, 32, 32\)/);
+  assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.fillRect\(74, 106, 2, 32\)/);
+  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 88, 109\)/);
+  assert.match(publicScript, /rounded\(402, 151, 188, 90, 8, "#dceefa"\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
   assert.match(publicScript, /const starYellow = "#ffd84d"/);
@@ -287,10 +293,10 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /const boxTitles = \["Arrival & Parking", "Refreshments", "Information", "Contact Support"\]/);
   assert.match(publicScript, /const privacyGreen = "#2f9b62"/);
   assert.match(publicScript, /bar\(22, 697, 278, "Privacy", icons\.privacy, privacyGreen\)/);
-  assert.match(publicScript, /const personalizedHeadline = `\$\{firstName \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper\.`/);
-  assert.match(publicScript, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
-  assert.match(publicScript, /for \(let size = 22; size >= 16; size -= \.5\)/);
-  assert.match(publicScript, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
+  assert.match(publicScript, /const personalizedHeadline = `\$\{firstName \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper!`/);
+  assert.match(publicScript, /const fitHeadline = \(headline, maxWidth, maxLines = 1\) =>/);
+  assert.match(publicScript, /for \(let size = 20; size >= 12; size -= \.5\)/);
+  assert.match(publicScript, /const headline = fitHeadline\(personalizedHeadline, 365\)/);
   assert.match(publicScript, /const fitNotes = \(notes, maxWidth, maxHeight\) =>/);
   assert.match(publicScript, /const compactNotes = notes => String\(notes \|\| ""\)\.replace\(\/\\s\+\/g, " "\)\.trim\(\)/);
   assert.match(publicScript, /\["Notes", compactNotes\(\$\("vol-notes"\)\?\.value\) \|\| "No notes provided\."\]/);
@@ -300,8 +306,13 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.doesNotMatch(publicScript, /Thank You for Representing the Cooper Debate Team!/);
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
-  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 0, 102, \{ width: pageWidth, align: "center"/);
-  assert.match(emailService, /document\.roundedRect\(402, 114, 188, 127, 8\)\.fill\("#dceefa"\)/);
+  assert.match(emailService, /confirmation: asset\("judge-confirmation-gavel\.png"\)/);
+  assert.match(emailService, /document\.roundedRect\(22, 100, 568, 44, 8\)\.fill\(gold\)/);
+  assert.match(emailService, /document\.roundedRect\(29, 104, 36, 36, 6\)\.fill\(navy\)/);
+  assert.match(emailService, /document\.image\(icons\.confirmation, 31, 106, \{ fit: \[32, 32\]/);
+  assert.match(emailService, /document\.rect\(74, 106, 2, 32\)\.fill\(navy\)/);
+  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 88, 109, \{ width: 480/);
+  assert.match(emailService, /document\.roundedRect\(402, 151, 188, 90, 8\)\.fill\("#dceefa"\)/);
   assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
@@ -315,9 +326,9 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /\["Contact Support", icons\.contact/);
   assert.match(emailService, /const privacyGreen = "#2f9b62"/);
   assert.match(emailService, /sectionBar\(22, 697, 278, "Privacy", icons\.privacy, privacyGreen\)/);
-  assert.match(emailService, /const personalizedHeadline = `\$\{firstName && firstName !== "Volunteer" \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper\.`/);
-  assert.match(emailService, /const fitHeadline = \(headline, maxWidth, maxLines = 2\) =>/);
-  assert.match(emailService, /const headline = fitHeadline\(personalizedHeadline, 368\)/);
+  assert.match(emailService, /const personalizedHeadline = `\$\{firstName && firstName !== "Volunteer" \? `\$\{firstName\}, thank you` : "Thank you"\} for representing Cooper!`/);
+  assert.match(emailService, /const fitHeadline = \(headline, maxWidth, maxLines = 1\) =>/);
+  assert.match(emailService, /const headline = fitHeadline\(personalizedHeadline, 365\)/);
   assert.match(emailService, /const fitNotes = \(notes, maxWidth, maxHeight\) =>/);
   assert.match(emailService, /const compactNotes = cleanText\(signup\.notes, 600\)\.replace\(\/\\s\+\/g, " "\)\.trim\(\)/);
   assert.match(emailService, /document\.heightOfString\(notes, \{ width: maxWidth, lineGap \}\)/);

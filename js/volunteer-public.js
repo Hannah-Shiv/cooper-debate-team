@@ -845,6 +845,7 @@
     image.src = src;
   });
   const LETTER_ICON_PATHS = Object.freeze({
+    confirmation: "images/volunteer-letter/judge-confirmation-gavel.png?v=1",
     signup: "images/volunteer-letter/signup-details.png?v=2",
     resolution: "images/volunteer-letter/tournament-resolution.png?v=2",
     expectations: "images/volunteer-letter/what-to-expect.png?v=2",
@@ -914,14 +915,14 @@
       });
       return rows;
     };
-    const fitHeadline = (headline, maxWidth, maxLines = 2) => {
-      for (let size = 22; size >= 16; size -= .5) {
+    const fitHeadline = (headline, maxWidth, maxLines = 1) => {
+      for (let size = 20; size >= 12; size -= .5) {
         const font = `700 ${size}px Georgia`;
         const rows = wrap(headline, maxWidth, font);
         if (rows.length <= maxLines) return { font, rows, leading: size + 2 };
       }
-      const font = "700 16px Georgia";
-      return { font, rows: wrap(headline, maxWidth, font).slice(0, maxLines), leading: 18 };
+      const font = "700 12px Georgia";
+      return { font, rows: wrap(headline, maxWidth, font).slice(0, maxLines), leading: 14 };
     };
     const fitNotes = (notes, maxWidth, maxHeight) => {
       for (let size = 7.5; size >= 2; size -= .25) {
@@ -1009,22 +1010,25 @@
     ctx.font = scaledFont("700 9px Arial"); ctx.fillStyle = gold; ctx.letterSpacing = "2px"; ctx.fillText("SPEAK  ·  REASON  ·  LEAD", 306, 49);
     ctx.font = scaledFont("8px Arial"); ctx.letterSpacing = "1.2px"; ctx.fillStyle = "#d9e6f5"; ctx.fillText("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 306, 68);
     ctx.letterSpacing = "0px";
-    ctx.textAlign = "center";
-    ctx.font = scaledFont("700 8px Arial"); ctx.fillStyle = "#a87900"; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 306, 102);
+    rounded(22, 100, 568, 44, 8, gold);
+    rounded(29, 104, 36, 36, 6, navy);
+    drawContainedImage(icons.confirmation, 31, 106, 32, 32);
+    ctx.fillStyle = navy; ctx.fillRect(74, 106, 2, 32);
     ctx.textAlign = "left";
-    const personalizedHeadline = `${firstName ? `${firstName}, thank you` : "Thank you"} for representing Cooper.`;
-    const headline = fitHeadline(personalizedHeadline, 368);
+    ctx.font = scaledFont("700 18px Georgia"); ctx.fillStyle = navy; ctx.fillText("TOURNAMENT JUDGE CONFIRMATION", 88, 109);
+    const personalizedHeadline = `${firstName ? `${firstName}, thank you` : "Thank you"} for representing Cooper!`;
+    const headline = fitHeadline(personalizedHeadline, 365);
     ctx.font = scaledFont(headline.font); ctx.fillStyle = navy;
-    headline.rows.forEach((row, i) => ctx.fillText(row, 22, 114 + i * headline.leading));
-    text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 171, 365, "9px Arial", ink, 4, 11);
-    text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 220, 365, "9px Arial", ink, 2, 11);
-    rounded(402, 114, 188, 127, 8, "#dceefa");
-    ctx.fillStyle = gold; ctx.fillRect(411, 123, 3, 109);
-    ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 425, 124);
-    text(value(event.title, "Upcoming Tournament"), 425, 139, 151, "700 13px Georgia", navy, 2, 14);
-    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 425, 174, 151, "8.5px Arial", ink, 2, 10);
-    text(`${location}${address ? `\n${address}` : ""}`, 425, 196, 151, "8px Arial", ink, 3, 10);
-    text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 226, 151, "700 7.5px Arial", ink, 2, 9);
+    headline.rows.forEach((row, i) => ctx.fillText(row, 22, 153 + i * headline.leading));
+    text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 181, 365, "8.5px Arial", ink, 4, 10.5);
+    text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 226, 365, "8.5px Arial", ink, 2, 10.5);
+    rounded(402, 151, 188, 90, 8, "#dceefa");
+    ctx.fillStyle = gold; ctx.fillRect(411, 159, 3, 74);
+    ctx.font = "700 7px Arial"; ctx.fillStyle = navy; ctx.fillText("TOURNAMENT INFORMATION", 425, 158);
+    text(value(event.title, "Upcoming Tournament"), 425, 172, 151, "700 11px Georgia", navy, 2, 12);
+    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 425, 198, 151, "8px Arial", ink, 1, 9);
+    text(`${location}${address ? `\n${address}` : ""}`, 425, 212, 151, "7.5px Arial", ink, 2, 8);
+    text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 425, 231, 151, "700 7px Arial", ink, 1, 8);
 
     const left = 22, right = 304, colW = 276;
     bar(left, 254, colW, "Your Signup Details", icons.signup);
