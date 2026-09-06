@@ -194,18 +194,20 @@ function rowsAsHtml(rows) {
   ).join("");
 }
 
-function emailShell(title, intro, contentHtml, footerText) {
+function emailShell(title, intro, contentHtml, footerText, highlightTitle = false) {
   return [
     "<!doctype html><html><body style=\"margin:0;padding:0;background:#f5f7fa;font-family:Arial,sans-serif;color:#1d2733;\">",
     "<div style=\"max-width:620px;margin:0 auto;padding:28px 16px;\">",
-    "<div style=\"background:#062451;padding:14px 20px;color:#fff;border-radius:8px 8px 0 0;\">",
+    "<div style=\"background:#062451;padding:12px 20px;color:#fff;border-radius:8px 8px 0 0;\">",
     "<table role=\"presentation\" style=\"border-collapse:collapse;width:100%;\"><tr>",
-    "<td style=\"vertical-align:middle;text-align:left;width:54px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"46\" height=\"46\" alt=\"Cooper Debate Team\" style=\"display:block;margin-right:auto;width:46px;height:46px;object-fit:contain;\"></td>",
-    "<td style=\"vertical-align:middle;text-align:center;\"><strong style=\"font-size:18px;\">Cooper Debate Team</strong></td>",
-    "<td aria-hidden=\"true\" style=\"vertical-align:middle;width:54px;\">&nbsp;</td>",
+    "<td style=\"vertical-align:middle;text-align:left;width:59px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"51\" height=\"51\" alt=\"Cooper Debate Team\" style=\"display:block;margin-right:auto;width:51px;height:51px;object-fit:contain;\"></td>",
+    "<td style=\"vertical-align:middle;text-align:center;\"><img src=\"https://cooperdebateteam.com/images/email-cooper-debate-wordmark.png\" width=\"300\" height=\"52\" alt=\"Cooper Debate Team\" style=\"display:block;margin:0 auto;width:300px;max-width:100%;height:auto;border:0;\"></td>",
+    "<td aria-hidden=\"true\" style=\"vertical-align:middle;width:59px;\">&nbsp;</td>",
     "</tr></table>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
-    `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
+    highlightTitle
+      ? `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;"><span style="display:inline-block;background:#ffd84d;color:#062451;padding:6px 10px;border-radius:5px;">${escapeHtml(title)}</span></h1>`
+      : `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
     `<p style="line-height:1.55;margin:0 0 20px;">${escapeHtml(intro).replaceAll("\n", "<br>")}</p>`,
     contentHtml,
     `<p style="margin:24px 0 0;font-size:13px;line-height:1.5;color:#667085;">${escapeHtml(footerText)}</p>`,
@@ -587,8 +589,12 @@ async function buildMessage(kind, event, signup, changes = []) {
   const confirmationChangeHtml =
     "<div style=\"margin:22px 0 14px;padding:13px 15px;background:#ffd84d;color:#062451;border-radius:6px;font-weight:700;line-height:1.5;\">" +
     "A calendar file and printable PDF itinerary are attached. To change your availability or contact information, please contact the coach listed above or refill the volunteer signup form." +
-    "</div>" +
-    `<p style="margin:0 0 12px;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;"><img src="https://cooperdebateteam.com/images/volunteer-signup-people-white.png" width="24" height="15" alt="" style="display:inline-block;width:24px;height:15px;vertical-align:middle;border:0;">&nbsp;&nbsp; <span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP</span></a></p>`;
+    "</div>";
+  const confirmationActionsHtml =
+    "<table role=\"presentation\" style=\"border-collapse:collapse;margin:0 0 12px;\"><tr>" +
+    `<td style="padding:0 10px 0 0;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;white-space:nowrap;"><img src="https://cooperdebateteam.com/images/volunteer-signup-people-white.png" width="24" height="15" alt="" style="display:inline-block;width:24px;height:15px;vertical-align:middle;border:0;">&nbsp;&nbsp; <span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP</span></a></td>` +
+    `<td style="padding:0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#062451;color:#fff;text-decoration:none;border-radius:5px;padding:12px 16px;font-weight:700;white-space:nowrap;">View tournament details</a></td>` +
+    "</tr></table>";
   const approvedSections = [
     ["Arrival & parking", APPROVED_ARRIVAL],
     ["Meals & refreshments", APPROVED_MEAL_ITEMS],
@@ -601,7 +607,7 @@ async function buildMessage(kind, event, signup, changes = []) {
     .join("\n\n");
   const approvedSectionsHtml = approvedSections
     .map(([title, items]) =>
-      `<h2 style="font-size:17px;">${escapeHtml(title)}</h2>` +
+      `<h2 style="font-size:17px;line-height:1.25;margin:20px 0 10px;"><span style="display:inline-block;background:#ffd84d;color:#062451;padding:4px 8px;border-radius:4px;">${escapeHtml(title)}</span></h2>` +
       `<ul style="line-height:1.55;">${items.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
     ).join("");
   const calendar = calendarAttachment(
@@ -621,11 +627,12 @@ async function buildMessage(kind, event, signup, changes = []) {
       "A calendar file and printable PDF itinerary are attached. If you need to change your availability or contact information, please contact the coach listed above.",
     ].filter(Boolean).join("\n");
     const html = emailShell(
-      "Your volunteer signup is confirmed",
+      "Your volunteer sign-up is confirmed.",
       `Hi ${name}, thank you for volunteering for the Cooper Debate Team.`,
       `${eventRowsHtml}${approvedSectionsHtml}` +
-      `${confirmationChangeHtml}${pageHtml}`,
-      ""
+      `${confirmationChangeHtml}${confirmationActionsHtml}`,
+      "",
+      true
     );
     return { subject: `Confirmed: ${eventName} Volunteer Signup`, text, html, attachments: [calendar, itinerary].filter(Boolean) };
   }

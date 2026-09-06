@@ -117,7 +117,7 @@ test("the public WASDL schedule modal uses a published PDF path", () => {
 });
 
 test("confirmation email uses navy bars and only approved one-pager logistics", () => {
-  assert.equal((emailService.match(/background:#062451/g) || []).length, 2);
+  assert.equal((emailService.match(/background:#062451/g) || []).length, 3);
   assert.doesNotMatch(emailService, /background:#0e3b2e/);
   assert.match(emailService, /const useApprovedOnePager = kind === "confirmation"/);
   assert.match(emailService, /useApprovedOnePager \? APPROVED_RESOLUTION/);
@@ -132,19 +132,19 @@ test("confirmation email uses navy bars and only approved one-pager logistics", 
   assert.doesNotMatch(emailService, /Judge at least 3 preliminary rounds/);
 });
 
-test("confirmation email uses the approved subject, greeting, and square C banner logo", () => {
+test("confirmation email uses the approved subject, greeting, enlarged square C, and cursive banner wordmark", () => {
   assert.match(emailService, /subject: `Confirmed: \$\{eventName\} Volunteer Signup`/);
   assert.match(emailService, /Hi \$\{name\}, thank you for volunteering for the Cooper Debate Team\./);
   assert.doesNotMatch(emailService, /thank you for volunteering with Cooper Debate\. Your signup is confirmed\./);
   assert.match(emailService, /https:\/\/cooperdebateteam\.com\/images\/index-footer-jaguar\.png/);
-  assert.match(emailService, /width=\\"46\\" height=\\"46\\"/);
-  assert.match(emailService, /text-align:left;width:54px;\\"><img/);
-  assert.match(emailService, /margin-right:auto;width:46px/);
-  assert.match(emailService, /text-align:center;\\"><strong style=\\"font-size:18px;\\">Cooper Debate Team/);
-  assert.match(emailService, /<td aria-hidden=\\"true\\" style=\\"vertical-align:middle;width:54px;\\">&nbsp;<\/td>/);
+  assert.match(emailService, /width=\\"51\\" height=\\"51\\"/);
+  assert.match(emailService, /text-align:left;width:59px;\\"><img/);
+  assert.match(emailService, /margin-right:auto;width:51px/);
+  assert.match(emailService, /text-align:center;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/email-cooper-debate-wordmark\.png\\" width=\\"300\\" height=\\"52\\"/);
+  assert.match(emailService, /<td aria-hidden=\\"true\\" style=\\"vertical-align:middle;width:59px;\\">&nbsp;<\/td>/);
   assert.ok(
     emailService.indexOf("index-footer-jaguar.png") <
-      emailService.indexOf('<strong style=\\"font-size:18px;\\">Cooper Debate Team')
+      emailService.indexOf("email-cooper-debate-wordmark.png")
   );
 });
 
@@ -153,15 +153,27 @@ test("confirmation email highlights change instructions and places signup before
   assert.match(emailService, new RegExp(highlightedCopy.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   assert.match(emailService, /background:#ffd84d;color:#062451;[^"]*font-weight:700/);
   assert.match(emailService, /const VOLUNTEER_SIGNUP_URL = `\$\{TOURNAMENT_PAGE_URL\}\?tab=volunteer-signup`/);
-  assert.match(emailService, /background:#a94332;color:#fff;[^"]*">.*volunteer-signup-people-white\.png.*VOLUNTEER SIGNUP/);
+  assert.match(emailService, /const confirmationActionsHtml =/);
+  assert.match(emailService, /background:#a94332;color:#fff;[^"]*white-space:nowrap;[^"]*">.*volunteer-signup-people-white\.png.*VOLUNTEER SIGNUP/);
+  assert.match(emailService, /VOLUNTEER SIGNUP[\s\S]*View tournament details/);
   assert.match(emailService, /width="24" height="15" alt=""[^>]*vertical-align:middle/);
   assert.match(emailService, /<span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP<\/span>/);
   assert.doesNotMatch(emailService, /&#128101;/);
   assert.ok(
     emailService.indexOf("confirmationChangeHtml") <
-      emailService.indexOf("${confirmationChangeHtml}${pageHtml}")
+      emailService.indexOf("${confirmationChangeHtml}${confirmationActionsHtml}")
   );
-  assert.match(emailService, /\$\{confirmationChangeHtml\}\$\{pageHtml\}/);
+  assert.match(emailService, /\$\{confirmationChangeHtml\}\$\{confirmationActionsHtml\}/);
+});
+
+test("confirmation email highlights its completed status and approved section headings", () => {
+  assert.match(emailService, /"Your volunteer sign-up is confirmed\."/);
+  assert.match(emailService, /emailShell\([\s\S]*true\s*\n\s*\);/);
+  assert.match(emailService, /background:#ffd84d;color:#062451;padding:6px 10px/);
+  assert.match(emailService, /background:#ffd84d;color:#062451;padding:4px 8px/);
+  for (const heading of ["Arrival & parking", "Meals & refreshments", "What to expect", "Important information", "Contact & support"]) {
+    assert.ok(emailService.includes(`["${heading}",`), `missing highlighted heading ${heading}`);
+  }
 });
 
 test("the automatic email attaches the exact browser-generated one-pager", async () => {
