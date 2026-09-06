@@ -278,12 +278,14 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /let fittedSize = 8\.2/);
   assert.match(publicScript, /drawContainedImage\(icon, x \+ 8, y \+ 3, 18, 18\)/);
   assert.match(publicScript, /confirmation: "images\/volunteer-letter\/judge-confirmation-gavel\.png\?v=1"/);
-  assert.match(publicScript, /rounded\(22, 100, 568, 44, 8, gold\)/);
+  assert.match(publicScript, /rounded\(22, 100, 365, 44, 8, gold\)/);
   assert.match(publicScript, /rounded\(29, 104, 36, 36, 6, navy\)/);
   assert.match(publicScript, /drawContainedImage\(icons\.confirmation, 31, 106, 32, 32\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.fillRect\(74, 106, 2, 32\)/);
-  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 88, 109\)/);
-  assert.match(publicScript, /rounded\(402, 151, 188, 90, 8, "#dceefa"\)/);
+  assert.match(publicScript, /scaledFont\("700 12\.5px Georgia"\)/);
+  assert.match(publicScript, /fillText\("TOURNAMENT JUDGE CONFIRMATION", 88, 113\)/);
+  assert.match(publicScript, /rounded\(402, 100, 188, 141, 8, "#dceefa", navy\)/);
+  assert.doesNotMatch(publicScript, /ctx\.fillRect\(411, 109, 3, 123\)/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
   assert.match(publicScript, /const starYellow = "#ffd84d"/);
@@ -307,12 +309,14 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
 
   assert.match(emailService, /document\.image\(icon, x \+ 8, y \+ 3, \{ fit: \[18, 18\]/);
   assert.match(emailService, /confirmation: asset\("judge-confirmation-gavel\.png"\)/);
-  assert.match(emailService, /document\.roundedRect\(22, 100, 568, 44, 8\)\.fill\(gold\)/);
+  assert.match(emailService, /document\.roundedRect\(22, 100, 365, 44, 8\)\.fill\(gold\)/);
   assert.match(emailService, /document\.roundedRect\(29, 104, 36, 36, 6\)\.fill\(navy\)/);
   assert.match(emailService, /document\.image\(icons\.confirmation, 31, 106, \{ fit: \[32, 32\]/);
   assert.match(emailService, /document\.rect\(74, 106, 2, 32\)\.fill\(navy\)/);
-  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 88, 109, \{ width: 480/);
-  assert.match(emailService, /document\.roundedRect\(402, 151, 188, 90, 8\)\.fill\("#dceefa"\)/);
+  assert.match(emailService, /\.fontSize\(12\.5\)/);
+  assert.match(emailService, /\.text\("TOURNAMENT JUDGE CONFIRMATION", 88, 113, \{ width: 285/);
+  assert.match(emailService, /document\.roundedRect\(402, 100, 188, 141, 8\)\.fillAndStroke\("#dceefa", navy\)/);
+  assert.doesNotMatch(emailService, /document\.rect\(411, 109, 3, 123\)/);
   assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);

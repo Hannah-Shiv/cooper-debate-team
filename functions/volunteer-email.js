@@ -378,12 +378,12 @@ function itineraryAttachment(event, signup) {
     document.fillColor("#d9e6f5").font("Helvetica").fontSize(8)
       .text("COOPER MIDDLE SCHOOL  ·  MCLEAN, VIRGINIA", 110, 68, { width: 392, align: "center", characterSpacing: 1.2 });
 
-    document.roundedRect(22, 100, 568, 44, 8).fill(gold);
+    document.roundedRect(22, 100, 365, 44, 8).fill(gold);
     document.roundedRect(29, 104, 36, 36, 6).fill(navy);
     document.image(icons.confirmation, 31, 106, { fit: [32, 32], align: "center", valign: "center" });
     document.rect(74, 106, 2, 32).fill(navy);
-    document.fillColor(navy).font("Times-Bold").fontSize(18)
-      .text("TOURNAMENT JUDGE CONFIRMATION", 88, 109, { width: 480, lineBreak: false });
+    document.fillColor(navy).font("Times-Bold").fontSize(12.5)
+      .text("TOURNAMENT JUDGE CONFIRMATION", 88, 113, { width: 285, lineBreak: false });
     const headline = fitHeadline(personalizedHeadline, 365);
     document.fillColor(navy).font("Times-Bold").fontSize(headline.size);
     headline.rows.forEach((row, index) => {
@@ -393,14 +393,13 @@ function itineraryAttachment(event, signup) {
       .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 181, { width: 365, height: 41, lineGap: 1.5 });
     document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 226, { width: 365, height: 21, lineGap: 1.5 });
 
-    document.roundedRect(402, 151, 188, 90, 8).fill("#dceefa");
-    document.rect(411, 159, 3, 74).fill(gold);
-    document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 425, 158);
-    document.font("Times-Bold").fontSize(11).text(eventName, 425, 172, { width: 151, height: 25, ellipsis: true });
-    document.fillColor(ink).font("Helvetica").fontSize(8).text(displayDate(event.date) || "Date to be announced", 425, 198, { width: 151, height: 10 });
+    document.roundedRect(402, 100, 188, 141, 8).fillAndStroke("#dceefa", navy);
+    document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 416, 110);
+    document.font("Times-Bold").fontSize(13).text(eventName, 416, 126, { width: 160, height: 31, ellipsis: true });
+    document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 416, 163, { width: 160, height: 20 });
     const location = [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join("\n") || "Location to be announced";
-    document.fontSize(7.5).text(location, 425, 212, { width: 151, height: 17, ellipsis: true });
-    document.font("Helvetica-Bold").fontSize(7).text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 425, 231, { width: 151, height: 8, ellipsis: true });
+    document.fontSize(8).text(location, 416, 187, { width: 160, height: 29, ellipsis: true });
+    document.font("Helvetica-Bold").fontSize(7.5).text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 416, 222, { width: 160, height: 12, ellipsis: true });
 
     const left = 22;
     const right = 304;
