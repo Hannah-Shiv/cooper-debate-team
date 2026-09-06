@@ -379,6 +379,29 @@ function itineraryAttachment(event, signup) {
       }
       return { size: 2, lineGap: .2 };
     };
+    const labeledParagraph = (label, body, x, y, maxWidth, fontSize = 8, leading = 11.5) => {
+      document.font("Helvetica-Bold").fontSize(fontSize);
+      const labelWidth = document.widthOfString(`${label} `);
+      document.font("Helvetica").fontSize(fontSize);
+      const words = String(body || "").trim().split(/\s+/).filter(Boolean);
+      let firstLine = "";
+      while (words.length) {
+        const next = firstLine ? `${firstLine} ${words[0]}` : words[0];
+        if (document.widthOfString(next) > maxWidth - labelWidth && firstLine) break;
+        firstLine = next;
+        words.shift();
+      }
+      document.fillColor(ink).font("Helvetica-Bold").fontSize(fontSize)
+        .text(label, x, y, { width: labelWidth, lineBreak: false });
+      if (firstLine) {
+        document.font("Helvetica").fontSize(fontSize)
+          .text(firstLine, x + labelWidth, y, { width: maxWidth - labelWidth, lineBreak: false });
+      }
+      if (words.length) {
+        document.font("Helvetica").fontSize(fontSize)
+          .text(words.join(" "), x, y + leading, { width: maxWidth, height: 52 - leading, ellipsis: true, lineGap: 2 });
+      }
+    };
 
     document.rect(0, 0, pageWidth, 92).fill(navy);
     document.rect(0, 90, pageWidth, 2).fill(gold);
@@ -409,9 +432,9 @@ function itineraryAttachment(event, signup) {
     document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 416, 110);
     document.font("Times-BoldItalic").fontSize(fitTournamentTitle(eventName, 160))
       .text(eventName, 416, 126, { width: 160, height: 16, lineBreak: false });
-    document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 416, 163, { width: 160, height: 20 });
+    document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 416, 157, { width: 160, height: 20 });
     const location = [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join("\n") || "Location to be announced";
-    document.fontSize(8).text(location, 416, 187, { width: 160, height: 29, ellipsis: true });
+    document.fontSize(8).text(location, 416, 184, { width: 160, height: 32, ellipsis: true, lineGap: 3 });
     document.font("Helvetica-Bold").fontSize(7.5).text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 416, 222, { width: 160, height: 12, ellipsis: true });
 
     const left = 22;
@@ -449,10 +472,7 @@ function itineraryAttachment(event, signup) {
 
     sectionBar(right, 254, rightW, "Tournament Resolution", icons.resolution);
     document.roundedRect(right, 278, rightW, 74, 5).fillAndStroke("#f5f9fc", line);
-    document.fillColor(ink).font("Helvetica-Bold").fontSize(8)
-      .text("Resolved:", right + 10, 290, { width: 42, lineBreak: false });
-    document.font("Helvetica").fontSize(8)
-      .text(APPROVED_RESOLUTION, right + 52, 290, { width: rightW - 62, height: 52, ellipsis: true, lineGap: 2 });
+    labeledParagraph("Resolved:", APPROVED_RESOLUTION, right + 10, 290, rightW - 20);
     sectionBar(right, 362, rightW, "What to Expect", icons.expectations);
     document.roundedRect(right, 386, rightW, 116, 5).fillAndStroke("#f5f9fc", line);
     bullets(APPROVED_EXPECTATIONS, right + 10, 395, rightW - 20, 7.2, 20, 17);

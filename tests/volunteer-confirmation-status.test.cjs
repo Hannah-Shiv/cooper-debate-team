@@ -314,6 +314,11 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /const font = `italic 700 \$\{size\}px Georgia`/);
   assert.match(publicScript, /ctx\.measureText\(title\)\.width <= maxWidth/);
   assert.match(publicScript, /ctx\.fillText\(tournamentTitle, 416, 126\)/);
+  assert.match(publicScript, /const labeledParagraph = \(label, body, x, y, maxWidth/);
+  assert.match(publicScript, /ctx\.measureText\(`\$\{label\} `\)\.width/);
+  assert.match(publicScript, /labeledParagraph\("Resolved:", resolution, right \+ 10, 290, rightW - 20/);
+  assert.match(publicScript, /416, 157, 160, "8\.5px Arial"/);
+  assert.match(publicScript, /416, 184, 160, "8px Arial", ink, 3, 13/);
   assert.doesNotMatch(publicScript, /barIconSymbol\(title\)/);
   assert.match(publicScript, /ctx\.fillStyle = navy; ctx\.beginPath\(\); ctx\.arc\(x \+ 4, cursor \+ 5, 5\.2/);
   assert.match(publicScript, /const starYellow = "#ffd84d"/);
@@ -352,6 +357,11 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(emailService, /document\.font\("Times-BoldItalic"\)\.fontSize\(size\)/);
   assert.match(emailService, /document\.widthOfString\(title\) <= maxWidth/);
   assert.match(emailService, /\.text\(eventName, 416, 126, \{ width: 160, height: 16, lineBreak: false \}\)/);
+  assert.match(emailService, /const labeledParagraph = \(label, body, x, y, maxWidth/);
+  assert.match(emailService, /document\.widthOfString\(`\$\{label\} `\)/);
+  assert.match(emailService, /labeledParagraph\("Resolved:", APPROVED_RESOLUTION, right \+ 10, 290, rightW - 20\)/);
+  assert.match(emailService, /"Date to be announced", 416, 157/);
+  assert.match(emailService, /location, 416, 184, \{ width: 160, height: 32, ellipsis: true, lineGap: 3 \}/);
   assert.match(emailService, /\.fontSize\(8\.2\)/);
   assert.doesNotMatch(emailService, /sectionBarIcon\(title\)/);
   assert.match(emailService, /document\.circle\(x, y, 5\.2\)\.fill\(navy\)/);
@@ -376,12 +386,11 @@ test("confirmation PDF uses supplied title icons, navy circles, yellow stars, an
   assert.match(publicScript, /const left = 22, right = 304, colW = 276, rightW = 286/);
   assert.match(publicScript, /bar\(right, 254, rightW, "Tournament Resolution"/);
   assert.match(publicScript, /bar\(right, 362, rightW, "What to Expect"/);
-  assert.match(publicScript, /fillText\("Resolved:", right \+ 10, 290\)/);
+  assert.match(publicScript, /labeledParagraph\("Resolved:", resolution, right \+ 10, 290, rightW - 20/);
   assert.match(emailService, /const rightW = 286/);
   assert.match(emailService, /sectionBar\(right, 254, rightW, "Tournament Resolution"/);
   assert.match(emailService, /sectionBar\(right, 362, rightW, "What to Expect"/);
-  assert.match(emailService, /\.font\("Helvetica-Bold"\)\.fontSize\(8\)\s*\.text\("Resolved:", right \+ 10, 290/);
-  assert.match(emailService, /\.text\(APPROVED_RESOLUTION, right \+ 52, 290/);
+  assert.match(emailService, /labeledParagraph\("Resolved:", APPROVED_RESOLUTION, right \+ 10, 290, rightW - 20\)/);
 });
 
 test("the four lower information cards use distinct muted fills", () => {

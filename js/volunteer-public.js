@@ -948,6 +948,28 @@
       rows.forEach((row, index) => ctx.fillText(row, x, y + index * leading));
       return y + rows.length * leading;
     };
+    const labeledParagraph = (label, body, x, y, maxWidth, font, boldFont, color = ink, leading = 11.5) => {
+      ctx.letterSpacing = "0px";
+      ctx.font = scaledFont(boldFont);
+      const labelWidth = ctx.measureText(`${label} `).width;
+      ctx.font = scaledFont(font);
+      const words = String(body || "").trim().split(/\s+/).filter(Boolean);
+      let firstLine = "";
+      while (words.length) {
+        const next = firstLine ? `${firstLine} ${words[0]}` : words[0];
+        if (ctx.measureText(next).width > maxWidth - labelWidth && firstLine) break;
+        firstLine = next;
+        words.shift();
+      }
+      const remainingRows = wrap(words.join(" "), maxWidth, font);
+      ctx.fillStyle = color;
+      ctx.textBaseline = "top";
+      ctx.font = scaledFont(boldFont);
+      ctx.fillText(label, x, y);
+      ctx.font = scaledFont(font);
+      if (firstLine) ctx.fillText(firstLine, x + labelWidth, y);
+      remainingRows.forEach((row, index) => ctx.fillText(row, x, y + (index + 1) * leading));
+    };
     const rounded = (x, y, w, h, r, fill, stroke) => {
       ctx.beginPath(); ctx.roundRect(x, y, w, h, r);
       ctx.fillStyle = fill; ctx.fill();
@@ -1040,8 +1062,8 @@
     const tournamentTitle = value(event.title, "Upcoming Tournament");
     ctx.font = scaledFont(fitTournamentTitle(tournamentTitle, 160)); ctx.fillStyle = navy;
     ctx.fillText(tournamentTitle, 416, 126);
-    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 416, 163, 160, "8.5px Arial", ink, 2, 10);
-    text(`${location}${address ? `\n${address}` : ""}`, 416, 187, 160, "8px Arial", ink, 3, 10);
+    text(`${event.date ? dateLabel(event.date) : "Date to be announced"}`, 416, 157, 160, "8.5px Arial", ink, 2, 10);
+    text(`${location}${address ? `\n${address}` : ""}`, 416, 184, 160, "8px Arial", ink, 3, 13);
     text(`Hosted by: ${value(event.host, "Cooper Debate Team")}`, 416, 222, 160, "700 7.5px Arial", ink, 2, 9);
 
     const left = 22, right = 304, colW = 276, rightW = 286;
@@ -1070,8 +1092,7 @@
     });
     bar(right, 254, rightW, "Tournament Resolution", icons.resolution);
     rounded(right, 278, rightW, 74, 5, "#f5f9fc", line);
-    ctx.font = scaledFont(sectionBodyFont("700 8px Arial")); ctx.fillStyle = ink; ctx.fillText("Resolved:", right + 10, 290);
-    text(resolution, right + 52, 290, rightW - 62, sectionBodyFont("8px Arial"), ink, 5, 11.5);
+    labeledParagraph("Resolved:", resolution, right + 10, 290, rightW - 20, sectionBodyFont("8px Arial"), sectionBodyFont("700 8px Arial"));
     bar(right, 362, rightW, "What to Expect", icons.expectations);
     rounded(right, 386, rightW, 116, 5, "#f5f9fc", line);
     bullets(expected, right + 10, 395, rightW - 20, "7.5px Arial", 15);
