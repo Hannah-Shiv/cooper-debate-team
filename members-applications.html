@@ -113,9 +113,9 @@
       <button class="mub-signout" type="button" onclick="memberSignOut()"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign Out</button>
     </div>
     <main class="portal-page">
-      <section id="auth-loading" class="access"><div class="access-box"><div class="eyebrow">Coach workspace</div><h1>Loading Applications</h1><p>Checking your secure member access…</p></div></section>
-      <section id="auth-required" class="access" hidden><div class="access-box"><div class="eyebrow">Coach workspace</div><h1>Sign in to review applications</h1><p>Application records include private student and family information and are available only to verified coaches.</p><a class="login" href="members.html">Sign in to the portal</a></div></section>
-      <section id="access-denied" class="access" hidden><div class="access-box"><div class="eyebrow">Coach workspace</div><h1>Coach access required</h1><p>This private workspace is only available to Cooper Debate coaches. Students and captains cannot view application records.</p><a class="login" href="members-resources.html">Return to portal</a></div></section>
+      <section id="auth-loading" class="access"><div class="access-box"><div class="eyebrow">Application workspace</div><h1>Loading Applications</h1><p>Checking your secure member access…</p></div></section>
+      <section id="auth-required" class="access" hidden><div class="access-box"><div class="eyebrow">Application workspace</div><h1>Sign in to review applications</h1><p>Application records include private student and family information and are available only to verified coaches and Website Admins.</p><a class="login" href="members.html">Sign in to the portal</a></div></section>
+      <section id="access-denied" class="access" hidden><div class="access-box"><div class="eyebrow">Application workspace</div><h1>Administrative access required</h1><p>This private workspace is available only to Cooper Debate coaches and Website Admins. Students and captains cannot view application records.</p><a class="login" href="members-resources.html">Return to portal</a></div></section>
       <section id="dashboard" hidden>
         <div class="hub-header">
           <div class="hub-heading">
@@ -168,9 +168,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script src="data/approved-members.js?v=6"></script>
+  <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/applications-admin.js?v=26"></script>
+  <script src="js/applications-admin.js?v=28"></script>
   <script src="js/members-nav.js?v=9"></script>
   <script src="js/dome-nav.js"></script>
 </body>

@@ -67,22 +67,28 @@ async function getPortalMemberAccess(user, firestore) {
   }
 
   if (firestore) {
-    const accessDoc = await firestore.collection("portal_members").doc(email).get();
-    if (accessDoc.exists) {
-      const data = accessDoc.data() || {};
-      return {
-        approved: data.active === true,
-        role: typeof resolvePortalRole === "function"
-          ? resolvePortalRole(data.role, email)
-          : (["coach", "captain", "member", "website-admin"].includes(data.role) ? data.role : "member"),
-        displayName: String(data.name || user.displayName || "").trim(),
-      };
+    try {
+      const accessDoc = await firestore.collection("portal_members").doc(email).get();
+      if (accessDoc.exists) {
+        const data = accessDoc.data() || {};
+        return {
+          approved: data.active === true,
+          role: typeof resolvePortalRole === "function"
+            ? resolvePortalRole(data.role, email)
+            : (["coach", "captain", "member", "website-admin"].includes(data.role) ? data.role : "member"),
+          displayName: String(data.name || user.displayName || "").trim(),
+        };
+      }
+    } catch (error) {
+      console.warn("[Portal access] Could not load the directory role; using local access fallback:", error);
     }
   }
 
   return {
     approved: APPROVED_MEMBERS.some(member => member.toLowerCase() === email),
-    role: typeof getAdminRole === "function" ? getAdminRole(email) : "member",
+    role: typeof resolvePortalRole === "function"
+      ? resolvePortalRole("member", email)
+      : (typeof getAdminRole === "function" ? getAdminRole(email) : "member"),
     displayName: MEMBER_NAMES[email] || String(user.displayName || "").trim(),
   };
 }
