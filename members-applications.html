@@ -82,6 +82,8 @@
     /* Student, guardian, and commitment blocks match the coach-review reference exactly. */
     .aligned-info-card h3,.aligned-commitments-card h3{align-items:center;display:flex;gap:7px}.aligned-info-card .detail-grid{display:grid;gap:7px;grid-template-columns:1fr}.aligned-info-card .fact{align-items:baseline;column-gap:16px;display:grid;grid-template-columns:105px minmax(0,1fr)}.aligned-info-card .fact span{display:block;margin:0;text-transform:none}.aligned-info-card .fact b{font-weight:600;text-align:left}.aligned-commitments-card .commitments{display:grid;gap:7px 18px;grid-auto-flow:column;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(4,auto)}.aligned-commitments-card .commitment{background:none;border:0;padding:0}
     @media(max-width:760px){.aligned-commitments-card .commitments{grid-auto-flow:row;grid-template-columns:1fr;grid-template-rows:none}}
+    .delete-application{align-items:center;background:rgba(173,41,53,.24);border:1px solid rgba(255,141,151,.7);border-radius:4px;color:#ffb7bd;cursor:pointer;display:inline-flex;font-size:.58rem;font-weight:700;gap:6px;letter-spacing:.08em;padding:7px 10px;text-transform:uppercase}
+    .delete-application:hover{background:#ad2935;color:#fff}.delete-application:disabled{cursor:wait;opacity:.65}.delete-application .icon-art{height:16px;width:16px}
   </style>
 </head>
 <body>
@@ -161,7 +163,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=6"></script>
   <script src="data/admins.js?v=10"></script>
-  <script src="js/applications-admin.js?v=25"></script>
+  <script src="js/applications-admin.js?v=26"></script>
   <script src="js/members-nav.js?v=9"></script>
   <script src="js/dome-nav.js"></script>
 </body>

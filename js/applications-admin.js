@@ -95,7 +95,7 @@
       applicants: "applicants", pending: "pending", accepted: "accepted", declined: "declined",
       grade: "grade", debate: "debate", calendar: "calendar", commitments: "commitments",
       check: "accepted", hold: "hold", person: "person", guardian: "guardian", phone: "phone",
-      clipboard: "clipboard", info: "info", lock: "lock", search: "search",
+      clipboard: "clipboard", info: "info", lock: "lock", search: "search", delete: "declined",
     };
     const asset = assets[name] || "info";
     return `<img class="icon-art icon-${asset} ${className}" src="images/application-icons/${asset}.png" alt="" aria-hidden="true">`;
@@ -170,7 +170,7 @@
     const decision = status(item);
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)}</div></div></header>
+      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)}</div><button type="button" class="delete-application" id="delete-application">${icon("delete")}Delete entry</button></div></header>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience, true)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts, true)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="info-card aligned-info-card"><h3>${icon("guardian", "card-heading-icon")}Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Email", parent.email)}${fact("Phone", parent.phone)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments confirmed</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
@@ -190,6 +190,29 @@
       if (answerDetail) openAnswerDialog(answerDetail, button);
     }));
     $("save-decision").addEventListener("click", () => saveDecision(item.id));
+    $("delete-application").addEventListener("click", () => deleteApplication(item));
+  }
+  async function deleteApplication(item) {
+    const studentName = [item.student?.firstName, item.student?.lastName].filter(Boolean).join(" ") || "this applicant";
+    if (!window.confirm(`Permanently delete ${studentName}'s application?\n\nThis cannot be undone.`)) return;
+    const button = $("delete-application");
+    button.disabled = true;
+    button.textContent = "Deleting…";
+    try {
+      const token = await currentUser.getIdToken();
+      const response = await fetch(REVIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "delete", applicationId: item.id }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to delete the application.");
+      selectedId = "";
+    } catch (error) {
+      alert(error.message || "Unable to delete the application.");
+      button.disabled = false;
+      button.innerHTML = `${icon("delete")}Delete entry`;
+    }
   }
   async function saveDecision(applicationId) {
     const button = $("save-decision");
