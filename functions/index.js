@@ -244,6 +244,7 @@ exports.removePublicCalendarOnDelete = onDocumentDeleted(
 const COACH_EMAILS = new Set([
   "pgkonde@fcps.edu",
   "1806950@fcpsschools.net",
+  "hannahbshiv@gmail.com",
 ]);
 
 async function hasFullAdminAccess(email) {
@@ -1314,8 +1315,8 @@ exports.syncApplicationFromSheet = onRequest(
 );
 
 // Application records are deliberately browser read-only. Coaches use this
-// endpoint to leave an authenticated, attributable admissions decision without
-// changing the separate email-delivery workflow.
+// endpoint to leave an authenticated, attributable admissions decision or
+// permanently remove an unwanted application.
 exports.manageApplicationReview = onRequest(
   { region: "us-central1", cors: true },
   async (req, res) => {
@@ -1347,11 +1348,35 @@ exports.manageApplicationReview = onRequest(
 
     const body = req.body || {};
     const applicationId = cleanText(body.applicationId, 128);
+    const action = cleanText(body.action, 24).toLowerCase() || "review";
     const decision = cleanText(body.decision, 24).toLowerCase();
     const internalNote = cleanText(body.internalNote, 2000);
 
     if (!/^[a-zA-Z0-9_-]{12,128}$/.test(applicationId)) {
       res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
+    if (action === "delete") {
+      const applicationRef = getFirestore().collection("applications").doc(applicationId);
+      try {
+        await getFirestore().runTransaction(async transaction => {
+          const application = await transaction.get(applicationRef);
+          if (!application.exists) throw new Error("That application no longer exists.");
+          transaction.delete(applicationRef);
+        });
+        res.status(200).json({ ok: true, deleted: true });
+      } catch (error) {
+        console.error("manageApplicationReview delete failed:", {
+          applicationId,
+          reviewerEmail,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        res.status(400).json({ error: cleanText(error.message, 240) || "Unable to delete the application." });
+      }
+      return;
+    }
+    if (action !== "review") {
+      res.status(400).json({ error: "Unsupported application action." });
       return;
     }
     if (!["pending", "accepted", "declined"].includes(decision)) {

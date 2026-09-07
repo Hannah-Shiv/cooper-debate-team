@@ -28,6 +28,7 @@
 // badge. Directory-managed roles remain authoritative for other identities.
 const PORTAL_ROLE_OVERRIDES = {
   "1806950@fcpsschools.net": "website-admin",
+  "hannahbshiv@gmail.com": "website-admin", // Temporary Website Admin testing access
 };
 
 const ADMIN_ROLES = [
