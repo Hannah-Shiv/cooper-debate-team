@@ -192,6 +192,12 @@
       .queue-panel{background:linear-gradient(155deg,#17283b,#0d1929);border-color:rgba(89,134,183,.5)}.queue-panel .list-head h2{color:#dce9f8}.queue-panel .application-row{background:rgba(17,35,54,.78);border-color:rgba(111,151,194,.2)}.queue-panel .application-row:hover{background:rgba(29,61,91,.75);border-color:rgba(104,161,216,.58)}.queue-panel .application-row.active{background:linear-gradient(120deg,#254f78,#183753);border-color:#d4aa45;box-shadow:inset 3px 0 #d4aa45,0 0 0 1px rgba(212,170,69,.15)}.queue-panel .row-context{color:#afc3da}
       .detail{background:linear-gradient(150deg,#1b2d40,#111e2e);border-color:rgba(96,137,180,.45)}.detail-tabs{background:rgba(9,21,35,.8)}.detail-tab-pane>.section{background:rgba(24,45,67,.62);border-color:rgba(105,149,193,.24)}.quick-tile,.info-card,.commitments-card,.answer-box{background:rgba(10,27,44,.72);border-color:rgba(100,145,188,.24)}.quick-tile span,.fact span,.answer-box span{color:#b4c9df}.quick-tile b,.fact b,.answer{color:#edf5fc}
       @media(min-width:761px){.review-section .review-card{grid-template-columns:minmax(285px,.72fr) minmax(700px,2.28fr)}.review-section .decision-buttons{grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.review-section .decision-button,.review-section .review-action-delete,.review-section .save-decision{display:flex!important;height:auto;min-height:54px;padding:5px 7px;width:100%}.review-section .save-row{display:none}.review-section .decision-main .icon-art{height:19px;width:19px}.review-section .decision-button span{font-size:.68rem}.review-section .decision-button small{font-size:.5rem}}
+      /* Embedded tab: reclaim the iframe's reserved top gap without moving or covering Member Hub. */
+      @media(min-width:761px){html.applications-embedded .summary-controls-row{margin-top:-44px}}
+      /* Selected decisions stay dark; selection is shown with a crisp outline instead of a bright fill. */
+      .decision-button.accept.selected{background:linear-gradient(180deg,#1b704b,#104b34);border-color:#82d4aa;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 0 0 2px rgba(80,190,135,.2);color:#fff}
+      .decision-button.hold.selected{background:linear-gradient(180deg,#8a621d,#60410f);border-color:#e1bd63;box-shadow:inset 0 1px 0 rgba(255,255,255,.17),0 0 0 2px rgba(208,165,62,.18);color:#fff}
+      .decision-button.decline.selected{background:linear-gradient(180deg,#7d3d47,#55282f);border-color:#d3878f;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 0 0 2px rgba(179,91,101,.18);color:#fff}
   </style>
 </head>
 <body>
