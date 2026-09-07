@@ -205,7 +205,7 @@ function emailShell(title, intro, contentHtml, footerText, highlightTitle = fals
     "<table role=\"presentation\" style=\"border-collapse:collapse;width:100%;\"><tr>",
     "<td style=\"vertical-align:middle;text-align:left;width:64px;\"><img src=\"https://cooperdebateteam.com/images/cooper-debate-badge.png\" width=\"56\" height=\"56\" alt=\"Cooper Debate Team badge\" style=\"display:block;margin-right:auto;width:56px;height:56px;object-fit:contain;border:0;\"></td>",
     "<td style=\"vertical-align:middle;text-align:center;\"><img src=\"https://cooperdebateteam.com/images/email-cooper-debate-wordmark.png\" width=\"300\" height=\"52\" alt=\"Cooper Debate Team\" style=\"display:block;margin:0 auto;width:300px;max-width:100%;height:auto;border:0;\"></td>",
-    "<td style=\"vertical-align:middle;text-align:right;width:64px;\"><img src=\"https://cooperdebateteam.com/images/apply-logo.png\" width=\"52\" height=\"52\" alt=\"Cooper C crest\" style=\"display:block;margin-left:auto;width:52px;height:52px;object-fit:contain;border:0;\"></td>",
+    "<td style=\"vertical-align:middle;text-align:right;width:64px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"52\" height=\"52\" alt=\"Cooper C with jaguar\" style=\"display:block;margin-left:auto;width:52px;height:52px;object-fit:contain;border:0;\"></td>",
     "</tr></table>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
     highlightTitle

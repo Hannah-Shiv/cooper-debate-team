@@ -140,12 +140,12 @@ test("confirmation email uses the approved subject, greeting, badge, centered wo
   assert.match(emailService, /width=\\"56\\" height=\\"56\\"/);
   assert.match(emailService, /text-align:left;width:64px;\\"><img/);
   assert.match(emailService, /text-align:center;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/email-cooper-debate-wordmark\.png\\" width=\\"300\\" height=\\"52\\"/);
-  assert.match(emailService, /text-align:right;width:64px;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/apply-logo\.png\\" width=\\"52\\" height=\\"52\\"/);
+  assert.match(emailService, /text-align:right;width:64px;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/index-footer-jaguar\.png\\" width=\\"52\\" height=\\"52\\"/);
   assert.ok(
     emailService.indexOf("cooper-debate-badge.png") <
       emailService.indexOf("email-cooper-debate-wordmark.png") &&
       emailService.indexOf("email-cooper-debate-wordmark.png") <
-      emailService.indexOf("apply-logo.png")
+      emailService.indexOf("index-footer-jaguar.png")
   );
 });
 
@@ -174,7 +174,7 @@ test("confirmation email highlights its completed status and approved section he
   assert.match(emailService, /judge-confirmation-gavel\.png/);
   assert.match(emailService, /color:#a94332;font-size:24px/);
   assert.match(emailService, /cooper-debate-badge\.png/);
-  assert.match(emailService, /apply-logo\.png/);
+  assert.match(emailService, /index-footer-jaguar\.png/);
   assert.match(emailService, /border:1px solid #91aac3/);
   assert.match(emailService, /height:44px;background:#a94332/);
   assert.match(emailService, /height:44px;background:#062451/);
