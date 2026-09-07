@@ -187,7 +187,7 @@ test("confirmation email highlights its completed status and approved section he
 test("the automatic email attaches the exact browser-generated one-pager", async () => {
   const supplied = Buffer.from("%PDF-1.4\nexact-browser-one-pager\n", "utf8").toString("base64");
   const attachment = await createVolunteerItineraryAttachment(
-    { title: "Hyperscale Data Centers", date: "2026-09-26" },
+    { title: "Hyperscale Data Centers", date: "2026-10-24" },
     { confirmationPdfBase64: supplied }
   );
   assert.equal(attachment.content, supplied);
