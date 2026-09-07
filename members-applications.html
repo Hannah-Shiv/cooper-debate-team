@@ -148,21 +148,19 @@
      @media(min-width:761px){body.dome-open .portal-page{padding-top:95px}.portal-page{padding-top:95px}.hub-header{min-height:60px}.applications-banner{flex:0 0 auto}.summary-controls-row{grid-template-columns:minmax(460px,.95fr) minmax(520px,1.05fr);margin-bottom:8px}.summary{min-height:76px}.metric{min-height:74px}.metric-label{top:8px}.workspace{min-height:0}.detail{padding-bottom:120px}.review-section{min-height:105px}.review-section .review-controls{grid-template-columns:minmax(235px,.85fr) minmax(420px,1.4fr)}.review-section .decision-button{min-height:58px}.review-section .review-note{min-height:52px}.review-section .save-row{margin-top:5px}.review-section .save-message{display:none}}
      @media(min-width:761px) and (max-width:1120px){.hub-header{gap:10px}.member-section-tab,.tab-btn{font-size:.62rem;padding:9px 10px}.applications-banner{margin-bottom:7px}.applications-banner h1{font-size:1.7rem}.banner-motto{font-size:.9rem}.summary-controls-row{grid-template-columns:1fr}.summary{min-height:68px}.metric{min-height:66px}.controls{min-height:51px}.workspace{grid-template-columns:205px minmax(0,1fr)}.detail-heading h2{font-size:1.8rem}.review-section{padding:7px 12px}.review-section .review-controls{grid-template-columns:235px minmax(0,1fr);gap:9px}.review-section .decision-button{min-height:54px}.review-section .decision-main .icon-art{height:22px;width:22px}.review-section .decision-button span{font-size:.7rem}.review-section .decision-button small{font-size:.55rem}.review-action-delete{font-size:.53rem;padding:7px}.review-section #save-decision{font-size:.55rem;padding:8px}}
      @media(max-width:760px){.applications-banner{margin-top:4px}.banner-motto{display:none}.applications-banner h1{font-size:1.7rem}.workspace{grid-template-columns:1fr}.detail-tab-pane>.section{padding:9px}.review-section{position:static!important;margin:10px -15px 0!important;border-radius:7px!important}.review-section .review-controls{grid-template-columns:1fr}.review-section .save-row{flex-wrap:wrap}.review-section .save-message{position:static;order:4}.review-action-delete{order:1}.review-section #save-decision{order:3}}
-     /* Restore the original Member Hub menu composition; polish it without redesigning it. */
-     .member-hub-menu{background:linear-gradient(105deg,#1c2031 0%,#1c2030 70%,#202438 100%);border:1px solid rgba(192,164,39,.38);box-shadow:inset 0 1px 0 rgba(255,255,255,.025),0 7px 20px rgba(0,0,0,.18);flex:0 0 auto;margin:0 0 10px;padding:10px 16px 11px}
-     .member-hub-menu .hub-header{border:0;margin:0 0 19px;min-height:45px;padding:0}
-     .member-hub-menu .hub-title{color:#f2d94e;font-size:2.15rem;line-height:.92;text-shadow:0 0 10px rgba(242,217,78,.13)}
-     .member-hub-menu .hub-sub{color:rgba(255,255,255,.57);font-size:.57rem;letter-spacing:.12em}
-     .member-hub-menu .tab-bar{gap:7px;margin:0}
-     .member-hub-menu .tab-bar .tab-btn{background:rgba(10,17,38,.14);border:1px solid rgba(255,255,255,.09);border-radius:999px;box-shadow:none;color:#d7bd37;font-size:.58rem;letter-spacing:.09em;padding:8px 17px;transform:none}
-     .member-hub-menu .tab-bar .tab-btn svg{height:12px;width:12px}
-     .member-hub-menu .tab-bar .tab-btn:hover{background:rgba(221,191,48,.07);border-color:rgba(221,191,48,.55);color:#f2d94e;box-shadow:0 0 12px rgba(221,191,48,.08);transform:none}
-     .member-hub-menu .tab-bar .tab-btn.active{background:rgba(221,191,48,.09);border-color:rgba(242,217,78,.7);box-shadow:inset 0 0 0 1px rgba(242,217,78,.08),0 0 13px rgba(221,191,48,.08);color:#f7df55}
-     .member-hub-menu .applications-banner{background:none;border:0;border-radius:0;box-shadow:none;display:block;margin:0;padding:0}
-     .member-hub-menu .applications-banner h1{color:#e8d67b;font-size:1.45rem;line-height:1;margin:0}
-     .member-hub-menu .applications-banner p{color:#abc4e4;font-size:.61rem;letter-spacing:0;margin:5px 0 0}
-     @media(min-width:761px){.member-hub-menu .hub-header{min-height:45px}.member-hub-menu .applications-banner{margin:0}}
-     @media(max-width:760px){.member-hub-menu{padding:14px}.member-hub-menu .hub-header{gap:13px;margin-bottom:17px}.member-hub-menu .tab-bar{gap:6px}.member-hub-menu .tab-bar .tab-btn{padding:8px 12px}.member-hub-menu .applications-banner{margin:0}}
+     /* The Member Hub header is identical across Debaters, Roster Manager, and Track Applications. */
+     .member-hub-menu{background:transparent;border:0;box-shadow:none;flex:0 0 auto;margin:0;padding:0}
+     .member-hub-menu .hub-header{align-items:center;border:0;display:flex;flex-wrap:nowrap;gap:24px;justify-content:space-between;margin-bottom:32px;min-height:72px;padding:0}
+     .member-hub-menu .hub-heading{flex:1 1 auto;min-width:0}
+     .member-hub-menu .hub-title{color:#ffd700;font:700 clamp(32.4px,4.05vw,50.1px)/1 "Cormorant Garamond",serif;margin:0 0 6px;text-shadow:0 0 60px rgba(255,215,0,.2)}
+     .member-hub-menu .hub-sub{color:rgba(255,255,255,.68);font:400 11.8px "Josefin Sans",sans-serif;letter-spacing:.14em;margin:0;text-transform:uppercase}
+     .member-hub-menu .tab-bar{display:flex;flex:0 0 auto;gap:6px;margin:0 0 2px;white-space:nowrap}
+     .member-hub-menu .tab-bar .tab-btn{align-items:center;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:50px;box-shadow:none;color:rgba(255,215,0,.82);cursor:pointer;display:inline-flex;font:700 11.5px "Josefin Sans",sans-serif;gap:7px;letter-spacing:.08em;padding:9px 22px;text-transform:uppercase;transform:none;transition:all .2s}
+     .member-hub-menu .tab-bar .tab-btn svg{height:14px;opacity:.78;width:14px}
+     .member-hub-menu .tab-bar .tab-btn:hover{background:rgba(255,215,0,.07);border-color:rgba(255,215,0,.65);box-shadow:none;color:#ffe66d;transform:none}
+     .member-hub-menu .tab-bar .tab-btn.active{background:rgba(255,215,0,.16);border-color:rgba(255,215,0,.75);box-shadow:none;color:#ffe66d}
+     .member-hub-menu .tab-bar .tab-btn.active svg{opacity:1}
+     @media(max-width:760px){.member-hub-menu .hub-header{align-items:flex-start;flex-direction:column;gap:18px}.member-hub-menu .tab-bar{flex-wrap:wrap;margin:0;white-space:normal}}
   </style>
 </head>
 <body>
@@ -210,10 +208,10 @@
             </a>
           </nav>
          </div>
+        </section>
          <section class="applications-banner" aria-labelledby="applications-title">
            <div><h1 id="applications-title">Track Applications</h1><p>Review and manage debate team applications</p></div>
          </section>
-        </section>
         <div class="summary-controls-row">
         <section class="summary" aria-label="Application summary">
           <div class="metric"><img class="metric-icon" src="images/application-icons/applications-summary.png" alt="" aria-hidden="true"><div><span class="metric-label">Total applications</span><strong id="stat-total">0</strong></div></div>
