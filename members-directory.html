@@ -89,6 +89,8 @@
       color: #ffe66d;
     }
     .tab-btn.active svg { opacity: 1; }
+    #applications-section { height: calc(100vh - 220px); min-height: 520px; }
+    #applications-frame { background: #1c2030; border: 0; display: block; height: 100%; width: 100%; }
 
     /* ── Top bar: search + sort + filter on one line ────────── */
     .dir-top-bar {
@@ -674,10 +676,10 @@
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
             Roster Manager
           </button>
-          <a class="tab-btn" id="tab-applications" href="members-applications.html" style="display:none">
+          <button class="tab-btn" id="tab-applications" type="button" onclick="switchTab('applications')" style="display:none">
             <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4.5V3h6v1.5M8.5 9h7M8.5 13h7M8.5 17h4"/><path d="M7.2 9.1l.8.8 1.3-1.6"/></svg>
             Track applications
-          </a>
+          </button>
         </div>
       </div>
 
@@ -1016,6 +1018,9 @@
           </table>
         </div>
       </div><!-- /admin-section -->
+      <div id="applications-section" style="display:none">
+        <iframe id="applications-frame" title="Track Applications"></iframe>
+      </div>
 
     </div><!-- /dashboard-wrap -->
   </div><!-- /mp-content -->
@@ -1841,8 +1846,10 @@ function switchTab(tab) {
   currentTab = tab;
   document.getElementById('tab-dir').classList.toggle('active', tab === 'directory');
   document.getElementById('tab-roster').classList.toggle('active', tab === 'roster');
+  document.getElementById('tab-applications').classList.toggle('active', tab === 'applications');
   document.getElementById('dir-section').style.display   = tab === 'directory' ? '' : 'none';
   document.getElementById('admin-section').style.display = tab === 'roster'    ? '' : 'none';
+  document.getElementById('applications-section').style.display = tab === 'applications' ? '' : 'none';
   if (tab === 'directory') {
     // Always return to the grid when clicking the Directory tab
     document.getElementById('profile-panel').style.display = 'none';
@@ -1852,13 +1859,21 @@ function switchTab(tab) {
     if (window.location.search) history.pushState({}, '', window.location.pathname);
   }
   if (tab === 'roster' && !rosterLoaded) loadRoster();
+  if (tab === 'applications') {
+    const frame = document.getElementById('applications-frame');
+    if (!frame.src) frame.src = 'members-applications.html?embedded=1';
+  }
+  if (tab === 'roster' || tab === 'applications') {
+    history.pushState({}, '', `${window.location.pathname}?tab=${tab}`);
+  }
 }
 
 /* ── Boot ─────────────────────────────────────────────── */
 async function onDashboardReady() {
   await loadTournaments();
-  if (new URLSearchParams(window.location.search).get('tab') === 'roster' && isFullAdminRole(currentUserRole)) {
-    switchTab('roster');
+  const requestedTab = new URLSearchParams(window.location.search).get('tab');
+  if ((requestedTab === 'roster' || requestedTab === 'applications') && isFullAdminRole(currentUserRole)) {
+    switchTab(requestedTab);
     return;
   }
   checkUrlProfile();

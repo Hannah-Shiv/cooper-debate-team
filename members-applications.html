@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script>if(new URLSearchParams(location.search).get("embedded")==="1")document.documentElement.classList.add("applications-embedded")</script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Coach-only application review workspace — Cooper Debate Team"/>
@@ -165,6 +166,14 @@
        .member-hub-menu{margin-left:auto;margin-right:auto;max-width:1380px;width:calc(100% - 44px)}
      }
      @media(max-width:760px){.member-hub-menu .hub-header{align-items:flex-start;flex-direction:column;gap:18px}.member-hub-menu .tab-bar{flex-wrap:wrap;margin:0;white-space:normal}}
+     html.applications-embedded,html.applications-embedded body{height:100%;overflow:hidden}
+     html.applications-embedded .mp-topbar,
+     html.applications-embedded #site-badge,
+     html.applications-embedded #dome-nav-root,
+     html.applications-embedded #app-userbar,
+     html.applications-embedded .member-hub-menu{display:none!important}
+     html.applications-embedded .portal-page{height:100dvh;padding:0 6px 6px}
+     html.applications-embedded #dashboard{height:100%;max-width:none}
   </style>
 </head>
 <body>
