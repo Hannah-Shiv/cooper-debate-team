@@ -177,30 +177,30 @@
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
        <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>${icon("info", "label-icon")}Decision</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("accepted")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("hold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("declined")}<span>Decline</span></div><small>Not a fit</small></button></div></div></div><div class="save-row"><button type="button" class="review-action-delete" id="review-delete-application">${icon("delete")} Delete entry</button><span class="save-message" id="save-message">This stores the decision, reviewer, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision ${icon("check")}</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
-     // Turn the dense record into three fast-scanning review tabs without removing data.
+      // Turn the record into five useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
      const sections = Array.from(content.querySelectorAll(":scope > .section"));
      const tabBar = document.createElement("nav");
      tabBar.className = "detail-tabs";
      tabBar.setAttribute("aria-label", "Application detail sections");
-     [["overview","Overview"],["application","Application"],["review","Review"]].forEach(([key,label], index) => {
+      [["overview","Overview"],["application","Application"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label], index) => {
        const button = document.createElement("button");
        button.type = "button"; button.className = `detail-tab${index === 0 ? " active" : ""}`;
        button.dataset.tab = key; button.textContent = label;
        tabBar.appendChild(button);
      });
      content.insertBefore(tabBar, content.firstChild);
-     // Keep the review section outside the panes: it is the always-visible action dock.
-     const groups = { overview: sections.slice(0,2), application: sections.slice(2), review: [] };
+      // The source sections remain intact; only their presentation is reorganized.
+      const groups = { overview: sections.slice(0,1), application: sections.slice(1,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
      Object.entries(groups).forEach(([key, group]) => {
        const pane = document.createElement("div");
        pane.className = "detail-tab-pane"; pane.dataset.pane = key;
        if (key !== "overview") pane.hidden = true;
        group.forEach(node => pane.appendChild(node));
-       if (key === "review") {
+        if (key === "review") {
          pane.innerHTML = `<div class="review-summary">
-           <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the always-visible action bar below to accept, hold, or decline this application.</p></div>
-           <div class="review-summary-card"><span>Review history</span><strong>${item.reviewedBy ? escapeHtml(item.reviewedBy) : "Not reviewed yet"}</strong><p>${reviewDate ? `Last updated ${escapeHtml(reviewDate)}.` : "No administrative decision has been recorded."}</p></div>
+            <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the administrative action bar below to record a secure decision and internal note.</p></div>
+            <div class="review-summary-card"><span>Review history</span><strong>${item.reviewedBy ? escapeHtml(item.reviewedBy) : "Not reviewed yet"}</strong><p>${reviewDate ? `Last updated ${escapeHtml(reviewDate)}.` : "No administrative decision has been recorded."}</p></div>
          </div>`;
        }
        content.appendChild(pane);
@@ -215,7 +215,7 @@
     }));
     requestAnimationFrame(() => document.querySelectorAll(".answer-preview, .quick-preview").forEach(preview => {
       const link = preview.nextElementSibling;
-      if (link && preview.scrollWidth > preview.clientWidth + 1) link.hidden = false;
+      if (link && (preview.scrollWidth > preview.clientWidth + 1 || preview.scrollHeight > preview.clientHeight + 1)) link.hidden = false;
     }));
     document.querySelectorAll(".answer-full-link").forEach(button => button.addEventListener("click", () => {
       const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
@@ -292,6 +292,15 @@
     const visible = filteredApplications();
     if (selectedId && !visible.some(item => item.id === selectedId)) { selectedId = visible[0]?.id || ""; renderDetail(); }
   }));
+  $("clear-filters").addEventListener("click", () => {
+    $("search").value = "";
+    $("decision-filter").value = "all";
+    $("grade-filter").value = "all";
+    $("sort").value = "newest";
+    renderList();
+    const visible = filteredApplications();
+    if (!visible.some(item => item.id === selectedId)) { selectedId = visible[0]?.id || ""; renderDetail(); }
+  });
   auth.onAuthStateChanged(async user => {
     currentUser = user;
     if (!user) { show("auth-required"); return; }
