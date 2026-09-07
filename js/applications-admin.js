@@ -105,9 +105,9 @@
     $("visible-count").textContent = `${list.length} total`;
     $("application-list").innerHTML = list.length ? list.map(item => {
       const student = item.student || {};
-      return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
+       return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
         <div class="row-main">
-          <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-status">${statusBadge(status(item))}</div></div>
+           <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade unavailable")} · ${escapeHtml(student.studentId || "No student ID")}</div><div class="row-submitted">Submitted ${escapeHtml(formatDate(item.createdAt))}</div><div class="row-status">${statusBadge(status(item))}</div></div>
         </div>
       </button>`;
     }).join("") : '<div class="empty">No applications match these filters.</div>';
@@ -175,8 +175,40 @@
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="info-card aligned-info-card"><h3>${icon("guardian", "card-heading-icon")}Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Email", parent.email)}${fact("Phone", parent.phone)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments confirmed</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
-      <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>${icon("info", "label-icon")}Decision</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("accepted")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("hold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("declined")}<span>Decline</span></div><small>Not a fit</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewer, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision ${icon("check")}</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+       <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>${icon("info", "label-icon")}Decision</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("accepted")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("hold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("declined")}<span>Decline</span></div><small>Not a fit</small></button></div></div></div><div class="save-row"><button type="button" class="review-action-delete" id="review-delete-application">${icon("delete")} Delete entry</button><span class="save-message" id="save-message">This stores the decision, reviewer, date, and optional internal note.</span><button type="button" class="save-decision" id="save-decision">Save decision ${icon("check")}</button></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
+     // Turn the dense record into three fast-scanning review tabs without removing data.
+     const content = $("detail").querySelector(".detail-content");
+     const sections = Array.from(content.querySelectorAll(":scope > .section"));
+     const tabBar = document.createElement("nav");
+     tabBar.className = "detail-tabs";
+     tabBar.setAttribute("aria-label", "Application detail sections");
+     [["overview","Overview"],["application","Application"],["review","Review"]].forEach(([key,label], index) => {
+       const button = document.createElement("button");
+       button.type = "button"; button.className = `detail-tab${index === 0 ? " active" : ""}`;
+       button.dataset.tab = key; button.textContent = label;
+       tabBar.appendChild(button);
+     });
+     content.insertBefore(tabBar, content.firstChild);
+     // Keep the review section outside the panes: it is the always-visible action dock.
+     const groups = { overview: sections.slice(0,2), application: sections.slice(2), review: [] };
+     Object.entries(groups).forEach(([key, group]) => {
+       const pane = document.createElement("div");
+       pane.className = "detail-tab-pane"; pane.dataset.pane = key;
+       if (key !== "overview") pane.hidden = true;
+       group.forEach(node => pane.appendChild(node));
+       if (key === "review") {
+         pane.innerHTML = `<div class="review-summary">
+           <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the always-visible action bar below to accept, hold, or decline this application.</p></div>
+           <div class="review-summary-card"><span>Review history</span><strong>${item.reviewedBy ? escapeHtml(item.reviewedBy) : "Not reviewed yet"}</strong><p>${reviewDate ? `Last updated ${escapeHtml(reviewDate)}.` : "No administrative decision has been recorded."}</p></div>
+         </div>`;
+       }
+       content.appendChild(pane);
+     });
+     tabBar.querySelectorAll(".detail-tab").forEach(button => button.addEventListener("click", () => {
+       tabBar.querySelectorAll(".detail-tab").forEach(tab => tab.classList.toggle("active", tab === button));
+       Object.entries(groups).forEach(([key]) => { const pane = content.querySelector(`[data-pane="${key}"]`); if (pane) pane.hidden = key !== button.dataset.tab; });
+     }));
     document.querySelectorAll(".decision-button").forEach(button => button.addEventListener("click", () => {
       $("review-decision").value = button.dataset.decision;
       document.querySelectorAll(".decision-button").forEach(control => control.classList.toggle("selected", control === button));
@@ -191,13 +223,16 @@
     }));
     $("save-decision").addEventListener("click", () => saveDecision(item.id));
     $("delete-application").addEventListener("click", () => deleteApplication(item));
+     $("review-delete-application").addEventListener("click", () => deleteApplication(item));
   }
   async function deleteApplication(item) {
     const studentName = [item.student?.firstName, item.student?.lastName].filter(Boolean).join(" ") || "this applicant";
     if (!window.confirm(`Permanently delete ${studentName}'s application?\n\nThis cannot be undone.`)) return;
-    const button = $("delete-application");
-    button.disabled = true;
-    button.textContent = "Deleting…";
+    const buttons = [$("delete-application"), $("review-delete-application")].filter(Boolean);
+    buttons.forEach(button => {
+      button.disabled = true;
+      button.textContent = "Deleting…";
+    });
     try {
       const token = await currentUser.getIdToken();
       const response = await fetch(REVIEW_ENDPOINT, {
@@ -210,8 +245,10 @@
       selectedId = "";
     } catch (error) {
       alert(error.message || "Unable to delete the application.");
-      button.disabled = false;
-      button.innerHTML = `${icon("delete")}Delete entry`;
+      buttons.forEach(button => {
+        button.disabled = false;
+        button.innerHTML = `${icon("delete")}Delete entry`;
+      });
     }
   }
   async function saveDecision(applicationId) {

@@ -75,6 +75,40 @@
      .tab-btn.active svg{opacity:1}
      @media(min-width:761px){.metric strong{font-size:1.71rem}}
      @media(max-width:760px){.tab-bar{flex-wrap:wrap;margin:0}}
+     /* Desktop cockpit: the page itself stays locked while each work surface scrolls. */
+     @media(min-width:761px){
+       html,body{height:100%;overflow:hidden}
+       .app{height:100dvh;min-height:0}
+       .portal-page{height:100dvh;min-height:0;overflow:hidden}
+       #dashboard{height:100%;display:flex;flex-direction:column}
+       .hub-header{flex:0 0 auto}
+       .summary-controls-row{flex:0 0 auto}
+       .workspace{flex:1 1 auto;min-height:0}
+       .queue-panel,.detail{min-height:0;height:100%}
+       .detail{overflow:auto;padding-bottom:154px}
+       .application-list{max-height:none;height:calc(100% - 58px)}
+       .review-section{background:linear-gradient(105deg,#09254d,#071a37 72%);border:1px solid rgba(255,214,75,.52);border-bottom:0;border-radius:10px 10px 0 0;bottom:0;box-shadow:0 -12px 32px rgba(1,8,25,.45);left:0;margin:0;padding:10px 22px 12px;position:fixed;right:0;z-index:30}
+       .review-section .review-card{border:0;padding:0}
+       .review-section .review-controls{grid-template-columns:minmax(300px,1.2fr) minmax(390px,1fr);gap:16px}
+       .review-section .review-note{min-height:62px}
+       .review-section .save-row{margin:0;position:relative}
+       .review-section .save-message{position:absolute;bottom:-2px;left:0;max-width:255px}
+       .review-section #save-decision{margin-left:auto;min-width:145px}
+       .review-section .audit{display:none}
+       .detail-heading .delete-application{display:none}
+       .review-action-delete{display:inline-flex!important}
+     }
+     .review-action-delete{align-items:center;background:rgba(199,55,65,.18);border:1px solid rgba(255,135,132,.62);border-radius:4px;color:#ffb3ad;cursor:pointer;display:none;font-size:.62rem;font-weight:800;gap:6px;justify-content:center;letter-spacing:.07em;padding:9px 12px;text-transform:uppercase}
+     .review-action-delete:hover{background:rgba(210,53,64,.32);border-color:#ffaaa6}
+     .review-action-delete:disabled{opacity:.6}
+     .detail-tabs{align-items:center;background:rgba(2,13,32,.62);border-bottom:1px solid rgba(125,181,255,.2);display:flex;gap:4px;margin:0 -12px;padding:6px 12px;position:sticky;top:-10px;z-index:5}
+     .detail-tab{background:transparent;border:1px solid transparent;border-radius:4px;color:#9db8da;cursor:pointer;font-size:.62rem;font-weight:800;letter-spacing:.08em;padding:8px 13px;text-transform:uppercase;transition:background .16s,border-color .16s,color .16s}
+     .detail-tab:hover{background:rgba(73,143,232,.13);color:#e8f2ff}
+     .detail-tab.active{background:#174c95;border-color:#55a5ff;color:#fff}
+     .detail-tab-pane[hidden]{display:none}
+     .review-summary{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));padding:14px 0}.review-summary-card{background:rgba(3,13,33,.5);border:1px solid rgba(125,181,255,.22);border-radius:7px;padding:16px}.review-summary-card span{color:#9fb8d8;display:block;font-size:.62rem;font-weight:700;letter-spacing:.09em;margin-bottom:7px;text-transform:uppercase}.review-summary-card strong{color:#f3f7ff;font:700 1.18rem "Cormorant Garamond",serif}.review-summary-card p{color:#c4d8f2;font-size:.72rem;line-height:1.5;margin:5px 0 0}
+     .tab-bar .tab-btn{background:linear-gradient(180deg,rgba(12,45,88,.96),rgba(5,24,52,.98));border-color:rgba(80,145,226,.48);border-radius:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 6px 16px rgba(0,0,0,.15);padding:11px 18px}.tab-bar .tab-btn:hover{background:linear-gradient(180deg,rgba(18,63,118,.98),rgba(8,32,67,.98));border-color:#6fb2ff;transform:translateY(-1px)}.tab-bar .tab-btn.active{background:linear-gradient(180deg,#ffdf55,#e9b92e);border-color:#fff0a3;box-shadow:0 0 0 2px rgba(255,215,67,.15),0 7px 18px rgba(0,0,0,.22);color:#081a35}
+     @media(max-width:760px){.detail-tabs{margin:0 -15px;padding:6px 8px;overflow:auto;position:sticky;top:-15px}.detail-tab{flex:0 0 auto;padding:8px 10px}.review-action-delete{display:inline-flex}}
     @media(max-width:760px){.controls{grid-template-columns:1fr}.app-control{min-height:46px}.app-filter-control{grid-template-columns:1fr 1fr}}
     /* Applicant queue — a focused navy list with a clear cobalt selected state. */
     .queue-panel{background:linear-gradient(155deg,#0a2246,#06152e);border-color:rgba(82,149,238,.34);box-shadow:0 12px 28px rgba(2,10,28,.2)}.queue-panel .list-head{border-bottom-color:rgba(92,151,228,.3);padding:13px 14px}.queue-panel .list-head h2{color:#dce9fb;font-family:"Josefin Sans",sans-serif;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}.queue-panel .count{background:rgba(91,145,218,.18);border:1px solid rgba(125,181,255,.16);color:#cfe2ff;font-size:.61rem;padding:5px 10px}.queue-panel .application-list{display:flex;flex-direction:column;gap:6px;padding:6px}.queue-panel .application-row{background:rgba(4,18,43,.54);border:1px solid rgba(133,177,235,.13);border-radius:7px;color:inherit;padding:12px 13px;transition:background .16s,border-color .16s,box-shadow .16s;white-space:normal}.queue-panel .application-row:hover{background:rgba(24,72,137,.35);border-color:rgba(94,167,255,.5)}.queue-panel .application-row.active{background:linear-gradient(120deg,#123d7e,#0a2b5b);border:1px solid #3387eb;box-shadow:inset 0 1px 0 rgba(179,218,255,.16),0 0 0 1px rgba(40,130,235,.12);padding:12px 13px}.queue-panel .row-main{display:block}.queue-panel .row-name{color:#f2f7ff;font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-weight:700;line-height:1.05}.queue-panel .row-context{color:#b7cce8;font-size:.66rem;line-height:1.35;margin-top:4px}.queue-panel .row-status{margin:7px 0 0}.queue-panel .badge{background:#174d9e;color:#dcebff;font-size:.52rem;letter-spacing:.08em;padding:4px 7px}.queue-panel .badge.accepted{background:rgba(24,151,91,.26);color:#a8efc8}.queue-panel .badge.declined{background:rgba(190,61,70,.28);color:#ffc0c2}
@@ -170,7 +204,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/applications-admin.js?v=28"></script>
+  <script src="js/applications-admin.js?v=29"></script>
   <script src="js/members-nav.js?v=9"></script>
   <script src="js/dome-nav.js"></script>
 </body>
