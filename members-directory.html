@@ -89,7 +89,9 @@
       color: #ffe66d;
     }
     .tab-btn.active svg { opacity: 1; }
-    #applications-section { height: calc(100vh - 158px); margin-left: calc(50% - 50vw + 10px); margin-top: -20px; min-height: 520px; width: calc(100vw - 20px); }
+    /* The review cockpit is a sibling of the directory surface: bring its first
+       rule closer to the shared hub header without letting the iframe crop. */
+    #applications-section { height: calc(100vh - 128px); margin-left: calc(50% - 50vw + 10px); margin-top: -30px; min-height: 520px; width: calc(100vw - 20px); }
     #applications-frame { background: #1c2030; border: 0; display: block; height: 100%; width: 100%; }
     .dashboard-wrap.applications-active .hub-header { margin-bottom: 0; }
 
