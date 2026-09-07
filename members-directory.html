@@ -1865,7 +1865,7 @@ function switchTab(tab) {
   if (tab === 'roster' && !rosterLoaded) loadRoster();
   if (tab === 'applications') {
     const frame = document.getElementById('applications-frame');
-    if (!frame.src) frame.src = 'members-applications.html?embedded=1';
+    if (!frame.src) frame.src = 'members-applications.html?embedded=1&layout=2';
   }
   if (tab === 'roster' || tab === 'applications') {
     history.pushState({}, '', `${window.location.pathname}?tab=${tab}`);
