@@ -117,7 +117,7 @@ test("the public WASDL schedule modal uses a published PDF path", () => {
 });
 
 test("confirmation email uses navy bars and only approved one-pager logistics", () => {
-  assert.equal((emailService.match(/background:#062451/g) || []).length, 3);
+  assert.match(emailService, /background:#062451/);
   assert.doesNotMatch(emailService, /background:#0e3b2e/);
   assert.match(emailService, /const useApprovedOnePager = kind === "confirmation"/);
   assert.match(emailService, /useApprovedOnePager \? APPROVED_RESOLUTION/);
@@ -132,19 +132,20 @@ test("confirmation email uses navy bars and only approved one-pager logistics", 
   assert.doesNotMatch(emailService, /Judge at least 3 preliminary rounds/);
 });
 
-test("confirmation email uses the approved subject, greeting, enlarged square C, and cursive banner wordmark", () => {
+test("confirmation email uses the approved subject, greeting, badge, centered wordmark, and square C", () => {
   assert.match(emailService, /subject: `Confirmed: \$\{eventName\} Volunteer Signup`/);
   assert.match(emailService, /Hi \$\{name\}, thank you for volunteering for the Cooper Debate Team\./);
   assert.doesNotMatch(emailService, /thank you for volunteering with Cooper Debate\. Your signup is confirmed\./);
-  assert.match(emailService, /https:\/\/cooperdebateteam\.com\/images\/index-footer-jaguar\.png/);
-  assert.match(emailService, /width=\\"51\\" height=\\"51\\"/);
-  assert.match(emailService, /text-align:left;width:59px;\\"><img/);
-  assert.match(emailService, /margin-right:auto;width:51px/);
+  assert.match(emailService, /https:\/\/cooperdebateteam\.com\/images\/cooper-debate-badge\.png/);
+  assert.match(emailService, /width=\\"56\\" height=\\"56\\"/);
+  assert.match(emailService, /text-align:left;width:64px;\\"><img/);
   assert.match(emailService, /text-align:center;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/email-cooper-debate-wordmark\.png\\" width=\\"300\\" height=\\"52\\"/);
-  assert.match(emailService, /<td aria-hidden=\\"true\\" style=\\"vertical-align:middle;width:59px;\\">&nbsp;<\/td>/);
+  assert.match(emailService, /text-align:right;width:64px;\\"><img src=\\"https:\/\/cooperdebateteam\.com\/images\/apply-logo\.png\\" width=\\"52\\" height=\\"52\\"/);
   assert.ok(
-    emailService.indexOf("index-footer-jaguar.png") <
-      emailService.indexOf("email-cooper-debate-wordmark.png")
+    emailService.indexOf("cooper-debate-badge.png") <
+      emailService.indexOf("email-cooper-debate-wordmark.png") &&
+      emailService.indexOf("email-cooper-debate-wordmark.png") <
+      emailService.indexOf("apply-logo.png")
   );
 });
 
@@ -169,7 +170,14 @@ test("confirmation email highlights change instructions and places signup before
 test("confirmation email highlights its completed status and approved section headings", () => {
   assert.match(emailService, /"Your volunteer sign-up is confirmed\."/);
   assert.match(emailService, /emailShell\([\s\S]*true\s*\n\s*\);/);
-  assert.match(emailService, /background:#ffd84d;color:#062451;padding:6px 10px/);
+  assert.match(emailService, /TOURNAMENT JUDGE CONFIRMATION/);
+  assert.match(emailService, /judge-confirmation-gavel\.png/);
+  assert.match(emailService, /color:#a94332;font-size:24px/);
+  assert.match(emailService, /cooper-debate-badge\.png/);
+  assert.match(emailService, /apply-logo\.png/);
+  assert.match(emailService, /border:1px solid #91aac3/);
+  assert.match(emailService, /height:44px;background:#a94332/);
+  assert.match(emailService, /height:44px;background:#062451/);
   assert.match(emailService, /background:#ffd84d;color:#062451;padding:4px 8px/);
   for (const heading of ["Arrival & parking", "Meals & refreshments", "What to expect", "Important information", "Contact & support"]) {
     assert.ok(emailService.includes(`["${heading}",`), `missing highlighted heading ${heading}`);

@@ -187,10 +187,13 @@ function rowsAsText(rows) {
   return rows.map(([label, value]) => `${label}: ${value}`).join("\n");
 }
 
-function rowsAsHtml(rows) {
+function rowsAsHtml(rows, bordered = false) {
   return rows.map(([label, value]) =>
-    `<tr><td style="padding:6px 14px 6px 0;color:#54606f;font-weight:600;vertical-align:top;">${escapeHtml(label)}</td>` +
-    `<td style="padding:6px 0;color:#1d2733;vertical-align:top;">${escapeHtml(value).replaceAll("\n", "<br>")}</td></tr>`
+    bordered
+      ? `<tr><td style="width:31%;padding:10px 12px;background:#eaf1f8;border:1px solid #91aac3;color:#253b54;font-weight:700;line-height:1.4;vertical-align:top;">${escapeHtml(label)}</td>` +
+        `<td style="padding:10px 12px;background:#f8fbfe;border:1px solid #91aac3;color:#1d2733;line-height:1.5;vertical-align:top;">${escapeHtml(value).replaceAll("\n", "<br>")}</td></tr>`
+      : `<tr><td style="padding:6px 14px 6px 0;color:#54606f;font-weight:600;vertical-align:top;">${escapeHtml(label)}</td>` +
+        `<td style="padding:6px 0;color:#1d2733;vertical-align:top;">${escapeHtml(value).replaceAll("\n", "<br>")}</td></tr>`
   ).join("");
 }
 
@@ -200,13 +203,17 @@ function emailShell(title, intro, contentHtml, footerText, highlightTitle = fals
     "<div style=\"max-width:620px;margin:0 auto;padding:28px 16px;\">",
     "<div style=\"background:#062451;padding:12px 20px;color:#fff;border-radius:8px 8px 0 0;\">",
     "<table role=\"presentation\" style=\"border-collapse:collapse;width:100%;\"><tr>",
-    "<td style=\"vertical-align:middle;text-align:left;width:59px;\"><img src=\"https://cooperdebateteam.com/images/index-footer-jaguar.png\" width=\"51\" height=\"51\" alt=\"Cooper Debate Team\" style=\"display:block;margin-right:auto;width:51px;height:51px;object-fit:contain;\"></td>",
+    "<td style=\"vertical-align:middle;text-align:left;width:64px;\"><img src=\"https://cooperdebateteam.com/images/cooper-debate-badge.png\" width=\"56\" height=\"56\" alt=\"Cooper Debate Team badge\" style=\"display:block;margin-right:auto;width:56px;height:56px;object-fit:contain;border:0;\"></td>",
     "<td style=\"vertical-align:middle;text-align:center;\"><img src=\"https://cooperdebateteam.com/images/email-cooper-debate-wordmark.png\" width=\"300\" height=\"52\" alt=\"Cooper Debate Team\" style=\"display:block;margin:0 auto;width:300px;max-width:100%;height:auto;border:0;\"></td>",
-    "<td aria-hidden=\"true\" style=\"vertical-align:middle;width:59px;\">&nbsp;</td>",
+    "<td style=\"vertical-align:middle;text-align:right;width:64px;\"><img src=\"https://cooperdebateteam.com/images/apply-logo.png\" width=\"52\" height=\"52\" alt=\"Cooper C crest\" style=\"display:block;margin-left:auto;width:52px;height:52px;object-fit:contain;border:0;\"></td>",
     "</tr></table>",
     "</div><div style=\"background:#fff;padding:28px 24px;border-radius:0 0 8px 8px;\">",
     highlightTitle
-      ? `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;"><span style="display:inline-block;background:#ffd84d;color:#062451;padding:6px 10px;border-radius:5px;">${escapeHtml(title)}</span></h1>`
+      ? "<table role=\"presentation\" style=\"border-collapse:separate;border-spacing:0;width:100%;margin:0 0 18px;background:#ffd84d;border:2px solid #e0b91f;border-radius:8px;\"><tr>" +
+        "<td style=\"width:55px;padding:7px 10px;vertical-align:middle;\"><img src=\"https://cooperdebateteam.com/images/volunteer-letter/judge-confirmation-gavel.png\" width=\"42\" height=\"42\" alt=\"\" style=\"display:block;width:42px;height:42px;border:0;\"></td>" +
+        "<td style=\"width:2px;padding:7px 0;vertical-align:middle;\"><div style=\"width:2px;height:40px;background:#062451;\">&nbsp;</div></td>" +
+        "<td style=\"padding:8px 12px;color:#062451;font-family:Georgia,'Times New Roman',serif;font-size:20px;font-weight:700;letter-spacing:.3px;line-height:1.2;vertical-align:middle;\">TOURNAMENT JUDGE CONFIRMATION</td>" +
+        `</tr></table><h1 style="color:#a94332;font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`
       : `<h1 style="font-size:24px;line-height:1.25;margin:0 0 18px;">${escapeHtml(title)}</h1>`,
     `<p style="line-height:1.55;margin:0 0 20px;">${escapeHtml(intro).replaceAll("\n", "<br>")}</p>`,
     contentHtml,
@@ -583,7 +590,7 @@ async function buildMessage(kind, event, signup, changes = []) {
   const expectations = useApprovedOnePager
     ? APPROVED_EXPECTATIONS.join("\n")
     : cleanText(event.expectations, 1200);
-  const eventRowsHtml = `<table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 20px;">${rowsAsHtml(rows)}</table>`;
+  const eventRowsHtml = `<table role="presentation" style="border-collapse:collapse;width:100%;margin:8px 0 20px;${useApprovedOnePager ? "border:1px solid #91aac3;background:#f8fbfe;" : ""}">${rowsAsHtml(rows, useApprovedOnePager)}</table>`;
   const eventRowsText = rowsAsText(rows);
   const pageHtml = `<p style="margin:20px 0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#062451;color:#fff;text-decoration:none;border-radius:5px;padding:11px 16px;font-weight:700;">View tournament details</a></p>`;
   const confirmationChangeHtml =
@@ -592,8 +599,8 @@ async function buildMessage(kind, event, signup, changes = []) {
     "</div>";
   const confirmationActionsHtml =
     "<table role=\"presentation\" style=\"border-collapse:collapse;margin:0 0 12px;\"><tr>" +
-    `<td style="padding:0 10px 0 0;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="display:inline-block;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:12px 18px;font-weight:700;letter-spacing:.4px;white-space:nowrap;"><img src="https://cooperdebateteam.com/images/volunteer-signup-people-white.png" width="24" height="15" alt="" style="display:inline-block;width:24px;height:15px;vertical-align:middle;border:0;">&nbsp;&nbsp; <span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP</span></a></td>` +
-    `<td style="padding:0;"><a href="${escapeHtml(pageUrl)}" style="display:inline-block;background:#062451;color:#fff;text-decoration:none;border-radius:5px;padding:12px 16px;font-weight:700;white-space:nowrap;">View tournament details</a></td>` +
+    `<td height="44" style="height:44px;padding:0 10px 0 0;vertical-align:middle;"><a href="${escapeHtml(VOLUNTEER_SIGNUP_URL)}" style="box-sizing:border-box;display:inline-block;height:44px;background:#a94332;color:#fff;text-decoration:none;border:1px solid #d98d79;border-radius:8px;padding:11px 18px;font-weight:700;line-height:20px;letter-spacing:.4px;white-space:nowrap;"><img src="https://cooperdebateteam.com/images/volunteer-signup-people-white.png" width="24" height="15" alt="" style="display:inline-block;width:24px;height:15px;vertical-align:middle;border:0;">&nbsp;&nbsp; <span style="color:#fff;vertical-align:middle;">VOLUNTEER SIGNUP</span></a></td>` +
+    `<td height="44" style="height:44px;padding:0;vertical-align:middle;"><a href="${escapeHtml(pageUrl)}" style="box-sizing:border-box;display:inline-block;height:44px;background:#062451;color:#fff;text-decoration:none;border:1px solid #31547d;border-radius:8px;padding:11px 18px;font-weight:700;line-height:20px;white-space:nowrap;">View tournament details</a></td>` +
     "</tr></table>";
   const approvedSections = [
     ["Arrival & parking", APPROVED_ARRIVAL],
