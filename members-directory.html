@@ -89,8 +89,9 @@
       color: #ffe66d;
     }
     .tab-btn.active svg { opacity: 1; }
-    #applications-section { height: calc(100vh - 220px); min-height: 520px; }
+    #applications-section { height: calc(100vh - 178px); margin-left: calc(50% - 50vw + 10px); min-height: 520px; width: calc(100vw - 20px); }
     #applications-frame { background: #1c2030; border: 0; display: block; height: 100%; width: 100%; }
+    .dashboard-wrap.applications-active .hub-header { margin-bottom: 10px; }
 
     /* ── Top bar: search + sort + filter on one line ────────── */
     .dir-top-bar {
@@ -1844,6 +1845,7 @@ const dirDb = firebase.firestore();
 let currentTab = 'directory';
 function switchTab(tab) {
   currentTab = tab;
+  document.querySelector('.dashboard-wrap').classList.toggle('applications-active', tab === 'applications');
   document.getElementById('tab-dir').classList.toggle('active', tab === 'directory');
   document.getElementById('tab-roster').classList.toggle('active', tab === 'roster');
   document.getElementById('tab-applications').classList.toggle('active', tab === 'applications');
