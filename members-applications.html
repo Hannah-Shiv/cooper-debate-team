@@ -84,6 +84,13 @@
     @media(max-width:760px){.aligned-commitments-card .commitments{grid-auto-flow:row;grid-template-columns:1fr;grid-template-rows:none}}
     .delete-application{align-items:center;background:rgba(173,41,53,.24);border:1px solid rgba(255,141,151,.7);border-radius:4px;color:#ffb7bd;cursor:pointer;display:inline-flex;font-size:.58rem;font-weight:700;gap:6px;letter-spacing:.08em;padding:7px 10px;text-transform:uppercase}
     .delete-application:hover{background:#ad2935;color:#fff}.delete-application:disabled{cursor:wait;opacity:.65}.delete-application .icon-art{height:16px;width:16px}
+    /* Give the applicant queue its own polished scroll rail without changing the page scrollbar. */
+    .application-list{scrollbar-color:#e7b83f #06152e;scrollbar-width:thin}
+    .application-list::-webkit-scrollbar{width:11px}
+    .application-list::-webkit-scrollbar-track{background:linear-gradient(180deg,#06152e,#0b2852);border-left:1px solid rgba(120,174,233,.2);border-radius:0 0 6px 0}
+    .application-list::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#ffe07a,#d49b1f);border:3px solid #092044;border-radius:999px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+    .application-list::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#fff0a8,#edb632)}
+    .application-list::-webkit-scrollbar-corner{background:#06152e}
   </style>
 </head>
 <body>
