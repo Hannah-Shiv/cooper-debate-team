@@ -144,7 +144,7 @@ async function getMemberAccess(firestoreDb, email) {
     approved: Boolean(legacyApproved),
     active: Boolean(legacyApproved),
     email: normalizedEmail,
-    role: normalizePortalRole(getAdminRole(normalizedEmail)),
+    role: resolvePortalRole("member", normalizedEmail),
     name: typeof MEMBER_NAMES !== "undefined"
       ? (MEMBER_NAMES[normalizedEmail] || "")
       : "",
