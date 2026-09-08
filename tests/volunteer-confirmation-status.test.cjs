@@ -435,16 +435,19 @@ test("volunteer roster coverage uses full-size and half-day visual states", () =
 
 test("all-day coverage is labeled consistently without visible full wording", () => {
   assert.match(publicScript, /label:\s*"All day",\s*className:\s*"is-full"/);
-  assert.match(publicScript, /detail:\s*"All-day availability"/);
+  assert.match(publicScript, /detail:\s*"Required WASDL full-day commitment"/);
   assert.match(publicScript, /aria-label="Filter by all-day coverage">All day<\/button>/);
   assert.doesNotMatch(publicScript, /label:\s*"Full"|detail:\s*"Full tournament"|>Full<\/button>/);
 });
 
-test("all-day availability is the first and initially selected signup choice", () => {
+test("full-day commitment starts unconfirmed and can be confirmed or unconfirmed", () => {
   assert.match(publicScript, /return \[\s*\{ id: "full"[^]*?\{ id: "morning"[^]*?\{ id: "afternoon"[^]*?\{ id: "custom"/);
   assert.match(publicScript, /const availabilityIconNames = \["full-day", "morning", "afternoon", "other"\]/);
-  assert.match(publicScript, /vol-availability-option\$\{index === 0 \? " is-selected" : ""\}/);
-  assert.match(publicScript, /\$\{index === 0 \? "checked" : ""\}/);
+  assert.match(publicScript, /<input type="checkbox" name="availability-/);
+  assert.doesNotMatch(publicScript, /<input type="checkbox"[^>]*\schecked(?:\s|>)/);
+  assert.match(publicScript, /class="vol-inline-continue" disabled/);
+  assert.match(publicScript, /continueButton\.disabled = !input\.checked \|\| !continueButton\.dataset\.roleId/);
+  assert.match(publicScript, /option === selectedOption && input\.checked/);
 });
 
 test("phone signup stacks time controls and keeps information readable", () => {

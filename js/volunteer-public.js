@@ -3,6 +3,9 @@
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/publicVolunteerSignup";
+  const WASDL_FULL_DAY_START = "08:00";
+  const WASDL_FULL_DAY_END = "17:30";
+  const WASDL_FULL_DAY_DURATION = 570;
   const APPROVED_MEAL_ITEMS = Object.freeze([
     "A complimentary lunch will be provided for all judges.",
     "Light refreshments (coffee, water, snacks) will be available throughout the day.",
@@ -227,25 +230,19 @@
     const start = timeToMinutes(event.startTime);
     const end = timeToMinutes(event.endTime);
     if (start === null || end === null || end <= start) {
-      return [{ id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: "", end: "", duration: "" }];
+      return [
+        { id: "full", label: timeRange(WASDL_FULL_DAY_START, WASDL_FULL_DAY_END), detail: "Required WASDL full-day commitment", icon: "☀", start: WASDL_FULL_DAY_START, end: WASDL_FULL_DAY_END, duration: durationLabel(WASDL_FULL_DAY_DURATION) },
+        { id: "custom", label: "Other (custom time range)", detail: "Choose your own start and end time", icon: "▣", start: "", end: "", duration: "" },
+      ];
     }
     const total = end - start;
-    const requestedFullWindow = fullTournamentWindow(event);
-    const requestedFullStart = timeToMinutes(requestedFullWindow.start);
-    const requestedFullEnd = timeToMinutes(requestedFullWindow.end);
-    const hasValidFullWindow = requestedFullStart !== null &&
-      requestedFullEnd !== null &&
-      requestedFullEnd > requestedFullStart;
-    const fullStart = hasValidFullWindow ? requestedFullWindow.start : event.startTime;
-    const fullEnd = hasValidFullWindow ? requestedFullWindow.end : event.endTime;
-    const fullDuration = hasValidFullWindow ? requestedFullEnd - requestedFullStart : total;
     const morningLength = Math.max(60, Math.floor((total / 2) / 30) * 30);
     const split = start + morningLength;
     return [
-      { id: "full", label: timeRange(fullStart, fullEnd), detail: "All-day availability", icon: "☀", start: fullStart, end: fullEnd, duration: durationLabel(fullDuration) },
+      { id: "full", label: timeRange(WASDL_FULL_DAY_START, WASDL_FULL_DAY_END), detail: "Required WASDL full-day commitment", icon: "☀", start: WASDL_FULL_DAY_START, end: WASDL_FULL_DAY_END, duration: durationLabel(WASDL_FULL_DAY_DURATION) },
       { id: "morning", label: timeRange(minutesToTime(start), minutesToTime(split)), detail: "Morning availability", icon: "☀", start: minutesToTime(start), end: minutesToTime(split), duration: durationLabel(morningLength) },
       { id: "afternoon", label: timeRange(minutesToTime(split), minutesToTime(end)), detail: "Afternoon availability", icon: "☀", start: minutesToTime(split), end: minutesToTime(end), duration: durationLabel(end - split) },
-      { id: "custom", label: "Other (custom time range)", detail: "Select your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
+      { id: "custom", label: "Other (custom time range)", detail: "Choose your own start and end time", icon: "▣", start: event.startTime, end: event.endTime, duration: "" },
     ];
   }
 
@@ -350,7 +347,7 @@
       const availableRole = event.roles
         .filter(role => role.label !== "Duplicate-check test")
         .find(role => Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0)) > 0);
-      const choices = availabilityChoices(event);
+      const choices = availabilityChoices(event).filter(choice => choice.id === "full");
       const publicSignups = Array.isArray(event.signups)
         ? event.signups.filter(signup => signup.parentName && signup.roleId)
         : [];
@@ -388,12 +385,15 @@
         : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
       const availabilityIconNames = ["full-day", "morning", "afternoon", "other"];
       const availabilityMarkup = choices.map((choice, index) => `
-        <label class="vol-availability-option${index === 0 ? " is-selected" : ""}">
-          <input type="radio" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${index === 0 ? "checked" : ""}>
-          <span class="vol-availability-radio" aria-hidden="true"></span>
+        <label class="vol-availability-option vol-confirm-commitment">
+          <input type="checkbox" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${availableRole ? "" : "disabled"}>
           <span class="vol-availability-icon" aria-hidden="true"><img src="assets/icons/volunteer-${availabilityIconNames[index] || "other"}.png" alt=""></span>
-          <span class="vol-availability-copy"><strong>${escapeHtml(choice.label)}</strong><small>${escapeHtml(choice.detail)}</small></span>
-           <span class="vol-selection-check" aria-hidden="true">✓</span>
+          <span class="vol-availability-copy"><strong>Full-Day Commitment</strong><small>${escapeHtml(choice.label)} · I can be present for the complete WASDL volunteer day.</small></span>
+          <span class="vol-commitment-toggle" aria-hidden="true">
+            <span class="vol-toggle-label vol-toggle-label--off">Not confirmed</span>
+            <span class="vol-toggle-track"><i></i></span>
+            <span class="vol-toggle-label vol-toggle-label--on">Confirmed</span>
+          </span>
           ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
         </label>`).join("");
 
@@ -405,7 +405,7 @@
               <div class="vol-panel-purpose-flow">
                 <strong>Judge Volunteer Opportunity</strong>
                 <i class="vol-purpose-arrow" aria-hidden="true"></i>
-                <span>Enter Your Availability</span>
+                <span>Confirm Full-Day Availability</span>
               </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">⚖</div>
             </div>
@@ -433,10 +433,14 @@
             </div>
             <div class="vol-unified-signup">
               <div class="vol-role-area">
-                <div class="vol-role-heading"><span>${modalIcon("clock")}</span><div><h4>When can you volunteer as a judge?</h4><p>Select the time range you are available.</p></div></div>
+                <div class="vol-role-heading"><span>${modalIcon("clock")}</span><div><h4>Full-day judge commitment</h4><p>Confirm the required WASDL volunteer hours below.</p></div></div>
+                <div class="vol-full-day-notice" role="note">
+                  <span class="vol-full-day-notice-icon" aria-hidden="true">i</span>
+                  <span class="vol-full-day-notice-copy"><strong>WASDL full-day volunteers only</strong><span>Only full-day judge slots are currently open. Volunteers must be present from 8:00 AM to 5:30 PM.</span></span>
+                </div>
                 <div class="vol-availability-options">${availabilityMarkup}</div>
-                <button type="button" class="vol-inline-continue" ${availableRole ? "" : "disabled"} data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
-                  ${availableRole ? "Continue to Your Sign-Up →" : "All judge spots are filled"}
+                <button type="button" class="vol-inline-continue" disabled data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
+                  ${availableRole ? "Confirm the full-day commitment above" : "All judge spots are filled"}
                 </button>
               </div>
             </div>
@@ -496,7 +500,7 @@
               <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
             ${publicSignups.length ? `<div class="vol-roster-pagination" hidden><span class="vol-roster-page-info"></span><div class="vol-roster-page-nav" aria-label="Volunteer roster pages"></div></div>` : ""}
-            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and selected availability are visible to the tournament community. Contact details and notes remain private.</p>
+            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and confirmed availability are visible to the tournament community. Contact details and notes remain private.</p>
             </section>
           </div>
         </article>`;
@@ -505,22 +509,25 @@
     root.querySelectorAll(".vol-availability-option input").forEach(input => {
       input.addEventListener("change", () => {
         const options = input.closest(".vol-availability-options");
-        const previousOption = options.querySelector(".vol-availability-option.is-selected");
         const selectedOption = input.closest(".vol-availability-option");
-        if (previousOption && previousOption !== selectedOption) {
-          previousOption.classList.remove("is-entering");
-          previousOption.classList.add("is-leaving");
-          window.setTimeout(() => previousOption.classList.remove("is-leaving"), 340);
-        }
         options.querySelectorAll(".vol-availability-option").forEach(option => {
-          option.classList.toggle("is-selected", option.contains(input));
+          option.classList.toggle("is-selected", option === selectedOption && input.checked);
         });
         selectedOption.classList.remove("is-leaving", "is-entering");
-        void selectedOption.offsetWidth;
-        selectedOption.classList.add("is-entering");
-        selectedOption.addEventListener("animationend", () => {
-          selectedOption.classList.remove("is-entering");
-        }, { once:true });
+        if (input.checked) {
+          void selectedOption.offsetWidth;
+          selectedOption.classList.add("is-entering");
+          selectedOption.addEventListener("animationend", () => {
+            selectedOption.classList.remove("is-entering");
+          }, { once:true });
+        }
+        const continueButton = input.closest(".vol-unified-card")?.querySelector(".vol-inline-continue");
+        if (continueButton) {
+          continueButton.disabled = !input.checked || !continueButton.dataset.roleId;
+          continueButton.textContent = input.checked && continueButton.dataset.roleId
+            ? "Continue to Your Sign-Up →"
+            : (continueButton.dataset.roleId ? "Confirm the full-day commitment above" : "All judge spots are filled");
+        }
       });
     });
     root.querySelectorAll(".vol-roster-controls").forEach(controls => {
@@ -583,7 +590,7 @@
       });
       applyRosterControls(controls);
     });
-    root.querySelectorAll(".vol-inline-continue:not(:disabled)").forEach(button => {
+    root.querySelectorAll(".vol-inline-continue").forEach(button => {
       button.addEventListener("click", () => {
         const card = button.closest(".vol-unified-card");
         const selected = card?.querySelector(".vol-availability-option input:checked");
@@ -754,7 +761,7 @@
       <section class="vol-side-card">
         <h4>${modalIcon("info")}<span class="vol-info-heading-copy"><span>Helpful information</span><small>Hover, focus, or tap an icon for details</small></span></h4>
         <div class="vol-side-row"><span>Tournament</span><strong>${escapeHtml(selectedEvent.title)}</strong></div>
-        <div class="vol-side-row"><span>Your selection</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
+        <div class="vol-side-row"><span>Your commitment</span><strong>${escapeHtml(roleDisplayLabel(selectedRole))} · ${escapeHtml(chosenTime)}</strong></div>
         <div id="vol-info-reader" class="vol-info-reader" role="tabpanel" aria-labelledby="vol-info-tab-0" aria-live="polite">
           ${informationDetailMarkup(informationItems[0])}
         </div>
@@ -1279,12 +1286,12 @@
     $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
     form.reset();
     form.querySelectorAll(".is-complete").forEach(field => field.classList.remove("is-complete"));
-    $("vol-availability-start").min = selectedEvent.startTime || "";
-    $("vol-availability-start").max = selectedEvent.endTime || "";
-    $("vol-availability-end").min = selectedEvent.startTime || "";
-    $("vol-availability-end").max = selectedEvent.endTime || "";
-    $("vol-availability-start").value = availability?.start || selectedEvent.startTime || "";
-    $("vol-availability-end").value = availability?.end || selectedEvent.endTime || "";
+    $("vol-availability-start").min = WASDL_FULL_DAY_START;
+    $("vol-availability-start").max = WASDL_FULL_DAY_START;
+    $("vol-availability-end").min = WASDL_FULL_DAY_END;
+    $("vol-availability-end").max = WASDL_FULL_DAY_END;
+    $("vol-availability-start").value = WASDL_FULL_DAY_START;
+    $("vol-availability-end").value = WASDL_FULL_DAY_END;
     $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
     renderSignupSidebar();
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
@@ -1387,8 +1394,8 @@
       phone: $("vol-phone").value,
       studentName: $("vol-student-name").value,
       notes: $("vol-notes").value,
-      availabilityStart: $("vol-availability-start").value,
-      availabilityEnd: $("vol-availability-end").value,
+      availabilityStart: WASDL_FULL_DAY_START,
+      availabilityEnd: WASDL_FULL_DAY_END,
       company: $("vol-company").value,
       turnstileToken,
     };

@@ -62,13 +62,17 @@
   }
   function setMetrics() {
     const total = applications.length;
-    const pending = applications.filter(item => status(item) === "pending").length;
+    const pendingApplications = applications.filter(item => status(item) === "pending");
+    const isReviewed = item => timestampMillis(item.reviewedAt) > 0 || Boolean(item.reviewedBy);
+    const pending = pendingApplications.filter(item => !isReviewed(item)).length;
+    const hold = pendingApplications.filter(isReviewed).length;
     const accepted = applications.filter(item => status(item) === "accepted").length;
     const declined = applications.filter(item => status(item) === "declined").length;
     $("stat-total").textContent = total;
     $("stat-pending").textContent = pending;
     $("stat-accepted").textContent = accepted;
     $("stat-declined").textContent = declined;
+    $("stat-hold").textContent = hold;
   }
   function filteredApplications() {
     const query = $("search").value.trim().toLowerCase();
@@ -162,7 +166,6 @@
       return;
     }
     const student = item.student || {};
-    const parent = item.parent || {};
     const eventDetails = item.eventDetails || {};
     longAnswers = [];
     const commitmentEntries = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]);
@@ -170,9 +173,9 @@
     const decision = status(item);
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p></div><div class="detail-status"><div class="badges">${statusBadge(decision)}</div><button type="button" class="delete-application" id="delete-application">${icon("delete")}Delete entry</button></div></header>
+      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}</div></div><div class="detail-status"><button type="button" class="delete-application" id="delete-application">${icon("delete")}Delete entry</button></div></header>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience, true)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts, true)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
-      <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="info-card aligned-info-card"><h3>${icon("guardian", "card-heading-icon")}Parent / guardian</h3><div class="detail-grid">${fact("Name", [parent.firstName, parent.lastName].filter(Boolean).join(" "))}${fact("Relationship", parent.relationship)}${fact("Email", parent.email)}${fact("Phone", parent.phone)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments confirmed</h3><div class="commitments">${commitments}</div></div></div></section>
+      <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
        <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><label>${icon("info", "label-icon")}Decision and actions</label><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("accepted")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("hold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("declined")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("delete")}<span>Delete entry</span></div><small>Remove permanently</small></button><button type="button" class="decision-button save-decision" id="save-decision"><div class="decision-main">${icon("check")}<span>Save decision</span></div><small>Store review</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewer, date, and optional internal note.</span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
@@ -183,20 +186,36 @@
      const tabBar = document.createElement("nav");
      tabBar.className = "detail-tabs";
      tabBar.setAttribute("aria-label", "Application detail sections");
-      [["overview","Overview"],["application","Application"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label], index) => {
+      [["overview","Overview"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label], index) => {
        const button = document.createElement("button");
        button.type = "button"; button.className = `detail-tab${index === 0 ? " active" : ""}`;
        button.dataset.tab = key; button.textContent = label;
        tabBar.appendChild(button);
      });
-     content.insertBefore(tabBar, content.firstChild);
+      const heading = content.querySelector(".detail-heading");
+      const commandBar = document.createElement("div");
+      commandBar.className = "detail-command-bar";
+      content.insertBefore(commandBar, content.firstChild);
+      commandBar.appendChild(heading);
+      commandBar.appendChild(tabBar);
       // The source sections remain intact; only their presentation is reorganized.
-      const groups = { overview: sections.slice(0,1), application: sections.slice(1,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
+      const groups = { overview: sections.slice(0,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
+      const responseCards = Array.from(sections[3].querySelectorAll(".answer-box"));
+      const overviewResponseCards = responseCards.filter((card, index) => index !== 2);
      Object.entries(groups).forEach(([key, group]) => {
        const pane = document.createElement("div");
        pane.className = "detail-tab-pane"; pane.dataset.pane = key;
        if (key !== "overview") pane.hidden = true;
        group.forEach(node => pane.appendChild(node));
+        if (key === "overview") {
+          const overviewGrid = document.createElement("div");
+          overviewGrid.className = "overview-dashboard-grid";
+          const quickCards = Array.from(pane.querySelectorAll(".quick-profile-grid > .quick-tile"));
+          [quickCards[0], quickCards[2]].filter(Boolean).forEach(card => overviewGrid.appendChild(card));
+          pane.querySelectorAll(".contact-columns > .info-card, .contact-columns > .commitments-card").forEach(card => overviewGrid.appendChild(card));
+          overviewResponseCards.forEach(card => overviewGrid.appendChild(card));
+          pane.replaceChildren(overviewGrid);
+        }
         if (key === "review") {
          pane.innerHTML = `<div class="review-summary">
             <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the administrative action bar below to record a secure decision and internal note.</p></div>

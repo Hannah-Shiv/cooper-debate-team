@@ -2104,6 +2104,10 @@
     .vol-availability-option.is-selected .vol-selection-check { background:#42c98a; border-color:#82efbb; box-shadow:0 0 12px rgba(66,201,138,.34); color:#062e20; opacity:1; transform:scale(1); }
     .vol-availability-duration { background:rgba(212,160,23,.16); border-radius:99px; color:#f2c658; font:700 .9rem 'Josefin Sans',sans-serif; grid-column:auto; justify-self:start; letter-spacing:.04em; padding:5px 8px; white-space:nowrap; }
     .vol-availability-option.is-selected .vol-availability-duration { background:#f0c557; color:#102846; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+    .vol-full-day-notice { align-items:flex-start; background:rgba(240,197,87,.11); border:1px solid rgba(240,197,87,.42); border-left:4px solid #f0c557; border-radius:6px; display:flex; flex-direction:column; gap:4px; margin:10px 0; padding:10px 12px; }
+    .vol-full-day-notice strong { color:#ffe58b; font:700 .68rem 'Josefin Sans',sans-serif; letter-spacing:.09em; text-transform:uppercase; }
+    .vol-full-day-notice span { color:#e9f1ff; font-size:.72rem; line-height:1.5; }
+    #volunteer-modal .vol-time-control input:disabled { color:#fff7d2; cursor:not-allowed; opacity:1; -webkit-text-fill-color:#fff7d2; }
     @media(prefers-reduced-motion:reduce){
       .vol-availability-option,
       .vol-availability-option::before { transition-duration:.01ms; }
@@ -5534,11 +5538,80 @@
       }
     }
 
+    #volunteer-modal .vol-availability-card--compact .vol-time-display {
+      align-items:center;
+      color:#fff7d2;
+      display:flex;
+      font:700 1.08rem/1.2 'Josefin Sans',sans-serif;
+      gap:10px;
+      min-height:40px;
+    }
+    #volunteer-modal .vol-availability-card--compact .vol-time-display img {
+      display:block;
+      flex:0 0 27px;
+      height:27px;
+      object-fit:contain;
+      position:static;
+      transform:none;
+      width:27px;
+    }
+
     @media (min-width:981px) {
       #volunteer-modal .vol-availability-card--compact {
         align-self:stretch;
         box-sizing:border-box;
         height:100%;
+        position:relative;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid {
+        align-content:start;
+        gap:12px;
+        padding-bottom:54px;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid .vol-form-field {
+        align-items:center;
+        display:grid;
+        gap:8px;
+        grid-template-columns:134px 27px minmax(0,1fr);
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid .vol-form-field label {
+        font-size:.83rem;
+        margin:0;
+        white-space:nowrap;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid .vol-time-display {
+        display:contents;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid .vol-time-display img {
+        grid-column:2;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid .vol-time-display span {
+        font-size:1.24rem;
+        grid-column:3;
+        white-space:nowrap;
+      }
+      #volunteer-modal .vol-availability-card--compact .vol-time-grid input {
+        font-size:1rem!important;
+        padding-left:42px!important;
+      }
+      #volunteer-modal .vol-availability-card--compact > .vol-assignment-note {
+        bottom:11px;
+        left:12px;
+        margin:0;
+        position:absolute;
+        right:12px;
+        top:auto;
+      }
+      #volunteer-modal #vol-fixed-hours-note > span {
+        background:#f6ca49;
+        border:1px solid #ffe48a;
+        color:#081820;
+        flex:0 0 18px;
+        height:18px;
+        width:18px;
+      }
+      #volunteer-modal .vol-condensed-main > .vol-notes-wide {
+        margin-top:0;
       }
     }
 
@@ -5673,6 +5746,219 @@
       background:#383d45;
       border-color:#ffe38d;
       color:#ffe38d;
+    }
+
+    /* Full-day commitment: centered, deliberate confirmation rather than a preselected choice. */
+    .tournaments-page .vol-opportunity-panel .vol-role-heading {
+      justify-content:center;
+      margin-inline:auto;
+      max-width:760px;
+      text-align:center;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-full-day-notice {
+      align-items:center;
+      background:rgba(240,197,87,.11);
+      border:1px solid rgba(240,197,87,.42);
+      border-left:4px solid #f0c557;
+      box-shadow:none;
+      display:grid;
+      gap:12px;
+      grid-template-columns:38px minmax(0,1fr);
+      margin:12px auto;
+      max-width:760px;
+      padding:10px 16px 10px 22px;
+      text-align:left;
+      width:100%;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-full-day-notice-icon {
+      align-items:center;
+      align-self:center;
+      background:linear-gradient(145deg,#ffe47a,#efbd32);
+      border:2px solid #fff0a6;
+      border-radius:50%;
+      box-shadow:0 3px 8px rgba(0,0,0,.25),0 0 0 3px rgba(239,189,50,.1);
+      color:#101820;
+      display:flex;
+      font:bold italic 1.25rem/1 Georgia,serif;
+      height:33px;
+      justify-content:center;
+      padding:0 1px 2px 0;
+      transform:translateX(11px);
+      width:33px;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-full-day-notice-copy {
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+      min-width:0;
+      transform:translateX(25px);
+    }
+    .tournaments-page .vol-opportunity-panel .vol-full-day-notice-copy > strong {
+      color:#ffe47a;
+      font-size:.76rem;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-full-day-notice-copy > span {
+      color:#f1fbff;
+      font-size:.76rem;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-availability-options {
+      display:grid;
+      grid-template-columns:minmax(0,760px);
+      grid-template-rows:auto;
+      justify-content:center;
+      margin-inline:auto;
+      width:100%;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment {
+      background:linear-gradient(135deg,#0b4160 0%,#0b304d 52%,#102a42 100%);
+      border:2px solid #efc452;
+      border-radius:12px;
+      box-shadow:0 12px 28px rgba(0,12,30,.3),inset 0 1px 0 rgba(255,255,255,.08);
+      gap:16px;
+      grid-template-columns:64px minmax(190px,1fr) minmax(270px,auto) auto;
+      min-height:104px;
+      padding:16px 20px;
+      width:100%;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment:hover,
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment:focus-within {
+      background:linear-gradient(135deg,#0e5576 0%,#0b3b5a 55%,#16354e 100%);
+      border-color:#ffe18a;
+      box-shadow:0 14px 32px rgba(0,12,30,.36),0 0 0 3px rgba(239,196,82,.14);
+      transform:translateY(-2px);
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-copy {
+      text-align:left;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-icon {
+      align-items:center;
+      display:flex;
+      justify-content:center;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-icon img {
+      height:62px;
+      width:62px;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-copy strong {
+      color:#ffe17a;
+      font-size:1.08rem;
+      letter-spacing:.055em;
+      text-transform:uppercase;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-copy small {
+      color:#eef7ff;
+      font-size:.75rem;
+      line-height:1.5;
+      margin-top:5px;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected {
+      background:linear-gradient(135deg,#0b5a4d 0%,#08493f 55%,#093b37 100%);
+      border-color:#56e0ac;
+      box-shadow:0 13px 30px rgba(0,31,25,.34),0 0 0 3px rgba(86,224,172,.12);
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-availability-copy strong {
+      color:#bfffe6;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-commitment-toggle {
+      align-items:center;
+      background:rgba(1,17,37,.52);
+      border:1px solid rgba(239,196,82,.52);
+      border-radius:999px;
+      box-shadow:inset 0 2px 7px rgba(0,0,0,.34);
+      display:grid;
+      gap:9px;
+      grid-template-columns:auto 58px auto;
+      padding:8px 11px;
+      transition:border-color .2s ease,background .2s ease,box-shadow .2s ease;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-toggle-label {
+      color:#9fb2c5;
+      font:700 .56rem/1 'Josefin Sans',sans-serif;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      transition:color .2s ease,opacity .2s ease;
+      white-space:nowrap;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-toggle-label--off {
+      color:#ffe17a;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-toggle-track {
+      background:#536579;
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:999px;
+      box-shadow:inset 0 2px 5px rgba(0,0,0,.35);
+      display:block;
+      height:28px;
+      padding:3px;
+      position:relative;
+      transition:background .24s ease,border-color .24s ease;
+      width:58px;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-toggle-track i {
+      background:linear-gradient(145deg,#fff5cc,#efc452);
+      border-radius:50%;
+      box-shadow:0 3px 8px rgba(0,0,0,.4);
+      display:block;
+      height:20px;
+      transform:translateX(0);
+      transition:transform .26s cubic-bezier(.2,.8,.2,1),background .2s ease;
+      width:20px;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-commitment-toggle {
+      background:rgba(0,48,39,.6);
+      border-color:#56e0ac;
+      box-shadow:inset 0 2px 7px rgba(0,0,0,.32),0 0 14px rgba(86,224,172,.12);
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-toggle-track {
+      background:#29a77e;
+      border-color:#73f1c2;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-toggle-track i {
+      background:linear-gradient(145deg,#effff9,#a9f8d9);
+      transform:translateX(30px);
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-toggle-label--off {
+      color:#7fa69a;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-confirm-commitment.is-selected .vol-toggle-label--on {
+      color:#bfffe6;
+    }
+    .tournaments-page .vol-opportunity-panel .vol-inline-continue {
+      display:block;
+      margin:14px auto 0;
+      max-width:760px;
+      width:100%;
+    }
+    @media(max-width:620px) {
+      .tournaments-page .vol-opportunity-panel .vol-full-day-notice {
+        gap:16px;
+        grid-template-columns:62px minmax(0,1fr);
+        padding:10px 12px;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-full-day-notice-icon {
+        justify-self:center;
+        transform:none;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-full-day-notice-copy {
+        transform:none;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-confirm-commitment {
+        grid-template-columns:62px minmax(0,1fr);
+        padding:14px 12px;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-icon img {
+        height:58px;
+        width:58px;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-commitment-toggle {
+        grid-column:1 / -1;
+        justify-self:center;
+      }
+      .tournaments-page .vol-opportunity-panel .vol-confirm-commitment .vol-availability-duration {
+        grid-column:1 / -1;
+        justify-self:center;
+        margin-top:2px;
+      }
     }
   </style>
   <link rel="stylesheet" href="css/tablet-portrait.css?v=9"/>
@@ -6349,23 +6635,26 @@
             <div class="vol-condensed-selection">
               <svg class="vol-selection-icon vol-modal-icon" aria-hidden="true" focusable="false"><use href="#vol-icon-calendar"></use></svg>
               <div>
-                <span>Your selected judging window</span>
+                <span>Your required judging window</span>
                 <strong id="vol-condensed-event"></strong>
               </div>
-              <p>You can adjust the exact hours below before reviewing.</p>
+              <p>WASDL requires volunteers for the full 8:00 AM–5:30 PM window.</p>
             </div>
             <fieldset class="vol-availability-card vol-availability-card--compact">
-              <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>Confirm availability</legend>
+              <legend><svg class="vol-modal-icon vol-icon-clock" aria-hidden="true" focusable="false"><use href="#vol-icon-clock"></use></svg>Required full-day hours</legend>
               <div class="vol-time-grid">
                 <div class="vol-form-field">
-                  <label for="vol-availability-start">Available from</label>
-                  <div class="vol-time-control"><img class="vol-time-day-icon" src="assets/icons/volunteer-morning.png" alt=""><input id="vol-availability-start" type="time" required></div>
+                  <label for="vol-availability-start">Required start</label>
+                  <div class="vol-time-display"><img class="vol-time-day-icon" src="assets/icons/volunteer-morning.png" alt=""><span>08:00 AM</span></div>
+                  <input id="vol-availability-start" type="hidden" value="08:00" aria-describedby="vol-fixed-hours-note">
                 </div>
                 <div class="vol-form-field">
-                  <label for="vol-availability-end">Available until</label>
-                  <div class="vol-time-control"><img class="vol-time-day-icon" src="assets/icons/volunteer-morning.png" alt=""><input id="vol-availability-end" type="time" required></div>
+                  <label for="vol-availability-end">Required end</label>
+                  <div class="vol-time-display"><img class="vol-time-day-icon" src="assets/icons/volunteer-morning.png" alt=""><span>05:30 PM</span></div>
+                  <input id="vol-availability-end" type="hidden" value="17:30" aria-describedby="vol-fixed-hours-note">
                 </div>
               </div>
+              <div id="vol-fixed-hours-note" class="vol-assignment-note"><span aria-hidden="true">i</span><p>These hours are fixed for WASDL full-day volunteers.</p></div>
             </fieldset>
             <div class="vol-form-grid">
               <div class="vol-form-field vol-compact-entry-field">
@@ -6393,7 +6682,7 @@
               <label for="vol-notes"><img class="vol-field-art" src="assets/icons/volunteer-field-notes.png" alt="">Notes for the coach <span style="opacity:.65;">(optional)</span></label>
               <textarea id="vol-notes" maxlength="600" placeholder="Questions, judging experience, or anything the coach should know"></textarea>
             </div>
-            <div class="vol-public-note">Your name, your debater’s name if provided, volunteer role, and selected availability will appear in the tournament roster. Your email, phone, and notes remain coach-only.</div>
+            <div class="vol-public-note">Your name, your debater’s name if provided, volunteer role, and confirmed availability will appear in the tournament roster. Your email, phone, and notes remain coach-only.</div>
           </div>
           <aside id="vol-signup-sidebar" class="vol-signup-sidebar vol-info-rail" aria-label="Helpful signup information"></aside>
         </div>
@@ -6942,7 +7231,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 <script src="js/public-calendar.js?v=19"></script>
 <script src="data/turnstile-config.js?v=2"></script>
-<script src="js/volunteer-public.js?v=104"></script>
+<script src="js/volunteer-public.js?v=106"></script>
   <script src="js/tryout-tournament-tab.js?v=34"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>
