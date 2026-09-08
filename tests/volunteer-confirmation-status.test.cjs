@@ -455,10 +455,10 @@ test("phone signup stacks time controls and keeps information readable", () => {
 });
 
 test("the narrow review card keeps the Cloudflare widget fully inside its bounds", () => {
-  assert.match(publicScript, /appearance: "interaction-only"/);
-  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile\s*\{[^}]*border-radius:8px;[^}]*display:flex;[^}]*justify-content:center;[^}]*overflow:hidden;[^}]*width:100%;/s);
-  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile > div\s*\{[^}]*border-radius:8px;[^}]*overflow:hidden;[^}]*transform:scale\(\.88\);[^}]*transform-origin:center top;/s);
-  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile iframe\s*\{[^}]*border-radius:8px !important;/s);
+  assert.match(publicScript, /appearance: "always"/);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile\s*\{[^}]*border:0;[^}]*border-radius:8px;[^}]*box-shadow:none;[^}]*display:flex;[^}]*justify-content:center;[^}]*overflow:hidden;[^}]*width:100%;/s);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile > div\s*\{[^}]*border:0;[^}]*border-radius:8px;[^}]*box-shadow:none;[^}]*overflow:hidden;[^}]*transform:scale\(\.88\);[^}]*transform-origin:center top;/s);
+  assert.match(tournamentPage, /\.vol-review-side #vol-turnstile iframe\s*\{[^}]*border:0 !important;[^}]*border-radius:8px !important;[^}]*box-shadow:none !important;/s);
 });
 
 test("long volunteer emails shrink to remain visible in their input", () => {

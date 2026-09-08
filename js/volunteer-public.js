@@ -694,7 +694,7 @@
     turnstileWidgetId = window.turnstile.render(root, {
       sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
       theme: "dark",
-      appearance: "interaction-only",
+      appearance: "always",
       callback: () => {
         setStatus("");
         if (!submitPendingTurnstile || signupSubmitting) return;
