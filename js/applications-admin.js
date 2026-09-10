@@ -212,9 +212,19 @@
           const overviewGrid = document.createElement("div");
           overviewGrid.className = "overview-dashboard-grid";
           const quickCards = Array.from(pane.querySelectorAll(".quick-profile-grid > .quick-tile"));
-           [quickCards[0]].filter(Boolean).forEach(card => overviewGrid.appendChild(card));
-          pane.querySelectorAll(".contact-columns > .info-card, .contact-columns > .commitments-card").forEach(card => overviewGrid.appendChild(card));
-          overviewResponseCards.forEach(card => overviewGrid.appendChild(card));
+           const infoCard = pane.querySelector(".contact-columns > .info-card");
+           const commitmentsCard = pane.querySelector(".contact-columns > .commitments-card");
+           const debateExperienceCard = responseCards[1];
+           const identityCard = document.createElement("div");
+           identityCard.className = "overview-identity-card";
+           [quickCards[0], infoCard].filter(Boolean).forEach(card => identityCard.appendChild(card));
+           const leftColumn = document.createElement("div");
+           leftColumn.className = "overview-column overview-left-column";
+           [identityCard, commitmentsCard, debateExperienceCard].filter(Boolean).forEach(card => leftColumn.appendChild(card));
+           const rightColumn = document.createElement("div");
+           rightColumn.className = "overview-column overview-right-column";
+           overviewResponseCards.filter(card => card !== debateExperienceCard).forEach(card => rightColumn.appendChild(card));
+           overviewGrid.append(leftColumn, rightColumn);
           pane.replaceChildren(overviewGrid);
         }
          if (key === "logistics" && scheduleCard) pane.prepend(scheduleCard);
