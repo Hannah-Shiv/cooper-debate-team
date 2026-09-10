@@ -1351,6 +1351,7 @@ exports.manageApplicationReview = onRequest(
     const action = cleanText(body.action, 24).toLowerCase() || "review";
     const decision = cleanText(body.decision, 24).toLowerCase();
     const internalNote = cleanText(body.internalNote, 2000);
+    const rating = Number(body.rating);
 
     if (!/^[a-zA-Z0-9_-]{12,128}$/.test(applicationId)) {
       res.status(400).json({ error: "A valid application is required." });
@@ -1383,6 +1384,10 @@ exports.manageApplicationReview = onRequest(
       res.status(400).json({ error: "Choose Accept, Hold, or Decline before saving." });
       return;
     }
+    if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+      res.status(400).json({ error: "Choose an applicant rating from 1 to 10." });
+      return;
+    }
 
     const applicationRef = getFirestore().collection("applications").doc(applicationId);
     try {
@@ -1392,6 +1397,7 @@ exports.manageApplicationReview = onRequest(
         transaction.update(applicationRef, {
           reviewStatus: decision,
           reviewNote: internalNote,
+          reviewRating: rating,
           reviewedBy: reviewerEmail,
           reviewedAt: FieldValue.serverTimestamp(),
         });
