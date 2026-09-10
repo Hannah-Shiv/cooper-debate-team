@@ -230,8 +230,11 @@
           pane.replaceChildren(overviewGrid);
         }
          if (key === "logistics") {
-           if (activitiesCard) pane.prepend(activitiesCard);
-           if (scheduleCard) pane.prepend(scheduleCard);
+            const logisticsSplit = document.createElement("div");
+            logisticsSplit.className = "logistics-split";
+            if (scheduleCard) logisticsSplit.appendChild(scheduleCard);
+            if (activitiesCard) logisticsSplit.appendChild(activitiesCard);
+            pane.prepend(logisticsSplit);
          }
         if (key === "review") {
          pane.innerHTML = `<div class="review-summary">
