@@ -196,8 +196,8 @@
       const commandBar = document.createElement("div");
       commandBar.className = "detail-command-bar";
       content.insertBefore(commandBar, content.firstChild);
-      commandBar.appendChild(heading);
       commandBar.appendChild(tabBar);
+      commandBar.appendChild(heading);
       // The source sections remain intact; only their presentation is reorganized.
       const groups = { overview: sections.slice(0,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
       const responseCards = Array.from(sections[3].querySelectorAll(".answer-box"));
