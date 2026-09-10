@@ -131,6 +131,36 @@
     const answerIndex = longAnswers.push({ label, text }) - 1;
     return `<div class="answer-box"><span>${icon(iconName, "answer-icon")}${escapeHtml(label)}</span><div class="answer"><span class="answer-preview" data-answer-index="${answerIndex}">${escapeHtml(text)}</span><button type="button" class="answer-full-link" data-answer-index="${answerIndex}" hidden>Click here to read more</button></div></div>`;
   }
+  function googleDriveDocument(value) {
+    const text = String(value || "").trim();
+    const urlMatch = text.match(/https?:\/\/[^\s<>"']+/i);
+    if (!urlMatch) return { error: "No Google Drive document link was provided with this application." };
+    let sourceUrl;
+    try {
+      sourceUrl = new URL(urlMatch[0].replace(/[),.;]+$/, ""));
+    } catch {
+      return { error: "The submitted essay document link is not a valid URL." };
+    }
+    const host = sourceUrl.hostname.toLowerCase();
+    const pathMatch = sourceUrl.pathname.match(/^\/(document|spreadsheets|presentation)\/d\/([^/]+)/);
+    const driveFileMatch = sourceUrl.pathname.match(/^\/file\/d\/([^/]+)/);
+    let previewUrl = "";
+    if (host === "docs.google.com" && pathMatch) {
+      const [, type, id] = pathMatch;
+      previewUrl = type === "presentation"
+        ? `https://docs.google.com/presentation/d/${encodeURIComponent(id)}/embed`
+        : `https://docs.google.com/${type}/d/${encodeURIComponent(id)}/preview`;
+    } else if (host === "drive.google.com" && driveFileMatch) {
+      previewUrl = `https://drive.google.com/file/d/${encodeURIComponent(driveFileMatch[1])}/preview`;
+    } else if (host === "drive.google.com" && sourceUrl.pathname === "/open" && sourceUrl.searchParams.get("id")) {
+      previewUrl = `https://drive.google.com/file/d/${encodeURIComponent(sourceUrl.searchParams.get("id"))}/preview`;
+    } else if (host === "drive.google.com" || host === "docs.google.com") {
+      return { sourceUrl: sourceUrl.href, error: "This Google Drive link format cannot be previewed. Ask the student to submit a direct file, Google Doc, Sheet, or Slides link." };
+    } else {
+      return { sourceUrl: sourceUrl.href, error: "The submitted essay link is not a Google Drive or Google Docs link." };
+    }
+    return { sourceUrl: sourceUrl.href, previewUrl };
+  }
   function openAnswerDialog(answerDetail, trigger) {
     const dialog = $("answer-dialog");
     $("answer-dialog-title").textContent = answerDetail.label;
@@ -246,6 +276,66 @@
            });
           pane.replaceChildren(overviewGrid);
         }
+          if (key === "essay") {
+            const sourceCard = pane.querySelector(".answer-box");
+            const driveDocument = googleDriveDocument(item.answers?.requiredEssay);
+            if (sourceCard) {
+              sourceCard.classList.add("essay-source-card");
+              const answerContent = sourceCard.querySelector(".answer");
+              if (answerContent) {
+                answerContent.replaceChildren();
+                if (driveDocument.sourceUrl) {
+                  const sourceLink = document.createElement("a");
+                  sourceLink.className = "essay-source-link";
+                  sourceLink.href = driveDocument.sourceUrl;
+                  sourceLink.target = "_blank";
+                  sourceLink.rel = "noopener noreferrer";
+                  sourceLink.textContent = driveDocument.sourceUrl;
+                  answerContent.appendChild(sourceLink);
+                } else {
+                  const missingLink = document.createElement("span");
+                  missingLink.className = "essay-source-missing";
+                  missingLink.textContent = String(item.answers?.requiredEssay || "No response provided.");
+                  answerContent.appendChild(missingLink);
+                }
+              }
+            }
+            const previewCard = document.createElement("section");
+            previewCard.className = "essay-preview-card";
+            previewCard.innerHTML = `<h3>${icon("clipboard", "answer-icon")}Essay document contents</h3><div class="essay-preview-body"></div>`;
+            const previewBody = previewCard.querySelector(".essay-preview-body");
+            if (driveDocument.error) {
+              previewBody.innerHTML = `<div class="essay-preview-error" role="status"><strong>Unable to open the essay document</strong><p>${escapeHtml(driveDocument.error)}</p></div>`;
+            } else {
+              previewBody.innerHTML = '<div class="essay-preview-status" role="status">Opening the submitted Google Drive document…</div>';
+              const frame = document.createElement("iframe");
+              frame.className = "essay-preview-frame";
+              frame.title = "Submitted essay document";
+              frame.src = driveDocument.previewUrl;
+              frame.loading = "eager";
+              frame.referrerPolicy = "strict-origin-when-cross-origin";
+              let previewSettled = false;
+              const previewTimeout = window.setTimeout(() => {
+                if (previewSettled) return;
+                frame.remove();
+                previewBody.innerHTML = '<div class="essay-preview-error" role="alert"><strong>Unable to open the essay document</strong><p>Google Drive did not respond in time. Verify that the link works and that its sharing permissions allow coaches to view it.</p></div>';
+              }, 15000);
+              frame.addEventListener("load", () => {
+                previewSettled = true;
+                window.clearTimeout(previewTimeout);
+                previewBody.querySelector(".essay-preview-status")?.remove();
+                frame.classList.add("loaded");
+              });
+              frame.addEventListener("error", () => {
+                previewSettled = true;
+                window.clearTimeout(previewTimeout);
+                frame.remove();
+                previewBody.innerHTML = '<div class="essay-preview-error" role="alert"><strong>Unable to open the essay document</strong><p>Google Drive did not load the submitted document. Verify that the link works and that its sharing permissions allow coaches to view it.</p></div>';
+              });
+              previewBody.appendChild(frame);
+            }
+            pane.appendChild(previewCard);
+          }
          if (key === "logistics") {
             const logisticsSplit = document.createElement("div");
             logisticsSplit.className = "logistics-split";
