@@ -99,7 +99,7 @@
       applicants: "applicants", pending: "pending", accepted: "accepted", declined: "declined",
       grade: "grade", debate: "debate", calendar: "calendar", commitments: "commitments",
       check: "accepted", hold: "hold", person: "person", guardian: "guardian", phone: "phone",
-      clipboard: "clipboard", info: "info", lock: "lock", search: "search", delete: "declined",
+      clipboard: "clipboard", info: "info", lock: "coach-notes", search: "search", delete: "declined",
       actionAccept: "action-accept", actionHold: "action-hold", actionDecline: "action-decline",
       actionDelete: "action-delete-charcoal",
     };
