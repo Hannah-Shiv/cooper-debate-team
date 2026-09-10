@@ -153,6 +153,19 @@
       dialog.style.top = `${top}px`;
     });
   }
+  function confirmReviewAction({ title, message, confirmLabel, danger = false }) {
+    const dialog = $("review-confirm-dialog");
+    $("review-confirm-title").textContent = title;
+    $("review-confirm-message").textContent = message;
+    const confirmButton = $("review-confirm-submit");
+    confirmButton.textContent = confirmLabel;
+    confirmButton.classList.toggle("danger", danger);
+    dialog.returnValue = "";
+    return new Promise(resolve => {
+      dialog.addEventListener("close", () => resolve(dialog.returnValue === "confirm"), { once: true });
+      dialog.showModal();
+    });
+  }
   function quickTile(iconName, label, value, isExpandable = false) {
     const text = String(value || "—");
     if (!isExpandable) {
@@ -283,10 +296,18 @@
      document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", async () => {
        const rating = Number($("review-rating").value);
        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
-        alert("Choose an applicant rating from 1 to 10 before recording a decision.");
+        ratingPopover.hidden = false;
+        ratingTrigger.setAttribute("aria-expanded", "true");
+        requestAnimationFrame(() => ratingPopover.classList.add("open"));
+        ratingSlider.focus();
         return;
        }
-      if (!window.confirm("Can I write this to the database?")) return;
+      const decisionLabel = button.dataset.decision === "accepted" ? "Accept" : button.dataset.decision === "declined" ? "Decline" : "Hold";
+      if (!(await confirmReviewAction({
+       title: `Confirm ${decisionLabel}`,
+       message: `Can I write this ${decisionLabel.toLowerCase()} decision, rating, and coach notes to the database?`,
+       confirmLabel: `Yes, ${decisionLabel.toLowerCase()}`
+      }))) return;
       $("review-decision").value = button.dataset.decision;
        document.querySelectorAll(".decision-button[data-decision]").forEach(control => {
         const selected = control === button;
@@ -306,7 +327,12 @@
      $("review-delete-application").addEventListener("click", () => deleteApplication(item));
   }
   async function deleteApplication(item) {
-    if (!window.confirm("Can I write this to the database?")) return;
+    if (!(await confirmReviewAction({
+      title: "Delete application?",
+      message: "This permanently removes the application from the database and cannot be undone.",
+      confirmLabel: "Yes, delete",
+      danger: true
+    }))) return;
     const buttons = [$("delete-application"), $("review-delete-application")].filter(Boolean);
     buttons.forEach(button => {
       button.disabled = true;
