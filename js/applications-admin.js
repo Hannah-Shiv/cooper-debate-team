@@ -161,6 +161,32 @@
     }
     return { sourceUrl: sourceUrl.href, previewUrl };
   }
+  function openEssayReader(driveDocument, trigger) {
+    const dialog = document.createElement("dialog");
+    dialog.className = "essay-reader-dialog";
+    dialog.setAttribute("aria-labelledby", "essay-reader-title");
+    dialog.innerHTML = `<div class="essay-reader-shell"><header class="essay-reader-header"><div class="essay-reader-heading"><span>Application essay / document</span><h2 id="essay-reader-title">Full document reader</h2></div><button type="button" class="essay-reader-close">Close</button></header><iframe class="essay-reader-frame" title="Submitted essay document in full-screen reader"></iframe></div>`;
+    const closeButton = dialog.querySelector(".essay-reader-close");
+    const frame = dialog.querySelector(".essay-reader-frame");
+    frame.src = driveDocument.previewUrl;
+    frame.referrerPolicy = "strict-origin-when-cross-origin";
+    const closeReader = () => dialog.close();
+    closeButton.addEventListener("click", closeReader);
+    dialog.addEventListener("click", event => {
+      if (event.target === dialog) closeReader();
+    });
+    dialog.addEventListener("close", () => {
+      dialog.remove();
+      trigger?.focus();
+    }, { once: true });
+    document.body.appendChild(dialog);
+    if (typeof dialog.showModal === "function") {
+      dialog.showModal();
+      closeButton.focus();
+    } else {
+      dialog.setAttribute("open", "");
+    }
+  }
   function openAnswerDialog(answerDetail, trigger) {
     const dialog = $("answer-dialog");
     $("answer-dialog-title").textContent = answerDetail.label;
@@ -302,11 +328,18 @@
             }
             const previewCard = document.createElement("section");
             previewCard.className = "essay-preview-card";
-            previewCard.innerHTML = `<h3>${icon("clipboard", "answer-icon")}Essay document contents</h3><div class="essay-preview-body"></div>`;
+             previewCard.innerHTML = `<h3>${icon("clipboard", "answer-icon")}Essay document contents</h3><div class="essay-preview-body"></div>`;
             const previewBody = previewCard.querySelector(".essay-preview-body");
             if (driveDocument.error) {
               previewBody.innerHTML = `<div class="essay-preview-error" role="status"><strong>Unable to open the essay document</strong><p>${escapeHtml(driveDocument.error)}</p></div>`;
             } else {
+               const fullscreenButton = document.createElement("button");
+               fullscreenButton.type = "button";
+               fullscreenButton.className = "essay-fullscreen-button";
+               fullscreenButton.textContent = "Full screen";
+               fullscreenButton.setAttribute("aria-label", "Open essay document in full-screen reader");
+               fullscreenButton.addEventListener("click", () => openEssayReader(driveDocument, fullscreenButton));
+               previewCard.querySelector("h3").appendChild(fullscreenButton);
               previewBody.innerHTML = '<div class="essay-preview-status" role="status">Opening the submitted Google Drive document…</div>';
               const frame = document.createElement("iframe");
               frame.className = "essay-preview-frame";
