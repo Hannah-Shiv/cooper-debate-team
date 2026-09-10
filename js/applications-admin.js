@@ -128,6 +128,17 @@
       renderDetail();
     }));
   }
+  function syncApplicationListHeight() {
+    const list = $("application-list");
+    const reviewBar = document.querySelector(".review-section");
+    if (!list) return;
+    if (!reviewBar || window.innerWidth <= 760) {
+      list.style.removeProperty("max-height");
+      return;
+    }
+    const availableHeight = Math.floor(reviewBar.getBoundingClientRect().top - list.getBoundingClientRect().top - 8);
+    list.style.maxHeight = `${Math.max(140, availableHeight)}px`;
+  }
   function navigateApplications(destination) {
     const list = filteredApplications();
     if (!list.length) return;
@@ -533,6 +544,7 @@
     setMetrics();
     renderList();
     renderDetail();
+    requestAnimationFrame(syncApplicationListHeight);
   }
   function beginListening() {
     if (unsubscribe) unsubscribe();
@@ -570,6 +582,7 @@
   ["first", "previous", "next", "last"].forEach(destination => {
     $(`application-${destination}`).addEventListener("click", () => navigateApplications(destination));
   });
+  window.addEventListener("resize", syncApplicationListHeight);
   auth.onAuthStateChanged(async user => {
     currentUser = user;
     if (!user) { show("auth-required"); return; }
