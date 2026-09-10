@@ -101,7 +101,7 @@
       check: "accepted", hold: "hold", person: "person", guardian: "guardian", phone: "phone",
       clipboard: "clipboard", info: "info", lock: "lock", search: "search", delete: "declined",
       actionAccept: "action-accept", actionHold: "action-hold", actionDecline: "action-decline",
-      actionDelete: "action-delete", actionSave: "action-save",
+      actionDelete: "action-delete",
     };
     const asset = assets[name] || "info";
     return `<img class="icon-art icon-${asset} ${className}" src="images/application-icons/${asset}.png" alt="" aria-hidden="true">`;
@@ -175,12 +175,12 @@
     const decision = status(item);
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}</div></div><div class="detail-status"><button type="button" class="delete-application" id="delete-application">${icon("delete")}Delete entry</button></div></header>
+      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}</div></div></header>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience, true)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts, true)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
-       <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete entry</span></div><small>From database</small></button><button type="button" class="decision-button save-decision" id="save-decision"><div class="decision-main">${icon("actionSave")}<span>Save decision</span></div><small>To database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message">This stores the decision, reviewer, date, and optional internal note.</span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+       <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Internal notes (optional)</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Private context for coaches and Website Admins">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete entry</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
       // Turn the record into five useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
@@ -250,14 +250,15 @@
        tabBar.querySelectorAll(".detail-tab").forEach(tab => tab.classList.toggle("active", tab === button));
        Object.entries(groups).forEach(([key]) => { const pane = content.querySelector(`[data-pane="${key}"]`); if (pane) pane.hidden = key !== button.dataset.tab; });
      }));
-     document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", () => {
+     document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", async () => {
+      if (!window.confirm("Can I write this to the database?")) return;
       $("review-decision").value = button.dataset.decision;
        document.querySelectorAll(".decision-button[data-decision]").forEach(control => {
         const selected = control === button;
         control.classList.toggle("selected", selected);
         control.setAttribute("aria-pressed", String(selected));
        });
-       $("save-decision").classList.add("decision-ready");
+       await saveDecision(item.id, button);
     }));
     requestAnimationFrame(() => document.querySelectorAll(".answer-preview, .quick-preview").forEach(preview => {
       const link = preview.nextElementSibling;
@@ -267,13 +268,10 @@
       const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
       if (answerDetail) openAnswerDialog(answerDetail, button);
     }));
-    $("save-decision").addEventListener("click", () => saveDecision(item.id));
-    $("delete-application").addEventListener("click", () => deleteApplication(item));
      $("review-delete-application").addEventListener("click", () => deleteApplication(item));
   }
   async function deleteApplication(item) {
-    const studentName = [item.student?.firstName, item.student?.lastName].filter(Boolean).join(" ") || "this applicant";
-    if (!window.confirm(`Permanently delete ${studentName}'s application?\n\nThis cannot be undone.`)) return;
+    if (!window.confirm("Can I write this to the database?")) return;
     const buttons = [$("delete-application"), $("review-delete-application")].filter(Boolean);
     buttons.forEach(button => {
       button.disabled = true;
@@ -297,10 +295,11 @@
       });
     }
   }
-  async function saveDecision(applicationId) {
-    const button = $("save-decision");
+  async function saveDecision(applicationId, button) {
     const message = $("save-message");
-    button.disabled = true;
+    const decisionButtons = [...document.querySelectorAll(".decision-button[data-decision]")];
+    decisionButtons.forEach(control => { control.disabled = true; });
+    button.setAttribute("aria-busy", "true");
     message.textContent = "Saving secure review…";
     try {
       const token = await currentUser.getIdToken();
@@ -314,7 +313,10 @@
       message.textContent = "Decision saved. Refreshing the review record…";
     } catch (error) {
       message.textContent = error.message || "Unable to save the review decision.";
-      button.disabled = false;
+      alert(message.textContent);
+    } finally {
+      decisionButtons.forEach(control => { control.disabled = false; });
+      button.removeAttribute("aria-busy");
     }
   }
   function render() {
