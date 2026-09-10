@@ -201,8 +201,9 @@
       // The source sections remain intact; only their presentation is reorganized.
       const groups = { overview: sections.slice(0,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
       const responseCards = Array.from(sections[3].querySelectorAll(".answer-box"));
-      const overviewResponseCards = responseCards.filter((card, index) => index !== 2);
+       const overviewResponseCards = responseCards.filter((card, index) => index !== 2 && index !== 3);
        const scheduleCard = sections[0].querySelectorAll(".quick-profile-grid > .quick-tile")[2];
+       const activitiesCard = responseCards[3];
      Object.entries(groups).forEach(([key, group]) => {
        const pane = document.createElement("div");
        pane.className = "detail-tab-pane"; pane.dataset.pane = key;
@@ -221,19 +222,17 @@
              overviewGrid.appendChild(studentInfoCard);
            }
            if (commitmentsCard) overviewGrid.appendChild(commitmentsCard);
-           let rightResponseRow = 1;
            overviewResponseCards.forEach((card, index) => {
-             if (index === 1) {
-               card.classList.add("overview-left-response");
-             } else {
-               card.classList.add("overview-right-response");
-               card.style.gridRow = String(rightResponseRow++);
-             }
+             card.classList.add(index % 2 === 0 ? "overview-left-response" : "overview-right-response");
+             card.style.gridRow = String(Math.floor(index / 2) + 2);
              overviewGrid.appendChild(card);
            });
           pane.replaceChildren(overviewGrid);
         }
-         if (key === "logistics" && scheduleCard) pane.prepend(scheduleCard);
+         if (key === "logistics") {
+           if (activitiesCard) pane.prepend(activitiesCard);
+           if (scheduleCard) pane.prepend(scheduleCard);
+         }
         if (key === "review") {
          pane.innerHTML = `<div class="review-summary">
             <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the administrative action bar below to record a secure decision and internal note.</p></div>
