@@ -101,7 +101,7 @@
       check: "accepted", hold: "hold", person: "person", guardian: "guardian", phone: "phone",
       clipboard: "clipboard", info: "info", lock: "coach-notes", search: "search", delete: "declined",
       actionAccept: "action-accept", actionHold: "action-hold", actionDecline: "action-decline",
-      actionDelete: "action-delete-purple",
+      actionDelete: "action-delete-white",
     };
     const asset = assets[name] || "info";
     return `<img class="icon-art icon-${asset} ${className}" src="images/application-icons/${asset}.png" alt="" aria-hidden="true">`;
