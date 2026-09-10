@@ -109,6 +109,11 @@
   function renderList() {
     const list = filteredApplications();
     $("visible-count").textContent = `${list.length} total`;
+    const selectedIndex = list.findIndex(item => item.id === selectedId);
+    $("application-first").disabled = selectedIndex <= 0;
+    $("application-previous").disabled = selectedIndex <= 0;
+    $("application-next").disabled = selectedIndex < 0 || selectedIndex >= list.length - 1;
+    $("application-last").disabled = selectedIndex < 0 || selectedIndex >= list.length - 1;
     $("application-list").innerHTML = list.length ? list.map(item => {
       const student = item.student || {};
        return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
@@ -122,6 +127,22 @@
       renderList();
       renderDetail();
     }));
+  }
+  function navigateApplications(destination) {
+    const list = filteredApplications();
+    if (!list.length) return;
+    const currentIndex = list.findIndex(item => item.id === selectedId);
+    let targetIndex = currentIndex;
+    if (destination === "first") targetIndex = 0;
+    if (destination === "previous") targetIndex = Math.max(0, currentIndex < 0 ? 0 : currentIndex - 1);
+    if (destination === "next") targetIndex = Math.min(list.length - 1, currentIndex < 0 ? 0 : currentIndex + 1);
+    if (destination === "last") targetIndex = list.length - 1;
+    selectedId = list[targetIndex].id;
+    renderList();
+    renderDetail();
+    requestAnimationFrame(() => {
+      document.querySelector(`.application-row[data-id="${CSS.escape(selectedId)}"]`)?.scrollIntoView({ block: "nearest" });
+    });
   }
   function fact(label, value) {
     return `<div class="fact"><span>${escapeHtml(label)}</span><b>${escapeHtml(value || "—")}</b></div>`;
@@ -527,7 +548,11 @@
   ["search", "decision-filter", "grade-filter", "sort"].forEach(id => $(id).addEventListener(id === "search" ? "input" : "change", () => {
     renderList();
     const visible = filteredApplications();
-    if (selectedId && !visible.some(item => item.id === selectedId)) { selectedId = visible[0]?.id || ""; renderDetail(); }
+    if (selectedId && !visible.some(item => item.id === selectedId)) {
+      selectedId = visible[0]?.id || "";
+      renderList();
+      renderDetail();
+    }
   }));
   $("clear-filters").addEventListener("click", () => {
     $("search").value = "";
@@ -536,7 +561,14 @@
     $("sort").value = "newest";
     renderList();
     const visible = filteredApplications();
-    if (!visible.some(item => item.id === selectedId)) { selectedId = visible[0]?.id || ""; renderDetail(); }
+    if (!visible.some(item => item.id === selectedId)) {
+      selectedId = visible[0]?.id || "";
+      renderList();
+      renderDetail();
+    }
+  });
+  ["first", "previous", "next", "last"].forEach(destination => {
+    $(`application-${destination}`).addEventListener("click", () => navigateApplications(destination));
   });
   auth.onAuthStateChanged(async user => {
     currentUser = user;
