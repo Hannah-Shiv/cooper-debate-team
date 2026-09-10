@@ -91,8 +91,8 @@
     .tab-btn.active svg { opacity: 1; }
     /* The review cockpit is a sibling of the directory surface: bring its first
        rule closer to the shared hub header without letting the iframe crop. */
-    #applications-section { height: calc(100vh - 196px); margin-left: calc(50% - 50vw + 10px); margin-top: 0 !important; min-height: 520px; transform: translateY(18px); width: calc(100vw - 20px); }
-    #applications-frame { background: #1c2030; border: 0; display: block; height: 100%; width: 100%; }
+    #applications-section { height: auto; margin-left: calc(50% - 50vw + 10px); margin-top: 0 !important; min-height: 520px; transform: translateY(18px); width: calc(100vw - 20px); }
+    #applications-frame { background: #1c2030; border: 0; display: block; height: 720px; overflow: hidden; width: 100%; }
     .dashboard-wrap.applications-active .hub-header { margin-bottom: 0; }
 
     /* ── Top bar: search + sort + filter on one line ────────── */
@@ -1022,7 +1022,7 @@
         </div>
       </div><!-- /admin-section -->
       <div id="applications-section" style="display:none">
-        <iframe id="applications-frame" title="Track Applications"></iframe>
+        <iframe id="applications-frame" title="Track Applications" scrolling="no"></iframe>
       </div>
 
     </div><!-- /dashboard-wrap -->
@@ -1845,6 +1845,37 @@ const dirDb = firebase.firestore();
 
 /* ── Tab switching ────────────────────────────────────── */
 let currentTab = 'directory';
+let applicationsFrameResizeObserver = null;
+
+function syncApplicationsFrameHeight() {
+  const frame = document.getElementById('applications-frame');
+  try {
+    const doc = frame.contentDocument;
+    if (!doc) return;
+    const contentHeight = Math.max(
+      doc.documentElement?.scrollHeight || 0,
+      doc.body?.scrollHeight || 0,
+      520
+    );
+    frame.style.height = `${contentHeight}px`;
+  } catch (error) {
+    console.warn('Unable to resize the applications workspace.', error);
+  }
+}
+
+function watchApplicationsFrameHeight() {
+  const frame = document.getElementById('applications-frame');
+  const doc = frame.contentDocument;
+  if (!doc) return;
+  applicationsFrameResizeObserver?.disconnect();
+  applicationsFrameResizeObserver = new ResizeObserver(syncApplicationsFrameHeight);
+  if (doc.documentElement) applicationsFrameResizeObserver.observe(doc.documentElement);
+  if (doc.body) applicationsFrameResizeObserver.observe(doc.body);
+  syncApplicationsFrameHeight();
+}
+
+document.getElementById('applications-frame').addEventListener('load', watchApplicationsFrameHeight);
+
 function switchTab(tab) {
   currentTab = tab;
   document.querySelector('.dashboard-wrap').classList.toggle('applications-active', tab === 'applications');
@@ -1868,6 +1899,8 @@ function switchTab(tab) {
     if (frame.dataset.layout !== '4') {
       frame.src = 'members-applications.html?embedded=1&layout=4';
       frame.dataset.layout = '4';
+    } else {
+      requestAnimationFrame(syncApplicationsFrameHeight);
     }
   }
   if (tab === 'roster' || tab === 'applications') {

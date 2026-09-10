@@ -212,9 +212,25 @@
           const overviewGrid = document.createElement("div");
           overviewGrid.className = "overview-dashboard-grid";
           const quickCards = Array.from(pane.querySelectorAll(".quick-profile-grid > .quick-tile"));
-           [quickCards[0]].filter(Boolean).forEach(card => overviewGrid.appendChild(card));
-          pane.querySelectorAll(".contact-columns > .info-card, .contact-columns > .commitments-card").forEach(card => overviewGrid.appendChild(card));
-          overviewResponseCards.forEach(card => overviewGrid.appendChild(card));
+           const gradeCard = quickCards[0];
+           const studentInfoCard = pane.querySelector(".contact-columns > .info-card");
+           const commitmentsCard = pane.querySelector(".contact-columns > .commitments-card");
+           if (studentInfoCard) {
+             studentInfoCard.classList.add("profile-with-grade");
+             if (gradeCard) studentInfoCard.prepend(gradeCard);
+             overviewGrid.appendChild(studentInfoCard);
+           }
+           if (commitmentsCard) overviewGrid.appendChild(commitmentsCard);
+           let rightResponseRow = 1;
+           overviewResponseCards.forEach((card, index) => {
+             if (index === 1) {
+               card.classList.add("overview-left-response");
+             } else {
+               card.classList.add("overview-right-response");
+               card.style.gridRow = String(rightResponseRow++);
+             }
+             overviewGrid.appendChild(card);
+           });
           pane.replaceChildren(overviewGrid);
         }
          if (key === "logistics" && scheduleCard) pane.prepend(scheduleCard);
