@@ -252,7 +252,12 @@
      }));
      document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", () => {
       $("review-decision").value = button.dataset.decision;
-       document.querySelectorAll(".decision-button[data-decision]").forEach(control => control.classList.toggle("selected", control === button));
+       document.querySelectorAll(".decision-button[data-decision]").forEach(control => {
+        const selected = control === button;
+        control.classList.toggle("selected", selected);
+        control.setAttribute("aria-pressed", String(selected));
+       });
+       $("save-decision").classList.add("decision-ready");
     }));
     requestAnimationFrame(() => document.querySelectorAll(".answer-preview, .quick-preview").forEach(preview => {
       const link = preview.nextElementSibling;
