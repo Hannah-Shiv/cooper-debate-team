@@ -280,6 +280,21 @@
        .controls #clear-filters{align-self:center!important;background:linear-gradient(180deg,#782c24,#541b18)!important;border:1px solid #e48776!important;border-radius:50%!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.13),0 6px 16px rgba(1,8,22,.3);color:#fff!important;height:54px!important;justify-self:center;min-width:54px!important;padding:0!important;text-shadow:0 1px 3px rgba(0,0,0,.5);width:54px!important}
        .controls #clear-filters svg{display:block;height:24px;margin:auto;stroke:currentColor;width:24px}
        .controls #clear-filters:hover{background:linear-gradient(180deg,#92382d,#67221d)!important;border-color:#f0a08f!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 9px 20px rgba(46,10,6,.38);color:#fff!important;transform:translateY(-1px)}
+        /* Bold, distinct administrative actions without increasing the dock height. */
+        .review-section .decision-button{--action-accent:#8fb9df;--action-glow:rgba(91,155,225,.3);background:linear-gradient(145deg,#17314e,#0a1b30 72%);border:1px solid var(--action-accent);border-radius:7px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),inset 0 -10px 22px rgba(0,0,0,.14),0 4px 12px rgba(0,0,0,.25);color:#fff;isolation:isolate;overflow:hidden;position:relative;text-shadow:0 1px 3px rgba(0,0,0,.65);transition:transform .2s ease,border-color .2s ease,box-shadow .25s ease,filter .2s ease}
+        .review-section .decision-button::before{background:var(--action-accent);box-shadow:0 0 12px var(--action-glow);content:"";height:4px;left:9px;position:absolute;right:9px;top:0;z-index:-1}
+        .review-section .decision-button::after{background:radial-gradient(circle at 50% 0,var(--action-glow),transparent 68%);content:"";inset:0;opacity:.48;pointer-events:none;position:absolute;z-index:-1}
+        .review-section .decision-button.accept{--action-accent:#62e6a1;--action-glow:rgba(50,211,132,.38);background:linear-gradient(145deg,#176a49,#0b3e2d 72%)}
+        .review-section .decision-button.hold{--action-accent:#ffd66b;--action-glow:rgba(235,179,46,.4);background:linear-gradient(145deg,#9a6a16,#5d3b08 72%)}
+        .review-section .decision-button.decline{--action-accent:#ff8d8d;--action-glow:rgba(228,73,83,.4);background:linear-gradient(145deg,#873c48,#4f222d 72%)}
+        .review-section .decision-button.review-action-delete{--action-accent:#e0a4d0;--action-glow:rgba(190,99,168,.35);background:linear-gradient(145deg,#5b3a59,#31233c 72%)}
+        .review-section .decision-button.save-decision{--action-accent:#76caff;--action-glow:rgba(45,158,239,.42);background:linear-gradient(145deg,#1c6fa8,#10426f 72%)}
+        .review-section .decision-button .decision-main{align-items:center;display:flex;gap:8px;justify-content:center}
+        .review-section .decision-button .decision-main .icon-art{filter:drop-shadow(0 2px 4px rgba(0,0,0,.45))}
+        .review-section .decision-button span{color:#fff;font-weight:900;letter-spacing:.1em;text-shadow:0 1px 4px rgba(0,0,0,.72)}
+        .review-section .decision-button small{color:rgba(255,255,255,.86);font-weight:700;letter-spacing:.025em}
+        .review-section .decision-button:hover,.review-section .decision-button:focus-visible{border-color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -10px 22px rgba(0,0,0,.12),0 0 0 2px color-mix(in srgb,var(--action-accent) 35%,transparent),0 7px 18px var(--action-glow);filter:brightness(1.12) saturate(1.12);outline:none;transform:translateY(-2px)}
+        .review-section .decision-button.selected{border-color:#fff;box-shadow:inset 0 0 0 2px var(--action-accent),0 0 16px var(--action-glow)}
        @media(min-width:761px){.summary-controls-row{grid-template-columns:minmax(510px,1fr) minmax(530px,1fr)}.controls{grid-template-columns:minmax(110px,.72fr) minmax(190px,1.2fr) minmax(95px,.62fr) 108px}}
        @media(max-width:760px){.summary{grid-template-columns:repeat(2,minmax(0,1fr))}.summary .metric:last-child{grid-column:1/-1}.summary .metric-label{white-space:normal}}
        @media(max-width:430px){.summary{grid-template-columns:1fr}.summary .metric:last-child{grid-column:auto}}
