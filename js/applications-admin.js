@@ -202,6 +202,7 @@
       const groups = { overview: sections.slice(0,2), essay: sections.slice(3,4), logistics: sections.slice(2,3), review: [] };
       const responseCards = Array.from(sections[3].querySelectorAll(".answer-box"));
       const overviewResponseCards = responseCards.filter((card, index) => index !== 2);
+       const scheduleCard = sections[0].querySelectorAll(".quick-profile-grid > .quick-tile")[2];
      Object.entries(groups).forEach(([key, group]) => {
        const pane = document.createElement("div");
        pane.className = "detail-tab-pane"; pane.dataset.pane = key;
@@ -211,11 +212,12 @@
           const overviewGrid = document.createElement("div");
           overviewGrid.className = "overview-dashboard-grid";
           const quickCards = Array.from(pane.querySelectorAll(".quick-profile-grid > .quick-tile"));
-          [quickCards[0], quickCards[2]].filter(Boolean).forEach(card => overviewGrid.appendChild(card));
+           [quickCards[0]].filter(Boolean).forEach(card => overviewGrid.appendChild(card));
           pane.querySelectorAll(".contact-columns > .info-card, .contact-columns > .commitments-card").forEach(card => overviewGrid.appendChild(card));
           overviewResponseCards.forEach(card => overviewGrid.appendChild(card));
           pane.replaceChildren(overviewGrid);
         }
+         if (key === "logistics" && scheduleCard) pane.prepend(scheduleCard);
         if (key === "review") {
          pane.innerHTML = `<div class="review-summary">
             <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the administrative action bar below to record a secure decision and internal note.</p></div>
