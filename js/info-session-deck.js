@@ -1,40 +1,52 @@
 (function () {
-  var slideCount = 30;
+  var slideCount = 42;
   var slideTitles = [
     "Welcome to Cooper Debate",
+    "Information Session Reminders",
     "Meet Coach Konde",
     "Meet the Leadership Team",
+    "Introducing the Cooper Debate Website",
     "What Is Debate?",
+    "What Is Public Forum Debate?",
+    "Inside a Public Forum Round",
+    "Public Forum Partners",
+    "Past Debate Topics: 2025–2026",
+    "Past Debate Topics: 2024–2025",
+    "September/October 2026 Topic",
+    "What Does the Debate Team Do?",
     "Team Commitment",
     "What We Do at Tuesday Practice",
-    "Building Cases and Debate Skills",
     "How to Write a Case",
-    "Public Forum Partners",
-    "Past Debate Topics",
-    "More Debate Topics",
+    "Building Cases and Debate Skills",
     "Langley High School Mentors",
+    "Debate Team AI Policy",
     "What Happens on Tournament Days?",
-    "2026–27 Tournament Schedule",
-    "Four Debate Rounds",
+    "Five or More Tournaments Each Year",
+    "Debate Tournaments",
     "Tournament Day Schedule",
-    "Inside a Debate Round",
+    "Four Debate Rounds",
+    "Parent and High School Judges",
     "Judging Criteria",
-    "We Need Parent Judges",
-    "Award Ceremony",
     "Tournament Highlights",
-    "Team Values",
-    "Hosting and Judging at Cooper",
-    "Why Join Debate?",
+    "Award Ceremony",
+    "Why Join the Debate Team?",
+    "Reasons to Join Debate",
+    "Fun Debate Tournaments",
+    "We Have Lots of Fun",
     "How Do I Apply?",
     "Team Website",
     "Application Requirements",
-    "Application and Tryout Dates",
+    "Application Essay and Tryouts",
+    "More Policy Information Coming",
+    "Applications Due September 16",
+    "Debate Tryouts September 22–23",
+    "Team Values",
     "Stay Informed",
     "Any Questions?"
   ];
 
   function slidePath(index) {
-    return "images/info-session/slide-" + String(index + 1).padStart(2, "0") + ".jpg";
+    return "images/info-session/slide-" + String(index + 1).padStart(2, "0") + ".jpg?v=2";
   }
 
   function initializeDeck() {
