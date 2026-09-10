@@ -181,7 +181,7 @@
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
-        <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><label for="review-note">${icon("clipboard", "label-icon")}Coach review notes</label><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Add observations, strengths, concerns, or follow-up details…">${escapeHtml(item.reviewNote || "")}</textarea></div><fieldset class="applicant-rating"><legend>How would you rate this applicant?</legend><input id="review-rating" type="hidden" value="${reviewRating || ""}"><div class="rating-readout"><strong id="rating-value">${reviewRating || "—"}</strong><span>out of 10</span></div><div class="rating-scale" role="group" aria-label="Applicant rating from 1 to 10">${Array.from({ length: 10 }, (_, index) => { const value = index + 1; return `<button type="button" class="rating-step${reviewRating === value ? " selected" : ""}" data-rating="${value}" aria-pressed="${reviewRating === value}">${value}</button>`; }).join("")}</div><div class="rating-labels"><span>Needs growth</span><span>Exceptional</span></div></fieldset><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete entry</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+        <section class="review-section"><h3 class="section-title">${icon("lock", "heading-icon")}Administrative review · internal</h3><div class="review-card"><div class="review-controls"><div class="review-note-wrap"><div class="review-note-head"><label for="review-note">${icon("clipboard", "label-icon")}Coach review notes</label><div class="applicant-rating" id="applicant-rating"><span class="rating-caption">Applicant rating</span><input id="review-rating" type="hidden" value="${reviewRating || ""}"><div class="rating-roller" id="rating-roller" role="spinbutton" tabindex="0" aria-label="Applicant rating from 1 to 10" aria-valuemin="1" aria-valuemax="10"${reviewRating ? ` aria-valuenow="${reviewRating}"` : ""}><button type="button" class="roller-arrow" data-rating-delta="1" aria-label="Increase rating">▲</button><div class="roller-window"><span id="rating-value">${reviewRating || "—"}</span></div><button type="button" class="roller-arrow" data-rating-delta="-1" aria-label="Decrease rating">▼</button><small>/10</small></div></div></div><textarea class="review-note" id="review-note" maxlength="2000" placeholder="Add observations, strengths, concerns, or follow-up details…">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold ${decision === "pending" ? "selected" : ""}" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete entry</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
       // Turn the record into five useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
@@ -251,15 +251,34 @@
        tabBar.querySelectorAll(".detail-tab").forEach(tab => tab.classList.toggle("active", tab === button));
        Object.entries(groups).forEach(([key]) => { const pane = content.querySelector(`[data-pane="${key}"]`); if (pane) pane.hidden = key !== button.dataset.tab; });
      }));
-      document.querySelectorAll(".rating-step").forEach(button => button.addEventListener("click", () => {
-       $("review-rating").value = button.dataset.rating;
-       $("rating-value").textContent = button.dataset.rating;
-       document.querySelectorAll(".rating-step").forEach(step => {
-        const selected = step === button;
-        step.classList.toggle("selected", selected);
-        step.setAttribute("aria-pressed", String(selected));
-       });
+      const setRating = (nextValue, direction = 1) => {
+       const value = Math.max(1, Math.min(10, Number(nextValue) || 5));
+       const roller = $("rating-roller");
+       $("review-rating").value = String(value);
+       $("rating-value").textContent = String(value);
+       roller.setAttribute("aria-valuenow", String(value));
+       roller.classList.remove("roll-up", "roll-down");
+       void roller.offsetWidth;
+       roller.classList.add(direction >= 0 ? "roll-up" : "roll-down");
+      };
+      document.querySelectorAll(".roller-arrow").forEach(button => button.addEventListener("click", () => {
+       const delta = Number(button.dataset.ratingDelta);
+       const current = Number($("review-rating").value);
+       setRating(current ? current + delta : 5, delta);
       }));
+      $("rating-roller").addEventListener("keydown", event => {
+       if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
+       event.preventDefault();
+       const delta = event.key === "ArrowUp" ? 1 : -1;
+       const current = Number($("review-rating").value);
+       setRating(current ? current + delta : 5, delta);
+      });
+      $("rating-roller").addEventListener("wheel", event => {
+       event.preventDefault();
+       const delta = event.deltaY < 0 ? 1 : -1;
+       const current = Number($("review-rating").value);
+       setRating(current ? current + delta : 5, delta);
+      }, { passive: false });
      document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", async () => {
        const rating = Number($("review-rating").value);
        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
