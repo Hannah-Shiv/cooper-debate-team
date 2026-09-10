@@ -187,7 +187,7 @@
     const commitmentEntries = Object.entries(COMMITMENT_LABELS).filter(([key]) => item.commitments?.[key]);
     const commitments = commitmentEntries.map(([, label]) => `<span class="commitment">${icon("check", "commitment-icon")} ${escapeHtml(label)}</span>`).join("") || '<span class="answer">No commitments recorded.</span>';
     const decision = status(item);
-    const reviewRating = Number.isInteger(Number(item.reviewRating)) && Number(item.reviewRating) >= 1 && Number(item.reviewRating) <= 10 ? Number(item.reviewRating) : 0;
+    const reviewRating = Number.isInteger(Number(item.reviewRating) * 2) && Number(item.reviewRating) >= 1 && Number(item.reviewRating) <= 10 ? Number(item.reviewRating) : 0;
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
       <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}</div></div></header>
@@ -268,6 +268,7 @@
       const ratingTrigger = $("rating-trigger");
       const ratingPopover = $("rating-popover");
       const ratingSlider = $("rating-slider");
+       ratingSlider.step = "0.5";
       const closeRating = () => {
        ratingPopover.classList.remove("open");
        ratingTrigger.setAttribute("aria-expanded", "false");
@@ -296,7 +297,7 @@
       });
      document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", async () => {
        const rating = Number($("review-rating").value);
-       if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+        if (!Number.isInteger(rating * 2) || rating < 1 || rating > 10) {
         await confirmReviewAction({
          title: "Rating required",
          message: "Choose an applicant rating from 1 to 10 before recording a decision.",

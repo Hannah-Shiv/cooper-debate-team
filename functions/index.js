@@ -1384,7 +1384,7 @@ exports.manageApplicationReview = onRequest(
       res.status(400).json({ error: "Choose Accept, Hold, or Decline before saving." });
       return;
     }
-    if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+    if (!Number.isInteger(rating * 2) || rating < 1 || rating > 10) {
       res.status(400).json({ error: "Choose an applicant rating from 1 to 10." });
       return;
     }
