@@ -577,7 +577,7 @@ function postAnnouncement() {
     document.getElementById("ann-title").value    = "";
     document.getElementById("ann-details").value  = "";
     document.getElementById("ann-drive").value    = "";
-    document.getElementById("ann-category").value = "General";
+    document.getElementById("ann-category").value = "Normal";
     btn.disabled    = false;
     btn.textContent = "Announce →";
     showAnnounceStatus("Posted!", false);
@@ -640,7 +640,16 @@ window.initCalendarAnnouncements = function (email, role) {
 // ── Timeline ──────────────────────────────────────────────────
 // Docs arrive newest-first from Firestore; reverse → oldest left, newest right
 function catKeyFor(cat) {
-  return (cat || "").toLowerCase() === "important" ? "important" : "normal";
+  const key = String(cat || "").trim().toLowerCase();
+  if (key === "important") return "important";
+  if (key === "tournament") return "tournament";
+  // Older records used General (and a few used Practice). Keep those
+  // readable without introducing a fourth visual category.
+  return "normal";
+}
+function catLabelFor(cat) {
+  const key = catKeyFor(cat);
+  return key.charAt(0).toUpperCase() + key.slice(1);
 }
 
 let announcementCockpitState = { selectedId: null, search: "", preset: "all", category: "all", sort: "newest", from: "", to: "" };
@@ -671,8 +680,8 @@ function filteredAnnouncementDocs() {
   });
   return docs.sort((a, b) => {
     const av = announcementDate(a)?.getTime() || 0; const bv = announcementDate(b)?.getTime() || 0;
-    if (s.sort === "important-first" || s.sort === "normal-first") {
-      const preferred = s.sort === "important-first" ? "important" : "normal";
+    if (s.sort.endsWith("-first")) {
+      const preferred = s.sort.replace("-first", "");
       const aRank = catKeyFor(a.data().category) === preferred ? 0 : 1;
       const bRank = catKeyFor(b.data().category) === preferred ? 0 : 1;
       return aRank - bRank || bv - av;
@@ -699,12 +708,12 @@ function renderAnnouncementCockpit() {
   const docs = filteredAnnouncementDocs();
   if (!docs.some(doc => doc.id === announcementCockpitState.selectedId)) announcementCockpitState.selectedId = docs[0]?.id || null;
   const count = document.getElementById("ann-result-count"); if (count) count.textContent = `${docs.length} result${docs.length === 1 ? "" : "s"}`;
-  queue.innerHTML = docs.length ? docs.map((doc, i) => {
+  queue.innerHTML = docs.length ? docs.map(doc => {
     const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc), selected = doc.id === announcementCockpitState.selectedId;
     const queueDate = formatAnnouncementQueueDate(date);
     const summary = (data.details || "No additional details.").replace(/\s+/g, " ").trim();
-    return `<button class="announcement-queue-row${selected ? " is-selected" : ""}" type="button" role="option" data-ann-id="${escHtml(doc.id)}" aria-selected="${selected}" tabindex="${selected ? "0" : "-1"}">
-      <span class="announcement-queue-date"><span>${queueDate.month}</span><strong>${queueDate.day}</strong><small>${queueDate.time}</small></span><span class="announcement-queue-copy"><span class="announcement-queue-meta"><b>${cat === "important" ? "Important" : "Normal"}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 150))}${summary.length > 150 ? "…" : ""}</span></span>
+    return `<button class="announcement-queue-row ann-row-${cat}${selected ? " is-selected" : ""}" type="button" role="option" data-ann-id="${escHtml(doc.id)}" aria-selected="${selected}" tabindex="${selected ? "0" : "-1"}">
+      <span class="announcement-queue-date"><span>${queueDate.month}</span><strong>${queueDate.day}</strong><small>${queueDate.time}</small></span><span class="announcement-queue-copy"><span class="announcement-queue-meta"><b class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 150))}${summary.length > 150 ? "…" : ""}</span></span>
     </button>`;
   }).join("") : `<div class="ann-tl-empty">${allAnnouncementDocs.length ? "<strong>No announcements match these filters.</strong><span>Try a broader search or clear the filters.</span>" : "<strong>No announcements yet.</strong><span>New team updates will appear here.</span>"}</div>`;
   const selected = docs.find(doc => doc.id === announcementCockpitState.selectedId);
@@ -737,7 +746,7 @@ function renderAnnouncementDetail(doc) {
   if (!doc) { pane.innerHTML = '<div class="announcement-detail-empty">Select an announcement to read the full message.</div>'; return; }
   const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc);
   const canDelete = isFullAdminRole(currentUserRole) || (currentUserRole === "captain" && data.postedBy === currentUserEmail);
-  pane.innerHTML = `<div class="announcement-detail-inner"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${cat === "important" ? "Important" : "Normal"}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
+  pane.innerHTML = `<div class="announcement-detail-inner"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
     <h3>${escHtml(data.title || "Untitled announcement")}</h3><p class="announcement-detail-poster">Posted by ${escHtml(announcementPoster(data))}</p>
     <div class="announcement-detail-body">${data.details ? escHtml(data.details).replace(/\n/g, "<br>") : "<em>No additional details were provided.</em>"}</div>
     ${data.driveLink ? `<a class="ann-detail-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached Drive file</a>` : ""}
@@ -779,9 +788,9 @@ function renderTimeline(docs) {
       const stamp = data.timestamp?.toDate?.();
       const when = stamp ? stamp.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"}) : "Recently posted";
       const cat = catKeyFor(data.category);
-      return `<button class="announcement-feed-item ann-feed-${cat}" type="button" data-ann-id="${doc.id}">
+       return `<button class="announcement-feed-item ann-feed-${cat}" type="button" data-ann-id="${doc.id}">
         <span class="announcement-feed-marker">${String(index + 1).padStart(2,"0")}</span>
-        <span class="announcement-feed-copy"><span class="announcement-feed-meta">${when} · ${cat === "important" ? "Important" : "Normal"}</span><strong>${escHtml(data.title || "")}</strong>${data.details ? `<span>${escHtml(data.details.slice(0,180))}${data.details.length > 180 ? "…" : ""}</span>` : ""}</span>
+         <span class="announcement-feed-copy"><span class="announcement-feed-meta">${when} · ${catLabelFor(data.category)}</span><strong>${escHtml(data.title || "")}</strong>${data.details ? `<span>${escHtml(data.details.slice(0,180))}${data.details.length > 180 ? "…" : ""}</span>` : ""}</span>
         <span class="announcement-feed-arrow" aria-hidden="true">View</span>
       </button>`;
     }).join("")}</div>`;
@@ -812,6 +821,7 @@ function renderTimeline(docs) {
     </div>
     <div class="ann-tl-legend">
       <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-normal"></span>Normal</span>
+      <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-tournament"></span>Tournament</span>
       <span class="ann-tl-legend-item"><span class="ann-leg-pip ann-pip-important"></span>Important</span>
       <span class="ann-tl-legend-hint">Hover a dot to preview · click to expand</span>
     </div>`;
@@ -897,7 +907,7 @@ function showHoverTip(dotEl, id, data) {
   dotEl.classList.add("active");
 
   const catKey   = catKeyFor(data.category);
-  const catLabel = catKey === "important" ? "Important" : "Normal";
+   const catLabel = catLabelFor(data.category);
   const ts       = data.timestamp?.toDate?.();
   const dateStr  = ts ? ts.toLocaleDateString("en-US", { weekday:"short", month:"short", day:"numeric", timeZone:"America/New_York" }) : "";
   const timeStr  = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
@@ -957,9 +967,9 @@ function openAnnDetModal(dotEl, id, data) {
   if (!m) return;
 
   const catKey   = catKeyFor(data.category);
-  const catLabel = catKey === "important"
+   const catLabel = catKey === "important"
     ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin-right:5px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>Important`
-    : "Normal";
+     : catKey === "tournament" ? "Tournament" : "Normal";
   const ts       = data.timestamp?.toDate?.();
   const fullDate = ts ? ts.toLocaleDateString("en-US", { weekday:"long", month:"long", day:"numeric", year:"numeric", timeZone:"America/New_York" }) : "";
   const timeOnly = ts ? ts.toLocaleTimeString("en-US", { hour:"numeric", minute:"2-digit", timeZone:"America/New_York" }) : "";
@@ -971,7 +981,7 @@ function openAnnDetModal(dotEl, id, data) {
     ? "Website Admin"
     : data.postedByRole === "coach" ? "Coach" : "Captain";
 
-  const catColors = { normal: "163,230,53", important: "179,0,0" };
+  const catColors = { normal: "52,137,238", tournament: "49,201,133", important: "228,87,97" };
   m.style.setProperty("--det-ca", catColors[catKey] || "163,230,53");
 
   m.querySelector("#ann-det-modal-cat").innerHTML =
@@ -1000,7 +1010,7 @@ function renderAllList() {
     ? `<p class="archive-intro">The complete team communication record, newest first.</p>
        <div class="archive-list">${allAnnouncementDocs.map((doc, index) => {
          const data = doc.data();
-         const important = catKeyFor(data.category) === "important";
+          const cat = catKeyFor(data.category);
          const stamp = data.timestamp?.toDate?.();
          const date = stamp ? stamp.toLocaleDateString("en-US", {
            weekday:"short", month:"short", day:"numeric", year:"numeric",
@@ -1018,10 +1028,10 @@ function renderAllList() {
          const drive = data.driveLink
            ? `<a class="archive-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached file</a>`
            : "";
-         return `<article class="archive-card${important ? " is-important" : ""}" id="archive-${doc.id}">
+          return `<article class="archive-card${cat === "important" ? " is-important" : ""} ann-archive-${cat}" id="archive-${doc.id}">
            <div class="archive-index">${String(index + 1).padStart(2, "0")}</div>
            <div>
-             <div class="archive-meta"><span>${important ? "Important" : "Normal"}</span><span>${date}${time ? ` · ${time}` : ""}</span></div>
+              <div class="archive-meta"><span class="ann-cat-${cat}">${catLabelFor(data.category)}</span><span>${date}${time ? ` · ${time}` : ""}</span></div>
              <h3>${escHtml(data.title || "Untitled announcement")}</h3>
              ${data.details ? `<div class="archive-body">${escHtml(data.details)}</div>` : ""}
              <div class="archive-actions"><span class="archive-meta">Posted by ${poster}</span>${drive}${deleteButton}</div>
@@ -1136,11 +1146,7 @@ function deleteAnnouncement(id) {
 
 // ── Render one announcement card ──────────────────────────────
 function renderAnnouncement(id, data) {
-  const catClass = {
-    Practice:   "ann-cat-practice",
-    Tournament: "ann-cat-tournament",
-    General:    "ann-cat-general"
-  }[data.category] || "ann-cat-general";
+  const catClass = "ann-cat-" + catKeyFor(data.category);
 
   const timeStr   = timeAgo(data.timestamp);
   const details   = data.details   ? `<div class="ann-details">${escHtml(data.details)}</div>` : "";
@@ -1160,7 +1166,7 @@ function renderAnnouncement(id, data) {
     <div class="announcement-card" id="ann-${id}">
       <div class="ann-header">
         <div class="ann-title-row">
-          <span class="ann-cat-badge ${catClass}">${escHtml(data.category || "General")}</span>
+          <span class="ann-cat-badge ${catClass}">${escHtml(catLabelFor(data.category))}</span>
           <span class="ann-title">${escHtml(data.title)}</span>
         </div>
         <span class="ann-meta">${timeStr}</span>
