@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=6"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=7"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -715,8 +715,12 @@
           <p class="cal-subtitle">Dates, deadlines, and official team notices in one place.</p>
         </div>
           <div class="portal-switch" role="tablist" aria-label="Member workspace views">
-            <a class="portal-switch-tab is-active" id="calendar-tab" role="tab" aria-controls="calendar-panel" aria-selected="true" tabindex="0" href="#calendar-panel">Calendar</a>
-            <a class="portal-switch-tab" id="announcements-tab" role="tab" aria-controls="announcements-panel" aria-selected="false" tabindex="-1" href="#announcements-panel">Announcements</a>
+            <a class="portal-switch-tab is-active" id="calendar-tab" role="tab" aria-controls="calendar-panel" aria-selected="true" tabindex="0" href="#calendar-panel">
+              <svg class="portal-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>Calendar</span>
+            </a>
+            <a class="portal-switch-tab" id="announcements-tab" role="tab" aria-controls="announcements-panel" aria-selected="false" tabindex="-1" href="#announcements-panel">
+              <svg class="portal-tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 14.5z"/><path d="M8 8h8M8 12h5"/></svg><span>Announcements</span>
+            </a>
           </div>
         </div>
         <div class="cal-header-actions" aria-label="Workspace actions">
