@@ -708,12 +708,15 @@ function renderAnnouncementCockpit() {
   const docs = filteredAnnouncementDocs();
   if (!docs.some(doc => doc.id === announcementCockpitState.selectedId)) announcementCockpitState.selectedId = docs[0]?.id || null;
   const count = document.getElementById("ann-result-count"); if (count) count.textContent = `${docs.length} result${docs.length === 1 ? "" : "s"}`;
-  queue.innerHTML = docs.length ? docs.map(doc => {
+  queue.innerHTML = docs.length ? `<div class="announcement-queue-head" aria-hidden="true"><span>Date</span><span>Category</span><span>Heading</span><span></span></div>` + docs.map(doc => {
     const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc), selected = doc.id === announcementCockpitState.selectedId;
     const queueDate = formatAnnouncementQueueDate(date);
     const summary = (data.details || "No additional details.").replace(/\s+/g, " ").trim();
     return `<button class="announcement-queue-row ann-row-${cat}${selected ? " is-selected" : ""}" type="button" role="option" data-ann-id="${escHtml(doc.id)}" aria-selected="${selected}" tabindex="${selected ? "0" : "-1"}">
-      <span class="announcement-queue-date"><span>${queueDate.month}</span><strong>${queueDate.day}</strong><small>${queueDate.time}</small></span><span class="announcement-queue-copy"><span class="announcement-queue-meta"><b class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 150))}${summary.length > 150 ? "…" : ""}</span></span>
+      <span class="announcement-queue-date"><span>${queueDate.month}</span><strong>${queueDate.day}</strong><small>${queueDate.time}</small></span>
+      <span class="announcement-queue-category"><b class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</b></span>
+      <span class="announcement-queue-copy"><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 150))}${summary.length > 150 ? "…" : ""}</span></span>
+      <span class="announcement-queue-chevron" aria-hidden="true">›</span>
     </button>`;
   }).join("") : `<div class="ann-tl-empty">${allAnnouncementDocs.length ? "<strong>No announcements match these filters.</strong><span>Try a broader search or clear the filters.</span>" : "<strong>No announcements yet.</strong><span>New team updates will appear here.</span>"}</div>`;
   const selected = docs.find(doc => doc.id === announcementCockpitState.selectedId);
@@ -743,14 +746,16 @@ function renderAnnouncementCockpit() {
 }
 function renderAnnouncementDetail(doc, docs = filteredAnnouncementDocs()) {
   const pane = document.getElementById("ann-detail-pane"); if (!pane) return;
+  pane.className = "announcement-detail-pane";
   if (!doc) { pane.innerHTML = '<div class="announcement-detail-empty">Select an announcement to read the full message.</div>'; return; }
   const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc);
+  pane.classList.add(`ann-detail-${cat}`);
   const canDelete = isFullAdminRole(currentUserRole) || (currentUserRole === "captain" && data.postedBy === currentUserEmail);
   const selectedIndex = docs.findIndex(item => item.id === doc.id);
   const previous = selectedIndex > 0 ? docs[selectedIndex - 1] : null;
   const next = selectedIndex >= 0 && selectedIndex < docs.length - 1 ? docs[selectedIndex + 1] : null;
-  pane.innerHTML = `<div class="announcement-detail-inner"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
-    <h3>${escHtml(data.title || "Untitled announcement")}</h3><p class="announcement-detail-poster">Posted by ${escHtml(announcementPoster(data))}</p>
+  pane.innerHTML = `<div class="announcement-detail-inner"><header class="announcement-detail-header"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
+    <h3>${escHtml(data.title || "Untitled announcement")}</h3><p class="announcement-detail-poster"><span aria-hidden="true">●</span> Posted by ${escHtml(announcementPoster(data))}</p></header>
     <div class="announcement-detail-body">${data.details ? escHtml(data.details).replace(/\n/g, "<br>") : "<em>No additional details were provided.</em>"}</div>
     ${data.driveLink ? `<a class="ann-detail-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached Drive file</a>` : ""}
     <div class="announcement-detail-actions">

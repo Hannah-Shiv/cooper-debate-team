@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=14"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=15"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -921,7 +921,7 @@
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=12"></script>
 <script src="js/calendar.js?v=46"></script>
-<script src="js/members-auth.js?v=30"></script>
+<script src="js/members-auth.js?v=31"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
@@ -943,7 +943,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function activateTab(tab, updateHistory) {
     var target = tab.getAttribute('href');
     if (!panels[target]) return;
-    if (target === activePanel) return;
+    if (target === activePanel) {
+      var unchangedScrollY = window.scrollY;
+      requestAnimationFrame(function () { window.scrollTo(0, unchangedScrollY); });
+      return;
+    }
     var savedScrollY = window.scrollY;
     var outgoingPanel = panels[activePanel];
     var incomingPanel = panels[target];
@@ -995,6 +999,9 @@ document.addEventListener('DOMContentLoaded', function () {
   }
 
   tabs.forEach(function (tab) {
+    tab.addEventListener('mousedown', function (event) {
+      if (tab.getAttribute('href') === activePanel) event.preventDefault();
+    });
     tab.addEventListener('click', function (event) {
       event.preventDefault();
       activateTab(tab, true);
