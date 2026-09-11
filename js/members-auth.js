@@ -635,7 +635,6 @@ window.initCalendarAnnouncements = function (email, role) {
   document.body.classList.toggle("announcements-view-active", window.location.hash === "#announcements-panel");
   initAnnouncementCockpitControls();
   loadAnnouncements();
-  requestAnimationFrame(window.syncAnnouncementCockpitHeight);
 };
 
 // ── Timeline ──────────────────────────────────────────────────
@@ -646,8 +645,6 @@ function catKeyFor(cat) {
 
 let announcementCockpitState = { selectedId: null, search: "", preset: "all", category: "all", sort: "newest", from: "", to: "" };
 let announcementCockpitControlsInitialized = false;
-let announcementCockpitResizeObserver = null;
-let announcementCockpitClassObserver = null;
 
 function announcementDate(doc) { return doc.data().timestamp?.toDate?.() || null; }
 function announcementDateKey(date) {
@@ -688,6 +685,14 @@ function formatAnnouncementStamp(date, long = false) {
   return date.toLocaleDateString("en-US", { weekday: long ? "long" : "short", month: "short", day: "numeric", year: long ? "numeric" : undefined, timeZone: "America/New_York" }) +
     " · " + date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
 }
+function formatAnnouncementQueueDate(date) {
+  if (!date) return { month: "Recent", day: "—", time: "" };
+  return {
+    month: date.toLocaleDateString("en-US", { month: "short", timeZone: "America/New_York" }),
+    day: date.toLocaleDateString("en-US", { day: "numeric", timeZone: "America/New_York" }),
+    time: date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" })
+  };
+}
 function renderAnnouncementCockpit() {
   const queue = document.getElementById("ann-timeline"); const detail = document.getElementById("ann-detail-pane"); if (!queue || !detail) return;
   const hadQueueFocus = queue.contains(document.activeElement);
@@ -696,9 +701,10 @@ function renderAnnouncementCockpit() {
   const count = document.getElementById("ann-result-count"); if (count) count.textContent = `${docs.length} result${docs.length === 1 ? "" : "s"}`;
   queue.innerHTML = docs.length ? docs.map((doc, i) => {
     const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc), selected = doc.id === announcementCockpitState.selectedId;
+    const queueDate = formatAnnouncementQueueDate(date);
     const summary = (data.details || "No additional details.").replace(/\s+/g, " ").trim();
     return `<button class="announcement-queue-row${selected ? " is-selected" : ""}" type="button" role="option" data-ann-id="${escHtml(doc.id)}" aria-selected="${selected}" tabindex="${selected ? "0" : "-1"}">
-      <span class="announcement-queue-number">${String(i + 1).padStart(2, "0")}</span><span class="announcement-queue-copy"><span class="announcement-queue-meta">${formatAnnouncementStamp(date)} · <b>${cat === "important" ? "Important" : "Normal"}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 120))}${summary.length > 120 ? "…" : ""}</span></span>
+      <span class="announcement-queue-date"><span>${queueDate.month}</span><strong>${queueDate.day}</strong><small>${queueDate.time}</small></span><span class="announcement-queue-copy"><span class="announcement-queue-meta"><b>${cat === "important" ? "Important" : "Normal"}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 150))}${summary.length > 150 ? "…" : ""}</span></span>
     </button>`;
   }).join("") : `<div class="ann-tl-empty">${allAnnouncementDocs.length ? "<strong>No announcements match these filters.</strong><span>Try a broader search or clear the filters.</span>" : "<strong>No announcements yet.</strong><span>New team updates will appear here.</span>"}</div>`;
   const selected = docs.find(doc => doc.id === announcementCockpitState.selectedId);
@@ -725,7 +731,6 @@ function renderAnnouncementCockpit() {
   if (hadQueueFocus && announcementCockpitState.selectedId) {
     requestAnimationFrame(() => queue.querySelector(`[data-ann-id="${CSS.escape(announcementCockpitState.selectedId)}"]`)?.focus());
   }
-  window.syncAnnouncementCockpitHeight();
 }
 function renderAnnouncementDetail(doc) {
   const pane = document.getElementById("ann-detail-pane"); if (!pane) return;
@@ -758,29 +763,7 @@ function initAnnouncementCockpitControls() {
     renderAnnouncementCockpit();
   }); });
   const clear = document.getElementById("ann-clear-filters"); if (clear) clear.addEventListener("click", () => { announcementCockpitState = { ...announcementCockpitState, search: "", preset: "all", category: "all", sort: "newest", from: "", to: "" }; Object.entries(ids).forEach(([key, id]) => { const el = document.getElementById(id); if (el) el.value = announcementCockpitState[key]; }); renderAnnouncementCockpit(); });
-  window.addEventListener("resize", window.syncAnnouncementCockpitHeight);
-  if ("ResizeObserver" in window && !announcementCockpitResizeObserver) {
-    announcementCockpitResizeObserver = new ResizeObserver(window.syncAnnouncementCockpitHeight);
-    [document.querySelector("header"), document.querySelector(".cal-header"), document.querySelector(".announcement-filters")].filter(Boolean).forEach(el => announcementCockpitResizeObserver.observe(el));
-  }
-  if ("MutationObserver" in window && !announcementCockpitClassObserver) {
-    announcementCockpitClassObserver = new MutationObserver(() => {
-      requestAnimationFrame(window.syncAnnouncementCockpitHeight);
-      window.setTimeout(window.syncAnnouncementCockpitHeight, 350);
-    });
-    announcementCockpitClassObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
-  }
 }
-
-window.syncAnnouncementCockpitHeight = function () {
-  const body = document.querySelector(".announcement-cockpit-body");
-  if (!body || window.innerWidth <= 700 || window.innerHeight < 620 || !document.body.classList.contains("announcements-view-active")) {
-    if (body) body.style.removeProperty("height");
-    return;
-  }
-  const available = Math.max(96, Math.floor(window.innerHeight - body.getBoundingClientRect().top - 16));
-  body.style.height = `${available}px`;
-};
 
 function renderTimeline(docs) {
   const tl = document.getElementById("ann-timeline");
