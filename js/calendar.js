@@ -215,7 +215,7 @@ function initCalDashboard(email, access) {
   const postBtn = document.getElementById("post-fab");
   if (postBtn && isEditor) {
     postBtn.style.opacity = "0";
-    postBtn.style.display = "flex";
+    postBtn.style.display = window.location.hash === "#announcements-panel" ? "none" : "flex";
     requestAnimationFrame(() => {
       postBtn.style.transition = "opacity 0.35s ease";
       postBtn.style.opacity = "1";
@@ -228,6 +228,9 @@ function initCalDashboard(email, access) {
 
   showCalState("dashboard");
   loadTournaments();
+  if (window.initCalendarAnnouncements) {
+    window.initCalendarAnnouncements(calUserEmail, calUserRole);
+  }
   if (_countdownInterval) clearInterval(_countdownInterval);
   _countdownInterval = window.setInterval(renderNextBanner, 60000);
 }

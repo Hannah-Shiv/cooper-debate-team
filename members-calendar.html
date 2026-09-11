@@ -13,6 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=3"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -652,7 +653,7 @@
      }
   </style>
 </head>
-<body>
+<body data-portal-page="calendar">
 
 <div class="mp-topbar"></div>
 <!-- SITE BADGE — home link, top left -->
@@ -696,7 +697,6 @@
   <!-- ── STATE: denied ───────────────────────────────────── -->
   <div id="cal-state-denied" class="auth-wrap" style="display:none">
     <div class="auth-box">
-      <span style="font-size:3rem;display:block;margin-bottom:18px">🚫</span>
       <h1 class="auth-title">Access Not Approved</h1>
       <p class="auth-sub">Your email is not on the approved members list.</p>
       <a href="members-resources.html" style="display:inline-block;margin-top:20px;color:var(--gold);text-decoration:underline;font-size:0.85rem;">Return to Resources</a>
@@ -710,7 +710,8 @@
       <!-- Header -->
       <div class="cal-header">
         <div class="cal-header-left">
-          <h1>Calendar</h1>
+          <h1>Team schedule</h1>
+          <p class="cal-subtitle">Dates, deadlines, and official team notices in one place.</p>
         </div>
         <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event">
           <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
@@ -718,28 +719,63 @@
         </button>
       </div>
 
-      <!-- Next tournament announcement -->
-      <div class="banner-fab-row">
-        <div class="next-tournament-banner" id="next-tournament-banner"></div>
+      <div class="portal-switch" role="tablist" aria-label="Member workspace views">
+        <a class="portal-switch-tab is-active" id="calendar-tab" role="tab" aria-controls="calendar-panel" aria-selected="true" tabindex="0" href="#calendar-panel">Calendar</a>
+        <a class="portal-switch-tab" id="announcements-tab" role="tab" aria-controls="announcements-panel" aria-selected="false" tabindex="-1" href="#announcements-panel">Announcements</a>
       </div>
 
-      <!-- Calendar controls -->
-      <div class="calendar-tools">
-        <div class="cal-legend">
-          <div class="leg-item"><div class="leg-dot" style="background:#7f1d1d"></div>Tournament</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#166534"></div>Practice</div>
-          <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>Meeting</div>
+      <section id="calendar-panel" role="tabpanel" aria-labelledby="calendar-tab" tabindex="0">
+        <!-- Next tournament announcement -->
+        <div class="banner-fab-row">
+          <div class="next-tournament-banner" id="next-tournament-banner"></div>
         </div>
-      </div>
 
-      <!-- FullCalendar mount -->
-      <div id="cal-container"></div>
+        <!-- Calendar controls -->
+        <div class="calendar-tools">
+          <div class="cal-legend">
+            <div class="leg-item"><div class="leg-dot" style="background:#7f1d1d"></div>Tournament</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#166534"></div>Practice</div>
+            <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>Meeting</div>
+          </div>
+        </div>
+
+        <!-- FullCalendar mount -->
+        <div id="cal-container"></div>
+      </section>
+
+      <section id="announcements-panel" class="announcement-panel" role="tabpanel" aria-labelledby="announcements-tab" tabindex="0" hidden>
+        <div class="announcement-heading-row">
+          <div>
+            <span class="resource-eyebrow">Official team communication</span>
+            <h2 id="announcement-heading">Announcements</h2>
+            <p>Coach and captain updates appear here in time order. Select an item for the full message.</p>
+          </div>
+        <button class="post-fab announcement-post-button" id="announcement-post-fab" onclick="openAnnouncementPostModal()" type="button">Post announcement</button>
+        </div>
+        <div id="ann-timeline"><div class="ann-tl-empty">Loading announcements…</div></div>
+        <button class="resource-button resource-button-muted announcement-all-button" onclick="openAllAnnouncementsModal()" type="button">View all announcements</button>
+      </section>
 
     </div>
   </div>
 
 
 </main>
+
+<div class="modal-overlay" id="announcement-post-modal" style="display:none" onclick="if(event.target===this)closeAnnouncementPostModal()">
+  <div class="modal-box">
+    <div class="modal-header"><span>Post announcement</span><button class="modal-close-btn" type="button" onclick="closeAnnouncementPostModal()" aria-label="Close">×</button></div>
+    <div class="evt-form">
+      <div class="form-group"><label class="form-label" for="ann-title">Title *</label><input class="form-input" id="ann-title" maxlength="100" type="text" placeholder="A clear, time-sensitive headline"/></div>
+      <div class="form-group"><label class="form-label" for="ann-category">Category *</label><select class="form-input form-select" id="ann-category"><option value="Normal">Normal</option><option value="Important" selected>Important</option></select></div>
+      <div class="form-group"><label class="form-label" for="ann-details">Details</label><textarea class="form-input form-textarea" id="ann-details" maxlength="1000" rows="5" placeholder="What should members know?"></textarea></div>
+      <div class="form-group"><label class="form-label" for="ann-drive">Drive link <span style="opacity:.5">(optional)</span></label><input class="form-input" id="ann-drive" type="url" placeholder="https://drive.google.com/…"/></div>
+      <div class="form-footer"><button class="btn-cancel" type="button" onclick="closeAnnouncementPostModal()">Cancel</button><button class="btn-save" id="announce-btn" type="button" onclick="postAnnouncement()">Post announcement</button><span id="announce-status"></span></div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="announcement-detail-modal" style="display:none" onclick="if(event.target===this)closeAnnouncementDetailModal()"><div class="ann-det-modal-box"><div class="modal-header"><span id="ann-det-modal-cat"></span><button class="modal-close-btn" type="button" onclick="closeAnnouncementDetailModal()" aria-label="Close">×</button></div><div id="ann-det-modal-body"></div></div></div>
+<div class="modal-overlay" id="all-announcements-modal" style="display:none" onclick="if(event.target===this)closeAllAnnouncementsModal()"><div class="modal-box modal-tall"><div class="modal-header"><span>All announcements</span><button class="modal-close-btn" type="button" onclick="closeAllAnnouncementsModal()" aria-label="Close">×</button></div><div class="all-ann-list" id="all-ann-list"></div></div></div>
 
 <!-- ── Event Detail Modal ──────────────────────────────────── -->
 <div class="modal-overlay" id="det-modal" style="display:none"
@@ -760,7 +796,7 @@
      onclick="if(event.target===this)closePostModal()">
   <div class="modal-box">
     <div class="modal-header">
-      <span id="post-modal-title">📅 Post Event</span>
+      <span id="post-modal-title">Post Event</span>
       <button class="modal-close-btn" onclick="closePostModal()">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
       </button>
@@ -777,9 +813,9 @@
       <div class="form-group">
         <label class="form-label" for="evt-type">Event Type</label>
         <select class="form-input form-select" id="evt-type" onchange="onTypeChange()">
-          <option value="tournament">🏆 Tournament</option>
-          <option value="practice">🟢 Practice</option>
-          <option value="meeting">📋 Meeting</option>
+          <option value="tournament">Tournament</option>
+          <option value="practice">Practice</option>
+          <option value="meeting">Meeting</option>
         </select>
       </div>
 
@@ -862,13 +898,79 @@
 
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=12"></script>
-<script src="js/calendar.js?v=42"></script>
+<script src="js/calendar.js?v=43"></script>
+<script src="js/members-auth.js?v=19"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
 <script src="js/main.js"></script>
 
 <script>
+/* Calendar / Announcements switch keeps both views in one authenticated workspace. */
+document.addEventListener('DOMContentLoaded', function () {
+  var tabs = document.querySelectorAll('.portal-switch-tab');
+  var panels = {
+    '#calendar-panel': document.getElementById('calendar-panel'),
+    '#announcements-panel': document.getElementById('announcements-panel')
+  };
+  var activePanel = '#calendar-panel';
+  var scrollPositions = { '#calendar-panel': window.scrollY, '#announcements-panel': null };
+
+  function activateTab(tab, updateHistory) {
+    var target = tab.getAttribute('href');
+    if (!panels[target]) return;
+    scrollPositions[activePanel] = window.scrollY;
+    activePanel = target;
+
+    tabs.forEach(function (item) {
+      var selected = item === tab;
+      item.classList.toggle('is-active', selected);
+      item.setAttribute('aria-selected', selected ? 'true' : 'false');
+      item.setAttribute('tabindex', selected ? '0' : '-1');
+    });
+    Object.keys(panels).forEach(function (id) {
+      var selected = id === target;
+      panels[id].hidden = !selected;
+      panels[id].classList.toggle('is-visible', selected && id === '#announcements-panel');
+    });
+    var eventButton = document.getElementById('post-fab');
+    if (eventButton) eventButton.style.display = target === '#calendar-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
+    if (updateHistory && window.location.hash !== target) history.pushState(null, '', target);
+
+    requestAnimationFrame(function () {
+      if (target === '#calendar-panel' && typeof calInstance !== 'undefined' && calInstance) calInstance.updateSize();
+      var savedPosition = scrollPositions[target];
+      if (typeof savedPosition === 'number') {
+        window.scrollTo(0, savedPosition);
+      } else {
+        document.querySelector('.portal-switch').scrollIntoView({ block: 'start' });
+      }
+    });
+  }
+
+  tabs.forEach(function (tab) {
+    tab.addEventListener('click', function (event) {
+      event.preventDefault();
+      activateTab(tab, true);
+    });
+    tab.addEventListener('keydown', function (event) {
+      if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+      event.preventDefault();
+      var tabList = Array.from(tabs);
+      var direction = event.key === 'ArrowRight' ? 1 : -1;
+      var next = tabList[(tabList.indexOf(tab) + direction + tabList.length) % tabList.length];
+      activateTab(next, true);
+      next.focus();
+    });
+  });
+  function activateFromHash() {
+    var target = panels[window.location.hash] ? window.location.hash : '#calendar-panel';
+    var tab = document.querySelector('.portal-switch-tab[href="' + target + '"]');
+    if (tab) activateTab(tab, false);
+  }
+  window.addEventListener('popstate', activateFromHash);
+  activateFromHash();
+});
 /* ── Notification toggle (calendar page) ─────────────────── */
 function calUpdateNotifState() {
   var badge = document.getElementById('cal-notif-state');

@@ -5,6 +5,7 @@
 (function() {
   const API_KEY    = 'AIzaSyDQLFIipyTLZonee_o4tc35gYWOc8TN8-M';
   const NEW_DAYS   = 7;
+  const COMMUNITY_FOLDER = '1yOjHY7NWPewWMr34oY_QkftJ5U1pcTNS';
 
   // Map card element IDs → Drive folder IDs
   const FOLDERS = [
@@ -27,15 +28,15 @@
   }
 
   function mimeIcon(mime) {
-    if (!mime) return '📎';
-    if (mime.includes('document'))     return '📄';
-    if (mime.includes('spreadsheet'))  return '📊';
-    if (mime.includes('presentation')) return '📽️';
-    if (mime.includes('pdf'))          return '📕';
-    if (mime.includes('video'))        return '🎥';
-    if (mime.includes('image'))        return '🖼️';
-    if (mime.includes('audio'))        return '🎵';
-    return '📎';
+    if (!mime) return 'FILE';
+    if (mime.includes('document'))     return 'DOC';
+    if (mime.includes('spreadsheet'))  return 'SHEET';
+    if (mime.includes('presentation')) return 'SLIDES';
+    if (mime.includes('pdf'))          return 'PDF';
+    if (mime.includes('video'))        return 'VIDEO';
+    if (mime.includes('image'))        return 'IMAGE';
+    if (mime.includes('audio'))        return 'AUDIO';
+    return 'FILE';
   }
 
   function timeAgoShort(iso) {
@@ -60,7 +61,7 @@
       `'${folderId}' in parents and mimeType != 'application/vnd.google-apps.folder' and trashed = false`
     );
     const fields = encodeURIComponent('files(id,name,mimeType,modifiedTime,webViewLink)');
-    const url    = `https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime+desc&pageSize=20&fields=${fields}&key=${API_KEY}`;
+    const url    = `https://www.googleapis.com/drive/v3/files?q=${q}&orderBy=modifiedTime+desc&pageSize=100&fields=${fields}&key=${API_KEY}`;
     const res    = await fetch(url, { referrerPolicy: 'unsafe-url' });
     if (!res.ok) throw new Error(`Drive API ${res.status} for folder ${folderId}`);
     return (await res.json()).files || [];
@@ -162,6 +163,67 @@
 
     const allFiles = results.flatMap(r => r.status === 'fulfilled' ? r.value : []);
     renderWhatsNew(allFiles);
+  };
+
+  window.openCommunityLibrary = async function() {
+    const modal = document.getElementById('community-library-modal');
+    const list = document.getElementById('community-file-list');
+    const status = document.getElementById('community-file-status');
+    if (!modal || !list || !status) return;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    status.textContent = 'Loading public Drive metadata…';
+    list.innerHTML = '';
+    try {
+      const files = await fetchFiles(COMMUNITY_FOLDER);
+      status.textContent = files.length ? `${files.length} files available. Preview support depends on the file type and browser.` : 'No files were returned. Use Open in Drive to browse the folder.';
+      list.innerHTML = files.map(f => {
+        const previewable = /document|pdf|text|spreadsheet|presentation/.test(f.mimeType || '');
+        const action = previewable
+          ? `<button class="community-file-preview" type="button" data-preview-url="${escHtml(f.webViewLink || '')}" data-preview-name="${escHtml(f.name)}">Preview</button>`
+          : `<a href="${escHtml(f.webViewLink || '#')}" target="_blank" rel="noopener">Open in Drive</a>`;
+        return `<div class="community-file"><div><span class="community-file-name">${escHtml(f.name)}</span><span class="community-file-meta">${escHtml(f.mimeType || 'Drive file')} · Updated ${timeAgoShort(f.modifiedTime)}</span></div>${action}</div>`;
+      }).join('');
+      list.querySelectorAll('.community-file-preview').forEach(button => {
+        button.addEventListener('click', () => {
+          openDrivePreview(button.dataset.previewUrl || '', button.dataset.previewName || '');
+        });
+      });
+    } catch (err) {
+      status.textContent = 'Drive metadata could not be loaded in this browser. The public folder remains available through Open in Drive.';
+    }
+  };
+  window.closeCommunityLibrary = function() {
+    const modal = document.getElementById('community-library-modal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+  };
+  window.openDrivePreview = function(url, name) {
+    const modal = document.getElementById('drive-preview-modal');
+    const frame = document.getElementById('drive-preview-frame');
+    const title = document.getElementById('drive-preview-title');
+    const fallback = document.getElementById('drive-preview-open');
+    if (!modal || !frame) return window.open(url, '_blank', 'noopener');
+    let previewUrl = url;
+    const docsMatch = url.match(/^https:\/\/docs\.google\.com\/(document|spreadsheets|presentation)\/d\/([^/?#]+)/);
+    const driveMatch = url.match(/^https:\/\/drive\.google\.com\/file\/d\/([^/?#]+)/);
+    if (docsMatch) {
+      previewUrl = `https://docs.google.com/${docsMatch[1]}/d/${encodeURIComponent(docsMatch[2])}/${docsMatch[1] === 'presentation' ? 'embed' : 'preview'}`;
+    } else if (driveMatch) {
+      previewUrl = `https://drive.google.com/file/d/${encodeURIComponent(driveMatch[1])}/preview`;
+    }
+    frame.src = previewUrl;
+    if (title) title.textContent = name || 'Document preview';
+    if (fallback) fallback.href = url;
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  };
+  window.closeDrivePreview = function() {
+    const modal = document.getElementById('drive-preview-modal');
+    const frame = document.getElementById('drive-preview-frame');
+    if (frame) frame.src = '';
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
   };
 
 })();

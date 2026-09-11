@@ -44,7 +44,7 @@ const PORTAL_ROLE_PRESENTATION = {
 };
 
 // ── Initialise Firebase ──────────────────────────────────────
-firebase.initializeApp(FIREBASE_CONFIG);
+if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
 const auth      = firebase.auth();
 const db        = firebase.firestore();
 const messaging = firebase.messaging ? firebase.messaging() : null;
@@ -65,6 +65,9 @@ let hidePreviewTimer   = null;
 
 // ── On page load ─────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
+  // Calendar owns authentication/session boot and initializes announcements
+  // only after its approved access check completes.
+  if (document.body && document.body.dataset.portalPage === "calendar") return;
   if (auth.isSignInWithEmailLink(window.location.href)) {
     completeMagicLinkSignIn();
     return;
@@ -444,6 +447,8 @@ function showDashboard(email) {
       fab.style.opacity = "1";
     });
   }
+  const announcementFab = document.getElementById("announcement-post-fab");
+  if (announcementFab && canManageMemberContentRole(currentUserRole)) announcementFab.style.display = "inline-flex";
 
   // Show notification error log for coaches and website admins
   if (isFullAdminRole(currentUserRole)) {
@@ -457,7 +462,7 @@ function showDashboard(email) {
   if (userbar) userbar.classList.add("visible");
 
   // Start real-time announcements listener
-  loadAnnouncements();
+  if (document.getElementById("ann-timeline")) loadAnnouncements();
 
   // Start listening for new calendar events — fires browser push when one is added
   startEventsListener();
@@ -574,7 +579,7 @@ function postAnnouncement() {
     btn.disabled    = false;
     btn.textContent = "Announce →";
     showAnnounceStatus("✓ Posted!", false);
-    setTimeout(() => { hideAnnounceStatus(); closePostModal(); }, 1400);
+    setTimeout(() => { hideAnnounceStatus(); closeAnnouncementPostModal(); }, 1400);
 
     // Send email to all members
     const subject  = `[Cooper Debate] ${category ? "[" + category + "] " : ""}${title}`;
@@ -607,7 +612,7 @@ function loadAnnouncements() {
       allAnnouncementDocs = snapshot.docs;
       renderTimeline(snapshot.docs.slice(0, 10));
       // Refresh view-all modal if it's open
-      const m = document.getElementById("all-modal");
+      const m = document.getElementById("all-announcements-modal");
       if (m && m.style.display !== "none") renderAllList();
     }, err => {
       console.error("loadAnnouncements:", err);
@@ -615,6 +620,15 @@ function loadAnnouncements() {
       if (tl) tl.innerHTML = '<div class="ann-tl-empty">Could not load announcements. Please refresh.</div>';
     });
 }
+
+window.initCalendarAnnouncements = function (email, role) {
+  if (document.body?.dataset.portalPage !== "calendar") return;
+  currentUserEmail = String(email || "").toLowerCase();
+  currentUserRole = normalizePortalRole(role);
+  const fab = document.getElementById("announcement-post-fab");
+  if (fab && canManageMemberContentRole(currentUserRole)) fab.style.display = "inline-flex";
+  loadAnnouncements();
+};
 
 // ── Timeline ──────────────────────────────────────────────────
 // Docs arrive newest-first from Firestore; reverse → oldest left, newest right
@@ -626,7 +640,26 @@ function renderTimeline(docs) {
   const tl = document.getElementById("ann-timeline");
   if (!tl) return;
   if (!docs.length) {
-    tl.innerHTML = '<div class="ann-tl-empty">📢 No announcements yet — check back soon.</div>';
+    tl.innerHTML = '<div class="ann-tl-empty">No announcements yet. Check back soon.</div>';
+    return;
+  }
+
+  if (document.getElementById("announcements-panel")) {
+    tl.innerHTML = `<div class="announcement-feed">${docs.map((doc, index) => {
+      const data = doc.data();
+      const stamp = data.timestamp?.toDate?.();
+      const when = stamp ? stamp.toLocaleDateString("en-US",{weekday:"short",month:"short",day:"numeric",timeZone:"America/New_York"}) : "Recently posted";
+      const cat = catKeyFor(data.category);
+      return `<button class="announcement-feed-item ann-feed-${cat}" type="button" data-ann-id="${doc.id}">
+        <span class="announcement-feed-marker">${String(index + 1).padStart(2,"0")}</span>
+        <span class="announcement-feed-copy"><span class="announcement-feed-meta">${when} · ${cat === "important" ? "Important" : "Normal"}</span><strong>${escHtml(data.title || "")}</strong>${data.details ? `<span>${escHtml(data.details.slice(0,180))}${data.details.length > 180 ? "…" : ""}</span>` : ""}</span>
+        <span class="announcement-feed-arrow" aria-hidden="true">View</span>
+      </button>`;
+    }).join("")}</div>`;
+    docs.forEach(doc => {
+      const item = tl.querySelector(`[data-ann-id="${doc.id}"]`);
+      if (item) item.addEventListener("click", () => openAnnDetModal(item, doc.id, doc.data()));
+    });
     return;
   }
 
@@ -791,7 +824,7 @@ function openAnnDetModal(dotEl, id, data) {
   document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
   dotEl.classList.add("active");
 
-  const m = document.getElementById("ann-det-modal");
+  const m = document.getElementById("announcement-detail-modal");
   if (!m) return;
 
   const catKey   = catKeyFor(data.category);
@@ -804,7 +837,7 @@ function openAnnDetModal(dotEl, id, data) {
   const body     = data.details   ? `<div class="ann-det-body">${escHtml(data.details)}</div>` : "";
   const drive    = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" class="ann-det-drive"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg> Open Drive File</a>` : "";
   const canDel   = isFullAdminRole(currentUserRole) || data.postedBy === currentUserEmail;
-  const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnDetModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
+  const delBtn   = canDel ? `<button class="ann-det-delete" onclick="deleteAnnouncement('${id}');closeAnnouncementDetailModal()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg> Delete</button>` : "";
   const byLabel  = data.postedByRole === "website-admin"
     ? "Website Admin"
     : data.postedByRole === "coach" ? "Coach" : "Captain";
@@ -824,8 +857,8 @@ function openAnnDetModal(dotEl, id, data) {
   document.body.style.overflow = "hidden";
 }
 
-function closeAnnDetModal() {
-  const m = document.getElementById("ann-det-modal");
+function closeAnnouncementDetailModal() {
+  const m = document.getElementById("announcement-detail-modal");
   if (m) { m.style.display = "none"; document.body.style.overflow = ""; }
   document.querySelectorAll(".ann-tl-dot").forEach(d => d.classList.remove("active"));
 }
@@ -840,10 +873,10 @@ function renderAllList() {
 }
 
 // ── Modal controls ────────────────────────────────────────────
-function openPostModal()  { const m = document.getElementById("post-modal"); if(m){m.style.display="flex";document.body.style.overflow="hidden";} }
-function closePostModal() { const m = document.getElementById("post-modal"); if(m){m.style.display="none"; document.body.style.overflow="";} }
-function openAllModal()   { const m = document.getElementById("all-modal");  if(m){m.style.display="flex";renderAllList();document.body.style.overflow="hidden";} }
-function closeAllModal()  { const m = document.getElementById("all-modal");  if(m){m.style.display="none"; document.body.style.overflow="";} }
+function openAnnouncementPostModal()  { const m = document.getElementById("announcement-post-modal"); if(m){m.style.display="flex";document.body.style.overflow="hidden";} }
+function closeAnnouncementPostModal() { const m = document.getElementById("announcement-post-modal"); if(m){m.style.display="none"; document.body.style.overflow="";} }
+function openAllAnnouncementsModal()   { const m = document.getElementById("all-announcements-modal");  if(m){m.style.display="flex";renderAllList();document.body.style.overflow="hidden";} }
+function closeAllAnnouncementsModal()  { const m = document.getElementById("all-announcements-modal");  if(m){m.style.display="none"; document.body.style.overflow="";} }
 
 // ── FCM token registration (background push — Phase 2) ────────
 async function registerFcmToken(email) {
