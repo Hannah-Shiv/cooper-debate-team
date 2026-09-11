@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=3"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=4"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -712,16 +712,18 @@
         <div class="cal-header-left">
           <h1>Team schedule</h1>
           <p class="cal-subtitle">Dates, deadlines, and official team notices in one place.</p>
+          <div class="portal-switch" role="tablist" aria-label="Member workspace views">
+            <a class="portal-switch-tab is-active" id="calendar-tab" role="tab" aria-controls="calendar-panel" aria-selected="true" tabindex="0" href="#calendar-panel">Calendar</a>
+            <a class="portal-switch-tab" id="announcements-tab" role="tab" aria-controls="announcements-panel" aria-selected="false" tabindex="-1" href="#announcements-panel">Announcements</a>
+          </div>
         </div>
-        <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event">
-          <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
-          <span class="post-fab-label">Create Event</span>
-        </button>
-      </div>
-
-      <div class="portal-switch" role="tablist" aria-label="Member workspace views">
-        <a class="portal-switch-tab is-active" id="calendar-tab" role="tab" aria-controls="calendar-panel" aria-selected="true" tabindex="0" href="#calendar-panel">Calendar</a>
-        <a class="portal-switch-tab" id="announcements-tab" role="tab" aria-controls="announcements-panel" aria-selected="false" tabindex="-1" href="#announcements-panel">Announcements</a>
+        <div class="cal-header-actions" aria-label="Workspace actions">
+          <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event">
+            <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
+            <span class="post-fab-label">Create Event</span>
+          </button>
+          <button class="post-fab announcement-post-button" id="announcement-post-fab" onclick="openAnnouncementPostModal()" type="button">Post Announcement</button>
+        </div>
       </div>
 
       <section id="calendar-panel" role="tabpanel" aria-labelledby="calendar-tab" tabindex="0">
@@ -750,7 +752,6 @@
             <h2 id="announcement-heading">Announcements</h2>
             <p>Coach and captain updates appear here in time order. Select an item for the full message.</p>
           </div>
-        <button class="post-fab announcement-post-button" id="announcement-post-fab" onclick="openAnnouncementPostModal()" type="button">Post announcement</button>
         </div>
         <div id="ann-timeline"><div class="ann-tl-empty">Loading announcements…</div></div>
         <button class="resource-button resource-button-muted announcement-all-button" onclick="openAllAnnouncementsModal()" type="button">View all announcements</button>
@@ -898,8 +899,8 @@
 
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=12"></script>
-<script src="js/calendar.js?v=43"></script>
-<script src="js/members-auth.js?v=19"></script>
+<script src="js/calendar.js?v=44"></script>
+<script src="js/members-auth.js?v=20"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
@@ -935,6 +936,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     var eventButton = document.getElementById('post-fab');
     if (eventButton) eventButton.style.display = target === '#calendar-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
+    var announcementButton = document.getElementById('announcement-post-fab');
+    if (announcementButton) announcementButton.style.display = target === '#announcements-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
     if (updateHistory && window.location.hash !== target) history.pushState(null, '', target);
 
     requestAnimationFrame(function () {

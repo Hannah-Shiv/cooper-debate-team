@@ -23,22 +23,22 @@ const FCPS_GOOGLE_DOMAINS = ["fcps.edu", "fcpsschools.net"];
 const PORTAL_ROLE_PRESENTATION = {
   member: {
     label: "Team Member",
-    fallback: "✓ Team Member",
+    fallback: "Team Member",
     icon: "images/role-icons/member.png",
   },
   captain: {
     label: "Captain",
-    fallback: "⭐ Captain",
+    fallback: "Captain",
     icon: "images/role-icons/captain.png",
   },
   coach: {
     label: "Coach",
-    fallback: "🛡️ Coach",
+    fallback: "Coach",
     icon: "images/role-icons/coach.png",
   },
   "website-admin": {
     label: "Website Admin",
-    fallback: "🛠️ Website Admin",
+    fallback: "Website Admin",
     icon: "images/role-icons/website-admin.png",
   },
 };
@@ -448,7 +448,9 @@ function showDashboard(email) {
     });
   }
   const announcementFab = document.getElementById("announcement-post-fab");
-  if (announcementFab && canManageMemberContentRole(currentUserRole)) announcementFab.style.display = "inline-flex";
+  if (announcementFab && canManageMemberContentRole(currentUserRole)) {
+    announcementFab.style.display = window.location.hash === "#announcements-panel" ? "flex" : "none";
+  }
 
   // Show notification error log for coaches and website admins
   if (isFullAdminRole(currentUserRole)) {
@@ -498,12 +500,12 @@ function announcementEmailHtml(title, category, details, driveLink) {
     ? `<p style="color:#cbd5e0;font-size:15px;line-height:1.7;margin:16px 0 0;">${details.replace(/\n/g,"<br>")}</p>`
     : "";
   const driveBlock = driveLink
-    ? `<p style="margin:14px 0 0;"><a href="${driveLink}" style="color:#93c5fd;font-size:13px;">📎 View attached file →</a></p>`
+    ? `<p style="margin:14px 0 0;"><a href="${driveLink}" style="color:#93c5fd;font-size:13px;">View attached file →</a></p>`
     : "";
   return `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;background:#0d1b3e;color:#fff;border-radius:8px;overflow:hidden;">
   <div style="background:#091530;padding:20px 28px;border-bottom:3px solid #ffd700;">
-    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">🦅 Cooper Debate Team</span>
+    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">Cooper Debate Team</span>
   </div>
   <div style="padding:28px;">
     <p style="color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 10px;">Team Announcement</p>
@@ -524,9 +526,9 @@ function announcementEmailHtml(title, category, details, driveLink) {
 function notifyNewEvent(data) {
   if (!("Notification" in window) || Notification.permission !== "granted") return;
   if (data.postedBy === currentUserEmail) return;
-  const typeLabel = data.type === "tournament" ? "🏆 Tournament"
-                  : data.type === "practice"   ? "🎯 Practice"
-                  : "📋 Meeting";
+  const typeLabel = data.type === "tournament" ? "Tournament"
+                  : data.type === "practice"   ? "Practice"
+                  : "Meeting";
   const body = data.location ? `${typeLabel} · ${data.location}` : typeLabel;
   const n = new Notification("Cooper Debate — New Event Posted", {
     body:  `${data.title}\n${body}`,
@@ -578,7 +580,7 @@ function postAnnouncement() {
     document.getElementById("ann-category").value = "General";
     btn.disabled    = false;
     btn.textContent = "Announce →";
-    showAnnounceStatus("✓ Posted!", false);
+    showAnnounceStatus("Posted!", false);
     setTimeout(() => { hideAnnounceStatus(); closeAnnouncementPostModal(); }, 1400);
 
     // Send email to all members
@@ -626,7 +628,9 @@ window.initCalendarAnnouncements = function (email, role) {
   currentUserEmail = String(email || "").toLowerCase();
   currentUserRole = normalizePortalRole(role);
   const fab = document.getElementById("announcement-post-fab");
-  if (fab && canManageMemberContentRole(currentUserRole)) fab.style.display = "inline-flex";
+  if (fab && canManageMemberContentRole(currentUserRole)) {
+    fab.style.display = window.location.hash === "#announcements-panel" ? "flex" : "none";
+  }
   loadAnnouncements();
 };
 
@@ -775,7 +779,7 @@ function showHoverTip(dotEl, id, data) {
   const bodyRaw  = data.details || "";
   const bodySnip = bodyRaw.length > 160 ? bodyRaw.slice(0, 160).trimEnd() + "…" : bodyRaw;
   const body     = bodySnip ? `<div class="tip-body">${escHtml(bodySnip)}</div>` : "";
-  const drive    = data.driveLink ? `<div class="tip-drive">📎 Drive file attached</div>` : "";
+  const drive    = data.driveLink ? `<div class="tip-drive">Drive file attached</div>` : "";
   const byLabel  = data.postedByRole === "website-admin"
     ? "Website Admin"
     : data.postedByRole === "coach" ? "Coach" : "Captain";
@@ -868,7 +872,37 @@ function renderAllList() {
   const list = document.getElementById("all-ann-list");
   if (!list) return;
   list.innerHTML = allAnnouncementDocs.length
-    ? allAnnouncementDocs.map(doc => renderAnnouncement(doc.id, doc.data())).join("")
+    ? `<p class="archive-intro">The complete team communication record, newest first.</p>
+       <div class="archive-list">${allAnnouncementDocs.map((doc, index) => {
+         const data = doc.data();
+         const important = catKeyFor(data.category) === "important";
+         const stamp = data.timestamp?.toDate?.();
+         const date = stamp ? stamp.toLocaleDateString("en-US", {
+           weekday:"short", month:"short", day:"numeric", year:"numeric",
+           timeZone:"America/New_York"
+         }) : "Recently posted";
+         const time = stamp ? stamp.toLocaleTimeString("en-US", {
+           hour:"numeric", minute:"2-digit", timeZone:"America/New_York"
+         }) : "";
+         const poster = data.postedByRole === "website-admin" ? "Website Admin"
+           : data.postedByRole === "coach" ? "Coach" : "Captain";
+         const canDelete = isFullAdminRole(currentUserRole) || data.postedBy === currentUserEmail;
+         const deleteButton = canDelete
+           ? `<button class="ann-delete-btn" type="button" onclick="deleteAnnouncement('${doc.id}')">Remove</button>`
+           : "";
+         const drive = data.driveLink
+           ? `<a class="archive-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached file</a>`
+           : "";
+         return `<article class="archive-card${important ? " is-important" : ""}" id="archive-${doc.id}">
+           <div class="archive-index">${String(index + 1).padStart(2, "0")}</div>
+           <div>
+             <div class="archive-meta"><span>${important ? "Important" : "Normal"}</span><span>${date}${time ? ` · ${time}` : ""}</span></div>
+             <h3>${escHtml(data.title || "Untitled announcement")}</h3>
+             ${data.details ? `<div class="archive-body">${escHtml(data.details)}</div>` : ""}
+             <div class="archive-actions"><span class="archive-meta">Posted by ${poster}</span>${drive}${deleteButton}</div>
+           </div>
+         </article>`;
+       }).join("")}</div>`
     : '<div class="ann-empty">No announcements yet.</div>';
 }
 
@@ -937,7 +971,7 @@ function toggleNotifications() {
     return;
   }
   if (Notification.permission === "granted") {
-    alert("Notifications are on ✓\nYou'll see a pop-up whenever Coach or a Captain posts an announcement.");
+    alert("Notifications are on.\nYou'll see a pop-up whenever Coach or a Captain posts an announcement.");
     return;
   }
   if (Notification.permission === "denied") {
@@ -982,7 +1016,7 @@ function renderAnnouncement(id, data) {
 
   const timeStr   = timeAgo(data.timestamp);
   const details   = data.details   ? `<div class="ann-details">${escHtml(data.details)}</div>` : "";
-  const driveLink = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" rel="noopener" class="ann-drive-link">📎 Open Drive File →</a>` : "";
+  const driveLink = data.driveLink ? `<a href="${escHtml(data.driveLink)}" target="_blank" rel="noopener" class="ann-drive-link">Open Drive File →</a>` : "";
 
   // Coach can delete any; captain can delete their own
   const canDelete = isFullAdminRole(currentUserRole) || data.postedBy === currentUserEmail;
@@ -1130,7 +1164,7 @@ function renderAllPins() {
       row.rel       = "noopener noreferrer";
       row.addEventListener("click", e => e.stopPropagation());
       row.innerHTML = `
-        <span class="card-pin-icon">📌</span>
+              <span class="card-pin-icon">PIN</span>
         <span class="card-pin-label">${escHtml(pin.label)}</span>
         <span class="card-pin-badge">Pinned</span>
         ${isEditor
@@ -1143,7 +1177,7 @@ function renderAllPins() {
       // No pin yet — inject a small "Pin a file" button into the title row (right-justified)
       const btn = document.createElement("button");
       btn.className = "card-pin-title-btn";
-      btn.innerHTML = `<span class="pin-icon">📌</span>Pin a file`;
+      btn.textContent = "Pin a file";
       btn.addEventListener("click", e => {
         e.stopPropagation();
         e.preventDefault();
@@ -1159,7 +1193,7 @@ function openPinModal(cardId) {
   const cardEl    = document.getElementById(cardId);
   const cardTitle = cardEl?.querySelector(".portal-card-title")?.textContent?.trim() || "Card";
   const pin       = _pins[cardId];
-  document.getElementById("pin-modal-title").textContent = `📌 Pin a File — ${cardTitle}`;
+  document.getElementById("pin-modal-title").textContent = `Pin a File — ${cardTitle}`;
   document.getElementById("pin-link").value        = pin?.driveLink || "";
   document.getElementById("pin-label-input").value = pin?.label    || "";
   const removeBtn = document.getElementById("pin-remove-btn");
@@ -1213,7 +1247,7 @@ function renderNotifErrors(docs) {
   if (!el) return;
 
   if (!docs || docs.length === 0) {
-    el.innerHTML = '<div class="ne-empty">✓ No device token errors recorded yet.</div>';
+    el.innerHTML = '<div class="ne-empty">No device token errors recorded yet.</div>';
     return;
   }
 

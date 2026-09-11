@@ -12,10 +12,10 @@ const CAL_FIREBASE_CONFIG = {
   appId:             "1:112813790184:web:ac559cb64747d7fd590a5d"
 };
 const CAL_ROLE_PRESENTATION = {
-  member: { label: "Team Member", fallback: "✓ Team Member", icon: "images/role-icons/member.png" },
-  captain: { label: "Captain", fallback: "⭐ Captain", icon: "images/role-icons/captain.png" },
-  coach: { label: "Coach", fallback: "🛡️ Coach", icon: "images/role-icons/coach.png" },
-  "website-admin": { label: "Website Admin", fallback: "🛠️ Website Admin", icon: "images/role-icons/website-admin.png" },
+  member: { label: "Team Member", fallback: "Team Member", icon: "images/role-icons/member.png" },
+  captain: { label: "Captain", fallback: "Captain", icon: "images/role-icons/captain.png" },
+  coach: { label: "Coach", fallback: "Coach", icon: "images/role-icons/coach.png" },
+  "website-admin": { label: "Website Admin", fallback: "Website Admin", icon: "images/role-icons/website-admin.png" },
 };
 
 firebase.initializeApp(CAL_FIREBASE_CONFIG);
@@ -642,9 +642,9 @@ function openEventDetail(fcEvent) {
   if (diff > 0) {
     const days  = Math.floor(diff / 86400000);
     const hours = Math.floor((diff % 86400000) / 3600000);
-    countdownHtml = `<div class="det-countdown">⏳ ${days} day${days!==1?"s":""}, ${hours} hour${hours!==1?"s":""} away</div>`;
+    countdownHtml = `<div class="det-countdown">${days} day${days!==1?"s":""}, ${hours} hour${hours!==1?"s":""} away</div>`;
   } else {
-    countdownHtml = `<div class="det-countdown past">✓ Already passed</div>`;
+    countdownHtml = `<div class="det-countdown past">Already passed</div>`;
   }
 
   // Location block
@@ -653,7 +653,7 @@ function openEventDetail(fcEvent) {
     locationHtml = `
       <div class="det-section">
         <div class="det-section-label">Location</div>
-        <div class="det-virtual-badge">🖥 Online</div>
+        <div class="det-virtual-badge">Online</div>
         ${t.location ? `<a class="det-link-btn" href="${calEsc(t.location)}" target="_blank" rel="noopener">Join Meeting →</a>` : ""}
       </div>`;
   } else if (t.location) {
@@ -687,7 +687,7 @@ function openEventDetail(fcEvent) {
       <div class="det-section">
         <div class="det-section-label">Entry Deadline</div>
         <div class="det-deadline-row">
-          <span class="det-deadline-date">⚠️ ${dlStr}</span>
+          <span class="det-deadline-date">${dlStr}</span>
           <span class="det-deadline-count ${dlDiff <= 0 ? 'past' : ''}">${dlCount}</span>
         </div>
       </div>`;
@@ -698,7 +698,7 @@ function openEventDetail(fcEvent) {
   if (t.scheduleLink) {
     scheduleHtml = `
       <div class="det-section">
-        <a class="det-link-btn" href="${calEsc(t.scheduleLink)}" target="_blank" rel="noopener">📋 View Round Schedule →</a>
+        <a class="det-link-btn" href="${calEsc(t.scheduleLink)}" target="_blank" rel="noopener">View Round Schedule →</a>
       </div>`;
   }
 
@@ -732,11 +732,11 @@ function openEventDetail(fcEvent) {
       </button>`
     : "";
 
-  const typeLabel = isDeadline  ? "⚠️ Entry Deadline"
-    : t.type === "practice"     ? "🟢 Practice"
-    : t.type === "meeting"      ? "📋 Meeting"
-    : t.type === "deadline"     ? "⚠️ Application Deadline"
-    : (t.isVirtual ? "🖥 Tournament (Virtual)" : "🏆 Tournament");
+  const typeLabel = isDeadline  ? "Entry Deadline"
+    : t.type === "practice"     ? "Practice"
+    : t.type === "meeting"      ? "Meeting"
+    : t.type === "deadline"     ? "Application Deadline"
+    : (t.isVirtual ? "Tournament (Virtual)" : "Tournament");
   const accentColor = isDeadline ? "#b45309"
     : t.type === "practice"     ? "#22c55e"
     : t.type === "meeting"      ? "#b45309"
@@ -803,9 +803,9 @@ function writeCalMailDoc(subject, htmlBody, textBody) {
 }
 
 function eventEmailHtml(data) {
-  const typeLabel = data.type === "tournament" ? "🏆 Tournament"
-                  : data.type === "practice"   ? "🎯 Practice"
-                  : "📋 Meeting";
+  const typeLabel = data.type === "tournament" ? "Tournament"
+                  : data.type === "practice"   ? "Practice"
+                  : "Meeting";
   const typeColor = data.type === "tournament" ? "#991b1b"
                   : data.type === "practice"   ? "#16a34a"
                   : "#92400e";
@@ -828,26 +828,26 @@ function eventEmailHtml(data) {
     ? `${fmt12(data.startTime)} – ${fmt12(data.endTime)}`
     : "";
   const locationBlock = data.location
-    ? `<p style="margin:6px 0 0;color:#cbd5e0;font-size:14px;">📍 ${data.location}</p>`
+      ? `<p style="margin:6px 0 0;color:#cbd5e0;font-size:14px;">Location: ${data.location}</p>`
     : "";
   const notesBlock = data.notes
     ? `<p style="margin:14px 0 0;color:#cbd5e0;font-size:14px;line-height:1.6;">${data.notes.replace(/\n/g,"<br>")}</p>`
     : "";
   const scheduleBlock = data.scheduleLink
-    ? `<p style="margin:10px 0 0;"><a href="${data.scheduleLink}" style="color:#93c5fd;font-size:13px;">📋 View Event Day Schedule →</a></p>`
+    ? `<p style="margin:10px 0 0;"><a href="${data.scheduleLink}" style="color:#93c5fd;font-size:13px;">View Event Day Schedule →</a></p>`
     : "";
 
   return `
 <div style="font-family:Arial,Helvetica,sans-serif;max-width:580px;margin:0 auto;background:#0d1b3e;color:#fff;border-radius:8px;overflow:hidden;">
   <div style="background:#091530;padding:20px 28px;border-bottom:3px solid #ffd700;">
-    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">🦅 Cooper Debate Team</span>
+    <span style="font-size:20px;font-weight:700;color:#ffd700;letter-spacing:1px;">Cooper Debate Team</span>
   </div>
   <div style="padding:28px;">
     <p style="color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:2px;margin:0 0 10px;">New Event Posted</p>
     <h2 style="color:#fff;font-size:19px;margin:0 0 12px;">${data.title}</h2>
     <span style="background:${typeColor};color:#fff;font-size:11px;padding:3px 10px;border-radius:12px;">${typeLabel}</span>
-    <p style="margin:14px 0 0;color:#ffffff;font-size:14px;">📅 ${dateStr}</p>
-    ${timeStr ? `<p style="margin:4px 0 0;color:#cbd5e0;font-size:14px;">🕐 ${timeStr}</p>` : ""}
+          <p style="margin:14px 0 0;color:#ffffff;font-size:14px;">${dateStr}</p>
+          ${timeStr ? `<p style="margin:4px 0 0;color:#cbd5e0;font-size:14px;">${timeStr}</p>` : ""}
     ${locationBlock}${notesBlock}${scheduleBlock}
     <div style="margin-top:24px;padding-top:20px;border-top:1px solid #1e3a6e;">
       <a href="https://cooperdebateteam.com/members-calendar.html" style="display:inline-block;background:#ffd700;color:#0d1b3e;font-weight:700;padding:10px 22px;border-radius:5px;text-decoration:none;font-size:14px;">View Calendar →</a>
@@ -902,7 +902,7 @@ function openPostModal(editId) {
   if (deleteBtn) deleteBtn.style.display = _editingId ? "inline-flex" : "none";
 
   document.getElementById("post-modal-title").textContent =
-    (_editingId || _editingStaticSchedule) ? "✎ Edit Event" : "📅 Post Event";
+    (_editingId || _editingStaticSchedule) ? "Edit Event" : "Post Event";
 
   toggleVirtualLabel();
   document.getElementById("post-event-modal").style.display = "flex";
