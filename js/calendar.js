@@ -247,7 +247,7 @@ function resetAllCellColors() {
   const container = document.getElementById("cal-container");
   if (!container) return;
   container.querySelectorAll("td.fc-daygrid-day").forEach(td => {
-    td.style.setProperty("background", "#050e28", "important");
+    td.style.setProperty("background", "#0b2f5b", "important");
     td.style.removeProperty("opacity");
   });
   // Re-show "Today" watermark — eventDidMount will hide it again if an event still exists
@@ -402,9 +402,11 @@ function buildFcEvents(docs) {
 }
 
 // ── Initialise FullCalendar ───────────────────────────────────
-const VALID_VIEWS = ["dayGridMonth", "timeGridWeek", "timeGridDay", "listYear"];
-const _savedView  = VALID_VIEWS.includes(localStorage.getItem("calLastView"))
-  ? localStorage.getItem("calLastView")
+const VALID_VIEWS = ["dayGridMonth", "listMonth"];
+const storedCalendarView = localStorage.getItem("calLastView");
+const migratedCalendarView = storedCalendarView === "listYear" ? "listMonth" : storedCalendarView;
+const _savedView  = VALID_VIEWS.includes(migratedCalendarView)
+  ? migratedCalendarView
   : "dayGridMonth";
 
 function initFullCalendar() {
@@ -419,29 +421,14 @@ function initFullCalendar() {
     headerToolbar: {
       left:   "prev,next today",
       center: "title",
-      right:  "togglePastDeadlines dayGridMonth,timeGridWeek,timeGridDay,listYear"
-    },
-    customButtons: {
-      togglePastDeadlines: {
-        text: "Show past deadlines",
-        click() {
-          _showPastDeadlines = !_showPastDeadlines;
-          localStorage.setItem("showPastDeadlines", _showPastDeadlines);
-          // Update button label
-          const btn = el.querySelector(".fc-togglePastDeadlines-button");
-          if (btn) btn.textContent = _showPastDeadlines ? "Hide past deadlines" : "Show past deadlines";
-          // Refresh events
-          calInstance.removeAllEvents();
-          calInstance.addEventSource(buildFcEvents(calendarEventDocs()));
-        }
-      }
+      right:  "dayGridMonth,listMonth"
     },
     buttonText: {
       today:        "Today",
       month:        "Month",
       week:         "Week",
       day:          "Day",
-      listYear:     "Agenda"
+      listMonth:    "Agenda"
     },
     height:       "auto",
     nowIndicator: true,
@@ -457,7 +444,7 @@ function initFullCalendar() {
       return { html: `<span class="cal-evt-title">${title}</span>` };
     },
     dayCellDidMount: info => {
-      info.el.style.setProperty("background", "#050e28", "important");
+      info.el.style.setProperty("background", "#0b2f5b", "important");
       // Inject "Today" watermark — hidden by eventDidMount if an event lands here
       if (info.isToday) {
         const frame = info.el.querySelector(".fc-daygrid-day-frame");
@@ -474,7 +461,7 @@ function initFullCalendar() {
       // Force dark-navy on column header cells
       setTimeout(() => {
         const hdrs = info.el.querySelectorAll(".fc-col-header-cell");
-        hdrs.forEach(th => th.style.setProperty("background", "#1e44a0", "important"));
+        hdrs.forEach(th => th.style.setProperty("background", "#152034", "important"));
       }, 0);
     },
     eventDidMount: info => {
@@ -493,6 +480,15 @@ function initFullCalendar() {
       const colors     = isDeadline ? { bg: "#ffd700", text: "#000000" }
                                     : evtColors(info.event.extendedProps.type);
       const isPast     = info.event.start < new Date();
+
+      const eventType = isDeadline ? "deadline" : (info.event.extendedProps.type || "tournament");
+      info.el.classList.add(`member-cal-event--${eventType}`);
+
+      if (viewType === "listMonth") {
+        const timeCell = info.el.querySelector(".fc-list-event-time");
+        if (timeCell && info.event.allDay) timeCell.textContent = "All Day";
+        return;
+      }
 
       if (viewType === "dayGridMonth") {
         // Hide "Today" watermark ONLY if this specific event covers today's cell
@@ -537,11 +533,21 @@ function initFullCalendar() {
   });
   calInstance.render();
 
-  // Restore button label to match persisted preference
-  if (_showPastDeadlines) {
-    const btn = el.querySelector(".fc-togglePastDeadlines-button");
-    if (btn) btn.textContent = "Hide past deadlines";
-  }
+  updatePastDeadlinesButton();
+}
+
+function updatePastDeadlinesButton() {
+  const btn = document.getElementById("past-deadlines-toggle");
+  if (btn) btn.textContent = _showPastDeadlines ? "Hide past deadlines" : "Show past deadlines";
+}
+
+function togglePastDeadlines() {
+  _showPastDeadlines = !_showPastDeadlines;
+  localStorage.setItem("showPastDeadlines", _showPastDeadlines);
+  updatePastDeadlinesButton();
+  if (!calInstance) return;
+  calInstance.removeAllEvents();
+  calInstance.addEventSource(buildFcEvents(calendarEventDocs()));
 }
 
 // ── Next-tournament banner ─────────────────────────────────────
