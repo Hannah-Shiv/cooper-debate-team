@@ -717,7 +717,7 @@ function renderAnnouncementCockpit() {
     </button>`;
   }).join("") : `<div class="ann-tl-empty">${allAnnouncementDocs.length ? "<strong>No announcements match these filters.</strong><span>Try a broader search or clear the filters.</span>" : "<strong>No announcements yet.</strong><span>New team updates will appear here.</span>"}</div>`;
   const selected = docs.find(doc => doc.id === announcementCockpitState.selectedId);
-  renderAnnouncementDetail(selected);
+  renderAnnouncementDetail(selected, docs);
   const selectAnnouncementRow = (id, restoreFocus) => {
     announcementCockpitState.selectedId = id;
     renderAnnouncementCockpit();
@@ -741,17 +741,36 @@ function renderAnnouncementCockpit() {
     requestAnimationFrame(() => queue.querySelector(`[data-ann-id="${CSS.escape(announcementCockpitState.selectedId)}"]`)?.focus());
   }
 }
-function renderAnnouncementDetail(doc) {
+function renderAnnouncementDetail(doc, docs = filteredAnnouncementDocs()) {
   const pane = document.getElementById("ann-detail-pane"); if (!pane) return;
   if (!doc) { pane.innerHTML = '<div class="announcement-detail-empty">Select an announcement to read the full message.</div>'; return; }
   const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc);
   const canDelete = isFullAdminRole(currentUserRole) || (currentUserRole === "captain" && data.postedBy === currentUserEmail);
+  const selectedIndex = docs.findIndex(item => item.id === doc.id);
+  const previous = selectedIndex > 0 ? docs[selectedIndex - 1] : null;
+  const next = selectedIndex >= 0 && selectedIndex < docs.length - 1 ? docs[selectedIndex + 1] : null;
   pane.innerHTML = `<div class="announcement-detail-inner"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${catLabelFor(data.category)}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
     <h3>${escHtml(data.title || "Untitled announcement")}</h3><p class="announcement-detail-poster">Posted by ${escHtml(announcementPoster(data))}</p>
     <div class="announcement-detail-body">${data.details ? escHtml(data.details).replace(/\n/g, "<br>") : "<em>No additional details were provided.</em>"}</div>
     ${data.driveLink ? `<a class="ann-detail-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached Drive file</a>` : ""}
-    ${canDelete ? '<button class="ann-detail-delete" type="button" data-delete-announcement>Delete announcement</button>' : ""}</div>`;
+    <div class="announcement-detail-actions">
+      <div>${canDelete ? '<button class="ann-detail-delete" type="button" data-delete-announcement>Delete</button>' : ""}</div>
+      <div class="announcement-detail-navigation" aria-label="Announcement navigation">
+        <button type="button" data-announcement-previous${previous ? "" : " disabled"}>← Previous</button>
+        <button type="button" data-announcement-next${next ? "" : " disabled"}>Next →</button>
+      </div>
+    </div></div>`;
   const del = pane.querySelector("[data-delete-announcement]"); if (del) del.addEventListener("click", () => { deleteAnnouncement(doc.id); });
+  const previousButton = pane.querySelector("[data-announcement-previous]");
+  if (previousButton && previous) previousButton.addEventListener("click", () => {
+    announcementCockpitState.selectedId = previous.id;
+    renderAnnouncementCockpit();
+  });
+  const nextButton = pane.querySelector("[data-announcement-next]");
+  if (nextButton && next) nextButton.addEventListener("click", () => {
+    announcementCockpitState.selectedId = next.id;
+    renderAnnouncementCockpit();
+  });
 }
 function initAnnouncementCockpitControls() {
   if (announcementCockpitControlsInitialized) return;

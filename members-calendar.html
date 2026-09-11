@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=12"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=13"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -728,7 +728,6 @@
             <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
             <span class="post-fab-label">Create Event</span>
           </button>
-          <button class="post-fab announcement-post-button" id="announcement-post-fab" onclick="openAnnouncementPostModal()" type="button">Post Announcement</button>
         </div>
       </div>
 
@@ -769,6 +768,7 @@
             <div><label for="ann-sort">Sort</label><select id="ann-sort"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="important-first">Important first</option><option value="tournament-first">Tournament first</option><option value="normal-first">Normal first</option></select></div>
             <div class="announcement-date-fields"><div><label for="ann-from">From</label><input id="ann-from" type="date"></div><div><label for="ann-to">To</label><input id="ann-to" type="date"></div></div>
             <button class="announcement-clear-filters" id="ann-clear-filters" type="button">Clear filters</button>
+            <button class="announcement-post-button announcement-filter-post" id="announcement-post-fab" onclick="openAnnouncementPostModal()" type="button">Post Announcement</button>
             <span class="announcement-result-count" id="ann-result-count" aria-live="polite"></span>
           </div>
           <div class="announcement-cockpit-body">
@@ -921,7 +921,7 @@
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=12"></script>
 <script src="js/calendar.js?v=46"></script>
-<script src="js/members-auth.js?v=29"></script>
+<script src="js/members-auth.js?v=30"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
