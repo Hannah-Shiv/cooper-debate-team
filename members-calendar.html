@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=7"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=10"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -760,8 +760,24 @@
             <p>Coach and captain updates appear here in time order. Select an item for the full message.</p>
           </div>
         </div>
-        <div id="ann-timeline"><div class="ann-tl-empty">Loading announcements…</div></div>
-        <button class="resource-button resource-button-muted announcement-all-button" onclick="openAllAnnouncementsModal()" type="button">View all announcements</button>
+        <div class="announcement-cockpit" id="announcement-cockpit">
+          <div class="announcement-filters">
+            <div class="announcement-search-field">
+              <label for="ann-search">Search announcements</label>
+              <input id="ann-search" type="search" placeholder="Search title or details" autocomplete="off">
+            </div>
+            <div><label for="ann-date-preset">Date range</label><select id="ann-date-preset"><option value="all">All time</option><option value="30">Past 30 days</option><option value="specific">Specific range</option></select></div>
+            <div><label for="ann-category-filter">Category</label><select id="ann-category-filter"><option value="all">All categories</option><option value="important">Important</option><option value="normal">Normal</option></select></div>
+            <div><label for="ann-sort">Sort</label><select id="ann-sort"><option value="newest">Newest</option><option value="oldest">Oldest</option><option value="important-first">Important first</option><option value="normal-first">Normal first</option></select></div>
+            <div class="announcement-date-fields"><div><label for="ann-from">From</label><input id="ann-from" type="date"></div><div><label for="ann-to">To</label><input id="ann-to" type="date"></div></div>
+            <button class="announcement-clear-filters" id="ann-clear-filters" type="button">Clear filters</button>
+            <span class="announcement-result-count" id="ann-result-count" aria-live="polite"></span>
+          </div>
+          <div class="announcement-cockpit-body">
+            <div class="announcement-queue" id="ann-timeline" role="listbox" aria-label="Announcements"><div class="ann-tl-empty">Loading announcements…</div></div>
+            <article class="announcement-detail-pane" id="ann-detail-pane"><div class="announcement-detail-empty">Select an announcement to read the full message.</div></article>
+          </div>
+        </div>
       </section>
 
     </div>
@@ -907,7 +923,7 @@
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=12"></script>
 <script src="js/calendar.js?v=46"></script>
-<script src="js/members-auth.js?v=20"></script>
+<script src="js/members-auth.js?v=26"></script>
 
 <script src="js/members-nav.js?v=6"></script>
 <script src="js/dome-nav.js"></script>
@@ -943,10 +959,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (eventButton) eventButton.style.display = target === '#calendar-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
     var announcementButton = document.getElementById('announcement-post-fab');
     if (announcementButton) announcementButton.style.display = target === '#announcements-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
+    var dashboard = document.getElementById('cal-state-dashboard');
+    document.body.classList.toggle('announcements-view-active', target === '#announcements-panel' && dashboard && dashboard.style.display !== 'none');
     if (updateHistory && window.location.hash !== target) history.pushState(null, '', target);
 
     requestAnimationFrame(function () {
       if (target === '#calendar-panel' && typeof calInstance !== 'undefined' && calInstance) calInstance.updateSize();
+      if (target === '#announcements-panel' && typeof window.syncAnnouncementCockpitHeight === 'function') window.syncAnnouncementCockpitHeight();
     });
   }
 

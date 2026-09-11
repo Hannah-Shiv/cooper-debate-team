@@ -603,7 +603,6 @@ function loadAnnouncements() {
 
   unsubAnnouncements = db.collection("announcements")
     .orderBy("timestamp", "desc")
-    .limit(30)
     .onSnapshot(snapshot => {
       if (!firstLoad) {
         snapshot.docChanges().forEach(change => {
@@ -612,14 +611,16 @@ function loadAnnouncements() {
       }
       firstLoad = false;
       allAnnouncementDocs = snapshot.docs;
-      renderTimeline(snapshot.docs.slice(0, 10));
+      renderAnnouncementCockpit(snapshot.docs);
       // Refresh view-all modal if it's open
       const m = document.getElementById("all-announcements-modal");
       if (m && m.style.display !== "none") renderAllList();
     }, err => {
       console.error("loadAnnouncements:", err);
       const tl = document.getElementById("ann-timeline");
-      if (tl) tl.innerHTML = '<div class="ann-tl-empty">Could not load announcements. Please refresh.</div>';
+      if (tl) tl.innerHTML = '<div class="ann-tl-empty ann-error-state"><strong>Announcements are unavailable.</strong><span>Check your connection, then refresh the page.</span></div>';
+      const detail = document.getElementById("ann-detail-pane");
+      if (detail) detail.innerHTML = '<div class="announcement-detail-empty">We could not load the review pane.</div>';
     });
 }
 
@@ -631,7 +632,10 @@ window.initCalendarAnnouncements = function (email, role) {
   if (fab && canManageMemberContentRole(currentUserRole)) {
     fab.style.display = window.location.hash === "#announcements-panel" ? "flex" : "none";
   }
+  document.body.classList.toggle("announcements-view-active", window.location.hash === "#announcements-panel");
+  initAnnouncementCockpitControls();
   loadAnnouncements();
+  requestAnimationFrame(window.syncAnnouncementCockpitHeight);
 };
 
 // ── Timeline ──────────────────────────────────────────────────
@@ -639,6 +643,144 @@ window.initCalendarAnnouncements = function (email, role) {
 function catKeyFor(cat) {
   return (cat || "").toLowerCase() === "important" ? "important" : "normal";
 }
+
+let announcementCockpitState = { selectedId: null, search: "", preset: "all", category: "all", sort: "newest", from: "", to: "" };
+let announcementCockpitControlsInitialized = false;
+let announcementCockpitResizeObserver = null;
+let announcementCockpitClassObserver = null;
+
+function announcementDate(doc) { return doc.data().timestamp?.toDate?.() || null; }
+function announcementDateKey(date) {
+  if (!date) return "";
+  const parts = new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(date);
+  return `${parts.find(p => p.type === "year").value}-${parts.find(p => p.type === "month").value}-${parts.find(p => p.type === "day").value}`;
+}
+function announcementPoster(data) {
+  return data.postedByRole === "website-admin" ? "Website Admin" : data.postedByRole === "coach" ? "Coach" : "Captain";
+}
+function filteredAnnouncementDocs() {
+  const s = announcementCockpitState;
+  const todayKey = announcementDateKey(new Date());
+  const [todayYear, todayMonth, todayDay] = todayKey.split("-").map(Number);
+  const thirtyDayStart = new Date(Date.UTC(todayYear, todayMonth - 1, todayDay - 29)).toISOString().slice(0, 10);
+  const docs = allAnnouncementDocs.filter(doc => {
+    const data = doc.data(); const date = announcementDate(doc); const haystack = `${data.title || ""} ${data.details || ""}`.toLowerCase();
+    if (s.search && !haystack.includes(s.search.toLowerCase())) return false;
+    if (s.category !== "all" && catKeyFor(data.category) !== s.category) return false;
+    const key = announcementDateKey(date);
+    if (s.preset === "30" && (!key || key < thirtyDayStart || key > todayKey)) return false;
+    if (s.preset === "specific" && ((s.from && (!key || key < s.from)) || (s.to && (!key || key > s.to)))) return false;
+    return true;
+  });
+  return docs.sort((a, b) => {
+    const av = announcementDate(a)?.getTime() || 0; const bv = announcementDate(b)?.getTime() || 0;
+    if (s.sort === "important-first" || s.sort === "normal-first") {
+      const preferred = s.sort === "important-first" ? "important" : "normal";
+      const aRank = catKeyFor(a.data().category) === preferred ? 0 : 1;
+      const bRank = catKeyFor(b.data().category) === preferred ? 0 : 1;
+      return aRank - bRank || bv - av;
+    }
+    return s.sort === "oldest" ? av - bv : bv - av;
+  });
+}
+function formatAnnouncementStamp(date, long = false) {
+  if (!date) return "Recently posted";
+  return date.toLocaleDateString("en-US", { weekday: long ? "long" : "short", month: "short", day: "numeric", year: long ? "numeric" : undefined, timeZone: "America/New_York" }) +
+    " · " + date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit", timeZone: "America/New_York" });
+}
+function renderAnnouncementCockpit() {
+  const queue = document.getElementById("ann-timeline"); const detail = document.getElementById("ann-detail-pane"); if (!queue || !detail) return;
+  const hadQueueFocus = queue.contains(document.activeElement);
+  const docs = filteredAnnouncementDocs();
+  if (!docs.some(doc => doc.id === announcementCockpitState.selectedId)) announcementCockpitState.selectedId = docs[0]?.id || null;
+  const count = document.getElementById("ann-result-count"); if (count) count.textContent = `${docs.length} result${docs.length === 1 ? "" : "s"}`;
+  queue.innerHTML = docs.length ? docs.map((doc, i) => {
+    const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc), selected = doc.id === announcementCockpitState.selectedId;
+    const summary = (data.details || "No additional details.").replace(/\s+/g, " ").trim();
+    return `<button class="announcement-queue-row${selected ? " is-selected" : ""}" type="button" role="option" data-ann-id="${escHtml(doc.id)}" aria-selected="${selected}" tabindex="${selected ? "0" : "-1"}">
+      <span class="announcement-queue-number">${String(i + 1).padStart(2, "0")}</span><span class="announcement-queue-copy"><span class="announcement-queue-meta">${formatAnnouncementStamp(date)} · <b>${cat === "important" ? "Important" : "Normal"}</b></span><strong>${escHtml(data.title || "Untitled announcement")}</strong><span>${escHtml(summary.slice(0, 120))}${summary.length > 120 ? "…" : ""}</span></span>
+    </button>`;
+  }).join("") : `<div class="ann-tl-empty">${allAnnouncementDocs.length ? "<strong>No announcements match these filters.</strong><span>Try a broader search or clear the filters.</span>" : "<strong>No announcements yet.</strong><span>New team updates will appear here.</span>"}</div>`;
+  const selected = docs.find(doc => doc.id === announcementCockpitState.selectedId);
+  renderAnnouncementDetail(selected);
+  const selectAnnouncementRow = (id, restoreFocus) => {
+    announcementCockpitState.selectedId = id;
+    renderAnnouncementCockpit();
+    if (restoreFocus) requestAnimationFrame(() => queue.querySelector(`[data-ann-id="${CSS.escape(id)}"]`)?.focus());
+  };
+  const rows = Array.from(queue.querySelectorAll("[data-ann-id]"));
+  rows.forEach((row, index) => {
+    row.addEventListener("click", () => selectAnnouncementRow(row.dataset.annId, true));
+    row.addEventListener("keydown", event => {
+      let targetIndex = null;
+      if (event.key === "ArrowDown") targetIndex = Math.min(rows.length - 1, index + 1);
+      if (event.key === "ArrowUp") targetIndex = Math.max(0, index - 1);
+      if (event.key === "Home") targetIndex = 0;
+      if (event.key === "End") targetIndex = rows.length - 1;
+      if (targetIndex === null) return;
+      event.preventDefault();
+      selectAnnouncementRow(rows[targetIndex].dataset.annId, true);
+    });
+  });
+  if (hadQueueFocus && announcementCockpitState.selectedId) {
+    requestAnimationFrame(() => queue.querySelector(`[data-ann-id="${CSS.escape(announcementCockpitState.selectedId)}"]`)?.focus());
+  }
+  window.syncAnnouncementCockpitHeight();
+}
+function renderAnnouncementDetail(doc) {
+  const pane = document.getElementById("ann-detail-pane"); if (!pane) return;
+  if (!doc) { pane.innerHTML = '<div class="announcement-detail-empty">Select an announcement to read the full message.</div>'; return; }
+  const data = doc.data(), cat = catKeyFor(data.category), date = announcementDate(doc);
+  const canDelete = isFullAdminRole(currentUserRole) || (currentUserRole === "captain" && data.postedBy === currentUserEmail);
+  pane.innerHTML = `<div class="announcement-detail-inner"><div class="announcement-detail-kicker"><span class="ann-cat-badge ann-cat-${cat}">${cat === "important" ? "Important" : "Normal"}</span><time>${formatAnnouncementStamp(date, true)}</time></div>
+    <h3>${escHtml(data.title || "Untitled announcement")}</h3><p class="announcement-detail-poster">Posted by ${escHtml(announcementPoster(data))}</p>
+    <div class="announcement-detail-body">${data.details ? escHtml(data.details).replace(/\n/g, "<br>") : "<em>No additional details were provided.</em>"}</div>
+    ${data.driveLink ? `<a class="ann-detail-drive" href="${escHtml(data.driveLink)}" target="_blank" rel="noopener">Open attached Drive file</a>` : ""}
+    ${canDelete ? '<button class="ann-detail-delete" type="button" data-delete-announcement>Delete announcement</button>' : ""}</div>`;
+  const del = pane.querySelector("[data-delete-announcement]"); if (del) del.addEventListener("click", () => { deleteAnnouncement(doc.id); });
+}
+function initAnnouncementCockpitControls() {
+  if (announcementCockpitControlsInitialized) return;
+  announcementCockpitControlsInitialized = true;
+  const ids = { search: "ann-search", preset: "ann-date-preset", category: "ann-category-filter", sort: "ann-sort", from: "ann-from", to: "ann-to" };
+  Object.entries(ids).forEach(([key, id]) => { const el = document.getElementById(id); if (el) el.addEventListener("input", () => {
+    announcementCockpitState[key] = el.value;
+    if ((key === "from" || key === "to") && el.value) {
+      announcementCockpitState.preset = "specific";
+      document.getElementById("ann-date-preset").value = "specific";
+    }
+    if (key === "preset" && el.value !== "specific") {
+      announcementCockpitState.from = "";
+      announcementCockpitState.to = "";
+      document.getElementById("ann-from").value = "";
+      document.getElementById("ann-to").value = "";
+    }
+    renderAnnouncementCockpit();
+  }); });
+  const clear = document.getElementById("ann-clear-filters"); if (clear) clear.addEventListener("click", () => { announcementCockpitState = { ...announcementCockpitState, search: "", preset: "all", category: "all", sort: "newest", from: "", to: "" }; Object.entries(ids).forEach(([key, id]) => { const el = document.getElementById(id); if (el) el.value = announcementCockpitState[key]; }); renderAnnouncementCockpit(); });
+  window.addEventListener("resize", window.syncAnnouncementCockpitHeight);
+  if ("ResizeObserver" in window && !announcementCockpitResizeObserver) {
+    announcementCockpitResizeObserver = new ResizeObserver(window.syncAnnouncementCockpitHeight);
+    [document.querySelector("header"), document.querySelector(".cal-header"), document.querySelector(".announcement-filters")].filter(Boolean).forEach(el => announcementCockpitResizeObserver.observe(el));
+  }
+  if ("MutationObserver" in window && !announcementCockpitClassObserver) {
+    announcementCockpitClassObserver = new MutationObserver(() => {
+      requestAnimationFrame(window.syncAnnouncementCockpitHeight);
+      window.setTimeout(window.syncAnnouncementCockpitHeight, 350);
+    });
+    announcementCockpitClassObserver.observe(document.body, { attributes: true, attributeFilter: ["class"] });
+  }
+}
+
+window.syncAnnouncementCockpitHeight = function () {
+  const body = document.querySelector(".announcement-cockpit-body");
+  if (!body || window.innerWidth <= 700 || window.innerHeight < 620 || !document.body.classList.contains("announcements-view-active")) {
+    if (body) body.style.removeProperty("height");
+    return;
+  }
+  const available = Math.max(96, Math.floor(window.innerHeight - body.getBoundingClientRect().top - 16));
+  body.style.height = `${available}px`;
+};
 
 function renderTimeline(docs) {
   const tl = document.getElementById("ann-timeline");
@@ -1003,7 +1145,10 @@ function notifyNewAnnouncement(data) {
 function deleteAnnouncement(id) {
   if (!confirm("Delete this announcement?")) return;
   db.collection("announcements").doc(id).delete()
-    .catch(err => console.error("deleteAnnouncement error:", err));
+    .catch(err => {
+      console.error("deleteAnnouncement error:", err);
+      alert("This announcement could not be deleted. Your role may no longer have permission, or the connection may have been interrupted.");
+    });
 }
 
 // ── Render one announcement card ──────────────────────────────
