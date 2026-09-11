@@ -31,7 +31,7 @@
 @media(max-width:700px){.community-exchange{grid-template-columns:1fr;padding:20px}.community-mark{justify-self:start;width:90px;height:90px}.community-mark span{font-size:1.4rem}.announcement-heading-row{flex-direction:column}.announcement-post-button{align-self:stretch}.portal-switch-tab{flex:1;text-align:center}.community-file{align-items:flex-start;flex-direction:column}.community-file a,.community-file-preview{padding-top:3px}}
 
 /* Calendar workspace — charcoal, gold and Cooper teal treatment. */
-.cal-wrap{max-width:1320px}
+.cal-wrap{max-width:1560px}
 .cal-header{align-items:flex-end!important;border-bottom:1px solid rgba(242,209,107,.26)!important;gap:28px!important;margin-bottom:0!important;padding:0 0 18px!important}
 .cal-header-left{min-width:0;flex:1;display:grid;grid-template-columns:max-content max-content;grid-template-areas:"title tabs" "subtitle tabs";column-gap:24px;align-items:center}
 .cal-header-left h1{grid-area:title}
@@ -210,7 +210,7 @@
 
 /* Wide announcement workspace: the calendar keeps its normal measure, while
    this review surface uses the room required for scanning and reading. */
-body.announcements-view-active .portal-page{padding:88px 24px 80px}
+body.announcements-view-active .portal-page{padding:120px 32px 80px}
 body.announcements-view-active .cal-wrap{width:100%;max-width:1560px}
 body.announcements-view-active .cal-header{border-bottom:0!important}
 body.announcements-view-active .cal-header-row-one{padding-bottom:12px;border-bottom:0}
@@ -226,26 +226,40 @@ body.announcements-view-active .announcement-detail-body{font-size:1.03rem;line-
 body.announcements-view-active .announcement-filters{grid-template-columns:minmax(180px,1.15fr) minmax(120px,.75fr) minmax(115px,.7fr) minmax(120px,.75fr) minmax(250px,1.4fr) auto minmax(155px,.85fr) auto;border-bottom:0}
 body.announcements-view-active .announcement-result-count{grid-column:auto;align-self:center;white-space:nowrap}
 @media(max-width:900px){
- body.announcements-view-active .portal-page{padding:82px 18px 60px}
+ body.announcements-view-active .portal-page{padding:120px 32px 80px}
  body.announcements-view-active .announcement-cockpit-body{height:620px;min-height:0}
  body.announcements-view-active .announcement-filters{grid-template-columns:repeat(3,minmax(0,1fr))}
  body.announcements-view-active .announcement-result-count{grid-column:1/-1}
 }
+@media(max-width:768px){
+ body.announcements-view-active .portal-page{padding:110px 16px 60px}
+}
 @media(max-width:700px){
- body.announcements-view-active .portal-page{padding:82px 14px 55px}
+ body.announcements-view-active .portal-page{padding:110px 16px 60px}
  body.announcements-view-active .announcement-cockpit-body{height:auto;min-height:0}
  body.announcements-view-active .announcement-detail-inner{padding:26px 20px 34px}
 }
 
-/* Paired workspace tabs: a dedicated control, centered in the right half of
-   the title row rather than treated as secondary navigation. */
+/* Calendar / Announcements use the same raised tab language as tournaments.html. */
 .cal-header-row-one{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:center!important}
-.cal-header-row-one>.portal-switch{justify-self:end;align-self:center;width:min(100%,430px);display:grid!important;grid-template-columns:1fr 1fr;gap:0!important;padding:0!important;border:1px solid rgba(54,105,173,.7)!important;border-radius:7px!important;background:rgba(5,24,52,.82)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;overflow:hidden}
-.cal-header-row-one .portal-switch-tab{display:flex;align-items:center;justify-content:center;gap:9px;min-height:46px;min-width:0;padding:10px 16px!important;border:0!important;border-radius:5px!important;color:#8fa9c7!important;font-size:.64rem!important;letter-spacing:.11em!important;line-height:1!important;transition:background .18s ease,color .18s ease,box-shadow .18s ease!important}
-.cal-header-row-one .portal-switch-tab .portal-tab-icon{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto}
-.cal-header-row-one .portal-switch-tab:hover,.cal-header-row-one .portal-switch-tab:focus-visible{color:#f5f8fb!important;background:rgba(28,62,103,.72)!important;outline:2px solid rgba(147,195,236,.45)!important;outline-offset:-3px!important}
-.cal-header-row-one .portal-switch-tab.is-active{color:#f4d56e!important;background:linear-gradient(180deg,rgba(110,86,19,.42),rgba(67,54,17,.32))!important;box-shadow:inset 0 0 0 1px #d5a928,0 0 13px rgba(242,209,107,.34)!important}
-.cal-header-row-one .portal-switch-tab.is-active .portal-tab-icon{stroke:#f4d56e}
+.cal-header-row-one>.portal-switch{justify-self:end;align-self:center;width:min(100%,430px);display:flex!important;gap:12px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;overflow:visible}
+.cal-header-row-one .portal-switch-tab{--tab-color:#78c3ff;--tab-muted:#a8d9ff;--tab-soft:rgba(41,135,235,.21);--tab-active:#1d548f;--tab-active-text:#fff;--tab-active-border:#76bdff;--tab-glow:rgba(56,150,255,.38);position:relative;display:flex;flex:1;align-items:center;justify-content:center;gap:10px;min-height:58px;min-width:0;overflow:hidden;padding:8px 17px!important;border:1px solid var(--tab-muted)!important;border-radius:10px!important;background:#161a20!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22)!important;color:var(--tab-color)!important;font-size:.69rem!important;letter-spacing:.08em!important;line-height:1!important;transform-origin:center bottom;transform-style:preserve-3d;transition:background .22s ease,border-color .22s ease,box-shadow .28s ease,transform .44s cubic-bezier(.22,1,.36,1),filter .28s ease!important}
+.cal-header-row-one .portal-switch-tab:nth-child(2){--tab-color:#f4c84e;--tab-muted:#ffe28a;--tab-soft:rgba(244,200,78,.14);--tab-active:#f7d15b;--tab-active-text:#07162d;--tab-active-border:#ffe69b;--tab-glow:rgba(244,200,78,.34)}
+.cal-header-row-one .portal-switch-tab::before{position:absolute;top:0;right:12px;left:12px;height:3px;border-radius:inherit;background:var(--tab-muted);content:"";pointer-events:none}
+.cal-header-row-one .portal-switch-tab::after{position:absolute;z-index:0;inset:-60% -12% -55%;border-radius:inherit;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.22) 0%,rgba(255,255,255,.08) 22%,transparent 68%);content:"";opacity:0;pointer-events:none;transform:scale(.78) translateY(8%);transition:opacity .28s ease,transform .34s cubic-bezier(.2,.8,.25,1)}
+.cal-header-row-one .portal-switch-tab>*{position:relative;z-index:1;transition:transform .28s cubic-bezier(.2,.8,.25,1)}
+.cal-header-row-one .portal-switch-tab .portal-tab-icon{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;transition:filter .28s ease,transform .28s cubic-bezier(.2,.8,.25,1)}
+.cal-header-row-one .portal-switch-tab:hover,.cal-header-row-one .portal-switch-tab:focus-visible{border-color:var(--tab-color)!important;background:radial-gradient(circle at 50% -15%,rgba(255,255,255,.22) 0%,transparent 45%),linear-gradient(135deg,var(--tab-soft),#3a424e 72%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 0 0 1px var(--tab-color),0 0 28px var(--tab-glow),0 14px 24px rgba(0,0,0,.34)!important;color:var(--tab-color)!important;filter:brightness(1.16) saturate(1.28);outline:2px solid var(--tab-color)!important;outline-offset:2px!important;transform:perspective(720px) rotateX(6deg) rotateY(-1.5deg) translateY(-5px) scale(1.016)}
+.cal-header-row-one .portal-switch-tab:hover::after,.cal-header-row-one .portal-switch-tab:focus-visible::after{opacity:1;transform:scale(1.18) translateY(-4%)}
+.cal-header-row-one .portal-switch-tab:hover .portal-tab-icon,.cal-header-row-one .portal-switch-tab:focus-visible .portal-tab-icon{filter:drop-shadow(0 0 10px var(--tab-color));transform:translateZ(14px) rotate(-2deg) scale(1.1)}
+.cal-header-row-one .portal-switch-tab.is-active{border-color:var(--tab-active-border)!important;background:var(--tab-active)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.14),0 0 18px var(--tab-glow),0 5px 15px rgba(0,0,0,.28)!important;color:var(--tab-active-text)!important;transform:translateY(-1px)}
+.cal-header-row-one .portal-switch-tab.is-active::before{background:var(--tab-color)}
+.cal-header-row-one .portal-switch-tab.is-active::after{opacity:.16;transform:scale(1) translateY(0)}
+.cal-header-row-one .portal-switch-tab.is-active .portal-tab-icon{stroke:currentColor}
+#calendar-panel,#announcements-panel{opacity:1;transform:translateY(0);transition:opacity .14s ease,transform .18s cubic-bezier(.22,1,.36,1)}
+#calendar-panel.is-leaving,#announcements-panel.is-leaving{opacity:0;transform:translateY(4px)}
+#calendar-panel.is-entering,#announcements-panel.is-entering{opacity:0;transform:translateY(4px)}
+@media(prefers-reduced-motion:reduce){.cal-header-row-one .portal-switch-tab,.cal-header-row-one .portal-switch-tab::after,.cal-header-row-one .portal-switch-tab>*{transition:none!important}.cal-header-row-one .portal-switch-tab:hover,.cal-header-row-one .portal-switch-tab:focus-visible{filter:none;transform:none}#calendar-panel,#announcements-panel{transition:none}}
 .visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .ann-cat-badge{display:inline-flex;align-items:center;padding:4px 9px;border:1px solid transparent;border-radius:5px;color:#fff!important;font:800 .58rem 'Josefin Sans',sans-serif;letter-spacing:.1em;text-transform:uppercase;box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 2px 5px rgba(0,0,0,.2)}
 .ann-cat-badge.ann-cat-normal{border-color:#4b99f4;background:linear-gradient(180deg,#287fe9,#1766c7)}.ann-cat-badge.ann-cat-tournament{border-color:#3ed18a;background:linear-gradient(180deg,#28b76c,#168c50)}.ann-cat-badge.ann-cat-important{border-color:#ef6873;background:linear-gradient(180deg,#d94a56,#aa2735)}

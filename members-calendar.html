@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=13"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=14"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -936,10 +936,17 @@ document.addEventListener('DOMContentLoaded', function () {
     '#announcements-panel': document.getElementById('announcements-panel')
   };
   var activePanel = '#calendar-panel';
+  var transitionTimer = 0;
+  var transitionToken = 0;
+  var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   function activateTab(tab, updateHistory) {
     var target = tab.getAttribute('href');
     if (!panels[target]) return;
+    if (target === activePanel) return;
+    var savedScrollY = window.scrollY;
+    var outgoingPanel = panels[activePanel];
+    var incomingPanel = panels[target];
     activePanel = target;
     var workspaceTitle = document.getElementById('workspace-title');
     if (workspaceTitle) workspaceTitle.textContent = target === '#announcements-panel' ? 'Announcements' : 'Team Schedule';
@@ -950,11 +957,6 @@ document.addEventListener('DOMContentLoaded', function () {
       item.setAttribute('aria-selected', selected ? 'true' : 'false');
       item.setAttribute('tabindex', selected ? '0' : '-1');
     });
-    Object.keys(panels).forEach(function (id) {
-      var selected = id === target;
-      panels[id].hidden = !selected;
-      panels[id].classList.toggle('is-visible', selected && id === '#announcements-panel');
-    });
     var eventButton = document.getElementById('post-fab');
     if (eventButton) eventButton.style.display = target === '#calendar-panel' && canManageMemberContentRole(calUserRole) ? 'flex' : 'none';
     var announcementButton = document.getElementById('announcement-post-fab');
@@ -963,9 +965,33 @@ document.addEventListener('DOMContentLoaded', function () {
     document.body.classList.toggle('announcements-view-active', target === '#announcements-panel' && dashboard && dashboard.style.display !== 'none');
     if (updateHistory && window.location.hash !== target) history.pushState(null, '', target);
 
-    requestAnimationFrame(function () {
-      if (target === '#calendar-panel' && typeof calInstance !== 'undefined' && calInstance) calInstance.updateSize();
-    });
+    window.clearTimeout(transitionTimer);
+    var token = ++transitionToken;
+    var finishSwap = function () {
+      if (token !== transitionToken) return;
+      Object.keys(panels).forEach(function (id) {
+        var selected = id === target;
+        panels[id].hidden = !selected;
+        panels[id].classList.toggle('is-visible', selected && id === '#announcements-panel');
+        panels[id].classList.remove('is-leaving', 'is-entering');
+      });
+      incomingPanel.hidden = false;
+      incomingPanel.classList.add('is-entering');
+      window.scrollTo(0, savedScrollY);
+      void incomingPanel.offsetWidth;
+      requestAnimationFrame(function () {
+        if (token !== transitionToken) return;
+        incomingPanel.classList.remove('is-entering');
+        window.scrollTo(0, savedScrollY);
+        if (target === '#calendar-panel' && typeof calInstance !== 'undefined' && calInstance) calInstance.updateSize();
+      });
+    };
+    if (prefersReducedMotion.matches || !outgoingPanel || outgoingPanel.hidden) {
+      finishSwap();
+    } else {
+      outgoingPanel.classList.add('is-leaving');
+      transitionTimer = window.setTimeout(finishSwap, 140);
+    }
   }
 
   tabs.forEach(function (tab) {
@@ -980,13 +1006,13 @@ document.addEventListener('DOMContentLoaded', function () {
       var direction = event.key === 'ArrowRight' ? 1 : -1;
       var next = tabList[(tabList.indexOf(tab) + direction + tabList.length) % tabList.length];
       activateTab(next, true);
-      next.focus();
+      next.focus({ preventScroll: true });
     });
   });
   function activateFromHash() {
     var target = panels[window.location.hash] ? window.location.hash : '#calendar-panel';
     var tab = document.querySelector('.portal-switch-tab[href="' + target + '"]');
-    if (tab) activateTab(tab, false);
+    if (tab && tab.getAttribute('href') !== activePanel) activateTab(tab, false);
   }
   window.addEventListener('popstate', activateFromHash);
   activateFromHash();
