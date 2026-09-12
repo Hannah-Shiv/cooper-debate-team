@@ -32,7 +32,7 @@
 
 /* Calendar workspace — charcoal, gold and Cooper teal treatment. */
 .cal-wrap{max-width:1560px}
-.cal-header{align-items:flex-end!important;border-bottom:1px solid rgba(242,209,107,.26)!important;gap:28px!important;margin-bottom:0!important;padding:0 0 18px!important}
+.cal-header{align-items:flex-end!important;border-bottom:0!important;gap:28px!important;margin-bottom:0!important;padding:0 0 18px!important}
 .cal-header-left{min-width:0;flex:1;display:grid;grid-template-columns:max-content max-content;grid-template-areas:"title tabs" "subtitle tabs";column-gap:24px;align-items:center}
 .cal-header-left h1{grid-area:title}
 .cal-header-left .cal-subtitle{grid-area:subtitle}
@@ -93,7 +93,7 @@
 
 /* Match the public tournament calendar's FullCalendar skin exactly. */
 .cal-header{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:0!important;padding-bottom:0!important}
-.cal-header-row-one{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;border-bottom:1px solid rgba(242,209,107,.26);padding-bottom:18px}
+.cal-header-row-one{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:24px;border-bottom:0;padding-bottom:18px}
 .cal-header-left h1{font-family:'Cormorant Garamond',serif!important;font-size:clamp(2rem,4vw,3rem)!important;font-weight:700!important;color:#FFD700!important;letter-spacing:.02em!important;line-height:1.1!important;text-shadow:0 0 40px rgba(255,215,0,.25)!important}
 .cal-header-actions{width:100%;min-width:0;min-height:66px;justify-content:flex-end;border-bottom:0;padding-top:12px}
 .cal-header-actions .post-fab{min-width:190px}

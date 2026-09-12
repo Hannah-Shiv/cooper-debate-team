@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/member-portal-restructure.css?v=19"/>
+  <link rel="stylesheet" href="css/member-portal-restructure.css?v=20"/>
   <style>
     /* ── Reset & base ────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -66,7 +66,7 @@
 
     /* ── Header ──────────────────────────────────────────── */
     .cal-header {
-      align-items:center; border-bottom:1px solid rgba(212,160,23,.22);
+      align-items:center; border-bottom:0;
       display:flex; justify-content:space-between; gap:16px; margin-bottom:16px; padding-bottom:14px;
     }
     .cal-header-left h1 {
@@ -142,7 +142,7 @@
     /* ── Calendar controls / Create Event ───────────────────── */
     .calendar-tools {
       align-items:center; border-bottom:1px solid rgba(122,162,220,.2); display:flex;
-      justify-content:flex-start; margin-bottom:14px; padding:0 2px 12px;
+      justify-content:space-between; gap:18px; margin-bottom:14px; padding:0 2px 12px;
     }
     .post-fab {
       align-items:center; background:linear-gradient(135deg,#0a6b65,#064a50);
@@ -162,15 +162,15 @@
 
     /* ── Legend ──────────────────────────────────────────── */
     .cal-legend {
-      display: flex; gap: 20px; flex-wrap: wrap;
-      margin-bottom: 14px; padding: 0 2px;
+      display: flex; gap: 18px; flex-wrap: wrap;
+      margin-bottom: 0; padding: 0 2px;
     }
     .leg-item {
-      display: flex; align-items: center; gap: 9px;
-      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.1em;
+      display: flex; align-items: center; gap: 8.1px;
+      font-size: 0.765rem; font-weight: 700; letter-spacing: 0.09em;
       text-transform: uppercase; color: #ffffff;
     }
-    .leg-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
+    .leg-dot { width: 11.7px; height: 11.7px; border-radius: 50%; flex-shrink: 0; }
 
     /* ── FullCalendar overrides ───────────────────────────── */
     #cal-container { border-radius: 10px; overflow: hidden; }
@@ -723,12 +723,6 @@
             </a>
           </div>
         </div>
-        <div class="cal-header-actions" aria-label="Workspace actions">
-          <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event">
-            <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
-            <span class="post-fab-label">Create Event</span>
-          </button>
-        </div>
       </div>
 
       <section id="calendar-panel" role="tabpanel" aria-labelledby="calendar-tab" tabindex="0">
@@ -744,7 +738,10 @@
             <div class="leg-item"><div class="leg-dot" style="background:#166534"></div>Practice</div>
             <div class="leg-item"><div class="leg-dot" style="background:#ffd700"></div>Meeting</div>
           </div>
-          <button class="past-deadlines-toggle" id="past-deadlines-toggle" type="button" onclick="togglePastDeadlines()">Show past deadlines</button>
+          <button class="post-fab" id="post-fab" onclick="openPostModal()" title="Create Event">
+            <img src="images/create-event-nobg.png" alt="" aria-hidden="true">
+            <span class="post-fab-label">Create Event</span>
+          </button>
         </div>
 
         <!-- FullCalendar mount -->
