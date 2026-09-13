@@ -1403,6 +1403,7 @@ exports.manageApplicationReview = onRequest(
     const body = req.body || {};
     const applicationId = cleanText(body.applicationId, 128);
     const action = cleanText(body.action, 24).toLowerCase() || "review";
+    const reviewerUid = cleanText(body.reviewerUid, 128);
     const decision = cleanText(body.decision, 24).toLowerCase();
     const internalNote = cleanText(body.internalNote, 2000);
     const rating = Number(body.rating);
@@ -1454,6 +1455,39 @@ exports.manageApplicationReview = onRequest(
     }
     if (!/^[a-zA-Z0-9_-]{12,128}$/.test(applicationId)) {
       res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
+    if (action === "deletecaptainreview") {
+      if (!await hasFullAdminAccess(reviewerEmail)) {
+        res.status(403).json({ error: "Only coaches and website admins can delete team reviews." });
+        return;
+      }
+      if (!/^[a-zA-Z0-9_-]{1,128}$/.test(reviewerUid)) {
+        res.status(400).json({ error: "A valid team review is required." });
+        return;
+      }
+      const applicationRef = getFirestore().collection("applications").doc(applicationId);
+      const reviewRef = applicationRef.collection("captainReviews").doc(reviewerUid);
+      try {
+        await getFirestore().runTransaction(async transaction => {
+          const [application, review] = await Promise.all([
+            transaction.get(applicationRef),
+            transaction.get(reviewRef),
+          ]);
+          if (!application.exists) throw new Error("That application no longer exists.");
+          if (!review.exists) throw new Error("That team review no longer exists.");
+          transaction.delete(reviewRef);
+        });
+        res.status(200).json({ ok: true, deletedCaptainReview: true });
+      } catch (error) {
+        console.error("manageApplicationReview team review delete failed:", {
+          applicationId,
+          reviewerUid,
+          reviewerEmail,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        res.status(400).json({ error: cleanText(error.message, 240) || "Unable to delete the team review." });
+      }
       return;
     }
     if (action === "captainreview") {

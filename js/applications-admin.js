@@ -214,11 +214,14 @@
       return summary;
     }, { accepted: 0, pending: 0, declined: 0 });
     const cards = captainReviews.length
-      ? captainReviews.map(review => `<article class="captain-review-card">
-          <div class="captain-review-card-head"><div><span>Reviewer</span><h4>${escapeHtml(review.reviewerName || review.captainName || review.reviewerEmail || review.captainEmail || "Team reviewer")}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span></div></div>
+      ? captainReviews.map(review => {
+        const reviewerName = review.reviewerName || review.captainName || review.reviewerEmail || review.captainEmail || "Team reviewer";
+        return `<article class="captain-review-card">
+          <div class="captain-review-card-head"><div><span>Reviewer</span><h4>${escapeHtml(reviewerName)}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span><button type="button" class="captain-review-delete" data-delete-captain-review="${escapeHtml(review.id)}" data-reviewer-name="${escapeHtml(reviewerName)}" aria-label="Delete review by ${escapeHtml(reviewerName)}">${icon("delete")}<span>Delete review</span></button></div></div>
           <div class="captain-review-scoreline"><span>${Object.values(review.rubric || {}).filter(value => value === "yes").length} positive quick grades</span></div><p>${escapeHtml(review.note || "No written review provided.")}</p>
           <small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small>
-        </article>`).join("")
+        </article>`;
+      }).join("")
       : '<div class="captain-review-empty">No team reviews have been submitted for this applicant.</div>';
     return `${reviewForm}<section class="captain-reviews-panel">
       <div class="captain-review-heading"><div><span>Team reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
@@ -606,6 +609,9 @@
         $("captain-review-save").addEventListener("click", () => saveCaptainReview(item.id));
       }
       if (isFinalReviewer()) {
+       document.querySelectorAll("[data-delete-captain-review]").forEach(button => button.addEventListener("click", () => {
+         deleteCaptainReview(item.id, button.dataset.deleteCaptainReview, button.dataset.reviewerName, button);
+       }));
        const ratingTrigger = $("rating-trigger");
       const ratingPopover = $("rating-popover");
       const ratingSlider = $("rating-slider");
@@ -728,6 +734,34 @@
     } finally {
       button.disabled = false;
       button.removeAttribute("aria-busy");
+    }
+  }
+  async function deleteCaptainReview(applicationId, reviewerUid, reviewerName, button) {
+    if (!(await confirmReviewAction({
+      title: "Delete team review?",
+      message: `This permanently removes the review posted by ${reviewerName || "this reviewer"}. The application and all other reviews will remain unchanged.`,
+      confirmLabel: "Yes, delete review",
+      danger: true
+    }))) return;
+    const originalHtml = button.innerHTML;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.textContent = "Deleting…";
+    try {
+      const token = await currentUser.getIdToken();
+      const response = await fetch(REVIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "deleteCaptainReview", applicationId, reviewerUid }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to delete the team review.");
+      button.textContent = "Deleted";
+    } catch (error) {
+      alert(error.message || "Unable to delete the team review.");
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+      button.innerHTML = originalHtml;
     }
   }
   async function hideApplication(item) {
