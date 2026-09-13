@@ -170,10 +170,9 @@
         ["growthMindset", "Does the applicant demonstrate openness to coaching, feedback, and continued growth?"],
         ["experienceValue", "Would the applicant’s current experiences or skills add useful value to the team?"],
       ];
-      reviewForm = `<section class="team-review-launch">
-        <div class="team-review-launch-copy"><h3>Internal Team Review</h3><p>${ownReview.id ? `Your perspective is on record. Update your ${recommendationLabel(ownReview.recommendation)} recommendation whenever needed.` : "Add your perspective by sharing a concise, structured assessment to help the coaching staff consider each applicant with care."}</p></div>
-        <button type="button" class="team-review-open" id="team-review-open">${ownReview.id ? "Update review for" : "Click here to review"} <b>${escapeHtml(applicantName)}</b></button>
-      </section>
+      reviewForm = `<button type="button" class="team-review-launch" id="team-review-open">
+        <span class="team-review-launch-copy"><strong>Internal Team Review <i aria-hidden="true">→</i></strong><small>${ownReview.id ? `Your perspective on ${escapeHtml(applicantName)} is on record. Open the review to make an update.` : `Add your perspective on ${escapeHtml(applicantName)} with a concise, structured assessment for the coaching staff.`}</small></span>
+      </button>
       <dialog class="team-review-dialog" id="team-review-dialog" aria-labelledby="team-review-dialog-title">
         <form method="dialog" class="team-review-modal">
           <header class="team-review-modal-head"><div><span>Reviewing ${escapeHtml(applicantName)}</span><h2 id="team-review-dialog-title">Team Internal Review</h2><p>Your perspective informs the coaching staff while remaining separate from the official decision.</p></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
@@ -185,7 +184,7 @@
               <section class="team-review-written"><label for="captain-review-note"><span>Written assessment</span><small>Required — enter an assessment</small></label><textarea id="captain-review-note" class="captain-review-note" maxlength="2000" required aria-required="true" placeholder="Summarize the applicant's strengths, concerns, readiness, and any follow-up you recommend…">${escapeHtml(note)}</textarea></section>
             </div>
             <aside class="team-review-recommendation">
-              <label class="captain-review-rating"><span>Overall rating <em>Required</em></span><select id="captain-review-rating" required aria-required="true" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
+              <div class="captain-review-rating"><div class="captain-review-rating-head"><span>Overall rating <em>Required</em></span><strong id="captain-review-rating-preview">${rating || 5}</strong></div><input id="captain-review-rating-value" type="hidden" value="${rating}"><input class="captain-review-rating-slider" id="captain-review-rating" type="range" min="1" max="10" step="0.5" value="${rating || 5}" aria-label="Overall applicant rating from 1 to 10" aria-required="true"><div class="captain-review-rating-labels"><span>1 · Needs growth</span><span>10 · Exceptional</span></div></div>
               <div class="team-review-recommendation-heading"><span>Recommendation</span><h3>What should the coaches consider?</h3><small>Choose one decision</small></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
               <div class="captain-review-actions">
                 <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted"><b>Accept</b><small>Strong fit for the team</small></button>
@@ -546,16 +545,23 @@
       if (captainDecision) {
         const captainNote = $("captain-review-note");
          const captainRating = $("captain-review-rating");
+          const captainRatingValue = $("captain-review-rating-value");
          const reviewDialog = $("team-review-dialog");
          $("team-review-open").addEventListener("click", () => reviewDialog.showModal());
          $("team-review-close").addEventListener("click", () => reviewDialog.close());
          reviewDialog.addEventListener("click", event => { if (event.target === reviewDialog) reviewDialog.close(); });
          const rubricState = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
-         const saveReviewDraft = () => captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRating.value, rubric: { ...rubricState } });
+          const saveReviewDraft = () => captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRatingValue.value, rubric: { ...rubricState } });
         captainNote.addEventListener("input", () => {
            saveReviewDraft();
         });
-          captainRating.addEventListener("change", saveReviewDraft);
+          captainRating.addEventListener("input", () => {
+            $("captain-review-rating-preview").textContent = captainRating.value;
+          });
+          captainRating.addEventListener("change", () => {
+            captainRatingValue.value = captainRating.value;
+            saveReviewDraft();
+          });
          document.querySelectorAll("[data-rubric-key]").forEach(button => button.addEventListener("click", () => {
            rubricState[button.dataset.rubricKey] = button.dataset.rubricValue;
            document.querySelectorAll(`[data-rubric-key="${button.dataset.rubricKey}"]`).forEach(control => {
@@ -650,7 +656,7 @@
   async function saveCaptainReview(applicationId) {
     const note = $("captain-review-note").value.trim();
     const decision = $("captain-review-decision").value;
-    const rating = Number($("captain-review-rating").value);
+    const rating = Number($("captain-review-rating-value").value);
     const rubric = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
     const button = $("captain-review-save");
     const message = $("captain-review-message");
