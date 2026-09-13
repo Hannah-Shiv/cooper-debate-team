@@ -200,18 +200,18 @@ service cloud.firestore {
       allow read:  if isCoach();
       allow write: if false;
 
-      // Captains can read only their own linked review. Coaches and Website
-      // Admins can read every captain review while making the final decision.
+      // Team reviewers can read only their own linked review. Coaches and
+      // Website Admins can read every review while making the final decision.
       match /captainReviews/{reviewId} {
-        allow read: if isCoach() || (isCaptain() && request.auth.uid == reviewId);
+        allow read: if isCoach() || (isApprovedMember() && request.auth.uid == reviewId);
         allow write: if false;
       }
     }
 
     // Redacted application projections contain no student/parent contact data.
-    // Captains subscribe here; only Cloud Functions maintain the documents.
+    // Team reviewers subscribe here; only Cloud Functions maintain the documents.
     match /captain_application_queue/{docId} {
-      allow read: if isCaptain();
+      allow read: if isApprovedMember();
       allow write: if false;
     }
 

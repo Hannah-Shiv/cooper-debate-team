@@ -51,6 +51,7 @@
   let longAnswers = [];
   let activeDetailTab = "overview";
   const isFinalReviewer = () => isFullAdminRole(currentRole);
+  const canSubmitTeamReview = () => ["member", "captain", "website-admin"].includes(currentRole);
   const isReviewEditor = element => element instanceof Element && Boolean(element.closest("#captain-review-note, #review-note, #applicant-rating"));
   function stopCaptainReviewListening() {
     if (captainReviewUnsubscribe) captainReviewUnsubscribe();
@@ -152,15 +153,16 @@
     if (captainReviewError) {
       return `<section class="captain-reviews-panel"><div class="captain-review-empty" role="alert">${escapeHtml(captainReviewError)}</div></section>`;
     }
-    if (!isFinalReviewer()) {
+    let reviewForm = "";
+    if (canSubmitTeamReview()) {
       const ownReview = captainReviews.find(review => review.id === currentUser?.uid) || {};
       const draft = captainReviewDrafts.get(applicationId);
       const savedRecommendation = ["accepted", "declined"].includes(ownReview.recommendation) ? ownReview.recommendation : "pending";
       const recommendation = draft?.decision || savedRecommendation;
       const note = draft?.note ?? ownReview.note ?? "";
       const rating = draft?.rating ?? ownReview.rating ?? "";
-      return `<section class="captain-reviews-panel">
-        <div class="captain-review-heading"><div><span>Captain review</span><h3>Your recommendation</h3></div>${ownReview.updatedAt ? `<small>Last saved ${escapeHtml(formatDate(ownReview.updatedAt))}</small>` : ""}</div>
+      reviewForm = `<section class="captain-reviews-panel">
+        <div class="captain-review-heading"><div><span>Team review</span><h3>Your recommendation</h3></div>${ownReview.updatedAt ? `<small>Last saved ${escapeHtml(formatDate(ownReview.updatedAt))}</small>` : ""}</div>
         <p class="captain-review-guidance">Your review is linked to this applicant. Only coaches and Website Admins can make the official rating and final decision.</p>
         <textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Share the applicant's strengths, concerns, readiness, and any follow-up recommendation…">${escapeHtml(note)}</textarea>
         <input id="captain-review-decision" type="hidden" value="${recommendation}">
@@ -174,6 +176,7 @@
         <div class="captain-review-message" id="captain-review-message" aria-live="polite"></div>
       </section>`;
     }
+    if (!isFinalReviewer()) return reviewForm;
     const counts = captainReviews.reduce((summary, review) => {
       const key = ["accepted", "declined"].includes(review.recommendation) ? review.recommendation : "pending";
       summary[key] += 1;
@@ -181,13 +184,13 @@
     }, { accepted: 0, pending: 0, declined: 0 });
     const cards = captainReviews.length
       ? captainReviews.map(review => `<article class="captain-review-card">
-          <div class="captain-review-card-head"><div><span>Captain</span><h4>${escapeHtml(review.captainName || review.captainEmail || "Captain")}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span></div></div>
+          <div class="captain-review-card-head"><div><span>Reviewer</span><h4>${escapeHtml(review.reviewerName || review.captainName || review.reviewerEmail || review.captainEmail || "Team reviewer")}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span></div></div>
           <p>${escapeHtml(review.note || "No written review provided.")}</p>
           <small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small>
         </article>`).join("")
       : '<div class="captain-review-empty">No captain reviews have been submitted for this applicant.</div>';
-    return `<section class="captain-reviews-panel">
-      <div class="captain-review-heading"><div><span>Captain reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
+    return `${reviewForm}<section class="captain-reviews-panel">
+      <div class="captain-review-heading"><div><span>Team reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
       <div class="captain-review-list">${cards}</div>
     </section>`;
   }
@@ -851,12 +854,12 @@
     currentRole = role;
     stopCaptainReviewListening();
     const rosterLink = $("applications-roster-link");
-    if (rosterLink) rosterLink.hidden = role === "captain";
+    if (rosterLink) rosterLink.hidden = !isFullAdminRole(role);
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.member;
     $("app-role-badge").dataset.role = role;
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
-    if (!access.approved || !(isFullAdminRole(role) || role === "captain")) { show("access-denied"); return; }
+    if (!access.approved) { show("access-denied"); return; }
     show("dashboard");
     beginListening();
   });

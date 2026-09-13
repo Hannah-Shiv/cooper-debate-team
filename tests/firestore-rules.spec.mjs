@@ -98,6 +98,9 @@ beforeEach(async () => {
       setDoc(doc(db, "applications", "application-test", "captainReviews", "other-captain-uid"), {
         captainName: "Other Captain", recommendation: "pending", note: "Follow up.",
       }),
+      setDoc(doc(db, "applications", "application-test", "captainReviews", MEMBER_EMAIL), {
+        reviewerName: "Cooper", recommendation: "accepted", rating: 8, note: "Member review.",
+      }),
       setDoc(doc(db, "portal_login_status", "known-email-hash"), {
         active: true,
       }),
@@ -321,8 +324,13 @@ test("captains see only redacted application projections", async () => {
   assert.equal(projection.data().student.firstName, "Applicant");
 });
 
-test("ordinary, unverified, and disallowed Google identities cannot read captain projections", async () => {
-  await assertFails(getDoc(doc(dbFor(MEMBER_EMAIL), "captain_application_queue", "application-test")));
+test("approved members can read redacted projections but not full applications", async () => {
+  const memberDb = dbFor(MEMBER_EMAIL);
+  await assertSucceeds(getDoc(doc(memberDb, "captain_application_queue", "application-test")));
+  await assertFails(getDoc(doc(memberDb, "applications", "application-test")));
+});
+
+test("unverified and disallowed Google identities cannot read reviewer projections", async () => {
   const unverifiedDb = testEnv.authenticatedContext("captain-unverified", {
     email: CAPTAIN_EMAIL,
     email_verified: false,
@@ -349,11 +357,19 @@ test("captains read only their own linked review and cannot write from the brows
   await assertFails(setDoc(ownReview, { recommendation: "declined", note: "Browser write" }));
 });
 
+test("members read only their own linked review and cannot write from the browser", async () => {
+  const memberDb = dbFor(MEMBER_EMAIL);
+  const ownReview = doc(memberDb, "applications", "application-test", "captainReviews", MEMBER_EMAIL);
+  await assertSucceeds(getDoc(ownReview));
+  await assertFails(getDoc(doc(memberDb, "applications", "application-test", "captainReviews", "captain-uid")));
+  await assertFails(setDoc(ownReview, { recommendation: "declined", rating: 2, note: "Browser write" }));
+});
+
 test("coaches read full applications and every captain review while browser review writes stay denied", async () => {
   const coachDb = dbFor(COACH_EMAIL, "google.com");
   await assertSucceeds(getDoc(doc(coachDb, "applications", "application-test")));
   const reviews = await assertSucceeds(getDocs(collection(coachDb, "applications", "application-test", "captainReviews")));
-  assert.equal(reviews.size, 2);
+  assert.equal(reviews.size, 3);
   await assertFails(setDoc(doc(coachDb, "applications", "application-test", "captainReviews", "coach-write"), {
     recommendation: "accepted",
     note: "Browser write",

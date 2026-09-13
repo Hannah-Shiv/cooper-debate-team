@@ -256,13 +256,13 @@ async function hasFullAdminAccess(email) {
   return data.active === true &&
     (COACH_EMAILS.has(normalizedEmail) || ["coach", "website-admin"].includes(data.role));
 }
-async function hasCaptainAccess(email) {
+async function hasApplicationReviewerAccess(email) {
   const normalizedEmail = cleanEmail(email);
   if (!normalizedEmail) return false;
   const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
   if (!membership.exists) return false;
   const data = membership.data() || {};
-  return data.active === true && data.role === "captain";
+  return data.active === true && ["member", "captain", "website-admin"].includes(data.role);
 }
 function captainApplicationProjection(applicationId, data) {
   return {
@@ -1411,8 +1411,8 @@ exports.manageApplicationReview = onRequest(
     }
 
     if (action === "listcaptainapps") {
-      if (!await hasCaptainAccess(reviewerEmail)) {
-        res.status(403).json({ error: "Only active captains can review applications." });
+      if (!await hasApplicationReviewerAccess(reviewerEmail)) {
+        res.status(403).json({ error: "Only active team reviewers can review applications." });
         return;
       }
       try {
@@ -1434,7 +1434,7 @@ exports.manageApplicationReview = onRequest(
           reviewerEmail,
           message: error instanceof Error ? error.message : String(error),
         });
-        res.status(500).json({ error: "Unable to load applications for captain review." });
+        res.status(500).json({ error: "Unable to load applications for review." });
       }
       return;
     }
@@ -1443,8 +1443,8 @@ exports.manageApplicationReview = onRequest(
       return;
     }
     if (action === "captainreview") {
-      if (!await hasCaptainAccess(reviewerEmail)) {
-        res.status(403).json({ error: "Only active captains can submit captain reviews." });
+      if (!await hasApplicationReviewerAccess(reviewerEmail)) {
+        res.status(403).json({ error: "Only active team reviewers can submit reviews." });
         return;
       }
       if (!["pending", "accepted", "declined"].includes(decision)) {
@@ -1473,6 +1473,9 @@ exports.manageApplicationReview = onRequest(
             captainUid: decoded.uid,
             captainEmail: reviewerEmail,
             captainName: cleanText(decoded.name, 120) || reviewerEmail,
+            reviewerUid: decoded.uid,
+            reviewerEmail,
+            reviewerName: cleanText(decoded.name, 120) || reviewerEmail,
             recommendation: decision,
             rating,
             note: internalNote,
