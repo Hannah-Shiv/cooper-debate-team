@@ -196,6 +196,15 @@
             </aside>
           </div>
         </form>
+      </dialog>
+      <dialog class="team-review-exit-dialog" id="team-review-exit-dialog" aria-labelledby="team-review-exit-title" aria-describedby="team-review-exit-message">
+        <div class="team-review-exit-card">
+          <div class="team-review-exit-icon" aria-hidden="true">!</div>
+          <span>Unsaved internal review</span>
+          <h2 id="team-review-exit-title">Leave this review?</h2>
+          <p id="team-review-exit-message">You are still editing. Discarding will remove the changes you have made since opening this review.</p>
+          <div><button type="button" class="team-review-keep-editing" id="team-review-keep-editing">Keep Editing</button><button type="button" class="team-review-discard" id="team-review-discard">Discard Changes</button></div>
+        </div>
       </dialog>`;
     }
     if (!isFinalReviewer()) return reviewForm;
@@ -547,9 +556,31 @@
          const captainRating = $("captain-review-rating");
           const captainRatingValue = $("captain-review-rating-value");
          const reviewDialog = $("team-review-dialog");
+          const exitDialog = $("team-review-exit-dialog");
+          const requestReviewClose = () => {
+            if (!captainReviewDrafts.has(item.id)) {
+              reviewDialog.close();
+              return;
+            }
+            if (!exitDialog.open) exitDialog.showModal();
+          };
          $("team-review-open").addEventListener("click", () => reviewDialog.showModal());
-         $("team-review-close").addEventListener("click", () => reviewDialog.close());
-         reviewDialog.addEventListener("click", event => { if (event.target === reviewDialog) reviewDialog.close(); });
+          $("team-review-close").addEventListener("click", requestReviewClose);
+          reviewDialog.addEventListener("click", event => { if (event.target === reviewDialog) requestReviewClose(); });
+          reviewDialog.addEventListener("cancel", event => {
+            event.preventDefault();
+            requestReviewClose();
+          });
+          $("team-review-keep-editing").addEventListener("click", () => {
+            exitDialog.close();
+            captainNote.focus();
+          });
+          $("team-review-discard").addEventListener("click", () => {
+            captainReviewDrafts.delete(item.id);
+            exitDialog.close();
+            reviewDialog.close();
+            renderDetail();
+          });
          const rubricState = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
           const saveReviewDraft = () => captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRatingValue.value, rubric: { ...rubricState } });
         captainNote.addEventListener("input", () => {
