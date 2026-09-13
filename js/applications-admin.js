@@ -61,13 +61,14 @@
     if (indicator && "Notification" in window) indicator.classList.toggle("on", Notification.permission === "granted");
   }
   function setMetrics() {
-    const total = applications.length;
-    const pendingApplications = applications.filter(item => status(item) === "pending");
+    const activeApplications = applications.filter(item => item.hidden !== true);
+    const total = activeApplications.length;
+    const pendingApplications = activeApplications.filter(item => status(item) === "pending");
     const isReviewed = item => timestampMillis(item.reviewedAt) > 0 || Boolean(item.reviewedBy);
     const pending = pendingApplications.filter(item => !isReviewed(item)).length;
     const hold = pendingApplications.filter(isReviewed).length;
-    const accepted = applications.filter(item => status(item) === "accepted").length;
-    const declined = applications.filter(item => status(item) === "declined").length;
+    const accepted = activeApplications.filter(item => status(item) === "accepted").length;
+    const declined = activeApplications.filter(item => status(item) === "declined").length;
     $("stat-total").textContent = total;
     $("stat-pending").textContent = pending;
     $("stat-accepted").textContent = accepted;
@@ -79,9 +80,11 @@
     const decision = $("decision-filter").value;
     const grade = $("grade-filter").value;
     const sort = $("sort").value;
+    const showHidden = $("show-hidden-records").checked;
     const list = applications.filter(item => {
       const searchable = [item.student?.firstName, item.student?.lastName, item.student?.studentId, item.parent?.firstName, item.parent?.lastName].join(" ").toLowerCase();
-      return (!query || searchable.includes(query)) &&
+      return (showHidden || item.hidden !== true) &&
+        (!query || searchable.includes(query)) &&
         (decision === "all" || status(item) === decision) &&
         (grade === "all" || item.student?.grade === grade);
     });
@@ -93,6 +96,9 @@
   function statusBadge(value) {
     const labels = { pending: "Pending", accepted: "Accepted", declined: "Declined" };
     return `<span class="badge ${value}">${icon(value, "badge-icon")} ${labels[value]}</span>`;
+  }
+  function hiddenBadge() {
+    return '<span class="badge hidden-record">Hidden</span>';
   }
   function icon(name, className = "") {
     const assets = {
@@ -118,7 +124,7 @@
       const student = item.student || {};
        return `<button type="button" class="application-row ${item.id === selectedId ? "active" : ""}" data-id="${escapeHtml(item.id)}">
         <div class="row-main">
-           <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade unavailable")} · ${escapeHtml(student.studentId || "No student ID")}</div><div class="row-submitted">Submitted ${escapeHtml(formatDate(item.createdAt))}</div><div class="row-status">${statusBadge(status(item))}</div></div>
+           <div class="row-copy"><div class="row-name">${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</div><div class="row-context">${escapeHtml(student.grade || "Grade unavailable")} · ${escapeHtml(student.studentId || "No student ID")}</div><div class="row-submitted">Submitted ${escapeHtml(formatDate(item.createdAt))}</div><div class="row-status">${statusBadge(status(item))}${item.hidden === true ? hiddenBadge() : ""}</div></div>
         </div>
       </button>`;
     }).join("") : '<div class="empty">No applications match these filters.</div>';
@@ -278,12 +284,12 @@
     const reviewRating = Number.isInteger(Number(item.reviewRating) * 2) && Number(item.reviewRating) >= 1 && Number(item.reviewRating) <= 10 ? Number(item.reviewRating) : 0;
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}</div></div></header>
+      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><p class="detail-submission">${icon("clipboard", "detail-meta-icon")}<strong>Submitted:</strong> ${escapeHtml(formatDate(item.createdAt))}</p><div class="detail-inline-status badges">${statusBadge(decision)}${item.hidden === true ? hiddenBadge() : ""}</div></div></header>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience, true)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts, true)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
-      <section class="review-section"><div class="review-card"><div class="review-controls"><h3 class="section-title">${icon("lock", "heading-icon")}Coach Notes</h3><div class="review-note-wrap"><textarea class="review-note" id="review-note" maxlength="2000" aria-label="Coach review notes" placeholder="Add observations, strengths, concerns, or follow-up details…">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="applicant-rating" id="applicant-rating"><input id="review-rating" type="hidden" value="${reviewRating || ""}"><button type="button" class="rating-trigger" id="rating-trigger" aria-expanded="false" aria-controls="rating-popover"><span>Rating</span><strong id="rating-value">${reviewRating || "—"}</strong><small>out of 10</small><b aria-hidden="true">▴</b></button><div class="rating-popover" id="rating-popover" hidden><div class="rating-popover-head"><span>Choose a rating</span><strong id="rating-preview">${reviewRating || 5}</strong></div><input class="rating-slider" id="rating-slider" type="range" min="1" max="10" step="1" value="${reviewRating || 5}" aria-label="Applicant rating from 1 to 10"><div class="rating-slider-labels"><span>1 · Needs growth</span><span>10 · Exceptional</span></div></div></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
+      <section class="review-section"><div class="review-card"><div class="review-controls"><h3 class="section-title">${icon("lock", "heading-icon")}Coach Notes</h3><div class="review-note-wrap"><textarea class="review-note" id="review-note" maxlength="2000" aria-label="Coach review notes" placeholder="Add observations, strengths, concerns, or follow-up details…">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="applicant-rating" id="applicant-rating"><input id="review-rating" type="hidden" value="${reviewRating || ""}"><button type="button" class="rating-trigger" id="rating-trigger" aria-expanded="false" aria-controls="rating-popover"><span>Rating</span><strong id="rating-value">${reviewRating || "—"}</strong><small>out of 10</small><b aria-hidden="true">▴</b></button><div class="rating-popover" id="rating-popover" hidden><div class="rating-popover-head"><span>Choose a rating</span><strong id="rating-preview">${reviewRating || 5}</strong></div><input class="rating-slider" id="rating-slider" type="range" min="1" max="10" step="1" value="${reviewRating || 5}" aria-label="Applicant rating from 1 to 10"><div class="rating-slider-labels"><span>1 · Needs growth</span><span>10 · Exceptional</span></div></div></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-hide" id="review-hide-application" ${item.hidden === true ? 'disabled aria-disabled="true"' : ""}><div class="decision-main">${icon("info")}<span>${item.hidden === true ? "Hidden" : "Hide"}</span></div><small>${item.hidden === true ? "Record kept" : "Keep record"}</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
       // Turn the record into five useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
@@ -485,7 +491,33 @@
       const answerDetail = longAnswers[Number(button.dataset.answerIndex)];
       if (answerDetail) openAnswerDialog(answerDetail, button);
     }));
+     $("review-hide-application").addEventListener("click", () => hideApplication(item));
      $("review-delete-application").addEventListener("click", () => deleteApplication(item));
+  }
+  async function hideApplication(item) {
+    if (item.hidden === true) return;
+    if (!(await confirmReviewAction({
+      title: "Hide application?",
+      message: "This keeps the complete record in the database but removes it from the default application queue and summary counts.",
+      confirmLabel: "Yes, hide"
+    }))) return;
+    const button = $("review-hide-application");
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    try {
+      const token = await currentUser.getIdToken();
+      const response = await fetch(REVIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "hide", applicationId: item.id }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to hide the application.");
+    } catch (error) {
+      alert(error.message || "Unable to hide the application.");
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
   }
   async function deleteApplication(item) {
     if (!(await confirmReviewAction({
@@ -551,14 +583,15 @@
     if (unsubscribe) unsubscribe();
     unsubscribe = db.collection("applications").onSnapshot(snapshot => {
       applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      if (selectedId && !applications.some(item => item.id === selectedId)) selectedId = "";
-      if (!selectedId && applications.length) selectedId = applications[0].id;
+      const visible = filteredApplications();
+      if (selectedId && !visible.some(item => item.id === selectedId)) selectedId = "";
+      if (!selectedId && visible.length) selectedId = visible[0].id;
       render();
     }, error => {
       $("application-list").innerHTML = `<div class="empty">Unable to load applications: ${escapeHtml(error.message || "Permission denied.")}</div>`;
     });
   }
-  ["search", "decision-filter", "grade-filter", "sort"].forEach(id => $(id).addEventListener(id === "search" ? "input" : "change", () => {
+  ["search", "decision-filter", "grade-filter", "sort", "show-hidden-records"].forEach(id => $(id).addEventListener(id === "search" ? "input" : "change", () => {
     renderList();
     const visible = filteredApplications();
     if (selectedId && !visible.some(item => item.id === selectedId)) {
@@ -572,6 +605,7 @@
     $("decision-filter").value = "all";
     $("grade-filter").value = "all";
     $("sort").value = "newest";
+    $("show-hidden-records").checked = false;
     renderList();
     const visible = filteredApplications();
     if (!visible.some(item => item.id === selectedId)) {

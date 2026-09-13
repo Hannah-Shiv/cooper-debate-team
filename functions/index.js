@@ -1315,8 +1315,8 @@ exports.syncApplicationFromSheet = onRequest(
 );
 
 // Application records are deliberately browser read-only. Coaches use this
-// endpoint to leave an authenticated, attributable admissions decision or
-// permanently remove an unwanted application.
+// endpoint to leave an authenticated, attributable admissions decision, hide
+// a record from the default review queue, or permanently remove an application.
 exports.manageApplicationReview = onRequest(
   { region: "us-central1", cors: true },
   async (req, res) => {
@@ -1373,6 +1373,29 @@ exports.manageApplicationReview = onRequest(
           message: error instanceof Error ? error.message : String(error),
         });
         res.status(400).json({ error: cleanText(error.message, 240) || "Unable to delete the application." });
+      }
+      return;
+    }
+    if (action === "hide") {
+      const applicationRef = getFirestore().collection("applications").doc(applicationId);
+      try {
+        await getFirestore().runTransaction(async transaction => {
+          const application = await transaction.get(applicationRef);
+          if (!application.exists) throw new Error("That application no longer exists.");
+          transaction.update(applicationRef, {
+            hidden: true,
+            hiddenBy: reviewerEmail,
+            hiddenAt: FieldValue.serverTimestamp(),
+          });
+        });
+        res.status(200).json({ ok: true, hidden: true });
+      } catch (error) {
+        console.error("manageApplicationReview hide failed:", {
+          applicationId,
+          reviewerEmail,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        res.status(400).json({ error: cleanText(error.message, 240) || "Unable to hide the application." });
       }
       return;
     }
