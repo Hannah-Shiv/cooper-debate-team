@@ -246,6 +246,9 @@ const COACH_EMAILS = new Set([
   "1806950@fcpsschools.net",
   "hannahbshiv@gmail.com",
 ]);
+const PROTECTED_WEBSITE_ADMIN_REVIEWERS = new Set([
+  "hannahbshiv@gmail.com",
+]);
 
 async function hasFullAdminAccess(email) {
   const normalizedEmail = cleanEmail(email);
@@ -260,9 +263,11 @@ async function hasApplicationReviewerAccess(email) {
   const normalizedEmail = cleanEmail(email);
   if (!normalizedEmail) return false;
   const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
-  if (!membership.exists) return false;
+  if (!membership.exists) return PROTECTED_WEBSITE_ADMIN_REVIEWERS.has(normalizedEmail);
   const data = membership.data() || {};
-  return data.active === true && ["member", "captain", "website-admin"].includes(data.role);
+  return data.active === true &&
+    (PROTECTED_WEBSITE_ADMIN_REVIEWERS.has(normalizedEmail) ||
+      ["member", "captain", "website-admin"].includes(data.role));
 }
 function captainApplicationProjection(applicationId, data) {
   return {
