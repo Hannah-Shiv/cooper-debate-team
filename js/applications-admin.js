@@ -185,7 +185,7 @@
             </div>
             <aside class="team-review-recommendation">
               <div class="captain-review-rating"><div class="captain-review-rating-head"><span>Overall rating <em>Required</em></span><strong id="captain-review-rating-preview">${rating || 5}</strong></div><input id="captain-review-rating-value" type="hidden" value="${rating}"><input class="captain-review-rating-slider" id="captain-review-rating" type="range" min="1" max="10" step="0.5" value="${rating || 5}" aria-label="Overall applicant rating from 1 to 10" aria-required="true"><div class="captain-review-rating-labels"><span>1 · Needs growth</span><span>10 · Exceptional</span></div></div>
-              <div class="team-review-recommendation-heading"><span>Recommendation</span><h3>What should the coaches consider?</h3><small>Choose one decision</small></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
+              <div class="team-review-recommendation-heading"><h3>Your recommendation?</h3></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
               <div class="captain-review-actions">
                 <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted"><b>Accept</b><small>Strong fit for the team</small></button>
                 <button type="button" class="captain-recommendation hold ${recommendation === "pending" ? "selected" : ""}" data-captain-decision="pending"><b>Hold</b><small>Needs more consideration</small></button>
