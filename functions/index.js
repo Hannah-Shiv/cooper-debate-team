@@ -1401,6 +1401,15 @@ exports.manageApplicationReview = onRequest(
     const decision = cleanText(body.decision, 24).toLowerCase();
     const internalNote = cleanText(body.internalNote, 2000);
     const rating = Number(body.rating);
+    const rubricInput = body.rubric && typeof body.rubric === "object" ? body.rubric : {};
+    const rubric = Object.fromEntries(
+      ["followThrough", "teamContribution", "growthMindset", "experienceValue"].map(key => [
+        key,
+        ["yes", "unsure", "no"].includes(cleanText(rubricInput[key], 12).toLowerCase())
+          ? cleanText(rubricInput[key], 12).toLowerCase()
+          : "",
+      ])
+    );
     const reviewerEmail = cleanEmail(decoded.email);
     const signInProvider = cleanText(decoded.firebase && decoded.firebase.sign_in_provider, 80);
     const verifiedAllowedIdentity = decoded.email_verified === true &&
@@ -1459,6 +1468,10 @@ exports.manageApplicationReview = onRequest(
         res.status(400).json({ error: "Choose an applicant rating from 1 to 10." });
         return;
       }
+      if (Object.values(rubric).some(value => !value)) {
+        res.status(400).json({ error: "Complete each quick grading question before submitting." });
+        return;
+      }
       const applicationRef = getFirestore().collection("applications").doc(applicationId);
       const reviewRef = applicationRef.collection("captainReviews").doc(decoded.uid);
       try {
@@ -1478,6 +1491,7 @@ exports.manageApplicationReview = onRequest(
             reviewerName: cleanText(decoded.name, 120) || reviewerEmail,
             recommendation: decision,
             rating,
+            rubric,
             note: internalNote,
             createdAt: review.createdAt || FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),

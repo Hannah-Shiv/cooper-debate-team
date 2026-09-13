@@ -149,7 +149,7 @@
       renderDetail();
     });
   }
-  function captainReviewPanel(applicationId) {
+  function captainReviewPanel(applicationId, applicantName) {
     if (captainReviewError) {
       return `<section class="captain-reviews-panel"><div class="captain-review-empty" role="alert">${escapeHtml(captainReviewError)}</div></section>`;
     }
@@ -161,20 +161,40 @@
       const recommendation = draft?.decision || savedRecommendation;
       const note = draft?.note ?? ownReview.note ?? "";
       const rating = draft?.rating ?? ownReview.rating ?? "";
-      reviewForm = `<section class="captain-reviews-panel">
-        <div class="captain-review-heading"><div><span>Team review</span><h3>Your recommendation</h3></div>${ownReview.updatedAt ? `<small>Last saved ${escapeHtml(formatDate(ownReview.updatedAt))}</small>` : ""}</div>
-        <p class="captain-review-guidance">Your review is linked to this applicant. Only coaches and Website Admins can make the official rating and final decision.</p>
-        <textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Share the applicant's strengths, concerns, readiness, and any follow-up recommendation…">${escapeHtml(note)}</textarea>
-        <input id="captain-review-decision" type="hidden" value="${recommendation}">
-        <div class="captain-review-actions">
-          <label class="captain-review-rating"><span>Rating</span><select id="captain-review-rating" aria-label="Applicant rating from 1 to 10"><option value="">Choose</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
-          <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted">Accept</button>
-          <button type="button" class="captain-recommendation hold ${recommendation === "pending" ? "selected" : ""}" data-captain-decision="pending">Hold</button>
-          <button type="button" class="captain-recommendation decline ${recommendation === "declined" ? "selected" : ""}" data-captain-decision="declined">Decline</button>
-          <button type="button" class="captain-review-save" id="captain-review-save">${ownReview.id ? "Update review" : "Submit review"}</button>
-        </div>
-        <div class="captain-review-message" id="captain-review-message" aria-live="polite"></div>
-      </section>`;
+      const rubric = { ...(ownReview.rubric || {}), ...(draft?.rubric || {}) };
+      const rubricQuestions = [
+        ["followThrough", "Does the application show dependable follow-through and readiness to participate consistently?"],
+        ["teamContribution", "Does this applicant appear likely to contribute positively to the team environment?"],
+        ["growthMindset", "Does the applicant demonstrate openness to coaching, feedback, and continued growth?"],
+        ["experienceValue", "Would the applicant’s current experiences or skills add useful value to the team?"],
+      ];
+      reviewForm = `<section class="team-review-launch">
+        <div><span>Your review</span><h3>${ownReview.id ? "Review submitted" : "Add your perspective"}</h3><p>${ownReview.id ? `Your ${recommendationLabel(ownReview.recommendation)} recommendation can be updated at any time.` : "Complete a quick, structured assessment for the coaching staff."}</p></div>
+        <button type="button" class="team-review-open" id="team-review-open">${ownReview.id ? "Update review for" : "Click here to review"} <b>${escapeHtml(applicantName)}</b></button>
+      </section>
+      <dialog class="team-review-dialog" id="team-review-dialog" aria-labelledby="team-review-dialog-title">
+        <form method="dialog" class="team-review-modal">
+          <header class="team-review-modal-head"><div><span>Team application review</span><h2 id="team-review-dialog-title">Review ${escapeHtml(applicantName)}</h2><p>Your assessment informs the coaches. It does not change the official decision.</p></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
+          <div class="team-review-modal-grid">
+            <div class="team-review-main">
+              <section class="team-review-rubric"><div class="team-review-section-title"><span>Quick assessment</span><b>Answer all four</b></div>
+                ${rubricQuestions.map(([key, question], index) => `<div class="rubric-question"><div><small>0${index + 1}</small><p>${escapeHtml(question)}</p></div><div class="rubric-options" role="group" aria-label="${escapeHtml(question)}">${["yes", "unsure", "no"].map(value => `<button type="button" class="rubric-option ${value} ${rubric[key] === value ? "selected" : ""}" data-rubric-key="${key}" data-rubric-value="${value}" aria-pressed="${rubric[key] === value}">${value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure"}</button>`).join("")}</div></div>`).join("")}
+              </section>
+              <section class="team-review-written"><label for="captain-review-note"><span>Written assessment</span><small>Required</small></label><textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Summarize the applicant's strengths, concerns, readiness, and any follow-up you recommend…">${escapeHtml(note)}</textarea></section>
+              <label class="captain-review-rating"><span>Overall rating</span><strong>${rating ? `${rating} / 10` : "Choose a rating"}</strong><select id="captain-review-rating" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
+            </div>
+            <aside class="team-review-recommendation"><div><span>Recommendation</span><h3>What should the coaches consider?</h3></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
+              <div class="captain-review-actions">
+                <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted"><b>Accept</b><small>Strong fit for the team</small></button>
+                <button type="button" class="captain-recommendation hold ${recommendation === "pending" ? "selected" : ""}" data-captain-decision="pending"><b>Hold</b><small>Needs more consideration</small></button>
+                <button type="button" class="captain-recommendation decline ${recommendation === "declined" ? "selected" : ""}" data-captain-decision="declined"><b>Decline</b><small>Not the right fit now</small></button>
+              </div>
+              <button type="button" class="captain-review-save" id="captain-review-save">${ownReview.id ? "Update review" : "Submit review"}</button>
+              <div class="captain-review-message" id="captain-review-message" aria-live="polite"></div>
+            </aside>
+          </div>
+        </form>
+      </dialog>`;
     }
     if (!isFinalReviewer()) return reviewForm;
     const counts = captainReviews.reduce((summary, review) => {
@@ -185,10 +205,10 @@
     const cards = captainReviews.length
       ? captainReviews.map(review => `<article class="captain-review-card">
           <div class="captain-review-card-head"><div><span>Reviewer</span><h4>${escapeHtml(review.reviewerName || review.captainName || review.reviewerEmail || review.captainEmail || "Team reviewer")}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span></div></div>
-          <p>${escapeHtml(review.note || "No written review provided.")}</p>
+          <div class="captain-review-scoreline"><span>${Object.values(review.rubric || {}).filter(value => value === "yes").length} positive quick grades</span></div><p>${escapeHtml(review.note || "No written review provided.")}</p>
           <small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small>
         </article>`).join("")
-      : '<div class="captain-review-empty">No captain reviews have been submitted for this applicant.</div>';
+      : '<div class="captain-review-empty">No team reviews have been submitted for this applicant.</div>';
     return `${reviewForm}<section class="captain-reviews-panel">
       <div class="captain-review-heading"><div><span>Team reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
       <div class="captain-review-list">${cards}</div>
@@ -509,10 +529,7 @@
             pane.prepend(logisticsSplit);
          }
          if (key === "review") {
-           pane.innerHTML = `${captainReviewPanel(item.id)}${isFinalReviewer() ? `<div class="review-summary">
-             <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the fixed coach decision bar at the bottom to record the official decision and internal note.</p></div>
-            <div class="review-summary-card"><span>Review history</span><strong>${item.reviewedBy ? escapeHtml(item.reviewedBy) : "Not reviewed yet"}</strong><p>${reviewDate ? `Last updated ${escapeHtml(reviewDate)}.` : "No administrative decision has been recorded."}</p></div>
-          </div>` : ""}`;
+           pane.innerHTML = captainReviewPanel(item.id, [student.firstName, student.lastName].filter(Boolean).join(" ") || "this applicant");
        }
        content.appendChild(pane);
      });
@@ -526,15 +543,31 @@
       if (captainDecision) {
         const captainNote = $("captain-review-note");
          const captainRating = $("captain-review-rating");
+         const reviewDialog = $("team-review-dialog");
+         $("team-review-open").addEventListener("click", () => reviewDialog.showModal());
+         $("team-review-close").addEventListener("click", () => reviewDialog.close());
+         reviewDialog.addEventListener("click", event => { if (event.target === reviewDialog) reviewDialog.close(); });
+         const rubricState = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
+         const saveReviewDraft = () => captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRating.value, rubric: { ...rubricState } });
         captainNote.addEventListener("input", () => {
-           captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRating.value });
+           saveReviewDraft();
         });
          captainRating.addEventListener("change", () => {
-           captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRating.value });
+           captainRating.previousElementSibling.textContent = captainRating.value ? `${captainRating.value} / 10` : "Choose a rating";
+           saveReviewDraft();
          });
+         document.querySelectorAll("[data-rubric-key]").forEach(button => button.addEventListener("click", () => {
+           rubricState[button.dataset.rubricKey] = button.dataset.rubricValue;
+           document.querySelectorAll(`[data-rubric-key="${button.dataset.rubricKey}"]`).forEach(control => {
+             const selected = control === button;
+             control.classList.toggle("selected", selected);
+             control.setAttribute("aria-pressed", String(selected));
+           });
+           saveReviewDraft();
+         }));
         document.querySelectorAll("[data-captain-decision]").forEach(button => button.addEventListener("click", () => {
           captainDecision.value = button.dataset.captainDecision;
-           captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value, rating: captainRating.value });
+           saveReviewDraft();
           document.querySelectorAll("[data-captain-decision]").forEach(control => control.classList.toggle("selected", control === button));
         }));
         $("captain-review-save").addEventListener("click", () => saveCaptainReview(item.id));
@@ -618,6 +651,7 @@
     const note = $("captain-review-note").value.trim();
     const decision = $("captain-review-decision").value;
     const rating = Number($("captain-review-rating").value);
+    const rubric = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
     const button = $("captain-review-save");
     const message = $("captain-review-message");
     if (!note) {
@@ -630,6 +664,11 @@
       $("captain-review-rating").focus();
       return;
     }
+    if (["followThrough", "teamContribution", "growthMindset", "experienceValue"].some(key => !rubric[key])) {
+      message.textContent = "Complete all four quick assessment questions.";
+      document.querySelector(".rubric-question:not(:has(.rubric-option.selected)) .rubric-option")?.focus();
+      return;
+    }
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
     message.textContent = "Saving your review…";
@@ -639,12 +678,13 @@
       const response = await fetch(REVIEW_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ action: "captainReview", applicationId, decision, internalNote: note, rating }),
+        body: JSON.stringify({ action: "captainReview", applicationId, decision, internalNote: note, rating, rubric }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your review.");
       captainReviewDrafts.delete(applicationId);
-      message.textContent = "Your captain review was saved.";
+      message.textContent = "Your team review was saved.";
+      $("team-review-dialog")?.close();
     } catch (error) {
       message.textContent = error.message || "Unable to save your review.";
     } finally {
