@@ -61,14 +61,16 @@
     if (indicator && "Notification" in window) indicator.classList.toggle("on", Notification.permission === "granted");
   }
   function setMetrics() {
-    const activeApplications = applications.filter(item => item.hidden !== true);
-    const total = activeApplications.length;
-    const pendingApplications = activeApplications.filter(item => status(item) === "pending");
+    const metricApplications = $("show-hidden-records")?.checked
+      ? applications
+      : applications.filter(item => item.hidden !== true);
+    const total = metricApplications.length;
+    const pendingApplications = metricApplications.filter(item => status(item) === "pending");
     const isReviewed = item => timestampMillis(item.reviewedAt) > 0 || Boolean(item.reviewedBy);
     const pending = pendingApplications.filter(item => !isReviewed(item)).length;
     const hold = pendingApplications.filter(isReviewed).length;
-    const accepted = activeApplications.filter(item => status(item) === "accepted").length;
-    const declined = activeApplications.filter(item => status(item) === "declined").length;
+    const accepted = metricApplications.filter(item => status(item) === "accepted").length;
+    const declined = metricApplications.filter(item => status(item) === "declined").length;
     $("stat-total").textContent = total;
     $("stat-pending").textContent = pending;
     $("stat-accepted").textContent = accepted;
@@ -229,23 +231,10 @@
     const dialog = $("answer-dialog");
     $("answer-dialog-title").textContent = answerDetail.label;
     $("answer-dialog-text").textContent = answerDetail.text;
+    dialog.style.removeProperty("left");
+    dialog.style.removeProperty("top");
     if (typeof dialog.showModal === "function") dialog.showModal();
     else dialog.hidden = false;
-    requestAnimationFrame(() => {
-      const anchor = trigger.closest(".answer-box") || trigger;
-      const anchorRect = anchor.getBoundingClientRect();
-      const padding = 16;
-      const left = Math.min(
-        Math.max(padding, anchorRect.left + (anchorRect.width - dialog.offsetWidth) / 2),
-        window.innerWidth - dialog.offsetWidth - padding
-      );
-      const top = Math.min(
-        Math.max(padding, anchorRect.top + (anchorRect.height - dialog.offsetHeight) / 2),
-        window.innerHeight - dialog.offsetHeight - padding
-      );
-      dialog.style.left = `${left}px`;
-      dialog.style.top = `${top}px`;
-    });
   }
   function confirmReviewAction({ title, message, confirmLabel, danger = false, singleAction = false }) {
     const dialog = $("review-confirm-dialog");
@@ -592,6 +581,7 @@
     });
   }
   ["search", "decision-filter", "grade-filter", "sort", "show-hidden-records"].forEach(id => $(id).addEventListener(id === "search" ? "input" : "change", () => {
+    setMetrics();
     renderList();
     const visible = filteredApplications();
     if (selectedId && !visible.some(item => item.id === selectedId)) {
@@ -606,6 +596,7 @@
     $("grade-filter").value = "all";
     $("sort").value = "newest";
     $("show-hidden-records").checked = false;
+    setMetrics();
     renderList();
     const visible = filteredApplications();
     if (!visible.some(item => item.id === selectedId)) {
