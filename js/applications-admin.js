@@ -157,7 +157,9 @@
     if (canSubmitTeamReview()) {
       const ownReview = captainReviews.find(review => review.id === currentUser?.uid) || {};
       const draft = captainReviewDrafts.get(applicationId);
-      const savedRecommendation = ["accepted", "declined"].includes(ownReview.recommendation) ? ownReview.recommendation : "pending";
+      const savedRecommendation = ownReview.id
+        ? (["accepted", "declined"].includes(ownReview.recommendation) ? ownReview.recommendation : "pending")
+        : "";
       const recommendation = draft?.decision || savedRecommendation;
       const note = draft?.note ?? ownReview.note ?? "";
       const rating = draft?.rating ?? ownReview.rating ?? "";
@@ -169,27 +171,28 @@
         ["experienceValue", "Would the applicant’s current experiences or skills add useful value to the team?"],
       ];
       reviewForm = `<section class="team-review-launch">
-        <div><span>Your review</span><h3>${ownReview.id ? "Review submitted" : "Add your perspective"}</h3><p>${ownReview.id ? `Your ${recommendationLabel(ownReview.recommendation)} recommendation can be updated at any time.` : "Complete a quick, structured assessment for the coaching staff."}</p></div>
+        <div class="team-review-launch-copy"><span>Your review</span><h3>${ownReview.id ? "Your perspective is on record" : "Add your perspective"}</h3><p>${ownReview.id ? `Your ${recommendationLabel(ownReview.recommendation)} recommendation can be thoughtfully updated at any time.` : "Share a concise, structured assessment to help the coaching staff consider each applicant with care."}</p></div>
         <button type="button" class="team-review-open" id="team-review-open">${ownReview.id ? "Update review for" : "Click here to review"} <b>${escapeHtml(applicantName)}</b></button>
       </section>
       <dialog class="team-review-dialog" id="team-review-dialog" aria-labelledby="team-review-dialog-title">
         <form method="dialog" class="team-review-modal">
-          <header class="team-review-modal-head"><div><span>Team application review</span><h2 id="team-review-dialog-title">Review ${escapeHtml(applicantName)}</h2><p>Your assessment informs the coaches. It does not change the official decision.</p></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
+          <header class="team-review-modal-head"><div><span>Reviewing ${escapeHtml(applicantName)}</span><h2 id="team-review-dialog-title">Team Internal Review</h2><p>Your perspective informs the coaching staff while remaining separate from the official decision.</p></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
           <div class="team-review-modal-grid">
             <div class="team-review-main">
               <section class="team-review-rubric"><div class="team-review-section-title"><span>Quick assessment</span><b>Answer all four</b></div>
                 ${rubricQuestions.map(([key, question], index) => `<div class="rubric-question"><div><small>0${index + 1}</small><p>${escapeHtml(question)}</p></div><div class="rubric-options" role="group" aria-label="${escapeHtml(question)}">${["yes", "unsure", "no"].map(value => `<button type="button" class="rubric-option ${value} ${rubric[key] === value ? "selected" : ""}" data-rubric-key="${key}" data-rubric-value="${value}" aria-pressed="${rubric[key] === value}">${value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure"}</button>`).join("")}</div></div>`).join("")}
               </section>
               <section class="team-review-written"><label for="captain-review-note"><span>Written assessment</span><small>Required</small></label><textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Summarize the applicant's strengths, concerns, readiness, and any follow-up you recommend…">${escapeHtml(note)}</textarea></section>
-              <label class="captain-review-rating"><span>Overall rating</span><strong>${rating ? `${rating} / 10` : "Choose a rating"}</strong><select id="captain-review-rating" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
             </div>
-            <aside class="team-review-recommendation"><div><span>Recommendation</span><h3>What should the coaches consider?</h3></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
+            <aside class="team-review-recommendation">
+              <label class="captain-review-rating"><span>Overall rating</span><strong>${rating ? `${rating} / 10` : "Choose a rating"}</strong><select id="captain-review-rating" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
+              <div class="team-review-recommendation-heading"><span>Recommendation</span><h3>What should the coaches consider?</h3><small>Choose one decision</small></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
               <div class="captain-review-actions">
                 <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted"><b>Accept</b><small>Strong fit for the team</small></button>
                 <button type="button" class="captain-recommendation hold ${recommendation === "pending" ? "selected" : ""}" data-captain-decision="pending"><b>Hold</b><small>Needs more consideration</small></button>
                 <button type="button" class="captain-recommendation decline ${recommendation === "declined" ? "selected" : ""}" data-captain-decision="declined"><b>Decline</b><small>Not the right fit now</small></button>
               </div>
-              <button type="button" class="captain-review-save" id="captain-review-save">${ownReview.id ? "Update review" : "Submit review"}</button>
+              <button type="button" class="captain-review-save" id="captain-review-save">${ownReview.id ? "Update Internal Review" : "Submit Internal Review"}</button>
               <div class="captain-review-message" id="captain-review-message" aria-live="polite"></div>
             </aside>
           </div>
@@ -654,19 +657,24 @@
     const rubric = Object.fromEntries([...document.querySelectorAll("[data-rubric-key].selected")].map(button => [button.dataset.rubricKey, button.dataset.rubricValue]));
     const button = $("captain-review-save");
     const message = $("captain-review-message");
-    if (!note) {
-      message.textContent = "Write your review before submitting.";
-      $("captain-review-note").focus();
-      return;
-    }
     if (!Number.isInteger(rating * 2) || rating < 1 || rating > 10) {
       message.textContent = "Choose an applicant rating from 1 to 10.";
       $("captain-review-rating").focus();
       return;
     }
+    if (!["accepted", "pending", "declined"].includes(decision)) {
+      message.textContent = "Choose Accept, Hold, or Decline before submitting.";
+      document.querySelector("[data-captain-decision]")?.focus();
+      return;
+    }
     if (["followThrough", "teamContribution", "growthMindset", "experienceValue"].some(key => !rubric[key])) {
       message.textContent = "Complete all four quick assessment questions.";
       document.querySelector(".rubric-question:not(:has(.rubric-option.selected)) .rubric-option")?.focus();
+      return;
+    }
+    if (!note) {
+      message.textContent = "Write your review before submitting.";
+      $("captain-review-note").focus();
       return;
     }
     button.disabled = true;
