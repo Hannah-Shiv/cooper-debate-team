@@ -180,12 +180,12 @@
           <div class="team-review-modal-grid">
             <div class="team-review-main">
               <section class="team-review-rubric"><div class="team-review-section-title"><span>Quick assessment</span><b>Answer all four</b></div>
-                ${rubricQuestions.map(([key, question], index) => `<div class="rubric-question"><div><small>0${index + 1}</small><p>${escapeHtml(question)}</p></div><div class="rubric-options" role="group" aria-label="${escapeHtml(question)}">${["yes", "unsure", "no"].map(value => `<button type="button" class="rubric-option ${value} ${rubric[key] === value ? "selected" : ""}" data-rubric-key="${key}" data-rubric-value="${value}" aria-pressed="${rubric[key] === value}">${value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure"}</button>`).join("")}</div></div>`).join("")}
+                ${rubricQuestions.map(([key, question], index) => `<div class="rubric-question"><div><small>0${index + 1}</small><p>${escapeHtml(question)}</p></div><div class="rubric-options" role="group" aria-label="${escapeHtml(question)}" aria-required="true">${["yes", "unsure", "no"].map(value => `<button type="button" class="rubric-option ${value} ${rubric[key] === value ? "selected" : ""}" data-rubric-key="${key}" data-rubric-value="${value}" aria-pressed="${rubric[key] === value}">${value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure"}</button>`).join("")}</div></div>`).join("")}
               </section>
-              <section class="team-review-written"><label for="captain-review-note"><span>Written assessment</span><small>Required</small></label><textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Summarize the applicant's strengths, concerns, readiness, and any follow-up you recommend…">${escapeHtml(note)}</textarea></section>
+              <section class="team-review-written"><label for="captain-review-note"><span>Written assessment</span><small>Required — enter an assessment</small></label><textarea id="captain-review-note" class="captain-review-note" maxlength="2000" required aria-required="true" placeholder="Summarize the applicant's strengths, concerns, readiness, and any follow-up you recommend…">${escapeHtml(note)}</textarea></section>
             </div>
             <aside class="team-review-recommendation">
-              <label class="captain-review-rating"><span>Overall rating</span><strong>${rating ? `${rating} / 10` : "Choose a rating"}</strong><select id="captain-review-rating" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
+              <label class="captain-review-rating"><span>Overall rating <em>Required</em></span><select id="captain-review-rating" required aria-required="true" aria-label="Overall applicant rating from 1 to 10"><option value="">Choose overall rating</option>${Array.from({ length: 19 }, (_, index) => 1 + index * .5).map(value => `<option value="${value}" ${Number(rating) === value ? "selected" : ""}>${value} / 10</option>`).join("")}</select></label>
               <div class="team-review-recommendation-heading"><span>Recommendation</span><h3>What should the coaches consider?</h3><small>Choose one decision</small></div><input id="captain-review-decision" type="hidden" value="${recommendation}">
               <div class="captain-review-actions">
                 <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted"><b>Accept</b><small>Strong fit for the team</small></button>
@@ -555,10 +555,7 @@
         captainNote.addEventListener("input", () => {
            saveReviewDraft();
         });
-         captainRating.addEventListener("change", () => {
-           captainRating.previousElementSibling.textContent = captainRating.value ? `${captainRating.value} / 10` : "Choose a rating";
-           saveReviewDraft();
-         });
+          captainRating.addEventListener("change", saveReviewDraft);
          document.querySelectorAll("[data-rubric-key]").forEach(button => button.addEventListener("click", () => {
            rubricState[button.dataset.rubricKey] = button.dataset.rubricValue;
            document.querySelectorAll(`[data-rubric-key="${button.dataset.rubricKey}"]`).forEach(control => {
