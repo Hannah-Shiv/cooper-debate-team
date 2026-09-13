@@ -171,7 +171,7 @@
         ["experienceValue", "Would the applicant’s current experiences or skills add useful value to the team?"],
       ];
       reviewForm = `<section class="team-review-launch">
-        <div class="team-review-launch-copy"><span>Your review</span><h3>${ownReview.id ? "Your perspective is on record" : "Add your perspective"}</h3><p>${ownReview.id ? `Your ${recommendationLabel(ownReview.recommendation)} recommendation can be thoughtfully updated at any time.` : "Share a concise, structured assessment to help the coaching staff consider each applicant with care."}</p></div>
+        <div class="team-review-launch-copy"><h3>Internal Team Review</h3><p>${ownReview.id ? `Your perspective is on record. Update your ${recommendationLabel(ownReview.recommendation)} recommendation whenever needed.` : "Add your perspective by sharing a concise, structured assessment to help the coaching staff consider each applicant with care."}</p></div>
         <button type="button" class="team-review-open" id="team-review-open">${ownReview.id ? "Update review for" : "Click here to review"} <b>${escapeHtml(applicantName)}</b></button>
       </section>
       <dialog class="team-review-dialog" id="team-review-dialog" aria-labelledby="team-review-dialog-title">
