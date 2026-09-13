@@ -30,17 +30,36 @@
 
   const $ = id => document.getElementById(id);
   const escapeHtml = value => String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  const timestampMillis = value => value && typeof value.toMillis === "function" ? value.toMillis() : 0;
+  const timestampMillis = value => value && typeof value.toMillis === "function" ? value.toMillis() : Number(value) || 0;
   const formatDate = value => {
-    const date = value && typeof value.toDate === "function" ? value.toDate() : null;
+    const date = value && typeof value.toDate === "function" ? value.toDate() : Number(value) ? new Date(Number(value)) : null;
     return date ? date.toLocaleString("en-US", { dateStyle: "medium", timeStyle: "short" }) : "Submission time unavailable";
   };
   const status = item => ["accepted", "declined"].includes(item.reviewStatus) ? item.reviewStatus : "pending";
   let currentUser = null;
+  let currentRole = "member";
   let applications = [];
   let selectedId = "";
   let unsubscribe = null;
+  let captainReviewUnsubscribe = null;
+  let captainReviewApplicationId = "";
+  let captainReviews = [];
+  let captainReviewError = "";
+  let captainReviewRenderPending = false;
+  const captainReviewDrafts = new Map();
+  const coachReviewDrafts = new Map();
   let longAnswers = [];
+  let activeDetailTab = "overview";
+  const isFinalReviewer = () => isFullAdminRole(currentRole);
+  const isReviewEditor = element => element instanceof Element && Boolean(element.closest("#captain-review-note, #review-note, #applicant-rating"));
+  function stopCaptainReviewListening() {
+    if (captainReviewUnsubscribe) captainReviewUnsubscribe();
+    captainReviewUnsubscribe = null;
+    captainReviewApplicationId = "";
+    captainReviews = [];
+    captainReviewError = "";
+    captainReviewRenderPending = false;
+  }
 
   window.memberSignOut = () => auth.signOut().finally(() => { window.location.href = "index.html"; });
   window.appToggleNotif = () => {
@@ -102,6 +121,74 @@
   function hiddenBadge() {
     return '<span class="badge hidden-record">Hidden</span>';
   }
+  function recommendationLabel(value) {
+    return value === "accepted" ? "Accept" : value === "declined" ? "Decline" : "Hold";
+  }
+  function listenForCaptainReviews(applicationId) {
+    if (!currentUser || captainReviewApplicationId === applicationId) return;
+    if (captainReviewUnsubscribe) captainReviewUnsubscribe();
+    captainReviewApplicationId = applicationId;
+    captainReviews = [];
+    captainReviewError = "";
+    const collection = db.collection("applications").doc(applicationId).collection("captainReviews");
+    const source = isFinalReviewer() ? collection : collection.doc(currentUser.uid);
+    captainReviewUnsubscribe = source.onSnapshot(snapshot => {
+      captainReviews = snapshot.docs
+        ? snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+        : snapshot.exists ? [{ id: snapshot.id, ...snapshot.data() }] : [];
+      captainReviewError = "";
+      if (isReviewEditor(document.activeElement)) {
+        captainReviewRenderPending = true;
+        return;
+      }
+      renderDetail();
+    }, error => {
+      captainReviews = [];
+      captainReviewError = error.message || "Captain reviews could not be loaded.";
+      renderDetail();
+    });
+  }
+  function captainReviewPanel(applicationId) {
+    if (captainReviewError) {
+      return `<section class="captain-reviews-panel"><div class="captain-review-empty" role="alert">${escapeHtml(captainReviewError)}</div></section>`;
+    }
+    if (!isFinalReviewer()) {
+      const ownReview = captainReviews.find(review => review.id === currentUser?.uid) || {};
+      const draft = captainReviewDrafts.get(applicationId);
+      const savedRecommendation = ["accepted", "declined"].includes(ownReview.recommendation) ? ownReview.recommendation : "pending";
+      const recommendation = draft?.decision || savedRecommendation;
+      const note = draft?.note ?? ownReview.note ?? "";
+      return `<section class="captain-reviews-panel">
+        <div class="captain-review-heading"><div><span>Captain review</span><h3>Your recommendation</h3></div>${ownReview.updatedAt ? `<small>Last saved ${escapeHtml(formatDate(ownReview.updatedAt))}</small>` : ""}</div>
+        <p class="captain-review-guidance">Your review is linked to this applicant. Only coaches and Website Admins can make the official rating and final decision.</p>
+        <textarea id="captain-review-note" class="captain-review-note" maxlength="2000" placeholder="Share the applicant's strengths, concerns, readiness, and any follow-up recommendation…">${escapeHtml(note)}</textarea>
+        <input id="captain-review-decision" type="hidden" value="${recommendation}">
+        <div class="captain-review-actions">
+          <button type="button" class="captain-recommendation accept ${recommendation === "accepted" ? "selected" : ""}" data-captain-decision="accepted">Accept</button>
+          <button type="button" class="captain-recommendation hold ${recommendation === "pending" ? "selected" : ""}" data-captain-decision="pending">Hold</button>
+          <button type="button" class="captain-recommendation decline ${recommendation === "declined" ? "selected" : ""}" data-captain-decision="declined">Decline</button>
+          <button type="button" class="captain-review-save" id="captain-review-save">${ownReview.id ? "Update review" : "Submit review"}</button>
+        </div>
+        <div class="captain-review-message" id="captain-review-message" aria-live="polite"></div>
+      </section>`;
+    }
+    const counts = captainReviews.reduce((summary, review) => {
+      const key = ["accepted", "declined"].includes(review.recommendation) ? review.recommendation : "pending";
+      summary[key] += 1;
+      return summary;
+    }, { accepted: 0, pending: 0, declined: 0 });
+    const cards = captainReviews.length
+      ? captainReviews.map(review => `<article class="captain-review-card">
+          <div class="captain-review-card-head"><div><span>Captain</span><h4>${escapeHtml(review.captainName || review.captainEmail || "Captain")}</h4></div><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span></div>
+          <p>${escapeHtml(review.note || "No written review provided.")}</p>
+          <small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small>
+        </article>`).join("")
+      : '<div class="captain-review-empty">No captain reviews have been submitted for this applicant.</div>';
+    return `<section class="captain-reviews-panel">
+      <div class="captain-review-heading"><div><span>Captain reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
+      <div class="captain-review-list">${cards}</div>
+    </section>`;
+  }
   function icon(name, className = "") {
     const assets = {
       applicants: "applicants", pending: "pending", accepted: "accepted", declined: "declined",
@@ -138,13 +225,13 @@
   }
   function syncApplicationListHeight() {
     const list = $("application-list");
-    const reviewBar = document.querySelector(".review-section");
+    const queuePanel = document.querySelector(".queue-panel");
     if (!list) return;
-    if (!reviewBar || window.innerWidth <= 760) {
+    if (!queuePanel || window.innerWidth <= 760) {
       list.style.removeProperty("max-height");
       return;
     }
-    const availableHeight = Math.floor(reviewBar.getBoundingClientRect().top - list.getBoundingClientRect().top - 8);
+    const availableHeight = Math.floor(queuePanel.getBoundingClientRect().bottom - list.getBoundingClientRect().top - 8);
     list.style.maxHeight = `${Math.max(140, availableHeight)}px`;
   }
   function navigateApplications(destination) {
@@ -261,9 +348,11 @@
   function renderDetail() {
     const item = applications.find(application => application.id === selectedId);
     if (!item) {
+      stopCaptainReviewListening();
       $("detail").innerHTML = '<div class="detail-empty">Select an application from the queue to view private details and record a decision.</div>';
       return;
     }
+    listenForCaptainReviews(item.id);
     const student = item.student || {};
     const eventDetails = item.eventDetails || {};
     longAnswers = [];
@@ -280,15 +369,24 @@
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Application responses</h3><div class="responses-grid">${answer("Why do you want to join?", item.answers?.whyJoin, "info")}${answer("Debate experience", item.answers?.experienceDetail, "debate")}${answer("Required essay / document", item.answers?.requiredEssay, "info")}${answer("Other activities and conflicts", item.answers?.scheduleConflicts, "calendar")}${answer("Anything else", item.answers?.anythingElse, "info")}${answer("Comments or concerns", item.answers?.questionsForCoach, "info")}</div></section>
       <section class="review-section"><div class="review-card"><div class="review-controls"><h3 class="section-title">${icon("lock", "heading-icon")}Coach Notes</h3><div class="review-note-wrap"><textarea class="review-note" id="review-note" maxlength="2000" aria-label="Coach review notes" placeholder="Add observations, strengths, concerns, or follow-up details…">${escapeHtml(item.reviewNote || "")}</textarea></div><div class="applicant-rating" id="applicant-rating"><input id="review-rating" type="hidden" value="${reviewRating || ""}"><button type="button" class="rating-trigger" id="rating-trigger" aria-expanded="false" aria-controls="rating-popover"><span>Rating</span><strong id="rating-value">${reviewRating || "—"}</strong><small>out of 10</small><b aria-hidden="true">▴</b></button><div class="rating-popover" id="rating-popover" hidden><div class="rating-popover-head"><span>Choose a rating</span><strong id="rating-preview">${reviewRating || 5}</strong></div><input class="rating-slider" id="rating-slider" type="range" min="1" max="10" step="1" value="${reviewRating || 5}" aria-label="Applicant rating from 1 to 10"><div class="rating-slider-labels"><span>1 · Needs growth</span><span>10 · Exceptional</span></div></div></div><div class="decision-panel"><input id="review-decision" type="hidden" value="${decision}"><div class="decision-buttons"><button type="button" class="decision-button accept ${decision === "accepted" ? "selected" : ""}" data-decision="accepted"><div class="decision-main">${icon("actionAccept")}<span>Accept</span></div><small>Admit to team</small></button><button type="button" class="decision-button hold" data-decision="pending"><div class="decision-main">${icon("actionHold")}<span>Hold</span></div><small>Consider later</small></button><button type="button" class="decision-button decline ${decision === "declined" ? "selected" : ""}" data-decision="declined"><div class="decision-main">${icon("actionDecline")}<span>Decline</span></div><small>Not a fit</small></button><button type="button" class="decision-button review-action-hide" id="review-hide-application" ${item.hidden === true ? 'disabled aria-disabled="true"' : ""}><div class="decision-main">${icon("info")}<span>${item.hidden === true ? "Hidden" : "Hide"}</span></div><small>${item.hidden === true ? "Record kept" : "Keep record"}</small></button><button type="button" class="decision-button review-action-delete" id="review-delete-application"><div class="decision-main">${icon("actionDelete")}<span>Delete</span></div><small>From database</small></button></div></div></div><div class="save-row"><span class="save-message" id="save-message" aria-live="polite"></span></div>${item.reviewedBy ? `<div class="audit">Last reviewed by <b>${escapeHtml(item.reviewedBy)}</b>${reviewDate ? ` on <b>${escapeHtml(reviewDate)}</b>` : ""}.</div>` : ""}</div></section>
     </div>`;
+      const coachDraft = coachReviewDrafts.get(item.id);
+      if (coachDraft && isFinalReviewer()) {
+        const noteField = $("review-note");
+        const ratingField = $("review-rating");
+        if (noteField) noteField.value = coachDraft.note;
+        if (ratingField) ratingField.value = coachDraft.rating || "";
+        const ratingValue = $("rating-value");
+        if (ratingValue) ratingValue.textContent = coachDraft.rating || "—";
+      }
       // Turn the record into five useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
      const sections = Array.from(content.querySelectorAll(":scope > .section"));
      const tabBar = document.createElement("nav");
      tabBar.className = "detail-tabs";
      tabBar.setAttribute("aria-label", "Application detail sections");
-      [["overview","Overview"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label], index) => {
+       [["overview","Overview"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label]) => {
        const button = document.createElement("button");
-       button.type = "button"; button.className = `detail-tab${index === 0 ? " active" : ""}`;
+        button.type = "button"; button.className = `detail-tab${key === activeDetailTab ? " active" : ""}`;
        button.dataset.tab = key; button.textContent = label;
        tabBar.appendChild(button);
      });
@@ -307,7 +405,7 @@
      Object.entries(groups).forEach(([key, group]) => {
        const pane = document.createElement("div");
        pane.className = "detail-tab-pane"; pane.dataset.pane = key;
-       if (key !== "overview") pane.hidden = true;
+        if (key !== activeDetailTab) pane.hidden = true;
        group.forEach(node => pane.appendChild(node));
         if (key === "overview") {
           const overviewGrid = document.createElement("div");
@@ -403,19 +501,37 @@
             if (activitiesCard) logisticsSplit.appendChild(activitiesCard);
             pane.prepend(logisticsSplit);
          }
-        if (key === "review") {
-         pane.innerHTML = `<div class="review-summary">
+         if (key === "review") {
+           pane.innerHTML = `${captainReviewPanel(item.id)}${isFinalReviewer() ? `<div class="review-summary">
             <div class="review-summary-card"><span>Current decision</span><strong>${escapeHtml(status(item).replace(/^./, letter => letter.toUpperCase()))}</strong><p>Use the administrative action bar below to record a secure decision and internal note.</p></div>
             <div class="review-summary-card"><span>Review history</span><strong>${item.reviewedBy ? escapeHtml(item.reviewedBy) : "Not reviewed yet"}</strong><p>${reviewDate ? `Last updated ${escapeHtml(reviewDate)}.` : "No administrative decision has been recorded."}</p></div>
-         </div>`;
+          </div>` : ""}`;
+          const finalReviewSection = content.querySelector(":scope > .review-section");
+          if (isFinalReviewer() && finalReviewSection) pane.appendChild(finalReviewSection);
+          else finalReviewSection?.remove();
        }
        content.appendChild(pane);
      });
      tabBar.querySelectorAll(".detail-tab").forEach(button => button.addEventListener("click", () => {
+        activeDetailTab = button.dataset.tab;
        tabBar.querySelectorAll(".detail-tab").forEach(tab => tab.classList.toggle("active", tab === button));
        Object.entries(groups).forEach(([key]) => { const pane = content.querySelector(`[data-pane="${key}"]`); if (pane) pane.hidden = key !== button.dataset.tab; });
      }));
-      const ratingTrigger = $("rating-trigger");
+      const captainDecision = $("captain-review-decision");
+      if (captainDecision) {
+        const captainNote = $("captain-review-note");
+        captainNote.addEventListener("input", () => {
+          captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value });
+        });
+        document.querySelectorAll("[data-captain-decision]").forEach(button => button.addEventListener("click", () => {
+          captainDecision.value = button.dataset.captainDecision;
+          captainReviewDrafts.set(item.id, { note: captainNote.value, decision: captainDecision.value });
+          document.querySelectorAll("[data-captain-decision]").forEach(control => control.classList.toggle("selected", control === button));
+        }));
+        $("captain-review-save").addEventListener("click", () => saveCaptainReview(item.id));
+      }
+      if (isFinalReviewer()) {
+       const ratingTrigger = $("rating-trigger");
       const ratingPopover = $("rating-popover");
       const ratingSlider = $("rating-slider");
        ratingSlider.step = "0.5";
@@ -424,6 +540,9 @@
        ratingTrigger.setAttribute("aria-expanded", "false");
        window.setTimeout(() => { if (!ratingPopover.classList.contains("open")) ratingPopover.hidden = true; }, 220);
       };
+       $("review-note").addEventListener("input", () => {
+        coachReviewDrafts.set(item.id, { note: $("review-note").value, rating: $("review-rating").value });
+       });
       ratingTrigger.addEventListener("click", () => {
        const opening = ratingPopover.hidden;
        if (!opening) return closeRating();
@@ -436,6 +555,7 @@
       ratingSlider.addEventListener("change", () => {
        $("review-rating").value = ratingSlider.value;
        $("rating-value").textContent = ratingSlider.value;
+       coachReviewDrafts.set(item.id, { note: $("review-note").value, rating: ratingSlider.value });
        closeRating();
        ratingTrigger.focus();
       });
@@ -447,6 +567,7 @@
       });
      document.querySelectorAll(".decision-button[data-decision]").forEach(button => button.addEventListener("click", async () => {
        const rating = Number($("review-rating").value);
+        const note = $("review-note").value.trim();
         if (!Number.isInteger(rating * 2) || rating < 1 || rating > 10) {
         await confirmReviewAction({
          title: "Rating required",
@@ -469,7 +590,7 @@
         control.classList.toggle("selected", selected);
         control.setAttribute("aria-pressed", String(selected));
        });
-       await saveDecision(item.id, button);
+        await saveDecision(item.id, button, { decision: button.dataset.decision, internalNote: note, rating });
         button.blur();
     }));
     requestAnimationFrame(() => document.querySelectorAll(".answer-preview, .quick-preview").forEach(preview => {
@@ -481,7 +602,40 @@
       if (answerDetail) openAnswerDialog(answerDetail, button);
     }));
      $("review-hide-application").addEventListener("click", () => hideApplication(item));
-     $("review-delete-application").addEventListener("click", () => deleteApplication(item));
+      $("review-delete-application").addEventListener("click", () => deleteApplication(item));
+      }
+  }
+  async function saveCaptainReview(applicationId) {
+    const note = $("captain-review-note").value.trim();
+    const decision = $("captain-review-decision").value;
+    const button = $("captain-review-save");
+    const message = $("captain-review-message");
+    if (!note) {
+      message.textContent = "Write your review before submitting.";
+      $("captain-review-note").focus();
+      return;
+    }
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    message.textContent = "Saving your review…";
+    activeDetailTab = "review";
+    try {
+      const token = await currentUser.getIdToken();
+      const response = await fetch(REVIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "captainReview", applicationId, decision, internalNote: note }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your review.");
+      captainReviewDrafts.delete(applicationId);
+      message.textContent = "Your captain review was saved.";
+    } catch (error) {
+      message.textContent = error.message || "Unable to save your review.";
+    } finally {
+      button.disabled = false;
+      button.removeAttribute("aria-busy");
+    }
   }
   async function hideApplication(item) {
     if (item.hidden === true) return;
@@ -538,7 +692,7 @@
       });
     }
   }
-  async function saveDecision(applicationId, button) {
+  async function saveDecision(applicationId, button, review) {
     const message = $("save-message");
     const decisionButtons = [...document.querySelectorAll(".decision-button[data-decision]")];
     decisionButtons.forEach(control => { control.disabled = true; });
@@ -549,10 +703,11 @@
       const response = await fetch(REVIEW_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ applicationId, decision: $("review-decision").value, internalNote: $("review-note").value.trim(), rating: Number($("review-rating").value) }),
+        body: JSON.stringify({ applicationId, decision: review.decision, internalNote: review.internalNote, rating: review.rating }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save the review decision.");
+      coachReviewDrafts.delete(applicationId);
       message.textContent = "Decision saved. Refreshing the review record…";
     } catch (error) {
       message.textContent = error.message || "Unable to save the review decision.";
@@ -570,11 +725,49 @@
   }
   function beginListening() {
     if (unsubscribe) unsubscribe();
+    if (!isFinalReviewer()) {
+      unsubscribe = null;
+      currentUser.getIdToken().then(token => fetch(REVIEW_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ action: "listCaptainApps" }),
+      })).then(async response => {
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok || !result.ok) throw new Error(result.error || "Unable to load applications.");
+        applications = Array.isArray(result.applications) ? result.applications : [];
+        const visible = filteredApplications();
+        if (!visible.some(item => item.id === selectedId)) selectedId = visible[0]?.id || "";
+        render();
+        unsubscribe = db.collection("captain_application_queue").onSnapshot(snapshot => {
+          applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          const refreshedVisible = filteredApplications();
+          if (!refreshedVisible.some(item => item.id === selectedId)) selectedId = refreshedVisible[0]?.id || "";
+          if (isReviewEditor(document.activeElement)) {
+            setMetrics();
+            renderList();
+            captainReviewRenderPending = true;
+            return;
+          }
+          render();
+        }, error => {
+          $("application-list").innerHTML = `<div class="empty">Live application updates are unavailable: ${escapeHtml(error.message || "Permission denied.")}</div>`;
+        });
+      }).catch(error => {
+        $("application-list").innerHTML = `<div class="empty">Unable to load applications: ${escapeHtml(error.message || "Permission denied.")}</div>`;
+      });
+      return;
+    }
     unsubscribe = db.collection("applications").onSnapshot(snapshot => {
       applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       const visible = filteredApplications();
       if (selectedId && !visible.some(item => item.id === selectedId)) selectedId = "";
       if (!selectedId && visible.length) selectedId = visible[0].id;
+      if (isReviewEditor(document.activeElement)) {
+        setMetrics();
+        renderList();
+        captainReviewRenderPending = true;
+        return;
+      }
       render();
     }, error => {
       $("application-list").innerHTML = `<div class="empty">Unable to load applications: ${escapeHtml(error.message || "Permission denied.")}</div>`;
@@ -619,19 +812,39 @@
     event.preventDefault();
     navigateApplications(event.key === "ArrowUp" ? "previous" : "next");
   });
+  document.addEventListener("focusout", event => {
+    if (!isReviewEditor(event.target) || !captainReviewRenderPending) return;
+    window.setTimeout(() => {
+      if (isReviewEditor(document.activeElement)) return;
+      captainReviewRenderPending = false;
+      renderDetail();
+    }, 0);
+  });
   window.addEventListener("resize", syncApplicationListHeight);
   auth.onAuthStateChanged(async user => {
     currentUser = user;
-    if (!user) { show("auth-required"); return; }
+    if (!user) {
+      if (unsubscribe) unsubscribe();
+      unsubscribe = null;
+      stopCaptainReviewListening();
+      applications = [];
+      selectedId = "";
+      show("auth-required");
+      return;
+    }
     $("app-userbar").classList.add("visible");
     $("app-name").textContent = portalWelcomeLabel(user.displayName, user.email);
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
+    currentRole = role;
+    stopCaptainReviewListening();
+    const rosterLink = $("applications-roster-link");
+    if (rosterLink) rosterLink.hidden = role === "captain";
     $("app-name").textContent = portalWelcomeLabel(access.displayName || user.displayName, user.email);
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.member;
     $("app-role-badge").dataset.role = role;
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
-    if (!access.approved || !isFullAdminRole(role)) { show("access-denied"); return; }
+    if (!access.approved || !(isFullAdminRole(role) || role === "captain")) { show("access-denied"); return; }
     show("dashboard");
     beginListening();
   });

@@ -1813,9 +1813,11 @@
     if (state === 'dashboard') {
       document.getElementById('mp-loading').style.display = 'none';
       document.getElementById('mp-content').style.display = 'block';
-      // Show management tabs for coaches and website admins
+      // Captains can review applications; roster management remains full-admin only.
       if (isFullAdminRole(currentUserRole)) {
         document.getElementById('tab-roster').style.display = 'inline-flex';
+      }
+      if (isFullAdminRole(currentUserRole) || normalizePortalRole(currentUserRole) === 'captain') {
         document.getElementById('tab-applications').style.display = 'inline-flex';
       }
       onDashboardReady();
@@ -1877,8 +1879,8 @@ function switchTab(tab) {
   if (tab === 'applications') {
     const frame = document.getElementById('applications-frame');
     if (frame.dataset.layout !== '11') {
-      frame.src = 'members-applications.html?embedded=1&layout=17';
-      frame.dataset.layout = '11';
+      frame.src = 'members-applications.html?embedded=1&layout=19';
+      frame.dataset.layout = '19';
     }
     requestAnimationFrame(sizeApplicationsFrameToViewport);
   }
@@ -1891,7 +1893,10 @@ function switchTab(tab) {
 async function onDashboardReady() {
   await loadTournaments();
   const requestedTab = new URLSearchParams(window.location.search).get('tab');
-  if ((requestedTab === 'roster' || requestedTab === 'applications') && isFullAdminRole(currentUserRole)) {
+  const canOpenRequestedTab = requestedTab === 'roster'
+    ? isFullAdminRole(currentUserRole)
+    : requestedTab === 'applications' && (isFullAdminRole(currentUserRole) || normalizePortalRole(currentUserRole) === 'captain');
+  if (canOpenRequestedTab) {
     switchTab(requestedTab);
     return;
   }

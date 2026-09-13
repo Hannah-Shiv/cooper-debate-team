@@ -2,7 +2,7 @@
 // Triggered when a new announcement or tournament is added to Firestore.
 // Sends an FCM push notification to every registered device token.
 
-const { onDocumentCreated, onDocumentDeleted, onDocumentUpdated } = require("firebase-functions/v2/firestore");
+const { onDocumentCreated, onDocumentDeleted, onDocumentUpdated, onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { onRequest }         = require("firebase-functions/v2/https");
 const { onSchedule }        = require("firebase-functions/v2/scheduler");
 const { initializeApp }     = require("firebase-admin/app");
@@ -256,6 +256,61 @@ async function hasFullAdminAccess(email) {
   return data.active === true &&
     (COACH_EMAILS.has(normalizedEmail) || ["coach", "website-admin"].includes(data.role));
 }
+async function hasCaptainAccess(email) {
+  const normalizedEmail = cleanEmail(email);
+  if (!normalizedEmail) return false;
+  const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
+  if (!membership.exists) return false;
+  const data = membership.data() || {};
+  return data.active === true && data.role === "captain";
+}
+function captainApplicationProjection(applicationId, data) {
+  return {
+    applicationId,
+    createdAt: data.createdAt || null,
+    student: {
+      firstName: cleanText(data.student && data.student.firstName, 120),
+      lastName: cleanText(data.student && data.student.lastName, 120),
+      grade: cleanText(data.student && data.student.grade, 40),
+      debateExperience: cleanText(data.student && data.student.debateExperience, 2000),
+      partner: cleanText(data.student && data.student.partner, 160),
+    },
+    answers: {
+      whyJoin: cleanText(data.answers && data.answers.whyJoin, 5000),
+      experienceDetail: cleanText(data.answers && data.answers.experienceDetail, 5000),
+      requiredEssay: cleanText(data.answers && data.answers.requiredEssay, 5000),
+      scheduleConflicts: cleanText(data.answers && data.answers.scheduleConflicts, 5000),
+      anythingElse: cleanText(data.answers && data.answers.anythingElse, 5000),
+    },
+    commitments: Object.fromEntries(Object.entries(data.commitments || {}).map(([key, value]) => [key, value === true])),
+    eventDetails: {
+      qstSession: cleanText(data.eventDetails && data.eventDetails.qstSession, 200),
+      september22Attendance: cleanText(data.eventDetails && data.eventDetails.september22Attendance, 200),
+      september23Attendance: cleanText(data.eventDetails && data.eventDetails.september23Attendance, 200),
+      tabroomAccount: cleanText(data.eventDetails && data.eventDetails.tabroomAccount, 200),
+      contractAgreement: cleanText(data.eventDetails && data.eventDetails.contractAgreement, 200),
+      contractReturn: cleanText(data.eventDetails && data.eventDetails.contractReturn, 200),
+      tournamentDates: Array.isArray(data.eventDetails && data.eventDetails.tournamentDates)
+        ? data.eventDetails.tournamentDates.map(value => cleanText(value, 120)).slice(0, 30)
+        : [],
+    },
+  };
+}
+
+exports.syncCaptainApplicationQueue = onDocumentWritten(
+  "applications/{docId}",
+  async event => {
+    const projectionRef = getFirestore().collection("captain_application_queue").doc(event.params.docId);
+    const after = event.data && event.data.after;
+    if (!after || !after.exists || after.data().hidden === true) {
+      await projectionRef.delete().catch(error => {
+        if (error && error.code !== 5) throw error;
+      });
+      return;
+    }
+    await projectionRef.set(captainApplicationProjection(event.params.docId, after.data()));
+  }
+);
 const turnstileSecret = defineSecret("TURNSTILE_SECRET_KEY");
 const resendSecret = defineSecret("RESEND_API_KEY");
 const applicationSheetSyncSecret = defineSecret("APPLICATION_SHEET_SYNC_SECRET");
@@ -1314,9 +1369,9 @@ exports.syncApplicationFromSheet = onRequest(
   }
 );
 
-// Application records are deliberately browser read-only. Coaches use this
-// endpoint to leave an authenticated, attributable admissions decision, hide
-// a record from the default review queue, or permanently remove an application.
+// Application records are deliberately browser read-only. Captains can save
+// only their own linked recommendation; coaches retain exclusive control of
+// final decisions, ratings, hidden state, and deletion.
 exports.manageApplicationReview = onRequest(
   { region: "us-central1", cors: true },
   async (req, res) => {
@@ -1328,7 +1383,7 @@ exports.manageApplicationReview = onRequest(
 
     const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
     if (!token) {
-      res.status(401).json({ error: "Sign in as a coach to review applications." });
+      res.status(401).json({ error: "Sign in to review applications." });
       return;
     }
 
@@ -1340,31 +1395,107 @@ exports.manageApplicationReview = onRequest(
       return;
     }
 
-    const reviewerEmail = cleanEmail(decoded.email);
-    if (!await hasFullAdminAccess(reviewerEmail)) {
-      res.status(403).json({ error: "Only coaches and website admins can review applications." });
-      return;
-    }
-
     const body = req.body || {};
     const applicationId = cleanText(body.applicationId, 128);
     const action = cleanText(body.action, 24).toLowerCase() || "review";
     const decision = cleanText(body.decision, 24).toLowerCase();
     const internalNote = cleanText(body.internalNote, 2000);
     const rating = Number(body.rating);
+    const reviewerEmail = cleanEmail(decoded.email);
+    const signInProvider = cleanText(decoded.firebase && decoded.firebase.sign_in_provider, 80);
+    const verifiedAllowedIdentity = decoded.email_verified === true &&
+      (signInProvider !== "google.com" || /@(fcps\.edu|fcpsschools\.net)$/.test(reviewerEmail));
+    if (!verifiedAllowedIdentity) {
+      res.status(403).json({ error: "Use your verified, approved sign-in method to review applications." });
+      return;
+    }
 
+    if (action === "listcaptainapps") {
+      if (!await hasCaptainAccess(reviewerEmail)) {
+        res.status(403).json({ error: "Only active captains can review applications." });
+        return;
+      }
+      try {
+        const snapshot = await getFirestore().collection("applications").get();
+        const eligibleDocuments = snapshot.docs
+          .map(doc => ({ id: doc.id, data: doc.data() || {} }))
+          .filter(({ data }) => data.hidden !== true);
+        const applications = eligibleDocuments.map(({ id, data }) => ({ id, ...captainApplicationProjection(id, data) }));
+        const projectionCollection = getFirestore().collection("captain_application_queue");
+        const existingProjections = await projectionCollection.get();
+        const eligibleIds = new Set(eligibleDocuments.map(({ id }) => id));
+        const batch = getFirestore().batch();
+        eligibleDocuments.forEach(({ id, data }) => batch.set(projectionCollection.doc(id), captainApplicationProjection(id, data)));
+        existingProjections.docs.filter(doc => !eligibleIds.has(doc.id)).forEach(doc => batch.delete(doc.ref));
+        await batch.commit();
+        res.status(200).json({ ok: true, applications });
+      } catch (error) {
+        console.error("manageApplicationReview captain queue failed:", {
+          reviewerEmail,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        res.status(500).json({ error: "Unable to load applications for captain review." });
+      }
+      return;
+    }
     if (!/^[a-zA-Z0-9_-]{12,128}$/.test(applicationId)) {
       res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
+    if (action === "captainreview") {
+      if (!await hasCaptainAccess(reviewerEmail)) {
+        res.status(403).json({ error: "Only active captains can submit captain reviews." });
+        return;
+      }
+      if (!["pending", "accepted", "declined"].includes(decision)) {
+        res.status(400).json({ error: "Choose Accept, Hold, or Decline." });
+        return;
+      }
+      if (!internalNote) {
+        res.status(400).json({ error: "Write a review before submitting your recommendation." });
+        return;
+      }
+      const applicationRef = getFirestore().collection("applications").doc(applicationId);
+      const reviewRef = applicationRef.collection("captainReviews").doc(decoded.uid);
+      try {
+        await getFirestore().runTransaction(async transaction => {
+          const [application, existingReview] = await Promise.all([
+            transaction.get(applicationRef),
+            transaction.get(reviewRef),
+          ]);
+          if (!application.exists) throw new Error("That application no longer exists.");
+          const review = existingReview.data() || {};
+          transaction.set(reviewRef, {
+            captainUid: decoded.uid,
+            captainEmail: reviewerEmail,
+            captainName: cleanText(decoded.name, 120) || reviewerEmail,
+            recommendation: decision,
+            note: internalNote,
+            createdAt: review.createdAt || FieldValue.serverTimestamp(),
+            updatedAt: FieldValue.serverTimestamp(),
+          });
+        });
+        res.status(200).json({ ok: true, captainReview: true });
+      } catch (error) {
+        console.error("manageApplicationReview captain review failed:", {
+          applicationId,
+          reviewerEmail,
+          message: error instanceof Error ? error.message : String(error),
+        });
+        res.status(400).json({ error: cleanText(error.message, 240) || "Unable to save the captain review." });
+      }
+      return;
+    }
+    if (!await hasFullAdminAccess(reviewerEmail)) {
+      res.status(403).json({ error: "Only coaches and website admins can make final application decisions." });
       return;
     }
     if (action === "delete") {
       const applicationRef = getFirestore().collection("applications").doc(applicationId);
       try {
-        await getFirestore().runTransaction(async transaction => {
-          const application = await transaction.get(applicationRef);
-          if (!application.exists) throw new Error("That application no longer exists.");
-          transaction.delete(applicationRef);
-        });
+        const application = await applicationRef.get();
+        if (!application.exists) throw new Error("That application no longer exists.");
+        await getFirestore().recursiveDelete(applicationRef);
         res.status(200).json({ ok: true, deleted: true });
       } catch (error) {
         console.error("manageApplicationReview delete failed:", {

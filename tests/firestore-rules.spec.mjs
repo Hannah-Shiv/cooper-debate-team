@@ -23,6 +23,7 @@ const STUDENT_EMAIL = "1806950@fcpsschools.net";
 const WEBSITE_ADMIN_FCPS_EMAIL = "site-admin@fcps.edu";
 const WEBSITE_ADMIN_STUDENT_EMAIL = "site-admin@fcpsschools.net";
 const INACTIVE_EMAIL = "inactive@fcpsschools.net";
+const CAPTAIN_EMAIL = "captain@fcpsschools.net";
 
 let testEnv;
 
@@ -80,6 +81,22 @@ beforeEach(async () => {
       }),
       setDoc(doc(db, "portal_members", INACTIVE_EMAIL), {
         active: false, role: "member", profileId: "inactive-profile", name: "Inactive Member",
+      }),
+      setDoc(doc(db, "portal_members", CAPTAIN_EMAIL), {
+        active: true, role: "captain", profileId: "captain-profile", name: "Team Captain",
+      }),
+      setDoc(doc(db, "applications", "application-test"), {
+        student: { firstName: "Applicant", lastName: "Student", schoolEmail: "private@fcpsschools.net" },
+      }),
+      setDoc(doc(db, "captain_application_queue", "application-test"), {
+        applicationId: "application-test",
+        student: { firstName: "Applicant", lastName: "Student", grade: "10" },
+      }),
+      setDoc(doc(db, "applications", "application-test", "captainReviews", "captain-uid"), {
+        captainName: "Team Captain", recommendation: "accepted", note: "Ready.",
+      }),
+      setDoc(doc(db, "applications", "application-test", "captainReviews", "other-captain-uid"), {
+        captainName: "Other Captain", recommendation: "pending", note: "Follow up.",
       }),
       setDoc(doc(db, "portal_login_status", "known-email-hash"), {
         active: true,
@@ -291,6 +308,56 @@ test("ordinary approved members cannot perform coach or captain writes", async (
     active: true,
   }));
   await assertFails(deleteDoc(doc(db, "announcements", "existing")));
+});
+
+test("captains see only redacted application projections", async () => {
+  const captainDb = testEnv.authenticatedContext("captain-uid", {
+    email: CAPTAIN_EMAIL,
+    email_verified: true,
+    firebase: { sign_in_provider: "google.com" },
+  }).firestore();
+  await assertFails(getDoc(doc(captainDb, "applications", "application-test")));
+  const projection = await assertSucceeds(getDoc(doc(captainDb, "captain_application_queue", "application-test")));
+  assert.equal(projection.data().student.firstName, "Applicant");
+});
+
+test("ordinary, unverified, and disallowed Google identities cannot read captain projections", async () => {
+  await assertFails(getDoc(doc(dbFor(MEMBER_EMAIL), "captain_application_queue", "application-test")));
+  const unverifiedDb = testEnv.authenticatedContext("captain-unverified", {
+    email: CAPTAIN_EMAIL,
+    email_verified: false,
+    firebase: { sign_in_provider: "google.com" },
+  }).firestore();
+  await assertFails(getDoc(doc(unverifiedDb, "captain_application_queue", "application-test")));
+  const disallowedGoogleDb = testEnv.authenticatedContext("captain-disallowed", {
+    email: "approved-captain@gmail.com",
+    email_verified: true,
+    firebase: { sign_in_provider: "google.com" },
+  }).firestore();
+  await assertFails(getDoc(doc(disallowedGoogleDb, "captain_application_queue", "application-test")));
+});
+
+test("captains read only their own linked review and cannot write from the browser", async () => {
+  const captainDb = testEnv.authenticatedContext("captain-uid", {
+    email: CAPTAIN_EMAIL,
+    email_verified: true,
+    firebase: { sign_in_provider: "google.com" },
+  }).firestore();
+  const ownReview = doc(captainDb, "applications", "application-test", "captainReviews", "captain-uid");
+  await assertSucceeds(getDoc(ownReview));
+  await assertFails(getDoc(doc(captainDb, "applications", "application-test", "captainReviews", "other-captain-uid")));
+  await assertFails(setDoc(ownReview, { recommendation: "declined", note: "Browser write" }));
+});
+
+test("coaches read full applications and every captain review while browser review writes stay denied", async () => {
+  const coachDb = dbFor(COACH_EMAIL, "google.com");
+  await assertSucceeds(getDoc(doc(coachDb, "applications", "application-test")));
+  const reviews = await assertSucceeds(getDocs(collection(coachDb, "applications", "application-test", "captainReviews")));
+  assert.equal(reviews.size, 2);
+  await assertFails(setDoc(doc(coachDb, "applications", "application-test", "captainReviews", "coach-write"), {
+    recommendation: "accepted",
+    note: "Browser write",
+  }));
 });
 
 test("approved members retain private tournament editing but not public control", async () => {

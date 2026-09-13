@@ -199,6 +199,20 @@ service cloud.firestore {
     match /applications/{docId} {
       allow read:  if isCoach();
       allow write: if false;
+
+      // Captains can read only their own linked review. Coaches and Website
+      // Admins can read every captain review while making the final decision.
+      match /captainReviews/{reviewId} {
+        allow read: if isCoach() || (isCaptain() && request.auth.uid == reviewId);
+        allow write: if false;
+      }
+    }
+
+    // Redacted application projections contain no student/parent contact data.
+    // Captains subscribe here; only Cloud Functions maintain the documents.
+    match /captain_application_queue/{docId} {
+      allow read: if isCaptain();
+      allow write: if false;
     }
 
     // Email acceptance records support coach-only delivery audits. They do not
