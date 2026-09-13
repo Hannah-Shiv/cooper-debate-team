@@ -617,6 +617,17 @@
   ["first", "previous", "next", "last"].forEach(destination => {
     $(`application-${destination}`).addEventListener("click", () => navigateApplications(destination));
   });
+  document.addEventListener("keydown", event => {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    const target = event.target;
+    if (target instanceof Element && (
+      target.matches("input, textarea, select, [contenteditable='true']") ||
+      target.closest("input, textarea, select, [contenteditable='true']")
+    )) return;
+    if (!$("dashboard") || $("dashboard").hidden || !filteredApplications().length) return;
+    event.preventDefault();
+    navigateApplications(event.key === "ArrowUp" ? "previous" : "next");
+  });
   window.addEventListener("resize", syncApplicationListHeight);
   auth.onAuthStateChanged(async user => {
     currentUser = user;
