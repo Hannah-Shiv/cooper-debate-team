@@ -1455,6 +1455,10 @@ exports.manageApplicationReview = onRequest(
         res.status(400).json({ error: "Write a review before submitting your recommendation." });
         return;
       }
+      if (!Number.isInteger(rating * 2) || rating < 1 || rating > 10) {
+        res.status(400).json({ error: "Choose an applicant rating from 1 to 10." });
+        return;
+      }
       const applicationRef = getFirestore().collection("applications").doc(applicationId);
       const reviewRef = applicationRef.collection("captainReviews").doc(decoded.uid);
       try {
@@ -1470,6 +1474,7 @@ exports.manageApplicationReview = onRequest(
             captainEmail: reviewerEmail,
             captainName: cleanText(decoded.name, 120) || reviewerEmail,
             recommendation: decision,
+            rating,
             note: internalNote,
             createdAt: review.createdAt || FieldValue.serverTimestamp(),
             updatedAt: FieldValue.serverTimestamp(),
