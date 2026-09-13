@@ -202,7 +202,7 @@
           <div class="team-review-exit-icon" aria-hidden="true">!</div>
           <span>Unsaved internal review</span>
           <h2 id="team-review-exit-title">Leave this review?</h2>
-          <p id="team-review-exit-message">You are still editing. Discarding will remove the changes you have made since opening this review.</p>
+          <p id="team-review-exit-message">Choose whether to continue editing or close this review. Any unsaved changes will be discarded.</p>
           <div><button type="button" class="team-review-keep-editing" id="team-review-keep-editing">Keep Editing</button><button type="button" class="team-review-discard" id="team-review-discard">Discard Changes</button></div>
         </div>
       </dialog>`;
@@ -558,10 +558,6 @@
          const reviewDialog = $("team-review-dialog");
           const exitDialog = $("team-review-exit-dialog");
           const requestReviewClose = () => {
-            if (!captainReviewDrafts.has(item.id)) {
-              reviewDialog.close();
-              return;
-            }
             if (!exitDialog.open) exitDialog.showModal();
           };
          $("team-review-open").addEventListener("click", () => reviewDialog.showModal());
