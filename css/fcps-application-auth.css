@@ -378,8 +378,8 @@ body.fcps-application-auth-open { overflow: hidden; }
   top: 50%;
   left: 23px;
   width: 31px;
-  height: 36px;
-  color: #09264c;
+  height: 41px;
+  object-fit: contain;
   transform: translateY(-50%);
 }
 
@@ -389,6 +389,7 @@ body.fcps-application-auth-open { overflow: hidden; }
   left: -29px;
   width: 23px;
   height: 42px;
+  object-fit: contain;
   transform: translateY(-50%);
   pointer-events: none;
 }
@@ -396,33 +397,6 @@ body.fcps-application-auth-open { overflow: hidden; }
 .fcps-application-auth__continue-rays--right {
   right: -29px;
   left: auto;
-  transform: translateY(-50%) scaleX(-1);
-}
-
-.fcps-application-auth__continue-rays i {
-  position: absolute;
-  left: 0;
-  width: 22px;
-  height: 3px;
-  border-radius: 3px;
-  background: #ffd64d;
-  box-shadow: 0 0 6px rgba(255,214,77,.48);
-  transform-origin: right center;
-}
-
-.fcps-application-auth__continue-rays i:nth-child(1) {
-  top: 4px;
-  transform: rotate(34deg);
-}
-
-.fcps-application-auth__continue-rays i:nth-child(2) {
-  top: 19px;
-  width: 17px;
-}
-
-.fcps-application-auth__continue-rays i:nth-child(3) {
-  bottom: 4px;
-  transform: rotate(-34deg);
 }
 
 .fcps-application-auth__continue:hover,
@@ -482,13 +456,12 @@ body.fcps-application-auth-open { overflow: hidden; }
     padding-left: 49px;
     font-size: .86rem;
   }
-  .fcps-application-auth__continue-icon { left: 13px; width: 26px; height: 30px; }
+  .fcps-application-auth__continue-icon { left: 13px; width: 26px; height: 34px; }
   .fcps-application-auth__continue-arrow { right: 18px; font-size: 1.25rem; }
-  .fcps-application-auth__continue-rays { left: -23px; transform: translateY(-50%) scale(.8); }
+  .fcps-application-auth__continue-rays { left: -23px; width: 19px; height: 37px; }
   .fcps-application-auth__continue-rays--right {
     right: -23px;
     left: auto;
-    transform: translateY(-50%) scale(-.8,.8);
   }
 }
 
