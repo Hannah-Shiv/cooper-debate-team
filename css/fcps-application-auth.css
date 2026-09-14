@@ -360,10 +360,10 @@ body.fcps-application-auth-open { overflow: hidden; }
   border-color: #f4d166;
   background: #efad20;
   color: #07111f;
-  font: 700 1.48rem/1.1 "Cormorant Garamond",serif;
-  letter-spacing: .055em;
-  word-spacing: .06em;
-  text-transform: none;
+  font: 700 1.12rem/1.1 "Josefin Sans",sans-serif;
+  letter-spacing: .085em;
+  word-spacing: .02em;
+  text-transform: uppercase;
   text-shadow: none;
 }
 
@@ -402,7 +402,7 @@ body.fcps-application-auth-open { overflow: hidden; }
   .fcps-application-auth__continue {
     padding-right: 48px;
     padding-left: 48px;
-    font-size: 1.3rem;
+    font-size: .96rem;
   }
   .fcps-application-auth__continue-arrow { right: 18px; font-size: 1.25rem; }
 }
