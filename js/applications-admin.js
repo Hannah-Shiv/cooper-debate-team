@@ -231,7 +231,7 @@
           <td><b class="captain-review-grid-rating">${Number(review.rating) || "—"}<span>/10</span></b></td>
           <td><p class="captain-review-grid-assessment">${escapeHtml(review.note || "No written assessment provided.")}</p></td>
           <td><span class="captain-review-grade-summary"><b>${positiveGrades}/4</b> marked Yes</span></td>
-          <td><span class="captain-review-recommendation ${escapeHtml(recommendation)}">${escapeHtml(recommendationLabel(recommendation))}</span><span class="captain-review-row-cue">View details <b aria-hidden="true">⌄</b></span></td>
+          <td><span class="captain-review-recommendation ${escapeHtml(recommendation)}">${escapeHtml(recommendationLabel(recommendation))}</span></td>
         </tr>
         <tr class="captain-review-detail-row" id="${escapeHtml(detailId)}" hidden>
           <td colspan="5"><div class="captain-review-detail-panel">
