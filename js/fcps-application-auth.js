@@ -67,6 +67,7 @@
       '    <button class="fcps-application-auth__close" type="button" aria-label="Close FCPS account check">×</button>',
       '    <img class="fcps-application-auth__mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true">',
       '    <p class="fcps-application-auth__kicker">2026–27 Team Application</p>',
+      '    <div class="fcps-application-auth__card-divider fcps-application-auth__card-divider--heading" aria-hidden="true"><span></span></div>',
       '    <h2 id="fcps-application-auth-title">FCPS Account Check</h2>',
       '    <div class="fcps-application-auth__divider" aria-hidden="true"><span></span></div>',
       '    <p class="fcps-application-auth__intro" id="fcps-application-auth-description">The application is restricted to Cooper Middle School students and staff. Verify your FCPS Google account before continuing.</p>',

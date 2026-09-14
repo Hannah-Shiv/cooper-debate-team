@@ -3,6 +3,7 @@ body.fcps-application-auth-open { overflow: hidden; }
 .fcps-application-auth {
   width: min(604px, calc(100vw - 24px));
   max-width: none;
+  min-height: min(690px, calc(100dvh - 20px));
   max-height: calc(100dvh - 20px);
   margin: auto;
   padding: 0;
@@ -66,15 +67,15 @@ body.fcps-application-auth-open { overflow: hidden; }
   display: block;
   width: 190px;
   max-height: 118px;
-  margin: 0 auto 9px;
+  margin: 0 auto 22px;
   object-fit: contain;
   filter: drop-shadow(0 11px 18px rgba(0,0,0,.25));
 }
 
 .fcps-application-auth__kicker {
-  margin: 0 0 11px;
+  margin: 0;
   color: #f2d16b;
-  font: 400 1.22rem/1.2 "Great Vibes",cursive;
+  font: 400 1.4rem/1.2 "Great Vibes",cursive;
   letter-spacing: .045em;
   text-transform: none;
   text-shadow: 0 0 10px rgba(242,209,107,.35);
@@ -207,6 +208,11 @@ body.fcps-application-auth-open { overflow: hidden; }
   margin: 16px 25px 8px;
 }
 
+.fcps-application-auth__card-divider--heading {
+  width: 154px;
+  margin: 10px auto 17px;
+}
+
 .fcps-application-auth__card-divider::before,
 .fcps-application-auth__card-divider::after {
   background: linear-gradient(90deg, transparent, rgba(227,175,49,.52) 28%, #ffe898 50%, rgba(227,175,49,.52) 72%, transparent);
@@ -323,6 +329,7 @@ body.fcps-application-auth-open { overflow: hidden; }
 @media (max-width: 620px) {
   .fcps-application-auth {
     width: calc(100vw - 12px);
+    min-height: 0;
     max-height: calc(100dvh - 12px);
     border-radius: 14px;
   }
