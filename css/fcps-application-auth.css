@@ -10,7 +10,7 @@ body.fcps-application-auth-open { overflow: hidden; }
   overflow: auto;
   border: 1px solid #79b4e3;
   border-radius: 20px;
-  background: #071941;
+  background: #203054;
   color: #fff;
   box-shadow: 0 0 32px rgba(86,160,218,.2), 0 28px 90px rgba(0,0,0,.72);
 }
@@ -32,7 +32,7 @@ body.fcps-application-auth-open { overflow: hidden; }
   min-height: 100%;
   padding: 25px 24px 30px;
   text-align: center;
-  background: #071941;
+  background: #203054;
 }
 
 .fcps-application-auth__close {
@@ -75,8 +75,8 @@ body.fcps-application-auth-open { overflow: hidden; }
 .fcps-application-auth__kicker {
   margin: 0;
   color: #f2d16b;
-  font: 400 1.4rem/1.2 "Great Vibes",cursive;
-  letter-spacing: .045em;
+  font: 400 1.54rem/1.2 "Great Vibes",cursive;
+  letter-spacing: .075em;
   text-transform: none;
   text-shadow: 0 0 10px rgba(242,209,107,.35);
 }
