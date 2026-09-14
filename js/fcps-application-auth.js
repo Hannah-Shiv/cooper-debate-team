@@ -89,7 +89,7 @@
       '      </div>',
       '      <div class="fcps-application-auth__security"><span class="fcps-application-auth__security-mark" aria-hidden="true">i</span><span>If this page opened inside a QR-code app, open it in Chrome or Safari so Google can use your FCPS sign-in.</span></div>',
       '      <p class="fcps-application-auth__status" role="status" aria-live="polite"></p>',
-      '      <a class="fcps-application-auth__continue" href="' + APPLICATION_URL + '" target="_blank" rel="noopener" hidden>Open the Team Application →</a>',
+      '      <a class="fcps-application-auth__continue" href="' + APPLICATION_URL + '" target="_blank" rel="noopener" hidden><span>Open the Team Application</span><span class="fcps-application-auth__continue-arrow" aria-hidden="true">⟶</span></a>',
       '    </div>',
       '  </div>',
       '</dialog>'
