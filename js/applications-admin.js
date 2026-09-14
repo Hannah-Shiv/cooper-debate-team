@@ -175,7 +175,7 @@
       </button>
       <dialog class="team-review-dialog" id="team-review-dialog" aria-labelledby="team-review-dialog-title">
         <form method="dialog" class="team-review-modal">
-          <header class="team-review-modal-head"><div><span>Reviewing ${escapeHtml(applicantName)}</span><h2 id="team-review-dialog-title">Team Internal Review</h2><p>Your perspective informs the coaching staff while remaining separate from the official decision.</p></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
+          <header class="team-review-modal-head"><div class="team-review-modal-title"><h2 id="team-review-dialog-title">Team Internal Review</h2><p>Your perspective informs the coaching staff while remaining separate from the official decision.</p></div><span class="team-review-modal-divider" aria-hidden="true"></span><div class="team-review-modal-applicant"><small>Reviewing</small><strong>${escapeHtml(applicantName)}</strong></div><button type="button" class="team-review-close" id="team-review-close" aria-label="Close review form">×</button></header>
           <div class="team-review-modal-grid">
             <div class="team-review-main">
               <section class="team-review-rubric"><div class="team-review-section-title"><span>Quick assessment</span><b>Answer all four</b></div>
