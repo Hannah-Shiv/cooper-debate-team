@@ -245,7 +245,10 @@
       }).join("")
       : '<tr><td colspan="5"><div class="captain-review-empty">No team reviews have been submitted for this applicant.</div></td></tr>';
     return `<div class="captain-review-overview ${reviewForm ? "has-launch" : "heading-only"}">${reviewForm}
-      <div class="captain-review-heading"><div class="captain-review-heading-copy"><span>Team reviews · ${captainReviews.length} submitted</span><h3>Team recommendations</h3><small>Compare recommendations at a glance, then open any row for the complete assessment.</small></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
+      ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
+      <div class="captain-review-heading-copy"><span>Team reviews · ${captainReviews.length} submitted</span><h3>Team recommendations</h3><small>Compare recommendations at a glance, then open any row for the complete assessment.</small></div>
+      ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
+      <div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div>
     </div><section class="captain-reviews-panel">
       <div class="captain-review-grid-wrap"><table class="captain-review-grid"><thead><tr><th>Reviewer</th><th>Overall rating</th><th>Written assessment</th><th>Quick grades</th><th>Recommendation</th></tr></thead><tbody>${cards}</tbody></table></div>
     </section>`;
