@@ -1876,9 +1876,9 @@ function switchTab(tab) {
   if (tab === 'roster' && !rosterLoaded) loadRoster();
   if (tab === 'applications') {
     const frame = document.getElementById('applications-frame');
-    if (frame.dataset.layout !== '81') {
-      frame.src = 'members-applications.html?embedded=1&layout=81';
-      frame.dataset.layout = '81';
+    if (frame.dataset.layout !== '82') {
+      frame.src = 'members-applications.html?embedded=1&layout=82';
+      frame.dataset.layout = '82';
     }
     requestAnimationFrame(sizeApplicationsFrameToViewport);
   }

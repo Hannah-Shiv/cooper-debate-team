@@ -321,7 +321,7 @@
         @media(max-width:760px){.review-section .review-controls{grid-template-columns:1fr!important}.review-section .applicant-rating{align-items:center;display:flex;justify-content:space-between}.review-section .decision-buttons{grid-template-columns:repeat(2,minmax(0,1fr))}}
         /* Keep review actions readable when laptop and tablet widths cannot support
            notes, rating, and five icon buttons on the same compressed row. */
-        @media(min-width:761px) and (max-width:1600px){
+        @media(min-width:761px) and (max-width:999px){
           .review-section .review-controls{grid-template-columns:76px minmax(0,1fr) minmax(150px,220px)!important}
           .review-section .decision-panel{grid-column:1/-1;height:auto}
           .review-section .decision-buttons{height:60px}
@@ -334,6 +334,19 @@
           .review-section .rating-trigger span{font-size:.67rem;grid-column:1;grid-row:1}
           .review-section .rating-trigger strong{font-size:1.7rem;grid-column:2;grid-row:1}
           .review-section .rating-trigger small{font-size:.68rem;grid-column:1/-1;grid-row:2;text-align:center}
+        }
+        @media(min-width:1000px) and (max-width:1600px){
+          .review-section .review-controls{grid-template-columns:76px minmax(190px,20fr) minmax(120px,10fr) minmax(0,70fr)!important;gap:8px}
+          .review-section .decision-panel{grid-column:auto;height:54px}
+          .review-section .decision-buttons{gap:5px;height:54px}
+          .review-section .decision-button,.review-section .review-action-delete{height:54px!important;min-width:0;padding:4px 6px}
+          .review-section .decision-button .decision-main .icon-art{display:none!important}
+          .review-section .decision-button span{font-size:.72rem;left:3px;right:3px}
+          .review-section .decision-button small,.review-section #save-decision small{font-size:.56rem!important;left:3px;right:3px}
+          .review-section .rating-trigger{align-content:center;column-gap:3px;grid-template-columns:max-content max-content max-content;grid-template-rows:1fr;justify-content:center;padding:0 17px 0 6px}
+          .review-section .rating-trigger span{font-size:.54rem;grid-column:1;grid-row:1;letter-spacing:.025em}
+          .review-section .rating-trigger strong{font-size:1.28rem;grid-column:2;grid-row:1}
+          .review-section .rating-trigger small{font-size:.54rem;grid-column:3;grid-row:1;text-align:left}
         }
         @media(max-width:760px){
           .review-section{padding-left:10px!important;padding-right:10px!important}
