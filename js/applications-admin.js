@@ -44,6 +44,7 @@
   let captainReviewUnsubscribe = null;
   let captainReviewApplicationId = "";
   let captainReviews = [];
+  let eligibleReviewerCount = null;
   let captainReviewError = "";
   let captainReviewRenderPending = false;
   const captainReviewDrafts = new Map();
@@ -60,6 +61,23 @@
     captainReviews = [];
     captainReviewError = "";
     captainReviewRenderPending = false;
+  }
+  async function loadEligibleReviewerCount() {
+    eligibleReviewerCount = null;
+    if (!isFinalReviewer()) return;
+    try {
+      const snapshot = await db.collection("members").get();
+      eligibleReviewerCount = snapshot.docs.filter(doc => {
+        const member = doc.data() || {};
+        const role = normalizePortalRole(member.role);
+        const hasLogin = Array.isArray(member.loginEmails)
+          ? member.loginEmails.some(Boolean)
+          : Boolean(member.email || member.fcpsEmail || member.personalEmail);
+        return member.active !== false && hasLogin && ["member", "captain", "website-admin"].includes(role);
+      }).length;
+    } catch (error) {
+      console.warn("Unable to count eligible application reviewers.", error);
+    }
   }
 
   window.memberSignOut = () => auth.signOut().finally(() => { window.location.href = "index.html"; });
@@ -248,7 +266,7 @@
       ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
       <div class="captain-review-heading-copy"><span>Team reviews · ${captainReviews.length} submitted</span><h3>Team recommendations</h3><small>Compare recommendations at a glance, then open any row for the complete assessment.</small></div>
       ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
-      <div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div>
+      <div class="captain-review-tally"><strong class="captain-review-coverage">${captainReviews.length}${Number.isInteger(eligibleReviewerCount) ? ` of ${eligibleReviewerCount}` : ""}<small>reviews submitted</small></strong><div class="captain-review-breakdown"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
     </div><section class="captain-reviews-panel">
       <div class="captain-review-grid-wrap"><table class="captain-review-grid"><thead><tr><th>Reviewer</th><th>Overall rating</th><th>Written assessment</th><th>Quick grades</th><th>Recommendation</th></tr></thead><tbody>${cards}</tbody></table></div>
     </section>`;
@@ -1014,6 +1032,7 @@
     $("app-role-badge").querySelector(".mub-role-label").textContent = rolePresentation.label;
     if (!access.approved) { show("access-denied"); return; }
     show("dashboard");
+    await loadEligibleReviewerCount();
     beginListening();
   });
   document.addEventListener("DOMContentLoaded", updateNotificationState);
