@@ -74,9 +74,10 @@ body.fcps-application-auth-open { overflow: hidden; }
 .fcps-application-auth__kicker {
   margin: 0 0 11px;
   color: #f2d16b;
-  font: 800 .68rem/1.2 "Josefin Sans",sans-serif;
-  letter-spacing: .19em;
+  font: 700 .78rem/1.2 "Cormorant Garamond",serif;
+  letter-spacing: .2em;
   text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(242,209,107,.35);
 }
 
 .fcps-application-auth h2 {
@@ -110,7 +111,10 @@ body.fcps-application-auth-open { overflow: hidden; }
 }
 
 .fcps-application-auth__divider::before,
-.fcps-application-auth__divider::after { background: #d39f2f; }
+.fcps-application-auth__divider::after {
+  background: linear-gradient(90deg, transparent, rgba(242,209,107,.62) 28%, #fff0a6 50%, rgba(242,209,107,.62) 72%, transparent);
+  box-shadow: 0 0 7px rgba(242,209,107,.45);
+}
 
 .fcps-application-auth__divider span {
   width: 8px;
@@ -204,7 +208,10 @@ body.fcps-application-auth-open { overflow: hidden; }
 }
 
 .fcps-application-auth__card-divider::before,
-.fcps-application-auth__card-divider::after { background: rgba(218,174,57,.38); }
+.fcps-application-auth__card-divider::after {
+  background: linear-gradient(90deg, transparent, rgba(227,175,49,.52) 28%, #ffe898 50%, rgba(227,175,49,.52) 72%, transparent);
+  box-shadow: 0 0 6px rgba(227,175,49,.34);
+}
 
 .fcps-application-auth__card-divider span {
   width: 7px;
@@ -278,12 +285,14 @@ body.fcps-application-auth-open { overflow: hidden; }
   height: 21px;
   flex: 0 0 21px;
   place-items: center;
-  border: 1px solid #dda936;
+  border: 1px solid #f8d66c;
   border-radius: 50%;
-  color: #e8b638;
+  background: #f2d16b;
+  color: #101010;
   font-family: Georgia,serif;
   font-size: .8rem;
   font-weight: 700;
+  box-shadow: 0 0 8px rgba(242,209,107,.38);
 }
 
 .fcps-application-auth__status {
@@ -311,13 +320,6 @@ body.fcps-application-auth-open { overflow: hidden; }
   text-transform: uppercase;
 }
 
-.fcps-application-auth__help {
-  max-width: 510px;
-  margin: 17px auto 0;
-  color: rgba(255,255,255,.72);
-  font: 600 .76rem/1.5 "Josefin Sans",sans-serif;
-}
-
 @media (max-width: 620px) {
   .fcps-application-auth {
     width: calc(100vw - 12px);
@@ -335,7 +337,6 @@ body.fcps-application-auth-open { overflow: hidden; }
   .fcps-application-auth__google-label { margin-left: 1px; }
   .fcps-application-auth__notice { padding: 12px; font-size: .82rem; }
   .fcps-application-auth__security { margin-left: 8px; margin-right: 8px; font-size: .8rem; }
-  .fcps-application-auth__help { font-size: .72rem; }
 }
 
 @media (max-width: 390px) {

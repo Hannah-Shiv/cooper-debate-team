@@ -86,11 +86,10 @@
       '        <span class="fcps-application-auth__notice-mark" aria-hidden="true">!</span>',
       '        <span><strong>Account Required:</strong> You must use your <em>fcpsschools.net</em> Google account to open the application.</span>',
       '      </div>',
-      '      <div class="fcps-application-auth__security"><span class="fcps-application-auth__security-mark" aria-hidden="true">!</span><span><strong>No team membership is required.</strong> This check only confirms that you selected an FCPS Google Workspace account.</span></div>',
+      '      <div class="fcps-application-auth__security"><span class="fcps-application-auth__security-mark" aria-hidden="true">i</span><span>If this page opened inside a QR-code app, open it in Chrome or Safari so Google can use your FCPS sign-in.</span></div>',
       '      <p class="fcps-application-auth__status" role="status" aria-live="polite"></p>',
       '      <a class="fcps-application-auth__continue" href="' + APPLICATION_URL + '" target="_blank" rel="noopener" hidden>Open the Team Application →</a>',
       '    </div>',
-      '    <p class="fcps-application-auth__help">If this page opened inside a QR-code app, open it in Chrome or Safari so Google can use your FCPS sign-in.</p>',
       '  </div>',
       '</dialog>'
     ].join("");
