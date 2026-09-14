@@ -248,7 +248,7 @@
       ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
       <div class="captain-review-heading-copy"><h3>Team recommendations</h3><small>Compare recommendations at a glance, then open any row for the complete assessment.</small></div>
       ${reviewForm ? '<span class="captain-review-overview-divider" aria-hidden="true"></span>' : ""}
-      <div class="captain-review-tally"><strong class="captain-review-coverage">${captainReviews.length}<small>${captainReviews.length === 1 ? "review" : "reviews"} submitted</small></strong><div class="captain-review-breakdown"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
+      <div class="captain-review-tally"><div class="captain-review-breakdown"><b class="reviews"><span>Reviews</span><strong>${captainReviews.length}</strong></b><b class="accept"><span>Accept</span><strong>${counts.accepted}</strong></b><b class="hold"><span>Hold</span><strong>${counts.pending}</strong></b><b class="decline"><span>Decline</span><strong>${counts.declined}</strong></b></div></div>
     </div><section class="captain-reviews-panel">
       <div class="captain-review-grid-wrap"><table class="captain-review-grid"><thead><tr><th>Reviewer</th><th>Overall rating</th><th>Written assessment</th><th>Quick grades</th><th>Recommendation</th></tr></thead><tbody>${cards}</tbody></table></div>
     </section>`;
