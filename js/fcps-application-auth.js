@@ -85,11 +85,9 @@
       '        <span class="fcps-application-auth__notice-mark" aria-hidden="true">!</span>',
       '        <span><strong>Account Required:</strong> You must use your <em>fcpsschools.net</em> Google account to open the application.</span>',
       '      </div>',
-      '      <div class="fcps-application-auth__security"><span class="fcps-application-auth__lock" aria-hidden="true"><svg viewBox="0 0 24 26"><rect x="5" y="10" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="16" r="1.2" fill="currentColor"/></svg></span><span>No Members Directory access is required for applicants.</span></div>',
       '      <p class="fcps-application-auth__status" role="status" aria-live="polite"></p>',
       '      <a class="fcps-application-auth__continue" href="' + APPLICATION_URL + '" target="_blank" rel="noopener" hidden>Open the Team Application →</a>',
       '    </div>',
-      '    <p class="fcps-application-auth__help">Open in Chrome or Safari</p>',
       '  </div>',
       '</dialog>'
     ].join("");
