@@ -638,6 +638,15 @@
          const toggleDetails = () => {
            const detail = $(row.getAttribute("aria-controls"));
            const willOpen = Boolean(detail?.hidden);
+           if (willOpen) {
+             document.querySelectorAll("[data-review-grid-row]").forEach(otherRow => {
+               if (otherRow === row) return;
+               const otherDetail = $(otherRow.getAttribute("aria-controls"));
+               if (otherDetail) otherDetail.hidden = true;
+               otherRow.setAttribute("aria-expanded", "false");
+               otherRow.classList.remove("expanded");
+             });
+           }
            if (detail) detail.hidden = !willOpen;
            row.setAttribute("aria-expanded", String(willOpen));
            row.classList.toggle("expanded", willOpen);
