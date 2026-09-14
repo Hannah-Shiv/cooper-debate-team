@@ -65,29 +65,31 @@
       '<dialog class="fcps-application-auth" aria-labelledby="fcps-application-auth-title" aria-describedby="fcps-application-auth-description">',
       '  <div class="fcps-application-auth__inner">',
       '    <button class="fcps-application-auth__close" type="button" aria-label="Close FCPS account check">×</button>',
-      '    <img class="fcps-application-auth__mark" src="images/fcps-google-logo.png" alt="" aria-hidden="true">',
-      '    <p class="fcps-application-auth__kicker">2026–27 Team Application</p>',
+      '    <img class="fcps-application-auth__mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true">',
       '    <h2 id="fcps-application-auth-title">FCPS Account Check</h2>',
-      '    <div class="fcps-application-auth__divider" aria-hidden="true"></div>',
-      '    <p class="fcps-application-auth__intro" id="fcps-application-auth-description">The application is restricted to Cooper Middle School students and staff. Verify your FCPS Google account before continuing.</p>',
+      '    <div class="fcps-application-auth__divider" aria-hidden="true"><span></span></div>',
+      '    <p class="fcps-application-auth__intro" id="fcps-application-auth-description">Sign in with your FCPS Google Workspace account to open the 2026–27 Debate Team application.</p>',
       '    <div class="fcps-application-auth__card">',
       '      <button class="fcps-application-auth__google" type="button">',
+      '        <img class="fcps-application-auth__fcps-logo" src="images/fcps-google-logo.png" alt="" aria-hidden="true">',
       '        <svg viewBox="0 0 24 24" aria-hidden="true">',
       '          <path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>',
       '          <path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/>',
       '          <path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/>',
       '          <path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/>',
       '        </svg>',
-      '        <span>Continue with fcpsschools.net</span>',
+      '        <span class="fcps-application-auth__google-label">Sign in with fcpsschools.net</span>',
       '      </button>',
+      '      <div class="fcps-application-auth__card-divider" aria-hidden="true"><span></span></div>',
       '      <div class="fcps-application-auth__notice">',
       '        <span class="fcps-application-auth__notice-mark" aria-hidden="true">!</span>',
-      '        <span><strong>No team membership is required.</strong> This check only confirms that you selected an FCPS Google Workspace account.</span>',
+      '        <span><strong>Account Required:</strong> You must use your <em>fcpsschools.net</em> Google account to open the application.</span>',
       '      </div>',
+      '      <div class="fcps-application-auth__security"><span class="fcps-application-auth__lock" aria-hidden="true"><svg viewBox="0 0 24 26"><rect x="5" y="10" width="14" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.7"/><circle cx="12" cy="16" r="1.2" fill="currentColor"/></svg></span><span>No Members Directory access is required for applicants.</span></div>',
       '      <p class="fcps-application-auth__status" role="status" aria-live="polite"></p>',
       '      <a class="fcps-application-auth__continue" href="' + APPLICATION_URL + '" target="_blank" rel="noopener" hidden>Open the Team Application →</a>',
       '    </div>',
-      '    <p class="fcps-application-auth__help">If this page opened inside a QR-code app, open it in Chrome or Safari so Google can use your FCPS sign-in.</p>',
+      '    <p class="fcps-application-auth__help">Open in Chrome or Safari</p>',
       '  </div>',
       '</dialog>'
     ].join("");
@@ -118,7 +120,7 @@
   function resetDialog() {
     signInButton.disabled = false;
     signInButton.hidden = false;
-    signInButton.querySelector("span").textContent = "Continue with fcpsschools.net";
+    signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Sign in with fcpsschools.net";
     status.textContent = "";
     status.className = "fcps-application-auth__status";
     continueLink.hidden = true;
@@ -165,14 +167,14 @@
     status.textContent = "";
     continueLink.hidden = true;
     signInButton.disabled = true;
-    signInButton.querySelector("span").textContent = "Checking FCPS Google…";
+    signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Checking FCPS Google…";
     try {
       await persistenceReady;
       var result = await auth.signInWithPopup(provider);
       if (!(await isVerifiedFcpsGoogleUser(result.user))) {
         status.textContent = "That is not an FCPS Google account. Choose an account ending in @fcpsschools.net and try again.";
         signInButton.disabled = false;
-        signInButton.querySelector("span").textContent = "Choose a different Google account";
+        signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Choose a different Google account";
         return;
       }
       var email = normalizeEmail(result.user.email);
@@ -184,7 +186,7 @@
     } catch (error) {
       status.textContent = authErrorMessage(error);
       signInButton.disabled = false;
-      signInButton.querySelector("span").textContent = "Try FCPS Google again";
+      signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Try FCPS Google again";
     }
   }
 
