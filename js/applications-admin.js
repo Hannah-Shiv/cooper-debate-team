@@ -213,19 +213,40 @@
       summary[key] += 1;
       return summary;
     }, { accepted: 0, pending: 0, declined: 0 });
+    const rubricLabels = {
+      followThrough: "Dependable follow-through",
+      teamContribution: "Positive team contribution",
+      growthMindset: "Openness to coaching and growth",
+      experienceValue: "Useful experience or skills",
+    };
+    const rubricValueLabel = value => value === "yes" ? "Yes" : value === "no" ? "No" : "Not sure";
     const cards = captainReviews.length
       ? captainReviews.map(review => {
         const reviewerName = review.reviewerName || review.captainName || review.reviewerEmail || review.captainEmail || "Team reviewer";
-        return `<article class="captain-review-card">
-          <div class="captain-review-card-head"><div><span>Reviewer</span><h4>${escapeHtml(reviewerName)}</h4></div><div class="captain-review-card-result"><b>${Number(review.rating) || "—"} / 10</b><span class="captain-review-recommendation ${escapeHtml(review.recommendation || "pending")}">${escapeHtml(recommendationLabel(review.recommendation))}</span><button type="button" class="captain-review-delete" data-delete-captain-review="${escapeHtml(review.id)}" data-reviewer-name="${escapeHtml(reviewerName)}" aria-label="Delete review by ${escapeHtml(reviewerName)}">${icon("delete")}<span>Delete review</span></button></div></div>
-          <div class="captain-review-scoreline"><span>${Object.values(review.rubric || {}).filter(value => value === "yes").length} positive quick grades</span></div><p>${escapeHtml(review.note || "No written review provided.")}</p>
-          <small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small>
-        </article>`;
+        const recommendation = ["accepted", "declined"].includes(review.recommendation) ? review.recommendation : "pending";
+        const positiveGrades = Object.values(review.rubric || {}).filter(value => value === "yes").length;
+        const detailId = `captain-review-detail-${review.id}`;
+        return `<tr class="captain-review-grid-row" data-review-grid-row="${escapeHtml(review.id)}" tabindex="0" aria-expanded="false" aria-controls="${escapeHtml(detailId)}">
+          <td><strong>${escapeHtml(reviewerName)}</strong><small>${review.updatedAt ? `Updated ${escapeHtml(formatDate(review.updatedAt))}` : "Submission time unavailable"}</small></td>
+          <td><b class="captain-review-grid-rating">${Number(review.rating) || "—"}<span>/10</span></b></td>
+          <td><p class="captain-review-grid-assessment">${escapeHtml(review.note || "No written assessment provided.")}</p></td>
+          <td><span class="captain-review-grade-summary"><b>${positiveGrades}/4</b> marked Yes</span></td>
+          <td><span class="captain-review-recommendation ${escapeHtml(recommendation)}">${escapeHtml(recommendationLabel(recommendation))}</span><span class="captain-review-row-cue">View details <b aria-hidden="true">⌄</b></span></td>
+        </tr>
+        <tr class="captain-review-detail-row" id="${escapeHtml(detailId)}" hidden>
+          <td colspan="5"><div class="captain-review-detail-panel">
+            <div class="captain-review-rubric-detail">${Object.entries(rubricLabels).map(([key, label]) => {
+              const value = review.rubric?.[key] || "unsure";
+              return `<div><span>${escapeHtml(label)}</span><b class="rubric-mark ${escapeHtml(value)}">${escapeHtml(rubricValueLabel(value))}</b></div>`;
+            }).join("")}</div>
+            <button type="button" class="captain-review-delete" data-delete-captain-review="${escapeHtml(review.id)}" data-reviewer-name="${escapeHtml(reviewerName)}" aria-label="Delete review by ${escapeHtml(reviewerName)}">${icon("delete")}<span>Delete review</span></button>
+          </div></td>
+        </tr>`;
       }).join("")
-      : '<div class="captain-review-empty">No team reviews have been submitted for this applicant.</div>';
+      : '<tr><td colspan="5"><div class="captain-review-empty">No team reviews have been submitted for this applicant.</div></td></tr>';
     return `${reviewForm}<section class="captain-reviews-panel">
       <div class="captain-review-heading"><div><span>Team reviews</span><h3>Team recommendations</h3></div><div class="captain-review-tally"><b class="accept">${counts.accepted} Accept</b><b class="hold">${counts.pending} Hold</b><b class="decline">${counts.declined} Decline</b></div></div>
-      <div class="captain-review-list">${cards}</div>
+      <div class="captain-review-grid-wrap"><table class="captain-review-grid"><thead><tr><th>Reviewer</th><th>Overall rating</th><th>Written assessment</th><th>Quick grades</th><th>Recommendation</th></tr></thead><tbody>${cards}</tbody></table></div>
     </section>`;
   }
   function icon(name, className = "") {
@@ -609,7 +630,23 @@
         $("captain-review-save").addEventListener("click", () => saveCaptainReview(item.id));
       }
       if (isFinalReviewer()) {
-       document.querySelectorAll("[data-delete-captain-review]").forEach(button => button.addEventListener("click", () => {
+       document.querySelectorAll("[data-review-grid-row]").forEach(row => {
+         const toggleDetails = () => {
+           const detail = $(row.getAttribute("aria-controls"));
+           const willOpen = Boolean(detail?.hidden);
+           if (detail) detail.hidden = !willOpen;
+           row.setAttribute("aria-expanded", String(willOpen));
+           row.classList.toggle("expanded", willOpen);
+         };
+         row.addEventListener("click", toggleDetails);
+         row.addEventListener("keydown", event => {
+           if (event.key !== "Enter" && event.key !== " ") return;
+           event.preventDefault();
+           toggleDetails();
+         });
+       });
+       document.querySelectorAll("[data-delete-captain-review]").forEach(button => button.addEventListener("click", event => {
+         event.stopPropagation();
          deleteCaptainReview(item.id, button.dataset.deleteCaptainReview, button.dataset.reviewerName, button);
        }));
        const ratingTrigger = $("rating-trigger");
