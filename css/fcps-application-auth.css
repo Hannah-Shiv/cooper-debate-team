@@ -181,9 +181,15 @@ body.fcps-application-auth-open { overflow: hidden; }
   cursor: wait;
 }
 
+.fcps-application-auth__google {
+  justify-content: flex-start;
+  padding-left: 34px;
+  padding-right: 10px;
+}
+
 .fcps-application-auth__fcps-logo {
   position: relative;
-  left: -8px;
+  left: -15px;
   width: 55px;
   height: 55px;
   flex: 0 0 auto;
@@ -197,8 +203,9 @@ body.fcps-application-auth-open { overflow: hidden; }
 }
 
 .fcps-application-auth__google-label {
+  flex: 1;
   min-width: 0;
-  margin-left: 8px;
+  margin-left: 0;
   white-space: nowrap;
 }
 
@@ -308,12 +315,41 @@ body.fcps-application-auth-open { overflow: hidden; }
   font: 600 .84rem/1.45 "Josefin Sans",sans-serif;
 }
 
-.fcps-application-auth__success { color: #c9f7d4; }
+.fcps-application-auth__success {
+  display: flex;
+  box-sizing: border-box;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 16px;
+  padding: 11px 14px;
+  border: 1px solid rgba(55,235,205,.65);
+  border-radius: 8px;
+  background: #252a30;
+  color: #eafffb;
+  font-size: .84rem;
+  white-space: nowrap;
+  box-shadow: inset 0 1px rgba(255,255,255,.06), 0 0 14px rgba(44,226,196,.12);
+}
+
+.fcps-application-auth__success-mark {
+  display: grid;
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  place-items: center;
+  border-radius: 50%;
+  background: #29e1c1;
+  color: #071b18;
+  font-family: Arial,sans-serif;
+  font-size: .95rem;
+  font-weight: 900;
+}
+
 .fcps-application-auth__success strong {
-  display: block;
-  margin-bottom: 4px;
-  color: #fff;
-  font-size: 1rem;
+  color: #7ff5df;
+  font-size: inherit;
 }
 
 .fcps-application-auth__continue {
@@ -321,9 +357,10 @@ body.fcps-application-auth-open { overflow: hidden; }
   margin-top: 14px;
   border-color: #f4d166;
   background: #efad20;
-  color: #101a31;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  color: #090909;
+  font: 400 1.7rem/1.1 "Great Vibes",cursive;
+  letter-spacing: .035em;
+  text-transform: none;
 }
 
 @media (max-width: 620px) {
@@ -338,12 +375,14 @@ body.fcps-application-auth-open { overflow: hidden; }
   .fcps-application-auth h2 { font-size: clamp(1.75rem,8.7vw,2.55rem); }
   .fcps-application-auth__intro { font-size: .9rem; }
   .fcps-application-auth__card { padding: 14px 14px 20px; }
-  .fcps-application-auth__google { min-height: 60px; padding: 0 9px; font-size: .86rem; }
-  .fcps-application-auth__fcps-logo { left: -2px; width: 47px; height: 47px; }
+  .fcps-application-auth__google { min-height: 60px; padding: 0 7px; font-size: .82rem; }
+  .fcps-application-auth__fcps-logo { left: -4px; width: 44px; height: 44px; }
   .fcps-application-auth__google svg { width: 31px; height: 31px; }
   .fcps-application-auth__google-label { margin-left: 1px; }
   .fcps-application-auth__notice { padding: 12px; font-size: .82rem; }
   .fcps-application-auth__security { margin-left: 8px; margin-right: 8px; font-size: .8rem; }
+  .fcps-application-auth__success { gap: 6px; padding: 10px 7px; font-size: clamp(.65rem,2.85vw,.78rem); }
+  .fcps-application-auth__continue { font-size: 1.5rem; }
 }
 
 @media (max-width: 390px) {

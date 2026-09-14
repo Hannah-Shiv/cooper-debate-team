@@ -168,7 +168,7 @@
     status.textContent = "";
     continueLink.hidden = true;
     signInButton.disabled = true;
-    signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Checking FCPS Google…";
+    signInButton.querySelector(".fcps-application-auth__google-label").textContent = "Checking FCPS Google Workspace ...";
     try {
       await persistenceReady;
       var result = await auth.signInWithPopup(provider);
@@ -181,7 +181,18 @@
       var email = normalizeEmail(result.user.email);
       signInButton.hidden = true;
       status.className = "fcps-application-auth__status fcps-application-auth__success";
-      status.innerHTML = "<strong>FCPS account verified</strong>" + email;
+      status.textContent = "";
+      var successMark = document.createElement("span");
+      successMark.className = "fcps-application-auth__success-mark";
+      successMark.setAttribute("aria-hidden", "true");
+      successMark.textContent = "✓";
+      var successText = document.createElement("span");
+      var successLabel = document.createElement("strong");
+      successLabel.textContent = "FCPS account verified ";
+      successText.appendChild(successLabel);
+      successText.appendChild(document.createTextNode(email));
+      status.appendChild(successMark);
+      status.appendChild(successText);
       continueLink.hidden = false;
       continueLink.focus();
     } catch (error) {
