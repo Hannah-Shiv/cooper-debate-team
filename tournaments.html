@@ -135,6 +135,14 @@
       grid-template-columns:repeat(2,minmax(0,1fr));
       gap:0;
       align-items:center;
+      background:
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(242,209,107,.88) 22%,
+          rgba(242,209,107,.88) 78%,
+          transparent 100%
+        ) center / 2px calc(100% - 24px) no-repeat;
     }
     .tournaments-page .resolution-main {
       min-width:0;
@@ -168,14 +176,7 @@
       text-align:center;
     }
     .tournaments-page .resolution-deck::before {
-      content:"";
-      position:absolute;
-      top:-12px;
-      bottom:-12px;
-      left:0;
-      width:1px;
-      background:linear-gradient(180deg,transparent,rgba(242,209,107,.78) 22%,rgba(242,209,107,.78) 78%,transparent);
-      box-shadow:0 0 12px rgba(242,209,107,.18);
+      display:none;
     }
     .tournaments-page .resolution-deck-heading {
       position:relative;
@@ -362,6 +363,7 @@
       .tournaments-page .resolution-layout {
         grid-template-columns:1fr;
         gap:25px;
+        background:none;
       }
       .tournaments-page .resolution-main { padding-right:0; }
       .tournaments-page .resolution-deck {
@@ -369,7 +371,11 @@
         padding-left:0;
       }
       .tournaments-page .resolution-deck::before {
+        display:block;
+        content:"";
+        position:absolute;
         top:0;
+        left:0;
         right:0;
         bottom:auto;
         width:auto;
