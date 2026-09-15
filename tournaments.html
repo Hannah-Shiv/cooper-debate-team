@@ -132,12 +132,13 @@
     }
     .tournaments-page .resolution-layout {
       display:grid;
-      grid-template-columns:minmax(0,1.5fr) minmax(310px,.75fr);
-      gap:34px;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:0;
       align-items:center;
     }
     .tournaments-page .resolution-main {
       min-width:0;
+      padding-right:34px;
     }
     .tournaments-page .resolution-actions {
       display:grid;
@@ -157,12 +158,14 @@
     }
     .tournaments-page .resolution-deck {
       position:relative;
-      display:grid;
-      grid-template-columns:150px minmax(0,1fr);
-      gap:18px;
+      display:flex;
+      flex-direction:column;
       align-items:center;
+      justify-content:center;
+      gap:10px;
       min-width:0;
       padding-left:34px;
+      text-align:center;
     }
     .tournaments-page .resolution-deck::before {
       content:"";
@@ -175,11 +178,15 @@
       box-shadow:0 0 12px rgba(242,209,107,.18);
     }
     .tournaments-page .resolution-deck-cover {
+      position:relative;
       display:block;
+      width:min(100%,330px);
+      padding:0;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.42);
       border-radius:7px;
       background:#f1efec;
+      cursor:pointer;
       box-shadow:0 8px 20px rgba(0,0,0,.3);
       transition:transform .2s,border-color .2s,box-shadow .2s;
     }
@@ -196,44 +203,99 @@
       aspect-ratio:16/9;
       object-fit:cover;
     }
-    .tournaments-page .resolution-deck-kicker {
-      margin:0 0 5px;
+    .tournaments-page .resolution-deck-summary {
+      margin:0;
+      color:#dce5f0;
+      font-size:.74rem;
+      line-height:1.45;
+    }
+    .topic-deck-modal {
+      width:min(94vw,1120px);
+      max-height:94vh;
+      padding:0;
+      overflow:hidden;
+      border:1px solid rgba(242,209,107,.86);
+      border-radius:14px;
+      background:#242832;
+      color:#fff;
+      box-shadow:0 32px 90px rgba(0,0,0,.76);
+    }
+    .topic-deck-modal::backdrop { background:rgba(2,8,22,.88); backdrop-filter:blur(5px); }
+    .topic-deck-modal-inner { padding:20px; }
+    .topic-deck-modal-header {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      margin-bottom:14px;
+    }
+    .topic-deck-modal-kicker {
+      margin:0 0 3px;
       color:#f2d16b;
-      font:700 .59rem/1.2 'Josefin Sans',sans-serif;
+      font:700 .61rem/1.2 'Josefin Sans',sans-serif;
       letter-spacing:.12em;
       text-transform:uppercase;
     }
-    .tournaments-page .resolution-deck-title {
-      margin:0 0 6px;
+    .topic-deck-modal-title {
+      margin:0;
       color:#fff;
-      font:700 1.03rem/1.12 'Cormorant Garamond',serif;
+      font:700 clamp(1.25rem,2.6vw,1.8rem)/1.1 'Cormorant Garamond',serif;
     }
-    .tournaments-page .resolution-deck-summary {
-      margin:0 0 9px;
-      color:#dce5f0;
-      font-size:.72rem;
-      line-height:1.45;
+    .topic-deck-modal-close {
+      flex:0 0 42px;
+      width:42px;
+      height:42px;
+      border:1px solid #f2d16b;
+      border-radius:50%;
+      background:#a90000;
+      color:#fff;
+      cursor:pointer;
+      font-size:1.25rem;
     }
-    .tournaments-page .resolution-deck-link {
+    .topic-deck-modal-stage {
+      position:relative;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+    .topic-deck-modal-slide {
+      display:block;
+      min-width:0;
+      width:100%;
+      max-height:calc(94vh - 150px);
+      object-fit:contain;
+      border:1px solid rgba(255,255,255,.3);
+      border-radius:8px;
+      background:#f0efed;
+      box-shadow:0 18px 44px rgba(0,0,0,.46);
+    }
+    .topic-deck-modal-arrow {
+      flex:0 0 42px;
+      width:42px;
+      height:42px;
+      border:1px solid rgba(242,209,107,.72);
+      border-radius:50%;
+      background:#101725;
       color:#f2d16b;
-      font:700 .61rem/1.2 'Josefin Sans',sans-serif;
-      letter-spacing:.06em;
-      text-decoration:none;
-      text-transform:uppercase;
+      cursor:pointer;
+      font-size:1.2rem;
     }
-    .tournaments-page .resolution-deck-link:hover,
-    .tournaments-page .resolution-deck-link:focus-visible {
-      color:#fff1b1;
-      text-decoration:underline;
-      text-underline-offset:3px;
+    .topic-deck-modal-arrow:disabled { opacity:.3; cursor:default; }
+    .topic-deck-modal-footer {
+      display:flex;
+      justify-content:space-between;
+      gap:15px;
+      margin:11px 54px 0;
+      color:#dce5f0;
+      font-size:.68rem;
     }
     @media(max-width:900px){
       .tournaments-page .resolution-layout {
         grid-template-columns:1fr;
         gap:25px;
       }
+      .tournaments-page .resolution-main { padding-right:0; }
       .tournaments-page .resolution-deck {
-        grid-template-columns:minmax(130px,190px) minmax(0,1fr);
         padding-top:25px;
         padding-left:0;
       }
@@ -245,6 +307,12 @@
         height:1px;
         background:linear-gradient(90deg,transparent,rgba(242,209,107,.78) 22%,rgba(242,209,107,.78) 78%,transparent);
       }
+    }
+    @media(max-width:600px){
+      .topic-deck-modal-inner { padding:12px; }
+      .topic-deck-modal-stage { gap:6px; }
+      .topic-deck-modal-arrow { flex-basis:34px; width:34px; height:34px; }
+      .topic-deck-modal-footer { margin-right:40px; margin-left:40px; }
     }
     @media(max-width:700px){
       .tournaments-page .resolution-actions {
@@ -6152,18 +6220,33 @@
           </div>
         </div>
         <aside class="resolution-deck" aria-label="September tournament topic analysis">
-          <a class="resolution-deck-cover" href="resources.html#topic-analysis" aria-label="View the September tournament topic analysis">
+          <button class="resolution-deck-cover" id="open-topic-deck" type="button" aria-label="Open the September tournament topic analysis slide viewer">
             <img src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis slide deck cover" loading="lazy">
-          </a>
-          <div class="resolution-deck-copy">
-            <p class="resolution-deck-kicker">7-slide student guide</p>
-            <h3 class="resolution-deck-title">September Tournament Topic Analysis</h3>
-            <p class="resolution-deck-summary">Get a quick, balanced introduction to the resolution and both sides.</p>
-            <a class="resolution-deck-link" href="resources.html#topic-analysis">View Topic Analysis →</a>
-          </div>
+          </button>
+          <p class="resolution-deck-summary">Open the 7-slide guide for a quick introduction to the resolution and both sides.</p>
         </aside>
       </div>
     </div>
+    <dialog class="topic-deck-modal" id="topic-deck-modal" aria-labelledby="topic-deck-modal-title">
+      <div class="topic-deck-modal-inner">
+        <header class="topic-deck-modal-header">
+          <div>
+            <p class="topic-deck-modal-kicker">Cooper Debate · September 2026</p>
+            <h2 class="topic-deck-modal-title" id="topic-deck-modal-title">September Tournament Topic Analysis</h2>
+          </div>
+          <button class="topic-deck-modal-close" id="close-topic-deck" type="button" aria-label="Close topic analysis">×</button>
+        </header>
+        <div class="topic-deck-modal-stage">
+          <button class="topic-deck-modal-arrow" id="topic-deck-previous" type="button" aria-label="Previous slide">←</button>
+          <img class="topic-deck-modal-slide" id="topic-deck-slide" src="images/topic-analysis/slide-01.webp?v=1" alt="Topic analysis slide 1: Topic Analysis">
+          <button class="topic-deck-modal-arrow" id="topic-deck-next" type="button" aria-label="Next slide">→</button>
+        </div>
+        <div class="topic-deck-modal-footer">
+          <span id="topic-deck-counter">Slide 1 of 7</span>
+          <span id="topic-deck-caption">Topic Analysis</span>
+        </div>
+      </div>
+    </dialog>
     <div class="tournament-overview-guide" aria-labelledby="tournament-overview-guide-title">
       <div class="tournament-overview-guide-header">
         <div class="tournament-overview-guide-header-art" aria-hidden="true">
@@ -7349,6 +7432,70 @@ document.addEventListener('DOMContentLoaded', function() {
   modal.addEventListener('close', function() {
     document.body.classList.remove('schedule-pdf-is-open');
   });
+}());
+</script>
+<script>
+(function() {
+  'use strict';
+  const openButton = document.getElementById('open-topic-deck');
+  const closeButton = document.getElementById('close-topic-deck');
+  const modal = document.getElementById('topic-deck-modal');
+  const slide = document.getElementById('topic-deck-slide');
+  const previous = document.getElementById('topic-deck-previous');
+  const next = document.getElementById('topic-deck-next');
+  const counter = document.getElementById('topic-deck-counter');
+  const caption = document.getElementById('topic-deck-caption');
+  const titles = [
+    'Topic Analysis',
+    'The Sept / Oct 2026 Resolution',
+    'What Does This Topic Mean?',
+    'What Each Side Sees and Wants',
+    'What Should I Run?',
+    'The Central Tradeoff',
+    'Questions'
+  ];
+  let currentSlide = 0;
+
+  if (!openButton || !closeButton || !modal || !slide || !previous || !next || !counter || !caption) return;
+
+  function setSlide(index) {
+    currentSlide = Math.max(0, Math.min(index, titles.length - 1));
+    const number = String(currentSlide + 1).padStart(2, '0');
+    slide.src = `images/topic-analysis/slide-${number}.webp?v=1`;
+    slide.alt = `Topic analysis slide ${currentSlide + 1}: ${titles[currentSlide]}`;
+    counter.textContent = `Slide ${currentSlide + 1} of ${titles.length}`;
+    caption.textContent = titles[currentSlide];
+    previous.disabled = currentSlide === 0;
+    next.disabled = currentSlide === titles.length - 1;
+  }
+
+  openButton.addEventListener('click', function() {
+    setSlide(0);
+    modal.showModal();
+    document.body.classList.add('schedule-pdf-is-open');
+    next.focus();
+  });
+  closeButton.addEventListener('click', function() { modal.close(); });
+  previous.addEventListener('click', function() { setSlide(currentSlide - 1); });
+  next.addEventListener('click', function() { setSlide(currentSlide + 1); });
+  modal.addEventListener('click', function(event) {
+    if (event.target === modal) modal.close();
+  });
+  modal.addEventListener('keydown', function(event) {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      setSlide(currentSlide - 1);
+    } else if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      setSlide(currentSlide + 1);
+    }
+  });
+  modal.addEventListener('close', function() {
+    document.body.classList.remove('schedule-pdf-is-open');
+    openButton.focus();
+  });
+
+  setSlide(0);
 }());
 </script>
 <script src="js/dome-nav.js?v=2"></script>
