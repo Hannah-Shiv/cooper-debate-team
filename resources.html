@@ -315,7 +315,7 @@
     .topic-deck-feature__play {
       position:absolute;
       left:50%;
-      top:50%;
+      top:14px;
       display:grid;
       width:52px;
       height:52px;
@@ -325,11 +325,11 @@
       background:rgba(7,26,54,.86);
       color:#fff;
       font-size:1.15rem;
-      transform:translate(-50%,-50%);
+      transform:translateX(-50%);
       transition:background .2s,transform .2s;
     }
     .topic-deck-feature__cover:hover .topic-deck-feature__play,
-    .topic-deck-feature__cover:focus-visible .topic-deck-feature__play { background:#8b0000; transform:translate(-50%,-50%) scale(1.08); }
+    .topic-deck-feature__cover:focus-visible .topic-deck-feature__play { background:#8b0000; transform:translateX(-50%) scale(1.08); }
     .topic-deck-feature__eyebrow { margin:0 0 8px; color:var(--gold); font-size:.65rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
     .topic-deck-feature h3 { margin:0 0 9px; color:#fff; font:700 clamp(1.35rem,2.4vw,1.8rem)/1.1 'Cormorant Garamond',serif; }
     .topic-deck-feature__byline { margin:0 0 12px; color:#f2d16b; font-size:.72rem; font-weight:700; }
