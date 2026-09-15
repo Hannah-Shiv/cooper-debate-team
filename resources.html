@@ -344,6 +344,93 @@
     .topic-deck-feature__action--primary { background:var(--gold); color:#0c1a42; }
     .topic-deck-feature__action:hover,.topic-deck-feature__action:focus-visible { border-color:#fff1b1; filter:brightness(1.12); outline:2px solid #f7cf55; outline-offset:2px; }
 
+    /* Topic viewer refinements: preserve the homepage deck system while
+       giving this shorter deck a tidier filmstrip and slower page turn. */
+    .topic-analysis-deck-dialog {
+      border-color:rgba(242,209,107,.86);
+      background:
+        radial-gradient(circle at 50% 0,rgba(66,100,190,.2),transparent 38%),
+        linear-gradient(145deg,#112b77 0%,#0b1f60 58%,#071746 100%);
+      box-shadow:0 32px 90px rgba(0,0,0,.76),0 0 0 1px rgba(255,255,255,.04) inset;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-dialog-inner {
+      background:transparent;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-dialog-header {
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(242,209,107,.2);
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage {
+      border-color:rgba(255,255,255,.28);
+      box-shadow:0 18px 44px rgba(0,0,0,.46),0 0 24px rgba(31,68,158,.16);
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-slide-viewport {
+      perspective:1400px;
+      transform-style:preserve-3d;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-exiting-next,
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-exiting-previous,
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-entering-next,
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-entering-previous {
+      backface-visibility:hidden;
+      animation-duration:720ms;
+      animation-timing-function:cubic-bezier(.22,.61,.36,1);
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-exiting-next {
+      transform-origin:left center;
+      animation-name:topic-page-out-next;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-entering-next {
+      transform-origin:right center;
+      animation-name:topic-page-in-next;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-exiting-previous {
+      transform-origin:right center;
+      animation-name:topic-page-out-previous;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-stage img.is-entering-previous {
+      transform-origin:left center;
+      animation-name:topic-page-in-previous;
+    }
+    @keyframes topic-page-out-next {
+      from { opacity:1; transform:translateX(0) rotateY(0); filter:brightness(1); }
+      to { opacity:.2; transform:translateX(-5%) rotateY(-14deg); filter:brightness(.72); }
+    }
+    @keyframes topic-page-in-next {
+      from { opacity:.35; transform:translateX(5%) rotateY(10deg); filter:brightness(.78); }
+      to { opacity:1; transform:translateX(0) rotateY(0); filter:brightness(1); }
+    }
+    @keyframes topic-page-out-previous {
+      from { opacity:1; transform:translateX(0) rotateY(0); filter:brightness(1); }
+      to { opacity:.2; transform:translateX(5%) rotateY(14deg); filter:brightness(.72); }
+    }
+    @keyframes topic-page-in-previous {
+      from { opacity:.35; transform:translateX(-5%) rotateY(-10deg); filter:brightness(.78); }
+      to { opacity:1; transform:translateX(0) rotateY(0); filter:brightness(1); }
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-progress {
+      height:4px;
+      margin-top:14px;
+      box-shadow:0 1px 0 rgba(255,255,255,.05) inset;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnails {
+      align-items:stretch;
+      gap:8px;
+      padding:4px 2px 11px;
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail {
+      align-self:stretch;
+      aspect-ratio:16/9;
+      transform:none;
+      box-shadow:0 5px 14px rgba(0,0,0,.28);
+    }
+    .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail:hover,
+    .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail:focus-visible,
+    .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail.is-active {
+      transform:none;
+      box-shadow:0 0 0 1px rgba(242,209,107,.34),0 7px 18px rgba(0,0,0,.34);
+    }
+
     .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
     .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
     @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;gap:32px;} .pro-con-grid{grid-template-columns:1fr;} .topic-deck-feature{grid-template-columns:1fr;} }
@@ -665,7 +752,7 @@
   </div>
 </section>
 
-<dialog class="homepage-readiness__deck-dialog" id="topic-deck-dialog" aria-labelledby="topic-deck-dialog-title">
+<dialog class="homepage-readiness__deck-dialog topic-analysis-deck-dialog" id="topic-deck-dialog" aria-labelledby="topic-deck-dialog-title">
   <div class="homepage-readiness__deck-dialog-inner">
     <header class="homepage-readiness__deck-dialog-header">
       <div>

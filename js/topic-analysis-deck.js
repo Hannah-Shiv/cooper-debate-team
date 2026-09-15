@@ -99,7 +99,7 @@
           activeSlide = incomingSlide;
           inactiveSlide = outgoingSlide;
           animationTimer = null;
-        }, 360);
+        }, 720);
       } else {
         activeSlide.src = slidePath(currentSlide);
         activeSlide.alt = slideAlt;
