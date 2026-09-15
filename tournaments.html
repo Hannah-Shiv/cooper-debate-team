@@ -108,7 +108,7 @@
     }
     .tournaments-page .resolution-card {
       border-top:1px solid #F2D16B;
-      padding:18px 28px 17px;
+      padding:20px 28px;
     }
     .tournaments-page .resolution-card,
     .tournament-overview-guide {
@@ -126,9 +126,18 @@
       font-size:.72rem !important;
     }
     .tournaments-page .resolution-text {
-      margin-bottom:10px;
+      margin-bottom:14px;
       font-size:clamp(1.22rem,2.5vw,1.43rem);
       line-height:1.3;
+    }
+    .tournaments-page .resolution-layout {
+      display:grid;
+      grid-template-columns:minmax(0,1.5fr) minmax(310px,.75fr);
+      gap:34px;
+      align-items:center;
+    }
+    .tournaments-page .resolution-main {
+      min-width:0;
     }
     .tournaments-page .resolution-actions {
       display:grid;
@@ -145,6 +154,97 @@
       font-size:.68rem !important;
       padding:8px 17px !important;
       text-align:center;
+    }
+    .tournaments-page .resolution-deck {
+      position:relative;
+      display:grid;
+      grid-template-columns:150px minmax(0,1fr);
+      gap:18px;
+      align-items:center;
+      min-width:0;
+      padding-left:34px;
+    }
+    .tournaments-page .resolution-deck::before {
+      content:"";
+      position:absolute;
+      top:-12px;
+      bottom:-12px;
+      left:0;
+      width:1px;
+      background:linear-gradient(180deg,transparent,rgba(242,209,107,.78) 22%,rgba(242,209,107,.78) 78%,transparent);
+      box-shadow:0 0 12px rgba(242,209,107,.18);
+    }
+    .tournaments-page .resolution-deck-cover {
+      display:block;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.42);
+      border-radius:7px;
+      background:#f1efec;
+      box-shadow:0 8px 20px rgba(0,0,0,.3);
+      transition:transform .2s,border-color .2s,box-shadow .2s;
+    }
+    .tournaments-page .resolution-deck-cover:hover,
+    .tournaments-page .resolution-deck-cover:focus-visible {
+      transform:translateY(-2px);
+      border-color:#f2d16b;
+      box-shadow:0 12px 24px rgba(0,0,0,.38);
+      outline:none;
+    }
+    .tournaments-page .resolution-deck-cover img {
+      display:block;
+      width:100%;
+      aspect-ratio:16/9;
+      object-fit:cover;
+    }
+    .tournaments-page .resolution-deck-kicker {
+      margin:0 0 5px;
+      color:#f2d16b;
+      font:700 .59rem/1.2 'Josefin Sans',sans-serif;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+    .tournaments-page .resolution-deck-title {
+      margin:0 0 6px;
+      color:#fff;
+      font:700 1.03rem/1.12 'Cormorant Garamond',serif;
+    }
+    .tournaments-page .resolution-deck-summary {
+      margin:0 0 9px;
+      color:#dce5f0;
+      font-size:.72rem;
+      line-height:1.45;
+    }
+    .tournaments-page .resolution-deck-link {
+      color:#f2d16b;
+      font:700 .61rem/1.2 'Josefin Sans',sans-serif;
+      letter-spacing:.06em;
+      text-decoration:none;
+      text-transform:uppercase;
+    }
+    .tournaments-page .resolution-deck-link:hover,
+    .tournaments-page .resolution-deck-link:focus-visible {
+      color:#fff1b1;
+      text-decoration:underline;
+      text-underline-offset:3px;
+    }
+    @media(max-width:900px){
+      .tournaments-page .resolution-layout {
+        grid-template-columns:1fr;
+        gap:25px;
+      }
+      .tournaments-page .resolution-deck {
+        grid-template-columns:minmax(130px,190px) minmax(0,1fr);
+        padding-top:25px;
+        padding-left:0;
+      }
+      .tournaments-page .resolution-deck::before {
+        top:0;
+        right:0;
+        bottom:auto;
+        width:auto;
+        height:1px;
+        background:linear-gradient(90deg,transparent,rgba(242,209,107,.78) 22%,rgba(242,209,107,.78) 78%,transparent);
+      }
     }
     @media(max-width:700px){
       .tournaments-page .resolution-actions {
@@ -6041,13 +6141,27 @@
       </div>
     </div>
     <div class="resolution-card">
-      <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
-      <div class="resolution-label">What We're Debating This Season</div>
-      <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
-      <div class="resolution-actions">
-        <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
-        <a href="resources.html#topic-analysis" class="btn btn-outline" style="font-size:0.75rem;padding:10px 22px;">View Topic Analysis →</a>
-        <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" class="btn partner-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
+      <div class="resolution-layout">
+        <div class="resolution-main">
+          <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
+          <div class="resolution-label">What We're Debating This Season</div>
+          <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+          <div class="resolution-actions">
+            <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
+            <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" class="btn partner-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
+          </div>
+        </div>
+        <aside class="resolution-deck" aria-label="September tournament topic analysis">
+          <a class="resolution-deck-cover" href="resources.html#topic-analysis" aria-label="View the September tournament topic analysis">
+            <img src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis slide deck cover" loading="lazy">
+          </a>
+          <div class="resolution-deck-copy">
+            <p class="resolution-deck-kicker">7-slide student guide</p>
+            <h3 class="resolution-deck-title">September Tournament Topic Analysis</h3>
+            <p class="resolution-deck-summary">Get a quick, balanced introduction to the resolution and both sides.</p>
+            <a class="resolution-deck-link" href="resources.html#topic-analysis">View Topic Analysis →</a>
+          </div>
+        </aside>
       </div>
     </div>
     <div class="tournament-overview-guide" aria-labelledby="tournament-overview-guide-title">
