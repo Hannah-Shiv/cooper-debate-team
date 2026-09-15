@@ -416,6 +416,8 @@
     .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnails {
       align-items:stretch;
       gap:8px;
+      margin-right:60px;
+      margin-left:60px;
       padding:4px 2px 11px;
     }
     .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail {
@@ -429,6 +431,18 @@
     .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnail.is-active {
       transform:none;
       box-shadow:0 0 0 1px rgba(242,209,107,.34),0 7px 18px rgba(0,0,0,.34);
+    }
+    @media(max-width:600px) {
+      .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnails {
+        margin-right:40px;
+        margin-left:40px;
+      }
+    }
+    @media(min-width:901px) and (max-height:850px) {
+      .topic-analysis-deck-dialog .homepage-readiness__deck-thumbnails {
+        margin-right:50px;
+        margin-left:50px;
+      }
     }
 
     .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
