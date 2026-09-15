@@ -64,6 +64,14 @@
       text-transform: uppercase;
       vertical-align: middle;
     }
+    .hub-title-divider {
+      background: linear-gradient(180deg, transparent, #ffd700 24%, #ffe87a 50%, #ffd700 76%, transparent);
+      display: inline-block;
+      height: 0.72em;
+      margin: 0 0.18em;
+      vertical-align: -0.04em;
+      width: 2px;
+    }
     .hub-sub {
       font-family: 'Josefin Sans', sans-serif;
       font-size: 11.8px; letter-spacing: 0.14em; text-transform: uppercase;
@@ -78,25 +86,28 @@
     .tab-btn {
       display: inline-flex; align-items: center; gap: 7px;
       padding: 9px 22px;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,215,0,0.055);
+      border: 1px solid rgba(255,224,92,0.38);
       border-radius: 50px;
       font-family: 'Josefin Sans', sans-serif;
       font-size: 11.5px; font-weight: 700;
       letter-spacing: 0.08em; text-transform: uppercase;
-      color: rgba(255,215,0,0.82);
+      color: #ffe45c;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 12px rgba(255,215,0,0.06);
+      text-shadow: 0 0 8px rgba(255,215,0,0.24);
       cursor: pointer; transition: all 0.2s;
     }
-    .tab-btn svg { opacity: 0.78; transition: opacity 0.2s; }
+    .tab-btn svg { opacity: 1; stroke: #ffe45c; transition: opacity 0.2s; }
     .tab-btn:hover {
-      border-color: rgba(255,215,0,0.65);
-      color: #ffe66d;
-      background: rgba(255,215,0,0.07);
+      border-color: #ffe45c;
+      color: #fff1a3;
+      background: rgba(255,215,0,0.12);
     }
     .tab-btn.active {
-      background: rgba(255,215,0,0.16);
-      border-color: rgba(255,215,0,0.75);
-      color: #ffe66d;
+      background: rgba(255,215,0,0.2);
+      border-color: #ffe45c;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 0 16px rgba(255,215,0,0.16);
+      color: #fff1a3;
     }
     .tab-btn.active svg { opacity: 1; }
     /* The review cockpit is a sibling of the directory surface: bring its first
@@ -677,7 +688,7 @@
       <!-- Header -->
       <div class="hub-header">
         <div class="hub-heading">
-          <h1 class="hub-title">Member Hub <span class="hub-title-context">| Cooper Debate Team · All Debaters</span></h1>
+          <h1 class="hub-title">Member Hub <span class="hub-title-divider" aria-hidden="true"></span><span class="hub-title-context">Cooper Debate Team · All Debaters</span></h1>
         </div>
         <div class="tab-bar">
           <button class="tab-btn active" id="tab-dir" onclick="switchTab('directory')">
