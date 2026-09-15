@@ -162,7 +162,7 @@
       flex-direction:column;
       align-items:center;
       justify-content:center;
-      gap:10px;
+      gap:12px;
       min-width:0;
       padding-left:34px;
       text-align:center;
@@ -177,24 +177,64 @@
       background:linear-gradient(180deg,transparent,rgba(242,209,107,.78) 22%,rgba(242,209,107,.78) 78%,transparent);
       box-shadow:0 0 12px rgba(242,209,107,.18);
     }
+    .tournaments-page .resolution-deck-heading {
+      position:relative;
+      z-index:2;
+    }
+    .tournaments-page .resolution-deck-kicker {
+      margin:0 0 4px;
+      color:#f2d16b;
+      font:700 .61rem/1.2 'Josefin Sans',sans-serif;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+    }
+    .tournaments-page .resolution-deck-title {
+      margin:0;
+      color:#fff;
+      font:700 clamp(1.1rem,2vw,1.38rem)/1.08 'Cormorant Garamond',serif;
+      text-shadow:0 3px 14px rgba(0,0,0,.34);
+    }
+    .tournaments-page .resolution-deck-stack {
+      position:relative;
+      width:min(100%,350px);
+      padding:7px 7px 9px;
+    }
+    .tournaments-page .resolution-deck-stack::before,
+    .tournaments-page .resolution-deck-stack::after {
+      content:"";
+      position:absolute;
+      border:1px solid rgba(242,209,107,.42);
+      border-radius:8px;
+      background:#193463;
+      box-shadow:0 8px 20px rgba(0,0,0,.24);
+    }
+    .tournaments-page .resolution-deck-stack::before {
+      inset:14px 0 0 14px;
+      transform:rotate(2deg);
+    }
+    .tournaments-page .resolution-deck-stack::after {
+      inset:9px 7px 5px;
+      transform:rotate(-1deg);
+    }
     .tournaments-page .resolution-deck-cover {
       position:relative;
+      z-index:2;
       display:block;
-      width:min(100%,330px);
+      width:100%;
       padding:0;
       overflow:hidden;
-      border:1px solid rgba(255,255,255,.42);
-      border-radius:7px;
+      border:2px solid rgba(242,209,107,.78);
+      border-radius:9px;
       background:#f1efec;
       cursor:pointer;
-      box-shadow:0 8px 20px rgba(0,0,0,.3);
+      box-shadow:0 14px 30px rgba(0,0,0,.42),0 0 22px rgba(67,128,224,.16);
       transition:transform .2s,border-color .2s,box-shadow .2s;
     }
     .tournaments-page .resolution-deck-cover:hover,
     .tournaments-page .resolution-deck-cover:focus-visible {
-      transform:translateY(-2px);
-      border-color:#f2d16b;
-      box-shadow:0 12px 24px rgba(0,0,0,.38);
+      transform:translateY(-3px);
+      border-color:#fff0a6;
+      box-shadow:0 18px 36px rgba(0,0,0,.46),0 0 28px rgba(90,154,255,.22);
       outline:none;
     }
     .tournaments-page .resolution-deck-cover img {
@@ -203,11 +243,40 @@
       aspect-ratio:16/9;
       object-fit:cover;
     }
+    .tournaments-page .resolution-deck-play {
+      position:absolute;
+      top:12px;
+      left:50%;
+      display:grid;
+      width:46px;
+      height:46px;
+      place-items:center;
+      border:2px solid #fff0a6;
+      border-radius:50%;
+      background:#e8a828;
+      color:#071735;
+      font-size:1rem;
+      line-height:1;
+      transform:translateX(-50%);
+      box-shadow:0 6px 18px rgba(0,0,0,.38);
+      transition:transform .2s,background .2s;
+    }
+    .tournaments-page .resolution-deck-cover:hover .resolution-deck-play,
+    .tournaments-page .resolution-deck-cover:focus-visible .resolution-deck-play {
+      background:#f2d16b;
+      transform:translateX(-50%) scale(1.08);
+    }
     .tournaments-page .resolution-deck-summary {
       margin:0;
-      color:#dce5f0;
-      font-size:.74rem;
+      padding:8px 14px;
+      border:1px solid rgba(126,184,232,.38);
+      border-radius:999px;
+      background:rgba(6,19,49,.58);
+      color:#eef5ff;
+      font-size:.72rem;
+      font-weight:600;
       line-height:1.45;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06);
     }
     .topic-deck-modal {
       width:min(94vw,1120px);
@@ -6220,10 +6289,17 @@
           </div>
         </div>
         <aside class="resolution-deck" aria-label="September tournament topic analysis">
-          <button class="resolution-deck-cover" id="open-topic-deck" type="button" aria-label="Open the September tournament topic analysis slide viewer">
-            <img src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis slide deck cover" loading="lazy">
-          </button>
-          <p class="resolution-deck-summary">Open the 7-slide guide for a quick introduction to the resolution and both sides.</p>
+          <div class="resolution-deck-heading">
+            <p class="resolution-deck-kicker">Featured 7-slide guide</p>
+            <h3 class="resolution-deck-title">September Tournament Topic Analysis</h3>
+          </div>
+          <div class="resolution-deck-stack">
+            <button class="resolution-deck-cover" id="open-topic-deck" type="button" aria-label="Open the September tournament topic analysis slide viewer">
+              <img src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis slide deck cover" loading="lazy">
+              <span class="resolution-deck-play" aria-hidden="true">▶</span>
+            </button>
+          </div>
+          <p class="resolution-deck-summary">Quickly understand the resolution and both sides →</p>
         </aside>
       </div>
     </div>
