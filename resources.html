@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/main.css?v=28"/>
   <link rel="stylesheet" href="css/public-footer.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
+  <link rel="stylesheet" href="css/homepage-readiness.css?v=65"/>
   <style>
     /* +2px base across all rem values */
     html { font-size: 19px !important; }
@@ -342,31 +343,6 @@
     }
     .topic-deck-feature__action--primary { background:var(--gold); color:#0c1a42; }
     .topic-deck-feature__action:hover,.topic-deck-feature__action:focus-visible { border-color:#fff1b1; filter:brightness(1.12); outline:2px solid #f7cf55; outline-offset:2px; }
-    .topic-deck-dialog {
-      width:min(1040px,calc(100vw - 28px));
-      max-width:none;
-      margin:auto;
-      padding:0;
-      overflow:hidden;
-      border:1px solid rgba(242,209,107,.7);
-      border-radius:16px;
-      background:#091a37;
-      color:#fff;
-      box-shadow:0 28px 90px rgba(0,0,0,.72);
-    }
-    .topic-deck-dialog::backdrop { background:rgba(1,8,22,.86); backdrop-filter:blur(7px); }
-    .topic-deck-dialog__header { display:flex; align-items:center; gap:18px; justify-content:space-between; padding:15px 18px; border-bottom:1px solid rgba(242,209,107,.28); }
-    .topic-deck-dialog__header h3 { margin:0; font:700 1.35rem/1.1 'Cormorant Garamond',serif; }
-    .topic-deck-dialog__header p { margin:3px 0 0; color:#f2d16b; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
-    .topic-deck-dialog__header-actions { display:flex; align-items:center; gap:9px; }
-    .topic-deck-dialog__header a,.topic-deck-dialog__close { color:#fff; font:700 .63rem/1 'Josefin Sans',sans-serif; text-decoration:none; }
-    .topic-deck-dialog__close { display:grid; width:38px; height:38px; place-items:center; padding:0; border:1px solid rgba(255,255,255,.48); border-radius:50%; background:#8b0000; cursor:pointer; font-size:1rem; }
-    .topic-deck-dialog__stage-row { display:grid; grid-template-columns:48px minmax(0,1fr) 48px; gap:12px; align-items:center; padding:18px; }
-    .topic-deck-dialog__stage { margin:0; }
-    .topic-deck-dialog__stage img { display:block; width:100%; max-height:calc(100dvh - 190px); aspect-ratio:16/9; object-fit:contain; border-radius:8px; background:#ecebe9; }
-    .topic-deck-dialog__stage figcaption { display:flex; justify-content:space-between; gap:18px; margin-top:10px; color:#cfdbed; font-size:.68rem; }
-    .topic-deck-dialog__nav { width:46px; height:54px; border:1px solid rgba(242,209,107,.55); border-radius:8px; background:#142e58; color:#fff; cursor:pointer; font-size:1.25rem; }
-    .topic-deck-dialog__nav:hover,.topic-deck-dialog__nav:focus-visible,.topic-deck-dialog__close:hover,.topic-deck-dialog__close:focus-visible { border-color:#fff; outline:2px solid #f7cf55; outline-offset:2px; }
 
     .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
     .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
@@ -381,11 +357,6 @@
       .topic-resolution { padding: 14px 16px; font-size: 1.05rem; }
       .topic-deck-feature { gap:18px; padding:14px; }
       .topic-deck-feature__actions { display:grid; grid-template-columns:1fr; }
-      .topic-deck-dialog__header { align-items:flex-start; }
-      .topic-deck-dialog__header-actions a { display:none; }
-      .topic-deck-dialog__stage-row { grid-template-columns:38px minmax(0,1fr) 38px; gap:6px; padding:12px 8px; }
-      .topic-deck-dialog__nav { width:36px; height:48px; }
-      .topic-deck-dialog__stage figcaption { flex-direction:column; gap:3px; }
 
       /* Key Research cards — single column already; reduce icon zone */
       .resource-icon { height: 64px; }
@@ -530,7 +501,7 @@
           <p class="topic-deck-feature__desc">A concise introduction to hyperscale data centers, what a construction moratorium means, and the strongest arguments available to both sides.</p>
           <div class="topic-deck-feature__actions">
             <button class="topic-deck-feature__action topic-deck-feature__action--primary" type="button" data-topic-deck-open>Quick View</button>
-            <a class="topic-deck-feature__action" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open PDF ↗</a>
+            <a class="topic-deck-feature__action" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open Full Deck ↗</a>
             <a class="topic-deck-feature__action" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" download>Download PDF ↓</a>
           </div>
         </div>
@@ -694,25 +665,39 @@
   </div>
 </section>
 
-<dialog class="topic-deck-dialog" id="topic-deck-dialog" aria-labelledby="topic-deck-dialog-title">
-  <header class="topic-deck-dialog__header">
-    <div>
-      <h3 id="topic-deck-dialog-title">September Tournament Topic Analysis</h3>
-      <p>Sept / Oct 2026 · Public Forum</p>
+<dialog class="homepage-readiness__deck-dialog" id="topic-deck-dialog" aria-labelledby="topic-deck-dialog-title">
+  <div class="homepage-readiness__deck-dialog-inner">
+    <header class="homepage-readiness__deck-dialog-header">
+      <div>
+        <p class="homepage-readiness__deck-dialog-kicker">Cooper Debate · September 2026</p>
+        <h3 id="topic-deck-dialog-title">September Tournament Topic Analysis</h3>
+        <p>Take a quick look through the presentation, or open the original PDF for the full experience.</p>
+      </div>
+      <div class="homepage-readiness__deck-dialog-actions">
+        <a class="homepage-readiness__deck-dialog-action--open" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open full deck ↗</a>
+        <a class="homepage-readiness__deck-dialog-action--download" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" download>Download PDF ↓</a>
+      </div>
+      <button class="homepage-readiness__deck-close" type="button" data-topic-deck-close aria-label="Close topic analysis">×</button>
+    </header>
+
+    <div class="homepage-readiness__deck-stage-row">
+      <button class="homepage-readiness__deck-nav" type="button" data-topic-deck-prev aria-label="Previous slide">←</button>
+      <figure class="homepage-readiness__deck-stage">
+        <div class="homepage-readiness__deck-slide-viewport">
+          <img id="topic-deck-slide" class="is-current" src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis title slide by Jacob Gibbons">
+          <img id="topic-deck-slide-secondary" aria-hidden="true" alt="">
+        </div>
+        <figcaption>
+          <span id="topic-deck-counter">Slide 1 of 7</span>
+          <strong id="topic-deck-caption">Topic Analysis</strong>
+        </figcaption>
+      </figure>
+      <button class="homepage-readiness__deck-nav" type="button" data-topic-deck-next aria-label="Next slide">→</button>
     </div>
-    <div class="topic-deck-dialog__header-actions">
-      <a href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open PDF ↗</a>
-      <a href="docs/topic-analysis-sept-oct-2026.pdf?v=1" download>Download ↓</a>
-      <button class="topic-deck-dialog__close" type="button" data-topic-deck-close aria-label="Close topic analysis">×</button>
-    </div>
-  </header>
-  <div class="topic-deck-dialog__stage-row">
-    <button class="topic-deck-dialog__nav" type="button" data-topic-deck-prev aria-label="Previous slide">←</button>
-    <figure class="topic-deck-dialog__stage">
-      <img id="topic-deck-slide" src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis title slide by Jacob Gibbons">
-      <figcaption><span id="topic-deck-counter">Slide 1 of 7</span><strong id="topic-deck-caption">Topic Analysis</strong></figcaption>
-    </figure>
-    <button class="topic-deck-dialog__nav" type="button" data-topic-deck-next aria-label="Next slide">→</button>
+
+    <div class="homepage-readiness__deck-progress" aria-hidden="true"><span id="topic-deck-progress"></span></div>
+    <div class="homepage-readiness__deck-thumbnails" id="topic-deck-thumbnails" aria-label="Choose a slide"></div>
+    <p class="homepage-readiness__deck-keyboard-note">Use the arrow keys to move through the deck · Press Esc to close</p>
   </div>
 </dialog>
 
@@ -766,50 +751,6 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=5"></script>
-<script>
-  (function () {
-    const dialog = document.getElementById('topic-deck-dialog');
-    const image = document.getElementById('topic-deck-slide');
-    const counter = document.getElementById('topic-deck-counter');
-    const caption = document.getElementById('topic-deck-caption');
-    const captions = [
-      'Topic Analysis',
-      'The Sept / Oct 2026 Resolution',
-      'What Does This Topic Mean?',
-      'What Each Side Sees and Wants',
-      'What Should I Run?',
-      'The Central Tradeoff',
-      'Questions'
-    ];
-    let slide = 0;
-    let opener = null;
-
-    function showSlide(next) {
-      slide = (next + captions.length) % captions.length;
-      const number = String(slide + 1).padStart(2, '0');
-      image.src = 'images/topic-analysis/slide-' + number + '.webp?v=1';
-      image.alt = captions[slide] + ' — slide ' + (slide + 1) + ' of 7';
-      counter.textContent = 'Slide ' + (slide + 1) + ' of 7';
-      caption.textContent = captions[slide];
-    }
-
-    document.querySelectorAll('[data-topic-deck-open]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        opener = button;
-        showSlide(0);
-        dialog.showModal();
-      });
-    });
-    dialog.querySelector('[data-topic-deck-close]').addEventListener('click', function () { dialog.close(); });
-    dialog.querySelector('[data-topic-deck-prev]').addEventListener('click', function () { showSlide(slide - 1); });
-    dialog.querySelector('[data-topic-deck-next]').addEventListener('click', function () { showSlide(slide + 1); });
-    dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
-    dialog.addEventListener('close', function () { if (opener) opener.focus(); });
-    dialog.addEventListener('keydown', function (event) {
-      if (event.key === 'ArrowLeft') { event.preventDefault(); showSlide(slide - 1); }
-      if (event.key === 'ArrowRight') { event.preventDefault(); showSlide(slide + 1); }
-    });
-  })();
-</script>
+<script src="js/topic-analysis-deck.js?v=1"></script>
 </body>
 </html>
