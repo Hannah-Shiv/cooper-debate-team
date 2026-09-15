@@ -168,9 +168,9 @@ test("launcher keeps the document beside the complete seven-category quick refer
     <link rel="stylesheet" href="${APP_ORIGIN}/css/essay-evaluation.css?v=test">
     <div id="essay-pane"><div class="essay-entry-shell">
       <section class="essay-entry-document"><div class="essay-preview-body"></div></section>
-      <aside class="essay-entry-reference"><div class="essay-reference-list">
+      <aside class="essay-entry-reference"><header class="essay-reference-head"><div class="essay-reference-launch"></div><span class="essay-reference-head-divider"></span><div class="essay-reference-heading"><h2>Rubric Quick Reference</h2></div></header><div class="essay-reference-list">
         ${["Claim and Case","Evidence and Research","Commentary and Analysis","Weighing Impacts, and Significance","Organization and Narrative Control","Conclusion and Recommendation","Style, Voice, and Presentation"].map((title, index) => `<details class="essay-reference-category"><summary><span class="essay-ref-number">0${index + 1}</span><span class="essay-ref-title">${title}</span><span class="essay-ref-points">5 pts</span></summary><div class="essay-ref-criteria"><div><b>5</b><span>Exact scoring criterion for this category.</span></div></div></details>`).join("")}
-      </div><div class="essay-reference-launch"></div></aside>
+      </div></aside>
     </div></div>
     <script src="${APP_ORIGIN}/js/essay-rubric.js?v=test"></script>
     <script src="${APP_ORIGIN}/js/essay-evaluation.js?v=test"></script>
@@ -198,12 +198,19 @@ test("launcher keeps the document beside the complete seven-category quick refer
       documentLeft: documentPanel.left,
       referenceLeft: referencePanel.left,
       referenceRight: referencePanel.right,
+      referenceTop: referencePanel.top,
+      launchTop: launchButton.top,
       referenceBottom: referencePanel.bottom,
       launchRight: launchButton.right,
       launchBottom: launchButton.bottom,
     };
   });
   expect(layout.referenceLeft).toBeGreaterThan(layout.documentLeft);
+  expect(layout.launchTop - layout.referenceTop).toBeLessThan(40);
   expect(layout.launchRight).toBeLessThanOrEqual(layout.referenceRight);
   expect(layout.launchBottom).toBeLessThanOrEqual(layout.referenceBottom);
+  const categoryColors = await page.locator(".essay-reference-category").evaluateAll((categories) =>
+    categories.map((category) => getComputedStyle(category).getPropertyValue("--category-accent").trim())
+  );
+  expect(new Set(categoryColors).size).toBe(7);
 });

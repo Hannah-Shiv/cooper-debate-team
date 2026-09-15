@@ -444,13 +444,13 @@
         const ratingValue = $("rating-value");
         if (ratingValue) ratingValue.textContent = coachDraft.rating || "—";
       }
-      // Turn the record into five useful review tabs while keeping the action dock independent.
+       // Turn the record into four useful review tabs while keeping the action dock independent.
      const content = $("detail").querySelector(".detail-content");
      const sections = Array.from(content.querySelectorAll(":scope > .section"));
      const tabBar = document.createElement("nav");
      tabBar.className = "detail-tabs";
      tabBar.setAttribute("aria-label", "Application detail sections");
-       [["overview","Overview"],["essay","Essay / Document"],["logistics","Logistics"],["review","Review"]].forEach(([key,label]) => {
+       [["overview","Overview"],["logistics","Logistics"],["essay","Essay Review"],["review","Team Review"]].forEach(([key,label]) => {
        const button = document.createElement("button");
         button.type = "button"; button.className = `detail-tab${key === activeDetailTab ? " active" : ""}`;
        button.dataset.tab = key; button.textContent = label;
@@ -498,7 +498,7 @@
              pane.replaceChildren();
              const entry = document.createElement("div");
              entry.className = "essay-entry-shell";
-             entry.innerHTML = `<section class="essay-entry-document"><header class="essay-entry-bar"><div><span class="essay-entry-kicker">Required essay / document</span><strong>Submitted document</strong></div><div class="essay-entry-tools"><a class="essay-source-link" target="_blank" rel="noopener noreferrer">Open source ↗</a><button type="button" class="essay-fullscreen-button">Full screen</button></div></header><div class="essay-preview-body"></div></section><aside class="essay-entry-reference"><header class="essay-reference-head"><div><span class="essay-entry-kicker">Coach console</span><h2>Evaluation Quick Reference</h2><p>Seven categories · 35 points possible</p></div><span class="essay-reference-total">35<br><small>PTS</small></span></header><div class="essay-reference-list"></div><div class="essay-reference-launch"></div></aside>`;
+              entry.innerHTML = `<section class="essay-entry-document"><header class="essay-entry-bar"><div><span class="essay-entry-kicker">Required essay / document</span><strong>Submitted document</strong></div><div class="essay-entry-tools"><a class="essay-source-link" target="_blank" rel="noopener noreferrer">Open source ↗</a><button type="button" class="essay-fullscreen-button">Full screen</button></div></header><div class="essay-preview-body"></div></section><aside class="essay-entry-reference"><header class="essay-reference-head"><div class="essay-reference-launch"></div><span class="essay-reference-head-divider" aria-hidden="true"></span><div class="essay-reference-heading"><span class="essay-entry-kicker">Evaluation reference</span><h2>Rubric Quick Reference</h2><p>Seven categories · 35 points possible</p></div></header><div class="essay-reference-list"></div></aside>`;
              const sourceLink = entry.querySelector(".essay-source-link");
              if (driveDocument.sourceUrl) sourceLink.href = driveDocument.sourceUrl;
              else { sourceLink.removeAttribute("href"); sourceLink.classList.add("disabled"); }
