@@ -274,9 +274,103 @@
     .train-title { font-family: 'Josefin Sans', sans-serif; font-weight: 700; font-size: 0.95rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--white); margin-bottom: 8px; }
     .train-desc  { font-size: 0.92rem; color: var(--gray-mid); line-height: 1.75; }
 
+    /* Current-topic slide deck */
+    .topic-deck-feature {
+      display:grid;
+      grid-template-columns:minmax(240px,360px) minmax(0,1fr);
+      gap:28px;
+      align-items:center;
+      scroll-margin-top:110px;
+      margin:0 0 30px;
+      padding:22px;
+      border:1px solid rgba(242,209,107,.48);
+      border-radius:14px;
+      background:linear-gradient(145deg,rgba(25,57,105,.92),rgba(8,25,58,.98));
+      box-shadow:0 14px 34px rgba(0,0,0,.24);
+    }
+    .topic-deck-feature__cover {
+      position:relative;
+      display:block;
+      width:100%;
+      padding:0;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.22);
+      border-radius:10px;
+      background:#ecebe9;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(0,0,0,.3);
+    }
+    .topic-deck-feature__cover img { display:block; width:100%; aspect-ratio:16/9; object-fit:cover; }
+    .topic-deck-feature__play {
+      position:absolute;
+      left:50%;
+      top:50%;
+      display:grid;
+      width:52px;
+      height:52px;
+      place-items:center;
+      border:2px solid rgba(255,255,255,.92);
+      border-radius:50%;
+      background:rgba(7,26,54,.86);
+      color:#fff;
+      font-size:1.15rem;
+      transform:translate(-50%,-50%);
+      transition:background .2s,transform .2s;
+    }
+    .topic-deck-feature__cover:hover .topic-deck-feature__play,
+    .topic-deck-feature__cover:focus-visible .topic-deck-feature__play { background:#8b0000; transform:translate(-50%,-50%) scale(1.08); }
+    .topic-deck-feature__eyebrow { margin:0 0 8px; color:var(--gold); font-size:.65rem; font-weight:700; letter-spacing:.13em; text-transform:uppercase; }
+    .topic-deck-feature h3 { margin:0 0 9px; color:#fff; font:700 clamp(1.35rem,2.4vw,1.8rem)/1.1 'Cormorant Garamond',serif; }
+    .topic-deck-feature__byline { margin:0 0 12px; color:#f2d16b; font-size:.72rem; font-weight:700; }
+    .topic-deck-feature__desc { margin:0 0 18px; color:var(--gray-mid); font-size:.87rem; line-height:1.6; }
+    .topic-deck-feature__actions { display:flex; flex-wrap:wrap; gap:9px; }
+    .topic-deck-feature__action {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:42px;
+      padding:9px 15px;
+      border:1px solid rgba(242,209,107,.58);
+      border-radius:6px;
+      background:rgba(212,160,23,.1);
+      color:#f7dc82;
+      cursor:pointer;
+      font:700 .68rem/1.2 'Josefin Sans',sans-serif;
+      letter-spacing:.055em;
+      text-decoration:none;
+      text-transform:uppercase;
+    }
+    .topic-deck-feature__action--primary { background:var(--gold); color:#0c1a42; }
+    .topic-deck-feature__action:hover,.topic-deck-feature__action:focus-visible { border-color:#fff1b1; filter:brightness(1.12); outline:2px solid #f7cf55; outline-offset:2px; }
+    .topic-deck-dialog {
+      width:min(1040px,calc(100vw - 28px));
+      max-width:none;
+      margin:auto;
+      padding:0;
+      overflow:hidden;
+      border:1px solid rgba(242,209,107,.7);
+      border-radius:16px;
+      background:#091a37;
+      color:#fff;
+      box-shadow:0 28px 90px rgba(0,0,0,.72);
+    }
+    .topic-deck-dialog::backdrop { background:rgba(1,8,22,.86); backdrop-filter:blur(7px); }
+    .topic-deck-dialog__header { display:flex; align-items:center; gap:18px; justify-content:space-between; padding:15px 18px; border-bottom:1px solid rgba(242,209,107,.28); }
+    .topic-deck-dialog__header h3 { margin:0; font:700 1.35rem/1.1 'Cormorant Garamond',serif; }
+    .topic-deck-dialog__header p { margin:3px 0 0; color:#f2d16b; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
+    .topic-deck-dialog__header-actions { display:flex; align-items:center; gap:9px; }
+    .topic-deck-dialog__header a,.topic-deck-dialog__close { color:#fff; font:700 .63rem/1 'Josefin Sans',sans-serif; text-decoration:none; }
+    .topic-deck-dialog__close { display:grid; width:38px; height:38px; place-items:center; padding:0; border:1px solid rgba(255,255,255,.48); border-radius:50%; background:#8b0000; cursor:pointer; font-size:1rem; }
+    .topic-deck-dialog__stage-row { display:grid; grid-template-columns:48px minmax(0,1fr) 48px; gap:12px; align-items:center; padding:18px; }
+    .topic-deck-dialog__stage { margin:0; }
+    .topic-deck-dialog__stage img { display:block; width:100%; max-height:calc(100dvh - 190px); aspect-ratio:16/9; object-fit:contain; border-radius:8px; background:#ecebe9; }
+    .topic-deck-dialog__stage figcaption { display:flex; justify-content:space-between; gap:18px; margin-top:10px; color:#cfdbed; font-size:.68rem; }
+    .topic-deck-dialog__nav { width:46px; height:54px; border:1px solid rgba(242,209,107,.55); border-radius:8px; background:#142e58; color:#fff; cursor:pointer; font-size:1.25rem; }
+    .topic-deck-dialog__nav:hover,.topic-deck-dialog__nav:focus-visible,.topic-deck-dialog__close:hover,.topic-deck-dialog__close:focus-visible { border-color:#fff; outline:2px solid #f7cf55; outline-offset:2px; }
+
     .three-col { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
     .two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
-    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;gap:32px;} .pro-con-grid{grid-template-columns:1fr;} }
+    @media(max-width:900px){ .three-col{grid-template-columns:1fr 1fr;} .two-col{grid-template-columns:1fr;gap:32px;} .pro-con-grid{grid-template-columns:1fr;} .topic-deck-feature{grid-template-columns:1fr;} }
     @media(max-width:600px){ .three-col{grid-template-columns:1fr;} }
 
     @media(max-width:640px){
@@ -285,6 +379,13 @@
       /* Topic box */
       .topic-box { padding: 20px 16px; }
       .topic-resolution { padding: 14px 16px; font-size: 1.05rem; }
+      .topic-deck-feature { gap:18px; padding:14px; }
+      .topic-deck-feature__actions { display:grid; grid-template-columns:1fr; }
+      .topic-deck-dialog__header { align-items:flex-start; }
+      .topic-deck-dialog__header-actions a { display:none; }
+      .topic-deck-dialog__stage-row { grid-template-columns:38px minmax(0,1fr) 38px; gap:6px; padding:12px 8px; }
+      .topic-deck-dialog__nav { width:36px; height:48px; }
+      .topic-deck-dialog__stage figcaption { flex-direction:column; gap:3px; }
 
       /* Key Research cards — single column already; reduce icon zone */
       .resource-icon { height: 64px; }
@@ -417,20 +518,38 @@
       <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Sept/Oct 2026</p>
       <div class="topic-resolution">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
 
+      <article class="topic-deck-feature" id="topic-analysis">
+        <button class="topic-deck-feature__cover" type="button" data-topic-deck-open aria-label="Quick view the September tournament topic analysis">
+          <img src="images/topic-analysis/slide-01.webp?v=1" alt="Title slide for Topic Analysis by Jacob Gibbons" loading="lazy">
+          <span class="topic-deck-feature__play" aria-hidden="true">▶</span>
+        </button>
+        <div>
+          <p class="topic-deck-feature__eyebrow">7-slide student guide</p>
+          <h3>September Tournament Topic Analysis</h3>
+          <p class="topic-deck-feature__byline">Prepared by Jacob Gibbons</p>
+          <p class="topic-deck-feature__desc">A concise introduction to hyperscale data centers, what a construction moratorium means, and the strongest arguments available to both sides.</p>
+          <div class="topic-deck-feature__actions">
+            <button class="topic-deck-feature__action topic-deck-feature__action--primary" type="button" data-topic-deck-open>Quick View</button>
+            <a class="topic-deck-feature__action" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open PDF ↗</a>
+            <a class="topic-deck-feature__action" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" download>Download PDF ↓</a>
+          </div>
+        </div>
+      </article>
+
       <div class="pro-con-grid">
         <div class="arg-card arg-card-pro">
           <div class="arg-label arg-label-pro">✓ Pro Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>AI dramatically improves threat detection and prevention capabilities</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Reduces human risk in intelligence operations</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Counter-terrorism benefits outweigh marginal privacy costs</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Allied nations coordinate more effectively through AI-shared intelligence</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>A pause could protect communities from rising electricity bills and heavy water use</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Temporary limits could reduce pollution and pressure on the electric grid</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>A moratorium could prevent wasteful overbuilding while stronger protections are developed</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Communities would gain more control over the local effects of large technology projects</span></div>
         </div>
         <div class="arg-card arg-card-con">
           <div class="arg-label arg-label-con">✗ Con Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Mass surveillance creates chilling effects on civil liberties</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Algorithmic bias leads to discriminatory enforcement</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>AI systems are vulnerable to adversarial manipulation</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Autonomous weapons systems escalate risk of accidental conflict</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Data-center projects can finance clean-energy production and grid upgrades</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>A broad pause could slow AI research, scientific computing, and job creation</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Projects may move overseas, reducing U.S. investment and control</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Targeted regulation could address harms without stopping construction nationwide</span></div>
         </div>
       </div>
 
@@ -575,6 +694,28 @@
   </div>
 </section>
 
+<dialog class="topic-deck-dialog" id="topic-deck-dialog" aria-labelledby="topic-deck-dialog-title">
+  <header class="topic-deck-dialog__header">
+    <div>
+      <h3 id="topic-deck-dialog-title">September Tournament Topic Analysis</h3>
+      <p>Sept / Oct 2026 · Public Forum</p>
+    </div>
+    <div class="topic-deck-dialog__header-actions">
+      <a href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open PDF ↗</a>
+      <a href="docs/topic-analysis-sept-oct-2026.pdf?v=1" download>Download ↓</a>
+      <button class="topic-deck-dialog__close" type="button" data-topic-deck-close aria-label="Close topic analysis">×</button>
+    </div>
+  </header>
+  <div class="topic-deck-dialog__stage-row">
+    <button class="topic-deck-dialog__nav" type="button" data-topic-deck-prev aria-label="Previous slide">←</button>
+    <figure class="topic-deck-dialog__stage">
+      <img id="topic-deck-slide" src="images/topic-analysis/slide-01.webp?v=1" alt="Topic Analysis title slide by Jacob Gibbons">
+      <figcaption><span id="topic-deck-counter">Slide 1 of 7</span><strong id="topic-deck-caption">Topic Analysis</strong></figcaption>
+    </figure>
+    <button class="topic-deck-dialog__nav" type="button" data-topic-deck-next aria-label="Next slide">→</button>
+  </div>
+</dialog>
+
 <footer data-public-footer>
   <div class="section-wrap">
     <div class="footer-grid">
@@ -625,5 +766,50 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=5"></script>
+<script>
+  (function () {
+    const dialog = document.getElementById('topic-deck-dialog');
+    const image = document.getElementById('topic-deck-slide');
+    const counter = document.getElementById('topic-deck-counter');
+    const caption = document.getElementById('topic-deck-caption');
+    const captions = [
+      'Topic Analysis',
+      'The Sept / Oct 2026 Resolution',
+      'What Does This Topic Mean?',
+      'What Each Side Sees and Wants',
+      'What Should I Run?',
+      'The Central Tradeoff',
+      'Questions'
+    ];
+    let slide = 0;
+    let opener = null;
+
+    function showSlide(next) {
+      slide = (next + captions.length) % captions.length;
+      const number = String(slide + 1).padStart(2, '0');
+      image.src = 'images/topic-analysis/slide-' + number + '.webp?v=1';
+      image.alt = captions[slide] + ' — slide ' + (slide + 1) + ' of 7';
+      counter.textContent = 'Slide ' + (slide + 1) + ' of 7';
+      caption.textContent = captions[slide];
+    }
+
+    document.querySelectorAll('[data-topic-deck-open]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        opener = button;
+        showSlide(0);
+        dialog.showModal();
+      });
+    });
+    dialog.querySelector('[data-topic-deck-close]').addEventListener('click', function () { dialog.close(); });
+    dialog.querySelector('[data-topic-deck-prev]').addEventListener('click', function () { showSlide(slide - 1); });
+    dialog.querySelector('[data-topic-deck-next]').addEventListener('click', function () { showSlide(slide + 1); });
+    dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
+    dialog.addEventListener('close', function () { if (opener) opener.focus(); });
+    dialog.addEventListener('keydown', function (event) {
+      if (event.key === 'ArrowLeft') { event.preventDefault(); showSlide(slide - 1); }
+      if (event.key === 'ArrowRight') { event.preventDefault(); showSlide(slide + 1); }
+    });
+  })();
+</script>
 </body>
 </html>
