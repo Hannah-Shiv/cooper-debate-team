@@ -1629,6 +1629,294 @@ exports.manageApplicationReview = onRequest(
   }
 );
 
+// Essay evaluations are shared by the coaching team and are deliberately
+// maintained through this authenticated endpoint.  The browser has no write
+// access to either the evaluation or its audit trail.
+const ESSAY_RUBRIC_KEYS = [
+  "claimCase",
+  "evidenceResearch",
+  "commentaryAnalysis",
+  "weighingImpacts",
+  "organizationNarrative",
+  "conclusionRecommendation",
+  "styleVoice",
+];
+const ESSAY_RECOMMENDATIONS = [
+  "strongly-recommend",
+  "recommend",
+  "consider",
+  "do-not-recommend",
+];
+
+function essayEvaluationInterpretation(totalScore, complete) {
+  if (!complete || !Number.isInteger(totalScore)) return null;
+  if (totalScore >= 32) return "Outstanding";
+  if (totalScore >= 27) return "Strong";
+  if (totalScore >= 21) return "Promising";
+  if (totalScore >= 14) return "Developing";
+  return "Does not yet demonstrate needed skills";
+}
+
+function essayEvaluationScore(rubric) {
+  const scores = ESSAY_RUBRIC_KEYS.map(key => rubric[key]);
+  const scoredCriteria = scores.filter(score => Number.isInteger(score)).length;
+  const totalScore = scores.reduce((total, score) => total + (Number.isInteger(score) ? score : 0), 0);
+  return {
+    totalScore,
+    scoredCriteria,
+    complete: scoredCriteria === ESSAY_RUBRIC_KEYS.length,
+    interpretation: essayEvaluationInterpretation(totalScore, scoredCriteria === ESSAY_RUBRIC_KEYS.length),
+  };
+}
+
+function normalizeEssayEvaluationText(value, field, maxLength, required = false) {
+  if (value === undefined || value === null) {
+    if (required) throw new Error(`${field} is required when finalizing an essay evaluation.`);
+    return "";
+  }
+  if (typeof value !== "string") throw new Error(`${field} must be text.`);
+  const cleaned = cleanText(value, maxLength);
+  if (required && !cleaned) throw new Error(`${field} is required when finalizing an essay evaluation.`);
+  return cleaned;
+}
+
+function normalizeEssayEvaluationPayload(body, finalize) {
+  if (!body.rubric || typeof body.rubric !== "object" || Array.isArray(body.rubric)) {
+    throw new Error("A rubric with all seven essay criteria is required.");
+  }
+  const rubric = {};
+  for (const key of ESSAY_RUBRIC_KEYS) {
+    const score = body.rubric[key];
+    if (score === undefined || score === null) {
+      rubric[key] = null;
+      continue;
+    }
+    if (!Number.isInteger(score) || score < 1 || score > 5) {
+      throw new Error("Each essay rubric score must be an integer from 1 to 5 or null.");
+    }
+    rubric[key] = score;
+  }
+
+  const recommendationValue = body.recommendation === undefined || body.recommendation === null
+    ? ""
+    : body.recommendation;
+  if (typeof recommendationValue !== "string") {
+    throw new Error("Recommendation must be one of the supported essay recommendations.");
+  }
+  const recommendation = cleanText(recommendationValue, 40).toLowerCase();
+  if (recommendation && !ESSAY_RECOMMENDATIONS.includes(recommendation)) {
+    throw new Error("Recommendation must be strongly-recommend, recommend, consider, or do-not-recommend.");
+  }
+
+  const normalized = {
+    rubric,
+    strengths: normalizeEssayEvaluationText(body.strengths, "Strengths", 5000, finalize),
+    growthAreas: normalizeEssayEvaluationText(body.growthAreas, "Growth areas", 5000, finalize),
+    concerns: normalizeEssayEvaluationText(body.concerns, "Concerns", 5000),
+    recommendation: recommendation || null,
+  };
+  const score = essayEvaluationScore(rubric);
+  if (finalize && !score.complete) {
+    throw new Error("All seven essay rubric scores are required when finalizing an essay evaluation.");
+  }
+  if (finalize && !recommendation) {
+    throw new Error("Overall recommendation is required when finalizing an essay evaluation.");
+  }
+  return { ...normalized, ...score };
+}
+
+function publicEssayEvaluation(data) {
+  if (!data) return null;
+  const rubric = Object.fromEntries(ESSAY_RUBRIC_KEYS.map(key => [
+    key,
+    Number.isInteger(data.rubric && data.rubric[key]) ? data.rubric[key] : null,
+  ]));
+  const score = essayEvaluationScore(rubric);
+  return {
+    revision: Math.max(0, Math.floor(Number(data.revision) || 0)),
+    status: data.status === "finalized" ? "finalized" : "draft",
+    rubric,
+    strengths: cleanText(data.strengths, 5000),
+    growthAreas: cleanText(data.growthAreas, 5000),
+    concerns: cleanText(data.concerns, 5000),
+    recommendation: ESSAY_RECOMMENDATIONS.includes(data.recommendation) ? data.recommendation : null,
+    totalScore: score.totalScore,
+    scoredCriteria: score.scoredCriteria,
+    interpretation: score.interpretation,
+    updatedBy: cleanEmail(data.updatedBy),
+    finalizedBy: cleanEmail(data.finalizedBy),
+    createdAt: data.createdAt || null,
+    updatedAt: data.updatedAt || null,
+    finalizedAt: data.finalizedAt || null,
+  };
+}
+
+class EssayEvaluationRevisionConflict extends Error {
+  constructor(current) {
+    super("This essay evaluation was updated by another reviewer. Reload it before saving.");
+    this.current = current;
+  }
+}
+
+exports.manageEssayEvaluation = onRequest(
+  { region: "us-central1", cors: true },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.set("Allow", "POST");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
+    if (!token) {
+      res.status(401).json({ error: "Sign in as a coach to manage essay evaluations." });
+      return;
+    }
+
+    let decoded;
+    try {
+      decoded = await getAuth().verifyIdToken(token);
+    } catch (_) {
+      res.status(401).json({ error: "Your sign-in session has expired. Please sign in again." });
+      return;
+    }
+
+    const reviewerEmail = cleanEmail(decoded.email);
+    const signInProvider = cleanText(decoded.firebase && decoded.firebase.sign_in_provider, 80);
+    const verifiedAllowedIdentity = decoded.email_verified === true &&
+      (signInProvider !== "google.com" || /@(fcps\.edu|fcpsschools\.net)$/.test(reviewerEmail));
+    if (!verifiedAllowedIdentity) {
+      res.status(403).json({ error: "Use your verified, approved sign-in method to manage essay evaluations." });
+      return;
+    }
+    if (!await hasFullAdminAccess(reviewerEmail)) {
+      res.status(403).json({ error: "Only coaches and website admins can manage essay evaluations." });
+      return;
+    }
+
+    const body = req.body && typeof req.body === "object" ? req.body : {};
+    const applicationId = cleanText(body.applicationId, 128);
+    const action = cleanText(body.action, 24).toLowerCase();
+    if (!/^[a-zA-Z0-9_-]{1,128}$/.test(applicationId)) {
+      res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
+    if (!["get", "save", "finalize"].includes(action)) {
+      res.status(400).json({ error: "Unsupported essay evaluation action." });
+      return;
+    }
+
+    const db = getFirestore();
+    const evaluationRef = db.collection("applications").doc(applicationId)
+      .collection("essayEvaluations").doc("current");
+
+    if (action === "get") {
+      try {
+        const snapshot = await evaluationRef.get();
+        res.status(200).json({ ok: true, evaluation: snapshot.exists ? publicEssayEvaluation(snapshot.data()) : null });
+      } catch (error) {
+        console.error("manageEssayEvaluation get failed:", {
+          applicationId,
+          message: cleanText(error && error.message, 300),
+        });
+        res.status(500).json({ error: "Unable to load the essay evaluation." });
+      }
+      return;
+    }
+
+    const expectedRevision = body.expectedRevision;
+    if (!Number.isInteger(expectedRevision) || expectedRevision < 0) {
+      res.status(400).json({ error: "A non-negative expected evaluation revision is required." });
+      return;
+    }
+
+    let payload;
+    try {
+      payload = normalizeEssayEvaluationPayload(body, action === "finalize");
+    } catch (error) {
+      res.status(400).json({ error: cleanText(error && error.message, 300) || "The essay evaluation is invalid." });
+      return;
+    }
+
+    const applicationRef = db.collection("applications").doc(applicationId);
+    const auditRef = evaluationRef.collection("audit").doc();
+    try {
+      const savedEvaluation = await db.runTransaction(async transaction => {
+        const [applicationSnapshot, currentSnapshot] = await Promise.all([
+          transaction.get(applicationRef),
+          transaction.get(evaluationRef),
+        ]);
+        if (!applicationSnapshot.exists) throw new Error("That application no longer exists.");
+
+        const currentData = currentSnapshot.exists ? currentSnapshot.data() : {};
+        const currentRevision = Math.max(0, Math.floor(Number(currentData.revision) || 0));
+        if (currentRevision !== expectedRevision) {
+          throw new EssayEvaluationRevisionConflict(
+            currentSnapshot.exists ? publicEssayEvaluation(currentData) : null
+          );
+        }
+
+        const revision = currentRevision + 1;
+        const status = action === "finalize" ? "finalized" : "draft";
+        const responseTime = new Date();
+        const evaluation = {
+          rubric: payload.rubric,
+          strengths: payload.strengths,
+          growthAreas: payload.growthAreas,
+          concerns: payload.concerns,
+          recommendation: payload.recommendation,
+          totalScore: payload.totalScore,
+          scoredCriteria: payload.scoredCriteria,
+          interpretation: payload.interpretation,
+          revision,
+          status,
+          updatedByUid: cleanText(decoded.uid, 128),
+          updatedBy: reviewerEmail,
+          updatedAt: FieldValue.serverTimestamp(),
+          ...(currentData.createdAt ? { createdAt: currentData.createdAt } : { createdAt: FieldValue.serverTimestamp() }),
+          ...(status === "finalized"
+            ? { finalizedByUid: cleanText(decoded.uid, 128), finalizedBy: reviewerEmail, finalizedAt: FieldValue.serverTimestamp() }
+            : {}),
+        };
+        transaction.set(evaluationRef, evaluation);
+        transaction.set(auditRef, {
+          action,
+          revision,
+          status,
+          actorUid: cleanText(decoded.uid, 128),
+          actorEmail: reviewerEmail,
+          totalScore: payload.totalScore,
+          scoredCriteria: payload.scoredCriteria,
+          interpretation: payload.interpretation,
+          changedAt: FieldValue.serverTimestamp(),
+        });
+        return publicEssayEvaluation({
+          ...evaluation,
+          createdAt: currentData.createdAt || responseTime,
+          updatedAt: responseTime,
+          ...(status === "finalized" ? { finalizedAt: responseTime } : {}),
+        });
+      });
+
+      res.status(200).json({
+        ok: true,
+        evaluation: savedEvaluation,
+      });
+    } catch (error) {
+      if (error instanceof EssayEvaluationRevisionConflict) {
+        res.status(409).json({ ok: false, error: error.message, evaluation: error.current });
+        return;
+      }
+      console.error("manageEssayEvaluation save failed:", {
+        applicationId,
+        action,
+        message: cleanText(error && error.message, 300),
+      });
+      res.status(400).json({ error: cleanText(error && error.message, 240) || "Unable to save the essay evaluation." });
+    }
+  }
+);
+
 
 // A temporary Resend outage should never strand a saved application. Failed
 // delivery requests are retried server-side; each recipient has its own

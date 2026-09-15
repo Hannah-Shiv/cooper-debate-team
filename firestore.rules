@@ -206,6 +206,19 @@ service cloud.firestore {
         allow read: if isCoach() || (isApprovedMember() && request.auth.uid == reviewId);
         allow write: if false;
       }
+
+      // Essay evaluations and their audit trail contain private reviewer notes.
+      // Coaches and Website Admins may read them; all mutations go through the
+      // authenticated Cloud Function and therefore bypass client rules.
+      match /essayEvaluations/{evaluationId} {
+        allow read: if isCoach();
+        allow write: if false;
+
+        match /audit/{auditId} {
+          allow read: if isCoach();
+          allow write: if false;
+        }
+      }
     }
 
     // Redacted application projections contain no student/parent contact data.

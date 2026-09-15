@@ -735,6 +735,7 @@
      $("review-hide-application").addEventListener("click", () => hideApplication(item));
       $("review-delete-application").addEventListener("click", () => deleteApplication(item));
       }
+      window.dispatchEvent(new CustomEvent("cooper:essay-ready", { detail: { item, pane: content.querySelector('[data-pane="essay"]') } }));
   }
   async function saveCaptainReview(applicationId) {
     const note = $("captain-review-note").value.trim();

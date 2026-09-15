@@ -101,6 +101,29 @@ beforeEach(async () => {
       setDoc(doc(db, "applications", "application-test", "captainReviews", MEMBER_EMAIL), {
         reviewerName: "Cooper", recommendation: "accepted", rating: 8, note: "Member review.",
       }),
+      setDoc(doc(db, "applications", "application-test", "essayEvaluations", "current"), {
+        revision: 1,
+        status: "draft",
+        rubric: {
+          claimCase: 4,
+          evidenceResearch: null,
+          commentaryAnalysis: 3,
+          weighingImpacts: null,
+          organizationNarrative: 4,
+          conclusionRecommendation: null,
+          styleVoice: 3,
+        },
+        strengths: "Clear position.",
+        growthAreas: "Develop impact comparison.",
+        concerns: "",
+        recommendation: null,
+      }),
+      setDoc(doc(db, "applications", "application-test", "essayEvaluations", "current", "audit", "revision-1"), {
+        action: "save",
+        revision: 1,
+        status: "draft",
+        totalScore: 14,
+      }),
       setDoc(doc(db, "portal_login_status", "known-email-hash"), {
         active: true,
       }),
@@ -374,6 +397,36 @@ test("coaches read full applications and every captain review while browser revi
     recommendation: "accepted",
     note: "Browser write",
   }));
+});
+
+test("coaches and website admins can read essay evaluations and audit records, but clients cannot write", async () => {
+  for (const email of [COACH_EMAIL, WEBSITE_ADMIN_FCPS_EMAIL]) {
+    const db = dbFor(email, "google.com");
+    const evaluation = doc(db, "applications", "application-test", "essayEvaluations", "current");
+    const audit = doc(db, "applications", "application-test", "essayEvaluations", "current", "audit", "revision-1");
+    await assertSucceeds(getDoc(evaluation));
+    await assertSucceeds(getDoc(audit));
+    await assertFails(setDoc(evaluation, { revision: 99 }));
+    await assertFails(setDoc(audit, { action: "browser-write" }));
+  }
+
+  const memberDb = dbFor(MEMBER_EMAIL);
+  await assertFails(getDoc(doc(
+    memberDb,
+    "applications",
+    "application-test",
+    "essayEvaluations",
+    "current"
+  )));
+  await assertFails(getDoc(doc(
+    memberDb,
+    "applications",
+    "application-test",
+    "essayEvaluations",
+    "current",
+    "audit",
+    "revision-1"
+  )));
 });
 
 test("approved members retain private tournament editing but not public control", async () => {
