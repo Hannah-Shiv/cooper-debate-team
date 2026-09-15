@@ -424,9 +424,19 @@
      .summary .metric-icon.accept-icon,.summary .metric-icon.decline-icon{flex-basis:36.45px!important;height:36.45px!important;width:36.45px!important}
      .summary .metric-icon.hold-icon{flex-basis:40.1px!important;height:40.1px!important;top:calc(66% - 1.8px);width:40.1px!important}
      .summary .metric strong{font-size:1.665rem!important;margin-top:4px}
+     .hub-title-context{color:#fff;font:inherit}
      @media(min-width:761px){
        .summary{align-self:start;box-sizing:border-box;height:61.56px!important;min-height:61.56px!important}
        .summary .metric{box-sizing:border-box;height:59.56px!important;min-height:59.56px!important}
+       .summary .metric-label{font-size:.5832rem!important}
+       .summary .metric strong{font-size:1.4985rem!important}
+       .summary .metric-icon{flex-basis:32.805px!important;height:32.805px!important;width:32.805px!important}
+       .summary .metric:first-child .metric-icon,.summary .metric-icon.pending-icon{flex-basis:29.52px!important;height:29.52px!important;width:29.52px!important}
+       .summary .metric-icon.accept-icon,.summary .metric-icon.decline-icon{flex-basis:32.805px!important;height:32.805px!important;width:32.805px!important}
+       .summary .metric-icon.hold-icon{flex-basis:36.09px!important;height:36.09px!important;top:calc(66% - 1.62px);width:36.09px!important}
+       .controls .app-control{box-sizing:border-box;height:49.5px!important;min-height:49.5px!important}
+       .app-search-icon{height:21.6px!important;width:21.6px!important}
+       .hub-title{white-space:nowrap}
      }
    </style>
 </head>
@@ -457,8 +467,7 @@
         <section class="member-hub-menu" aria-label="Member Hub navigation">
          <div class="hub-header">
           <div class="hub-heading">
-            <h1 class="hub-title">Member Hub</h1>
-            <p class="hub-sub">Cooper Debate Team · All Debaters</p>
+             <h1 class="hub-title">Member Hub <span class="hub-title-context">| Cooper Debate Team · All Debaters</span></h1>
           </div>
            <nav class="tab-bar" aria-label="Member workspace sections">
              <a class="tab-btn" href="members-directory.html">
