@@ -48,12 +48,9 @@
 
      /* Deeper blue panels with the same gold-edged treatment as the other pages */
      .resources-page .resource-card,
-     .resources-page .topic-box,
      .resources-page .skills-panel,
      .resources-page .template-card,
-     .resources-page .train-card,
-     .resources-page .arg-card-pro,
-     .resources-page .arg-card-con {
+      .resources-page .train-card {
        background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99));
        border: 1px solid rgba(242,209,107,0.5);
        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
@@ -66,18 +63,27 @@
      .resources-page .skills-panel {
        border-radius: 16px;
      }
+      .resources-page .topic-box {
+        background: #1d212a;
+        border: 1px solid rgba(212,160,23,0.34);
+        box-shadow: 0 20px 48px rgba(0,0,0,0.28);
+      }
      .resources-page .skills-panel {
        background: linear-gradient(145deg, rgba(11,32,76,0.96), rgba(6,19,49,0.99)) !important;
        border: 1px solid rgba(242,209,107,0.5) !important;
      }
      .resources-page .topic-resolution {
-       background: rgba(18,48,94,0.72);
-       border: 1px solid rgba(242,209,107,0.3);
+        background: #242832;
+        border: 1px solid rgba(212,160,23,0.3);
        border-left: 3px solid var(--gold);
      }
-     .resources-page .arg-card-pro,
-     .resources-page .arg-card-con {
-       background: rgba(13,42,86,0.8);
+      .resources-page .arg-card-pro {
+        background: #202d29;
+        border-color: rgba(93,190,132,0.38);
+      }
+      .resources-page .arg-card-con {
+        background: #33252b;
+        border-color: rgba(211,112,127,0.38);
      }
      .resources-page .skill-tip {
        background: rgba(18,48,94,0.72);
@@ -202,21 +208,23 @@
 
     /* ── Topic box ── */
     .topic-box {
-      background: rgba(11,37,69,0.6); border: 1px solid rgba(212,160,23,0.25);
+      background: #1d212a; border: 1px solid rgba(212,160,23,0.34);
       border-radius: 14px; padding: 40px; margin-bottom: 36px;
+      box-shadow: 0 20px 48px rgba(0,0,0,0.28);
     }
     .topic-resolution {
       font-family: 'Cormorant Garamond', serif; font-style: italic;
       font-size: clamp(1.15rem, 2.5vw, 1.55rem); color: var(--white);
       line-height: 1.65; margin-bottom: 28px;
       padding: 22px 28px; border-left: 3px solid var(--gold);
-      background: rgba(212,160,23,0.06); border-radius: 0 10px 10px 0;
+      background: #242832; border-radius: 0 10px 10px 0;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.18);
     }
 
     .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
     .arg-card { border-radius: 10px; padding: 22px; }
-    .arg-card-pro { background: rgba(34,197,94,0.07); border: 1px solid rgba(34,197,94,0.2); transition: box-shadow 0.25s, border-color 0.25s; }
-    .arg-card-con { background: rgba(239,68,68,0.07); border: 1px solid rgba(239,68,68,0.2); transition: box-shadow 0.25s, border-color 0.25s; }
+    .arg-card-pro { background: #202d29; border: 1px solid rgba(93,190,132,0.38); transition: box-shadow 0.25s, border-color 0.25s; }
+    .arg-card-con { background: #33252b; border: 1px solid rgba(211,112,127,0.38); transition: box-shadow 0.25s, border-color 0.25s; }
     .arg-card-pro:hover { border-color: rgba(34,197,94,0.6); box-shadow: 0 0 18px rgba(34,197,94,0.25); }
     .arg-card-con:hover { border-color: rgba(239,68,68,0.6); box-shadow: 0 0 18px rgba(239,68,68,0.25); }
     .arg-label     { font-size: 0.77rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 14px; }
@@ -286,7 +294,7 @@
       padding:22px;
       border:1px solid rgba(242,209,107,.48);
       border-radius:14px;
-      background:linear-gradient(145deg,rgba(25,57,105,.92),rgba(8,25,58,.98));
+      background:#2d313b;
       box-shadow:0 14px 34px rgba(0,0,0,.24);
     }
     .topic-deck-feature__cover {
