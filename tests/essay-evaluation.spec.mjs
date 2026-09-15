@@ -11,6 +11,7 @@ async function mountEvaluation(page, evaluation = null) {
       </head>
       <body style="margin:0;background:#071a37">
         <div id="essay-pane"></div>
+        <script src="${APP_ORIGIN}/js/essay-rubric.js?v=test"></script>
         <script src="${APP_ORIGIN}/js/essay-evaluation.js?v=test"></script>
       </body>
     </html>
@@ -160,4 +161,49 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await page.locator(".close-discard").click();
   await expect(page.locator(".essay-eval")).not.toBeVisible();
   await expect(page.locator(".essay-launch-wrap p")).toContainText("Completed · 35/35 · Outstanding");
+});
+
+test("launcher keeps the document beside the complete seven-category quick reference", async ({ page }) => {
+  await page.setContent(`
+    <link rel="stylesheet" href="${APP_ORIGIN}/css/essay-evaluation.css?v=test">
+    <div id="essay-pane"><div class="essay-entry-shell">
+      <section class="essay-entry-document"><div class="essay-preview-body"></div></section>
+      <aside class="essay-entry-reference"><div class="essay-reference-list">
+        ${["Claim and Case","Evidence and Research","Commentary and Analysis","Weighing Impacts, and Significance","Organization and Narrative Control","Conclusion and Recommendation","Style, Voice, and Presentation"].map((title, index) => `<details class="essay-reference-category"><summary><span class="essay-ref-number">0${index + 1}</span><span class="essay-ref-title">${title}</span><span class="essay-ref-points">5 pts</span></summary><div class="essay-ref-criteria"><div><b>5</b><span>Exact scoring criterion for this category.</span></div></div></details>`).join("")}
+      </div><div class="essay-reference-launch"></div></aside>
+    </div></div>
+    <script src="${APP_ORIGIN}/js/essay-rubric.js?v=test"></script>
+    <script src="${APP_ORIGIN}/js/essay-evaluation.js?v=test"></script>
+  `);
+  await page.evaluate(() => {
+    window.__evaluation = null;
+    window.firebase = { auth: () => ({ currentUser: { getIdToken: async () => "test-token" } }) };
+    window.fetch = async () => new Response(JSON.stringify({ ok: true, evaluation: null }), { status: 200 });
+    const pane = document.querySelector("#essay-pane");
+    window.dispatchEvent(new CustomEvent("cooper:essay-ready", {
+      detail: { pane, item: { id: "launcher-test", student: { firstName: "Ari", lastName: "Coach" }, answers: { requiredEssay: "" } } },
+    }));
+  });
+  await expect(page.locator(".essay-entry-shell")).toBeVisible();
+  await expect(page.locator(".essay-entry-document")).toBeVisible();
+  await expect(page.locator(".essay-entry-reference")).toBeVisible();
+  await expect(page.locator(".essay-reference-category")).toHaveCount(7);
+  await expect(page.locator(".essay-reference-category .essay-ref-criteria")).toHaveCount(7);
+  await expect(page.locator(".essay-launch")).toHaveText("Start evaluation");
+  const layout = await page.evaluate(() => {
+    const documentPanel = document.querySelector(".essay-entry-document").getBoundingClientRect();
+    const referencePanel = document.querySelector(".essay-entry-reference").getBoundingClientRect();
+    const launchButton = document.querySelector(".essay-launch").getBoundingClientRect();
+    return {
+      documentLeft: documentPanel.left,
+      referenceLeft: referencePanel.left,
+      referenceRight: referencePanel.right,
+      referenceBottom: referencePanel.bottom,
+      launchRight: launchButton.right,
+      launchBottom: launchButton.bottom,
+    };
+  });
+  expect(layout.referenceLeft).toBeGreaterThan(layout.documentLeft);
+  expect(layout.launchRight).toBeLessThanOrEqual(layout.referenceRight);
+  expect(layout.launchBottom).toBeLessThanOrEqual(layout.referenceBottom);
 });

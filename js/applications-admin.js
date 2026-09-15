@@ -494,43 +494,24 @@
           pane.replaceChildren(overviewGrid);
         }
           if (key === "essay") {
-            const sourceCard = pane.querySelector(".answer-box");
             const driveDocument = googleDriveDocument(item.answers?.requiredEssay);
-            if (sourceCard) {
-              sourceCard.classList.add("essay-source-card");
-              const answerContent = sourceCard.querySelector(".answer");
-              if (answerContent) {
-                answerContent.replaceChildren();
-                if (driveDocument.sourceUrl) {
-                  const sourceLink = document.createElement("a");
-                  sourceLink.className = "essay-source-link";
-                  sourceLink.href = driveDocument.sourceUrl;
-                  sourceLink.target = "_blank";
-                  sourceLink.rel = "noopener noreferrer";
-                  sourceLink.textContent = driveDocument.sourceUrl;
-                  answerContent.appendChild(sourceLink);
-                } else {
-                  const missingLink = document.createElement("span");
-                  missingLink.className = "essay-source-missing";
-                  missingLink.textContent = String(item.answers?.requiredEssay || "No response provided.");
-                  answerContent.appendChild(missingLink);
-                }
-              }
-            }
-            const previewCard = document.createElement("section");
-            previewCard.className = "essay-preview-card";
-             previewCard.innerHTML = `<h3>${icon("clipboard", "answer-icon")}Essay document contents</h3><div class="essay-preview-body"></div>`;
+             pane.replaceChildren();
+             const entry = document.createElement("div");
+             entry.className = "essay-entry-shell";
+             entry.innerHTML = `<section class="essay-entry-document"><header class="essay-entry-bar"><div><span class="essay-entry-kicker">Required essay / document</span><strong>Submitted document</strong></div><div class="essay-entry-tools"><a class="essay-source-link" target="_blank" rel="noopener noreferrer">Open source ↗</a><button type="button" class="essay-fullscreen-button">Full screen</button></div></header><div class="essay-preview-body"></div></section><aside class="essay-entry-reference"><header class="essay-reference-head"><div><span class="essay-entry-kicker">Coach console</span><h2>Evaluation Quick Reference</h2><p>Seven categories · 35 points possible</p></div><span class="essay-reference-total">35<br><small>PTS</small></span></header><div class="essay-reference-list"></div><div class="essay-reference-launch"></div></aside>`;
+             const sourceLink = entry.querySelector(".essay-source-link");
+             if (driveDocument.sourceUrl) sourceLink.href = driveDocument.sourceUrl;
+             else { sourceLink.removeAttribute("href"); sourceLink.classList.add("disabled"); }
+             entry.querySelector(".essay-fullscreen-button").addEventListener("click", () => driveDocument.previewUrl && openEssayReader(driveDocument, entry.querySelector(".essay-fullscreen-button")));
+             const referenceList = entry.querySelector(".essay-reference-list");
+             const rubric = window.COOPER_ESSAY_RUBRIC || [];
+             referenceList.innerHTML = rubric.map((category, index) => `<details class="essay-reference-category" ${index === 0 ? "open" : ""}><summary><span class="essay-ref-number">0${index + 1}</span><span class="essay-ref-title">${escapeHtml(category.title)}</span><span class="essay-ref-points">5 pts</span></summary><div class="essay-ref-criteria">${[5,4,3,2,1].map(score => `<div><b>${score}</b><span>${escapeHtml(category.descriptions[score])}</span></div>`).join("")}</div></details>`).join("");
+             pane.appendChild(entry);
+             const previewCard = entry.querySelector(".essay-entry-document");
             const previewBody = previewCard.querySelector(".essay-preview-body");
             if (driveDocument.error) {
               previewBody.innerHTML = `<div class="essay-preview-error" role="status"><strong>Unable to open the essay document</strong><p>${escapeHtml(driveDocument.error)}</p></div>`;
             } else {
-               const fullscreenButton = document.createElement("button");
-               fullscreenButton.type = "button";
-               fullscreenButton.className = "essay-fullscreen-button";
-               fullscreenButton.textContent = "Full screen";
-               fullscreenButton.setAttribute("aria-label", "Open essay document in full-screen reader");
-               fullscreenButton.addEventListener("click", () => openEssayReader(driveDocument, fullscreenButton));
-               previewCard.querySelector("h3").appendChild(fullscreenButton);
               previewBody.innerHTML = '<div class="essay-preview-status" role="status">Opening the submitted Google Drive document…</div>';
               const frame = document.createElement("iframe");
               frame.className = "essay-preview-frame";
@@ -558,7 +539,6 @@
               });
               previewBody.appendChild(frame);
             }
-            pane.appendChild(previewCard);
           }
          if (key === "logistics") {
             const logisticsSplit = document.createElement("div");
