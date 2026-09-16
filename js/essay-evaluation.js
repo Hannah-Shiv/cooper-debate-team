@@ -193,7 +193,7 @@
     if (!card) return;
     const completed = evaluation?.status === "finalized" || evaluation?.finalizedAt;
      const hasDraft = KEYS.some((key) => Number.isInteger(evaluation?.rubric?.[key]));
-     const actionLabel = completed ? "View completed evaluation" : hasDraft ? "Continue evaluation" : "Start evaluation";
+     const actionLabel = completed ? "View completed evaluation" : hasDraft ? "Continue evaluation" : "Start Essay Evaluation";
      card.innerHTML = `<div><strong>Evaluation workspace</strong><p>${esc(launcherSummary(evaluation))}</p></div><button type="button" class="essay-launch" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
     card.querySelector("button").addEventListener("click", () => openWorkspace(item, evaluation));
   }

@@ -189,7 +189,7 @@ test("launcher keeps the document beside the complete seven-category quick refer
   await expect(page.locator(".essay-entry-reference")).toBeVisible();
   await expect(page.locator(".essay-reference-category")).toHaveCount(7);
   await expect(page.locator(".essay-reference-category .essay-ref-criteria")).toHaveCount(7);
-  await expect(page.locator(".essay-launch")).toHaveText("Start evaluation");
+  await expect(page.locator(".essay-launch")).toHaveText("Start Essay Evaluation");
   const layout = await page.evaluate(() => {
     const documentPanel = document.querySelector(".essay-entry-document").getBoundingClientRect();
     const referencePanel = document.querySelector(".essay-entry-reference").getBoundingClientRect();
