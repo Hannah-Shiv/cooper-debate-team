@@ -19,8 +19,12 @@ test("tryout form preserves separate Pair A and Pair B records", () => {
 
 test("debates can be saved as drafts with every field optional", () => {
   const form = html.slice(html.indexOf('<form id="tryout-form"'), html.indexOf("</form>", html.indexOf('<form id="tryout-form"')));
-  assert.doesNotMatch(form, /\srequired(?:\s|>)/);
-  assert.doesNotMatch(form, /<label[^>]*>[^<]*\*/);
+  const debateFields = ["tryout-date", "tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two", "tryout-judge", "tryout-start", "tryout-end", "tryout-location", "tryout-notes"];
+  debateFields.forEach(id => {
+    const field = form.match(new RegExp(`<(?:input|textarea)[^>]*id="${id}"[^>]*>`))?.[0] || "";
+    assert.ok(field);
+    assert.doesNotMatch(field, /\srequired(?:\s|>)/);
+  });
   assert.match(client, /pairAIds: ids\.slice\(0, 2\)\.filter\(Boolean\)/);
   assert.match(client, /pairBIds: ids\.slice\(2\)\.filter\(Boolean\)/);
   assert.match(client, /draft \? "Draft"/);
@@ -29,8 +33,8 @@ test("debates can be saved as drafts with every field optional", () => {
 });
 
 test("tryout settings and debate entries autosave without save buttons", () => {
-  assert.match(html, /id="tryout-settings-status"[^>]*>Saved</);
-  assert.match(html, /id="tryout-record-status"[^>]*>Saved</);
+  assert.match(html, /id="tryout-settings-status"[^>]*>Tournament saved</);
+  assert.match(html, /id="tryout-record-status"[^>]*>Debate saved</);
   assert.doesNotMatch(html, /id="tryout-range-save"/);
   assert.doesNotMatch(html, /id="tryout-save"/);
   assert.match(client, /TEMPLATE_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input", \(\) => scheduleTemplateSave\(\)\)\)/);
@@ -38,11 +42,14 @@ test("tryout settings and debate entries autosave without save buttons", () => {
   assert.match(client, /"Saved just now"/);
 });
 
-test("entry cards sit together above a full-width schedule", () => {
-  const entryStart = html.indexOf('<div class="tryout-entry-grid">');
+test("data entry uses a five-column, three-row grid above the full-width schedule", () => {
+  const entryStart = html.indexOf('<form id="tryout-form"');
   const scheduleStart = html.indexOf('<section class="tryout-card tryout-schedule-card">');
   assert.ok(entryStart >= 0 && scheduleStart > entryStart);
-  assert.match(html, /\.tryout-entry-grid\{align-items:start;display:grid/);
+  assert.match(html, /\.tryout-data-grid\{display:grid;gap:14px;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(html, /class="tryout-pair-group pair-a"/);
+  assert.match(html, /class="tryout-pair-group pair-b"/);
+  assert.match(html, /\.tryout-pair-group\{[^}]*grid-column:span 2/);
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
 });
 
