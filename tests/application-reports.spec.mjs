@@ -118,7 +118,7 @@ test("decision report distinguishes pending and on hold without Team Review data
   await expect(dialog).toContainText("Accepted");
   await expect(dialog).not.toContainText("Team Review");
 
-  await dialog.locator("#report-status").selectOption("on-hold");
+  await dialog.locator('[data-report-filter="status"][data-value="on-hold"]').click();
   await expect(dialog.locator("tbody tr")).toHaveCount(1);
   await expect(dialog.locator("tbody tr")).toContainText("Casey Hold");
 

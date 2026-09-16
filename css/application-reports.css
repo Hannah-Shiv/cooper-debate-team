@@ -57,3 +57,47 @@
 .application-report-dialog[data-kind=essay] .report-table .report-status{font-size:.62rem}
 .application-report-dialog[data-kind=essay] .report-table small{font-size:.69rem}
 .application-report-dialog[data-kind=essay] .report-table caption{font-size:.76rem}
+.application-report-dialog[data-kind=decision]{border-color:#4f9bdb;box-shadow:0 24px 70px rgba(0,0,0,.62),0 0 0 1px rgba(107,190,255,.14)}
+.application-report-dialog[data-kind=decision] .report-head{background:linear-gradient(110deg,#123e70 0,#0b2c55 50%,#061b39 100%);border-bottom-color:#4f9bdb;padding:9px 14px;position:relative}
+.application-report-dialog[data-kind=decision] .report-kicker{color:#ffe052;font-size:.62rem}
+.application-report-dialog[data-kind=decision] .report-head h2{color:#fff;font-size:1.65rem}
+.application-report-dialog[data-kind=decision] .report-count{color:#fff;font-size:.82rem;font-weight:900;left:50%;letter-spacing:.03em;position:absolute;text-shadow:none;top:50%;transform:translate(-50%,-50%)}
+.application-report-dialog[data-kind=decision] .report-head-actions{margin-left:auto}
+.application-report-dialog[data-kind=decision] .report-button.primary{background:#ffd523;border-color:#fff08a;color:#171003}
+.application-report-dialog[data-kind=decision] .report-toolbar{background:#0a2a54;border-bottom:1px solid #3f77ae;box-shadow:none;gap:0;grid-template-columns:minmax(190px,1.15fr) minmax(390px,1.8fr) minmax(180px,.8fr) auto;padding:13px 14px}
+.application-report-dialog[data-kind=decision] .report-field{padding:0 17px}
+.application-report-dialog[data-kind=decision] .report-field:first-child{padding-left:0}
+.application-report-dialog[data-kind=decision] .report-field label,.application-report-dialog[data-kind=decision] .report-field-label{font-size:.59rem;font-weight:900;letter-spacing:.13em;margin-bottom:2px}
+.application-report-dialog[data-kind=decision] .report-field:first-child label{color:#6fe7ff}
+.application-report-dialog[data-kind=decision] .report-choice-field:nth-child(2) .report-field-label{color:#ffe052}
+.application-report-dialog[data-kind=decision] .report-choice-field:nth-child(3) .report-field-label{color:#c9a7ff}
+.application-report-dialog[data-kind=decision] #report-search{background:#061a36;border-color:#2e79ad;border-radius:7px;color:#fff;font-size:.68rem;box-shadow:none}
+.application-report-dialog[data-kind=decision] #report-search::placeholder{color:#9bb5d0;opacity:.88}
+.application-report-dialog[data-kind=decision] .report-filter-buttons{gap:6px}
+.application-report-dialog[data-kind=decision] .report-filter-buttons button{border-radius:7px;box-shadow:none;min-width:54px;padding:7px 10px}
+.application-report-dialog[data-kind=decision] #report-status [data-value=all]{background:#176eaa;border-color:#67c5ff;color:#fff}
+.application-report-dialog[data-kind=decision] #report-status [data-value=pending]{background:#9b5f19;border-color:#efb65f;color:#fff}
+.application-report-dialog[data-kind=decision] #report-status [data-value=on-hold]{background:#7048a0;border-color:#b990e5;color:#fff}
+.application-report-dialog[data-kind=decision] #report-status [data-value=accepted]{background:#167345;border-color:#62d69a;color:#fff}
+.application-report-dialog[data-kind=decision] #report-status [data-value=declined]{background:#8f243d;border-color:#ef7188;color:#fff}
+.application-report-dialog[data-kind=decision] #report-status button:not(.active),.application-report-dialog[data-kind=decision] #report-grade button:not(.active){filter:saturate(.72) brightness(.72)}
+.application-report-dialog[data-kind=decision] #report-status button.active,.application-report-dialog[data-kind=decision] #report-grade button.active{box-shadow:0 0 0 2px #fff;filter:none;transform:translateY(-1px)}
+.application-report-dialog[data-kind=decision] #report-grade button:nth-child(1){background:#176eaa;border-color:#67c5ff;color:#fff}
+.application-report-dialog[data-kind=decision] #report-grade button:nth-child(2){background:#a44b27;border-color:#f19b71;color:#fff}
+.application-report-dialog[data-kind=decision] #report-grade button:nth-child(3){background:#6d4bb0;border-color:#bba0f3;color:#fff}
+.application-report-dialog[data-kind=decision] #report-grade button:nth-child(4){background:#26795e;border-color:#78d9b4;color:#fff}
+.application-report-dialog[data-kind=decision] #report-grade button:nth-child(n+5){background:#8d416e;border-color:#de8fbd;color:#fff}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle{align-self:end;background:#0d3158;border:1px solid #3976aa;border-radius:7px;color:#fff;display:flex;height:35px;justify-content:space-between;margin-left:0;min-width:174px;padding:6px 9px 6px 11px}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle input{appearance:none;background:#314d69;border:1px solid #6c8aa6;border-radius:999px;cursor:pointer;flex:0 0 34px;height:18px;margin:0;order:2;position:relative;transition:background .18s,border-color .18s;width:34px}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle input::after{background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.45);content:"";height:12px;left:2px;position:absolute;top:2px;transition:transform .18s;width:12px}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle input:checked{background:#16885f;border-color:#65dfad}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle input:checked::after{transform:translateX(16px)}
+.application-report-dialog[data-kind=decision] .report-hidden-toggle span{color:#e5f3ff;font-size:.57rem;letter-spacing:.09em;order:1}
+.application-report-dialog[data-kind=decision] .report-table th{font-size:.64rem}
+.application-report-dialog[data-kind=decision] .report-table td{font-size:.76rem}
+.application-report-dialog[data-kind=decision] .report-table .report-status{font-size:.62rem}
+.application-report-dialog[data-kind=decision] .report-table small{font-size:.69rem}
+.application-report-dialog[data-kind=decision] .report-table caption{font-size:.76rem}
+@media(max-width:1050px){.application-report-dialog[data-kind=decision] .report-toolbar{grid-template-columns:1fr 1fr}.application-report-dialog[data-kind=decision] .report-field:first-child{grid-column:1/-1}.application-report-dialog[data-kind=decision] .report-field{padding:0 10px}.application-report-dialog[data-kind=decision] .report-filter-buttons{flex-wrap:wrap}}
+@media(max-width:760px){.application-report-dialog[data-kind=decision] .report-count{font-size:.72rem;left:auto;position:static;transform:none}.application-report-dialog[data-kind=decision] .report-head{padding:10px 14px}}
+@media(max-width:600px){.application-report-dialog[data-kind=decision] .report-toolbar{gap:3px;grid-template-columns:1fr;padding:10px 12px}.application-report-dialog[data-kind=decision] .report-field{grid-column:auto!important;padding:7px 0}.application-report-dialog[data-kind=decision] .report-hidden-toggle{justify-content:space-between;margin-top:5px}.application-report-dialog[data-kind=decision] .report-filter-buttons button{flex:1}}
