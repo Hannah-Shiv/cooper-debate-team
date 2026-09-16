@@ -118,14 +118,15 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
   await expect(page.getByText(
     "Presents a strong, precise claim and develops a clear case with at least two well-developed reasons or contentions."
   )).toBeVisible();
-  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 scored · 4/35");
+  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 categories scored. 4 / 35 points");
   await expect(page.locator('[data-key="claimCase"] .eval-cat-grade')).toHaveText("Good");
   await expect(page.locator('[data-key="claimCase"]')).toHaveClass(/scored/);
   await expect(page.locator(".eval-source-notice")).toContainText("No valid Google Drive or Google Docs link");
 
   await page.locator('[data-key="evidenceResearch"] .eval-cat-head').click();
   await page.locator('[data-key="evidenceResearch"] .eval-score[data-score="5"]').click();
-  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 scored · 9/35");
+  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 categories scored. 9 / 35 points");
+  await expect(page.locator(".eval-meter span")).toHaveText("29%");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-grade')).toHaveText("Outstanding");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-score')).toHaveText("5/5");
   await expect.poll(async () => page.evaluate(() =>
@@ -156,6 +157,8 @@ test("reset clears a saved evaluation and restores the Not Started launcher", as
   await expect(page.locator(".essay-launch-wrap p")).toContainText("In Progress4/35");
   await page.locator(".essay-launch").click();
   await expect(page.locator(".eval-reset")).toBeVisible();
+  await expect(page.locator(".eval-reset")).toHaveCSS("background-image", /linear-gradient/);
+  await expect(page.locator(".eval-reset")).toHaveCSS("color", "rgb(255, 255, 255)");
   await page.locator(".eval-reset").click();
   await expect(page.locator(".eval-reset-confirm")).toBeVisible();
   await expect(page.locator(".eval-reset-confirm")).toContainText("This cannot be undone.");
@@ -234,10 +237,11 @@ test("evaluation header is a single ordered command bar with score and status pi
   await expect(page.locator(".essay-eval-kicker")).toHaveText("Evaluation Workspace");
   await expect(page.locator(".essay-eval-sub")).toHaveText("Read document → Score categories");
   await expect(page.locator(".eval-head-summary strong")).toHaveText("Essay Evaluation");
-  await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 scored · 0/35");
+  await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 categories scored. 0 / 35 points");
   await expect(page.locator(".eval-status")).toHaveText("Not started");
+  await expect(page.locator(".eval-head-recommendation span")).toHaveText("Not selected");
   const header = await page.evaluate(() => {
-    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-finalize", ".eval-close"];
+    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-head-recommendation", ".eval-finalize", ".eval-close"];
     const boxes = selectors.map(selector => document.querySelector(selector).getBoundingClientRect());
     const scoreStyle = getComputedStyle(document.querySelector(".eval-header-score"));
     const statusStyle = getComputedStyle(document.querySelector(".eval-status"));
@@ -254,10 +258,16 @@ test("evaluation header is a single ordered command bar with score and status pi
       essayTitleSize: parseFloat(getComputedStyle(document.querySelector(".eval-head-summary strong")).fontSize),
       scoreSize: parseFloat(scoreStyle.fontSize),
       statusDivider: getComputedStyle(document.querySelector(".eval-status"), "::before").borderRightWidth,
+      statusWidth: status.width,
+      instructionSize: parseFloat(getComputedStyle(document.querySelector(".essay-eval-sub")).fontSize),
+      instructionColor: getComputedStyle(document.querySelector(".essay-eval-sub")).color,
       closeBackground: closeStyle.backgroundImage,
       finalizeBackground: finalizeStyle.backgroundImage,
       finalizeColor: finalizeStyle.color,
       closeIsLast: document.querySelector(".essay-eval-head-actions").lastElementChild.classList.contains("eval-close"),
+      recommendationBetweenStatusAndFinalize:
+        document.querySelector(".eval-status").nextElementSibling.classList.contains("eval-head-recommendation") &&
+        document.querySelector(".eval-head-recommendation").nextElementSibling.classList.contains("eval-finalize-wrap"),
       statusCloseGap: close.left - status.right,
       finalizeCloseGap: close.left - finalize.right,
     };
@@ -269,10 +279,14 @@ test("evaluation header is a single ordered command bar with score and status pi
   expect(header.essayTitleSize).toBeGreaterThanOrEqual(15.8);
   expect(header.scoreSize).toBeGreaterThanOrEqual(13.7);
   expect(header.statusDivider).toBe("1px");
+  expect(header.statusWidth).toBe(176);
+  expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
+  expect(header.instructionColor).toBe("rgb(212, 230, 248)");
   expect(header.closeBackground).toContain("182, 59, 71");
   expect(header.finalizeBackground).toContain("67, 200, 121");
   expect(header.finalizeColor).toBe("rgb(255, 255, 255)");
   expect(header.closeIsLast).toBe(true);
+  expect(header.recommendationBetweenStatusAndFinalize).toBe(true);
   expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(9);
 
   const finalizeHelp = page.locator(".eval-finalize-help");
@@ -281,6 +295,8 @@ test("evaluation header is a single ordered command bar with score and status pi
   await page.locator(".eval-finalize-wrap").hover();
   await expect(finalizeHelp).toBeVisible();
   await expect(finalizeHelp).toContainText("Please score all categories and choose a recommendation to activate.");
+  const tooltipBox = await finalizeHelp.boundingBox();
+  expect(tooltipBox.y).toBeGreaterThan(65);
 
   const close = page.locator(".eval-close");
   const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundImage);
@@ -302,6 +318,8 @@ test("coaching notes are optional and recommendation colors persist after select
 
   await expect(page.locator('label[for="eval-strengths"]')).toContainText("Optional");
   await expect(page.locator('label[for="eval-growth"]')).toContainText("Optional");
+  await expect(page.locator(".eval-meter span")).toHaveText("0%");
+  await expect(page.locator(".eval-meter i")).toHaveCSS("background-image", /linear-gradient/);
   await expect(page.locator(".eval-cat-grade")).toHaveCount(7);
   await expect(page.locator(".eval-cat-score")).toHaveCount(7);
   await expect(page.locator(".eval-cat-grade").first()).toHaveText("Choose level");
@@ -321,6 +339,7 @@ test("coaching notes are optional and recommendation colors persist after select
   await recommendation.click();
   await page.waitForTimeout(220);
   await expect(recommendation).toHaveAttribute("aria-checked", "true");
+  await expect(page.locator(".eval-head-recommendation span")).toHaveText("Recommend");
   expect(await recommendation.evaluate(element => getComputedStyle(element).backgroundColor)).toBe(hoverColor);
 
   for (const category of await page.locator(".eval-category").all()) {

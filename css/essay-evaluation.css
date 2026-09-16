@@ -702,6 +702,88 @@ html.is-chromeos .eval-head-summary:before{display:none}
   visibility:visible
 }
 
+/* Stable command-bar controls and visible finalization guidance. */
+.essay-eval-sub{color:#d4e6f8;font-size:.86rem;font-weight:700}
+.eval-status{
+  box-sizing:border-box;
+  flex:0 0 176px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  width:176px
+}
+.eval-head-recommendation{
+  align-items:center;
+  background:#172f54;
+  border:1px solid #5f87b4;
+  border-radius:999px;
+  box-sizing:border-box;
+  color:#fff;
+  display:flex;
+  flex:0 0 190px;
+  font-size:.64rem;
+  gap:7px;
+  min-height:32px;
+  overflow:hidden;
+  padding:6px 10px;
+  width:190px
+}
+.eval-head-recommendation b{color:#90b5d9;font-size:.53rem;letter-spacing:.07em;text-transform:uppercase}
+.eval-head-recommendation span{font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.eval-reset{
+  background:linear-gradient(180deg,#b63b47,#7e202d);
+  border:1px solid #ff8f99;
+  color:#fff
+}
+.eval-reset:hover,.eval-reset:focus-visible{
+  background:linear-gradient(180deg,#dc5260,#9b2837);
+  border-color:#ffd0d4;
+  box-shadow:0 0 0 3px rgba(255,87,101,.2),0 0 13px rgba(255,87,101,.32);
+  color:#fff;
+  outline:0;
+  transform:translateY(-1px)
+}
+.eval-finalize-help{
+  bottom:auto;
+  left:auto;
+  position:fixed;
+  right:88px;
+  top:74px;
+  transform:translateY(-5px);
+  z-index:1000
+}
+.eval-finalize-help:after{
+  border-bottom:0;
+  border-left:1px solid #e3bd4e;
+  border-right:0;
+  border-top:1px solid #e3bd4e;
+  bottom:calc(100% - 4px);
+  left:auto;
+  right:42px;
+  top:auto
+}
+.eval-finalize-wrap:has(.eval-finalize:disabled):hover .eval-finalize-help{
+  transform:translateY(0)
+}
+.eval-meter{
+  background:#123c4b;
+  border:1px solid #318c89;
+  border-radius:999px;
+  height:22px;
+  position:relative
+}
+.eval-meter i{background:linear-gradient(90deg,#169b83,#42d5ac)}
+.eval-meter span{
+  color:#fff;
+  font-size:.66rem;
+  font-weight:900;
+  inset:0;
+  line-height:20px;
+  position:absolute;
+  text-align:center;
+  text-shadow:0 1px 2px #053a35
+}
+
 /* Recommendation colors: selected uses the same visual state as hover. */
 .eval-recommendation{gap:8px}
 .eval-recommendation button{
