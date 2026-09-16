@@ -201,7 +201,7 @@
     #tryout-manager .tm-fields{gap:16px 14px}#tryout-manager .tm-field{gap:8px}#tryout-manager .tm-field label{color:#b8cae2;font-size:.55rem;letter-spacing:.12em}#tryout-manager .tm-field input,#tryout-manager .tm-field select,#tryout-manager .tm-field textarea{background:linear-gradient(180deg,rgba(3,15,38,.92),rgba(3,12,30,.96));border:1px solid rgba(139,177,230,.28);border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.025);color:#f2f7ff;font-size:.72rem;min-height:44px;padding:11px 12px;transition:border-color .18s,box-shadow .18s,background .18s}#tryout-manager .tm-field textarea{min-height:102px}#tryout-manager .tm-field input:hover,#tryout-manager .tm-field select:hover,#tryout-manager .tm-field textarea:hover{border-color:rgba(139,190,255,.48)}#tryout-manager .tm-field input:focus,#tryout-manager .tm-field select:focus,#tryout-manager .tm-field textarea:focus{background:#061a3b;border-color:#6ce0c8;box-shadow:0 0 0 3px rgba(108,224,200,.1),0 8px 22px rgba(0,0,0,.14)}
     .tryout-pair-label{align-items:center;border:0;color:#f5cf69;display:flex;font-size:.58rem;gap:10px;letter-spacing:.14em;margin:5px 0 -1px;padding:0}.tryout-pair-label::after{background:linear-gradient(90deg,rgba(245,207,105,.42),transparent);content:"";height:1px;width:100%}.tryout-actions{margin-top:22px}.tryout-actions .tm-save{background:linear-gradient(135deg,#f7d764,#e9b82f);border:1px solid #ffe58c;border-radius:8px;box-shadow:0 8px 18px rgba(202,148,24,.18);min-height:43px;padding:11px 18px;transition:box-shadow .18s,transform .18s}.tryout-actions .tm-save:hover,.tryout-actions .tm-save:focus-visible{box-shadow:0 11px 24px rgba(202,148,24,.3);outline:2px solid rgba(255,229,140,.35);outline-offset:2px;transform:translateY(-1px)}.tryout-cancel{border-radius:8px;min-height:43px;padding:11px 15px}
     .tryout-template-settings{background:linear-gradient(110deg,rgba(12,38,76,.98),rgba(6,25,55,.98));border-color:rgba(108,224,200,.24)}.tryout-template-settings .tm-fields{background:rgba(2,14,36,.28);border:1px solid rgba(137,181,239,.14);border-radius:10px;padding:12px}.tryout-table-wrap{border-radius:9px}.tryout-empty{background:linear-gradient(145deg,rgba(6,23,51,.72),rgba(3,16,37,.62));border-color:rgba(108,224,200,.25);border-radius:10px;color:#9fb7d5;padding:34px}
-    @media(max-width:580px){.tryout-overview{padding:17px 16px}.tryout-overview h2{font-size:1.42rem}.tryout-overview p{display:none}.tryout-stat{min-height:68px;padding:11px 13px}.tryout-stat strong{font-size:1.55rem}.tryout-card{padding:19px 17px}.tryout-template-settings .tm-fields{padding:10px}}
+    @media(max-width:580px){.tryout-overview{padding:17px 16px}.tryout-overview h2{font-size:1.42rem}.tryout-overview p{display:block;font-size:.62rem;line-height:1.3}.tryout-stat{min-height:62px;padding:10px 13px}.tryout-stat strong{font-size:1.55rem}.tryout-card{padding:19px 17px}.tryout-template-settings .tm-fields{padding:10px}}
    @media(max-width:680px){.tm-view-grid{grid-template-columns:1fr}.tm-view-card.full{grid-column:auto}.tm-view-row{grid-template-columns:1fr;gap:3px}.tm-view-hero-top{flex-direction:column}}
 
     /* Wider tournament workspace with a fully contained data grid. */
@@ -682,21 +682,21 @@
               <section class="tryout-overview">
                 <div class="tryout-overview-copy">
                   <button class="tryout-back" type="button" data-manager-mode="volunteers">← Back to All Tournaments</button>
-                  <span class="tm-summary-kicker">Reusable tryout tournament template</span>
                   <h2 id="tryout-template-title">2026 Debate Tryout Schedule</h2>
-                  <p>Manually schedule Pair A against Pair B with a judge, date, time, and room. Debaters come from Track Applications or the Members Directory.</p>
+                  <p>Manually create debate schedule</p>
                 </div>
                 <div class="tryout-stat"><span>Debaters</span><strong id="tryout-student-count">0</strong></div>
                 <div class="tryout-stat"><span>Debates</span><strong id="tryout-pair-count">0</strong></div>
               </section>
               <section class="tryout-card tryout-template-settings">
-                <h2>Tryout date range</h2>
-                <p class="tryout-card-intro">Unlike a regular tournament, this tryout tournament can span multiple days. Every debate must fall inside this range.</p>
+                <h2>Tournament settings</h2>
+                <p class="tryout-card-intro">Name the tournament and choose the date range for its debate schedule.</p>
                 <div class="tm-fields">
+                  <div class="tm-field full"><label for="tryout-tournament-name">Tournament name *</label><input id="tryout-tournament-name" maxlength="160" required placeholder="e.g., 2026 Debate Tryout Schedule"></div>
                   <div class="tm-field"><label for="tryout-range-start">Start date *</label><input id="tryout-range-start" type="date" required></div>
                   <div class="tm-field"><label for="tryout-range-end">End date *</label><input id="tryout-range-end" type="date" required></div>
                 </div>
-                <div class="tryout-actions"><button id="tryout-range-save" class="tm-save" type="button">Save date range</button></div>
+                <div class="tryout-actions"><button id="tryout-range-save" class="tm-save" type="button">Save tournament settings</button></div>
               </section>
               <div class="tryout-grid">
                 <form id="tryout-form" class="tryout-card">

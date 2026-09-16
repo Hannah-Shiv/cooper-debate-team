@@ -29,11 +29,15 @@ test("tryout header uses two summary metrics and a button-style return control",
 });
 
 test("tryout template uses a reusable date range", () => {
+  assert.match(html, /id="tryout-tournament-name"/);
   assert.match(html, /id="tryout-range-start"/);
   assert.match(html, /id="tryout-range-end"/);
   assert.match(client, /action: "saveTemplate"/);
   assert.match(server, /tryout_tournaments/);
   assert.match(server, /date < startDate \|\| date > endDate/);
+  assert.match(server, /template = \{ \.\.\.currentTemplate, title, startDate, endDate \}/);
+  assert.doesNotMatch(html, /Reusable tryout tournament template/);
+  assert.match(html, /Manually create debate schedule/);
 });
 
 test("debater and judge pools expose only schedule-safe projections", () => {
@@ -59,7 +63,7 @@ test("legacy one-pair records remain readable", () => {
 });
 
 test("captains can edit debates but only full admins can delete or change the range", () => {
-  assert.match(server, /Only Coaches and Website Admins can change the tryout date range/);
+  assert.match(server, /Only Coaches and Website Admins can change the tryout tournament settings/);
   assert.match(server, /Only Coaches and Website Admins can delete tryout debates/);
   assert.match(client, /canDelete = event\.detail\?\.role !== "captain"/);
   assert.match(server, /belongsToTemplate\(existingSnap\.data\(\), template\)/);

@@ -2620,11 +2620,13 @@ exports.manageTryoutSchedule = onRequest(
 
       if (action === "saveTemplate") {
         if (!await hasFullAdminAccess(decoded.email)) {
-          throw new Error("Only Coaches and Website Admins can change the tryout date range.");
+          throw new Error("Only Coaches and Website Admins can change the tryout tournament settings.");
         }
         const incoming = body.template || {};
+        const title = cleanText(incoming.title, 160);
         const startDate = cleanDate(incoming.startDate);
         const endDate = cleanDate(incoming.endDate);
+        if (!title) throw new Error("Enter a tournament name.");
         if (!startDate || !endDate || startDate > endDate) throw new Error("Choose a valid tryout start and end date.");
         let template;
         await db.runTransaction(async transaction => {
@@ -2640,7 +2642,7 @@ exports.manageTryoutSchedule = onRequest(
           })) {
             throw new Error("Move or delete debates outside the new date range before shortening it.");
           }
-          template = { ...currentTemplate, startDate, endDate };
+          template = { ...currentTemplate, title, startDate, endDate };
           transaction.set(templateRef, {
             ...template,
             updatedBy: cleanEmail(decoded.email),

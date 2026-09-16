@@ -61,6 +61,7 @@
 
   function applyTemplate() {
     $("tryout-template-title").textContent = template.title || "Debate Tryout Schedule";
+    $("tryout-tournament-name").value = template.title || "";
     $("tryout-range-start").value = template.startDate || "";
     $("tryout-range-end").value = template.endDate || "";
     $("tryout-date").min = template.startDate || "";
@@ -155,19 +156,24 @@
   }
 
   async function saveTemplate() {
+    const title = $("tryout-tournament-name").value.trim();
     const startDate = $("tryout-range-start").value;
     const endDate = $("tryout-range-end").value;
+    if (!title) {
+      setMessage("Enter a tournament name.", "error");
+      return;
+    }
     if (!startDate || !endDate || startDate > endDate) {
       setMessage("Choose a valid tryout start and end date.", "error");
       return;
     }
     try {
       $("tryout-range-save").disabled = true;
-      const result = await manage({ action: "saveTemplate", template: { startDate, endDate } });
+      const result = await manage({ action: "saveTemplate", template: { title, startDate, endDate } });
       template = result.template;
       applyTemplate();
       renderSummary();
-      setMessage("Tryout date range saved.", "ok");
+      setMessage("Tournament settings saved.", "ok");
     } catch (error) {
       setMessage(error.message, "error");
     } finally {
@@ -253,6 +259,7 @@
     canDelete = event.detail?.role !== "captain";
     const isCaptain = event.detail?.role === "captain";
     $("tryout-range-save").hidden = isCaptain;
+    $("tryout-tournament-name").disabled = isCaptain;
     $("tryout-range-start").disabled = isCaptain;
     $("tryout-range-end").disabled = isCaptain;
     if (isCaptain) {
