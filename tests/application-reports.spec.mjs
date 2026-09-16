@@ -58,6 +58,7 @@ const evaluations = {
 
 async function mountReports(page) {
   await page.setContent(`
+    <button id="application-stats-report">Stats</button>
     <button id="essay-scores-report">Essay Scores</button>
     <button id="decision-status-report">Decision Status</button>
   `);
@@ -80,8 +81,74 @@ async function mountReports(page) {
     });
   }, { records: applications, essayRecords: evaluations });
   await page.addStyleTag({ path: "css/application-reports.css" });
+  await page.addStyleTag({ path: "css/application-stats.css" });
+  await page.addScriptTag({ path: "js/application-stats.js" });
   await page.addScriptTag({ path: "js/application-reports.js" });
 }
+
+test("stats chart groups by the selected day or hour interval", async ({ page }) => {
+  await mountReports(page);
+  await page.evaluate(() => {
+    window.__cooperApplicationsReportContext.applications = [
+      { id: "one", createdAt: "2026-09-14T13:15:00-04:00" },
+      { id: "two", createdAt: "2026-09-14T17:30:00-04:00" },
+      { id: "three", createdAt: "2026-09-16T21:45:00-04:00" },
+    ];
+  });
+  await page.locator("#application-stats-report").click();
+
+  const dialog = page.locator(".application-stats-dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await expect(dialog.locator("#stats-by")).toHaveValue("day");
+  await expect(dialog.locator(".stats-line")).toHaveCount(1);
+  await expect(dialog.locator(".stats-line")).toHaveAttribute("d", / C /);
+  await expect(dialog.locator(".stats-line")).toHaveCSS("stroke", "rgb(244, 207, 70)");
+  await expect(dialog.locator(".stats-line")).toHaveCSS("stroke-width", "2.5px");
+  await expect(dialog.locator(".stats-chart-stage")).toHaveCSS("background-color", "rgb(27, 29, 33)");
+  await expect(dialog.locator(".stats-chart")).toHaveAttribute("aria-label", /cumulative application submissions/);
+  await expect(dialog.locator(".stats-point").last()).toHaveAttribute("aria-label", "Sep 16: 3 cumulative submissions");
+  await expect(dialog.locator(".stats-point")).toHaveCount(3);
+  await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
+  await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
+  await expect(dialog.locator('[data-stats-handle="from"]')).toHaveCSS("left", "0px");
+  const initialRail = await dialog.locator(".stats-range-rail").boundingBox();
+  const initialToHandle = await dialog.locator('[data-stats-handle="to"]').boundingBox();
+  expect(Math.abs((initialToHandle.x + initialToHandle.width / 2) - (initialRail.x + initialRail.width))).toBeLessThan(2);
+
+  const toHandle = await dialog.locator('[data-stats-handle="to"]').boundingBox();
+  const rail = await dialog.locator(".stats-range-rail").boundingBox();
+  await page.mouse.move(toHandle.x + toHandle.width / 2, toHandle.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(rail.x + rail.width / 2, toHandle.y + 20);
+  await page.mouse.up();
+  await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
+  await dialog.locator(".stats-reset").click();
+
+  const fromHandle = await dialog.locator('[data-stats-handle="from"]').boundingBox();
+  const resetRail = await dialog.locator(".stats-range-rail").boundingBox();
+  await page.mouse.move(fromHandle.x + fromHandle.width / 2, fromHandle.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(resetRail.x + resetRail.width * 2 / 3, fromHandle.y + 20);
+  await page.mouse.up();
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await dialog.locator(".stats-reset").click();
+
+  await dialog.locator("#stats-from").fill("2026-09-14T00:00");
+  await dialog.locator("#stats-from").dispatchEvent("change");
+  await dialog.locator("#stats-to").fill("2026-09-14T23:59");
+  await dialog.locator("#stats-to").dispatchEvent("change");
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await expect(dialog.locator(".stats-point")).toHaveCount(1);
+  await dialog.locator("#stats-by").selectOption("hour");
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
+  await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
+  await expect(dialog.locator(".stats-point")).toHaveCount(24);
+  const onePmPoint = dialog.getByLabel("1 PM: 1 cumulative submission", { exact: true });
+  await onePmPoint.hover();
+  await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toBeVisible();
+  await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toContainText("1 PM");
+});
 
 test("essay report shows all grading states, filters, and sorts by total", async ({ page }) => {
   await mountReports(page);
