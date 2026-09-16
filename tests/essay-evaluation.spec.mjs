@@ -275,6 +275,13 @@ test("evaluation header is a single ordered command bar with score and status pi
   expect(header.closeIsLast).toBe(true);
   expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(9);
 
+  const finalizeHelp = page.locator(".eval-finalize-help");
+  await page.mouse.move(2, 400);
+  await expect(finalizeHelp).toBeHidden();
+  await page.locator(".eval-finalize-wrap").hover();
+  await expect(finalizeHelp).toBeVisible();
+  await expect(finalizeHelp).toContainText("Please score all categories and choose a recommendation to activate.");
+
   const close = page.locator(".eval-close");
   const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundImage);
   await close.hover();
@@ -286,6 +293,44 @@ test("evaluation header is a single ordered command bar with score and status pi
   expect(hoverStyle.background).not.toBe(restingBackground);
   expect(hoverStyle.shadow).not.toBe("none");
   expect(hoverStyle.transform).not.toBe("none");
+});
+
+test("coaching notes are optional and recommendation colors persist after selection", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await mountEvaluation(page, null);
+  await page.locator(".essay-launch").click();
+
+  await expect(page.locator('label[for="eval-strengths"]')).toContainText("Optional");
+  await expect(page.locator('label[for="eval-growth"]')).toContainText("Optional");
+  await expect(page.locator(".eval-cat-grade")).toHaveCount(7);
+  await expect(page.locator(".eval-cat-score")).toHaveCount(7);
+  await expect(page.locator(".eval-cat-grade").first()).toHaveText("Choose level");
+  await expect(page.locator(".eval-cat-score").first()).toHaveText("— /5");
+
+  const categoryColors = await page.locator(".eval-category").evaluateAll(elements =>
+    elements.map(element => getComputedStyle(element).borderLeftColor)
+  );
+  expect(new Set(categoryColors).size).toBe(7);
+
+  const recommendation = page.locator('[data-rec="recommend"]');
+  const restingColor = await recommendation.evaluate(element => getComputedStyle(element).backgroundColor);
+  await recommendation.hover();
+  await page.waitForTimeout(220);
+  const hoverColor = await recommendation.evaluate(element => getComputedStyle(element).backgroundColor);
+  expect(hoverColor).not.toBe(restingColor);
+  await recommendation.click();
+  await page.waitForTimeout(220);
+  await expect(recommendation).toHaveAttribute("aria-checked", "true");
+  expect(await recommendation.evaluate(element => getComputedStyle(element).backgroundColor)).toBe(hoverColor);
+
+  for (const category of await page.locator(".eval-category").all()) {
+    const score = category.locator('.eval-score[data-score="5"]');
+    if (!(await score.isVisible())) await category.locator(".eval-cat-head").click();
+    await score.click();
+  }
+  await expect(page.locator("#eval-strengths")).toHaveValue("");
+  await expect(page.locator("#eval-growth")).toHaveValue("");
+  await expect(page.locator(".eval-finalize")).toBeEnabled();
 });
 
 test("launcher keeps the document beside the complete seven-category quick reference", async ({ page }) => {

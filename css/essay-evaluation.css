@@ -613,3 +613,119 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-status{border:1px solid #5d93c6;flex:0 0 auto;padding:7px 12px;text-align:center;width:auto}
   .eval-close{margin-left:0}
 }
+
+/* Mirror the colorful quick-reference rubric inside the evaluation workspace. */
+.eval-category{
+  background:color-mix(in srgb,var(--category-accent) 17%,#06152b);
+  border-color:color-mix(in srgb,var(--category-accent) 72%,transparent);
+  border-left-width:4px;
+  box-shadow:0 5px 14px rgba(0,0,0,.16);
+  overflow:visible
+}
+.eval-cat-head{
+  background:color-mix(in srgb,var(--category-accent) 34%,#07172f);
+  border-radius:5px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09);
+  min-height:58px;
+  transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
+}
+.eval-cat-head:hover{
+  background:color-mix(in srgb,var(--category-accent) 43%,#07172f);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 0 0 1px color-mix(in srgb,var(--category-accent) 58%,transparent)
+}
+.eval-cat-num{
+  background:radial-gradient(circle at 38% 32%,color-mix(in srgb,var(--category-accent) 46%,#18365a),color-mix(in srgb,var(--category-accent) 22%,#07172f) 68%);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--category-accent) 24%,transparent),inset 0 1px 0 rgba(255,255,255,.38),0 0 12px color-mix(in srgb,var(--category-accent) 34%,transparent)
+}
+.eval-cat-name{font-size:.94rem;text-shadow:0 0 8px color-mix(in srgb,var(--category-accent) 24%,transparent)}
+.eval-cat-grade,.eval-cat-score{
+  background:color-mix(in srgb,var(--category-accent) 16%,#020b18);
+  border:1px solid color-mix(in srgb,var(--category-accent) 82%,#fff);
+  border-radius:6px;
+  box-shadow:0 0 10px color-mix(in srgb,var(--category-accent) 24%,transparent),inset 0 1px 0 rgba(255,255,255,.12);
+  color:#fff;
+  min-width:84px;
+  padding:7px 9px;
+  text-align:center;
+  text-shadow:0 0 5px color-mix(in srgb,var(--category-accent) 55%,transparent)
+}
+.eval-cat-score{min-width:66px}
+.eval-category.scored .eval-cat-grade,.eval-category.scored .eval-cat-score{
+  background:var(--category-accent);
+  border-color:color-mix(in srgb,var(--category-accent) 64%,#fff);
+  color:#06152b;
+  text-shadow:none
+}
+.eval-cat-body{background:#041226}
+
+/* Disabled finalization guidance is owned by the wrapper because native
+   disabled buttons do not reliably emit pointer events in every browser. */
+.eval-finalize-wrap{display:inline-flex;position:relative}
+.eval-finalize-help{
+  background:#fff8dd;
+  border:1px solid #e3bd4e;
+  border-radius:8px;
+  bottom:calc(100% + 10px);
+  box-shadow:0 10px 24px rgba(0,0,0,.38);
+  color:#332307;
+  font-size:.68rem;
+  font-weight:800;
+  left:50%;
+  line-height:1.35;
+  opacity:0;
+  padding:9px 11px;
+  pointer-events:none;
+  position:absolute;
+  text-align:center;
+  transform:translate(-50%,5px);
+  transition:opacity .16s,transform .16s,visibility .16s;
+  visibility:hidden;
+  white-space:normal;
+  width:245px;
+  z-index:20
+}
+.eval-finalize-help:after{
+  background:#fff8dd;
+  border-bottom:1px solid #e3bd4e;
+  border-right:1px solid #e3bd4e;
+  content:"";
+  height:9px;
+  left:50%;
+  position:absolute;
+  top:calc(100% - 4px);
+  transform:translateX(-50%) rotate(45deg);
+  width:9px
+}
+.eval-finalize-wrap:has(.eval-finalize:disabled):hover .eval-finalize-help{
+  opacity:1;
+  transform:translate(-50%,0);
+  visibility:visible
+}
+
+/* Recommendation colors: selected uses the same visual state as hover. */
+.eval-recommendation{gap:8px}
+.eval-recommendation button{
+  --rec-rest:#205b43;
+  --rec-active:#2fa86f;
+  background:var(--rec-rest);
+  border:1px solid color-mix(in srgb,var(--rec-active) 72%,#fff);
+  border-radius:7px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 11px rgba(0,0,0,.2);
+  color:#fff;
+  font-size:.68rem;
+  min-height:44px;
+  padding:10px 7px;
+  transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
+}
+.eval-recommendation button[data-rec="strongly-recommend"]{--rec-rest:#176044;--rec-active:#2eb77a}
+.eval-recommendation button[data-rec="recommend"]{--rec-rest:#175789;--rec-active:#2c8fd0}
+.eval-recommendation button[data-rec="consider"]{--rec-rest:#8a5a12;--rec-active:#d99424}
+.eval-recommendation button[data-rec="do-not-recommend"]{--rec-rest:#802c38;--rec-active:#c84957}
+.eval-recommendation button:hover,.eval-recommendation button:focus-visible,.eval-recommendation button.selected{
+  background:var(--rec-active);
+  border-color:#fff;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 0 0 2px color-mix(in srgb,var(--rec-active) 48%,transparent),0 7px 16px rgba(0,0,0,.3);
+  color:#fff;
+  outline:0;
+  transform:translateY(-2px)
+}
