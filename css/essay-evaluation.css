@@ -934,7 +934,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
 .eval-header-score{
   border-radius:999px;
   box-sizing:border-box;
-  font-size:.68rem;
+  font-size:.75rem;
   height:30px;
   line-height:16px;
   min-height:30px;
@@ -962,22 +962,37 @@ html.is-chromeos .eval-head-summary:before{display:none}
 }
 .eval-head-status-group{flex:0 0 126px}
 .eval-head-rec-group{flex:0 0 150px}
+.eval-head-status-group .eval-head-label,.eval-head-rec-group .eval-head-label{text-align:center}
 .eval-status,.eval-head-recommendation{
+  align-items:center;
   border-radius:999px;
   box-sizing:border-box;
   flex:0 0 30px;
   height:30px;
   min-height:30px;
+  justify-content:center;
   overflow:hidden;
   padding:6px 9px;
-  text-align:left;
+  text-align:center;
   text-overflow:ellipsis;
   white-space:nowrap;
   width:100%
 }
 .eval-status:before{display:none}
-.eval-head-recommendation{display:block;font-size:.62rem}
-.eval-head-recommendation span{display:block;line-height:16px}
+.eval-head-recommendation{display:flex;font-size:.62rem}
+.eval-head-recommendation span{display:block;line-height:16px;text-align:center;width:100%}
+.eval-head-summary .eval-meter{
+  background:#063943;
+  border-color:#23988d
+}
+.eval-head-summary .eval-meter i{background:linear-gradient(90deg,#0d7068,#15998b)}
+.eval-head-summary .eval-meter span{
+  color:#fff;
+  font-size:.72rem;
+  position:absolute;
+  text-shadow:0 1px 3px #001d20,0 0 4px #001d20;
+  z-index:2
+}
 .eval-reset,.eval-finalize,.eval-close{
   flex:0 0 auto;
   font-size:.61rem;
@@ -985,7 +1000,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   min-height:30px;
   padding:5px 9px
 }
-.eval-finalize-help{top:64px}
+.eval-finalize-help{top:66px}
 @media(max-width:1100px){
   .essay-eval-head,html.is-chromeos .essay-eval-head{gap:6px;padding-left:8px;padding-right:8px}
   .eval-head-primary{gap:7px}
@@ -993,7 +1008,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-head-person{flex-basis:112px}
   .eval-head-instructions{flex-basis:100px;padding-left:7px}
   .eval-head-summary{gap:6px}
-  .eval-head-score-group{flex-basis:180px}
+  .eval-head-score-group{flex-basis:205px}
   .eval-head-progress{flex-basis:72px}
   .eval-head-summary .eval-meter{width:72px}
   .essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{gap:4px}
@@ -1002,7 +1017,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-reset,.eval-finalize,.eval-close{font-size:.56rem;padding-left:7px;padding-right:7px}
   .eval-head-label,.essay-eval-kicker,.eval-head-summary strong{font-size:.47rem;letter-spacing:.08em}
   .essay-eval-title{font-size:1rem}
-  .eval-header-score{font-size:.62rem}
+  .eval-header-score{font-size:.69rem}
 }
 
 /* Recommendation colors: selected uses the same visual state as hover. */

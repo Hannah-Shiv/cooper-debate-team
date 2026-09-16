@@ -254,6 +254,11 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
     const finalize = document.querySelector(".eval-finalize").getBoundingClientRect();
     const header = document.querySelector(".essay-eval-head");
     const progress = document.querySelector(".eval-meter");
+    const statusLabel = document.querySelector(".eval-head-status-group .eval-head-label").getBoundingClientRect();
+    const recommendationLabel = document.querySelector(".eval-head-rec-group .eval-head-label").getBoundingClientRect();
+    const recommendation = document.querySelector(".eval-head-recommendation").getBoundingClientRect();
+    const progressStyle = getComputedStyle(progress);
+    const progressTextStyle = getComputedStyle(progress.querySelector("span"));
     return {
       actionsOrdered: actionBoxes.every((box, index) => index === 0 || box.left >= actionBoxes[index - 1].right),
       actionsOneLine: Math.max(...actionBoxes.map(box => box.top + box.height / 2)) - Math.min(...actionBoxes.map(box => box.top + box.height / 2)) < 2,
@@ -262,6 +267,12 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
       noHeaderOverflow: header.scrollWidth <= header.clientWidth,
       noDialogOverflow: document.querySelector(".essay-eval-shell").scrollWidth <= document.querySelector(".essay-eval-shell").clientWidth,
       progressInHeader: progress.closest(".eval-head-summary") !== null,
+      statusCentered: Math.abs((statusLabel.left + statusLabel.width / 2) - (status.left + status.width / 2)) < 1,
+      recommendationCentered: Math.abs((recommendationLabel.left + recommendationLabel.width / 2) - (recommendation.left + recommendation.width / 2)) < 1,
+      progressBackground: progressStyle.backgroundColor,
+      progressTextColor: progressTextStyle.color,
+      progressTextLayer: Number(progressTextStyle.zIndex),
+      scoreWidth: document.querySelector(".eval-header-score").getBoundingClientRect().width,
       scoreRadius: parseFloat(scoreStyle.borderRadius),
       statusRadius: parseFloat(statusStyle.borderRadius),
       essayTitleSize: parseFloat(getComputedStyle(document.querySelector(".eval-head-summary strong")).fontSize),
@@ -289,10 +300,16 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.noHeaderOverflow).toBe(true);
   expect(header.noDialogOverflow).toBe(true);
   expect(header.progressInHeader).toBe(true);
+  expect(header.statusCentered).toBe(true);
+  expect(header.recommendationCentered).toBe(true);
+  expect(header.progressBackground).toBe("rgb(6, 57, 67)");
+  expect(header.progressTextColor).toBe("rgb(255, 255, 255)");
+  expect(header.progressTextLayer).toBeGreaterThan(1);
+  expect(header.scoreWidth).toBeGreaterThanOrEqual(205);
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
   expect(header.essayTitleSize).toBeGreaterThanOrEqual(7.5);
-  expect(header.scoreSize).toBeGreaterThanOrEqual(9.8);
+  expect(header.scoreSize).toBeGreaterThanOrEqual(11);
   expect(header.statusDivider).toBe("1px");
   expect(header.statusWidth).toBe(96);
   expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
