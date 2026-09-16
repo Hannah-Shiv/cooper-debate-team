@@ -513,8 +513,6 @@
     const selected = events.find(item => item.id === selectedEventId);
     $("tm-event-modal").classList.toggle("is-editing", mode === "edit");
     if (selected) renderModalDetails(selected);
-    const tryoutManager = $("tryout-manager");
-    if (tryoutManager && selected?.eventType === "tryout") $("tm-event-modal").querySelector(".tm-modal").appendChild(tryoutManager);
     $("tm-event-modal").hidden = false;
     document.body.classList.add("tm-modal-open");
     if (mode === "edit") window.setTimeout(() => $("event-title").focus({ preventScroll: true }), 80);
