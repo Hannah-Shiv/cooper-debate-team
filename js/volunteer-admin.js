@@ -13,6 +13,7 @@
   const MANAGE_ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/manageVolunteerSignup";
   const ROLE_PRESENTATION = {
     coach: { label: "Coach", fallback: "🛡️ Coach", icon: "images/role-icons/coach.png" },
+    captain: { label: "Captain", fallback: "★ Captain", icon: "images/role-icons/captain.png" },
     "website-admin": { label: "Website Admin", fallback: "🛠️ Website Admin", icon: "images/role-icons/website-admin.png" },
   };
   firebase.initializeApp(FIREBASE_CONFIG);
@@ -424,8 +425,8 @@
       showAccess("This page is not visible with current role", "Your account does not currently have access to this member page.", "Okay");
       return;
     }
-    if (!isFullAdminRole(role)) {
-      showAccess("This page is not visible with current role", "Volunteer signups are available to coaches and Website Admins.", "Okay");
+    if (!["coach", "captain", "website-admin"].includes(role)) {
+      showAccess("This page is not visible with current role", "The Tournament Manager is available to Coaches, Captains, and Website Admins.", "Okay");
       return;
     }
     currentUser = user;
@@ -445,8 +446,16 @@
       badge.textContent = rolePresentation.label;
     }
     $("member-userbar").classList.add("visible");
-    resetForm();
-    startEvents();
+    document.body.dataset.portalRole = role;
+    document.dispatchEvent(new CustomEvent("tournament-manager-ready", { detail: { role } }));
+    if (role === "captain") {
+      document.querySelector('[data-manager-mode="volunteers"]')?.setAttribute("hidden", "");
+      document.querySelector(".tm-preview")?.setAttribute("hidden", "");
+      document.querySelector('[data-manager-mode="tryout"]')?.click();
+    } else {
+      resetForm();
+      startEvents();
+    }
   });
 
   document.addEventListener("DOMContentLoaded", () => {

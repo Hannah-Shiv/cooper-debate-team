@@ -451,6 +451,10 @@ function showDashboard(email) {
   if (announcementFab && canManageMemberContentRole(currentUserRole)) {
     announcementFab.style.display = window.location.hash === "#announcements-panel" ? "flex" : "none";
   }
+  const tournamentManagerCard = document.getElementById("tournament-manager-card");
+  if (tournamentManagerCard && canManageMemberContentRole(currentUserRole)) {
+    tournamentManagerCard.style.display = "";
+  }
 
   // Show notification error log for coaches and website admins
   if (isFullAdminRole(currentUserRole)) {

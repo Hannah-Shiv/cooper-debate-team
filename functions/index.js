@@ -269,6 +269,16 @@ async function hasApplicationReviewerAccess(email) {
     (PROTECTED_WEBSITE_ADMIN_REVIEWERS.has(normalizedEmail) ||
       ["member", "captain", "website-admin"].includes(data.role));
 }
+
+async function hasTryoutManagerAccess(email) {
+  const normalizedEmail = cleanEmail(email);
+  if (!normalizedEmail) return false;
+  const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
+  if (!membership.exists) return COACH_EMAILS.has(normalizedEmail);
+  const data = membership.data() || {};
+  return data.active === true &&
+    (COACH_EMAILS.has(normalizedEmail) || ["coach", "captain", "website-admin"].includes(data.role));
+}
 function captainApplicationProjection(applicationId, data) {
   return {
     applicationId,
@@ -2297,6 +2307,169 @@ exports.manageVolunteerSignup = onRequest(
     } catch (error) {
       console.error("manageVolunteerSignup failed:", error);
       res.status(400).json({ error: error.message || "Unable to manage volunteer signups." });
+    }
+  }
+);
+
+// Coaches, Captains, and Website Admins use this private endpoint to build the
+// September tryout schedule. The browser never reads private tryout signups.
+exports.manageTryoutSchedule = onRequest(
+  { region: "us-central1", cors: true },
+  async (req, res) => {
+    if (req.method !== "POST") {
+      res.set("Allow", "POST");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
+    if (!token) {
+      res.status(401).json({ error: "Sign in to manage the tryout schedule." });
+      return;
+    }
+
+    let decoded;
+    try {
+      decoded = await getAuth().verifyIdToken(token);
+    } catch (_) {
+      res.status(401).json({ error: "Your sign-in session has expired. Please sign in again." });
+      return;
+    }
+    if (!await hasTryoutManagerAccess(decoded.email)) {
+      res.status(403).json({ error: "Only Coaches, Captains, and Website Admins can manage the tryout schedule." });
+      return;
+    }
+
+    const body = req.body || {};
+    const action = cleanText(body.action, 40);
+    const db = getFirestore();
+    const scheduleCollection = db.collection("tryout_schedule");
+    const signupCollection = db.collection("tryout_signups");
+    const sessionDates = { sep22: "2026-09-22", sep23: "2026-09-23" };
+    const overlaps = (leftStart, leftEnd, rightStart, rightEnd) =>
+      timeMinutes(leftStart) < timeMinutes(rightEnd) && timeMinutes(rightStart) < timeMinutes(leftEnd);
+
+    try {
+      if (action === "list") {
+        const [signupSnap, scheduleSnap] = await Promise.all([
+          signupCollection.where("season", "==", "2026-2027").get(),
+          scheduleCollection.where("season", "==", "2026-2027").get(),
+        ]);
+        const students = signupSnap.docs
+          .filter(doc => doc.data().withdrawn !== true)
+          .map(doc => {
+            const data = doc.data();
+            return {
+              id: doc.id,
+              name: cleanText(data.name, 80),
+              grade: cleanText(data.grade, 1),
+              session: cleanText(data.session, 8),
+              pairedWith: cleanText(data.pairedWith, 128),
+            };
+          })
+          .sort((a, b) => a.name.localeCompare(b.name));
+        const assignments = scheduleSnap.docs.map(doc => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            studentIds: Array.isArray(data.studentIds) ? data.studentIds.slice(0, 2) : [],
+            studentNames: Array.isArray(data.studentNames) ? data.studentNames.slice(0, 2) : [],
+            session: cleanText(data.session, 8),
+            date: cleanDate(data.date),
+            startTime: cleanTime(data.startTime),
+            endTime: cleanTime(data.endTime),
+            judge: cleanText(data.judge, 120),
+            location: cleanText(data.location, 160),
+            notes: cleanText(data.notes, 500),
+          };
+        }).sort((a, b) => `${a.date}-${a.startTime}`.localeCompare(`${b.date}-${b.startTime}`));
+        res.status(200).json({ ok: true, students, assignments });
+        return;
+      }
+
+      if (action === "delete") {
+        const assignmentId = cleanText(body.assignmentId, 128);
+        if (!assignmentId) throw new Error("Choose a tryout assignment to delete.");
+        await scheduleCollection.doc(assignmentId).delete();
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (action === "save") {
+        const requestedId = cleanText(body.assignmentId, 128);
+        const incoming = body.assignment || {};
+        const studentIds = [...new Set((Array.isArray(incoming.studentIds) ? incoming.studentIds : [])
+          .map(value => cleanText(value, 128)).filter(Boolean))];
+        const session = cleanText(incoming.session, 8);
+        const date = cleanDate(incoming.date);
+        const startTime = cleanTime(incoming.startTime);
+        const endTime = cleanTime(incoming.endTime);
+        const judge = cleanText(incoming.judge, 120);
+        const location = cleanText(incoming.location, 160);
+        const notes = cleanText(incoming.notes, 500);
+        if (studentIds.length !== 2) throw new Error("Choose two different debaters.");
+        if (!sessionDates[session] || date !== sessionDates[session]) throw new Error("Choose the September 22 or September 23 tryout session.");
+        if (!startTime || !endTime || timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
+        if (!judge) throw new Error("Enter the judge’s name.");
+        if (!location) throw new Error("Enter a room or location.");
+
+        const assignmentRef = requestedId ? scheduleCollection.doc(requestedId) : scheduleCollection.doc();
+        await db.runTransaction(async transaction => {
+          const [signupDocs, assignmentDocs] = await Promise.all([
+            Promise.all(studentIds.map(id => transaction.get(signupCollection.doc(id)))),
+            transaction.get(scheduleCollection.where("season", "==", "2026-2027")),
+          ]);
+          if (signupDocs.some(doc => !doc.exists || doc.data().withdrawn === true)) {
+            throw new Error("One of those debaters is no longer available.");
+          }
+          const students = signupDocs.map(doc => ({ id: doc.id, ...doc.data() }));
+          if (students.some(student => student.session !== session)) {
+            throw new Error("Both debaters must be signed up for the selected tryout date.");
+          }
+
+          const otherAssignments = assignmentDocs.docs
+            .filter(doc => doc.id !== assignmentRef.id)
+            .map(doc => ({ id: doc.id, ...doc.data() }));
+          if (otherAssignments.some(item =>
+            Array.isArray(item.studentIds) && item.studentIds.some(id => studentIds.includes(id)))) {
+            throw new Error("One of those debaters is already scheduled.");
+          }
+          const sameWindow = otherAssignments.filter(item =>
+            item.date === date && overlaps(startTime, endTime, item.startTime, item.endTime));
+          const normalizedJudge = judge.toLowerCase();
+          const normalizedLocation = location.toLowerCase();
+          if (sameWindow.some(item => cleanText(item.judge, 120).toLowerCase() === normalizedJudge)) {
+            throw new Error(`${judge} is already judging another pair at that time.`);
+          }
+          if (sameWindow.some(item => cleanText(item.location, 160).toLowerCase() === normalizedLocation)) {
+            throw new Error(`${location} is already in use at that time.`);
+          }
+
+          const data = {
+            season: "2026-2027",
+            session,
+            date,
+            studentIds,
+            studentNames: students.map(student => cleanText(student.name, 80)),
+            startTime,
+            endTime,
+            judge,
+            location,
+            notes,
+            updatedBy: cleanEmail(decoded.email),
+            updatedAt: FieldValue.serverTimestamp(),
+          };
+          if (requestedId) transaction.set(assignmentRef, data, { merge: true });
+          else transaction.set(assignmentRef, { ...data, createdAt: FieldValue.serverTimestamp() });
+        });
+        res.status(200).json({ ok: true, assignmentId: assignmentRef.id });
+        return;
+      }
+
+      throw new Error("Unknown tryout schedule action.");
+    } catch (error) {
+      console.error("manageTryoutSchedule failed:", error);
+      res.status(400).json({ error: error.message || "Unable to manage the tryout schedule." });
     }
   }
 );
