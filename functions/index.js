@@ -2574,12 +2574,6 @@ exports.manageTryoutSchedule = onRequest(
       data.tournamentId === template.id || isLegacyTryoutRow(data, template);
 
     try {
-      if (action === "getTemplate") {
-        const template = await loadTemplate();
-        res.status(200).json({ ok: true, template });
-        return;
-      }
-
       if (action === "list") {
         const template = await loadTemplate();
         const [seasonScheduleSnap, pools] = await Promise.all([

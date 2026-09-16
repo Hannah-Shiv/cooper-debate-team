@@ -41,7 +41,7 @@ test("website admins have a visible way to open and leave the tryout schedule", 
 });
 
 test("the main tournament grid includes a simplified tryout template row", () => {
-  assert.match(server, /action === "getTemplate"/);
+  assert.match(client, /manage\(\{ action: "list" \}\)\.then/);
   assert.match(client, /tryout-template-loaded/);
   assert.match(volunteerClient, /Tournament Name<\/th><th>Date<\/th><th>Type/);
   assert.match(volunteerClient, /Internal Tryouts/);

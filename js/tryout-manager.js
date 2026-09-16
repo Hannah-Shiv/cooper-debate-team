@@ -299,7 +299,7 @@
     $("tryout-tournament-name").disabled = isCaptain;
     $("tryout-range-start").disabled = isCaptain;
     $("tryout-range-end").disabled = isCaptain;
-    manage({ action: "getTemplate" }).then(result => {
+    manage({ action: "list" }).then(result => {
       template = result.template || template;
       applyTemplate();
       publishTemplateToTournamentGrid();
