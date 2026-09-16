@@ -167,6 +167,7 @@
     applyTemplate();
     $("tryout-status").value = "scheduled";
     $("tryout-judge-type").value = "member";
+    updateTimePeriods();
     setAutosaveStatus("tryout-record-status", "Saved");
     setMessage("");
   }
@@ -187,6 +188,7 @@
     $("tryout-judge-type").value = item.judgeType || "member";
     $("tryout-start").value = item.startTime;
     $("tryout-end").value = item.endTime;
+    updateTimePeriods();
     $("tryout-location").value = item.location;
     $("tryout-notes").value = item.notes || "";
     $("tryout-form-heading").textContent = "Edit debate";
@@ -389,12 +391,24 @@
     });
   }
 
+  function updateTimePeriods() {
+    ["start", "end"].forEach(side => {
+      const value = $(`tryout-${side}`).value;
+      const hour = Number(value.split(":")[0]);
+      $(`tryout-${side}-period`).textContent = value ? (hour >= 12 ? "PM" : "AM") : "AM / PM";
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     enableNativePickers();
+    updateTimePeriods();
     $("tryout-form").addEventListener("submit", event => event.preventDefault());
     $("tryout-new-draft").addEventListener("click", resetForm);
     TEMPLATE_FIELDS.forEach(id => $(id).addEventListener("input", () => scheduleTemplateSave()));
-    ASSIGNMENT_FIELDS.forEach(id => $(id).addEventListener("input", () => scheduleAssignmentSave()));
+    ASSIGNMENT_FIELDS.forEach(id => $(id).addEventListener("input", () => {
+      if (id === "tryout-start" || id === "tryout-end") updateTimePeriods();
+      scheduleAssignmentSave();
+    }));
     $("tryout-delete-cancel").addEventListener("click", closeDeleteModal);
     $("tryout-delete-confirm").addEventListener("click", deleteAssignment);
     $("tryout-delete-modal").addEventListener("click", event => {

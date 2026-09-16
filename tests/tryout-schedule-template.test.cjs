@@ -38,7 +38,8 @@ test("tryout settings and debate entries autosave without save buttons", () => {
   assert.doesNotMatch(html, /id="tryout-range-save"/);
   assert.doesNotMatch(html, /id="tryout-save"/);
   assert.match(client, /TEMPLATE_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input", \(\) => scheduleTemplateSave\(\)\)\)/);
-  assert.match(client, /ASSIGNMENT_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input", \(\) => scheduleAssignmentSave\(\)\)\)/);
+  assert.match(client, /ASSIGNMENT_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input"/);
+  assert.match(client, /scheduleAssignmentSave\(\)/);
   assert.match(client, /"Saved just now"/);
 });
 
@@ -128,10 +129,18 @@ test("deleting a tryout row uses an in-page confirmation modal", () => {
 });
 
 test("date and time fields use visible native pickers across the full input", () => {
-  assert.match(html, /input\[type="date"\].*background:#c9dced/);
-  assert.match(html, /input\[type="time"\].*color-scheme:light/);
+  assert.match(html, /input\[type="date"\].*background:#071a36/);
+  assert.match(html, /input\[type="time"\].*color-scheme:dark/);
   assert.match(client, /input\.showPicker\(\)/);
   assert.match(client, /#tryout-manager input\[type="date"\], #tryout-manager input\[type="time"\]/);
+});
+
+test("tryout times show AM or PM and room identifies the school location", () => {
+  assert.match(html, /id="tryout-start-period"[^>]*>AM \/ PM<\/span>/);
+  assert.match(html, /id="tryout-end-period"[^>]*>AM \/ PM<\/span>/);
+  assert.match(html, /\.tryout-time-box\{[^}]*min-height:72px/);
+  assert.match(client, /hour >= 12 \? "PM" : "AM"/);
+  assert.match(html, /<b>Location<\/b>Cooper Middle School/);
 });
 
 test("tryout template uses a reusable date range", () => {
