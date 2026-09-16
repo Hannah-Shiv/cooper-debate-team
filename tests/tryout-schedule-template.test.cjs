@@ -155,7 +155,10 @@ test("schedule rows fit without horizontal scrolling and use accessible row acti
   assert.match(client, /class="tryout-row-number">\$\{index \+ 1\}/);
   assert.match(client, /class="tryout-student-stack"/);
   assert.match(client, /class="tryout-student-name"/);
-  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{background:linear-gradient\(180deg,#173d70,#0b2850\)/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*background:#03152d/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*display:inline-flex/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*min-height:24px/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*padding:5px 9px/);
   assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*color|\.tryout-schedule-card \.tryout-table th\{[^}]*color:#ffe45c/);
   assert.match(client, /aria-label="Edit row \$\{index \+ 1\}"/);
   assert.match(client, /aria-label="Delete row \$\{index \+ 1\}"/);
