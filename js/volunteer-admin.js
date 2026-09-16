@@ -28,6 +28,9 @@
   let selectedEventId = null;
   let events = [];
   let currentUser = null;
+  let currentUserRole = "member";
+  let pendingDeleteEventId = null;
+  let deleteTrigger = null;
   let capacityRoles = [];
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -105,7 +108,6 @@
     $("event-season").value = "2026-2027";
     $("event-volunteer-signups").checked = true;
     setCapacityRoles();
-    $("tm-crumb-event").textContent = "New tournament";
     $("vol-save").textContent = "Create tournament";
     $("vol-cancel-edit").style.display = "none";
     $("tm-detail-heading").textContent = "Add tournament";
@@ -147,7 +149,6 @@
     $("event-lunch-provided").checked = mealPrefix.test(providedMeal);
     $("event-meal").value = providedMeal.replace(mealPrefix, "");
     setCapacityRoles(event.roles || []);
-    $("tm-crumb-event").textContent = event.title || "Tournament Management";
     $("vol-save").textContent = "Save changes";
     $("vol-cancel-edit").style.display = "block";
     selectedEventId = event.id;
@@ -186,6 +187,7 @@
     $("tm-confirmed").textContent = confirmed;
     $("tm-available").textContent = Math.max(0, capacity - confirmed);
     $("tm-fill-rate").textContent = `${capacity ? Math.round((confirmed / capacity) * 100) : 0}% Filled`;
+    $("tm-status").closest(".tm-metric.status").dataset.status = published ? "active" : "inactive";
     $("tm-status").textContent = published ? "Live" : "Draft";
     $("tm-status-note").textContent = published ? "Volunteer signup open" : "Not published";
     $("tm-preview-title").textContent = title;
@@ -343,14 +345,37 @@
       alert(error.message || "Unable to cancel this tournament.");
     }
   }
-  async function deleteEvent(eventId) {
+  function closeDeleteConfirmation() {
+    $("tm-delete-modal").hidden = true;
+    pendingDeleteEventId = null;
+    const trigger = deleteTrigger;
+    deleteTrigger = null;
+    trigger?.focus();
+  }
+  function deleteEvent(eventId, trigger) {
     const event = events.find(item => item.id === eventId);
-    if (!event || !confirm(`Delete “${event.title}” permanently? Past records and signups cannot be recovered.`)) return;
+    if (!event) return;
+    pendingDeleteEventId = eventId;
+    deleteTrigger = trigger || null;
+    $("tm-delete-event-name").textContent = event.title;
+    $("tm-delete-modal").hidden = false;
+    $("tm-delete-cancel").focus();
+  }
+  async function confirmDeleteEvent() {
+    const eventId = pendingDeleteEventId;
+    if (!eventId) return;
+    const button = $("tm-delete-confirm");
+    button.disabled = true;
+    button.textContent = "Deleting…";
     try {
       await manage({ action: "deleteEvent", eventId });
+      closeDeleteConfirmation();
       resetForm();
     } catch (error) {
       alert(error.message || "Unable to delete this tournament.");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Delete tournament";
     }
   }
   function eventPayload(item, roles = item.roles || []) {
@@ -421,20 +446,23 @@
   function selectTournament(item, shouldScroll = false) {
     if (!item) return;
     populateForm(item, false);
-    renderSelectedSignups(item.id);
+    const canManagePrivateSignups = ["coach", "website-admin"].includes(currentUserRole);
+    if (canManagePrivateSignups) renderSelectedSignups(item.id);
     const status = tournamentStatus(item);
     $("tm-detail-actions").innerHTML = `
       <button class="tm-action close" type="button" data-selected-details>View Full Details</button>
+      ${canManagePrivateSignups ? `
       <button class="tm-action close" type="button" data-selected-toggle>${item.published ? "Make inactive" : "Make active"}</button>
       <button class="tm-action" type="button" data-selected-export>Export volunteer CSV</button>
-      <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>`;
+      <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>` : ""}`;
     $("tm-detail-actions").querySelector("[data-selected-details]").addEventListener("click", () => openEventModal("view"));
-    $("tm-detail-actions").querySelector("[data-selected-toggle]").addEventListener("click", () => setPublished(item.id, !item.published));
-    $("tm-detail-actions").querySelector("[data-selected-export]").addEventListener("click", () => exportEvent(item.id));
-    $("tm-detail-actions").querySelector("[data-selected-delete]").addEventListener("click", () => deleteEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-toggle]")?.addEventListener("click", () => setPublished(item.id, !item.published));
+    $("tm-detail-actions").querySelector("[data-selected-export]")?.addEventListener("click", () => exportEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-delete]")?.addEventListener("click", event => deleteEvent(item.id, event.currentTarget));
     document.querySelectorAll(".tm-data-table tbody tr").forEach(row => row.classList.toggle("selected", row.dataset.event === item.id));
+    $("tm-status").closest(".tm-metric.status").dataset.status = status.key;
     $("tm-status").textContent = status.label;
-    $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
+    $("tm-status-note").textContent = status.key === "completed" ? "Tournament completed" : item.published ? "Open for signups" : "Signups closed";
     if (shouldScroll) $("tm-detail-heading").scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function modalRow(label, value) {
@@ -578,6 +606,7 @@
       return;
     }
     currentUser = user;
+    currentUserRole = role;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
     $("member-name").textContent = portalWelcomeLabel(
@@ -596,15 +625,10 @@
     $("member-userbar").classList.add("visible");
     document.body.dataset.portalRole = role;
     document.dispatchEvent(new CustomEvent("tournament-manager-ready", { detail: { role } }));
-    if (role === "captain") {
-      document.querySelector('[data-manager-mode="volunteers"]')?.setAttribute("hidden", "");
-      document.querySelectorAll("[data-volunteer-only]").forEach(item => item.setAttribute("hidden", ""));
-      document.querySelector('[data-manager-mode="tryout"]')?.click();
-    } else {
-       resetForm();
-       closeEventModal();
-      startEvents();
-    }
+    if (role === "captain") $("tm-selected-signups")?.setAttribute("hidden", "");
+    resetForm();
+    closeEventModal();
+    startEvents();
   });
 
   document.addEventListener("DOMContentLoaded", () => {
@@ -675,8 +699,15 @@
     $("tm-event-modal").addEventListener("click", event => {
       if (event.target === $("tm-event-modal")) closeEventModal();
     });
+    $("tm-delete-cancel").addEventListener("click", closeDeleteConfirmation);
+    $("tm-delete-confirm").addEventListener("click", confirmDeleteEvent);
+    $("tm-delete-modal").addEventListener("click", event => {
+      if (event.target === $("tm-delete-modal")) closeDeleteConfirmation();
+    });
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && !$("tm-event-modal").hidden) closeEventModal();
+      if (event.key !== "Escape") return;
+      if (!$("tm-delete-modal").hidden) closeDeleteConfirmation();
+      else if (!$("tm-event-modal").hidden) closeEventModal();
     });
   });
 })();

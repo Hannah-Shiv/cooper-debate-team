@@ -1,18 +1,18 @@
-/* Cooper Debate Team — private tryout schedule manager */
+/* Cooper Debate Team — private tryout debate schedule manager */
 (function () {
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/manageTryoutSchedule";
-  let SESSION_META = {
-    sep22: { date: "2026-09-22", label: "Tuesday, September 22", location: "Cafeteria" },
-    sep23: { date: "2026-09-23", label: "Wednesday, September 23", location: "Lecture Hall" },
-  };
-  let students = [];
+  const DEBATER_FIELDS = ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"];
+  let debaters = [];
+  let judges = [];
   let assignments = [];
+  let template = { title: "2026 Debate Tryout Schedule", startDate: "2026-09-16", endDate: "2026-09-23" };
   let editingId = "";
   let currentUser = null;
+  let canDelete = false;
   const $ = id => document.getElementById(id);
-  const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
     if (!/^\d{2}:\d{2}$/.test(value || "")) return value || "";
     const [hour, minute] = value.split(":").map(Number);
@@ -22,11 +22,10 @@
     if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
     const [year, month, day] = value.split("-").map(Number);
     return new Date(year, month - 1, day).toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
+      weekday: "short", month: "short", day: "numeric",
     });
   };
+  const statusLabel = value => ({ scheduled: "Scheduled", completed: "Completed", cancelled: "Cancelled" }[value] || "Scheduled");
 
   function setMessage(text, kind) {
     const target = $("tryout-message");
@@ -47,45 +46,61 @@
     return result;
   }
 
-  function studentsForSession(session) {
-    return students.filter(student => student.session === session);
+  function renderPeopleOptions(selected = {}) {
+    const options = `<option value="">Choose a debater</option>${debaters.map(person =>
+      `<option value="${esc(person.id)}">${esc(person.name)} · ${esc(person.grade || "Grade unavailable")} · ${esc(person.sourceLabel)}</option>`
+    ).join("")}`;
+    DEBATER_FIELDS.forEach(id => {
+      $(id).innerHTML = options;
+      $(id).value = selected[id] || "";
+    });
+    $("tryout-judge-options").innerHTML = judges.map(person =>
+      `<option value="${esc(person.name)}">${esc(person.sourceLabel || "Members Directory")}</option>`
+    ).join("");
   }
 
-  function renderStudentOptions(selectedOne = "", selectedTwo = "") {
-    const session = $("tryout-session").value;
-    const available = studentsForSession(session);
-    const options = `<option value="">Choose a debater</option>` + available.map(student =>
-      `<option value="${esc(student.id)}">${esc(student.name)} · Grade ${esc(student.grade)}</option>`
-    ).join("");
-    $("tryout-student-one").innerHTML = options;
-    $("tryout-student-two").innerHTML = options;
-    $("tryout-student-one").value = selectedOne;
-    $("tryout-student-two").value = selectedTwo;
-    if (!editingId) $("tryout-location").value = SESSION_META[session]?.location || "";
+  function applyTemplate() {
+    $("tryout-template-title").textContent = template.title || "Debate Tryout Schedule";
+    $("tryout-range-start").value = template.startDate || "";
+    $("tryout-range-end").value = template.endDate || "";
+    $("tryout-date").min = template.startDate || "";
+    $("tryout-date").max = template.endDate || "";
+    if (!$("tryout-date").value || $("tryout-date").value < template.startDate || $("tryout-date").value > template.endDate) {
+      $("tryout-date").value = template.startDate || "";
+    }
   }
 
   function renderSummary() {
-    const scheduledIds = new Set(assignments.flatMap(item => item.studentIds || []));
-    $("tryout-student-count").textContent = students.length;
+    $("tryout-student-count").textContent = debaters.length;
     $("tryout-pair-count").textContent = assignments.length;
-    $("tryout-unscheduled-count").textContent = students.filter(student => !scheduledIds.has(student.id)).length;
+    const start = new Date(`${template.startDate}T12:00:00`);
+    const end = new Date(`${template.endDate}T12:00:00`);
+    const days = Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) ? 0 : Math.max(0, Math.round((end - start) / 86400000) + 1);
+    $("tryout-day-count").textContent = days;
+  }
+
+  function pairNames(item, side) {
+    const names = side === "a" ? item.pairANames : item.pairBNames;
+    return Array.isArray(names) && names.length ? names : side === "a" ? (item.studentNames || []).slice(0, 2) : [];
   }
 
   function renderSchedule() {
     const root = $("tryout-schedule-list");
     if (!assignments.length) {
-      root.innerHTML = `<div class="tryout-empty">No pairs have been scheduled yet. Add the first assignment using the form.</div>`;
+      root.innerHTML = `<div class="tryout-empty">No debates have been scheduled yet. Add the first debate using the form.</div>`;
       renderSummary();
       return;
     }
     root.innerHTML = `<table class="tryout-table">
-      <thead><tr><th>Pair</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${assignments.map(item => `<tr>
-        <td><strong>${(item.studentNames || []).map(esc).join(" &amp; ")}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
-        <td>${esc(SESSION_META[item.session]?.label || item.date)}<br><strong>${esc(timeLabel(item.startTime))}–${esc(timeLabel(item.endTime))}</strong></td>
-        <td>${esc(item.judge)}</td>
+        <td><strong>${pairNames(item, "a").map(esc).join(" &amp; ") || "Legacy pair"}</strong></td>
+        <td><strong>${pairNames(item, "b").map(esc).join(" &amp; ") || "Not entered"}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
+        <td>${esc(dateLabel(item.date))}<br><strong>${esc(timeLabel(item.startTime))}–${esc(timeLabel(item.endTime))}</strong></td>
+        <td>${esc(item.judge)}<br><small>${esc(item.judgeTypeLabel || "Members Directory")}</small></td>
         <td>${esc(item.location)}</td>
-        <td><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}">Edit</button><button type="button" data-tryout-delete="${esc(item.id)}">Delete</button></div></td>
+        <td><span class="tm-grid-status ${esc(item.status || "scheduled")}">${esc(statusLabel(item.status))}</span></td>
+        <td><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}">Edit</button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}">Delete</button>` : ""}</div></td>
       </tr>`).join("")}</tbody>
     </table>`;
     root.querySelectorAll("[data-tryout-edit]").forEach(button => button.addEventListener("click", () => editAssignment(button.dataset.tryoutEdit)));
@@ -96,35 +111,44 @@
   function resetForm() {
     editingId = "";
     $("tryout-form").reset();
-    $("tryout-session").value = Object.keys(SESSION_META).find(session => SESSION_META[session].active !== false) || Object.keys(SESSION_META)[0] || "";
-    $("tryout-form-heading").textContent = "Add tryout assignment";
-    $("tryout-save").textContent = "Add to schedule";
+    $("tryout-form-heading").textContent = "Add debate";
+    $("tryout-save").textContent = "Add debate";
     $("tryout-cancel").hidden = true;
-    renderStudentOptions();
+    renderPeopleOptions();
+    applyTemplate();
+    $("tryout-status").value = "scheduled";
+    $("tryout-judge-type").value = "member";
     setMessage("");
   }
 
   function editAssignment(id) {
     const item = assignments.find(assignment => assignment.id === id);
     if (!item) return;
+    const pairA = item.pairAIds || item.studentIds || [];
+    const pairB = item.pairBIds || [];
     editingId = id;
-    $("tryout-session").value = item.session;
-    renderStudentOptions(item.studentIds[0], item.studentIds[1]);
+    renderPeopleOptions({
+      "tryout-a-one": pairA[0], "tryout-a-two": pairA[1],
+      "tryout-b-one": pairB[0], "tryout-b-two": pairB[1],
+    });
+    $("tryout-date").value = item.date;
+    $("tryout-status").value = item.status || "scheduled";
     $("tryout-judge").value = item.judge;
+    $("tryout-judge-type").value = item.judgeType || "member";
     $("tryout-start").value = item.startTime;
     $("tryout-end").value = item.endTime;
     $("tryout-location").value = item.location;
     $("tryout-notes").value = item.notes || "";
-    $("tryout-form-heading").textContent = "Edit tryout assignment";
+    $("tryout-form-heading").textContent = "Edit debate";
     $("tryout-save").textContent = "Save changes";
     $("tryout-cancel").hidden = false;
-    setMessage("");
+    setMessage(pairA.length === 2 ? "" : "This older entry needs Pair A selected again before it can be saved.", pairA.length === 2 ? "" : "error");
     $("tryout-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function deleteAssignment(id) {
     const item = assignments.find(assignment => assignment.id === id);
-    if (!item || !confirm(`Delete the tryout assignment for ${(item.studentNames || []).join(" and ")}?`)) return;
+    if (!item || !confirm(`Delete the ${dateLabel(item.date)} debate?`)) return;
     try {
       await manage({ action: "delete", assignmentId: id });
       await load();
@@ -134,20 +158,41 @@
     }
   }
 
+  async function saveTemplate() {
+    const startDate = $("tryout-range-start").value;
+    const endDate = $("tryout-range-end").value;
+    if (!startDate || !endDate || startDate > endDate) {
+      setMessage("Choose a valid tryout start and end date.", "error");
+      return;
+    }
+    try {
+      $("tryout-range-save").disabled = true;
+      const result = await manage({ action: "saveTemplate", template: { startDate, endDate } });
+      template = result.template;
+      applyTemplate();
+      renderSummary();
+      setMessage("Tryout date range saved.", "ok");
+    } catch (error) {
+      setMessage(error.message, "error");
+    } finally {
+      $("tryout-range-save").disabled = false;
+    }
+  }
+
   async function save(event) {
     event.preventDefault();
-    const session = $("tryout-session").value;
-    const firstId = $("tryout-student-one").value;
-    const secondId = $("tryout-student-two").value;
-    if (!firstId || !secondId || firstId === secondId) {
-      setMessage("Choose two different debaters.", "error");
+    const ids = DEBATER_FIELDS.map(id => $(id).value);
+    if (ids.some(id => !id) || new Set(ids).size !== 4) {
+      setMessage("Choose four different debaters for Pair A and Pair B.", "error");
       return;
     }
     const assignment = {
-      session,
-      date: SESSION_META[session]?.date || "",
-      studentIds: [firstId, secondId],
+      pairAIds: ids.slice(0, 2),
+      pairBIds: ids.slice(2),
+      date: $("tryout-date").value,
+      status: $("tryout-status").value,
       judge: $("tryout-judge").value.trim(),
+      judgeType: $("tryout-judge-type").value,
       startTime: $("tryout-start").value,
       endTime: $("tryout-end").value,
       location: $("tryout-location").value.trim(),
@@ -158,7 +203,7 @@
       await manage({ action: "save", assignmentId: editingId, assignment });
       await load();
       resetForm();
-      setMessage("Tryout assignment saved.", "ok");
+      setMessage("Tryout debate saved.", "ok");
     } catch (error) {
       setMessage(error.message, "error");
     } finally {
@@ -168,29 +213,15 @@
 
   async function load() {
     const result = await manage({ action: "list" });
-    students = result.students || [];
+    debaters = result.debaters || result.students || [];
+    judges = result.judges || [];
     assignments = result.assignments || [];
-    if (Array.isArray(result.sessions) && result.sessions.length) {
-      SESSION_META = {};
-      result.sessions.forEach(item => {
-        if (!item.session || !item.date) return;
-        SESSION_META[item.session] = {
-          date: item.date,
-          label: dateLabel(item.date),
-          location: item.location || "Cooper Middle School",
-          tournamentId: item.tournamentId,
-          active: item.active === true,
-        };
-      });
-      const availableSessions = Object.keys(SESSION_META);
-      $("tryout-session").innerHTML = availableSessions.map(session =>
-        `<option value="${esc(session)}"${SESSION_META[session].active ? "" : " disabled"}>${esc(SESSION_META[session].label)} — ${esc(SESSION_META[session].location)}${SESSION_META[session].active ? "" : " (inactive)"}</option>`
-      ).join("");
-    }
-    renderStudentOptions(
-      editingId ? $("tryout-student-one").value : "",
-      editingId ? $("tryout-student-two").value : ""
-    );
+    template = result.template || template;
+    applyTemplate();
+    renderPeopleOptions(editingId ? {
+      "tryout-a-one": $("tryout-a-one").value, "tryout-a-two": $("tryout-a-two").value,
+      "tryout-b-one": $("tryout-b-one").value, "tryout-b-two": $("tryout-b-two").value,
+    } : {});
     renderSchedule();
   }
 
@@ -200,18 +231,16 @@
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.classList.toggle("active", button.dataset.managerMode === mode));
     window.activateEventsTab?.(tryout ? "tryout" : "overview");
-    if (tryout && currentUser) {
-      load().catch(error => {
-        $("tryout-schedule-list").innerHTML = `<div class="tryout-empty">${esc(error.message)}</div>`;
-      });
-    }
+    if (tryout && currentUser) load().catch(error => {
+      $("tryout-schedule-list").innerHTML = `<div class="tryout-empty">${esc(error.message)}</div>`;
+    });
   }
   window.setTryoutManagerVisible = visible => showMode(visible ? "tryout" : "volunteers");
 
   document.addEventListener("DOMContentLoaded", () => {
     $("tryout-form").addEventListener("submit", save);
     $("tryout-cancel").addEventListener("click", resetForm);
-    $("tryout-session").addEventListener("change", () => renderStudentOptions());
+    $("tryout-range-save").addEventListener("click", saveTemplate);
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.addEventListener("click", () => showMode(button.dataset.managerMode)));
     document.querySelectorAll("[data-open-tryout]").forEach(link =>
@@ -224,7 +253,12 @@
 
   document.addEventListener("tournament-manager-ready", event => {
     currentUser = firebase.auth().currentUser;
-    if (event.detail?.role === "captain") {
+    canDelete = event.detail?.role !== "captain";
+    const isCaptain = event.detail?.role === "captain";
+    $("tryout-range-save").hidden = isCaptain;
+    $("tryout-range-start").disabled = isCaptain;
+    $("tryout-range-end").disabled = isCaptain;
+    if (isCaptain) {
       $("volunteer-manager").hidden = true;
       showMode("tryout");
     } else if (location.hash === "#tryout-manager") {

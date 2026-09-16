@@ -2212,13 +2212,18 @@ exports.manageVolunteerSignup = onRequest(
       return;
     }
 
-    if (!await hasFullAdminAccess(decoded.email)) {
-      res.status(403).json({ error: "Only coaches and website admins can manage volunteer signups." });
-      return;
-    }
-
     const body = req.body || {};
     const action = cleanText(body.action, 40);
+    const hasFullAccess = await hasFullAdminAccess(decoded.email);
+    const hasTournamentEditorAccess = hasFullAccess || await hasTryoutManagerAccess(decoded.email);
+    if (!hasTournamentEditorAccess) {
+      res.status(403).json({ error: "Only coaches, captains, and website admins can manage tournaments." });
+      return;
+    }
+    if (!hasFullAccess && !["saveEvent", "ensureTryoutEvents"].includes(action)) {
+      res.status(403).json({ error: "Only coaches and website admins can manage signups or delete tournaments." });
+      return;
+    }
     const db = getFirestore();
 
     try {
@@ -2457,8 +2462,60 @@ exports.manageVolunteerSignup = onRequest(
   }
 );
 
-// Coaches, Captains, and Website Admins use this private endpoint to build the
-// September tryout schedule. The browser never reads private tryout signups.
+async function buildTryoutPeoplePools(db) {
+  const [applicationSnap, memberSnap] = await Promise.all([
+    db.collection("applications").get(),
+    db.collection("members").get(),
+  ]);
+  const people = new Map();
+  const addDebater = (name, grade, source) => {
+    const safeName = cleanText(name, 120);
+    const safeGrade = cleanText(grade, 40);
+    if (!safeName) return;
+    const key = `${safeName.toLowerCase().replace(/\s+/g, " ")}|${safeGrade.toLowerCase()}`;
+    const existing = people.get(key) || { name: safeName, grade: safeGrade, sources: new Set() };
+    existing.sources.add(source);
+    people.set(key, existing);
+  };
+  applicationSnap.docs.forEach(doc => {
+    const data = doc.data();
+    if (data.hidden === true) return;
+    const student = data.student || {};
+    addDebater([student.firstName, student.lastName].map(value => cleanText(value, 120)).filter(Boolean).join(" "), student.grade, "application");
+  });
+  memberSnap.docs.forEach(doc => {
+    const data = doc.data();
+    if (data.active === false) return;
+    addDebater([data.firstName, data.lastName].map(value => cleanText(value, 120)).filter(Boolean).join(" "), data.grade, "member");
+  });
+  const debaters = [...people.entries()].map(([key, person]) => {
+    const sources = [...person.sources].sort();
+    return {
+      id: `person-${crypto.createHash("sha256").update(key).digest("hex").slice(0, 24)}`,
+      name: person.name,
+      grade: person.grade,
+      sources,
+      sourceLabel: sources.length > 1 ? "Member & Applicant" : sources[0] === "member" ? "Members Directory" : "Track Application",
+    };
+  }).sort((a, b) => a.name.localeCompare(b.name));
+  const judges = memberSnap.docs
+    .filter(doc => doc.data().active !== false)
+    .map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: [data.firstName, data.lastName].map(value => cleanText(value, 120)).filter(Boolean).join(" "),
+        sourceLabel: "Members Directory",
+      };
+    })
+    .filter(person => person.name)
+    .sort((a, b) => a.name.localeCompare(b.name));
+  return { debaters, judges };
+}
+
+// Coaches, Captains, and Website Admins use this private endpoint to build
+// multi-day tryout debate schedules. Private application and member records
+// are projected to names, grades, and source labels only.
 exports.manageTryoutSchedule = onRequest(
   { region: "us-central1", cors: true },
   async (req, res) => {
@@ -2490,71 +2547,122 @@ exports.manageTryoutSchedule = onRequest(
     const action = cleanText(body.action, 40);
     const db = getFirestore();
     const scheduleCollection = db.collection("tryout_schedule");
-    const signupCollection = db.collection("tryout_signups");
-    const overlaps = (leftStart, leftEnd, rightStart, rightEnd) =>
-      timeMinutes(leftStart) < timeMinutes(rightEnd) && timeMinutes(rightStart) < timeMinutes(leftEnd);
+    const templateRef = db.collection("tryout_tournaments").doc("tryout-2026");
+    const defaultTemplate = {
+      id: templateRef.id,
+      season: "2026-2027",
+      title: "2026 Debate Tryout Schedule",
+      startDate: "2026-09-16",
+      endDate: "2026-09-23",
+    };
+    const templateFromSnapshot = snapshot => {
+      const saved = snapshot.exists ? snapshot.data() : {};
+      return {
+        id: templateRef.id,
+        season: cleanText(saved.season, 20) || defaultTemplate.season,
+        title: cleanText(saved.title, 160) || defaultTemplate.title,
+        startDate: cleanDate(saved.startDate) || defaultTemplate.startDate,
+        endDate: cleanDate(saved.endDate) || defaultTemplate.endDate,
+      };
+    };
+    const loadTemplate = async () => templateFromSnapshot(await templateRef.get());
+    const isLegacyTryoutRow = (data, template) =>
+      data.season === template.season &&
+      ["sep22", "sep23"].includes(cleanText(data.session, 8)) &&
+      !Array.isArray(data.pairBIds);
+    const belongsToTemplate = (data, template) =>
+      data.tournamentId === template.id || isLegacyTryoutRow(data, template);
 
     try {
-      await ensureTryoutTournamentModel(db);
-      let tournamentSnap = await db.collection("volunteer_events")
-        .where("eventType", "==", "tryout")
-        .get();
-      const todayInNewYork = newYorkCalendarDate();
-      const sessions = tournamentSnap.docs.map(doc => {
-        const event = doc.data();
-        return {
-          tournamentId: doc.id,
-          session: cleanText(event.partnerSession, 8),
-          title: cleanText(event.title, 160),
-          date: cleanDate(event.date),
-          location: cleanText(event.location, 160),
-          startTime: cleanTime(event.startTime),
-          endTime: cleanTime(event.endTime),
-          active: event.published === true && event.cancelled !== true &&
-            event.partnerSignupsEnabled === true && cleanDate(event.date) >= todayInNewYork,
-        };
-      }).filter(session => ["sep22", "sep23"].includes(session.session));
       if (action === "list") {
-        const [signupSnap, scheduleSnap] = await Promise.all([
-          signupCollection.where("season", "==", "2026-2027").get(),
-          scheduleCollection.where("season", "==", "2026-2027").get(),
+        const template = await loadTemplate();
+        const [seasonScheduleSnap, pools] = await Promise.all([
+          scheduleCollection.where("season", "==", template.season).get(),
+          buildTryoutPeoplePools(db),
         ]);
-        const students = signupSnap.docs
-          .filter(doc => doc.data().withdrawn !== true)
-          .map(doc => {
-            const data = doc.data();
-            return {
-              id: doc.id,
-              name: cleanText(data.name, 80),
-              grade: cleanText(data.grade, 1),
-              session: cleanText(data.session, 8),
-              pairedWith: cleanText(data.pairedWith, 128),
-            };
-          })
-          .sort((a, b) => a.name.localeCompare(b.name));
-        const assignments = scheduleSnap.docs.map(doc => {
+        const debaterIdsByName = new Map();
+        pools.debaters.forEach(person => {
+          const key = person.name.toLowerCase();
+          debaterIdsByName.set(key, [...(debaterIdsByName.get(key) || []), person.id]);
+        });
+        const scheduleDocs = seasonScheduleSnap.docs.filter(doc => belongsToTemplate(doc.data(), template));
+        const assignments = scheduleDocs.map(doc => {
           const data = doc.data();
+          const legacyIds = Array.isArray(data.studentIds) ? data.studentIds.slice(0, 2) : [];
+          const legacyNames = Array.isArray(data.studentNames) ? data.studentNames.slice(0, 2) : [];
+          const hydratedLegacyIds = legacyNames.map(name => {
+            const matches = debaterIdsByName.get(cleanText(name, 120).toLowerCase()) || [];
+            return matches.length === 1 ? matches[0] : "";
+          }).filter(Boolean);
           return {
             id: doc.id,
-            studentIds: Array.isArray(data.studentIds) ? data.studentIds.slice(0, 2) : [],
-            studentNames: Array.isArray(data.studentNames) ? data.studentNames.slice(0, 2) : [],
+            studentIds: legacyIds,
+            studentNames: legacyNames,
+            pairAIds: Array.isArray(data.pairAIds) ? data.pairAIds.slice(0, 2) : hydratedLegacyIds,
+            pairANames: Array.isArray(data.pairANames) ? data.pairANames.slice(0, 2) : legacyNames,
+            pairBIds: Array.isArray(data.pairBIds) ? data.pairBIds.slice(0, 2) : [],
+            pairBNames: Array.isArray(data.pairBNames) ? data.pairBNames.slice(0, 2) : [],
             session: cleanText(data.session, 8),
             date: cleanDate(data.date),
             startTime: cleanTime(data.startTime),
             endTime: cleanTime(data.endTime),
             judge: cleanText(data.judge, 120),
+            judgeType: cleanText(data.judgeType, 40) || "member",
+            judgeTypeLabel: cleanText(data.judgeTypeLabel, 80) || "Members Directory",
             location: cleanText(data.location, 160),
+            status: ["scheduled", "completed", "cancelled"].includes(data.status) ? data.status : "scheduled",
             notes: cleanText(data.notes, 500),
           };
         }).sort((a, b) => `${a.date}-${a.startTime}`.localeCompare(`${b.date}-${b.startTime}`));
-        res.status(200).json({ ok: true, students, assignments, sessions });
+        res.status(200).json({ ok: true, ...pools, assignments, template });
+        return;
+      }
+
+      if (action === "saveTemplate") {
+        if (!await hasFullAdminAccess(decoded.email)) {
+          throw new Error("Only Coaches and Website Admins can change the tryout date range.");
+        }
+        const incoming = body.template || {};
+        const startDate = cleanDate(incoming.startDate);
+        const endDate = cleanDate(incoming.endDate);
+        if (!startDate || !endDate || startDate > endDate) throw new Error("Choose a valid tryout start and end date.");
+        let template;
+        await db.runTransaction(async transaction => {
+          const templateSnap = await transaction.get(templateRef);
+          const currentTemplate = templateFromSnapshot(templateSnap);
+          const scheduleSnap = await transaction.get(
+            scheduleCollection.where("season", "==", currentTemplate.season)
+          );
+          if (scheduleSnap.docs.some(doc => {
+            const data = doc.data();
+            const date = cleanDate(data.date);
+            return belongsToTemplate(data, currentTemplate) && date && (date < startDate || date > endDate);
+          })) {
+            throw new Error("Move or delete debates outside the new date range before shortening it.");
+          }
+          template = { ...currentTemplate, startDate, endDate };
+          transaction.set(templateRef, {
+            ...template,
+            updatedBy: cleanEmail(decoded.email),
+            updatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+        });
+        res.status(200).json({ ok: true, template });
         return;
       }
 
       if (action === "delete") {
+        if (!await hasFullAdminAccess(decoded.email)) {
+          throw new Error("Only Coaches and Website Admins can delete tryout debates.");
+        }
         const assignmentId = cleanText(body.assignmentId, 128);
         if (!assignmentId) throw new Error("Choose a tryout assignment to delete.");
-        await scheduleCollection.doc(assignmentId).delete();
+        const assignmentRef = scheduleCollection.doc(assignmentId);
+        const [assignmentSnap, template] = await Promise.all([assignmentRef.get(), loadTemplate()]);
+        if (!assignmentSnap.exists || !belongsToTemplate(assignmentSnap.data(), template)) {
+          throw new Error("That tryout debate no longer exists.");
+        }
+        await assignmentRef.delete();
         res.status(200).json({ ok: true });
         return;
       }
@@ -2562,69 +2670,77 @@ exports.manageTryoutSchedule = onRequest(
       if (action === "save") {
         const requestedId = cleanText(body.assignmentId, 128);
         const incoming = body.assignment || {};
-        const studentIds = [...new Set((Array.isArray(incoming.studentIds) ? incoming.studentIds : [])
-          .map(value => cleanText(value, 128)).filter(Boolean))];
-        const session = cleanText(incoming.session, 8);
+        const pairAIds = (Array.isArray(incoming.pairAIds) ? incoming.pairAIds : [])
+          .map(value => cleanText(value, 128)).filter(Boolean).slice(0, 2);
+        const pairBIds = (Array.isArray(incoming.pairBIds) ? incoming.pairBIds : [])
+          .map(value => cleanText(value, 128)).filter(Boolean).slice(0, 2);
+        const studentIds = [...pairAIds, ...pairBIds];
         const date = cleanDate(incoming.date);
         const startTime = cleanTime(incoming.startTime);
         const endTime = cleanTime(incoming.endTime);
         const judge = cleanText(incoming.judge, 120);
+        const judgeType = ["member", "high-school-student", "teacher", "parent", "other"].includes(incoming.judgeType)
+          ? incoming.judgeType : "other";
+        const judgeTypeLabel = {
+          member: "Members Directory",
+          "high-school-student": "High-school student",
+          teacher: "Teacher",
+          parent: "Parent",
+          other: "Other",
+        }[judgeType];
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
-        if (studentIds.length !== 2) throw new Error("Choose two different debaters.");
-        const tournament = sessions.find(item => item.session === session && item.active);
-        if (!tournament || date !== tournament.date) throw new Error("Choose an active upcoming tryout session.");
+        const status = ["scheduled", "completed", "cancelled"].includes(incoming.status) ? incoming.status : "scheduled";
+        if (studentIds.length !== 4 || new Set(studentIds).size !== 4) {
+          throw new Error("Choose four different debaters for Pair A and Pair B.");
+        }
         if (!startTime || !endTime || timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
         if (!judge) throw new Error("Enter the judge’s name.");
         if (!location) throw new Error("Enter a room or location.");
+        const pools = await buildTryoutPeoplePools(db);
+        const personById = new Map(pools.debaters.map(person => [person.id, person]));
+        const selected = studentIds.map(id => personById.get(id));
+        if (selected.some(person => !person)) throw new Error("One of those debaters is no longer in Track Applications or the Members Directory.");
 
         const assignmentRef = requestedId ? scheduleCollection.doc(requestedId) : scheduleCollection.doc();
         await db.runTransaction(async transaction => {
-          const [signupDocs, assignmentDocs] = await Promise.all([
-            Promise.all(studentIds.map(id => transaction.get(signupCollection.doc(id)))),
-            transaction.get(scheduleCollection.where("season", "==", "2026-2027")),
-          ]);
-          if (signupDocs.some(doc => !doc.exists || doc.data().withdrawn === true)) {
-            throw new Error("One of those debaters is no longer available.");
+          const templateSnap = await transaction.get(templateRef);
+          const template = templateFromSnapshot(templateSnap);
+          if (!date || date < template.startDate || date > template.endDate) {
+            throw new Error(`Choose a debate date between ${template.startDate} and ${template.endDate}.`);
           }
-          const students = signupDocs.map(doc => ({ id: doc.id, ...doc.data() }));
-          if (students.some(student => student.session !== session)) {
-            throw new Error("Both debaters must be signed up for the selected tryout date.");
+          if (requestedId) {
+            const existingSnap = await transaction.get(assignmentRef);
+            if (!existingSnap.exists || !belongsToTemplate(existingSnap.data(), template)) {
+              throw new Error("That tryout debate no longer exists.");
+            }
           }
-
-          const otherAssignments = assignmentDocs.docs
-            .filter(doc => doc.id !== assignmentRef.id)
-            .map(doc => ({ id: doc.id, ...doc.data() }));
-          if (otherAssignments.some(item =>
-            Array.isArray(item.studentIds) && item.studentIds.some(id => studentIds.includes(id)))) {
-            throw new Error("One of those debaters is already scheduled.");
-          }
-          const sameWindow = otherAssignments.filter(item =>
-            item.date === date && overlaps(startTime, endTime, item.startTime, item.endTime));
-          const normalizedJudge = judge.toLowerCase();
-          const normalizedLocation = location.toLowerCase();
-          if (sameWindow.some(item => cleanText(item.judge, 120).toLowerCase() === normalizedJudge)) {
-            throw new Error(`${judge} is already judging another pair at that time.`);
-          }
-          if (sameWindow.some(item => cleanText(item.location, 160).toLowerCase() === normalizedLocation)) {
-            throw new Error(`${location} is already in use at that time.`);
-          }
-
           const data = {
-            season: "2026-2027",
-            tournamentId: tournament.tournamentId,
-            session,
+            season: template.season,
+            tournamentId: template.id,
+            session: "template",
             date,
             studentIds,
-            studentNames: students.map(student => cleanText(student.name, 80)),
+            studentNames: selected.map(person => person.name),
+            pairAIds,
+            pairANames: selected.slice(0, 2).map(person => person.name),
+            pairBIds,
+            pairBNames: selected.slice(2).map(person => person.name),
             startTime,
             endTime,
             judge,
+            judgeType,
+            judgeTypeLabel,
             location,
+            status,
             notes,
             updatedBy: cleanEmail(decoded.email),
             updatedAt: FieldValue.serverTimestamp(),
           };
+          if (!templateSnap.exists) transaction.set(templateRef, {
+            ...template,
+            updatedAt: FieldValue.serverTimestamp(),
+          });
           if (requestedId) transaction.set(assignmentRef, data, { merge: true });
           else transaction.set(assignmentRef, { ...data, createdAt: FieldValue.serverTimestamp() });
         });

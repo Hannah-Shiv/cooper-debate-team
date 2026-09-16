@@ -5,6 +5,8 @@ const {
   newYorkCalendarDate,
   sanitizeEventType,
 } = require("../functions/tournament-events");
+const fs = require("node:fs");
+const path = require("node:path");
 
 test("event types are constrained to the supported values", () => {
   assert.equal(sanitizeEventType(" INTERNAL "), "internal");
@@ -26,4 +28,29 @@ test("public volunteer events preserve legacy enabled records and reject closed 
 test("New York calendar date is used at midnight boundaries", () => {
   const instant = new Date("2025-02-10T04:30:00.000Z");
   assert.equal(newYorkCalendarDate(instant), "2025-02-09");
+});
+
+test("captains can enter tournaments but cannot delete them", () => {
+  const browserSource = fs.readFileSync(path.join(__dirname, "../js/volunteer-admin.js"), "utf8");
+  const serverSource = fs.readFileSync(path.join(__dirname, "../functions/index.js"), "utf8");
+
+  assert.ok(browserSource.includes('const canManagePrivateSignups = ["coach", "website-admin"].includes(currentUserRole);'));
+  assert.ok(browserSource.includes('${canManagePrivateSignups ? `'));
+  assert.ok(browserSource.includes('data-selected-delete'));
+  assert.ok(browserSource.includes('if (role === "captain") $("tm-selected-signups")?.setAttribute("hidden", "");'));
+  assert.ok(serverSource.includes('if (!hasFullAccess && !["saveEvent", "ensureTryoutEvents"].includes(action))'));
+});
+
+test("tournament deletion uses the in-page confirmation dialog", () => {
+  const htmlSource = fs.readFileSync(path.join(__dirname, "../members-events.html"), "utf8");
+  const browserSource = fs.readFileSync(path.join(__dirname, "../js/volunteer-admin.js"), "utf8");
+  const deleteHandler = browserSource.slice(
+    browserSource.indexOf("function deleteEvent"),
+    browserSource.indexOf("async function confirmDeleteEvent")
+  );
+
+  assert.ok(htmlSource.includes('id="tm-delete-modal"'));
+  assert.ok(htmlSource.includes('role="alertdialog"'));
+  assert.ok(!deleteHandler.includes("confirm("));
+  assert.ok(browserSource.includes('await manage({ action: "deleteEvent", eventId });'));
 });
