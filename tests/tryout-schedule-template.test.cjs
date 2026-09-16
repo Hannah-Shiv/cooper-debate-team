@@ -78,6 +78,7 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
   assert.match(html, /class="tryout-pair-group pair-b"/);
   assert.match(html, /\.tryout-pair-group\{[^}]*grid-column:span 3/);
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
+  assert.match(html, /\.tryout-data-entry\{[^}]*margin-top:10px/);
 });
 
 test("tryout heading, data entry, and schedule grid use blue, dark-teal, and dark-blue palettes", () => {
@@ -153,6 +154,7 @@ test("schedule rows fit without horizontal scrolling and use accessible row acti
   assert.match(client, /class="tryout-row-number">\$\{index \+ 1\}/);
   assert.match(client, /class="tryout-student-stack"/);
   assert.match(client, /class="tryout-student-name"/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th\{color:#ffe45c/);
   assert.match(client, /aria-label="Edit row \$\{index \+ 1\}"/);
   assert.match(client, /aria-label="Delete row \$\{index \+ 1\}"/);
   assert.match(client, /class="tryout-action-divider"/);
@@ -185,9 +187,9 @@ test("schedule separates date and time, shows grades, and derives Draft or Final
   assert.match(client, /pairBCount !== 2/);
   assert.doesNotMatch(html, /Pair B · Optional/);
   assert.match(client, /\$\{draft \? "Draft" : "Finalized"\}/);
-  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*background:#ff8a65/);
+  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*background:#ffe45c/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*border-radius:50%/);
-  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*color:#151b32/);
+  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*color:#111/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*height:24px/);
 });
 
