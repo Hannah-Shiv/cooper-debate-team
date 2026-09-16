@@ -198,7 +198,7 @@
      if (completed) {
        const rubric = evaluation?.rubric || emptyState().rubric;
        const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
-        summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-recommendation">${esc(recommendationLabel(evaluation.recommendation))}</span>`;
+        summaryMarkup = `<span class="essay-evaluated-result"><span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b></span><span class="essay-evaluated-recommendation">${esc(recommendationLabel(evaluation.recommendation))}</span>`;
      }
       const summaryClass = completed ? "is-completed" : hasDraft ? "is-draft" : "is-not-started";
       card.innerHTML = `<div class="essay-launch-heading"><strong>Evaluation workspace</strong><p class="${summaryClass}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
