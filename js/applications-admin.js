@@ -511,7 +511,7 @@
              entry.querySelector(".essay-fullscreen-button").addEventListener("click", () => driveDocument.previewUrl && openEssayReader(driveDocument, entry.querySelector(".essay-fullscreen-button")));
              const referenceList = entry.querySelector(".essay-reference-list");
              const rubric = window.COOPER_ESSAY_RUBRIC || [];
-             referenceList.innerHTML = rubric.map((category, index) => `<details class="essay-reference-category" ${index === 0 ? "open" : ""}><summary><span class="essay-ref-number">0${index + 1}</span><span class="essay-ref-title">${escapeHtml(category.title)}</span><span class="essay-ref-points">5 pts</span></summary><div class="essay-ref-criteria">${[5,4,3,2,1].map(score => `<div><b>${score}</b><span>${escapeHtml(category.descriptions[score])}</span></div>`).join("")}</div></details>`).join("");
+             referenceList.innerHTML = rubric.map((category, index) => `<details class="essay-reference-category" ${index === 0 ? "open" : ""}><summary><span class="essay-ref-number">${index + 1}</span><span class="essay-ref-title">${escapeHtml(category.title)}</span><span class="essay-ref-points">5 pts</span></summary><div class="essay-ref-criteria">${[5,4,3,2,1].map(score => `<div><b>${score}</b><span>${escapeHtml(category.descriptions[score])}</span></div>`).join("")}</div></details>`).join("");
              pane.appendChild(entry);
              const previewCard = entry.querySelector(".essay-entry-document");
             const previewBody = previewCard.querySelector(".essay-preview-body");
