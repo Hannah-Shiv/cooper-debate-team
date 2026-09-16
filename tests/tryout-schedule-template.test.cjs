@@ -182,7 +182,8 @@ test("schedule separates date and time, shows grades, and derives Draft or Final
   assert.match(client, /data-label="Time"/);
   assert.match(client, /class="tryout-grade"/);
   assert.match(client, /const pairBCount = pairNames\(item, "b"\)\.length/);
-  assert.match(client, /\(pairBCount !== 0 && pairBCount !== 2\)/);
+  assert.match(client, /pairBCount !== 2/);
+  assert.doesNotMatch(html, /Pair B · Optional/);
   assert.match(client, /\$\{draft \? "Draft" : "Finalized"\}/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*background:#ff8a65/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*border-radius:50%/);

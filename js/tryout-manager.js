@@ -162,7 +162,7 @@
 
   function isDraft(item) {
     const pairBCount = pairNames(item, "b").length;
-    return pairNames(item, "a").length !== 2 || (pairBCount !== 0 && pairBCount !== 2) ||
+    return pairNames(item, "a").length !== 2 || pairBCount !== 2 ||
       !item.date || !item.startTime || !item.endTime || !item.judge || !item.location;
   }
 
