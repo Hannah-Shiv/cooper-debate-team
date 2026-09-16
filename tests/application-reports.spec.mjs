@@ -96,11 +96,11 @@ test("essay report shows all grading states, filters, and sorts by total", async
   await expect(dialog.locator("tbody tr").filter({ hasText: "Casey Hold" })).toContainText("Not complete");
   await expect(dialog).not.toContainText("Team Review");
 
-  await dialog.locator("#report-status").selectOption("evaluated");
+  await dialog.locator('[data-report-filter="status"][data-value="evaluated"]').click();
   await expect(dialog.locator("tbody tr")).toHaveCount(1);
   await expect(dialog.locator("tbody tr")).toContainText("Jordan Beta");
 
-  await dialog.locator("#report-status").selectOption("all");
+  await dialog.locator('[data-report-filter="status"][data-value="all"]').click();
   await dialog.getByRole("button", { name: "Total /35" }).click();
   await expect(dialog.locator("tbody tr").first()).toContainText("Alex Alpha");
   await dialog.getByRole("button", { name: "Total /35" }).click();
