@@ -29,6 +29,8 @@
   let events = [];
   let currentUser = null;
   let currentUserRole = "member";
+  let pendingDeleteEventId = null;
+  let deleteTrigger = null;
   let capacityRoles = [];
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -344,14 +346,37 @@
       alert(error.message || "Unable to cancel this tournament.");
     }
   }
-  async function deleteEvent(eventId) {
+  function closeDeleteConfirmation() {
+    $("tm-delete-modal").hidden = true;
+    pendingDeleteEventId = null;
+    const trigger = deleteTrigger;
+    deleteTrigger = null;
+    trigger?.focus();
+  }
+  function deleteEvent(eventId, trigger) {
     const event = events.find(item => item.id === eventId);
-    if (!event || !confirm(`Delete “${event.title}” permanently? Past records and signups cannot be recovered.`)) return;
+    if (!event) return;
+    pendingDeleteEventId = eventId;
+    deleteTrigger = trigger || null;
+    $("tm-delete-event-name").textContent = event.title;
+    $("tm-delete-modal").hidden = false;
+    $("tm-delete-cancel").focus();
+  }
+  async function confirmDeleteEvent() {
+    const eventId = pendingDeleteEventId;
+    if (!eventId) return;
+    const button = $("tm-delete-confirm");
+    button.disabled = true;
+    button.textContent = "Deleting…";
     try {
       await manage({ action: "deleteEvent", eventId });
+      closeDeleteConfirmation();
       resetForm();
     } catch (error) {
       alert(error.message || "Unable to delete this tournament.");
+    } finally {
+      button.disabled = false;
+      button.textContent = "Delete tournament";
     }
   }
   function eventPayload(item, roles = item.roles || []) {
@@ -434,7 +459,7 @@
     $("tm-detail-actions").querySelector("[data-selected-details]").addEventListener("click", () => openEventModal("view"));
     $("tm-detail-actions").querySelector("[data-selected-toggle]")?.addEventListener("click", () => setPublished(item.id, !item.published));
     $("tm-detail-actions").querySelector("[data-selected-export]")?.addEventListener("click", () => exportEvent(item.id));
-    $("tm-detail-actions").querySelector("[data-selected-delete]")?.addEventListener("click", () => deleteEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-delete]")?.addEventListener("click", event => deleteEvent(item.id, event.currentTarget));
     document.querySelectorAll(".tm-data-table tbody tr").forEach(row => row.classList.toggle("selected", row.dataset.event === item.id));
     $("tm-status").textContent = status.label;
     $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
@@ -674,8 +699,15 @@
     $("tm-event-modal").addEventListener("click", event => {
       if (event.target === $("tm-event-modal")) closeEventModal();
     });
+    $("tm-delete-cancel").addEventListener("click", closeDeleteConfirmation);
+    $("tm-delete-confirm").addEventListener("click", confirmDeleteEvent);
+    $("tm-delete-modal").addEventListener("click", event => {
+      if (event.target === $("tm-delete-modal")) closeDeleteConfirmation();
+    });
     document.addEventListener("keydown", event => {
-      if (event.key === "Escape" && !$("tm-event-modal").hidden) closeEventModal();
+      if (event.key !== "Escape") return;
+      if (!$("tm-delete-modal").hidden) closeDeleteConfirmation();
+      else if (!$("tm-event-modal").hidden) closeEventModal();
     });
   });
 })();

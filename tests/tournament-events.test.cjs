@@ -40,3 +40,17 @@ test("captains can enter tournaments but cannot delete them", () => {
   assert.ok(browserSource.includes('if (role === "captain") $("tm-selected-signups")?.setAttribute("hidden", "");'));
   assert.ok(serverSource.includes('if (!hasFullAccess && !["saveEvent", "ensureTryoutEvents"].includes(action))'));
 });
+
+test("tournament deletion uses the in-page confirmation dialog", () => {
+  const htmlSource = fs.readFileSync(path.join(__dirname, "../members-events.html"), "utf8");
+  const browserSource = fs.readFileSync(path.join(__dirname, "../js/volunteer-admin.js"), "utf8");
+  const deleteHandler = browserSource.slice(
+    browserSource.indexOf("function deleteEvent"),
+    browserSource.indexOf("async function confirmDeleteEvent")
+  );
+
+  assert.ok(htmlSource.includes('id="tm-delete-modal"'));
+  assert.ok(htmlSource.includes('role="alertdialog"'));
+  assert.ok(!deleteHandler.includes("confirm("));
+  assert.ok(browserSource.includes('await manage({ action: "deleteEvent", eventId });'));
+});

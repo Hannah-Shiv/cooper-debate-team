@@ -203,17 +203,30 @@
     .tm-manager-columns{max-width:1606px}
     .tm-page-row{margin-bottom:32px;min-height:72px}
     .tm-page-heading h1{
+      align-items:center;
       color:#ffd700;
+      display:flex;
       font-size:clamp(32.4px,4.05vw,50.1px);
+      flex-wrap:nowrap;
       line-height:1;
-      margin:0 0 8px;
+      margin:0;
       text-shadow:0 0 60px rgba(255,215,0,.2)
     }
-    .tm-page-heading p{
+    .tm-page-heading{width:100%}
+    .tm-page-title-main{flex:0 0 auto;white-space:nowrap}
+    .tm-page-title-divider{
+      background:linear-gradient(180deg,transparent,#ffd700 24%,#ffe87a 50%,#ffd700 76%,transparent);
+      display:inline-block;
+      height:.72em;
+      margin:0 .18em;
+      width:2px
+    }
+    .tm-page-title-context{
       color:#fff;
       font:400 11.8px/1.45 'Josefin Sans',sans-serif;
       letter-spacing:.055em;
-      max-width:none
+      text-shadow:none;
+      text-transform:uppercase
     }
     .tm-grid-column .tm-data-grid{overflow-x:hidden}
     .tm-grid-column .tm-data-table{min-width:0;table-layout:fixed;width:100%}
@@ -326,7 +339,8 @@
       background:#f2bf3d;
       border-color:#f7d66c;
       box-shadow:0 8px 20px rgba(242,191,61,.17);
-      color:#07142c
+      color:#07142c;
+      transition:background .18s,border-color .18s,box-shadow .18s,transform .18s
     }
     .tm-selection-panel .tm-detail-actions [data-selected-toggle]{border-color:rgba(242,191,61,.4);color:#f5cf69}
     .tm-selection-panel .tm-detail-actions [data-selected-export]{border-color:rgba(85,191,218,.38);color:#bdeeff}
@@ -342,9 +356,74 @@
       outline:2px solid currentColor;
       outline-offset:2px
     }
+    .tm-selection-panel .tm-detail-actions [data-selected-details]:hover,
+    .tm-selection-panel .tm-detail-actions [data-selected-details]:focus-visible{
+      background:#ffe173;
+      border-color:#fff0a8;
+      box-shadow:0 0 0 3px rgba(242,191,61,.2),0 12px 28px rgba(242,191,61,.35);
+      filter:none;
+      transform:translateY(-2px)
+    }
+    .tm-delete-backdrop{
+      align-items:center;
+      background:rgba(1,8,22,.82);
+      display:flex;
+      inset:88px 0 0;
+      justify-content:center;
+      padding:20px;
+      position:fixed;
+      z-index:70;
+      backdrop-filter:blur(6px)
+    }
+    .tm-delete-backdrop[hidden]{display:none}
+    .tm-delete-dialog{
+      background:linear-gradient(145deg,#11284d,#091b37);
+      border:1px solid rgba(238,112,129,.46);
+      border-radius:12px;
+      box-shadow:0 24px 70px rgba(0,0,0,.62);
+      max-width:440px;
+      padding:28px;
+      text-align:center;
+      width:100%
+    }
+    .tm-delete-icon{
+      align-items:center;
+      background:rgba(238,112,129,.12);
+      border:1px solid rgba(238,112,129,.34);
+      border-radius:50%;
+      color:#ff9caf;
+      display:flex;
+      font-size:1.35rem;
+      height:48px;
+      justify-content:center;
+      margin:0 auto 16px;
+      width:48px
+    }
+    .tm-delete-dialog h2{color:#fff;font:700 1.7rem 'Cormorant Garamond',serif;margin:0 0 9px}
+    .tm-delete-dialog p{color:#b9c9df;font-size:.7rem;line-height:1.65;margin:0}
+    .tm-delete-dialog strong{color:#fff}
+    .tm-delete-dialog-actions{display:grid;gap:10px;grid-template-columns:1fr 1fr;margin-top:22px}
+    .tm-delete-dialog button{
+      border-radius:7px;
+      cursor:pointer;
+      font-size:.62rem;
+      font-weight:700;
+      letter-spacing:.08em;
+      min-height:44px;
+      text-transform:uppercase
+    }
+    .tm-delete-cancel{background:rgba(13,35,72,.86);border:1px solid rgba(131,169,222,.36);color:#e7f0fd}
+    .tm-delete-confirm{background:#a92f49;border:1px solid #e0657d;color:#fff}
+    .tm-delete-dialog button:hover,.tm-delete-dialog button:focus-visible{filter:brightness(1.16);outline:2px solid currentColor;outline-offset:2px}
+    .tm-delete-dialog button:disabled{cursor:wait;filter:saturate(.5);opacity:.7}
     @media(max-width:560px){
       .tm-selection-panel .tm-summary-metrics{grid-template-columns:1fr}
       .tm-selection-panel .tm-metric{min-height:92px}
+    }
+    @media(max-width:780px){
+      .tm-page-heading h1{align-items:flex-start;flex-direction:column}
+      .tm-page-title-divider{display:none}
+      .tm-page-title-context{margin-top:10px}
     }
     @media(min-width:901px) and (max-width:1050px){
       .tm-selection-panel .tm-metric.status strong{font-size:1rem;line-height:1.1}
@@ -389,7 +468,7 @@
           <section id="vol-dashboard" hidden>
             <div class="tm-breadcrumb"><a href="members-signon.html">Member Hub</a><span>›</span><span class="current">Tournament Management</span><span>›</span><span id="tm-crumb-event">Overview</span></div>
             <div class="tm-page-row">
-              <div class="tm-page-heading"><h1>Tournament Management</h1><p>Add, view, and manage every tournament, including internal tryouts.</p></div>
+              <div class="tm-page-heading"><h1><span class="tm-page-title-main">Tournament Management</span><span class="tm-page-title-divider" aria-hidden="true"></span><span class="tm-page-title-context">Add, view, and manage every tournament, including internal tryouts.</span></h1></div>
             </div>
             <div id="volunteer-manager">
              <div class="tm-manager-columns">
@@ -439,6 +518,17 @@
                     <span class="tm-summary-fact-copy"><span class="tm-summary-fact-label">Debate resolution</span><span class="tm-summary-fact-value" id="tm-summary-resolution">Loading resolution…</span></span>
                   </div>
                 </div>
+             <div class="tm-delete-backdrop" id="tm-delete-modal" hidden>
+               <div class="tm-delete-dialog" role="alertdialog" aria-modal="true" aria-labelledby="tm-delete-title" aria-describedby="tm-delete-description">
+                 <div class="tm-delete-icon" aria-hidden="true">!</div>
+                 <h2 id="tm-delete-title">Delete tournament?</h2>
+                 <p id="tm-delete-description"><strong id="tm-delete-event-name">This tournament</strong> will be permanently deleted. Past records and signups cannot be recovered.</p>
+                 <div class="tm-delete-dialog-actions">
+                   <button class="tm-delete-cancel" id="tm-delete-cancel" type="button">Cancel</button>
+                   <button class="tm-delete-confirm" id="tm-delete-confirm" type="button">Delete tournament</button>
+                 </div>
+               </div>
+             </div>
               </div>
               <div class="tm-summary-metrics" aria-label="Volunteer signup metrics">
                 <div class="tm-metric capacity">
@@ -596,7 +686,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/volunteer-admin.js?v=27"></script>
+  <script src="js/volunteer-admin.js?v=28"></script>
   <script src="js/tryout-manager.js?v=3"></script>
   <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>
