@@ -102,6 +102,7 @@
 @media(max-width:760px){.application-report-dialog[data-kind=decision] .report-count{font-size:.72rem;left:auto;position:static;transform:none}.application-report-dialog[data-kind=decision] .report-head{padding:10px 14px}}
 @media(max-width:600px){.application-report-dialog[data-kind=decision] .report-toolbar{gap:3px;grid-template-columns:1fr;padding:10px 12px}.application-report-dialog[data-kind=decision] .report-field{grid-column:auto!important;padding:7px 0}.application-report-dialog[data-kind=decision] .report-hidden-toggle{justify-content:space-between;margin-top:5px}.application-report-dialog[data-kind=decision] .report-filter-buttons button{flex:1}}
 .report-button:disabled{cursor:wait;filter:saturate(.45);opacity:.62}
+.report-save-pdf:hover,.report-save-pdf:focus-visible{background:#a32e39!important;border-color:#ffd1d4!important;box-shadow:0 0 0 3px rgba(255,95,106,.2);color:#fff!important;outline:0}
 .application-report-dialog .report-table-wrap{overflow-x:hidden;overflow-y:auto}
 .application-report-dialog .report-table{min-width:0;table-layout:fixed;width:100%}
 .application-report-dialog .report-table th,.application-report-dialog .report-table td{hyphens:auto;overflow-wrap:anywhere;white-space:normal;word-break:normal}

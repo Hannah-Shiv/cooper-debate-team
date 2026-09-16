@@ -56,7 +56,7 @@
         { label: "Grade", width: 43 },
         { label: "Status", width: 58, status: true },
         { label: "Total /35", width: 43, align: "center" },
-        ...LABELS.map(label => ({ label, width: 34, align: "center" })),
+        ...["Claim / Case", "Evidence", "Analysis", "Weighing", "Org.", "Concl.", "Style / Voice"].map(label => ({ label, width: 34, align: "center" })),
         { label: "Interpretation", width: 76 },
         { label: "Recommendation", width: 194 },
       ];
@@ -96,7 +96,15 @@
       item.reviewNote || "—",
     ];
   }
-  function savePdf(kind) {
+  function fittedPdfFontSize(doc, text, width, preferredSize, minimumSize = 3.5, font = "Helvetica") {
+    const words = pdfValue(text).split(/\s+/).filter(Boolean);
+    const longestWord = words.reduce((longest, word) => word.length > longest.length ? word : longest, "");
+    let size = preferredSize;
+    doc.font(font);
+    while (size > minimumSize && doc.fontSize(size).widthOfString(longestWord) > width) size -= 0.25;
+    return size;
+  }
+  async function savePdf(kind) {
     if (!dialog || !window.PDFDocument) {
       window.alert("PDF creation is unavailable. Refresh the page and try again.");
       return;
@@ -106,6 +114,22 @@
     const evaluations = dialog.__evaluations || {};
     if (!rows.length) return;
     button.disabled = true;
+    button.textContent = "Choose location…";
+    let fileHandle;
+    try {
+      if (typeof window.showSaveFilePicker !== "function") {
+        throw new Error("Your browser does not support choosing a save location. Open this page in the latest Chrome or Edge browser.");
+      }
+      fileHandle = await window.showSaveFilePicker({
+        suggestedName: `${kind === "essay" ? "essay-scores" : "decision-status"}-${pdfFileDate()}.pdf`,
+        types: [{ description: "PDF document", accept: { "application/pdf": [".pdf"] } }],
+      });
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = "Save as PDF";
+      if (error?.name !== "AbortError") window.alert(error.message || "A save location could not be selected.");
+      return;
+    }
     button.textContent = "Saving PDF…";
     try {
       const isEssay = kind === "essay";
@@ -142,7 +166,8 @@
         let x = left;
         columns.forEach(column => {
           doc.rect(x, y, column.width, 30).fillAndStroke("#123e70", "#d4a937");
-          doc.fillColor("#ffe27b").font("Helvetica-Bold").fontSize(isEssay ? 6.2 : 7)
+          const headerSize = fittedPdfFontSize(doc, column.label.toUpperCase(), column.width - 8, isEssay ? 6.2 : 7, 4.5, "Helvetica-Bold");
+          doc.fillColor("#ffe27b").font("Helvetica-Bold").fontSize(headerSize)
             .text(column.label.toUpperCase(), x + 4, y + 7, { align: column.align || "left", width: column.width - 8, height: 18 });
           x += column.width;
         });
@@ -157,10 +182,14 @@
       drawTableHeading();
       rows.forEach((item, rowIndex) => {
         const values = reportPdfRow(kind, item, evaluations);
-        doc.font("Helvetica").fontSize(isEssay ? 6.6 : 7.4);
+        const cellSizes = values.map((value, index) => {
+          const text = typeof value === "object" ? value.label : pdfValue(value);
+          return fittedPdfFontSize(doc, text, columns[index].width - 8, isEssay ? 6.6 : 7.4, 4.5, index === 0 || typeof value === "object" ? "Helvetica-Bold" : "Helvetica");
+        });
         const rowHeight = Math.max(29, ...values.map((value, index) => {
           const text = typeof value === "object" ? value.label : pdfValue(value);
-          return doc.heightOfString(text, { width: columns[index].width - 8, lineGap: 1 }) + 10;
+          return doc.font(index === 0 || typeof value === "object" ? "Helvetica-Bold" : "Helvetica").fontSize(cellSizes[index])
+            .heightOfString(text, { width: columns[index].width - 8, lineGap: 1 }) + 10;
         }));
         if (y + rowHeight > bottom) addPage();
         let x = left;
@@ -170,7 +199,7 @@
           const fill = isStatus ? value.fill : (rowIndex % 2 ? "#edf4fb" : "#ffffff");
           const textColor = isStatus ? value.text : (index === 0 ? "#08284e" : "#263f59");
           doc.rect(x, y, column.width, rowHeight).fillAndStroke(fill, "#9db4cb");
-          doc.fillColor(textColor).font(index === 0 || isStatus ? "Helvetica-Bold" : "Helvetica").fontSize(isEssay ? 6.6 : 7.4)
+          doc.fillColor(textColor).font(index === 0 || isStatus ? "Helvetica-Bold" : "Helvetica").fontSize(cellSizes[index])
             .text(isStatus ? value.label : pdfValue(value), x + 4, y + 5, {
               align: column.align || "left",
               width: column.width - 8,
@@ -190,17 +219,16 @@
           .text(`Page ${pageIndex - range.start + 1} of ${range.count}`, doc.page.width - 124, doc.page.height - 36, { align: "right", lineBreak: false, width: 100 });
       }
       doc.on("data", chunk => chunks.push(chunk));
-      doc.on("end", () => {
-        const blob = new Blob(chunks, { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${isEssay ? "essay-scores" : "decision-status"}-${pdfFileDate()}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        setTimeout(() => URL.revokeObjectURL(url), 1000);
-        if (dialog) {
+      doc.on("end", async () => {
+        try {
+          const blob = new Blob(chunks, { type: "application/pdf" });
+          const writable = await fileHandle.createWritable();
+          await writable.write(blob);
+          await writable.close();
+        } catch (error) {
+          console.error("Unable to write application report PDF", error);
+          window.alert("The PDF could not be saved to that location. Please try again.");
+        } finally {
           button.disabled = false;
           button.textContent = "Save as PDF";
         }

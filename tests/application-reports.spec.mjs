@@ -1,5 +1,4 @@
 import { test, expect } from "@playwright/test";
-import { readFile } from "node:fs/promises";
 
 const applications = [
   {
@@ -212,6 +211,17 @@ test("saves both reports as landscape PDFs without opening the print dialog", as
   await page.addScriptTag({ path: "js/vendor/pdfkit.standalone.js" });
   await page.evaluate(() => {
     window.print = () => { throw new Error("The print dialog should not open."); };
+    window.__savedPdf = null;
+    window.__pickerOptions = null;
+    window.showSaveFilePicker = async options => {
+      window.__pickerOptions = options;
+      return {
+        createWritable: async () => ({
+          write: async blob => { window.__savedPdf = blob; },
+          close: async () => {},
+        }),
+      };
+    };
   });
   for (const report of [
     { trigger: "#decision-status-report", filename: /^decision-status-\d{4}-\d{2}-\d{2}\.pdf$/ },
@@ -220,18 +230,39 @@ test("saves both reports as landscape PDFs without opening the print dialog", as
     await page.locator(report.trigger).click();
     const saveButton = page.getByRole("button", { name: "Save as PDF" });
     await expect(saveButton).toBeEnabled();
-    const [download] = await Promise.all([
-      page.waitForEvent("download"),
-      saveButton.click(),
-    ]);
-    expect(download.suggestedFilename()).toMatch(report.filename);
-
-    const path = await download.path();
-    const pdf = await readFile(path);
-    expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
-    expect(pdf.length).toBeGreaterThan(2000);
-    expect(pdf.toString("latin1")).toContain("/MediaBox [0 0 792 612]");
-    expect(pdf.toString("latin1")).toContain("/Count 1");
+    await saveButton.hover();
+    const saveHover = await saveButton.evaluate(element => {
+      const style = getComputedStyle(element);
+      return { background: style.backgroundColor, border: style.borderColor, shadow: style.boxShadow };
+    });
+    const closeButton = page.locator(".report-close");
+    await closeButton.hover();
+    const closeHover = await closeButton.evaluate(element => {
+      const style = getComputedStyle(element);
+      return { background: style.backgroundColor, border: style.borderColor, shadow: style.boxShadow };
+    });
+    expect(saveHover).toEqual(closeHover);
+    await saveButton.click();
+    await page.waitForFunction(() => window.__savedPdf instanceof Blob);
+    const saved = await page.evaluate(async () => {
+      const buffer = await window.__savedPdf.arrayBuffer();
+      const bytes = new Uint8Array(buffer);
+      return {
+        content: new TextDecoder("windows-1252").decode(buffer),
+        name: window.__pickerOptions.suggestedName,
+        prefix: String.fromCharCode(...bytes.slice(0, 5)),
+        size: bytes.length,
+        type: window.__pickerOptions.types[0],
+      };
+    });
+    expect(saved.name).toMatch(report.filename);
+    expect(saved.type.accept["application/pdf"]).toEqual([".pdf"]);
+    expect(saved.prefix).toBe("%PDF-");
+    expect(saved.size).toBeGreaterThan(2000);
+    expect(saved.content).toContain("/MediaBox [0 0 792 612]");
+    expect(saved.content).toContain("/Count 1");
+    await expect(saveButton).toHaveText("Save as PDF");
+    await page.evaluate(() => { window.__savedPdf = null; });
     await page.locator(".report-close").click();
   }
 });
