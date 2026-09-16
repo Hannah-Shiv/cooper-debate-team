@@ -159,6 +159,19 @@ test("reset clears a saved evaluation and restores the Not Started launcher", as
   await page.locator(".eval-reset").click();
   await expect(page.locator(".eval-reset-confirm")).toBeVisible();
   await expect(page.locator(".eval-reset-confirm")).toContainText("This cannot be undone.");
+  const resetConfirmationLayout = await page.locator(".eval-reset-confirm").evaluate((element) => {
+    const rect = element.getBoundingClientRect();
+    return {
+      centerX: rect.left + rect.width / 2,
+      centerY: rect.top + rect.height / 2,
+      viewportCenterX: window.innerWidth / 2,
+      viewportCenterY: window.innerHeight / 2,
+      width: rect.width,
+    };
+  });
+  expect(Math.abs(resetConfirmationLayout.centerX - resetConfirmationLayout.viewportCenterX)).toBeLessThan(2);
+  expect(Math.abs(resetConfirmationLayout.centerY - resetConfirmationLayout.viewportCenterY)).toBeLessThan(2);
+  expect(resetConfirmationLayout.width).toBeGreaterThan(700);
   await page.locator(".reset-confirm").click();
 
   await expect(page.locator(".essay-eval")).not.toBeVisible();
