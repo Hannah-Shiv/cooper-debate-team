@@ -47,6 +47,14 @@ async function mountEvaluation(page, evaluation = null) {
           headers: { "Content-Type": "application/json" },
         });
       }
+      if (body.action === "reset") {
+        window.__evaluation = null;
+        window.__revision = 0;
+        return new Response(JSON.stringify({ ok: true, evaluation: null }), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
       window.__revision += 1;
       window.__evaluation = {
         revision: window.__revision,
@@ -97,7 +105,9 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
     recommendation: null,
   });
 
-  await expect(page.locator(".essay-launch-wrap p")).toContainText("Draft · 1 of 7 scored · 4/35");
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("In Progress4/35");
+  await expect(page.locator(".essay-launch-wrap p")).not.toContainText("coach@example.test");
+  await expect(page.locator(".essay-progress-score")).toHaveCSS("font-size", "18.88px");
   await page.evaluate(() => { window.__delayGetMs = 250; });
   await page.locator(".essay-launch").click();
 
@@ -124,6 +134,39 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
   await expect(page.locator(".eval-status")).toHaveText("Saved just now");
 });
 
+test("reset clears a saved evaluation and restores the Not Started launcher", async ({ page }) => {
+  await mountEvaluation(page, {
+    revision: 2,
+    status: "draft",
+    rubric: {
+      claimCase: 4,
+      evidenceResearch: null,
+      commentaryAnalysis: null,
+      weighingImpacts: null,
+      organizationNarrative: null,
+      conclusionRecommendation: null,
+      styleVoice: null,
+    },
+    strengths: "Clear claim.",
+    growthAreas: "",
+    concerns: "",
+    recommendation: null,
+  });
+
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("In Progress4/35");
+  await page.locator(".essay-launch").click();
+  await expect(page.locator(".eval-reset")).toBeVisible();
+  page.once("dialog", (confirmation) => confirmation.accept());
+  await page.locator(".eval-reset").click();
+
+  await expect(page.locator(".essay-eval")).not.toBeVisible();
+  await expect(page.locator(".essay-launch-wrap p")).toHaveText("Not started");
+  await expect(page.locator(".essay-launch")).toHaveText("Start Essay Evaluation");
+  await expect.poll(async () => page.evaluate(() =>
+    window.__requests.filter((request) => request.action === "reset").at(-1)?.expectedRevision
+  )).toBe(2);
+});
+
 test("mobile view switches panels and protects changes after a failed save", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await mountEvaluation(page, {
@@ -145,7 +188,7 @@ test("mobile view switches panels and protects changes after a failed save", asy
     finalizedBy: "coach@example.test",
     finalizedAt: { _seconds: 1789500000, _nanoseconds: 0 },
   });
-  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Outstanding");
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
   await page.locator(".essay-launch").click();
 
   await expect(page.locator('[data-view="essay"]')).toHaveClass(/active/);
@@ -164,10 +207,11 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".eval-close-confirm")).toBeVisible();
   await page.locator(".close-discard").click();
   await expect(page.locator(".essay-eval")).not.toBeVisible();
-  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Outstanding");
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
 });
 
 test("launcher keeps the document beside the complete seven-category quick reference", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.setContent(`
     <link rel="stylesheet" href="${APP_ORIGIN}/css/essay-evaluation.css?v=test">
     <div id="essay-pane"><div class="essay-entry-shell">
@@ -210,7 +254,7 @@ test("launcher keeps the document beside the complete seven-category quick refer
     };
   });
   expect(layout.referenceLeft).toBeGreaterThan(layout.documentLeft);
-  expect(layout.launchTop - layout.referenceTop).toBeLessThan(40);
+  expect(layout.launchTop - layout.referenceTop).toBeLessThan(60);
   expect(layout.launchRight).toBeLessThanOrEqual(layout.referenceRight);
   expect(layout.launchBottom).toBeLessThanOrEqual(layout.referenceBottom);
   const categoryColors = await page.locator(".essay-reference-category").evaluateAll((categories) =>

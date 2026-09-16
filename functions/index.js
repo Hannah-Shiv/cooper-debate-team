@@ -1828,7 +1828,7 @@ exports.manageEssayEvaluation = onRequest(
       res.status(400).json({ error: "A valid application is required." });
       return;
     }
-    if (!["get", "save", "finalize"].includes(action)) {
+    if (!["get", "save", "finalize", "reset"].includes(action)) {
       res.status(400).json({ error: "Unsupported essay evaluation action." });
       return;
     }
@@ -1857,12 +1857,14 @@ exports.manageEssayEvaluation = onRequest(
       return;
     }
 
-    let payload;
-    try {
-      payload = normalizeEssayEvaluationPayload(body, action === "finalize");
-    } catch (error) {
-      res.status(400).json({ error: cleanText(error && error.message, 300) || "The essay evaluation is invalid." });
-      return;
+    let payload = null;
+    if (action !== "reset") {
+      try {
+        payload = normalizeEssayEvaluationPayload(body, action === "finalize");
+      } catch (error) {
+        res.status(400).json({ error: cleanText(error && error.message, 300) || "The essay evaluation is invalid." });
+        return;
+      }
     }
 
     const applicationRef = db.collection("applications").doc(applicationId);
@@ -1884,6 +1886,20 @@ exports.manageEssayEvaluation = onRequest(
         }
 
         const revision = currentRevision + 1;
+        if (action === "reset") {
+          transaction.delete(evaluationRef);
+          transaction.set(auditRef, {
+            action,
+            revision,
+            status: "not-started",
+            actorUid: cleanText(decoded.uid, 128),
+            actorEmail: reviewerEmail,
+            previousTotalScore: Math.max(0, Math.floor(Number(currentData.totalScore) || 0)),
+            previousScoredCriteria: Math.max(0, Math.floor(Number(currentData.scoredCriteria) || 0)),
+            changedAt: FieldValue.serverTimestamp(),
+          });
+          return null;
+        }
         const status = action === "finalize" ? "finalized" : "draft";
         const responseTime = new Date();
         const evaluation = {

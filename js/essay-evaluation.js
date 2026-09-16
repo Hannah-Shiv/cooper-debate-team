@@ -194,7 +194,12 @@
     const completed = evaluation?.status === "finalized" || evaluation?.finalizedAt;
      const hasDraft = KEYS.some((key) => Number.isInteger(evaluation?.rubric?.[key]));
       const actionLabel = completed ? "View Evaluation" : hasDraft ? "Continue Evaluation" : "Start Essay Evaluation";
-     let summaryMarkup = esc(launcherSummary(evaluation));
+      let summaryMarkup = esc(launcherSummary(evaluation));
+      if (hasDraft && !completed) {
+        const rubric = evaluation?.rubric || emptyState().rubric;
+        const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
+        summaryMarkup = `<span class="essay-progress-label">In Progress</span><b class="essay-progress-score">${score}/35</b>`;
+      }
      if (completed) {
        const rubric = evaluation?.rubric || emptyState().rubric;
        const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
@@ -209,6 +214,8 @@
     const root = dialog.querySelector(".eval-rubric");
     const completed = scoreCount();
     dialog.querySelector(".eval-header-score").textContent = `${completed} of 7 scored · ${total()}/35 · ${interpretation()}`;
+    const resetButton = dialog.querySelector(".eval-reset");
+    if (resetButton) resetButton.hidden = !(Number(state.revision) > 0 || completed > 0 || state.strengths || state.growthAreas || state.concerns || state.recommendation);
     root.querySelector(".eval-meter i").style.width = `${(completed / 7) * 100}%`;
     root.querySelectorAll("[data-key]").forEach((category) => {
       const score = state.rubric[category.dataset.key];
@@ -451,6 +458,36 @@
     return finalizePromise;
   }
 
+  async function resetEvaluation() {
+    if (!state || !current || !window.confirm("Reset this essay evaluation? All rubric scores, notes, and the recommendation will be permanently cleared.")) return;
+    clearTimeout(saveTimer);
+    const resetButton = dialog.querySelector(".eval-reset");
+    const rubric = dialog.querySelector(".eval-rubric");
+    resetButton.disabled = true;
+    rubric.inert = true;
+    rubric.setAttribute("aria-busy", "true");
+    setStatus("Resetting evaluation…");
+    try {
+      if (savePromise) await savePromise;
+      await api("reset", current.id, { expectedRevision: state.revision ?? 0 });
+      state = emptyState();
+      lastPersistedEvaluation = null;
+      evaluationCache.set(current.id, state);
+      dirty = false;
+      lastSaveError = "";
+      changeVersion = 0;
+      updateLauncher(current.__essayPane, current, state);
+      dialog.close();
+    } catch (error) {
+      lastSaveError = error.message;
+      if (error.remoteEvaluation) showConflict(error.remoteEvaluation);
+      setStatus(error.message, "error");
+      resetButton.disabled = false;
+      rubric.inert = false;
+      rubric.setAttribute("aria-busy", "false");
+    }
+  }
+
   function wire(dialogElement) {
     const root = dialogElement.querySelector(".eval-rubric");
     root.addEventListener("click", (event) => {
@@ -484,6 +521,7 @@
     });
     dialogElement.querySelector(".eval-close").onclick = closeRequest;
     dialogElement.querySelector(".eval-finalize").onclick = finalize;
+    dialogElement.querySelector(".eval-reset").onclick = resetEvaluation;
     dialogElement.addEventListener("cancel", (event) => { event.preventDefault(); closeRequest(); });
     dialogElement.addEventListener("click", (event) => { if (event.target === dialogElement) closeRequest(); });
     dialogElement.querySelectorAll("[data-view]").forEach((button) => {
@@ -531,7 +569,7 @@
     dialog?.remove();
     dialog = document.createElement("dialog");
     dialog.className = "essay-eval";
-    dialog.innerHTML = `<div class="essay-eval-shell"><header class="essay-eval-head"><div class="essay-eval-identity"><div class="essay-eval-kicker">Private coaching workspace · Phase 1</div><div class="essay-eval-title">${esc([item.student?.firstName, item.student?.lastName].filter(Boolean).join(" ") || "Applicant")}</div><div class="essay-eval-sub">Read the document, then score each category at your pace.</div></div><div class="eval-head-summary"><strong>Essay evaluation</strong><span class="eval-header-score">0 of 7 scored · 0/35 · Not started</span></div><div class="essay-eval-head-actions"><span class="eval-status" aria-live="polite">Loading evaluation…</span><button class="eval-close" type="button">Close</button><button class="eval-finalize" type="button" disabled>Finalize evaluation</button></div></header><div class="eval-mobile-tabs"><button type="button" data-view="essay" class="active">Essay</button><button type="button" data-view="rubric">Rubric</button></div><main class="eval-main"><section class="eval-column eval-essay"><div class="eval-essay-inner"><div class="eval-essay-bar"><span>Submitted document</span><span><button type="button" class="eval-source-open">Open source</button><button type="button" class="eval-focus">Focus reader</button></span></div><div class="eval-source-notice loading"><strong>Loading submitted essay</strong><p>Waiting for Google Drive to respond.</p></div><iframe class="eval-frame" title="Submitted essay document" hidden></iframe></div></section><div class="eval-drag" role="separator" tabindex="0" aria-orientation="vertical" aria-valuemin="35" aria-valuemax="70" aria-valuenow="58" aria-label="Adjust essay and rubric divider"></div><section class="eval-column eval-rubric" aria-busy="true" inert>${rubricMarkup()}</section></main><div class="eval-conflict" role="alertdialog" aria-modal="true" aria-labelledby="eval-conflict-title" hidden><strong id="eval-conflict-title">Evaluation conflict</strong><p></p><button type="button" class="conflict-reload">Reload latest</button><button type="button" class="conflict-keep">Keep editing</button></div><div class="eval-close-confirm" role="alertdialog" aria-modal="true" aria-labelledby="eval-close-title" hidden><strong id="eval-close-title">Unsaved evaluation changes</strong><p>Your changes could not be saved.</p><button type="button" class="close-keep">Keep editing</button><button type="button" class="close-discard">Close without saving</button></div></div>`;
+    dialog.innerHTML = `<div class="essay-eval-shell"><header class="essay-eval-head"><div class="essay-eval-identity"><div class="essay-eval-kicker">Private coaching workspace · Phase 1</div><div class="essay-eval-title">${esc([item.student?.firstName, item.student?.lastName].filter(Boolean).join(" ") || "Applicant")}</div><div class="essay-eval-sub">Read the document, then score each category at your pace.</div></div><div class="eval-head-summary"><strong>Essay evaluation</strong><span class="eval-header-score">0 of 7 scored · 0/35 · Not started</span></div><div class="essay-eval-head-actions"><span class="eval-status" aria-live="polite">Loading evaluation…</span><button class="eval-reset" type="button" hidden>Reset evaluation</button><button class="eval-close" type="button">Close</button><button class="eval-finalize" type="button" disabled>Finalize evaluation</button></div></header><div class="eval-mobile-tabs"><button type="button" data-view="essay" class="active">Essay</button><button type="button" data-view="rubric">Rubric</button></div><main class="eval-main"><section class="eval-column eval-essay"><div class="eval-essay-inner"><div class="eval-essay-bar"><span>Submitted document</span><span><button type="button" class="eval-source-open">Open source</button><button type="button" class="eval-focus">Focus reader</button></span></div><div class="eval-source-notice loading"><strong>Loading submitted essay</strong><p>Waiting for Google Drive to respond.</p></div><iframe class="eval-frame" title="Submitted essay document" hidden></iframe></div></section><div class="eval-drag" role="separator" tabindex="0" aria-orientation="vertical" aria-valuemin="35" aria-valuemax="70" aria-valuenow="58" aria-label="Adjust essay and rubric divider"></div><section class="eval-column eval-rubric" aria-busy="true" inert>${rubricMarkup()}</section></main><div class="eval-conflict" role="alertdialog" aria-modal="true" aria-labelledby="eval-conflict-title" hidden><strong id="eval-conflict-title">Evaluation conflict</strong><p></p><button type="button" class="conflict-reload">Reload latest</button><button type="button" class="conflict-keep">Keep editing</button></div><div class="eval-close-confirm" role="alertdialog" aria-modal="true" aria-labelledby="eval-close-title" hidden><strong id="eval-close-title">Unsaved evaluation changes</strong><p>Your changes could not be saved.</p><button type="button" class="close-keep">Keep editing</button><button type="button" class="close-discard">Close without saving</button></div></div>`;
     document.body.appendChild(dialog);
     dialog.showModal();
     wire(dialog);
