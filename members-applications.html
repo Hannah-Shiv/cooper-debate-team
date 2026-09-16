@@ -80,6 +80,8 @@
      .tab-btn.active svg{opacity:1}
      @media(min-width:761px){.metric strong{font-size:1.71rem}}
      @media(max-width:760px){.tab-bar{flex-wrap:wrap;margin:0}}
+     /* Reserve action artwork for wide desktop monitors; labels stay clearer on laptops. */
+     @media(max-width:1599px){.review-section .decision-button .decision-main .icon-art{display:none}.review-section .decision-main{gap:0}}
      /* Desktop cockpit: the page itself stays locked while each work surface scrolls. */
      @media(min-width:761px){
        html,body{height:100%;overflow:hidden}
