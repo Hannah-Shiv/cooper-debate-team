@@ -202,7 +202,8 @@
        const updated = timestampDate(evaluation?.finalizedAt);
        summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-detail">${esc(band)} · ${esc(recommendationLabel(evaluation.recommendation))}${evaluation?.finalizedBy ? ` · ${esc(evaluation.finalizedBy)}` : ""}${updated ? ` · ${esc(updated.toLocaleDateString())}` : ""}</span>`;
      }
-     card.innerHTML = `<div><strong>Evaluation workspace</strong><p class="${completed ? "is-completed" : ""}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
+      const summaryClass = completed ? "is-completed" : hasDraft ? "is-draft" : "is-not-started";
+      card.innerHTML = `<div class="essay-launch-heading"><strong>Evaluation workspace</strong><p class="${summaryClass}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
     card.querySelector("button").addEventListener("click", () => openWorkspace(item, evaluation));
   }
 
