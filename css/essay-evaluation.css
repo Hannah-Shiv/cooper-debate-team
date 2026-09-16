@@ -984,13 +984,13 @@ html.is-chromeos .eval-head-summary:before{display:none}
   width:100%
 }
 .eval-status:before{display:none}
-.eval-head-recommendation{display:flex;font-size:.62rem}
+.eval-head-recommendation{display:flex;font-size:.782rem}
 .eval-head-recommendation span{display:block;line-height:16px;text-align:center;width:100%}
 .eval-head-summary .eval-meter{
-  background:#063943;
-  border-color:#23988d
+  background:#032a32;
+  border-color:#167d75
 }
-.eval-head-summary .eval-meter i{background:linear-gradient(90deg,#0d7068,#15998b)}
+.eval-head-summary .eval-meter i{background:linear-gradient(90deg,#09554f,#0d7068)}
 .eval-head-summary .eval-meter span{
   color:#fff;
   font-size:.72rem;

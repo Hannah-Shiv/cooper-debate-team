@@ -264,6 +264,7 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
     const recommendation = document.querySelector(".eval-head-recommendation").getBoundingClientRect();
     const progressStyle = getComputedStyle(progress);
     const progressTextStyle = getComputedStyle(progress.querySelector("span"));
+    const recommendationStyle = getComputedStyle(document.querySelector(".eval-head-recommendation"));
     return {
       actionsOrdered: actionBoxes.every((box, index) => index === 0 || box.left >= actionBoxes[index - 1].right),
       actionsOneLine: Math.max(...actionBoxes.map(box => box.top + box.height / 2)) - Math.min(...actionBoxes.map(box => box.top + box.height / 2)) < 2,
@@ -277,6 +278,8 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
       progressBackground: progressStyle.backgroundColor,
       progressTextColor: progressTextStyle.color,
       progressTextLayer: Number(progressTextStyle.zIndex),
+      recommendationSize: parseFloat(recommendationStyle.fontSize),
+      statusSize: parseFloat(statusStyle.fontSize),
       scoreWidth: document.querySelector(".eval-header-score").getBoundingClientRect().width,
       scoreRadius: parseFloat(scoreStyle.borderRadius),
       statusRadius: parseFloat(statusStyle.borderRadius),
@@ -308,9 +311,10 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.progressInHeader).toBe(true);
   expect(header.statusCentered).toBe(true);
   expect(header.recommendationCentered).toBe(true);
-  expect(header.progressBackground).toBe("rgb(6, 57, 67)");
+  expect(header.progressBackground).toBe("rgb(3, 42, 50)");
   expect(header.progressTextColor).toBe("rgb(255, 255, 255)");
   expect(header.progressTextLayer).toBeGreaterThan(1);
+  expect(header.recommendationSize).toBe(header.statusSize);
   expect(header.scoreWidth).toBeGreaterThanOrEqual(205);
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
