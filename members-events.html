@@ -218,15 +218,26 @@
       background:linear-gradient(180deg,transparent,#ffd700 24%,#ffe87a 50%,#ffd700 76%,transparent);
       display:inline-block;
       height:.72em;
-      margin:0 .18em;
+      margin:0 .34em;
       width:2px
     }
     .tm-page-title-context{
       color:#fff;
-      font:400 11.8px/1.45 'Josefin Sans',sans-serif;
-      letter-spacing:.055em;
+      font:400 13px/1.35 'Josefin Sans',sans-serif;
+      letter-spacing:.025em;
       text-shadow:none;
-      text-transform:uppercase
+      text-transform:none
+    }
+    .tm-grid-heading h2{
+      color:#ffd700;
+      font-size:1.72rem;
+      line-height:1;
+      text-shadow:0 0 28px rgba(255,215,0,.18)
+    }
+    .tm-grid-heading .tm-grid-count{
+      color:#dbe8f8;
+      font-size:.945rem;
+      font-weight:600
     }
     .tm-grid-column .tm-data-grid{overflow-x:hidden}
     .tm-grid-column .tm-data-table{min-width:0;table-layout:fixed;width:100%}
@@ -480,12 +491,12 @@
           </section>
           <section id="vol-dashboard" hidden>
             <div class="tm-page-row">
-              <div class="tm-page-heading"><h1><span class="tm-page-title-main">Tournament Management</span><span class="tm-page-title-divider" aria-hidden="true"></span><span class="tm-page-title-context">Add, view, and manage every tournament, including internal tryouts.</span></h1></div>
+              <div class="tm-page-heading"><h1><span class="tm-page-title-main">Tournament Management</span><span class="tm-page-title-divider" aria-hidden="true"></span><span class="tm-page-title-context">Add, View, and Manage Every Tournament, Including Internal Tryouts.</span></h1></div>
             </div>
             <div id="volunteer-manager">
              <div class="tm-manager-columns">
              <section class="tm-grid-column">
-             <div class="tm-grid-heading"><h2>Tournaments</h2><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
+             <div class="tm-grid-heading"><h2>All Tournaments</h2><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
              <div class="tm-grid-toolbar" data-volunteer-only>
                <div class="tm-grid-controls">
                  <label class="tm-control-box tm-control-search" data-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="event-grid-search" type="search" placeholder="Find a tournament…" aria-label="Search tournaments"></label>
