@@ -199,8 +199,7 @@
        const rubric = evaluation?.rubric || emptyState().rubric;
        const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
        const band = BANDS.find(([minimum, maximum]) => score >= minimum && score <= maximum)?.[2] || "Completed";
-       const updated = timestampDate(evaluation?.finalizedAt);
-       summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-detail">${esc(band)} · ${esc(recommendationLabel(evaluation.recommendation))}${evaluation?.finalizedBy ? ` · ${esc(evaluation.finalizedBy)}` : ""}${updated ? ` · ${esc(updated.toLocaleDateString())}` : ""}</span>`;
+        summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-detail"><span class="essay-evaluated-band">${esc(band)}</span><strong class="essay-evaluated-recommendation">${esc(recommendationLabel(evaluation.recommendation))}</strong></span>`;
      }
       const summaryClass = completed ? "is-completed" : hasDraft ? "is-draft" : "is-not-started";
       card.innerHTML = `<div class="essay-launch-heading"><strong>Evaluation workspace</strong><p class="${summaryClass}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
