@@ -845,6 +845,166 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-head-recommendation{flex-basis:170px;width:170px}
 }
 
+/* Polished single-row header with labels directly above their details. */
+.essay-eval-head,html.is-chromeos .essay-eval-head{
+  align-items:center;
+  box-sizing:border-box;
+  display:flex;
+  flex:0 0 auto;
+  gap:10px;
+  height:62px;
+  min-height:62px;
+  overflow:hidden;
+  padding:7px clamp(10px,1.25vw,20px);
+  width:100%
+}
+.eval-head-primary{
+  align-items:center;
+  display:flex;
+  flex:1 1 auto;
+  gap:12px;
+  min-width:0;
+  width:auto
+}
+.essay-eval-identity{
+  align-items:stretch;
+  display:flex;
+  flex:1 1 auto;
+  gap:12px;
+  min-height:0;
+  min-width:0
+}
+.eval-head-person,.eval-head-instructions,.eval-head-score-group,.eval-head-progress,
+.eval-head-status-group,.eval-head-rec-group{
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  min-width:0
+}
+.eval-head-person{flex:0 1 150px}
+.eval-head-instructions{
+  border-left:1px solid rgba(144,188,235,.3);
+  flex:1 1 185px;
+  padding-left:12px
+}
+.eval-head-label,.essay-eval-kicker,.eval-head-summary strong{
+  color:#e8c45c;
+  display:block;
+  font:900 .51rem/1.1 "Josefin Sans",sans-serif;
+  letter-spacing:.11em;
+  margin:0 0 5px;
+  min-height:0;
+  text-transform:uppercase
+}
+.essay-eval-kicker{grid-column:auto}
+.essay-eval-title{
+  align-items:center;
+  display:flex;
+  font-size:1.12rem;
+  height:30px;
+  line-height:1;
+  min-height:0;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+.essay-eval-sub{
+  align-items:center;
+  border:0;
+  display:flex;
+  font-size:.86rem;
+  height:30px;
+  line-height:1;
+  min-height:0;
+  overflow:hidden;
+  padding:0;
+  text-overflow:ellipsis
+}
+.eval-head-summary{
+  align-items:stretch;
+  border:0;
+  display:flex;
+  flex:0 0 auto;
+  gap:10px;
+  margin:0;
+  min-height:0;
+  padding:0
+}
+.eval-head-score-group{flex:0 1 230px}
+.eval-head-summary strong{color:#d4e6f8}
+.eval-header-score{
+  border-radius:999px;
+  box-sizing:border-box;
+  font-size:.68rem;
+  height:30px;
+  line-height:16px;
+  min-height:30px;
+  overflow:hidden;
+  padding:7px 10px;
+  text-overflow:ellipsis;
+  white-space:nowrap
+}
+.eval-head-progress{flex:0 0 92px}
+.eval-head-summary .eval-meter{
+  flex:0 0 30px;
+  height:30px;
+  width:92px
+}
+.eval-head-summary .eval-meter span{line-height:28px}
+.essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{
+  align-items:flex-end;
+  border:0;
+  display:flex;
+  flex:0 0 auto;
+  gap:6px;
+  min-height:0;
+  padding:0;
+  width:auto
+}
+.eval-head-status-group{flex:0 0 126px}
+.eval-head-rec-group{flex:0 0 150px}
+.eval-status,.eval-head-recommendation{
+  border-radius:999px;
+  box-sizing:border-box;
+  flex:0 0 30px;
+  height:30px;
+  min-height:30px;
+  overflow:hidden;
+  padding:6px 9px;
+  text-align:left;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  width:100%
+}
+.eval-status:before{display:none}
+.eval-head-recommendation{display:block;font-size:.62rem}
+.eval-head-recommendation span{display:block;line-height:16px}
+.eval-reset,.eval-finalize,.eval-close{
+  flex:0 0 auto;
+  font-size:.61rem;
+  height:30px;
+  min-height:30px;
+  padding:5px 9px
+}
+.eval-finalize-help{top:64px}
+@media(max-width:1100px){
+  .essay-eval-head,html.is-chromeos .essay-eval-head{gap:6px;padding-left:8px;padding-right:8px}
+  .eval-head-primary{gap:7px}
+  .essay-eval-identity{gap:7px}
+  .eval-head-person{flex-basis:112px}
+  .eval-head-instructions{flex-basis:100px;padding-left:7px}
+  .eval-head-summary{gap:6px}
+  .eval-head-score-group{flex-basis:180px}
+  .eval-head-progress{flex-basis:72px}
+  .eval-head-summary .eval-meter{width:72px}
+  .essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{gap:4px}
+  .eval-head-status-group{flex-basis:96px}
+  .eval-head-rec-group{flex-basis:124px}
+  .eval-reset,.eval-finalize,.eval-close{font-size:.56rem;padding-left:7px;padding-right:7px}
+  .eval-head-label,.essay-eval-kicker,.eval-head-summary strong{font-size:.47rem;letter-spacing:.08em}
+  .essay-eval-title{font-size:1rem}
+  .eval-header-score{font-size:.62rem}
+}
+
 /* Recommendation colors: selected uses the same visual state as hover. */
 .eval-recommendation{gap:8px}
 .eval-recommendation button{

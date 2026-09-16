@@ -118,14 +118,14 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
   await expect(page.getByText(
     "Presents a strong, precise claim and develops a clear case with at least two well-developed reasons or contentions."
   )).toBeVisible();
-  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 categories scored. 4 / 35 points");
+  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 categories · 4 / 35 points");
   await expect(page.locator('[data-key="claimCase"] .eval-cat-grade')).toHaveText("Good");
   await expect(page.locator('[data-key="claimCase"]')).toHaveClass(/scored/);
   await expect(page.locator(".eval-source-notice")).toContainText("No valid Google Drive or Google Docs link");
 
   await page.locator('[data-key="evidenceResearch"] .eval-cat-head').click();
   await page.locator('[data-key="evidenceResearch"] .eval-score[data-score="5"]').click();
-  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 categories scored. 9 / 35 points");
+  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 categories · 9 / 35 points");
   await expect(page.locator(".eval-meter span")).toHaveText("29%");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-grade')).toHaveText("Outstanding");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-score')).toHaveText("5/5");
@@ -229,7 +229,7 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
 });
 
-test("evaluation header uses two stable rows without small-laptop horizontal overflow", async ({ page }) => {
+test("evaluation header uses compact labeled groups without small-laptop overflow", async ({ page }) => {
   await page.setViewportSize({ width: 1024, height: 768 });
   await mountEvaluation(page, null);
   await page.locator(".essay-launch").click();
@@ -237,13 +237,13 @@ test("evaluation header uses two stable rows without small-laptop horizontal ove
   await expect(page.locator(".essay-eval-kicker")).toHaveText("Evaluation Workspace");
   await expect(page.locator(".essay-eval-sub")).toHaveText("Read document → Score categories");
   await expect(page.locator(".eval-head-summary strong")).toHaveText("Essay Evaluation");
-  await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 categories scored. 0 / 35 points");
+  await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 categories · 0 / 35 points");
   await expect(page.locator(".eval-status")).toHaveText("Not started");
   await expect(page.locator(".eval-head-recommendation span")).toHaveText("Not selected");
   const header = await page.evaluate(() => {
-    const primarySelectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-meter"];
+    const detailSelectors = [".essay-eval-title", ".essay-eval-sub", ".eval-header-score", ".eval-meter", ".eval-status", ".eval-head-recommendation", ".eval-finalize", ".eval-close"];
     const actionSelectors = [".eval-status", ".eval-head-recommendation", ".eval-finalize", ".eval-close"];
-    const primaryBoxes = primarySelectors.map(selector => document.querySelector(selector).getBoundingClientRect());
+    const detailBoxes = detailSelectors.map(selector => document.querySelector(selector).getBoundingClientRect());
     const actionBoxes = actionSelectors.map(selector => document.querySelector(selector).getBoundingClientRect());
     const scoreStyle = getComputedStyle(document.querySelector(".eval-header-score"));
     const statusStyle = getComputedStyle(document.querySelector(".eval-status"));
@@ -257,7 +257,8 @@ test("evaluation header uses two stable rows without small-laptop horizontal ove
     return {
       actionsOrdered: actionBoxes.every((box, index) => index === 0 || box.left >= actionBoxes[index - 1].right),
       actionsOneLine: Math.max(...actionBoxes.map(box => box.top + box.height / 2)) - Math.min(...actionBoxes.map(box => box.top + box.height / 2)) < 2,
-      twoRows: Math.min(...actionBoxes.map(box => box.top)) > Math.max(...primaryBoxes.map(box => box.bottom)),
+      detailBaseline: Math.max(...detailBoxes.map(box => box.bottom)) - Math.min(...detailBoxes.map(box => box.bottom)) < 6,
+      compactHeight: header.getBoundingClientRect().height,
       noHeaderOverflow: header.scrollWidth <= header.clientWidth,
       noDialogOverflow: document.querySelector(".essay-eval-shell").scrollWidth <= document.querySelector(".essay-eval-shell").clientWidth,
       progressInHeader: progress.closest(".eval-head-summary") !== null,
@@ -275,24 +276,25 @@ test("evaluation header uses two stable rows without small-laptop horizontal ove
       finalizeColor: finalizeStyle.color,
       closeIsLast: document.querySelector(".essay-eval-head-actions").lastElementChild.classList.contains("eval-close"),
       recommendationBetweenStatusAndFinalize:
-        document.querySelector(".eval-status").nextElementSibling.classList.contains("eval-head-recommendation") &&
-        document.querySelector(".eval-head-recommendation").nextElementSibling.classList.contains("eval-finalize-wrap"),
+        document.querySelector(".eval-head-status-group").nextElementSibling.classList.contains("eval-head-rec-group") &&
+        document.querySelector(".eval-head-rec-group").nextElementSibling.classList.contains("eval-finalize-wrap"),
       statusCloseGap: close.left - status.right,
       finalizeCloseGap: close.left - finalize.right,
     };
   });
   expect(header.actionsOrdered).toBe(true);
   expect(header.actionsOneLine).toBe(true);
-  expect(header.twoRows).toBe(true);
+  expect(header.detailBaseline).toBe(true);
+  expect(header.compactHeight).toBeLessThanOrEqual(64);
   expect(header.noHeaderOverflow).toBe(true);
   expect(header.noDialogOverflow).toBe(true);
   expect(header.progressInHeader).toBe(true);
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
-  expect(header.essayTitleSize).toBeGreaterThanOrEqual(15.8);
-  expect(header.scoreSize).toBeGreaterThanOrEqual(13.7);
+  expect(header.essayTitleSize).toBeGreaterThanOrEqual(7.5);
+  expect(header.scoreSize).toBeGreaterThanOrEqual(9.8);
   expect(header.statusDivider).toBe("1px");
-  expect(header.statusWidth).toBe(150);
+  expect(header.statusWidth).toBe(96);
   expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
   expect(header.instructionColor).toBe("rgb(212, 230, 248)");
   expect(header.actionHeights.every(height => height === 30)).toBe(true);
@@ -301,7 +303,7 @@ test("evaluation header uses two stable rows without small-laptop horizontal ove
   expect(header.finalizeColor).toBe("rgb(255, 255, 255)");
   expect(header.closeIsLast).toBe(true);
   expect(header.recommendationBetweenStatusAndFinalize).toBe(true);
-  expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(6);
+  expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(4);
 
   const finalizeHelp = page.locator(".eval-finalize-help");
   await page.mouse.move(2, 400);
@@ -310,7 +312,22 @@ test("evaluation header uses two stable rows without small-laptop horizontal ove
   await expect(finalizeHelp).toBeVisible();
   await expect(finalizeHelp).toContainText("Please score all categories and choose a recommendation to activate.");
   const tooltipBox = await finalizeHelp.boundingBox();
-  expect(tooltipBox.y).toBeGreaterThan(65);
+  const headerBox = await page.locator(".essay-eval-head").boundingBox();
+  expect(tooltipBox.y).toBeGreaterThanOrEqual(headerBox.y + headerBox.height - 1);
+
+  await page.locator('[data-key="claimCase"] .eval-score[data-score="4"]').click();
+  await expect(page.locator(".eval-reset")).toBeVisible();
+  const savedDraftOverflow = await page.evaluate(() => {
+    const header = document.querySelector(".essay-eval-head");
+    const shell = document.querySelector(".essay-eval-shell");
+    const close = document.querySelector(".eval-close").getBoundingClientRect();
+    return {
+      headerFits: header.scrollWidth <= header.clientWidth,
+      shellFits: shell.scrollWidth <= shell.clientWidth,
+      closeFits: close.right <= window.innerWidth,
+    };
+  });
+  expect(savedDraftOverflow).toEqual({ headerFits: true, shellFits: true, closeFits: true });
 
   const close = page.locator(".eval-close");
   const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundImage);
