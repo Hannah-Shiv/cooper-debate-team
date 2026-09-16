@@ -28,6 +28,7 @@
   let selectedEventId = null;
   let events = [];
   let currentUser = null;
+  let currentUserRole = "member";
   let capacityRoles = [];
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
@@ -421,17 +422,19 @@
   function selectTournament(item, shouldScroll = false) {
     if (!item) return;
     populateForm(item, false);
-    renderSelectedSignups(item.id);
+    const canManagePrivateSignups = ["coach", "website-admin"].includes(currentUserRole);
+    if (canManagePrivateSignups) renderSelectedSignups(item.id);
     const status = tournamentStatus(item);
     $("tm-detail-actions").innerHTML = `
       <button class="tm-action close" type="button" data-selected-details>View Full Details</button>
+      ${canManagePrivateSignups ? `
       <button class="tm-action close" type="button" data-selected-toggle>${item.published ? "Make inactive" : "Make active"}</button>
       <button class="tm-action" type="button" data-selected-export>Export volunteer CSV</button>
-      <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>`;
+      <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>` : ""}`;
     $("tm-detail-actions").querySelector("[data-selected-details]").addEventListener("click", () => openEventModal("view"));
-    $("tm-detail-actions").querySelector("[data-selected-toggle]").addEventListener("click", () => setPublished(item.id, !item.published));
-    $("tm-detail-actions").querySelector("[data-selected-export]").addEventListener("click", () => exportEvent(item.id));
-    $("tm-detail-actions").querySelector("[data-selected-delete]").addEventListener("click", () => deleteEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-toggle]")?.addEventListener("click", () => setPublished(item.id, !item.published));
+    $("tm-detail-actions").querySelector("[data-selected-export]")?.addEventListener("click", () => exportEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-delete]")?.addEventListener("click", () => deleteEvent(item.id));
     document.querySelectorAll(".tm-data-table tbody tr").forEach(row => row.classList.toggle("selected", row.dataset.event === item.id));
     $("tm-status").textContent = status.label;
     $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
@@ -578,6 +581,7 @@
       return;
     }
     currentUser = user;
+    currentUserRole = role;
     $("vol-auth").hidden = true;
     $("vol-dashboard").hidden = false;
     $("member-name").textContent = portalWelcomeLabel(
@@ -596,15 +600,10 @@
     $("member-userbar").classList.add("visible");
     document.body.dataset.portalRole = role;
     document.dispatchEvent(new CustomEvent("tournament-manager-ready", { detail: { role } }));
-    if (role === "captain") {
-      document.querySelector('[data-manager-mode="volunteers"]')?.setAttribute("hidden", "");
-      document.querySelectorAll("[data-volunteer-only]").forEach(item => item.setAttribute("hidden", ""));
-      document.querySelector('[data-manager-mode="tryout"]')?.click();
-    } else {
-       resetForm();
-       closeEventModal();
-      startEvents();
-    }
+    if (role === "captain") $("tm-selected-signups")?.setAttribute("hidden", "");
+    resetForm();
+    closeEventModal();
+    startEvents();
   });
 
   document.addEventListener("DOMContentLoaded", () => {

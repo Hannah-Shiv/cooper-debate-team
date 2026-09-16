@@ -2212,13 +2212,18 @@ exports.manageVolunteerSignup = onRequest(
       return;
     }
 
-    if (!await hasFullAdminAccess(decoded.email)) {
-      res.status(403).json({ error: "Only coaches and website admins can manage volunteer signups." });
-      return;
-    }
-
     const body = req.body || {};
     const action = cleanText(body.action, 40);
+    const hasFullAccess = await hasFullAdminAccess(decoded.email);
+    const hasTournamentEditorAccess = hasFullAccess || await hasTryoutManagerAccess(decoded.email);
+    if (!hasTournamentEditorAccess) {
+      res.status(403).json({ error: "Only coaches, captains, and website admins can manage tournaments." });
+      return;
+    }
+    if (!hasFullAccess && !["saveEvent", "ensureTryoutEvents"].includes(action)) {
+      res.status(403).json({ error: "Only coaches and website admins can manage signups or delete tournaments." });
+      return;
+    }
     const db = getFirestore();
 
     try {
