@@ -1778,6 +1778,19 @@ function publicEssayEvaluation(data) {
   };
 }
 
+function publicEssayEvaluationReport(data) {
+  const evaluation = publicEssayEvaluation(data);
+  if (!evaluation) return null;
+  return {
+    status: evaluation.status,
+    rubric: evaluation.rubric,
+    recommendation: evaluation.recommendation,
+    totalScore: evaluation.totalScore,
+    scoredCriteria: evaluation.scoredCriteria,
+    interpretation: evaluation.interpretation,
+  };
+}
+
 class EssayEvaluationRevisionConflict extends Error {
   constructor(current) {
     super("This essay evaluation was updated by another reviewer. Reload it before saving.");
@@ -1822,18 +1835,39 @@ exports.manageEssayEvaluation = onRequest(
     }
 
     const body = req.body && typeof req.body === "object" ? req.body : {};
-    const applicationId = cleanText(body.applicationId, 128);
     const action = cleanText(body.action, 24).toLowerCase();
-    if (!/^[a-zA-Z0-9_-]{1,128}$/.test(applicationId)) {
-      res.status(400).json({ error: "A valid application is required." });
-      return;
-    }
-    if (!["get", "save", "finalize", "reset"].includes(action)) {
+    if (!["get", "list", "save", "finalize", "reset"].includes(action)) {
       res.status(400).json({ error: "Unsupported essay evaluation action." });
       return;
     }
 
     const db = getFirestore();
+    if (action === "list") {
+      try {
+        const snapshot = await db.collectionGroup("essayEvaluations").get();
+        const evaluations = {};
+        snapshot.docs.forEach(doc => {
+          const applicationId = doc.ref.parent.parent && doc.ref.parent.parent.id;
+          const parentCollection = doc.ref.parent.parent && doc.ref.parent.parent.parent;
+          if (applicationId && parentCollection && parentCollection.id === "applications" && doc.id === "current") {
+            evaluations[applicationId] = publicEssayEvaluationReport(doc.data());
+          }
+        });
+        res.status(200).json({ ok: true, evaluations });
+      } catch (error) {
+        console.error("manageEssayEvaluation list failed:", {
+          message: cleanText(error && error.message, 300),
+        });
+        res.status(500).json({ error: "Unable to load essay evaluation reports." });
+      }
+      return;
+    }
+
+    const applicationId = cleanText(body.applicationId, 128);
+    if (!/^[a-zA-Z0-9_-]{1,128}$/.test(applicationId)) {
+      res.status(400).json({ error: "A valid application is required." });
+      return;
+    }
     const evaluationRef = db.collection("applications").doc(applicationId)
       .collection("essayEvaluations").doc("current");
 

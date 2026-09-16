@@ -51,6 +51,11 @@
   const coachReviewDrafts = new Map();
   let longAnswers = [];
   let activeDetailTab = "overview";
+  function publishReportContext() {
+    const detail = { applications: applications.slice(), currentUser, role: currentRole };
+    window.__cooperApplicationsReportContext = detail;
+    window.dispatchEvent(new CustomEvent("cooper:applications-context", { detail }));
+  }
   const isFinalReviewer = () => isFullAdminRole(currentRole);
   const canSubmitTeamReview = () => ["member", "captain", "website-admin"].includes(currentRole);
   const isReviewEditor = element => element instanceof Element && Boolean(element.closest("#captain-review-note, #review-note, #applicant-rating"));
@@ -429,7 +434,7 @@
     const reviewRating = Number.isInteger(Number(item.reviewRating) * 2) && Number(item.reviewRating) >= 1 && Number(item.reviewRating) <= 10 ? Number(item.reviewRating) : 0;
     const reviewDate = item.reviewedAt ? formatDate(item.reviewedAt) : "";
     $("detail").innerHTML = `<div class="detail-content">
-      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><div class="detail-inline-status badges">${statusBadge(decision)}${item.hidden === true ? hiddenBadge() : ""}</div></div></header>
+      <header class="detail-heading"><div class="detail-title-row"><h2>${escapeHtml([student.firstName, student.lastName].filter(Boolean).join(" ") || "Unnamed applicant")}</h2><div class="detail-inline-status badges">${statusBadge(decision)}${item.hidden === true ? hiddenBadge() : ""}</div></div>${isFinalReviewer() ? '<div class="detail-report-actions" aria-label="Global applicant reports"><button type="button" class="report-launch report-launch-scores" id="essay-scores-report" aria-haspopup="dialog"><span aria-hidden="true">▦</span><span>Essay Scores</span></button><button type="button" class="report-launch report-launch-decisions" id="decision-status-report" aria-haspopup="dialog"><span aria-hidden="true">◌</span><span>Decision Status</span></button></div>' : ""}</header>
       <section class="section"><h3 class="section-title">${icon("info", "heading-icon")}Quick profile</h3><div class="quick-profile-grid">${quickTile("grade", "Grade", student.grade)}${quickTile("debate", "Debate experience", student.debateExperience, true)}${quickTile("calendar", "Schedule", item.answers?.scheduleConflicts, true)}${quickTile("commitments", "Commitments", `${commitmentEntries.length} confirmed`)}</div></section>
       <section class="section"><div class="contact-columns"><div class="info-card aligned-info-card"><h3>${icon("person", "card-heading-icon")}Student information</h3><div class="detail-grid">${fact("Student ID", student.studentId)}${fact("School Email", student.schoolEmail)}${fact("Response Email", student.responseEmail || student.personalEmail)}${fact("Debate partner", student.partner)}</div></div><div class="commitments-card aligned-commitments-card"><h3>${icon("commitments", "card-heading-icon")}Commitments</h3><div class="commitments">${commitments}</div></div></div></section>
       <section class="section"><h3 class="section-title">${icon("calendar", "heading-icon")}Event details</h3><div class="info-card"><div class="detail-grid">${fact("QST info session", eventDetails.qstSession)}${fact("September 22", eventDetails.september22Attendance)}${fact("September 23", eventDetails.september23Attendance)}${fact("Tabroom account", eventDetails.tabroomAccount)}${fact("Contract agreement", eventDetails.contractAgreement)}${fact("Contract return", eventDetails.contractReturn)}${fact("Tournament dates", Array.isArray(eventDetails.tournamentDates) ? eventDetails.tournamentDates.join(", ") : "")}</div></div></section>
@@ -894,11 +899,13 @@
         const result = await response.json().catch(() => ({}));
         if (!response.ok || !result.ok) throw new Error(result.error || "Unable to load applications.");
         applications = Array.isArray(result.applications) ? result.applications : [];
+        publishReportContext();
         const visible = filteredApplications();
         if (!visible.some(item => item.id === selectedId)) selectedId = visible[0]?.id || "";
         render();
         unsubscribe = db.collection("captain_application_queue").onSnapshot(snapshot => {
           applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          publishReportContext();
           const refreshedVisible = filteredApplications();
           if (!refreshedVisible.some(item => item.id === selectedId)) selectedId = refreshedVisible[0]?.id || "";
           if (isReviewEditor(document.activeElement)) {
@@ -918,6 +925,7 @@
     }
     unsubscribe = db.collection("applications").onSnapshot(snapshot => {
       applications = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      publishReportContext();
       const visible = filteredApplications();
       if (selectedId && !visible.some(item => item.id === selectedId)) selectedId = "";
       if (!selectedId && visible.length) selectedId = visible[0].id;
@@ -996,6 +1004,7 @@
     const access = await getPortalMemberAccess(user, db);
     const role = normalizePortalRole(access.role);
     currentRole = role;
+    publishReportContext();
     stopCaptainReviewListening();
     const rosterLink = $("applications-roster-link");
     if (rosterLink) rosterLink.hidden = !isFullAdminRole(role);
