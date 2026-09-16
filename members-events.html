@@ -163,7 +163,8 @@
     .tryout-manager{display:grid;gap:18px}.tryout-overview{background:linear-gradient(110deg,#103773,#091e46);border:1px solid rgba(124,182,255,.38);border-radius:7px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr) repeat(3,minmax(115px,.28fr));padding:24px 26px}.tryout-overview h2{font:700 1.75rem 'Cormorant Garamond',serif;margin:5px 0}.tryout-overview p{color:#c7d9f1;font-size:.72rem;line-height:1.55;margin:0}.tryout-stat{align-self:center;border-left:1px solid rgba(159,185,225,.2);padding-left:20px}.tryout-stat span{color:#a8cbff;display:block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.tryout-stat strong{display:block;font:700 1.9rem 'Cormorant Garamond',serif;margin-top:5px}
     .tryout-grid{display:grid;gap:18px;grid-template-columns:minmax(340px,.75fr) minmax(0,1.25fr)}.tryout-card{background:linear-gradient(145deg,rgba(12,30,61,.95),rgba(8,24,51,.95));border:1px solid var(--tm-line);border-radius:7px;padding:23px}.tryout-card h2{color:var(--tm-gold);font-size:.68rem;letter-spacing:.09em;margin:0 0 7px;text-transform:uppercase}.tryout-card-intro{color:var(--tm-muted);font-size:.68rem;line-height:1.55;margin:0 0 18px}.tryout-actions{align-items:center;display:flex;gap:10px;margin-top:18px}.tryout-cancel{background:transparent;border:1px solid rgba(255,255,255,.25);border-radius:3px;color:#d6e0ef;cursor:pointer;font-size:.62rem;font-weight:700;padding:11px 13px;text-transform:uppercase}.tryout-message{font-size:.67rem;line-height:1.4;margin:12px 0 0}.tryout-message.error{color:#ffb3b3}.tryout-message.ok{color:var(--tm-green)}
     .tryout-table-wrap{overflow-x:auto}.tryout-table{border-collapse:collapse;width:100%}.tryout-table th{border-bottom:1px solid rgba(242,191,61,.35);color:#a8cbff;font-size:.55rem;letter-spacing:.08em;padding:10px 9px;text-align:left;text-transform:uppercase}.tryout-table td{border-bottom:1px solid rgba(255,255,255,.08);color:#dbe6f5;font-size:.68rem;line-height:1.45;padding:13px 9px;vertical-align:top}.tryout-table td strong{color:#fff}.tryout-row-actions{display:flex;gap:8px}.tryout-row-actions button{background:transparent;border:0;color:var(--tm-gold);cursor:pointer;font-size:.58rem;font-weight:700;padding:0;text-transform:uppercase}.tryout-row-actions button:last-child{color:var(--tm-red)}.tryout-empty{border:1px dashed rgba(242,191,61,.28);border-radius:5px;color:var(--tm-muted);font-size:.7rem;line-height:1.6;padding:24px;text-align:center}
-    @media(max-width:980px){.tryout-overview{grid-template-columns:1fr 1fr}.tryout-overview-copy{grid-column:1/-1}.tryout-grid{grid-template-columns:1fr}}@media(max-width:580px){.tryout-overview{grid-template-columns:1fr}.tryout-overview-copy{grid-column:auto}.tryout-stat{border-left:0;border-top:1px solid rgba(159,185,225,.2);padding:12px 0 0}.events-section-nav{gap:9px}.events-tab{min-width:150px}.tryout-card{padding:17px}}
+    .tryout-template-settings{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,.7fr) auto;align-items:end;gap:18px}.tryout-template-settings h2,.tryout-template-settings .tryout-card-intro{grid-column:1}.tryout-template-settings .tm-fields{grid-column:2}.tryout-template-settings .tryout-actions{grid-column:3;margin:0}.tryout-pair-label{border-bottom:1px solid rgba(242,191,61,.25);color:#f2bf3d;font-size:.65rem;font-weight:700;letter-spacing:.1em;margin-top:4px;padding-bottom:7px;text-transform:uppercase}.tryout-table{min-width:900px}.tryout-table .tm-grid-status.scheduled{color:#79e0aa}.tryout-table .tm-grid-status.cancelled{color:#ff9ba9}.tryout-table .tm-grid-status.completed{color:#d0aef5}.tryout-table small{color:#9fb2cc}
+    @media(max-width:980px){.tryout-overview{grid-template-columns:1fr 1fr}.tryout-overview-copy{grid-column:1/-1}.tryout-grid{grid-template-columns:1fr}.tryout-template-settings{grid-template-columns:1fr}.tryout-template-settings h2,.tryout-template-settings .tryout-card-intro,.tryout-template-settings .tm-fields,.tryout-template-settings .tryout-actions{grid-column:1}}@media(max-width:580px){.tryout-overview{grid-template-columns:1fr}.tryout-overview-copy{grid-column:auto}.tryout-stat{border-left:0;border-top:1px solid rgba(159,185,225,.2);padding:12px 0 0}.events-section-nav{gap:9px}.events-tab{min-width:150px}.tryout-card{padding:17px}}
     .tm-grid-toolbar{align-items:center;display:flex;gap:12px;justify-content:space-between;margin:0 0 14px}.tm-grid-controls{display:flex;flex:1;gap:10px}.tm-grid-controls input,.tm-grid-controls select{background:rgba(3,13,33,.72);border:1px solid rgba(178,199,231,.24);border-radius:5px;color:#fff;font-size:.72rem;min-height:42px;padding:9px 12px}.tm-grid-controls input{max-width:340px;width:100%}.tm-new-event{background:var(--tm-gold);border:0;border-radius:5px;color:#07142c;cursor:pointer;font-size:.64rem;font-weight:700;letter-spacing:.08em;min-height:42px;padding:10px 15px;text-transform:uppercase;white-space:nowrap}.tm-data-grid{background:rgba(7,24,52,.78);border:1px solid var(--tm-line);border-radius:8px;margin-bottom:24px;overflow:auto}.tm-data-table{border-collapse:collapse;min-width:860px;width:100%}.tm-data-table th{background:#071831;border-bottom:1px solid rgba(144,180,232,.28);color:#9fc4f5;font-size:.57rem;letter-spacing:.08em;padding:12px 14px;text-align:left;text-transform:uppercase}.tm-data-table td{border-bottom:1px solid rgba(255,255,255,.07);color:#dbe7f6;font-size:.72rem;padding:13px 14px}.tm-data-table tbody tr{cursor:pointer;transition:background .16s}.tm-data-table tbody tr:hover,.tm-data-table tbody tr.selected{background:rgba(50,119,226,.16)}.tm-data-table tbody tr.selected{box-shadow:inset 3px 0 var(--tm-gold)}.tm-grid-title{color:#fff;font-weight:700}.tm-grid-sub{color:#8fa4c1;font-size:.62rem;margin-top:3px}.tm-kind,.tm-grid-status{border:1px solid currentColor;border-radius:999px;display:inline-flex;font-size:.55rem;font-weight:700;letter-spacing:.06em;padding:5px 8px;text-transform:uppercase;white-space:nowrap}.tm-kind.internal,.tm-kind.tryout{color:#76dfc7}.tm-kind.external{color:#8fc0ff}.tm-grid-status.active{color:#79e0aa}.tm-grid-status.inactive{color:#aab6c8}.tm-grid-status.completed{color:#d0aef5}.tm-detail-actions{align-items:center;display:flex;flex-wrap:wrap;gap:9px;margin:-6px 0 22px}.tm-detail-actions .tm-action.delete{border-color:rgba(238,155,155,.55);color:#ffb1b1}.tm-selected-signups{background:rgba(7,24,52,.68);border:1px solid var(--tm-line);border-radius:7px;margin:0 0 22px;padding:18px 22px}.tm-selected-signups h3{color:var(--tm-gold);font-size:.62rem;letter-spacing:.09em;margin:0 0 10px;text-transform:uppercase}.tm-detail-heading{color:#fff;font:700 1.5rem 'Cormorant Garamond',serif;margin:4px 0 14px;scroll-margin-top:110px}@media(max-width:580px){.tm-grid-toolbar{align-items:stretch;flex-direction:column}.tm-grid-controls{display:grid;grid-template-columns:1fr}.tm-grid-controls input{max-width:none}}
    </style>
    <style>
@@ -194,7 +195,7 @@
    .tm-view-list{display:grid;gap:10px}.tm-view-row{display:grid;gap:14px;grid-template-columns:125px 1fr}.tm-view-row dt{color:#7990b1;font-size:.61rem}.tm-view-row dd{color:#e9f0fa;font-size:.68rem;line-height:1.5;margin:0;overflow-wrap:anywhere}
    .tm-view-setting{align-items:center;display:flex;gap:9px}.tm-view-dot{background:#65758e;border-radius:50%;height:9px;width:9px}.tm-view-dot.on{background:#30cf88;box-shadow:0 0 0 4px rgba(48,207,136,.12)}
    .tm-table-toggle{background:#32445f;border-radius:999px;display:inline-flex;height:20px;padding:3px;width:36px}.tm-table-toggle span{background:#b9c8dc;border-radius:50%;height:14px;transition:transform .18s;width:14px}.tm-table-toggle.on{background:#16a76c}.tm-table-toggle.on span{background:#effff9;transform:translateX(16px)}.tm-row-arrow{color:#7190b9;font-size:1.15rem;text-align:right;width:24px}
-   #tryout-manager{display:none}.tm-modal #tryout-manager:not([hidden]),body[data-portal-role="captain"] #tryout-manager:not([hidden]){display:block}
+   #tryout-manager{display:none}body[data-portal-role] #tryout-manager:not([hidden]){display:block}
    @media(max-width:680px){.tm-view-grid{grid-template-columns:1fr}.tm-view-card.full{grid-column:auto}.tm-view-row{grid-template-columns:1fr;gap:3px}.tm-view-hero-top{flex-direction:column}}
 
     /* Wider tournament workspace with a fully contained data grid. */
@@ -674,34 +675,49 @@
             <section id="tryout-manager" class="tryout-manager" hidden>
               <section class="tryout-overview">
                 <div class="tryout-overview-copy">
-                  <span class="tm-summary-kicker">2026 debate tryouts</span>
-                  <h2>September 22 &amp; 23 Tryout Schedule</h2>
-                  <p>Enter each pair, judge, time, and room. This schedule stays private to Coaches, Captains, and Website Admins.</p>
+                  <span class="tm-summary-kicker">Reusable tryout tournament template</span>
+                  <h2 id="tryout-template-title">2026 Debate Tryout Schedule</h2>
+                  <p>Manually schedule Pair A against Pair B with a judge, date, time, and room. Debaters come from Track Applications or the Members Directory.</p>
                 </div>
-                <div class="tryout-stat"><span>Signed up</span><strong id="tryout-student-count">0</strong></div>
-                <div class="tryout-stat"><span>Scheduled pairs</span><strong id="tryout-pair-count">0</strong></div>
-                <div class="tryout-stat"><span>Unscheduled</span><strong id="tryout-unscheduled-count">0</strong></div>
+                <div class="tryout-stat"><span>Debaters</span><strong id="tryout-student-count">0</strong></div>
+                <div class="tryout-stat"><span>Debates</span><strong id="tryout-pair-count">0</strong></div>
+                <div class="tryout-stat"><span>Days</span><strong id="tryout-day-count">0</strong></div>
+              </section>
+              <section class="tryout-card tryout-template-settings">
+                <h2>Tryout date range</h2>
+                <p class="tryout-card-intro">Unlike a regular tournament, this tryout tournament can span multiple days. Every debate must fall inside this range.</p>
+                <div class="tm-fields">
+                  <div class="tm-field"><label for="tryout-range-start">Start date *</label><input id="tryout-range-start" type="date" required></div>
+                  <div class="tm-field"><label for="tryout-range-end">End date *</label><input id="tryout-range-end" type="date" required></div>
+                </div>
+                <div class="tryout-actions"><button id="tryout-range-save" class="tm-save" type="button">Save date range</button></div>
               </section>
               <div class="tryout-grid">
                 <form id="tryout-form" class="tryout-card">
-                  <h2 id="tryout-form-heading">Add tryout assignment</h2>
-                  <p class="tryout-card-intro">Choose two debaters from the same tryout date, then enter their judge, time, and room.</p>
+                  <h2 id="tryout-form-heading">Add debate</h2>
+                  <p class="tryout-card-intro">Create the authoritative schedule manually. Pair A debates Pair B at the entered time and room.</p>
                   <div class="tm-fields">
-                    <div class="tm-field full"><label for="tryout-session">Tryout date *</label><select id="tryout-session" required><option value="sep22">Tuesday, September 22 — Cafeteria</option><option value="sep23">Wednesday, September 23 — Lecture Hall</option></select></div>
-                    <div class="tm-field"><label for="tryout-student-one">Debater 1 *</label><select id="tryout-student-one" required></select></div>
-                    <div class="tm-field"><label for="tryout-student-two">Debater 2 *</label><select id="tryout-student-two" required></select></div>
-                    <div class="tm-field full"><label for="tryout-judge">Judge *</label><input id="tryout-judge" maxlength="120" required placeholder="Judge’s full name"></div>
-                    <div class="tm-field"><label for="tryout-start">Start time *</label><input id="tryout-start" type="time" min="14:30" max="16:30" required></div>
-                    <div class="tm-field"><label for="tryout-end">End time *</label><input id="tryout-end" type="time" min="14:30" max="16:30" required></div>
-                    <div class="tm-field full"><label for="tryout-location">Room / location *</label><input id="tryout-location" maxlength="160" required placeholder="e.g., Cafeteria Table 1"></div>
+                    <div class="tm-field"><label for="tryout-date">Debate date *</label><input id="tryout-date" type="date" required></div>
+                    <div class="tm-field"><label for="tryout-status">Status</label><select id="tryout-status"><option value="scheduled">Scheduled</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
+                    <div class="tm-field full tryout-pair-label">Pair A</div>
+                    <div class="tm-field"><label for="tryout-a-one">Debater 1 *</label><select id="tryout-a-one" required></select></div>
+                    <div class="tm-field"><label for="tryout-a-two">Debater 2 *</label><select id="tryout-a-two" required></select></div>
+                    <div class="tm-field full tryout-pair-label">Pair B</div>
+                    <div class="tm-field"><label for="tryout-b-one">Debater 1 *</label><select id="tryout-b-one" required></select></div>
+                    <div class="tm-field"><label for="tryout-b-two">Debater 2 *</label><select id="tryout-b-two" required></select></div>
+                    <div class="tm-field"><label for="tryout-judge">Judge *</label><input id="tryout-judge" list="tryout-judge-options" maxlength="120" required placeholder="Choose or enter a judge"><datalist id="tryout-judge-options"></datalist></div>
+                    <div class="tm-field"><label for="tryout-judge-type">Judge type</label><select id="tryout-judge-type"><option value="member">Members Directory</option><option value="high-school-student">High-school student</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="other">Other</option></select></div>
+                    <div class="tm-field"><label for="tryout-start">Start time *</label><input id="tryout-start" type="time" required></div>
+                    <div class="tm-field"><label for="tryout-end">End time *</label><input id="tryout-end" type="time" required></div>
+                    <div class="tm-field full"><label for="tryout-location">Room / location *</label><input id="tryout-location" maxlength="160" required placeholder="e.g., Room 114"></div>
                     <div class="tm-field full"><label for="tryout-notes">Private notes</label><textarea id="tryout-notes" maxlength="500" placeholder="Optional internal notes"></textarea></div>
                   </div>
-                  <div class="tryout-actions"><button id="tryout-save" class="tm-save" type="submit">Add to schedule</button><button id="tryout-cancel" class="tryout-cancel" type="button" hidden>Cancel edit</button></div>
+                  <div class="tryout-actions"><button id="tryout-save" class="tm-save" type="submit">Add debate</button><button id="tryout-cancel" class="tryout-cancel" type="button" hidden>Cancel edit</button></div>
                   <p id="tryout-message" class="tryout-message" role="status"></p>
                 </form>
                 <section class="tryout-card">
-                  <h2>Current schedule</h2>
-                  <p class="tryout-card-intro">Assignments are ordered by date and start time. Conflicting students, judges, and rooms are blocked when you save.</p>
+                  <h2>Debate schedule</h2>
+                  <p class="tryout-card-intro">Debates are shown in date and time order. This manually entered table is the official tryout schedule.</p>
                   <div id="tryout-schedule-list" class="tryout-table-wrap"><div class="tryout-empty">Loading the tryout schedule…</div></div>
                 </section>
               </div>
@@ -717,7 +733,7 @@
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
   <script src="js/volunteer-admin.js?v=30"></script>
-  <script src="js/tryout-manager.js?v=3"></script>
+  <script src="js/tryout-manager.js?v=4"></script>
   <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>
 </body>
