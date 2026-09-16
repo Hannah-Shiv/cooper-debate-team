@@ -96,15 +96,18 @@
     }
     root.innerHTML = `<table class="tryout-table">
       <thead><tr><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>${assignments.map(item => `<tr>
+      <tbody>${assignments.map(item => {
+        const awaitingPairB = pairNames(item, "b").length !== 2;
+        return `<tr>
         <td><strong>${pairNames(item, "a").map(esc).join(" &amp; ") || "Legacy pair"}</strong></td>
-        <td><strong>${pairNames(item, "b").map(esc).join(" &amp; ") || "Not entered"}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
+        <td><strong>${pairNames(item, "b").map(esc).join(" &amp; ") || "Awaiting Pair B"}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
         <td>${esc(dateLabel(item.date))}<br><strong>${esc(timeLabel(item.startTime))}–${esc(timeLabel(item.endTime))}</strong></td>
         <td>${esc(item.judge)}<br><small>${esc(item.judgeTypeLabel || "Members Directory")}</small></td>
         <td>${esc(item.location)}</td>
-        <td><span class="tm-grid-status ${esc(item.status || "scheduled")}">${esc(statusLabel(item.status))}</span></td>
+        <td><span class="tm-grid-status ${awaitingPairB ? "awaiting" : esc(item.status || "scheduled")}">${awaitingPairB ? "Awaiting Pair B" : esc(statusLabel(item.status))}</span></td>
         <td><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}">Edit</button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}">Delete</button>` : ""}</div></td>
-      </tr>`).join("")}</tbody>
+      </tr>`;
+      }).join("")}</tbody>
     </table>`;
     root.querySelectorAll("[data-tryout-edit]").forEach(button => button.addEventListener("click", () => editAssignment(button.dataset.tryoutEdit)));
     root.querySelectorAll("[data-tryout-delete]").forEach(button => button.addEventListener("click", () => deleteAssignment(button.dataset.tryoutDelete)));
@@ -189,14 +192,22 @@
 
   async function save(event) {
     event.preventDefault();
+    const values = DEBATER_FIELDS.map(id => $(id).value.trim());
     const ids = DEBATER_FIELDS.map(selectedDebaterId);
-    if (ids.some(id => !id) || new Set(ids).size !== 4) {
-      setMessage("Choose four different debaters from the name suggestions for Pair A and Pair B.", "error");
+    const pairAIds = ids.slice(0, 2);
+    const pairBIds = ids.slice(2);
+    const pairBHasAnyValue = values.slice(2).some(Boolean);
+    if (pairAIds.some(id => !id) || new Set(pairAIds).size !== 2) {
+      setMessage("Choose two different debaters from the name suggestions for Pair A.", "error");
+      return;
+    }
+    if (pairBHasAnyValue && (pairBIds.some(id => !id) || new Set([...pairAIds, ...pairBIds]).size !== 4)) {
+      setMessage("Choose two different Pair B debaters, or leave both Pair B fields empty.", "error");
       return;
     }
     const assignment = {
-      pairAIds: ids.slice(0, 2),
-      pairBIds: ids.slice(2),
+      pairAIds,
+      pairBIds: pairBHasAnyValue ? pairBIds : [],
       date: $("tryout-date").value,
       status: $("tryout-status").value,
       judge: $("tryout-judge").value.trim(),

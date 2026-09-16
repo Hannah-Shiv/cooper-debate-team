@@ -10,9 +10,17 @@ test("tryout form schedules Pair A against Pair B", () => {
   for (const id of ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.match(client, /pairAIds: ids\.slice\(0, 2\)/);
-  assert.match(client, /pairBIds: ids\.slice\(2\)/);
-  assert.match(server, /studentIds\.length !== 4 \|\| new Set\(studentIds\)\.size !== 4/);
+  assert.match(client, /const pairAIds = ids\.slice\(0, 2\)/);
+  assert.match(client, /const pairBIds = ids\.slice\(2\)/);
+  assert.match(server, /pairAIds\.length !== 2 \|\| new Set\(pairAIds\)\.size !== 2/);
+});
+
+test("Pair A can be saved while Pair B is awaiting debaters", () => {
+  assert.match(html, /Pair B · Optional until later/);
+  assert.doesNotMatch(html, /for="tryout-b-one">Debater 1 \*/);
+  assert.match(client, /pairBIds: pairBHasAnyValue \? pairBIds : \[\]/);
+  assert.match(client, /Awaiting Pair B/);
+  assert.match(server, /!\[0, 2\]\.includes\(pairBIds\.length\)/);
 });
 
 test("debater fields search by name without exposing their source", () => {

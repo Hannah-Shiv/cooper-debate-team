@@ -2693,8 +2693,14 @@ exports.manageTryoutSchedule = onRequest(
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
         const status = ["scheduled", "completed", "cancelled"].includes(incoming.status) ? incoming.status : "scheduled";
-        if (studentIds.length !== 4 || new Set(studentIds).size !== 4) {
-          throw new Error("Choose four different debaters for Pair A and Pair B.");
+        if (pairAIds.length !== 2 || new Set(pairAIds).size !== 2) {
+          throw new Error("Choose two different debaters for Pair A.");
+        }
+        if (![0, 2].includes(pairBIds.length)) {
+          throw new Error("Choose both Pair B debaters, or leave both Pair B fields empty.");
+        }
+        if (new Set(studentIds).size !== studentIds.length) {
+          throw new Error("Each selected debater can appear only once.");
         }
         if (!startTime || !endTime || timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
         if (!judge) throw new Error("Enter the judge’s name.");
