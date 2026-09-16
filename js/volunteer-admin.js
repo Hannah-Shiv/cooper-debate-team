@@ -187,6 +187,7 @@
     $("tm-confirmed").textContent = confirmed;
     $("tm-available").textContent = Math.max(0, capacity - confirmed);
     $("tm-fill-rate").textContent = `${capacity ? Math.round((confirmed / capacity) * 100) : 0}% Filled`;
+    $("tm-status").closest(".tm-metric.status").dataset.status = published ? "active" : "inactive";
     $("tm-status").textContent = published ? "Live" : "Draft";
     $("tm-status-note").textContent = published ? "Volunteer signup open" : "Not published";
     $("tm-preview-title").textContent = title;
@@ -459,8 +460,9 @@
     $("tm-detail-actions").querySelector("[data-selected-export]")?.addEventListener("click", () => exportEvent(item.id));
     $("tm-detail-actions").querySelector("[data-selected-delete]")?.addEventListener("click", event => deleteEvent(item.id, event.currentTarget));
     document.querySelectorAll(".tm-data-table tbody tr").forEach(row => row.classList.toggle("selected", row.dataset.event === item.id));
+    $("tm-status").closest(".tm-metric.status").dataset.status = status.key;
     $("tm-status").textContent = status.label;
-    $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
+    $("tm-status-note").textContent = status.key === "completed" ? "Tournament completed" : item.published ? "Open for signups" : "Signups closed";
     if (shouldScroll) $("tm-detail-heading").scrollIntoView({ behavior: "smooth", block: "start" });
   }
   function modalRow(label, value) {
