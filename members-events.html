@@ -201,6 +201,20 @@
     .tm-main{padding-left:clamp(18px,2vw,42px);padding-right:clamp(18px,2vw,42px)}
     .tm-shell{max-width:1496px}
     .tm-manager-columns{max-width:1606px}
+    .tm-page-row{margin-bottom:32px;min-height:72px}
+    .tm-page-heading h1{
+      color:#ffd700;
+      font-size:clamp(32.4px,4.05vw,50.1px);
+      line-height:1;
+      margin:0 0 8px;
+      text-shadow:0 0 60px rgba(255,215,0,.2)
+    }
+    .tm-page-heading p{
+      color:#fff;
+      font:400 11.8px/1.45 'Josefin Sans',sans-serif;
+      letter-spacing:.055em;
+      max-width:none
+    }
     .tm-grid-column .tm-data-grid{overflow-x:hidden}
     .tm-grid-column .tm-data-table{min-width:0;table-layout:fixed;width:100%}
     .tm-grid-column .tm-data-table th:nth-child(1){width:28%}
@@ -301,17 +315,18 @@
       color:#e7f0fd;
       display:flex;
       font-size:.59rem;
+      grid-column:auto;
+      height:50px;
       justify-content:center;
       letter-spacing:.08em;
-      min-height:42px;
+      min-height:50px;
       padding:10px 12px
     }
     .tm-selection-panel .tm-detail-actions [data-selected-details]{
       background:#f2bf3d;
       border-color:#f7d66c;
       box-shadow:0 8px 20px rgba(242,191,61,.17);
-      color:#07142c;
-      grid-column:1/-1
+      color:#07142c
     }
     .tm-selection-panel .tm-detail-actions [data-selected-toggle]{border-color:rgba(242,191,61,.4);color:#f5cf69}
     .tm-selection-panel .tm-detail-actions [data-selected-export]{border-color:rgba(85,191,218,.38);color:#bdeeff}
@@ -319,8 +334,7 @@
       background:rgba(132,40,55,.12);
       border-color:rgba(238,112,129,.38);
       color:#ffb5c0;
-      grid-column:1/-1;
-      margin-top:2px
+      margin-top:0
     }
     .tm-selection-panel .tm-detail-actions .tm-action:hover,
     .tm-selection-panel .tm-detail-actions .tm-action:focus-visible{
@@ -331,9 +345,6 @@
     @media(max-width:560px){
       .tm-selection-panel .tm-summary-metrics{grid-template-columns:1fr}
       .tm-selection-panel .tm-metric{min-height:92px}
-      .tm-selection-panel .tm-detail-actions{grid-template-columns:1fr}
-      .tm-selection-panel .tm-detail-actions [data-selected-details],
-      .tm-selection-panel .tm-detail-actions [data-selected-delete]{grid-column:auto}
     }
     @media(min-width:901px) and (max-width:1050px){
       .tm-selection-panel .tm-metric.status strong{font-size:1rem;line-height:1.1}
