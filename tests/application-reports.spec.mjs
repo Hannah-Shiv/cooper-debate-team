@@ -104,6 +104,10 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   await expect(dialog.locator(".stats-point")).toHaveCount(3);
   await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
   await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
+  await expect(dialog.locator('[data-stats-handle="from"]')).toHaveCSS("left", "0px");
+  const initialRail = await dialog.locator(".stats-range-rail").boundingBox();
+  const initialToHandle = await dialog.locator('[data-stats-handle="to"]').boundingBox();
+  expect(Math.abs((initialToHandle.x + initialToHandle.width / 2) - (initialRail.x + initialRail.width))).toBeLessThan(2);
 
   const toHandle = await dialog.locator('[data-stats-handle="to"]').boundingBox();
   const rail = await dialog.locator(".stats-range-rail").boundingBox();
@@ -112,6 +116,16 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   await page.mouse.move(rail.x + rail.width / 2, toHandle.y + 20);
   await page.mouse.up();
   await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
+  await dialog.locator(".stats-reset").click();
+
+  const fromHandle = await dialog.locator('[data-stats-handle="from"]').boundingBox();
+  const resetRail = await dialog.locator(".stats-range-rail").boundingBox();
+  await page.mouse.move(fromHandle.x + fromHandle.width / 2, fromHandle.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(resetRail.x + resetRail.width * 2 / 3, fromHandle.y + 20);
+  await page.mouse.up();
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
+  expect(await dialog.locator(".stats-point").count()).toBeGreaterThanOrEqual(24);
   await dialog.locator(".stats-reset").click();
 
   await dialog.locator("#stats-from").fill("2026-09-14T00:00");

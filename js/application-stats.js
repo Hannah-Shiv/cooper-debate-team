@@ -100,9 +100,8 @@
 
   function updateHandles() {
     if (!dialog) return;
-    const span = Math.max(1, domainEnd - domainStart);
-    const left = (selectedStart - domainStart) / span * 100;
-    const right = (selectedEnd - domainStart) / span * 100;
+    const left = 0;
+    const right = 100;
     const selection = dialog.querySelector(".stats-range-selection");
     const railRect = dialog.querySelector(".stats-range-rail").getBoundingClientRect();
     const stageRect = dialog.querySelector(".stats-chart-stage").getBoundingClientRect();
@@ -148,20 +147,43 @@
 
   function wireHandle(handle) {
     const side = handle.dataset.statsHandle;
+    let dragStart = 0;
+    let dragEnd = 0;
+    let pendingValue = null;
     const moveToClientX = clientX => {
       const rail = dialog.querySelector(".stats-range-rail");
       const rect = rail.getBoundingClientRect();
       const ratio = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
-      const value = domainStart + ratio * (domainEnd - domainStart);
-      setSelection(side === "from" ? value : selectedStart, side === "to" ? value : selectedEnd, side);
+      const minimumGap = Math.min(HOUR, dragEnd - dragStart);
+      const rawValue = dragStart + ratio * (dragEnd - dragStart);
+      pendingValue = side === "from"
+        ? Math.min(rawValue, dragEnd - minimumGap)
+        : Math.max(rawValue, dragStart + minimumGap);
+      const position = (pendingValue - dragStart) / Math.max(1, dragEnd - dragStart) * 100;
+      handle.style.left = `${position}%`;
+      const selection = dialog.querySelector(".stats-range-selection");
+      if (side === "from") {
+        selection.style.left = `${position}%`;
+        selection.style.width = `${100 - position}%`;
+      } else {
+        selection.style.width = `${position}%`;
+      }
     };
     handle.addEventListener("pointerdown", event => {
       event.preventDefault();
+      dragStart = selectedStart;
+      dragEnd = selectedEnd;
+      pendingValue = side === "from" ? dragStart : dragEnd;
       handle.setPointerCapture(event.pointerId);
       moveToClientX(event.clientX);
     });
     handle.addEventListener("pointermove", event => {
       if (handle.hasPointerCapture(event.pointerId)) moveToClientX(event.clientX);
+    });
+    handle.addEventListener("pointerup", event => {
+      if (!handle.hasPointerCapture(event.pointerId) || !Number.isFinite(pendingValue)) return;
+      handle.releasePointerCapture(event.pointerId);
+      setSelection(side === "from" ? pendingValue : dragStart, side === "to" ? pendingValue : dragEnd, side);
     });
     handle.addEventListener("keydown", event => {
       if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
@@ -185,7 +207,7 @@
     dialog = document.createElement("dialog");
     dialog.className = "application-stats-dialog";
     dialog.setAttribute("aria-labelledby", "stats-title");
-    dialog.innerHTML = `<div class="stats-shell"><header class="stats-head"><div><p>Application records</p><h2 id="stats-title">Submissions over time</h2><span>Times shown in Eastern Time</span></div><div class="stats-head-summary"><strong class="stats-count"></strong><small class="stats-granularity"></small></div><button type="button" class="stats-close" aria-label="Close stats">✕</button></header><section class="stats-controls" aria-label="Submission date and time range"><label>From<input id="stats-from" type="datetime-local"></label><label>To<input id="stats-to" type="datetime-local"></label><button type="button" class="stats-reset">Reset range</button></section><section class="stats-visual"><div class="stats-chart-stage"></div><div class="stats-range-rail" aria-label="Draggable submission range"><div class="stats-range-selection"></div><button type="button" class="stats-range-handle from" data-stats-handle="from" role="slider" aria-label="From date and time"></button><button type="button" class="stats-range-handle to" data-stats-handle="to" role="slider" aria-label="To date and time"></button></div><p class="stats-range-help">Drag the vertical handles to zoom. Select one day or less to see submissions hour by hour.</p></section></div>`;
+    dialog.innerHTML = `<div class="stats-shell"><header class="stats-head"><div><p>Application records</p><h2 id="stats-title">Submissions over time</h2><span>Times shown in Eastern Time</span></div><div class="stats-head-summary"><strong class="stats-count"></strong><small class="stats-granularity"></small></div><button type="button" class="stats-close" aria-label="Close stats">✕</button></header><section class="stats-controls" aria-label="Submission date and time range"><label>From<input id="stats-from" type="datetime-local"></label><label>To<input id="stats-to" type="datetime-local"></label><button type="button" class="stats-reset">Reset range</button></section><section class="stats-visual"><div class="stats-chart-stage"></div><div class="stats-range-rail" aria-label="Draggable submission range"><div class="stats-range-selection"></div><button type="button" class="stats-range-handle from" data-stats-handle="from" role="slider" aria-label="From date and time"></button><button type="button" class="stats-range-handle to" data-stats-handle="to" role="slider" aria-label="To date and time"></button></div><p class="stats-range-help">Drag either edge inward and release to zoom. At one day or less, the chart switches to hour-by-hour data.</p></section></div>`;
     document.body.appendChild(dialog);
     dialog.showModal();
     dialog.querySelector(".stats-close").onclick = () => dialog.close();
