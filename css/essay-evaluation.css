@@ -190,10 +190,14 @@
 .eval-conflict button, .eval-close-confirm button, .eval-reset-confirm button { border: 1px solid #7e9abd; border-radius: 4px; cursor: pointer; font-size: .6rem; font-weight: 800; margin-right: 6px; padding: 7px 10px; }
 .conflict-reload, .close-discard, .reset-confirm { background: #e7b83f; color: #07172f; }
 .conflict-keep, .close-keep, .reset-cancel { background: transparent; color: #dce9f8; }
-.eval-reset-confirm{bottom:auto;box-shadow:0 24px 70px rgba(0,0,0,.68);padding:30px;top:50%;transform:translate(-50%,-50%);width:min(820px,calc(100% - 40px))}
+.eval-reset-confirm{background:linear-gradient(145deg,#123d6b,#0a274b 72%);border:2px solid #e7bd4e;border-radius:18px;bottom:auto;box-shadow:0 24px 70px rgba(0,0,0,.68),inset 0 1px 0 rgba(255,255,255,.12);padding:30px 32px;top:50%;transform:translate(-50%,-50%);width:min(570px,calc(100% - 40px))}
 .eval-reset-confirm strong{font-size:1.25rem;margin-bottom:12px}
-.eval-reset-confirm p{font-size:.9rem;line-height:1.6;margin:0 0 22px}
-.eval-reset-confirm button{font-size:.8rem;margin-right:10px;padding:12px 18px}
+.eval-reset-confirm p{font-size:.9rem;line-height:1.6;margin:0 0 24px;max-width:480px;white-space:normal}
+.eval-reset-confirm button{border-radius:999px;font-size:.8rem;margin-right:10px;padding:12px 20px}
+.eval-reset-confirm .reset-cancel{background:#176b4c;border-color:#69d4a5;box-shadow:inset 0 1px 0 rgba(255,255,255,.2);color:#fff}
+.eval-reset-confirm .reset-cancel:hover,.eval-reset-confirm .reset-cancel:focus-visible{background:#208861;border-color:#a2f0cf;outline:2px solid #fff;outline-offset:2px}
+.eval-reset-confirm .reset-confirm{background:#a7353f;border-color:#ff9da5;box-shadow:inset 0 1px 0 rgba(255,255,255,.18);color:#fff}
+.eval-reset-confirm .reset-confirm:hover,.eval-reset-confirm .reset-confirm:focus-visible{background:#c8434f;border-color:#ffd0d4;outline:2px solid #fff;outline-offset:2px}
 
 @media (min-width: 761px) and (max-width: 1400px) {
   .essay-eval-head{align-items:center;flex:0 0 auto;gap:8px 10px;grid-template-areas:"identity actions" "summary summary";grid-template-columns:minmax(0,1fr) auto;min-height:112px;padding:9px 14px}

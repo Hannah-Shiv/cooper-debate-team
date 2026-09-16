@@ -171,7 +171,8 @@ test("reset clears a saved evaluation and restores the Not Started launcher", as
   });
   expect(Math.abs(resetConfirmationLayout.centerX - resetConfirmationLayout.viewportCenterX)).toBeLessThan(2);
   expect(Math.abs(resetConfirmationLayout.centerY - resetConfirmationLayout.viewportCenterY)).toBeLessThan(2);
-  expect(resetConfirmationLayout.width).toBeGreaterThan(700);
+  expect(resetConfirmationLayout.width).toBeGreaterThan(500);
+  expect(resetConfirmationLayout.width).toBeLessThan(650);
   await page.locator(".reset-confirm").click();
 
   await expect(page.locator(".essay-eval")).not.toBeVisible();
