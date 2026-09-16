@@ -558,7 +558,7 @@
     item.__essayPane = pane;
     const wrapper = document.createElement("div");
     wrapper.className = "essay-launch-wrap";
-    (pane.querySelector(".essay-reference-launch") || pane).appendChild(wrapper);
+    (pane.querySelector(".essay-reference-launch-content") || pane.querySelector(".essay-reference-launch") || pane).appendChild(wrapper);
     updateLauncher(pane, item, evaluationCache.get(item.id) || emptyState());
     loadEvaluation(item.id)
       .then((evaluation) => {
