@@ -180,6 +180,13 @@
 .conflict-reload, .close-discard { background: #e7b83f; color: #07172f; }
 .conflict-keep, .close-keep { background: transparent; color: #dce9f8; }
 
+@media (min-width: 761px) and (max-width: 1100px) {
+  .essay-eval-head{align-items:center;flex:0 0 auto;gap:8px 10px;grid-template-areas:"identity actions" "summary summary";grid-template-columns:minmax(0,1fr) auto;min-height:112px;padding:9px 14px}
+  .essay-eval-identity{grid-area:identity}
+  .eval-head-summary{grid-area:summary}
+  .essay-eval-head-actions{grid-area:actions}
+  .eval-head-summary:before{display:none}
+}
 @media (max-width: 760px) {
   .essay-eval-head { align-items: center; flex:0 0 auto; gap:10px; grid-template-areas:"identity actions" "summary summary"; grid-template-columns:minmax(0,1fr) auto; min-height: 118px; padding: 12px 14px; }
   .essay-eval-identity{align-items:flex-start;display:flex;flex-direction:column;gap:2px;grid-area:identity}.essay-eval-sub{white-space:normal}.eval-head-summary{grid-area:summary}.essay-eval-head-actions { flex-wrap: wrap; grid-area:actions; justify-content: flex-end; }
