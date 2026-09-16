@@ -505,11 +505,69 @@
     });
   }
 
+  function saveSchedulePdf() {
+    const visible = visibleAssignments();
+    if (!visible.length) {
+      setMessage("There are no visible debates to save as a PDF.", "error");
+      return;
+    }
+    const printWindow = window.open("", "tryout-schedule-pdf", "width=1200,height=800");
+    if (!printWindow) {
+      setMessage("Allow pop-ups to save the debate schedule as a PDF.", "error");
+      return;
+    }
+    printWindow.opener = null;
+    const people = (item, side) => pairEntries(item, side).map(entry => {
+      const grade = gradeLabel(entry.grade || debaters.find(person => person.id === entry.id)?.grade);
+      return `<div class="student">${esc(entry.name)}${grade ? `<span class="grade">${esc(grade)}</span>` : ""}</div>`;
+    }).join("");
+    const filterLabel = scheduleFilter === "all" ? "All records" : `${scheduleFilter[0].toUpperCase()}${scheduleFilter.slice(1)} records`;
+    const searchLabel = scheduleSearch.trim() ? ` · Search: “${esc(scheduleSearch.trim())}”` : "";
+    const rows = visible.map((item, index) => {
+      const draft = isDraft(item);
+      const times = [timeLabel(item.startTime), timeLabel(item.endTime)].filter(Boolean).join("–") || "Time not set";
+      return `<tr>
+        <td>${index + 1}</td>
+        <td>${people(item, "a")}</td>
+        <td>${people(item, "b")}${item.notes ? `<small>${esc(item.notes)}</small>` : ""}</td>
+        <td>${esc(dateLabel(item.date) || "Date not set")}</td>
+        <td>${esc(times)}</td>
+        <td>${esc(item.judge || "Not set")}${item.judge && item.judgeType !== "member" ? `<small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
+        <td>${esc(item.location || "Not set")}</td>
+        <td><span class="status ${draft ? "draft" : "finalized"}">${draft ? "Draft" : "Finalized"}</span></td>
+      </tr>`;
+    }).join("");
+    printWindow.document.write(`<!doctype html><html><head><meta charset="utf-8">
+      <title>${esc(template.title || "Debate Tryout Schedule")}</title>
+      <style>
+        @page{size:landscape;margin:.35in}
+        *{box-sizing:border-box;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+        body{background:#fff;color:#10223f;font-family:Arial,sans-serif;margin:0}
+        .banner{align-items:center;background:#123f70;border-bottom:5px solid #ffe45c;color:#fff;display:flex;justify-content:space-between;padding:16px 20px}
+        h1{font-family:Georgia,serif;font-size:22px;margin:0}.meta{color:#c9def7;font-size:10px;margin-top:5px}.count{background:#08264b;border:1px solid #5f8cc2;border-radius:7px;color:#ffe45c;font-size:12px;font-weight:800;padding:8px 12px}
+        table{border-collapse:separate;border-spacing:0;margin-top:14px;table-layout:fixed;width:100%}
+        th{background:#fff;padding:3px;text-align:left}th span{background:#03152d;border:1px solid #294d7d;border-radius:5px;color:#ffe45c;display:inline-block;font-size:9px;letter-spacing:.07em;padding:6px 8px;text-transform:uppercase}
+        td{background:#eaf2fc;border-bottom:1px solid #b7c9e1;color:#10223f;font-size:9px;line-height:1.35;padding:8px 6px;vertical-align:top}tr:nth-child(even) td{background:#dce9f8}
+        th:nth-child(1),td:nth-child(1){width:3%}th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){width:18%}th:nth-child(4),td:nth-child(4){width:12%}th:nth-child(5),td:nth-child(5){width:13%}th:nth-child(6),td:nth-child(6){width:14%}th:nth-child(7),td:nth-child(7){width:10%}th:nth-child(8),td:nth-child(8){width:12%}
+        tr{break-inside:avoid}.student{align-items:center;display:flex;font-weight:700;gap:5px;margin-bottom:3px}.grade{align-items:center;background:#0b2d5c;border-radius:50%;color:#ffe45c;display:inline-flex;font-size:7px;height:19px;justify-content:center;min-width:19px}.status{border:1px solid;border-radius:999px;display:inline-block;font-size:8px;font-weight:800;padding:4px 7px;text-transform:uppercase}.draft{background:#fff7cf;border-color:#c39300;color:#684d00}.finalized{background:#d7f8e8;border-color:#148458;color:#075f3d}small{color:#536985;display:block;font-size:8px;margin-top:3px}
+        .actions{margin-top:14px;text-align:right}.actions button{background:#03152d;border:1px solid #ffe45c;border-radius:6px;color:#ffe45c;cursor:pointer;font-weight:800;padding:8px 12px}
+        @media print{.actions{display:none}}
+      </style></head><body>
+      <header class="banner"><div><h1>${esc(template.title || "Debate Tryout Schedule")}</h1><div class="meta">${filterLabel}${searchLabel} · Generated ${esc(new Date().toLocaleString())}</div></div><div class="count">${visible.length} ${visible.length === 1 ? "debate" : "debates"}</div></header>
+      <table><thead><tr><th><span>#</span></th><th><span>Pair A</span></th><th><span>Pair B</span></th><th><span>Date</span></th><th><span>Time</span></th><th><span>Judge</span></th><th><span>Room</span></th><th><span>Status</span></th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="actions"><button type="button" onclick="window.print()">Save as PDF</button></div>
+      </body></html>`);
+    printWindow.document.close();
+    printWindow.focus();
+    window.setTimeout(() => printWindow.print(), 250);
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     enableNativePickers();
     updateTimePeriods();
     $("tryout-form").addEventListener("submit", event => event.preventDefault());
     $("tryout-new-draft").addEventListener("click", resetForm);
+    $("tryout-save-pdf").addEventListener("click", saveSchedulePdf);
     TEMPLATE_FIELDS.forEach(id => $(id).addEventListener("input", () => scheduleTemplateSave()));
     ASSIGNMENT_FIELDS.forEach(id => $(id).addEventListener("input", () => {
       if (id === "tryout-start" || id === "tryout-end") updateTimePeriods();
