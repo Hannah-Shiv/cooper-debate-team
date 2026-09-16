@@ -40,6 +40,9 @@
 .essay-launch { background: #e7b83f; border: 1px solid #f3d477; border-radius: 4px; color: #081a35; cursor: pointer; font-size: .64rem; font-weight: 800; letter-spacing: .08em; padding: 10px 14px; text-transform: uppercase; white-space: nowrap; }
 .essay-reference-launch .essay-launch.is-completed{align-items:center;display:flex;gap:8px;justify-content:center;letter-spacing:.05em}.essay-reference-launch .essay-launch.is-completed:before{content:"▤";font-size:1.1em;margin:0}.essay-reference-launch .essay-launch.is-completed:after{content:none}
 .essay-launch:hover { background: #f3d477; transform: translateY(-1px); }
+.essay-reference-head .essay-reference-launch .essay-launch-wrap{align-items:flex-start}
+.essay-reference-head .essay-reference-launch .essay-launch{display:inline-flex;justify-content:center;min-height:44px;padding:11px 22px;width:auto}
+.essay-reference-launch .essay-launch:before,.essay-reference-launch .essay-launch:after,.essay-reference-launch .essay-launch.is-completed:before,.essay-reference-launch .essay-launch.is-completed:after{content:none}
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
 .essay-eval { background: #071a37; border: 0; color: #eef5ff; height: 100dvh; margin: 0; max-height: none; max-width: none; overflow: hidden; padding: 0; width: 100vw; }
