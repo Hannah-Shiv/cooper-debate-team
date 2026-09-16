@@ -43,6 +43,14 @@
 .essay-reference-head .essay-reference-launch .essay-launch-wrap{align-items:flex-start}
 .essay-reference-head .essay-reference-launch .essay-launch{display:inline-flex;justify-content:center;min-height:44px;padding:11px 22px;width:auto}
 .essay-reference-launch .essay-launch:before,.essay-reference-launch .essay-launch:after,.essay-reference-launch .essay-launch.is-completed:before,.essay-reference-launch .essay-launch.is-completed:after{content:none}
+@media(min-width:601px){
+  .essay-reference-head{grid-template-columns:minmax(0,1.26fr) 1px minmax(0,.74fr)}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed){grid-template-columns:minmax(0,1.49fr) 1px minmax(0,.51fr)}
+  .essay-reference-head .essay-reference-launch .essay-launch-wrap{max-width:100%;width:max-content}
+  .essay-reference-head .essay-reference-launch .essay-launch{width:100%}
+  .essay-reference-head .essay-reference-heading{padding-right:5px}
+  .essay-reference-head .essay-reference-heading p{white-space:nowrap}
+}
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
 .essay-eval { background: #071a37; border: 0; color: #eef5ff; height: 100dvh; margin: 0; max-height: none; max-width: none; overflow: hidden; padding: 0; width: 100vw; }
