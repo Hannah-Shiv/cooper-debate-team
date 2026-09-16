@@ -215,3 +215,15 @@
   .eval-recommendation { grid-template-columns: repeat(2, 1fr); }
 }
 .essay-reference-launch .essay-launch-heading p.is-not-started{background:#fff;border:2px solid #ffd21f;box-shadow:0 2px 8px rgba(0,0,0,.28);color:#542116;padding:6px 10px}
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)){display:block}
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-reference-head-divider,
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-reference-heading{display:none}
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-reference-launch,
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-launch-wrap{width:100%}
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-launch-heading{justify-content:flex-start}
+html.is-chromeos .essay-reference-head:not(:has(.essay-launch-heading p.is-completed)) .essay-launch{width:100%}
+html.is-chromeos .essay-eval-head{align-items:center;flex:0 0 auto;gap:8px 10px;grid-template-areas:"identity actions" "summary summary";grid-template-columns:minmax(0,1fr) auto;min-height:112px;padding:9px 14px}
+html.is-chromeos .essay-eval-identity{grid-area:identity}
+html.is-chromeos .eval-head-summary{grid-area:summary}
+html.is-chromeos .essay-eval-head-actions{grid-area:actions}
+html.is-chromeos .eval-head-summary:before{display:none}

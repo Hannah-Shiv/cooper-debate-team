@@ -1,6 +1,7 @@
 /* Cooper Debate Team — private coach application review workspace */
 (function () {
   "use strict";
+  if (/\bCrOS\b/i.test(navigator.userAgent)) document.documentElement.classList.add("is-chromeos");
 
   const FIREBASE_CONFIG = {
     apiKey: "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
