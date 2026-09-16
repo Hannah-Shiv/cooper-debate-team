@@ -241,7 +241,11 @@ test("saves both reports as landscape PDFs without opening the print dialog", as
       const style = getComputedStyle(element);
       return { background: style.backgroundColor, border: style.borderColor, shadow: style.boxShadow };
     });
-    expect(saveHover).toEqual(closeHover);
+    expect(saveHover.background).toBe("rgb(255, 227, 107)");
+    expect(saveHover.border).toBe("rgb(255, 244, 176)");
+    expect(saveHover.shadow).toContain("rgba(255, 213, 35");
+    expect(saveHover.background).not.toBe(closeHover.background);
+    expect(closeHover.background).toBe("rgb(163, 46, 57)");
     await saveButton.click();
     await page.waitForFunction(() => window.__savedPdf instanceof Blob);
     const saved = await page.evaluate(async () => {
