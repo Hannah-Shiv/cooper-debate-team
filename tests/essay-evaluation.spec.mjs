@@ -229,8 +229,8 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
 });
 
-test("evaluation header is a single ordered command bar with score and status pills", async ({ page }) => {
-  await page.setViewportSize({ width: 1440, height: 900 });
+test("evaluation header uses two stable rows without small-laptop horizontal overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 1024, height: 768 });
   await mountEvaluation(page, null);
   await page.locator(".essay-launch").click();
 
@@ -241,8 +241,10 @@ test("evaluation header is a single ordered command bar with score and status pi
   await expect(page.locator(".eval-status")).toHaveText("Not started");
   await expect(page.locator(".eval-head-recommendation span")).toHaveText("Not selected");
   const header = await page.evaluate(() => {
-    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-head-recommendation", ".eval-finalize", ".eval-close"];
-    const boxes = selectors.map(selector => document.querySelector(selector).getBoundingClientRect());
+    const primarySelectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-meter"];
+    const actionSelectors = [".eval-status", ".eval-head-recommendation", ".eval-finalize", ".eval-close"];
+    const primaryBoxes = primarySelectors.map(selector => document.querySelector(selector).getBoundingClientRect());
+    const actionBoxes = actionSelectors.map(selector => document.querySelector(selector).getBoundingClientRect());
     const scoreStyle = getComputedStyle(document.querySelector(".eval-header-score"));
     const statusStyle = getComputedStyle(document.querySelector(".eval-status"));
     const closeStyle = getComputedStyle(document.querySelector(".eval-close"));
@@ -250,9 +252,15 @@ test("evaluation header is a single ordered command bar with score and status pi
     const status = document.querySelector(".eval-status").getBoundingClientRect();
     const close = document.querySelector(".eval-close").getBoundingClientRect();
     const finalize = document.querySelector(".eval-finalize").getBoundingClientRect();
+    const header = document.querySelector(".essay-eval-head");
+    const progress = document.querySelector(".eval-meter");
     return {
-      ordered: boxes.every((box, index) => index === 0 || box.left >= boxes[index - 1].right),
-      oneLine: Math.max(...boxes.map(box => box.top + box.height / 2)) - Math.min(...boxes.map(box => box.top + box.height / 2)) < 2,
+      actionsOrdered: actionBoxes.every((box, index) => index === 0 || box.left >= actionBoxes[index - 1].right),
+      actionsOneLine: Math.max(...actionBoxes.map(box => box.top + box.height / 2)) - Math.min(...actionBoxes.map(box => box.top + box.height / 2)) < 2,
+      twoRows: Math.min(...actionBoxes.map(box => box.top)) > Math.max(...primaryBoxes.map(box => box.bottom)),
+      noHeaderOverflow: header.scrollWidth <= header.clientWidth,
+      noDialogOverflow: document.querySelector(".essay-eval-shell").scrollWidth <= document.querySelector(".essay-eval-shell").clientWidth,
+      progressInHeader: progress.closest(".eval-head-summary") !== null,
       scoreRadius: parseFloat(scoreStyle.borderRadius),
       statusRadius: parseFloat(statusStyle.borderRadius),
       essayTitleSize: parseFloat(getComputedStyle(document.querySelector(".eval-head-summary strong")).fontSize),
@@ -261,6 +269,7 @@ test("evaluation header is a single ordered command bar with score and status pi
       statusWidth: status.width,
       instructionSize: parseFloat(getComputedStyle(document.querySelector(".essay-eval-sub")).fontSize),
       instructionColor: getComputedStyle(document.querySelector(".essay-eval-sub")).color,
+      actionHeights: actionBoxes.map(box => box.height),
       closeBackground: closeStyle.backgroundImage,
       finalizeBackground: finalizeStyle.backgroundImage,
       finalizeColor: finalizeStyle.color,
@@ -272,22 +281,27 @@ test("evaluation header is a single ordered command bar with score and status pi
       finalizeCloseGap: close.left - finalize.right,
     };
   });
-  expect(header.ordered).toBe(true);
-  expect(header.oneLine).toBe(true);
+  expect(header.actionsOrdered).toBe(true);
+  expect(header.actionsOneLine).toBe(true);
+  expect(header.twoRows).toBe(true);
+  expect(header.noHeaderOverflow).toBe(true);
+  expect(header.noDialogOverflow).toBe(true);
+  expect(header.progressInHeader).toBe(true);
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
   expect(header.essayTitleSize).toBeGreaterThanOrEqual(15.8);
   expect(header.scoreSize).toBeGreaterThanOrEqual(13.7);
   expect(header.statusDivider).toBe("1px");
-  expect(header.statusWidth).toBe(176);
+  expect(header.statusWidth).toBe(150);
   expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
   expect(header.instructionColor).toBe("rgb(212, 230, 248)");
+  expect(header.actionHeights.every(height => height === 30)).toBe(true);
   expect(header.closeBackground).toContain("182, 59, 71");
   expect(header.finalizeBackground).toContain("67, 200, 121");
   expect(header.finalizeColor).toBe("rgb(255, 255, 255)");
   expect(header.closeIsLast).toBe(true);
   expect(header.recommendationBetweenStatusAndFinalize).toBe(true);
-  expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(9);
+  expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(6);
 
   const finalizeHelp = page.locator(".eval-finalize-help");
   await page.mouse.move(2, 400);
