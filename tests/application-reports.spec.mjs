@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { readFile } from "node:fs/promises";
 
 const applications = [
   {
@@ -199,4 +200,38 @@ test("print mode releases fixed page heights so long reports can paginate", asyn
   expect(layout.bodyOverflow).toBe("visible");
   expect(layout.bodyHeight).not.toBe("100%");
   expect(layout.dialogOverflow).toBe("visible");
+});
+
+test("saves both reports as landscape PDFs without opening the print dialog", async ({ page }) => {
+  await mountReports(page);
+  await page.evaluate(() => {
+    const base = document.createElement("base");
+    base.href = "https://cooperdebateteam.test/";
+    document.head.prepend(base);
+  });
+  await page.addScriptTag({ path: "js/vendor/pdfkit.standalone.js" });
+  await page.evaluate(() => {
+    window.print = () => { throw new Error("The print dialog should not open."); };
+  });
+  for (const report of [
+    { trigger: "#decision-status-report", filename: /^decision-status-\d{4}-\d{2}-\d{2}\.pdf$/ },
+    { trigger: "#essay-scores-report", filename: /^essay-scores-\d{4}-\d{2}-\d{2}\.pdf$/ },
+  ]) {
+    await page.locator(report.trigger).click();
+    const saveButton = page.getByRole("button", { name: "Save as PDF" });
+    await expect(saveButton).toBeEnabled();
+    const [download] = await Promise.all([
+      page.waitForEvent("download"),
+      saveButton.click(),
+    ]);
+    expect(download.suggestedFilename()).toMatch(report.filename);
+
+    const path = await download.path();
+    const pdf = await readFile(path);
+    expect(pdf.subarray(0, 5).toString()).toBe("%PDF-");
+    expect(pdf.length).toBeGreaterThan(2000);
+    expect(pdf.toString("latin1")).toContain("/MediaBox [0 0 792 612]");
+    expect(pdf.toString("latin1")).toContain("/Count 1");
+    await page.locator(".report-close").click();
+  }
 });

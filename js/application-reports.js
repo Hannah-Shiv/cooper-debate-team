@@ -27,6 +27,192 @@
   let launchVersion = 0;
 
   function buttonSort(label, key) { return `<th><button type="button" data-sort="${key}" aria-sort="none">${esc(label)}</button></th>`; }
+  function pdfValue(value) {
+    const text = String(value ?? "—").replace(/\s+/g, " ").trim();
+    return text.length > 420 ? `${text.slice(0, 417)}…` : (text || "—");
+  }
+  function pdfFileDate() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+  }
+  function pdfStatus(kind, item, evaluation) {
+    const value = kind === "essay" ? evaluationStatus(evaluation) : decision(item);
+    const label = kind === "essay" ? evaluationLabel(value) : decisionLabel(value);
+    const colors = {
+      "not-started": ["#e7eef7", "#355b82"],
+      pending: ["#dceeff", "#185d91"],
+      "in-progress": ["#fff0c2", "#835d05"],
+      "on-hold": ["#f0e4ff", "#694292"],
+      evaluated: ["#d9f5e7", "#176b45"],
+      accepted: ["#d9f5e7", "#176b45"],
+      declined: ["#ffe0e3", "#8b2534"],
+    }[value] || ["#e7eef7", "#355b82"];
+    return { label, fill: colors[0], text: colors[1] };
+  }
+  function reportPdfColumns(kind) {
+    if (kind === "essay") {
+      return [
+        { label: "Applicant", width: 92 },
+        { label: "Grade", width: 43 },
+        { label: "Status", width: 58, status: true },
+        { label: "Total /35", width: 43, align: "center" },
+        ...LABELS.map(label => ({ label, width: 34, align: "center" })),
+        { label: "Interpretation", width: 76 },
+        { label: "Recommendation", width: 194 },
+      ];
+    }
+    return [
+      { label: "Applicant", width: 128 },
+      { label: "Grade", width: 52 },
+      { label: "Decision", width: 82, status: true },
+      { label: "Rating", width: 62, align: "center" },
+      { label: "Submitted", width: 83 },
+      { label: "Decision date", width: 83 },
+      { label: "Coach note", width: 254 },
+    ];
+  }
+  function reportPdfRow(kind, item, evaluations) {
+    const evaluation = evaluations[item.id] || null;
+    const applicant = `${name(item)}\n${item.student?.studentId || "No student ID"}`;
+    if (kind === "essay") {
+      const total = score(evaluation);
+      return [
+        applicant,
+        item.student?.grade || "—",
+        pdfStatus(kind, item, evaluation),
+        total ? `${total}/35` : "—",
+        ...KEYS.map(key => evaluation?.rubric?.[key] || "—"),
+        interpretation(evaluation),
+        recLabel(evaluation?.recommendation),
+      ];
+    }
+    return [
+      applicant,
+      item.student?.grade || "—",
+      pdfStatus(kind, item, evaluation),
+      item.reviewRating ? `${item.reviewRating}/10` : "—",
+      date(item.createdAt),
+      date(item.decisionAt || item.reviewedAt),
+      item.reviewNote || "—",
+    ];
+  }
+  function savePdf(kind) {
+    if (!dialog || !window.PDFDocument) {
+      window.alert("PDF creation is unavailable. Refresh the page and try again.");
+      return;
+    }
+    const button = dialog.querySelector(".report-save-pdf");
+    const rows = dialog.__reportRows || [];
+    const evaluations = dialog.__evaluations || {};
+    if (!rows.length) return;
+    button.disabled = true;
+    button.textContent = "Saving PDF…";
+    try {
+      const isEssay = kind === "essay";
+      const title = isEssay ? "Essay Scores" : "Decision Status";
+      const doc = new window.PDFDocument({
+        size: "LETTER",
+        layout: "landscape",
+        margin: 24,
+        bufferPages: true,
+        info: { Title: `${title} — Cooper Debate Team`, Author: "Cooper Debate Team" },
+      });
+      const chunks = [];
+      const columns = reportPdfColumns(kind);
+      const tableWidth = columns.reduce((sum, column) => sum + column.width, 0);
+      const left = (doc.page.width - tableWidth) / 2;
+      const bottom = doc.page.height - 34;
+      let y = 0;
+      const drawPageHeading = () => {
+        doc.rect(0, 0, doc.page.width, 62).fill(isEssay ? "#34151b" : "#08284e");
+        doc.rect(0, 58, doc.page.width, 4).fill("#e7b83f");
+        doc.fillColor("#f6d35f").font("Helvetica-Bold").fontSize(8).text("COOPER DEBATE TEAM", 24, 14, { characterSpacing: 1.2 });
+        doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(20).text(title, 24, 27);
+        doc.fillColor("#dce9f8").font("Helvetica").fontSize(8).text(`Generated ${new Date().toLocaleString("en-US")}`, doc.page.width - 245, 19, { align: "right", width: 220 });
+        doc.fillColor("#ffffff").font("Helvetica-Bold").fontSize(9).text(`${rows.length} applicant${rows.length === 1 ? "" : "s"}`, doc.page.width - 245, 36, { align: "right", width: 220 });
+        const statusFilter = dialog.querySelector("#report-status")?.dataset.value || "all";
+        const gradeFilter = dialog.querySelector("#report-grade")?.dataset.value || "all";
+        const search = dialog.querySelector("#report-search")?.value.trim();
+        const filters = [`Status: ${statusFilter === "all" ? "All" : (isEssay ? evaluationLabel(statusFilter) : decisionLabel(statusFilter))}`, `Grade: ${gradeFilter === "all" ? "All" : gradeFilter}`];
+        if (search) filters.push(`Search: ${search}`);
+        doc.fillColor("#385a7c").font("Helvetica").fontSize(7.5).text(filters.join("   •   "), left, 69, { width: tableWidth });
+        y = 86;
+      };
+      const drawTableHeading = () => {
+        let x = left;
+        columns.forEach(column => {
+          doc.rect(x, y, column.width, 30).fillAndStroke("#123e70", "#d4a937");
+          doc.fillColor("#ffe27b").font("Helvetica-Bold").fontSize(isEssay ? 6.2 : 7)
+            .text(column.label.toUpperCase(), x + 4, y + 7, { align: column.align || "left", width: column.width - 8, height: 18 });
+          x += column.width;
+        });
+        y += 30;
+      };
+      const addPage = () => {
+        doc.addPage({ size: "LETTER", layout: "landscape", margin: 24 });
+        drawPageHeading();
+        drawTableHeading();
+      };
+      drawPageHeading();
+      drawTableHeading();
+      rows.forEach((item, rowIndex) => {
+        const values = reportPdfRow(kind, item, evaluations);
+        doc.font("Helvetica").fontSize(isEssay ? 6.6 : 7.4);
+        const rowHeight = Math.max(29, ...values.map((value, index) => {
+          const text = typeof value === "object" ? value.label : pdfValue(value);
+          return doc.heightOfString(text, { width: columns[index].width - 8, lineGap: 1 }) + 10;
+        }));
+        if (y + rowHeight > bottom) addPage();
+        let x = left;
+        values.forEach((value, index) => {
+          const column = columns[index];
+          const isStatus = typeof value === "object";
+          const fill = isStatus ? value.fill : (rowIndex % 2 ? "#edf4fb" : "#ffffff");
+          const textColor = isStatus ? value.text : (index === 0 ? "#08284e" : "#263f59");
+          doc.rect(x, y, column.width, rowHeight).fillAndStroke(fill, "#9db4cb");
+          doc.fillColor(textColor).font(index === 0 || isStatus ? "Helvetica-Bold" : "Helvetica").fontSize(isEssay ? 6.6 : 7.4)
+            .text(isStatus ? value.label : pdfValue(value), x + 4, y + 5, {
+              align: column.align || "left",
+              width: column.width - 8,
+              height: rowHeight - 8,
+              lineGap: 1,
+            });
+          x += column.width;
+        });
+        y += rowHeight;
+      });
+      const range = doc.bufferedPageRange();
+      for (let pageIndex = range.start; pageIndex < range.start + range.count; pageIndex += 1) {
+        doc.switchToPage(pageIndex);
+        doc.fillColor("#5e748c").font("Helvetica").fontSize(7)
+          .text(`Cooper Debate Team • Confidential application record`, 24, doc.page.height - 36, { lineBreak: false, width: 400 });
+        doc.fillColor("#385a7c").font("Helvetica-Bold")
+          .text(`Page ${pageIndex - range.start + 1} of ${range.count}`, doc.page.width - 124, doc.page.height - 36, { align: "right", lineBreak: false, width: 100 });
+      }
+      doc.on("data", chunk => chunks.push(chunk));
+      doc.on("end", () => {
+        const blob = new Blob(chunks, { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${isEssay ? "essay-scores" : "decision-status"}-${pdfFileDate()}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        if (dialog) {
+          button.disabled = false;
+          button.textContent = "Save as PDF";
+        }
+      });
+      doc.end();
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = "Save as PDF";
+      console.error("Unable to save application report PDF", error);
+      window.alert("The PDF could not be created. Please refresh the page and try again.");
+    }
+  }
   function apiList() {
     const user = context.currentUser || window.firebase?.auth?.().currentUser;
     if (!user) return Promise.reject(new Error("Your secure session has expired. Sign in again."));
@@ -44,13 +230,13 @@
       ? '<button type="button" class="active" data-report-filter="status" data-value="all">All</button><button type="button" data-report-filter="status" data-value="not-started">Not Started</button><button type="button" data-report-filter="status" data-value="in-progress">In Progress</button><button type="button" data-report-filter="status" data-value="evaluated">Evaluated</button>'
       : '<button type="button" class="active" data-report-filter="status" data-value="all">All</button><button type="button" data-report-filter="status" data-value="pending">Pending</button><button type="button" data-report-filter="status" data-value="on-hold">On Hold</button><button type="button" data-report-filter="status" data-value="accepted">Accepted</button><button type="button" data-report-filter="status" data-value="declined">Declined</button>'}</div></div>`;
     const gradeControl = '<div class="report-field report-choice-field"><span class="report-field-label">Filter grade</span><div id="report-grade" class="report-filter-buttons report-grade-buttons" role="group" aria-label="Filter grade" data-value="all"><button type="button" class="active" data-report-filter="grade" data-value="all">All</button></div></div>';
-    dialog.innerHTML = `<div class="report-shell"><header class="report-head"><div><p class="report-kicker">Application records</p><h2 id="report-title">${isEssay ? "Essay Scores" : "Decision Status"}</h2></div><div class="report-head-actions"><span class="report-count" aria-live="polite">Loading…</span><button type="button" class="report-button primary report-print">Print report</button><button type="button" class="report-button report-close" aria-label="Close report">✕</button></div></header><div class="report-toolbar"><div class="report-field"><label for="report-search">Search applicants</label><input id="report-search" type="search" placeholder="Name, student ID, or grade"></div>${statusControl}${gradeControl}<div class="report-field report-hidden-field"><span class="report-field-label">Hidden records</span><label class="report-hidden-toggle" for="report-show-hidden"><span>Show hidden</span><input id="report-show-hidden" type="checkbox"></label></div></div><div class="report-table-wrap"><div class="report-empty report-loading">Loading report…</div></div></div>`;
+    dialog.innerHTML = `<div class="report-shell"><header class="report-head"><div><p class="report-kicker">Application records</p><h2 id="report-title">${isEssay ? "Essay Scores" : "Decision Status"}</h2></div><div class="report-head-actions"><span class="report-count" aria-live="polite">Loading…</span><button type="button" class="report-button primary report-save-pdf" disabled>Save as PDF</button><button type="button" class="report-button report-close" aria-label="Close report">✕</button></div></header><div class="report-toolbar"><div class="report-field"><label for="report-search">Search applicants</label><input id="report-search" type="search" placeholder="Name, student ID, or grade"></div>${statusControl}${gradeControl}<div class="report-field report-hidden-field"><span class="report-field-label">Hidden records</span><label class="report-hidden-toggle" for="report-show-hidden"><span>Show hidden</span><input id="report-show-hidden" type="checkbox"></label></div></div><div class="report-table-wrap"><div class="report-empty report-loading">Loading report…</div></div></div>`;
     document.body.appendChild(dialog);
     dialog.showModal();
     dialog.querySelector(".report-close").onclick = () => dialog.close();
     dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
     dialog.addEventListener("close", () => { dialog.remove(); dialog = null; }, { once: true });
-    dialog.querySelector(".report-print").onclick = () => window.print();
+    dialog.querySelector(".report-save-pdf").onclick = () => savePdf(kind);
     ["report-search", "report-show-hidden"].forEach(id => {
       dialog.querySelector(`#${id}`).addEventListener(id === "report-search" ? "input" : "change", () => render(kind, dialog.__evaluations || {}));
     });
@@ -92,11 +278,13 @@
       return (typeof left === "string" ? left.localeCompare(right) : left - right) * direction;
     });
     const grades = [...new Set(available.map(item => item.student?.grade).filter(Boolean))].sort();
+    dialog.__reportRows = rows;
     const gradeControl = dialog.querySelector("#report-grade");
     grades.forEach(grade => {
       if (!gradeControl.querySelector(`[data-value="${CSS.escape(grade)}"]`)) gradeControl.insertAdjacentHTML("beforeend", `<button type="button" data-report-filter="grade" data-value="${esc(grade)}">${esc(grade)}</button>`);
     });
     dialog.querySelector(".report-count").textContent = `${rows.length} of ${available.length} applicants`;
+    dialog.querySelector(".report-save-pdf").disabled = rows.length === 0;
     const headers = isEssay ? `${buttonSort("Applicant", "name")}${buttonSort("Grade", "grade")}${buttonSort("Status", "status")}${buttonSort("Total /35", "score")}${KEYS.map((key, index) => buttonSort(LABELS[index], key)).join("")}<th>Interpretation</th><th>Recommendation</th>` : `${buttonSort("Applicant", "name")}${buttonSort("Grade", "grade")}${buttonSort("Decision", "status")}${buttonSort("Application rating", "rating")}${buttonSort("Submitted", "submitted")}${buttonSort("Decision date", "decision-date")}<th>Coach note</th>`;
     const body = rows.map(item => {
       const evaluation = evaluations[item.id] || null;

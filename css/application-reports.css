@@ -101,6 +101,7 @@
 @media(max-width:1050px){.application-report-dialog[data-kind=decision] .report-toolbar{grid-template-columns:1fr 1fr}.application-report-dialog[data-kind=decision] .report-field:first-child{grid-column:1/-1}.application-report-dialog[data-kind=decision] .report-field{padding:0 10px}.application-report-dialog[data-kind=decision] .report-filter-buttons{flex-wrap:wrap}}
 @media(max-width:760px){.application-report-dialog[data-kind=decision] .report-count{font-size:.72rem;left:auto;position:static;transform:none}.application-report-dialog[data-kind=decision] .report-head{padding:10px 14px}}
 @media(max-width:600px){.application-report-dialog[data-kind=decision] .report-toolbar{gap:3px;grid-template-columns:1fr;padding:10px 12px}.application-report-dialog[data-kind=decision] .report-field{grid-column:auto!important;padding:7px 0}.application-report-dialog[data-kind=decision] .report-hidden-toggle{justify-content:space-between;margin-top:5px}.application-report-dialog[data-kind=decision] .report-filter-buttons button{flex:1}}
+.report-button:disabled{cursor:wait;filter:saturate(.45);opacity:.62}
 .application-report-dialog .report-table-wrap{overflow-x:hidden;overflow-y:auto}
 .application-report-dialog .report-table{min-width:0;table-layout:fixed;width:100%}
 .application-report-dialog .report-table th,.application-report-dialog .report-table td{hyphens:auto;overflow-wrap:anywhere;white-space:normal;word-break:normal}
