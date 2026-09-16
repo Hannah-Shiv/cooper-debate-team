@@ -83,8 +83,9 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
 
 test("tryout heading, data entry, and schedule grid use blue, dark-teal, and dark-blue palettes", () => {
   assert.match(html, /\.tryout-overview\{background:[^}]*linear-gradient\(120deg,#174990/);
-  assert.match(html, /\.tryout-data-entry\{background:[^}]*linear-gradient\(145deg,#123f46,#082a31\)/);
+  assert.match(html, /\.tryout-data-entry\{background:#0a343a\}/);
   assert.match(html, /\.tryout-data-entry h2\{color:#a7f3e6\}/);
+  assert.match(html, /#tryout-manager \.tryout-data-entry \.tm-field input,[^}]*\{background:#08272d\}/);
   assert.match(html, /\.tryout-schedule-card\{background:[^}]*linear-gradient\(145deg,#0d2850,#071a36\)/);
   assert.match(html, /\.tryout-schedule-card h2\{color:#bfdbfe\}/);
   assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(18,52,96,.72\)\}/);
@@ -150,11 +151,12 @@ test("tryout header uses two summary metrics and a button-style return control",
 });
 
 test("schedule rows fit without horizontal scrolling and use accessible row actions", () => {
-  assert.match(client, /<th>#<\/th><th>Pair A/);
+  assert.match(client, /<th><span>#<\/span><\/th><th><span>Pair A<\/span>/);
   assert.match(client, /class="tryout-row-number">\$\{index \+ 1\}/);
   assert.match(client, /class="tryout-student-stack"/);
   assert.match(client, /class="tryout-student-name"/);
-  assert.match(html, /\.tryout-schedule-card \.tryout-table th\{color:#ffe45c/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{background:linear-gradient\(180deg,#173d70,#0b2850\)/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table th span\{[^}]*color|\.tryout-schedule-card \.tryout-table th\{[^}]*color:#ffe45c/);
   assert.match(client, /aria-label="Edit row \$\{index \+ 1\}"/);
   assert.match(client, /aria-label="Delete row \$\{index \+ 1\}"/);
   assert.match(client, /class="tryout-action-divider"/);
@@ -179,7 +181,7 @@ test("schedule grid supports search, record-completeness filtering, sorting, and
 });
 
 test("schedule separates date and time, shows grades, and derives Draft or Finalized from completeness", () => {
-  assert.match(client, /<th>#<\/th><th>Pair A<\/th><th>Pair B<\/th><th>Date<\/th><th>Time<\/th>/);
+  assert.match(client, /<th><span>#<\/span><\/th><th><span>Pair A<\/span><\/th><th><span>Pair B<\/span><\/th><th><span>Date<\/span><\/th><th><span>Time<\/span>/);
   assert.match(client, /data-label="Date"/);
   assert.match(client, /data-label="Time"/);
   assert.match(client, /class="tryout-grade"/);
@@ -187,9 +189,9 @@ test("schedule separates date and time, shows grades, and derives Draft or Final
   assert.match(client, /pairBCount !== 2/);
   assert.doesNotMatch(html, /Pair B · Optional/);
   assert.match(client, /\$\{draft \? "Draft" : "Finalized"\}/);
-  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*background:#ffe45c/);
+  assert.match(html, /\.tryout-table \.tryout-grade\{background:#0b2d5c/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*border-radius:50%/);
-  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*color:#111/);
+  assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*color:#ffe45c/);
   assert.match(html, /\.tryout-table \.tryout-grade\{[^}]*height:24px/);
 });
 

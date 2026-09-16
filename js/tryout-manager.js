@@ -227,7 +227,7 @@
       return;
     }
     root.innerHTML = `<table class="tryout-table">
-      <thead><tr><th>#</th><th>Pair A</th><th>Pair B</th><th>Date</th><th>Time</th><th>Judge</th><th>Room</th><th>Record status</th><th>Actions</th></tr></thead>
+      <thead><tr><th><span>#</span></th><th><span>Pair A</span></th><th><span>Pair B</span></th><th><span>Date</span></th><th><span>Time</span></th><th><span>Judge</span></th><th><span>Room</span></th><th><span>Record status</span></th><th><span>Actions</span></th></tr></thead>
       <tbody>${visible.map((item, index) => {
         const draft = isDraft(item);
         return `<tr>
