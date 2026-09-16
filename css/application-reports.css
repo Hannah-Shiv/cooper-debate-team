@@ -43,11 +43,12 @@
 .application-report-dialog[data-kind=essay] #report-grade button:nth-child(n+5){background:#8d416e;border-color:#de8fbd;color:#fff}
 .application-report-dialog[data-kind=essay] #report-grade button:not(.active){filter:saturate(.72) brightness(.75)}
 .application-report-dialog[data-kind=essay] #report-grade button.active{box-shadow:0 0 0 2px #fff;filter:none;transform:translateY(-1px)}
-.application-report-dialog[data-kind=essay] .report-hidden-toggle{align-self:end;background:#12395f;border:1px solid #5591c4;border-radius:999px;color:#fff;height:35px;margin-left:0;padding:6px 13px 6px 31px}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle{align-self:end;background:#0d3158;border:1px solid #3976aa;border-radius:7px;color:#fff;display:flex;height:35px;justify-content:space-between;margin-left:0;min-width:174px;padding:6px 9px 6px 11px}
 .application-report-dialog[data-kind=essay] .report-hidden-toggle::before{left:0}
-.application-report-dialog[data-kind=essay] .report-hidden-toggle input{appearance:none;background:#07172e;border:1px solid #6fa2ce;border-radius:999px;height:17px;left:12px;margin:0;position:absolute;width:17px}
-.application-report-dialog[data-kind=essay] .report-hidden-toggle input:checked{background:#29c98b;border-color:#a0f6d3;box-shadow:0 0 8px rgba(41,201,139,.65)}
-.application-report-dialog[data-kind=essay] .report-hidden-toggle input:checked::after{color:#fff;content:"✓";font-size:.68rem;font-weight:900;left:3px;position:absolute;top:0}
-.application-report-dialog[data-kind=essay] .report-hidden-toggle span{color:#d9edff;font-size:.56rem;letter-spacing:.08em}
-@media(max-width:1050px){.application-report-dialog[data-kind=essay] .report-field{padding:0 10px}.application-report-dialog[data-kind=essay] .report-field:nth-child(3)::before{display:none}.application-report-dialog[data-kind=essay] .report-hidden-toggle{padding-left:31px}}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle input{appearance:none;background:#314d69;border:1px solid #6c8aa6;border-radius:999px;cursor:pointer;flex:0 0 34px;height:18px;margin:0;order:2;position:relative;transition:background .18s,border-color .18s;width:34px}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle input::after{background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,.45);content:"";height:12px;left:2px;position:absolute;top:2px;transition:transform .18s;width:12px}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle input:checked{background:#16885f;border-color:#65dfad;box-shadow:none}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle input:checked::after{transform:translateX(16px)}
+.application-report-dialog[data-kind=essay] .report-hidden-toggle span{color:#e5f3ff;font-size:.57rem;letter-spacing:.09em;order:1}
+@media(max-width:1050px){.application-report-dialog[data-kind=essay] .report-field{padding:0 10px}.application-report-dialog[data-kind=essay] .report-field:nth-child(3)::before{display:none}}
 @media(max-width:600px){.application-report-dialog[data-kind=essay] .report-field{padding:7px 0}.application-report-dialog[data-kind=essay] .report-field::before,.application-report-dialog[data-kind=essay] .report-hidden-toggle::before{display:none}.application-report-dialog[data-kind=essay] .report-toolbar{gap:3px;padding:10px 12px}.application-report-dialog[data-kind=essay] .report-hidden-toggle{justify-content:center;margin-top:5px}}
