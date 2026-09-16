@@ -109,11 +109,15 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
     "Presents a strong, precise claim and develops a clear case with at least two well-developed reasons or contentions."
   )).toBeVisible();
   await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 scored · 4/35 · Not complete");
+  await expect(page.locator('[data-key="claimCase"] .eval-cat-grade')).toHaveText("Good");
+  await expect(page.locator('[data-key="claimCase"]')).toHaveClass(/scored/);
   await expect(page.locator(".eval-source-notice")).toContainText("No valid Google Drive or Google Docs link");
 
   await page.locator('[data-key="evidenceResearch"] .eval-cat-head').click();
   await page.locator('[data-key="evidenceResearch"] .eval-score[data-score="5"]').click();
   await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 scored · 9/35 · Not complete");
+  await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-grade')).toHaveText("Outstanding");
+  await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-score')).toHaveText("5/5");
   await expect.poll(async () => page.evaluate(() =>
     window.__requests.filter((request) => request.action === "save").length
   )).toBe(1);

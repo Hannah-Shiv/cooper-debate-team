@@ -205,7 +205,9 @@
     root.querySelector(".eval-meter i").style.width = `${(completed / 7) * 100}%`;
     root.querySelectorAll("[data-key]").forEach((category) => {
       const score = state.rubric[category.dataset.key];
+      category.querySelector(".eval-cat-grade").textContent = score ? SCORE_LABELS[score] : "";
       category.querySelector(".eval-cat-score").textContent = score ? `${score}/5` : "Not scored";
+      category.classList.toggle("scored", Boolean(score));
       category.querySelectorAll(".eval-score").forEach((button) => {
         const selected = Number(button.dataset.score) === score;
         button.classList.toggle("selected", selected);
@@ -227,7 +229,7 @@
   function rubricMarkup() {
     return `<div class="eval-meter"><i></i></div>${RUBRIC.map((category, index) => {
       const bodyId = `eval-category-${category.key}`;
-      return `<section class="eval-category ${index === 0 ? "open" : ""}" data-key="${category.key}"><button class="eval-cat-head" type="button" aria-expanded="${index === 0}" aria-controls="${bodyId}"><span class="eval-cat-num">0${index + 1}</span><span class="eval-cat-name">${category.title}</span><span class="eval-cat-score">Not scored</span><span class="eval-chevron" aria-hidden="true">⌄</span></button><div class="eval-cat-body" id="${bodyId}" role="radiogroup" aria-label="${esc(category.title)} score">${[5, 4, 3, 2, 1].map((score) => `<button type="button" class="eval-score" role="radio" aria-checked="false" data-score="${score}"><b>${score}</b><small>${SCORE_LABELS[score]}</small><em>${esc(category.descriptions[score])}</em></button>`).join("")}</div></section>`;
+      return `<section class="eval-category ${index === 0 ? "open" : ""}" data-key="${category.key}"><button class="eval-cat-head" type="button" aria-expanded="${index === 0}" aria-controls="${bodyId}"><span class="eval-cat-num">0${index + 1}</span><span class="eval-cat-name">${category.title}</span><span class="eval-cat-grade"></span><span class="eval-cat-score">Not scored</span><span class="eval-chevron" aria-hidden="true">⌄</span></button><div class="eval-cat-body" id="${bodyId}" role="radiogroup" aria-label="${esc(category.title)} score">${[5, 4, 3, 2, 1].map((score) => `<button type="button" class="eval-score" role="radio" aria-checked="false" data-score="${score}"><b>${score}</b><small>${SCORE_LABELS[score]}</small><em>${esc(category.descriptions[score])}</em></button>`).join("")}</div></section>`;
     }).join("")}<div class="eval-fields"><div class="eval-field"><label for="eval-strengths">Strengths <span>Required</span></label><textarea id="eval-strengths" placeholder="What should the student keep doing?"></textarea></div><div class="eval-field"><label for="eval-growth">Areas for growth <span>Required</span></label><textarea id="eval-growth" placeholder="What is the clearest next coaching step?"></textarea></div><div class="eval-field"><label for="eval-concerns">Concerns <span>Optional</span></label><textarea id="eval-concerns" placeholder="Flag anything that needs follow-up."></textarea></div><div class="eval-field"><label id="eval-recommendation-label">Recommendation <span>Required</span></label><div class="eval-recommendation" role="radiogroup" aria-labelledby="eval-recommendation-label">${[["strongly-recommend", "Strongly recommend"], ["recommend", "Recommend"], ["consider", "Consider"], ["do-not-recommend", "Do not recommend"]].map(([value, label]) => `<button type="button" role="radio" aria-checked="false" data-rec="${value}">${label}</button>`).join("")}</div></div></div>`;
   }
 
