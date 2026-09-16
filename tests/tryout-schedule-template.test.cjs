@@ -80,6 +80,15 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
 });
 
+test("tryout heading, data entry, and schedule grid use distinct section palettes", () => {
+  assert.match(html, /\.tryout-overview\{background:[^}]*linear-gradient\(120deg,#174990/);
+  assert.match(html, /\.tryout-data-entry\{background:[^}]*rgba\(43,23,61/);
+  assert.match(html, /\.tryout-data-entry h2\{color:#f0abfc\}/);
+  assert.match(html, /\.tryout-schedule-card\{background:[^}]*rgba\(8,48,55/);
+  assert.match(html, /\.tryout-schedule-card h2\{color:#5eead4\}/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(9,66,72,.64\)\}/);
+});
+
 test("tournament date range stays internal and the pane uses the shorter Room label", () => {
   assert.match(html, /id="tryout-range-start" type="hidden"/);
   assert.match(html, /id="tryout-range-end" type="hidden"/);
