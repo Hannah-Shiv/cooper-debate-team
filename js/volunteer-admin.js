@@ -41,6 +41,15 @@
       year: "numeric",
     });
   };
+  const shortDateLabel = value => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
   const timeLabel = value => {
     if (!/^\d{2}:\d{2}$/.test(value || "")) return "";
     const [hour, minute] = value.split(":").map(Number);
@@ -100,6 +109,7 @@
     $("vol-save").textContent = "Create tournament";
     $("vol-cancel-edit").style.display = "none";
     $("tm-detail-heading").textContent = "Add tournament";
+    $("tm-modal-title").textContent = "Add tournament";
     $("tm-detail-actions").innerHTML = "";
     $("tm-selected-signups").querySelector(".signups-body").innerHTML = `<p class="tm-no-signups">Save the tournament before signups can be added.</p>`;
     window.setTryoutManagerVisible?.(false);
@@ -142,6 +152,7 @@
     $("vol-cancel-edit").style.display = "block";
     selectedEventId = event.id;
     $("tm-detail-heading").textContent = event.title || "Tournament details";
+    $("tm-modal-title").textContent = event.title || "Tournament details";
     window.setTryoutManagerVisible?.(event.eventType === "tryout");
     message("");
     updateManagerSummary();
@@ -238,6 +249,7 @@
       $("vol-save").disabled = true;
       await manage({ action: "saveEvent", eventId: editingId || "", event: data });
       resetForm();
+      closeEventModal();
     } catch (error) {
       message(error.message || "Unable to save this volunteer event.", "error");
     } finally {
@@ -412,9 +424,11 @@
     renderSelectedSignups(item.id);
     const status = tournamentStatus(item);
     $("tm-detail-actions").innerHTML = `
+      <button class="tm-action close" type="button" data-selected-details>View Full Details</button>
       <button class="tm-action close" type="button" data-selected-toggle>${item.published ? "Make inactive" : "Make active"}</button>
       <button class="tm-action" type="button" data-selected-export>Export volunteer CSV</button>
       <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>`;
+    $("tm-detail-actions").querySelector("[data-selected-details]").addEventListener("click", () => openEventModal("view"));
     $("tm-detail-actions").querySelector("[data-selected-toggle]").addEventListener("click", () => setPublished(item.id, !item.published));
     $("tm-detail-actions").querySelector("[data-selected-export]").addEventListener("click", () => exportEvent(item.id));
     $("tm-detail-actions").querySelector("[data-selected-delete]").addEventListener("click", () => deleteEvent(item.id));
@@ -422,6 +436,64 @@
     $("tm-status").textContent = status.label;
     $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
     if (shouldScroll) $("tm-detail-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+  function modalRow(label, value) {
+    return `<div class="tm-view-row"><dt>${esc(label)}</dt><dd>${esc(value || "Not provided")}</dd></div>`;
+  }
+  function renderModalDetails(item) {
+    const status = tournamentStatus(item);
+    const roles = visibleRoles(item.roles || []);
+    $("tm-modal-view").innerHTML = `
+      <section class="tm-view-hero">
+        <div class="tm-view-hero-top"><div><h3>${esc(item.title)}</h3><p>${esc(item.eventType === "tryout" ? "Internal Cooper tryout" : item.eventType === "internal" ? "Internal Cooper tournament" : "External tournament")}</p></div><span class="tm-grid-status ${status.key}">${esc(status.label)}</span></div>
+      </section>
+      <div class="tm-view-grid">
+        <section class="tm-view-card"><h4>Basic information</h4><dl class="tm-view-list">
+          ${modalRow("Tournament date", dateLabel(item.date))}
+          ${modalRow("Time", item.startTime && item.endTime ? `${timeLabel(item.startTime)}–${timeLabel(item.endTime)}` : "")}
+          ${modalRow("Location", item.location)}
+          ${modalRow("Address", item.address)}
+          ${modalRow("Season", item.season)}
+          ${modalRow("Hosted by", item.host)}
+          ${modalRow("Debate format", item.debateFormat)}
+          ${modalRow("Signup deadline", item.signupDeadline ? dateLabel(item.signupDeadline) : "")}
+        </dl></section>
+        <section class="tm-view-card"><h4>Signup settings</h4><dl class="tm-view-list">
+          ${modalRow("Tournament status", status.label)}
+          <div class="tm-view-row"><dt>Volunteer signup</dt><dd class="tm-view-setting"><span class="tm-view-dot ${item.volunteerSignupsEnabled === false ? "" : "on"}"></span>${item.volunteerSignupsEnabled === false ? "Disabled" : "Enabled"}</dd></div>
+          <div class="tm-view-row"><dt>Partner signup</dt><dd class="tm-view-setting"><span class="tm-view-dot ${item.partnerSignupsEnabled === true ? "on" : ""}"></span>${item.partnerSignupsEnabled === true ? "Enabled" : "Disabled"}</dd></div>
+          ${modalRow("Partner session", item.partnerSession)}
+          ${modalRow("Judge capacity", roles.reduce((total, role) => total + Number(role.capacity || 0), 0))}
+          ${modalRow("Confirmed judges", roles.reduce((total, role) => total + Number(role.signedUp || 0), 0))}
+        </dl></section>
+        <section class="tm-view-card full"><h4>Debate information</h4><dl class="tm-view-list">
+          ${modalRow("Resolution / topic", item.resolution)}
+          ${modalRow("Judge instructions", item.judgeInstructions)}
+          ${modalRow("What to expect", item.expectations)}
+          ${modalRow("Meal information", item.mealInfo)}
+          ${modalRow("Family notes", item.details)}
+          ${modalRow("Invitation", item.invitationUrl)}
+        </dl></section>
+        <section class="tm-view-card full"><h4>Coach contact</h4><dl class="tm-view-list">
+          ${modalRow("Contact", item.coachName)}
+          ${modalRow("Email", item.coachEmail)}
+          ${modalRow("Phone", item.coachPhone)}
+        </dl></section>
+      </div>`;
+  }
+  function openEventModal(mode = "view") {
+    const selected = events.find(item => item.id === selectedEventId);
+    $("tm-event-modal").classList.toggle("is-editing", mode === "edit");
+    if (selected) renderModalDetails(selected);
+    const tryoutManager = $("tryout-manager");
+    if (tryoutManager && selected?.eventType === "tryout") $("tm-event-modal").querySelector(".tm-modal").appendChild(tryoutManager);
+    $("tm-event-modal").hidden = false;
+    document.body.classList.add("tm-modal-open");
+    if (mode === "edit") window.setTimeout(() => $("event-title").focus({ preventScroll: true }), 80);
+  }
+  function closeEventModal() {
+    $("tm-event-modal").hidden = true;
+    document.body.classList.remove("tm-modal-open");
   }
   async function renderEvents(items) {
     const root = $("vol-event-list");
@@ -437,6 +509,7 @@
         status.key === filter;
       return matchesSearch && matchesFilter;
     });
+    $("tm-grid-count").textContent = `${filtered.length} of ${items.length}`;
     if (!items.length) {
       root.innerHTML = `<div class="tm-empty">No tournaments have been created yet. Add the tournament details below, set judge capacity, then publish when volunteers are ready to sign up.</div>`;
       return;
@@ -445,10 +518,10 @@
       root.innerHTML = `<div class="tm-empty">No tournaments match the current search and filter.</div>`;
       return;
     }
-    root.innerHTML = `<table class="tm-data-table"><thead><tr><th>Tournament</th><th>Date</th><th>Type</th><th>Status</th><th>Volunteer signup</th><th>Partner signup</th></tr></thead><tbody>${filtered.map(item => {
+    root.innerHTML = `<table class="tm-data-table"><thead><tr><th>Tournament</th><th>Date</th><th>Type</th><th>Status</th><th>Volunteers</th><th>Partners</th><th aria-label="Open"></th></tr></thead><tbody>${filtered.map(item => {
       const status = tournamentStatus(item);
       const type = item.eventType || "external";
-      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div><div class="tm-grid-sub">${esc(item.location || item.host || "Location not set")}</div></td><td>${esc(dateLabel(item.date))}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal tryout" : type)}</span></td><td><span class="tm-grid-status ${status.key}">${esc(status.label)}</span></td><td>${item.volunteerSignupsEnabled === false ? "Off" : "On"}</td><td>${item.partnerSignupsEnabled === true ? "On" : "Off"}</td></tr>`;
+      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div><div class="tm-grid-sub">${esc(item.location || item.host || "Location not set")}</div></td><td>${esc(shortDateLabel(item.date))}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal tryout" : type)}</span></td><td><span class="tm-grid-status ${status.key}">${esc(status.label)}</span></td><td><span class="tm-table-toggle ${item.volunteerSignupsEnabled === false ? "" : "on"}" aria-label="${item.volunteerSignupsEnabled === false ? "Disabled" : "Enabled"}"><span></span></span></td><td><span class="tm-table-toggle ${item.partnerSignupsEnabled === true ? "on" : ""}" aria-label="${item.partnerSignupsEnabled === true ? "Enabled" : "Disabled"}"><span></span></span></td><td class="tm-row-arrow" aria-hidden="true">›</td></tr>`;
     }).join("")}</tbody></table>`;
     root.querySelectorAll("[data-event]").forEach(row => {
       const activate = () => selectTournament(events.find(item => item.id === row.dataset.event), true);
@@ -523,7 +596,8 @@
       document.querySelectorAll("[data-volunteer-only]").forEach(item => item.setAttribute("hidden", ""));
       document.querySelector('[data-manager-mode="tryout"]')?.click();
     } else {
-      resetForm();
+       resetForm();
+       closeEventModal();
       startEvents();
     }
   });
@@ -581,9 +655,16 @@
     }));
     document.querySelectorAll("[data-add-tournament]").forEach(link => link.addEventListener("click", event => {
       event.preventDefault();
-      resetForm();
-      $("event-information").scrollIntoView({ behavior: "smooth", block: "start" });
-      $("event-title").focus({ preventScroll: true });
+       resetForm();
+       openEventModal("edit");
     }));
+    $("tm-modal-edit").addEventListener("click", () => openEventModal("edit"));
+    $("tm-modal-close").addEventListener("click", closeEventModal);
+    $("tm-event-modal").addEventListener("click", event => {
+      if (event.target === $("tm-event-modal")) closeEventModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !$("tm-event-modal").hidden) closeEventModal();
+    });
   });
 })();
