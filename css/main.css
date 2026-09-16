@@ -2612,7 +2612,7 @@ button, input, select, textarea { max-width: 100%; }
   .portal-tabs,
   .tm-tabs { max-width: 100%; }
 
-  /* Tournament manager turns its fixed sidebar into a horizontal section bar. */
+  /* Tournament Management turns its fixed sidebar into a horizontal section bar. */
   .tm-layout { grid-template-columns: minmax(0, 1fr) !important; }
   .tm-sidebar {
     border-bottom: 1px solid var(--tm-line);

@@ -13,7 +13,7 @@ const routes = [
   'members-directory.html',
   'members-calendar.html',
   'members-applications.html',
-  'members-volunteers.html',
+  'members-tournaments.html',
 ];
 
 test('members-stats keeps its temporary auth state on the stats route', async ({ request }) => {

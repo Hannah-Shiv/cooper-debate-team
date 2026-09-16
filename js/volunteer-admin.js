@@ -124,7 +124,7 @@
     $("event-lunch-provided").checked = mealPrefix.test(providedMeal);
     $("event-meal").value = providedMeal.replace(mealPrefix, "");
     setCapacityRoles(event.roles || []);
-    $("tm-crumb-event").textContent = event.title || "Tournament Manager";
+    $("tm-crumb-event").textContent = event.title || "Tournament Management";
     $("vol-save").textContent = "Save changes";
     $("vol-cancel-edit").style.display = "block";
     message("");
@@ -426,7 +426,7 @@
       return;
     }
     if (!["coach", "captain", "website-admin"].includes(role)) {
-      showAccess("This page is not visible with current role", "The Tournament Manager is available to Coaches, Captains, and Website Admins.", "Okay");
+      showAccess("This page is not visible with current role", "Tournament Management is available to Coaches, Captains, and Website Admins.", "Okay");
       return;
     }
     currentUser = user;
@@ -437,8 +437,10 @@
       user.email
     );
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
+    const roleIcon = $("member-role-icon");
     const badge = $("member-role-badge");
     const label = badge && badge.querySelector(".mub-role-label");
+    if (roleIcon) roleIcon.src = rolePresentation.icon;
     if (badge) badge.dataset.role = role;
     if (label) {
       label.textContent = rolePresentation.label;
