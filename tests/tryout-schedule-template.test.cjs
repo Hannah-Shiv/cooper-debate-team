@@ -89,7 +89,7 @@ test("tryout heading, data entry, and schedule grid use blue, dark-teal, and dar
   assert.match(html, /\.tryout-schedule-card\{background:[^}]*linear-gradient\(145deg,#0d2850,#071a36\)/);
   assert.match(html, /\.tryout-schedule-card h2\{color:#bfdbfe\}/);
   assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(18,52,96,.72\)\}/);
-  assert.match(html, /\.tryout-overview h2,\.tryout-data-entry h2,\.tryout-schedule-card h2\{color:#d6aa2f\}/);
+  assert.match(html, /\.tryout-overview h2,\.tryout-data-entry h2,\.tryout-schedule-card h2\{color:#ffe45c\}/);
 });
 
 test("tournament date range stays internal and the pane uses the shorter Room label", () => {
@@ -170,11 +170,15 @@ test("schedule rows fit without horizontal scrolling and use accessible row acti
 
 test("visible debate grid can be saved through a color landscape PDF layout", () => {
   assert.match(html, /id="tryout-save-pdf"[^>]*>[\s\S]*Save landscape PDF/);
+  assert.match(html, /js\/vendor\/pdfkit\.standalone\.js/);
   assert.match(client, /function saveSchedulePdf\(\)/);
   assert.match(client, /const visible = visibleAssignments\(\)/);
-  assert.match(client, /@page\{size:landscape/);
-  assert.match(client, /print-color-adjust:exact/);
-  assert.match(client, /window\.setTimeout\(\(\) => printWindow\.print\(\), 250\)/);
+  assert.match(client, /new window\.PDFDocument\(\{/);
+  assert.match(client, /layout: "landscape"/);
+  assert.match(client, /window\.showSaveFilePicker/);
+  assert.match(client, /application\/pdf/);
+  assert.match(client, /doc\.page\.height - 36/);
+  assert.doesNotMatch(client.slice(client.indexOf("async function saveSchedulePdf"), client.indexOf('document.addEventListener("DOMContentLoaded"')), /printWindow|window\.print/);
   assert.match(client, /\$\("tryout-save-pdf"\)\.addEventListener\("click", saveSchedulePdf\)/);
 });
 
