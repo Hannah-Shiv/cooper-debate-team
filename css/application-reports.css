@@ -52,3 +52,8 @@
 .application-report-dialog[data-kind=essay] .report-hidden-toggle span{color:#e5f3ff;font-size:.57rem;letter-spacing:.09em;order:1}
 @media(max-width:1050px){.application-report-dialog[data-kind=essay] .report-field{padding:0 10px}.application-report-dialog[data-kind=essay] .report-field:nth-child(3)::before{display:none}}
 @media(max-width:600px){.application-report-dialog[data-kind=essay] .report-field{padding:7px 0}.application-report-dialog[data-kind=essay] .report-field::before,.application-report-dialog[data-kind=essay] .report-hidden-toggle::before{display:none}.application-report-dialog[data-kind=essay] .report-toolbar{gap:3px;padding:10px 12px}.application-report-dialog[data-kind=essay] .report-hidden-toggle{justify-content:center;margin-top:5px}}
+.application-report-dialog[data-kind=essay] .report-table th{font-size:.64rem}
+.application-report-dialog[data-kind=essay] .report-table td{font-size:.76rem}
+.application-report-dialog[data-kind=essay] .report-table .report-status{font-size:.62rem}
+.application-report-dialog[data-kind=essay] .report-table small{font-size:.69rem}
+.application-report-dialog[data-kind=essay] .report-table caption{font-size:.76rem}
