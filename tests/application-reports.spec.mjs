@@ -106,6 +106,8 @@ test("stats chart groups by the selected day or hour interval", async ({ page })
   await expect(dialog.locator(".stats-line")).toHaveCSS("stroke", "rgb(244, 207, 70)");
   await expect(dialog.locator(".stats-line")).toHaveCSS("stroke-width", "2.5px");
   await expect(dialog.locator(".stats-chart-stage")).toHaveCSS("background-color", "rgb(27, 29, 33)");
+  await expect(dialog.locator(".stats-chart")).toHaveAttribute("aria-label", /cumulative application submissions/);
+  await expect(dialog.locator(".stats-point").last()).toHaveAttribute("aria-label", "Sep 16: 3 cumulative submissions");
   await expect(dialog.locator(".stats-point")).toHaveCount(3);
   await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
   await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
@@ -142,7 +144,7 @@ test("stats chart groups by the selected day or hour interval", async ({ page })
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
   await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
   await expect(dialog.locator(".stats-point")).toHaveCount(24);
-  const onePmPoint = dialog.getByLabel("1 PM: 1 submission", { exact: true });
+  const onePmPoint = dialog.getByLabel("1 PM: 1 cumulative submission", { exact: true });
   await onePmPoint.hover();
   await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toBeVisible();
   await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toContainText("1 PM");

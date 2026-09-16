@@ -66,6 +66,11 @@
       const bin = bins.find(candidate => time >= candidate.start && time < candidate.end);
       if (bin) bin.count += 1;
     });
+    let cumulative = 0;
+    bins.forEach(bin => {
+      cumulative += bin.count;
+      bin.count = cumulative;
+    });
     return { bins, hourly };
   }
 
@@ -98,10 +103,10 @@
     const pointMarkup = points.map(point => {
       const tooltipX = Math.max(100, Math.min(width - 100, point.x));
       const tooltipY = Math.max(58, point.y - 42);
-      const tooltipText = `${point.label} · ${point.count} submission${point.count === 1 ? "" : "s"}`;
-      return `<g class="stats-point-group"><circle class="stats-point" cx="${point.x}" cy="${point.y}" r="6" tabindex="0" aria-label="${esc(point.label)}: ${point.count} submission${point.count === 1 ? "" : "s"}"><title>${esc(tooltipText)}</title></circle><g class="stats-tooltip" transform="translate(${tooltipX} ${tooltipY})" aria-hidden="true"><rect x="-94" y="-22" width="188" height="34" rx="6"></rect><text text-anchor="middle">${esc(tooltipText)}</text></g>${point.showLabel ? `<text class="stats-x-label" x="${point.x}" y="${height - 24}" text-anchor="middle">${esc(point.label)}</text>` : ""}</g>`;
+      const tooltipText = `${point.label} · ${point.count} cumulative submission${point.count === 1 ? "" : "s"}`;
+      return `<g class="stats-point-group"><circle class="stats-point" cx="${point.x}" cy="${point.y}" r="6" tabindex="0" aria-label="${esc(point.label)}: ${point.count} cumulative submission${point.count === 1 ? "" : "s"}"><title>${esc(tooltipText)}</title></circle><g class="stats-tooltip" transform="translate(${tooltipX} ${tooltipY})" aria-hidden="true"><rect x="-110" y="-22" width="220" height="34" rx="6"></rect><text text-anchor="middle">${esc(tooltipText)}</text></g>${point.showLabel ? `<text class="stats-x-label" x="${point.x}" y="${height - 24}" text-anchor="middle">${esc(point.label)}</text>` : ""}</g>`;
     }).join("");
-    return `<svg class="stats-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart showing application submissions grouped ${hourly ? "by hour" : "by day"}"><text class="stats-axis-title" transform="translate(15 ${plot.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Submissions</text>${grid}<line class="stats-axis" x1="${plot.left}" y1="${plot.top + plotHeight}" x2="${width - plot.right}" y2="${plot.top + plotHeight}"/><path class="stats-line" d="${path}"/>${pointMarkup}<text class="stats-axis-title" x="${plot.left + plotWidth / 2}" y="${height - 2}" text-anchor="middle">Date / time</text></svg>`;
+    return `<svg class="stats-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart showing cumulative application submissions grouped ${hourly ? "by hour" : "by day"}"><text class="stats-axis-title" transform="translate(15 ${plot.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Cumulative submissions</text>${grid}<line class="stats-axis" x1="${plot.left}" y1="${plot.top + plotHeight}" x2="${width - plot.right}" y2="${plot.top + plotHeight}"/><path class="stats-line" d="${path}"/>${pointMarkup}<text class="stats-axis-title" x="${plot.left + plotWidth / 2}" y="${height - 2}" text-anchor="middle">Date / time</text></svg>`;
   }
 
   function updateHandles() {
