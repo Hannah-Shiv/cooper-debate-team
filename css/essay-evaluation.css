@@ -70,6 +70,21 @@
   .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap{align-items:flex-start;gap:12px;grid-template-columns:1fr}
   .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch{justify-self:start}
 }
+.essay-reference-head:has(.essay-launch-heading p.is-completed){padding:13px 19px 15px}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap{column-gap:38px;display:grid;grid-template-areas:"title title" "status action";grid-template-columns:minmax(0,1fr) auto;row-gap:11px;width:100%}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-heading{display:contents}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-heading>strong{grid-area:title}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap p.is-completed{grid-area:status}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-evaluated-score{border-left:1px solid rgba(255,255,255,.58);margin-left:8px;padding-left:14px}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-evaluated-recommendation{font-size:.667rem;margin-left:8px;padding:7px 11px;position:relative}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-evaluated-recommendation:before{background:rgba(255,255,255,.58);content:"";height:30px;left:-10px;position:absolute;top:50%;transform:translateY(-50%);width:1px}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch.is-completed{grid-area:action;position:relative}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch.is-completed:before{background:linear-gradient(180deg,transparent,rgba(255,255,255,.82) 20%,rgba(255,255,255,.82) 80%,transparent);content:"";height:48px;left:-20px;position:absolute;top:50%;transform:translateY(-50%);width:1px}
+@media(max-width:600px){
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap{grid-template-areas:"title" "status" "action";grid-template-columns:1fr}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch.is-completed{justify-self:start}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch.is-completed:before{content:none}
+}
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
 .essay-eval { background: #071a37; border: 0; color: #eef5ff; height: 100dvh; margin: 0; max-height: none; max-width: none; overflow: hidden; padding: 0; width: 100vw; }
