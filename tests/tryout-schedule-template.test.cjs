@@ -55,6 +55,15 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
 });
 
+test("tournament date range stays internal and the pane uses the shorter Room label", () => {
+  assert.match(html, /id="tryout-range-start" type="hidden"/);
+  assert.match(html, /id="tryout-range-end" type="hidden"/);
+  assert.doesNotMatch(html, /for="tryout-range-start"/);
+  assert.doesNotMatch(html, /for="tryout-range-end"/);
+  assert.match(html, /for="tryout-location">Room<\/label>/);
+  assert.doesNotMatch(html, /Room \/ location/);
+});
+
 test("tryout manager typography is increased by fifteen percent", () => {
   assert.match(html, /#tryout-manager \.tm-field label\{font-size:\.63rem\}/);
   assert.match(html, /#tryout-manager \.tm-field input,[^}]*font-size:\.83rem/);

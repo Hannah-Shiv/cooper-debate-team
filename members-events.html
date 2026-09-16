@@ -707,14 +707,14 @@
                     </div>
                   </div>
                 </div>
+                <input id="tryout-range-start" type="hidden">
+                <input id="tryout-range-end" type="hidden">
                 <div class="tryout-data-grid">
                   <div class="tm-field span-3"><label for="tryout-tournament-name">Tournament name *</label><input id="tryout-tournament-name" maxlength="160" required placeholder="e.g., Debate Tryouts"></div>
-                  <div class="tm-field"><label for="tryout-range-start">Tournament start *</label><input id="tryout-range-start" type="date" required></div>
-                  <div class="tm-field"><label for="tryout-range-end">Tournament end *</label><input id="tryout-range-end" type="date" required></div>
                   <div class="tm-field"><label for="tryout-date">Debate date</label><input id="tryout-date" type="date"></div>
                   <div class="tm-field span-2"><label for="tryout-status">Status</label><select id="tryout-status"><option value="scheduled">Scheduled</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
-                  <div class="tm-field span-2"><label for="tryout-judge">Judge</label><input id="tryout-judge" list="tryout-judge-options" maxlength="120" placeholder="Choose or enter a judge"></div>
-                  <div class="tm-field span-2"><label for="tryout-judge-type">Judge type</label><select id="tryout-judge-type"><option value="member">Members Directory</option><option value="high-school-student">High-school student</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="other">Other</option></select></div>
+                  <div class="tm-field span-3"><label for="tryout-judge">Judge</label><input id="tryout-judge" list="tryout-judge-options" maxlength="120" placeholder="Choose or enter a judge"></div>
+                  <div class="tm-field span-3"><label for="tryout-judge-type">Judge type</label><select id="tryout-judge-type"><option value="member">Members Directory</option><option value="high-school-student">High-school student</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="other">Other</option></select></div>
 
                   <fieldset class="tryout-pair-group pair-a">
                     <legend>Pair A</legend>
@@ -728,7 +728,7 @@
                   </fieldset>
                   <div class="tm-field"><label for="tryout-start">Start time</label><input id="tryout-start" type="time"></div>
                   <div class="tm-field"><label for="tryout-end">End time</label><input id="tryout-end" type="time"></div>
-                  <div class="tm-field span-2"><label for="tryout-location">Room / location</label><input id="tryout-location" maxlength="160" placeholder="e.g., Room 114"></div>
+                  <div class="tm-field span-2"><label for="tryout-location">Room</label><input id="tryout-location" maxlength="160" placeholder="e.g., Room 114"></div>
                   <div class="tm-field span-2"><label for="tryout-notes">Private notes</label><textarea id="tryout-notes" maxlength="500" placeholder="Optional internal notes"></textarea></div>
                   <datalist id="tryout-debater-options"></datalist>
                   <datalist id="tryout-judge-options"></datalist>
