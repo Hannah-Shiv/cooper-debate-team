@@ -451,6 +451,7 @@
     if (role === "captain") {
       document.querySelector('[data-manager-mode="volunteers"]')?.setAttribute("hidden", "");
       document.querySelector(".tm-preview")?.setAttribute("hidden", "");
+      document.querySelectorAll("[data-volunteer-only]").forEach(item => item.setAttribute("hidden", ""));
       document.querySelector('[data-manager-mode="tryout"]')?.click();
     } else {
       resetForm();
@@ -487,6 +488,18 @@
     document.querySelectorAll("[data-tm-tab]").forEach(button => button.addEventListener("click", () => {
       document.querySelectorAll("[data-tm-tab]").forEach(tab => tab.classList.toggle("active", tab === button));
       $(button.dataset.tmTab)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+    document.querySelectorAll("[data-show-tournaments]").forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      document.querySelector('[data-manager-mode="volunteers"]')?.click();
+      $("vol-event-list").scrollIntoView({ behavior: "smooth", block: "start" });
+    }));
+    document.querySelectorAll("[data-add-tournament]").forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      document.querySelector('[data-manager-mode="volunteers"]')?.click();
+      resetForm();
+      $("event-information").scrollIntoView({ behavior: "smooth", block: "start" });
+      $("event-title").focus({ preventScroll: true });
     }));
   });
 })();
