@@ -2693,6 +2693,9 @@ exports.manageTryoutSchedule = onRequest(
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
         const status = ["scheduled", "completed", "cancelled"].includes(incoming.status) ? incoming.status : "scheduled";
+        if (!studentIds.length) {
+          throw new Error("Add at least one debater before saving this debate.");
+        }
         if (new Set(studentIds).size !== studentIds.length) {
           throw new Error("Each selected debater can appear only once.");
         }

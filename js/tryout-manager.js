@@ -78,7 +78,7 @@
       $(id).value = person ? debaterLabel(person) : "";
     });
     $("tryout-judge-options").innerHTML = judges.map(person =>
-      `<option value="${esc(person.name)}">${esc(person.sourceLabel || "Members Directory")}</option>`
+      `<option value="${esc(person.name)}"></option>`
     ).join("");
   }
 
@@ -142,7 +142,7 @@
         <td data-label="Pair A"><strong class="tryout-student-stack">${stackedNames(item, "a")}</strong></td>
         <td data-label="Pair B"><strong class="tryout-student-stack">${stackedNames(item, "b")}</strong>${item.notes ? `<small>${esc(item.notes)}</small>` : ""}</td>
         <td data-label="Date & time">${scheduleDateTime(item)}</td>
-        <td data-label="Judge">${esc(item.judge || "Not set")}${item.judge ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
+        <td data-label="Judge">${esc(item.judge || "Not set")}${item.judge && item.judgeType !== "member" ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
         <td data-label="Room">${esc(item.location || "Not set")}</td>
         <td data-label="Status"><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
         <td data-label="Actions"><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}" aria-label="Edit row ${index + 1}" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}" aria-label="Delete row ${index + 1}" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>` : ""}</div></td>
@@ -168,7 +168,7 @@
     $("tryout-status").value = "scheduled";
     $("tryout-judge-type").value = "member";
     updateTimePeriods();
-    setAutosaveStatus("tryout-record-status", "Saved");
+    setAutosaveStatus("tryout-record-status", "Add a debater to begin saving.");
     setMessage("");
   }
 
@@ -307,6 +307,11 @@
 
   function scheduleAssignmentSave(delay = 800) {
     clearTimeout(assignmentSaveTimer);
+    if (!DEBATER_FIELDS.some(id => $(id).value.trim())) {
+      $("tryout-new-draft").disabled = false;
+      setAutosaveStatus("tryout-record-status", "Add a debater to begin saving.");
+      return;
+    }
     $("tryout-new-draft").disabled = true;
     setAutosaveStatus("tryout-record-status", "Saving…", "saving");
     assignmentSaveTimer = setTimeout(saveAssignment, delay);

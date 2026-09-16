@@ -17,7 +17,7 @@ test("tryout form preserves separate Pair A and Pair B records", () => {
   assert.match(server, /pairBNames: selectedPairB\.map/);
 });
 
-test("debates can be saved as drafts with every field optional", () => {
+test("debates save as drafts only after at least one debater is selected", () => {
   const form = html.slice(html.indexOf('<form id="tryout-form"'), html.indexOf("</form>", html.indexOf('<form id="tryout-form"')));
   const debateFields = ["tryout-date", "tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two", "tryout-judge", "tryout-start", "tryout-end", "tryout-location", "tryout-notes"];
   debateFields.forEach(id => {
@@ -30,6 +30,8 @@ test("debates can be saved as drafts with every field optional", () => {
   assert.match(client, /draft \? "Draft"/);
   assert.match(server, /if \(date && \(date < template\.startDate \|\| date > template\.endDate\)\)/);
   assert.match(server, /if \(startTime && endTime && timeMinutes\(startTime\) >= timeMinutes\(endTime\)\)/);
+  assert.match(server, /if \(!studentIds\.length\)/);
+  assert.match(server, /Add at least one debater before saving this debate/);
 });
 
 test("tryout settings and debate entries autosave without save buttons", () => {
@@ -138,9 +140,17 @@ test("date and time fields use visible native pickers across the full input", ()
 test("tryout times show AM or PM and room identifies the school location", () => {
   assert.match(html, /id="tryout-start-period"[^>]*>AM \/ PM<\/span>/);
   assert.match(html, /id="tryout-end-period"[^>]*>AM \/ PM<\/span>/);
-  assert.match(html, /\.tryout-time-box\{[^}]*min-height:72px/);
+  assert.match(html, /\.tryout-time-box\{[^}]*min-height:102px/);
   assert.match(client, /hour >= 12 \? "PM" : "AM"/);
   assert.match(html, /<b>Location<\/b>Cooper Middle School/);
+});
+
+test("blank debates do not autosave and member judges omit directory source text", () => {
+  assert.match(client, /!DEBATER_FIELDS\.some\(id => \$\(id\)\.value\.trim\(\)\)/);
+  assert.match(client, /Add a debater to begin saving\./);
+  assert.match(client, /item\.judgeType !== "member"/);
+  assert.doesNotMatch(client, /person\.sourceLabel \|\| "Members Directory"/);
+  assert.match(html, /<option value="member">Member<\/option>/);
 });
 
 test("tryout template uses a reusable date range", () => {
