@@ -156,8 +156,10 @@ test("reset clears a saved evaluation and restores the Not Started launcher", as
   await expect(page.locator(".essay-launch-wrap p")).toContainText("In Progress4/35");
   await page.locator(".essay-launch").click();
   await expect(page.locator(".eval-reset")).toBeVisible();
-  page.once("dialog", (confirmation) => confirmation.accept());
   await page.locator(".eval-reset").click();
+  await expect(page.locator(".eval-reset-confirm")).toBeVisible();
+  await expect(page.locator(".eval-reset-confirm")).toContainText("This cannot be undone.");
+  await page.locator(".reset-confirm").click();
 
   await expect(page.locator(".essay-eval")).not.toBeVisible();
   await expect(page.locator(".essay-launch-wrap p")).toHaveText("Not started");
