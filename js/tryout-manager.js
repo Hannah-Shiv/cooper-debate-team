@@ -77,6 +77,10 @@
     }
   }
 
+  function publishTemplateToTournamentGrid() {
+    document.dispatchEvent(new CustomEvent("tryout-template-loaded", { detail: { template } }));
+  }
+
   function renderSummary() {
     $("tryout-student-count").textContent = debaters.length;
     $("tryout-pair-count").textContent = assignments.length;
@@ -181,6 +185,7 @@
       const result = await manage({ action: "saveTemplate", template: { title, startDate, endDate } });
       template = result.template;
       applyTemplate();
+      publishTemplateToTournamentGrid();
       renderSummary();
       setMessage("Tournament settings saved.", "ok");
     } catch (error) {
@@ -237,6 +242,7 @@
     assignments = result.assignments || [];
     template = result.template || template;
     applyTemplate();
+    publishTemplateToTournamentGrid();
     renderPeopleOptions(editingId ? {
       "tryout-a-one": selectedDebaterId("tryout-a-one"), "tryout-a-two": selectedDebaterId("tryout-a-two"),
       "tryout-b-one": selectedDebaterId("tryout-b-one"), "tryout-b-two": selectedDebaterId("tryout-b-two"),
@@ -293,6 +299,11 @@
     $("tryout-tournament-name").disabled = isCaptain;
     $("tryout-range-start").disabled = isCaptain;
     $("tryout-range-end").disabled = isCaptain;
+    manage({ action: "getTemplate" }).then(result => {
+      template = result.template || template;
+      applyTemplate();
+      publishTemplateToTournamentGrid();
+    }).catch(error => console.warn("Unable to load the tryout tournament summary:", error));
     if (isCaptain) {
       $("volunteer-manager").hidden = true;
       showMode("tryout");

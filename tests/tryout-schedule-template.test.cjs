@@ -5,6 +5,7 @@ const fs = require("node:fs");
 const html = fs.readFileSync("members-events.html", "utf8");
 const client = fs.readFileSync("js/tryout-manager.js", "utf8");
 const server = fs.readFileSync("functions/index.js", "utf8");
+const volunteerClient = fs.readFileSync("js/volunteer-admin.js", "utf8");
 
 test("tryout form schedules Pair A against Pair B", () => {
   for (const id of ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"]) {
@@ -37,6 +38,20 @@ test("website admins have a visible way to open and leave the tryout schedule", 
   assert.match(html, /data-manager-mode="volunteers">← Back to All Tournaments</);
   assert.match(client, /\$\("volunteer-manager"\)\.hidden = tryout/);
   assert.doesNotMatch(fs.readFileSync("js/volunteer-admin.js", "utf8"), /appendChild\(tryoutManager\)/);
+});
+
+test("the main tournament grid includes a simplified tryout template row", () => {
+  assert.match(server, /action === "getTemplate"/);
+  assert.match(client, /tryout-template-loaded/);
+  assert.match(volunteerClient, /Tournament Name<\/th><th>Date<\/th><th>Type/);
+  assert.match(volunteerClient, /Internal Tryouts/);
+  assert.match(volunteerClient, /item\?\.isTryoutTemplate/);
+  assert.match(volunteerClient, /data-edit-tryout>Edit<\/button>/);
+  assert.match(volunteerClient, /row\.querySelector\("\[data-edit-tryout\]"\)/);
+  assert.match(volunteerClient, /\.filter\(event => event\.eventType !== "tryout"\)/);
+  assert.doesNotMatch(html, /id="event-grid-status"/);
+  const gridMarkup = volunteerClient.slice(volunteerClient.indexOf('tm-data-table tm-tournament-index'), volunteerClient.indexOf('root.querySelectorAll("[data-event]")'));
+  assert.doesNotMatch(gridMarkup, /Volunteers|Partners|tm-table-toggle|tm-grid-status/);
 });
 
 test("tryout header uses two summary metrics and a button-style return control", () => {

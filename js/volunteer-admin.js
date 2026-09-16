@@ -27,6 +27,7 @@
   let editingId = null;
   let selectedEventId = null;
   let events = [];
+  let tryoutTemplateEvent = null;
   let currentUser = null;
   let currentUserRole = "member";
   let pendingDeleteEventId = null;
@@ -525,15 +526,12 @@
     const root = $("vol-event-list");
     const search = ($("event-grid-search")?.value || "").trim().toLowerCase();
     const typeFilter = $("event-grid-type")?.value || "all";
-    const statusFilter = $("event-grid-status")?.value || "all";
     const sort = $("event-grid-sort")?.value || "date-asc";
     const filtered = items.filter(item => {
-      const status = tournamentStatus(item);
       const type = item.eventType || "external";
       const matchesSearch = !search || [item.title, item.date, item.location, item.host, type].some(value => String(value || "").toLowerCase().includes(search));
       const matchesType = typeFilter === "all" || type === typeFilter;
-      const matchesStatus = statusFilter === "all" || status.key === statusFilter;
-      return matchesSearch && matchesType && matchesStatus;
+      return matchesSearch && matchesType;
     }).sort((left, right) => {
       if (sort === "date-desc") return String(right.date || "").localeCompare(String(left.date || ""));
       if (sort === "name-asc") return String(left.title || "").localeCompare(String(right.title || ""));
@@ -549,14 +547,31 @@
       root.innerHTML = `<div class="tm-empty">No tournaments match the current search and filter.</div>`;
       return;
     }
-    root.innerHTML = `<table class="tm-data-table"><thead><tr><th>Tournament</th><th>Date</th><th>Type</th><th>Status</th><th>Volunteers</th><th>Partners</th><th aria-label="Open"></th></tr></thead><tbody>${filtered.map(item => {
-      const status = tournamentStatus(item);
+    root.innerHTML = `<table class="tm-data-table tm-tournament-index"><thead><tr><th>Tournament Name</th><th>Date</th><th>Type</th><th aria-label="Open"></th></tr></thead><tbody>${filtered.map(item => {
       const type = item.eventType || "external";
-      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div><div class="tm-grid-sub">${esc(item.location || item.host || "Location not set")}</div></td><td>${esc(shortDateLabel(item.date))}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal tryout" : type)}</span></td><td><span class="tm-grid-status ${status.key}">${esc(status.label)}</span></td><td><span class="tm-table-toggle ${item.volunteerSignupsEnabled === false ? "" : "on"}" aria-label="${item.volunteerSignupsEnabled === false ? "Disabled" : "Enabled"}"><span></span></span></td><td><span class="tm-table-toggle ${item.partnerSignupsEnabled === true ? "on" : ""}" aria-label="${item.partnerSignupsEnabled === true ? "Enabled" : "Disabled"}"><span></span></span></td><td class="tm-row-arrow" aria-hidden="true">›</td></tr>`;
+      const date = item.isTryoutTemplate && item.endDate && item.endDate !== item.date
+        ? `${shortDateLabel(item.date)} – ${shortDateLabel(item.endDate)}`
+        : shortDateLabel(item.date);
+      const action = item.isTryoutTemplate
+        ? `<button class="tm-row-edit" type="button" data-edit-tryout>Edit</button>`
+        : `<span class="tm-row-arrow" aria-hidden="true">›</span>`;
+      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div></td><td>${esc(date)}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal Tryouts" : type)}</span></td><td class="tm-row-action">${action}</td></tr>`;
     }).join("")}</tbody></table>`;
     root.querySelectorAll("[data-event]").forEach(row => {
-      const activate = () => selectTournament(events.find(item => item.id === row.dataset.event), true);
+      const activate = () => {
+        const item = events.find(candidate => candidate.id === row.dataset.event);
+        if (item?.isTryoutTemplate) {
+          window.setTryoutManagerVisible?.(true);
+          $("tryout-manager")?.scrollIntoView({ behavior: "smooth", block: "start" });
+          return;
+        }
+        selectTournament(item, true);
+      };
       row.addEventListener("click", activate);
+      row.querySelector("[data-edit-tryout]")?.addEventListener("click", event => {
+        event.stopPropagation();
+        activate();
+      });
       row.addEventListener("keydown", event => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -571,10 +586,14 @@
       console.warn("Unable to verify the legacy tryout tournament records:", error);
     });
     db.collection("volunteer_events").orderBy("date", "asc").onSnapshot(snapshot => {
-      events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const volunteerEvents = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .filter(event => event.eventType !== "tryout");
+      events = tryoutTemplateEvent ? [...volunteerEvents, tryoutTemplateEvent] : volunteerEvents;
       renderEvents(events);
       if (!selectedEventId) {
-        const currentOpenEvent = events.find(event => tournamentStatus(event).key === "active") || events.at(-1);
+        const currentOpenEvent = events.find(event => !event.isTryoutTemplate && tournamentStatus(event).key === "active")
+          || events.find(event => !event.isTryoutTemplate);
         if (currentOpenEvent) selectTournament(currentOpenEvent);
       } else {
         const selected = events.find(event => event.id === selectedEventId);
@@ -584,6 +603,21 @@
        $("vol-event-list").innerHTML = `<div class="tm-empty">Volunteer events could not be loaded: ${esc(error.message)}</div>`;
     });
   }
+
+  document.addEventListener("tryout-template-loaded", event => {
+    const template = event.detail?.template;
+    if (!template) return;
+    tryoutTemplateEvent = {
+      id: `tryout-template-${template.id || "tryout"}`,
+      title: template.title || "Debate Tryout Schedule",
+      date: template.startDate || "",
+      endDate: template.endDate || "",
+      eventType: "tryout",
+      isTryoutTemplate: true,
+    };
+    events = [...events.filter(item => !item.isTryoutTemplate), tryoutTemplateEvent];
+    renderEvents(events);
+  });
   function showAccess(title, text, actionLabel) {
     $("vol-auth").innerHTML = `<div class="tm-auth-box"><div class="tm-auth-mark">◆</div><h1>${esc(title)}</h1><p>${esc(text)}</p><a class="tm-login" href="members.html">${esc(actionLabel)}</a></div>`;
   }
@@ -639,11 +673,10 @@
     };
     window.activateEventsTab = activateEventsTab;
     $("event-grid-search").addEventListener("input", () => renderEvents(events));
-    ["event-grid-type", "event-grid-status", "event-grid-sort"].forEach(id => $(id).addEventListener("change", () => renderEvents(events)));
+    ["event-grid-type", "event-grid-sort"].forEach(id => $(id).addEventListener("change", () => renderEvents(events)));
     $("event-grid-reset").addEventListener("click", () => {
       $("event-grid-search").value = "";
       $("event-grid-type").value = "all";
-      $("event-grid-status").value = "all";
       $("event-grid-sort").value = "date-asc";
       renderEvents(events);
     });
