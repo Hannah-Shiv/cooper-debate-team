@@ -65,6 +65,25 @@ test("tryout header uses two summary metrics and a button-style return control",
   assert.match(html, /grid-template-columns:minmax\(0,1fr\) repeat\(2,minmax\(125px,.22fr\)\)/);
 });
 
+test("schedule rows fit without horizontal scrolling and use accessible row actions", () => {
+  assert.match(client, /<th>#<\/th><th>Pair A/);
+  assert.match(client, /class="tryout-row-number">\$\{index \+ 1\}/);
+  assert.match(client, /class="tryout-student-stack"/);
+  assert.match(client, /class="tryout-student-name"/);
+  assert.match(client, /aria-label="Edit row \$\{index \+ 1\}"/);
+  assert.match(client, /aria-label="Delete row \$\{index \+ 1\}"/);
+  assert.match(html, /\.tryout-table-wrap\{max-width:100%;overflow-x:hidden\}/);
+});
+
+test("deleting a tryout row uses an in-page confirmation modal", () => {
+  assert.match(html, /id="tryout-delete-modal"/);
+  assert.match(html, /id="tryout-delete-summary"/);
+  assert.match(html, /id="tryout-delete-confirm"/);
+  assert.match(client, /openDeleteModal\(button\.dataset\.tryoutDelete, button\)/);
+  assert.match(client, /\$\("tryout-delete-confirm"\)\.addEventListener\("click", deleteAssignment\)/);
+  assert.doesNotMatch(client, /\bconfirm\(/);
+});
+
 test("date and time fields use visible native pickers across the full input", () => {
   assert.match(html, /input\[type="date"\].*background:#c9dced/);
   assert.match(html, /input\[type="time"\].*color-scheme:light/);
@@ -99,7 +118,7 @@ test("debater and judge pools expose only schedule-safe projections", () => {
 test("manual schedule does not run automatic assignment conflict checks", () => {
   const handler = server.slice(server.indexOf("exports.manageTryoutSchedule"), server.indexOf("exports.manageTryoutSchedule") + 20000);
   assert.doesNotMatch(handler, /already scheduled|already judging|already in use/);
-  assert.match(html, /manually entered table is the official tryout schedule/i);
+  assert.match(html, /Saved drafts and completed debates appear here/i);
 });
 
 test("legacy one-pair records remain readable", () => {

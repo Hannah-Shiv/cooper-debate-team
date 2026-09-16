@@ -12,6 +12,8 @@
   let currentUser = null;
   let canDelete = false;
   let templateRevision = 0;
+  let pendingDeleteId = "";
+  let deleteTrigger = null;
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
@@ -92,6 +94,12 @@
     return Array.isArray(names) && names.length ? names : side === "a" ? (item.studentNames || []).slice(0, 2) : [];
   }
 
+  function stackedNames(item, side) {
+    const names = pairNames(item, side);
+    if (!names.length) return `<span class="tryout-student-name muted">Awaiting Pair ${side.toUpperCase()}</span>`;
+    return names.map(name => `<span class="tryout-student-name">${esc(name)}</span>`).join("");
+  }
+
   function isDraft(item) {
     return pairNames(item, "a").length !== 2 || pairNames(item, "b").length !== 2 ||
       !item.date || !item.startTime || !item.endTime || !item.judge || !item.location;
@@ -112,22 +120,23 @@
       return;
     }
     root.innerHTML = `<table class="tryout-table">
-      <thead><tr><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>${assignments.map(item => {
+      <thead><tr><th>#</th><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${assignments.map((item, index) => {
         const draft = isDraft(item);
         return `<tr>
-        <td><strong>${pairNames(item, "a").map(esc).join(" &amp; ") || "Awaiting Pair A"}</strong></td>
-        <td><strong>${pairNames(item, "b").map(esc).join(" &amp; ") || "Awaiting Pair B"}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
-        <td>${scheduleDateTime(item)}</td>
-        <td>${esc(item.judge || "Not set")}${item.judge ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
-        <td>${esc(item.location || "Not set")}</td>
-        <td><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
-        <td><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}">Edit</button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}">Delete</button>` : ""}</div></td>
+        <td data-label="Row" class="tryout-row-number">${index + 1}</td>
+        <td data-label="Pair A"><strong class="tryout-student-stack">${stackedNames(item, "a")}</strong></td>
+        <td data-label="Pair B"><strong class="tryout-student-stack">${stackedNames(item, "b")}</strong>${item.notes ? `<small>${esc(item.notes)}</small>` : ""}</td>
+        <td data-label="Date & time">${scheduleDateTime(item)}</td>
+        <td data-label="Judge">${esc(item.judge || "Not set")}${item.judge ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
+        <td data-label="Room">${esc(item.location || "Not set")}</td>
+        <td data-label="Status"><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
+        <td data-label="Actions"><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}" aria-label="Edit row ${index + 1}" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}" aria-label="Delete row ${index + 1}" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>` : ""}</div></td>
       </tr>`;
       }).join("")}</tbody>
     </table>`;
     root.querySelectorAll("[data-tryout-edit]").forEach(button => button.addEventListener("click", () => editAssignment(button.dataset.tryoutEdit)));
-    root.querySelectorAll("[data-tryout-delete]").forEach(button => button.addEventListener("click", () => deleteAssignment(button.dataset.tryoutDelete)));
+    root.querySelectorAll("[data-tryout-delete]").forEach(button => button.addEventListener("click", () => openDeleteModal(button.dataset.tryoutDelete, button)));
     renderSummary();
   }
 
@@ -169,15 +178,41 @@
     $("tryout-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
-  async function deleteAssignment(id) {
+  function closeDeleteModal() {
+    $("tryout-delete-modal").hidden = true;
+    document.body.classList.remove("tm-modal-open");
+    pendingDeleteId = "";
+    deleteTrigger?.focus();
+    deleteTrigger = null;
+  }
+
+  function openDeleteModal(id, trigger) {
     const item = assignments.find(assignment => assignment.id === id);
-    if (!item || !confirm(item.date ? `Delete the ${dateLabel(item.date)} debate?` : "Delete this draft debate?")) return;
+    if (!item) return;
+    pendingDeleteId = id;
+    deleteTrigger = trigger;
+    const row = assignments.findIndex(assignment => assignment.id === id) + 1;
+    const students = [...pairNames(item, "a"), ...pairNames(item, "b")];
+    $("tryout-delete-summary").textContent = `Row ${row}${students.length ? ` · ${students.join(" and ")}` : ""}${item.date ? ` · ${dateLabel(item.date)}` : " · Draft"}`;
+    $("tryout-delete-modal").hidden = false;
+    document.body.classList.add("tm-modal-open");
+    $("tryout-delete-confirm").focus();
+  }
+
+  async function deleteAssignment() {
+    const id = pendingDeleteId;
+    if (!id) return;
     try {
+      $("tryout-delete-confirm").disabled = true;
       await manage({ action: "delete", assignmentId: id });
+      closeDeleteModal();
       await load();
       if (editingId === id) resetForm();
     } catch (error) {
+      closeDeleteModal();
       setMessage(error.message, "error");
+    } finally {
+      $("tryout-delete-confirm").disabled = false;
     }
   }
 
@@ -296,6 +331,14 @@
     $("tryout-form").addEventListener("submit", save);
     $("tryout-cancel").addEventListener("click", resetForm);
     $("tryout-range-save").addEventListener("click", saveTemplate);
+    $("tryout-delete-cancel").addEventListener("click", closeDeleteModal);
+    $("tryout-delete-confirm").addEventListener("click", deleteAssignment);
+    $("tryout-delete-modal").addEventListener("click", event => {
+      if (event.target === $("tryout-delete-modal")) closeDeleteModal();
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !$("tryout-delete-modal").hidden) closeDeleteModal();
+    });
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.addEventListener("click", () => showMode(button.dataset.managerMode)));
     document.querySelectorAll("[data-open-tryout]").forEach(link =>
