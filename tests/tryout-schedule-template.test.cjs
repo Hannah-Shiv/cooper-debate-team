@@ -80,10 +80,10 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
 });
 
-test("tryout heading, data entry, and schedule grid use coordinated blue palettes", () => {
+test("tryout heading, data entry, and schedule grid use blue, dark-teal, and dark-blue palettes", () => {
   assert.match(html, /\.tryout-overview\{background:[^}]*linear-gradient\(120deg,#174990/);
-  assert.match(html, /\.tryout-data-entry\{background:[^}]*linear-gradient\(145deg,#153765,#0a1e3b\)/);
-  assert.match(html, /\.tryout-data-entry h2\{color:#bfdbfe\}/);
+  assert.match(html, /\.tryout-data-entry\{background:[^}]*linear-gradient\(145deg,#123f46,#082a31\)/);
+  assert.match(html, /\.tryout-data-entry h2\{color:#a7f3e6\}/);
   assert.match(html, /\.tryout-schedule-card\{background:[^}]*linear-gradient\(145deg,#0d2850,#071a36\)/);
   assert.match(html, /\.tryout-schedule-card h2\{color:#bfdbfe\}/);
   assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(18,52,96,.72\)\}/);
