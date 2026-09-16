@@ -92,6 +92,18 @@
     return Array.isArray(names) && names.length ? names : side === "a" ? (item.studentNames || []).slice(0, 2) : [];
   }
 
+  function isDraft(item) {
+    return pairNames(item, "a").length !== 2 || pairNames(item, "b").length !== 2 ||
+      !item.date || !item.startTime || !item.endTime || !item.judge || !item.location;
+  }
+
+  function scheduleDateTime(item) {
+    const date = dateLabel(item.date);
+    const times = [timeLabel(item.startTime), timeLabel(item.endTime)].filter(Boolean);
+    if (!date && !times.length) return "Date and time not set";
+    return `${date ? `${esc(date)}<br>` : ""}<strong>${esc(times.join("–") || "Time not set")}</strong>`;
+  }
+
   function renderSchedule() {
     const root = $("tryout-schedule-list");
     if (!assignments.length) {
@@ -102,14 +114,14 @@
     root.innerHTML = `<table class="tryout-table">
       <thead><tr><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${assignments.map(item => {
-        const awaitingPairB = pairNames(item, "b").length !== 2;
+        const draft = isDraft(item);
         return `<tr>
-        <td><strong>${pairNames(item, "a").map(esc).join(" &amp; ") || "Legacy pair"}</strong></td>
+        <td><strong>${pairNames(item, "a").map(esc).join(" &amp; ") || "Awaiting Pair A"}</strong></td>
         <td><strong>${pairNames(item, "b").map(esc).join(" &amp; ") || "Awaiting Pair B"}</strong>${item.notes ? `<br><small>${esc(item.notes)}</small>` : ""}</td>
-        <td>${esc(dateLabel(item.date))}<br><strong>${esc(timeLabel(item.startTime))}–${esc(timeLabel(item.endTime))}</strong></td>
-        <td>${esc(item.judge)}<br><small>${esc(item.judgeTypeLabel || "Members Directory")}</small></td>
-        <td>${esc(item.location)}</td>
-        <td><span class="tm-grid-status ${awaitingPairB ? "awaiting" : esc(item.status || "scheduled")}">${awaitingPairB ? "Awaiting Pair B" : esc(statusLabel(item.status))}</span></td>
+        <td>${scheduleDateTime(item)}</td>
+        <td>${esc(item.judge || "Not set")}${item.judge ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
+        <td>${esc(item.location || "Not set")}</td>
+        <td><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
         <td><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}">Edit</button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}">Delete</button>` : ""}</div></td>
       </tr>`;
       }).join("")}</tbody>
@@ -153,13 +165,13 @@
     $("tryout-form-heading").textContent = "Edit debate";
     $("tryout-save").textContent = "Save changes";
     $("tryout-cancel").hidden = false;
-    setMessage(pairA.length === 2 ? "" : "This older entry needs Pair A selected again before it can be saved.", pairA.length === 2 ? "" : "error");
+    setMessage("");
     $("tryout-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   async function deleteAssignment(id) {
     const item = assignments.find(assignment => assignment.id === id);
-    if (!item || !confirm(`Delete the ${dateLabel(item.date)} debate?`)) return;
+    if (!item || !confirm(item.date ? `Delete the ${dateLabel(item.date)} debate?` : "Delete this draft debate?")) return;
     try {
       await manage({ action: "delete", assignmentId: id });
       await load();
@@ -201,20 +213,18 @@
     event.preventDefault();
     const values = DEBATER_FIELDS.map(id => $(id).value.trim());
     const ids = DEBATER_FIELDS.map(selectedDebaterId);
-    const pairAIds = ids.slice(0, 2);
-    const pairBIds = ids.slice(2);
-    const pairBHasAnyValue = values.slice(2).some(Boolean);
-    if (pairAIds.some(id => !id) || new Set(pairAIds).size !== 2) {
-      setMessage("Choose two different debaters from the name suggestions for Pair A.", "error");
+    if (values.some((value, index) => value && !ids[index])) {
+      setMessage("Choose typed debaters from the name suggestions.", "error");
       return;
     }
-    if (pairBHasAnyValue && (pairBIds.some(id => !id) || new Set([...pairAIds, ...pairBIds]).size !== 4)) {
-      setMessage("Choose two different Pair B debaters, or leave both Pair B fields empty.", "error");
+    const selectedIds = ids.filter(Boolean);
+    if (new Set(selectedIds).size !== selectedIds.length) {
+      setMessage("Each debater can appear only once.", "error");
       return;
     }
     const assignment = {
-      pairAIds,
-      pairBIds: pairBHasAnyValue ? pairBIds : [],
+      pairAIds: ids.slice(0, 2).filter(Boolean),
+      pairBIds: ids.slice(2).filter(Boolean),
       date: $("tryout-date").value,
       status: $("tryout-status").value,
       judge: $("tryout-judge").value.trim(),

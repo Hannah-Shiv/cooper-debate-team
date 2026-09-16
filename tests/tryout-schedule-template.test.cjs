@@ -7,21 +7,25 @@ const client = fs.readFileSync("js/tryout-manager.js", "utf8");
 const server = fs.readFileSync("functions/index.js", "utf8");
 const volunteerClient = fs.readFileSync("js/volunteer-admin.js", "utf8");
 
-test("tryout form schedules Pair A against Pair B", () => {
+test("tryout form preserves separate Pair A and Pair B records", () => {
   for (const id of ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.match(client, /const pairAIds = ids\.slice\(0, 2\)/);
-  assert.match(client, /const pairBIds = ids\.slice\(2\)/);
-  assert.match(server, /pairAIds\.length !== 2 \|\| new Set\(pairAIds\)\.size !== 2/);
+  assert.match(client, /pairAIds: ids\.slice\(0, 2\)\.filter\(Boolean\)/);
+  assert.match(client, /pairBIds: ids\.slice\(2\)\.filter\(Boolean\)/);
+  assert.match(server, /pairANames: selectedPairA\.map/);
+  assert.match(server, /pairBNames: selectedPairB\.map/);
 });
 
-test("Pair A can be saved while Pair B is awaiting debaters", () => {
-  assert.match(html, /Pair B · Optional until later/);
-  assert.doesNotMatch(html, /for="tryout-b-one">Debater 1 \*/);
-  assert.match(client, /pairBIds: pairBHasAnyValue \? pairBIds : \[\]/);
-  assert.match(client, /Awaiting Pair B/);
-  assert.match(server, /!\[0, 2\]\.includes\(pairBIds\.length\)/);
+test("debates can be saved as drafts with every field optional", () => {
+  const form = html.slice(html.indexOf('<form id="tryout-form"'), html.indexOf("</form>", html.indexOf('<form id="tryout-form"')));
+  assert.doesNotMatch(form, /\srequired(?:\s|>)/);
+  assert.doesNotMatch(form, /<label[^>]*>[^<]*\*/);
+  assert.match(client, /pairAIds: ids\.slice\(0, 2\)\.filter\(Boolean\)/);
+  assert.match(client, /pairBIds: ids\.slice\(2\)\.filter\(Boolean\)/);
+  assert.match(client, /draft \? "Draft"/);
+  assert.match(server, /if \(date && \(date < template\.startDate \|\| date > template\.endDate\)\)/);
+  assert.match(server, /if \(startTime && endTime && timeMinutes\(startTime\) >= timeMinutes\(endTime\)\)/);
 });
 
 test("debater fields search by name without exposing their source", () => {

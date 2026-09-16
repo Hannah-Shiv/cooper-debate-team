@@ -705,22 +705,22 @@
               <div class="tryout-grid">
                 <form id="tryout-form" class="tryout-card">
                   <h2 id="tryout-form-heading">Add debate</h2>
-                  <p class="tryout-card-intro">Create the authoritative schedule manually. Pair A debates Pair B at the entered time and room.</p>
+                  <p class="tryout-card-intro">Start with any available details, save the draft, and complete it later from the schedule.</p>
                   <div class="tm-fields">
-                    <div class="tm-field"><label for="tryout-date">Debate date *</label><input id="tryout-date" type="date" required></div>
+                    <div class="tm-field"><label for="tryout-date">Debate date</label><input id="tryout-date" type="date"></div>
                     <div class="tm-field"><label for="tryout-status">Status</label><select id="tryout-status"><option value="scheduled">Scheduled</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
                     <div class="tm-field full tryout-pair-label">Pair A</div>
-                    <div class="tm-field"><label for="tryout-a-one">Debater 1 *</label><input id="tryout-a-one" list="tryout-debater-options" autocomplete="off" required placeholder="Start typing a name"></div>
-                    <div class="tm-field"><label for="tryout-a-two">Debater 2 *</label><input id="tryout-a-two" list="tryout-debater-options" autocomplete="off" required placeholder="Start typing a name"></div>
+                    <div class="tm-field"><label for="tryout-a-one">Debater 1</label><input id="tryout-a-one" list="tryout-debater-options" autocomplete="off" placeholder="Start typing a name"></div>
+                    <div class="tm-field"><label for="tryout-a-two">Debater 2</label><input id="tryout-a-two" list="tryout-debater-options" autocomplete="off" placeholder="Start typing a name"></div>
                     <div class="tm-field full tryout-pair-label">Pair B · Optional until later</div>
                     <div class="tm-field"><label for="tryout-b-one">Debater 1</label><input id="tryout-b-one" list="tryout-debater-options" autocomplete="off" placeholder="Start typing a name"></div>
                     <div class="tm-field"><label for="tryout-b-two">Debater 2</label><input id="tryout-b-two" list="tryout-debater-options" autocomplete="off" placeholder="Start typing a name"></div>
                     <datalist id="tryout-debater-options"></datalist>
-                    <div class="tm-field"><label for="tryout-judge">Judge *</label><input id="tryout-judge" list="tryout-judge-options" maxlength="120" required placeholder="Choose or enter a judge"><datalist id="tryout-judge-options"></datalist></div>
+                    <div class="tm-field"><label for="tryout-judge">Judge</label><input id="tryout-judge" list="tryout-judge-options" maxlength="120" placeholder="Choose or enter a judge"><datalist id="tryout-judge-options"></datalist></div>
                     <div class="tm-field"><label for="tryout-judge-type">Judge type</label><select id="tryout-judge-type"><option value="member">Members Directory</option><option value="high-school-student">High-school student</option><option value="teacher">Teacher</option><option value="parent">Parent</option><option value="other">Other</option></select></div>
-                    <div class="tm-field"><label for="tryout-start">Start time *</label><input id="tryout-start" type="time" required></div>
-                    <div class="tm-field"><label for="tryout-end">End time *</label><input id="tryout-end" type="time" required></div>
-                    <div class="tm-field full"><label for="tryout-location">Room / location *</label><input id="tryout-location" maxlength="160" required placeholder="e.g., Room 114"></div>
+                    <div class="tm-field"><label for="tryout-start">Start time</label><input id="tryout-start" type="time"></div>
+                    <div class="tm-field"><label for="tryout-end">End time</label><input id="tryout-end" type="time"></div>
+                    <div class="tm-field full"><label for="tryout-location">Room / location</label><input id="tryout-location" maxlength="160" placeholder="e.g., Room 114"></div>
                     <div class="tm-field full"><label for="tryout-notes">Private notes</label><textarea id="tryout-notes" maxlength="500" placeholder="Optional internal notes"></textarea></div>
                   </div>
                   <div class="tryout-actions"><button id="tryout-save" class="tm-save" type="submit">Add debate</button><button id="tryout-cancel" class="tryout-cancel" type="button" hidden>Cancel edit</button></div>
@@ -728,7 +728,7 @@
                 </form>
                 <section class="tryout-card">
                   <h2>Debate schedule</h2>
-                  <p class="tryout-card-intro">Debates are shown in date and time order. This manually entered table is the official tryout schedule.</p>
+                  <p class="tryout-card-intro">Saved drafts and completed debates appear here. Use Edit on a specific row to continue entering its details.</p>
                   <div id="tryout-schedule-list" class="tryout-table-wrap"><div class="tryout-empty">Loading the tryout schedule…</div></div>
                 </section>
               </div>
@@ -744,7 +744,7 @@
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
   <script src="js/volunteer-admin.js?v=32"></script>
-  <script src="js/tryout-manager.js?v=6"></script>
+  <script src="js/tryout-manager.js?v=7"></script>
   <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>
 </body>

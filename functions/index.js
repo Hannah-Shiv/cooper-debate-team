@@ -2693,28 +2693,22 @@ exports.manageTryoutSchedule = onRequest(
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
         const status = ["scheduled", "completed", "cancelled"].includes(incoming.status) ? incoming.status : "scheduled";
-        if (pairAIds.length !== 2 || new Set(pairAIds).size !== 2) {
-          throw new Error("Choose two different debaters for Pair A.");
-        }
-        if (![0, 2].includes(pairBIds.length)) {
-          throw new Error("Choose both Pair B debaters, or leave both Pair B fields empty.");
-        }
         if (new Set(studentIds).size !== studentIds.length) {
           throw new Error("Each selected debater can appear only once.");
         }
-        if (!startTime || !endTime || timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
-        if (!judge) throw new Error("Enter the judge’s name.");
-        if (!location) throw new Error("Enter a room or location.");
+        if (startTime && endTime && timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
         const pools = await buildTryoutPeoplePools(db);
         const personById = new Map(pools.debaters.map(person => [person.id, person]));
-        const selected = studentIds.map(id => personById.get(id));
+        const selectedPairA = pairAIds.map(id => personById.get(id));
+        const selectedPairB = pairBIds.map(id => personById.get(id));
+        const selected = [...selectedPairA, ...selectedPairB];
         if (selected.some(person => !person)) throw new Error("One of those debaters is no longer in Track Applications or the Members Directory.");
 
         const assignmentRef = requestedId ? scheduleCollection.doc(requestedId) : scheduleCollection.doc();
         await db.runTransaction(async transaction => {
           const templateSnap = await transaction.get(templateRef);
           const template = templateFromSnapshot(templateSnap);
-          if (!date || date < template.startDate || date > template.endDate) {
+          if (date && (date < template.startDate || date > template.endDate)) {
             throw new Error(`Choose a debate date between ${template.startDate} and ${template.endDate}.`);
           }
           if (requestedId) {
@@ -2731,9 +2725,9 @@ exports.manageTryoutSchedule = onRequest(
             studentIds,
             studentNames: selected.map(person => person.name),
             pairAIds,
-            pairANames: selected.slice(0, 2).map(person => person.name),
+            pairANames: selectedPairA.map(person => person.name),
             pairBIds,
-            pairBNames: selected.slice(2).map(person => person.name),
+            pairBNames: selectedPairB.map(person => person.name),
             startTime,
             endTime,
             judge,
