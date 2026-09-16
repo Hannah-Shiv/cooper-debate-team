@@ -72,6 +72,8 @@ test("tryout template uses a reusable date range", () => {
   assert.match(html, /id="tryout-range-start"/);
   assert.match(html, /id="tryout-range-end"/);
   assert.match(client, /action: "saveTemplate"/);
+  assert.match(client, /templateRevision \+= 1/);
+  assert.match(client, /requestedAtRevision !== templateRevision/);
   assert.match(server, /tryout_tournaments/);
   assert.match(server, /date < startDate \|\| date > endDate/);
   assert.match(server, /template = \{ \.\.\.currentTemplate, title, startDate, endDate \}/);

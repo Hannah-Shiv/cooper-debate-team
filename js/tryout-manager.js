@@ -11,6 +11,7 @@
   let editingId = "";
   let currentUser = null;
   let canDelete = false;
+  let templateRevision = 0;
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
@@ -182,6 +183,7 @@
     }
     try {
       $("tryout-range-save").disabled = true;
+      templateRevision += 1;
       const result = await manage({ action: "saveTemplate", template: { title, startDate, endDate } });
       template = result.template;
       applyTemplate();
@@ -236,13 +238,16 @@
   }
 
   async function load() {
+    const requestedAtRevision = templateRevision;
     const result = await manage({ action: "list" });
     debaters = result.debaters || result.students || [];
     judges = result.judges || [];
     assignments = result.assignments || [];
-    template = result.template || template;
-    applyTemplate();
-    publishTemplateToTournamentGrid();
+    if (requestedAtRevision === templateRevision) {
+      template = result.template || template;
+      applyTemplate();
+      publishTemplateToTournamentGrid();
+    }
     renderPeopleOptions(editingId ? {
       "tryout-a-one": selectedDebaterId("tryout-a-one"), "tryout-a-two": selectedDebaterId("tryout-a-two"),
       "tryout-b-one": selectedDebaterId("tryout-b-one"), "tryout-b-two": selectedDebaterId("tryout-b-two"),
@@ -299,7 +304,9 @@
     $("tryout-tournament-name").disabled = isCaptain;
     $("tryout-range-start").disabled = isCaptain;
     $("tryout-range-end").disabled = isCaptain;
+    const requestedAtRevision = templateRevision;
     manage({ action: "list" }).then(result => {
+      if (requestedAtRevision !== templateRevision) return;
       template = result.template || template;
       applyTemplate();
       publishTemplateToTournamentGrid();
