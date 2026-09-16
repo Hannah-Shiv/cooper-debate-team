@@ -28,6 +28,13 @@ test("tryout header uses two summary metrics and a button-style return control",
   assert.match(html, /grid-template-columns:minmax\(0,1fr\) repeat\(2,minmax\(125px,.22fr\)\)/);
 });
 
+test("date and time fields use visible native pickers across the full input", () => {
+  assert.match(html, /input\[type="date"\].*background:#f5f8fc/);
+  assert.match(html, /input\[type="time"\].*color-scheme:light/);
+  assert.match(client, /input\.showPicker\(\)/);
+  assert.match(client, /#tryout-manager input\[type="date"\], #tryout-manager input\[type="time"\]/);
+});
+
 test("tryout template uses a reusable date range", () => {
   assert.match(html, /id="tryout-tournament-name"/);
   assert.match(html, /id="tryout-range-start"/);

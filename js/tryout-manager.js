@@ -240,7 +240,21 @@
   }
   window.setTryoutManagerVisible = visible => showMode(visible ? "tryout" : "volunteers");
 
+  function enableNativePickers() {
+    document.querySelectorAll('#tryout-manager input[type="date"], #tryout-manager input[type="time"]').forEach(input => {
+      input.addEventListener("click", () => {
+        if (typeof input.showPicker !== "function") return;
+        try {
+          input.showPicker();
+        } catch (_) {
+          // Browsers without an available native picker retain normal input behavior.
+        }
+      });
+    });
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
+    enableNativePickers();
     $("tryout-form").addEventListener("submit", save);
     $("tryout-cancel").addEventListener("click", resetForm);
     $("tryout-range-save").addEventListener("click", saveTemplate);
