@@ -547,15 +547,15 @@
       root.innerHTML = `<div class="tm-empty">No tournaments match the current search and filter.</div>`;
       return;
     }
-    root.innerHTML = `<table class="tm-data-table tm-tournament-index"><thead><tr><th>Tournament Name</th><th>Date</th><th>Type</th><th aria-label="Open"></th></tr></thead><tbody>${filtered.map(item => {
+    root.innerHTML = `<table class="tm-data-table tm-tournament-index"><thead><tr><th>Tournament Name</th><th>Date</th><th>Type</th></tr></thead><tbody>${filtered.map(item => {
       const type = item.eventType || "external";
       const date = item.isTryoutTemplate && item.endDate && item.endDate !== item.date
         ? `${shortDateLabel(item.date)} – ${shortDateLabel(item.endDate)}`
         : shortDateLabel(item.date);
       const action = item.isTryoutTemplate
-        ? `<button class="tm-row-edit" type="button" data-edit-tryout>Edit</button>`
+        ? `<button class="tm-row-edit" type="button" data-edit-tryout aria-label="Edit tryout tournament" title="Edit tryout tournament"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>`
         : `<span class="tm-row-arrow" aria-hidden="true">›</span>`;
-      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div></td><td>${esc(date)}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal Tryouts" : type)}</span></td><td class="tm-row-action">${action}</td></tr>`;
+      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div></td><td>${esc(date)}</td><td class="tm-type-cell"><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal Tryouts" : type)}</span>${action}</td></tr>`;
     }).join("")}</tbody></table>`;
     root.querySelectorAll("[data-event]").forEach(row => {
       const activate = () => {

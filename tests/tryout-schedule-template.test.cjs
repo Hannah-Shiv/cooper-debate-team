@@ -46,7 +46,8 @@ test("the main tournament grid includes a simplified tryout template row", () =>
   assert.match(volunteerClient, /Tournament Name<\/th><th>Date<\/th><th>Type/);
   assert.match(volunteerClient, /Internal Tryouts/);
   assert.match(volunteerClient, /item\?\.isTryoutTemplate/);
-  assert.match(volunteerClient, /data-edit-tryout>Edit<\/button>/);
+  assert.match(volunteerClient, /data-edit-tryout aria-label="Edit tryout tournament"/);
+  assert.match(volunteerClient, /class="tm-type-cell"/);
   assert.match(volunteerClient, /row\.querySelector\("\[data-edit-tryout\]"\)/);
   assert.match(volunteerClient, /\.filter\(event => event\.eventType !== "tryout"\)/);
   assert.doesNotMatch(html, /id="event-grid-status"/);
