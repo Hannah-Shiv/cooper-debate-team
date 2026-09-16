@@ -89,7 +89,12 @@
       const label = hourly ? axisHour(new Date(bin.start)) : axisDate(new Date(bin.start));
       return { x, y, label, count: bin.count, showLabel: index % labelEvery === 0 || index === bins.length - 1 };
     });
-    const path = points.map((point, index) => `${index ? "L" : "M"} ${point.x} ${point.y}`).join(" ");
+    const path = points.reduce((commands, point, index) => {
+      if (index === 0) return `M ${point.x} ${point.y}`;
+      const previous = points[index - 1];
+      const midpoint = (previous.x + point.x) / 2;
+      return `${commands} C ${midpoint} ${previous.y} ${midpoint} ${point.y} ${point.x} ${point.y}`;
+    }, "");
     const pointMarkup = points.map(point => {
       const tooltipX = Math.max(100, Math.min(width - 100, point.x));
       const tooltipY = Math.max(58, point.y - 42);

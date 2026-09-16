@@ -102,6 +102,10 @@ test("stats chart groups by the selected day or hour interval", async ({ page })
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
   await expect(dialog.locator("#stats-by")).toHaveValue("day");
   await expect(dialog.locator(".stats-line")).toHaveCount(1);
+  await expect(dialog.locator(".stats-line")).toHaveAttribute("d", / C /);
+  await expect(dialog.locator(".stats-line")).toHaveCSS("stroke", "rgb(244, 207, 70)");
+  await expect(dialog.locator(".stats-line")).toHaveCSS("stroke-width", "2.5px");
+  await expect(dialog.locator(".stats-chart-stage")).toHaveCSS("background-color", "rgb(27, 29, 33)");
   await expect(dialog.locator(".stats-point")).toHaveCount(3);
   await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
   await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
