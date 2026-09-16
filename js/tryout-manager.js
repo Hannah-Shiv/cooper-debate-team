@@ -47,10 +47,16 @@
     return middleSchoolGrade ? `${middleSchoolGrade[1]}th` : grade;
   };
   const debaterLabel = person => `${person.name}${person.grade ? ` · ${person.grade}` : ""}`;
+  const parseDebaterValue = value => {
+    const typed = String(value || "").trim();
+    if (!typed) return null;
+    const known = debaters.find(person => debaterLabel(person).toLowerCase() === typed.toLowerCase());
+    if (known) return { id: known.id, name: known.name, grade: known.grade || "" };
+    const parts = typed.split(/\s*[·|]\s*/, 2);
+    return { id: "", name: parts[0].trim(), grade: (parts[1] || "").trim() };
+  };
   const selectedDebaterId = fieldId => {
-    const value = $(fieldId).value.trim().toLowerCase();
-    const matches = debaters.filter(person => debaterLabel(person).toLowerCase() === value);
-    return matches.length === 1 ? matches[0].id : "";
+    return parseDebaterValue($(fieldId).value)?.id || "";
   };
 
   function setMessage(text, kind) {
@@ -78,13 +84,19 @@
     return result;
   }
 
-  function renderPeopleOptions(selected = {}) {
-    $("tryout-debater-options").innerHTML = debaters.map(person =>
-      `<option value="${esc(debaterLabel(person))}"></option>`
-    ).join("");
+  function renderPeopleOptions(selected = {}, typedValues = {}) {
+    const suggestionLabels = new Set(debaters.map(debaterLabel));
+    assignments.forEach(item => {
+      [...pairEntries(item, "a"), ...pairEntries(item, "b")].forEach(entry => {
+        if (!entry.name) return;
+        suggestionLabels.add(`${entry.name}${entry.grade ? ` · ${entry.grade}` : ""}`);
+      });
+    });
+    $("tryout-debater-options").innerHTML = [...suggestionLabels].sort((a, b) => a.localeCompare(b))
+      .map(label => `<option value="${esc(label)}"></option>`).join("");
     DEBATER_FIELDS.forEach(id => {
       const person = debaters.find(candidate => candidate.id === selected[id]);
-      $(id).value = person ? debaterLabel(person) : "";
+      $(id).value = person ? debaterLabel(person) : (typedValues[id] || "");
     });
     $("tryout-judge-options").innerHTML = judges.map(person =>
       `<option value="${esc(person.name)}"></option>`
@@ -122,16 +134,28 @@
     return Array.isArray(ids) ? ids : side === "a" ? (item.studentIds || []).slice(0, 2) : [];
   }
 
-  function stackedNames(item, side) {
+  function pairEntries(item, side) {
+    const entries = side === "a" ? item.pairAEntries : item.pairBEntries;
+    if (Array.isArray(entries) && entries.length) return entries;
     const names = pairNames(item, side);
-    if (!names.length) return `<span class="tryout-student-name muted">Awaiting Pair ${side.toUpperCase()}</span>`;
     const ids = pairIds(item, side);
-    return names.map((name, index) => {
-      const byId = debaters.find(person => person.id === ids[index]);
-      const byName = debaters.filter(person => person.name.toLowerCase() === String(name).toLowerCase());
+    const grades = side === "a" ? item.pairAGrades : item.pairBGrades;
+    return names.map((name, index) => ({
+      id: ids[index] || "",
+      name,
+      grade: Array.isArray(grades) ? grades[index] || "" : "",
+    }));
+  }
+
+  function stackedNames(item, side) {
+    const entries = pairEntries(item, side);
+    if (!entries.length) return `<span class="tryout-student-name muted">Awaiting Pair ${side.toUpperCase()}</span>`;
+    return entries.map(entry => {
+      const byId = debaters.find(person => person.id === entry.id);
+      const byName = debaters.filter(person => person.name.toLowerCase() === String(entry.name).toLowerCase());
       const person = byId || (byName.length === 1 ? byName[0] : null);
-      const grade = person ? gradeLabel(person.grade) : "";
-      return `<span class="tryout-student-name"><span>${esc(name)}</span>${grade ? `<small class="tryout-grade">${esc(grade)}</small>` : ""}</span>`;
+      const grade = gradeLabel(entry.grade || person?.grade);
+      return `<span class="tryout-student-name"><span>${esc(entry.name)}</span>${grade ? `<small class="tryout-grade">${esc(grade)}</small>` : ""}</span>`;
     }).join("");
   }
 
@@ -155,8 +179,8 @@
       if (!query) return true;
       const searchable = [
         ...pairNames(item, "a"), ...pairNames(item, "b"), item.date, item.startTime, item.endTime,
-        ...pairIds(item, "a").map(id => gradeLabel(debaters.find(person => person.id === id)?.grade)),
-        ...pairIds(item, "b").map(id => gradeLabel(debaters.find(person => person.id === id)?.grade)),
+        ...pairEntries(item, "a").map(entry => gradeLabel(entry.grade)),
+        ...pairEntries(item, "b").map(entry => gradeLabel(entry.grade)),
         item.judge, item.location, item.notes, draft ? "draft incomplete" : "finalized complete",
       ].join(" ").toLowerCase();
       return searchable.includes(query);
@@ -250,6 +274,12 @@
     renderPeopleOptions({
       "tryout-a-one": pairA[0], "tryout-a-two": pairA[1],
       "tryout-b-one": pairB[0], "tryout-b-two": pairB[1],
+    });
+    [["a", 0], ["b", 2]].forEach(([side, offset]) => {
+      pairEntries(item, side).forEach((entry, index) => {
+        if (!entry || entry.id || !DEBATER_FIELDS[offset + index]) return;
+        $(DEBATER_FIELDS[offset + index]).value = `${entry.name}${entry.grade ? ` · ${entry.grade}` : ""}`;
+      });
     });
     $("tryout-date").value = item.date;
     $("tryout-status").value = item.status || "scheduled";
@@ -351,18 +381,18 @@
   }
 
   function collectAssignment() {
-    const values = DEBATER_FIELDS.map(id => $(id).value.trim());
-    const ids = DEBATER_FIELDS.map(selectedDebaterId);
-    if (values.some((value, index) => value && !ids[index])) {
-      return { error: "Choose typed debaters from the name suggestions." };
-    }
-    const selectedIds = ids.filter(Boolean);
-    if (new Set(selectedIds).size !== selectedIds.length) {
-      return { error: "Each debater can appear only once." };
-    }
+    const entries = DEBATER_FIELDS.map(id => parseDebaterValue($(id).value));
+    const populated = entries.filter(Boolean);
+    if (populated.some(entry => !entry.name)) return { error: "Enter a name for each debater." };
+    const identityKeys = populated.map(entry => entry.name.toLowerCase().replace(/\s+/g, " "));
+    if (new Set(identityKeys).size !== identityKeys.length) return { error: "Each debater can appear only once." };
+    const pairAEntries = entries.slice(0, 2).filter(Boolean);
+    const pairBEntries = entries.slice(2).filter(Boolean);
     return { assignment: {
-      pairAIds: ids.slice(0, 2).filter(Boolean),
-      pairBIds: ids.slice(2).filter(Boolean),
+      pairAIds: pairAEntries.map(entry => entry.id).filter(Boolean),
+      pairBIds: pairBEntries.map(entry => entry.id).filter(Boolean),
+      pairAEntries,
+      pairBEntries,
       date: $("tryout-date").value,
       status: $("tryout-status").value,
       judge: $("tryout-judge").value.trim(),
@@ -432,10 +462,11 @@
       applyTemplate();
       publishTemplateToTournamentGrid();
     }
+    const typedDebaterValues = Object.fromEntries(DEBATER_FIELDS.map(id => [id, $(id).value]));
     renderPeopleOptions(editingId ? {
       "tryout-a-one": selectedDebaterId("tryout-a-one"), "tryout-a-two": selectedDebaterId("tryout-a-two"),
       "tryout-b-one": selectedDebaterId("tryout-b-one"), "tryout-b-two": selectedDebaterId("tryout-b-two"),
-    } : {});
+    } : {}, editingId ? typedDebaterValues : {});
     renderSchedule();
   }
 

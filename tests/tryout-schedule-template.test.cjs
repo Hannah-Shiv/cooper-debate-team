@@ -11,8 +11,8 @@ test("tryout form preserves separate Pair A and Pair B records", () => {
   for (const id of ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"]) {
     assert.match(html, new RegExp(`id="${id}"`));
   }
-  assert.match(client, /pairAIds: ids\.slice\(0, 2\)\.filter\(Boolean\)/);
-  assert.match(client, /pairBIds: ids\.slice\(2\)\.filter\(Boolean\)/);
+  assert.match(client, /pairAEntries/);
+  assert.match(client, /pairBEntries/);
   assert.match(server, /pairANames: selectedPairA\.map/);
   assert.match(server, /pairBNames: selectedPairB\.map/);
 });
@@ -25,13 +25,29 @@ test("debates save as drafts only after at least one debater is selected", () =>
     assert.ok(field);
     assert.doesNotMatch(field, /\srequired(?:\s|>)/);
   });
-  assert.match(client, /pairAIds: ids\.slice\(0, 2\)\.filter\(Boolean\)/);
-  assert.match(client, /pairBIds: ids\.slice\(2\)\.filter\(Boolean\)/);
+  assert.match(client, /pairAIds: pairAEntries\.map/);
+  assert.match(client, /pairBIds: pairBEntries\.map/);
   assert.match(client, /draft \? "Draft"/);
   assert.match(server, /if \(date && \(date < template\.startDate \|\| date > template\.endDate\)\)/);
   assert.match(server, /if \(startTime && endTime && timeMinutes\(startTime\) >= timeMinutes\(endTime\)\)/);
-  assert.match(server, /if \(!studentIds\.length\)/);
+  assert.match(server, /if \(!\[\.\.\.incomingPairA, \.\.\.incomingPairB\]\.length\)/);
   assert.match(server, /Add at least one debater before saving this debate/);
+});
+
+test("coaches can save applicants and judges who are not in suggestions", () => {
+  assert.match(html, /placeholder="Choose or type name · grade"/);
+  assert.match(html, /placeholder="Choose or type any judge"/);
+  assert.match(client, /function parseDebaterValue|const parseDebaterValue/);
+  assert.match(client, /return \{ id: "", name: parts\[0\]\.trim\(\), grade:/);
+  assert.doesNotMatch(client, /Choose typed debaters from the name suggestions/);
+  assert.match(server, /const cleanTryoutEntries/);
+  assert.match(server, /if \(!entry\.id\) return \{ id: "", name: entry\.name, grade: entry\.grade \}/);
+  assert.match(server, /pairAEntries: selectedPairA/);
+  assert.match(server, /pairBEntries: selectedPairB/);
+  assert.match(client, /const typedDebaterValues = Object\.fromEntries/);
+  assert.match(client, /editingId \? typedDebaterValues : \{\}/);
+  assert.match(client, /const suggestionLabels = new Set\(debaters\.map\(debaterLabel\)\)/);
+  assert.match(client, /assignments\.forEach\(item =>/);
 });
 
 test("tryout settings and debate entries autosave without save buttons", () => {
@@ -78,7 +94,7 @@ test("debater fields search by name without exposing their source", () => {
   assert.match(html, /id="tryout-a-one" list="tryout-debater-options"/);
   assert.match(html, /id="tryout-debater-options"/);
   assert.match(client, /const debaterLabel = person =>/);
-  assert.match(client, /debaters\.filter\(person => debaterLabel\(person\)\.toLowerCase\(\) === value\)/);
+  assert.match(client, /debaters\.find\(person => debaterLabel\(person\)\.toLowerCase\(\) === typed\.toLowerCase\(\)\)/);
   const optionsRenderer = client.slice(client.indexOf('$("tryout-debater-options").innerHTML'), client.indexOf("DEBATER_FIELDS.forEach"));
   assert.doesNotMatch(optionsRenderer, /sourceLabel/);
 });

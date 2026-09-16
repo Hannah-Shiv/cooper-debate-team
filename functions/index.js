@@ -2602,6 +2602,18 @@ exports.manageTryoutSchedule = onRequest(
             pairANames: Array.isArray(data.pairANames) ? data.pairANames.slice(0, 2) : legacyNames,
             pairBIds: Array.isArray(data.pairBIds) ? data.pairBIds.slice(0, 2) : [],
             pairBNames: Array.isArray(data.pairBNames) ? data.pairBNames.slice(0, 2) : [],
+            pairAGrades: Array.isArray(data.pairAGrades) ? data.pairAGrades.slice(0, 2) : [],
+            pairBGrades: Array.isArray(data.pairBGrades) ? data.pairBGrades.slice(0, 2) : [],
+            pairAEntries: Array.isArray(data.pairAEntries) ? data.pairAEntries.slice(0, 2).map(entry => ({
+              id: cleanText(entry && entry.id, 128),
+              name: cleanText(entry && entry.name, 120),
+              grade: cleanText(entry && entry.grade, 40),
+            })).filter(entry => entry.name) : [],
+            pairBEntries: Array.isArray(data.pairBEntries) ? data.pairBEntries.slice(0, 2).map(entry => ({
+              id: cleanText(entry && entry.id, 128),
+              name: cleanText(entry && entry.name, 120),
+              grade: cleanText(entry && entry.grade, 40),
+            })).filter(entry => entry.name) : [],
             session: cleanText(data.session, 8),
             date: cleanDate(data.date),
             startTime: cleanTime(data.startTime),
@@ -2672,11 +2684,19 @@ exports.manageTryoutSchedule = onRequest(
       if (action === "save") {
         const requestedId = cleanText(body.assignmentId, 128);
         const incoming = body.assignment || {};
-        const pairAIds = (Array.isArray(incoming.pairAIds) ? incoming.pairAIds : [])
-          .map(value => cleanText(value, 128)).filter(Boolean).slice(0, 2);
-        const pairBIds = (Array.isArray(incoming.pairBIds) ? incoming.pairBIds : [])
-          .map(value => cleanText(value, 128)).filter(Boolean).slice(0, 2);
-        const studentIds = [...pairAIds, ...pairBIds];
+        const cleanTryoutEntries = (rawEntries, fallbackIds) => {
+          if (Array.isArray(rawEntries)) {
+            return rawEntries.slice(0, 2).map(entry => ({
+              id: cleanText(entry && entry.id, 128),
+              name: cleanText(entry && entry.name, 120),
+              grade: cleanText(entry && entry.grade, 40),
+            })).filter(entry => entry.id || entry.name);
+          }
+          return (Array.isArray(fallbackIds) ? fallbackIds : []).slice(0, 2)
+            .map(id => ({ id: cleanText(id, 128), name: "", grade: "" })).filter(entry => entry.id);
+        };
+        const incomingPairA = cleanTryoutEntries(incoming.pairAEntries, incoming.pairAIds);
+        const incomingPairB = cleanTryoutEntries(incoming.pairBEntries, incoming.pairBIds);
         const date = cleanDate(incoming.date);
         const startTime = cleanTime(incoming.startTime);
         const endTime = cleanTime(incoming.endTime);
@@ -2693,19 +2713,27 @@ exports.manageTryoutSchedule = onRequest(
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
         const status = ["scheduled", "completed", "cancelled"].includes(incoming.status) ? incoming.status : "scheduled";
-        if (!studentIds.length) {
+        if (![...incomingPairA, ...incomingPairB].length) {
           throw new Error("Add at least one debater before saving this debate.");
-        }
-        if (new Set(studentIds).size !== studentIds.length) {
-          throw new Error("Each selected debater can appear only once.");
         }
         if (startTime && endTime && timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
         const pools = await buildTryoutPeoplePools(db);
         const personById = new Map(pools.debaters.map(person => [person.id, person]));
-        const selectedPairA = pairAIds.map(id => personById.get(id));
-        const selectedPairB = pairBIds.map(id => personById.get(id));
+        const hydrateEntries = entries => entries.map(entry => {
+          if (!entry.id) return { id: "", name: entry.name, grade: entry.grade };
+          const person = personById.get(entry.id);
+          return person ? { id: person.id, name: person.name, grade: person.grade } : null;
+        });
+        const selectedPairA = hydrateEntries(incomingPairA);
+        const selectedPairB = hydrateEntries(incomingPairB);
         const selected = [...selectedPairA, ...selectedPairB];
         if (selected.some(person => !person)) throw new Error("One of those debaters is no longer in Track Applications or the Members Directory.");
+        if (selected.some(person => !person.name)) throw new Error("Enter a name for each debater.");
+        const identityKeys = selected.map(person => person.name.toLowerCase().replace(/\s+/g, " "));
+        if (new Set(identityKeys).size !== identityKeys.length) throw new Error("Each debater can appear only once.");
+        const pairAIds = selectedPairA.map(person => person.id).filter(Boolean);
+        const pairBIds = selectedPairB.map(person => person.id).filter(Boolean);
+        const studentIds = [...pairAIds, ...pairBIds];
 
         const assignmentRef = requestedId ? scheduleCollection.doc(requestedId) : scheduleCollection.doc();
         await db.runTransaction(async transaction => {
@@ -2729,8 +2757,12 @@ exports.manageTryoutSchedule = onRequest(
             studentNames: selected.map(person => person.name),
             pairAIds,
             pairANames: selectedPairA.map(person => person.name),
+            pairAGrades: selectedPairA.map(person => person.grade),
+            pairAEntries: selectedPairA,
             pairBIds,
             pairBNames: selectedPairB.map(person => person.name),
+            pairBGrades: selectedPairB.map(person => person.grade),
+            pairBEntries: selectedPairB,
             startTime,
             endTime,
             judge,
