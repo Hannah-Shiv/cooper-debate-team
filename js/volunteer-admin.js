@@ -498,16 +498,21 @@
   async function renderEvents(items) {
     const root = $("vol-event-list");
     const search = ($("event-grid-search")?.value || "").trim().toLowerCase();
-    const filter = $("event-grid-filter")?.value || "all";
+    const typeFilter = $("event-grid-type")?.value || "all";
+    const statusFilter = $("event-grid-status")?.value || "all";
+    const sort = $("event-grid-sort")?.value || "date-asc";
     const filtered = items.filter(item => {
       const status = tournamentStatus(item);
       const type = item.eventType || "external";
       const matchesSearch = !search || [item.title, item.date, item.location, item.host, type].some(value => String(value || "").toLowerCase().includes(search));
-      const matchesFilter = filter === "all" ||
-        (filter === "upcoming" && status.key === "active") ||
-        (filter === "tryout" && type === "tryout") ||
-        status.key === filter;
-      return matchesSearch && matchesFilter;
+      const matchesType = typeFilter === "all" || type === typeFilter;
+      const matchesStatus = statusFilter === "all" || status.key === statusFilter;
+      return matchesSearch && matchesType && matchesStatus;
+    }).sort((left, right) => {
+      if (sort === "date-desc") return String(right.date || "").localeCompare(String(left.date || ""));
+      if (sort === "name-asc") return String(left.title || "").localeCompare(String(right.title || ""));
+      if (sort === "name-desc") return String(right.title || "").localeCompare(String(left.title || ""));
+      return String(left.date || "").localeCompare(String(right.date || ""));
     });
     $("tm-grid-count").textContent = `${filtered.length} of ${items.length}`;
     if (!items.length) {
@@ -612,7 +617,14 @@
     };
     window.activateEventsTab = activateEventsTab;
     $("event-grid-search").addEventListener("input", () => renderEvents(events));
-    $("event-grid-filter").addEventListener("change", () => renderEvents(events));
+    ["event-grid-type", "event-grid-status", "event-grid-sort"].forEach(id => $(id).addEventListener("change", () => renderEvents(events)));
+    $("event-grid-reset").addEventListener("click", () => {
+      $("event-grid-search").value = "";
+      $("event-grid-type").value = "all";
+      $("event-grid-status").value = "all";
+      $("event-grid-sort").value = "date-asc";
+      renderEvents(events);
+    });
     $("event-type").addEventListener("change", () => {
       const isTryout = $("event-type").value === "tryout";
       if (!isTryout) $("event-partner-session").value = "";
