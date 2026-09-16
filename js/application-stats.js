@@ -77,20 +77,20 @@
     const max = Math.max(1, ...bins.map(bin => bin.count));
     const ticks = [...new Set([0, Math.ceil(max / 2), max])].sort((a, b) => a - b);
     const slot = plotWidth / Math.max(1, bins.length);
-    const barWidth = Math.max(3, Math.min(42, slot * 0.68));
     const labelEvery = Math.max(1, Math.ceil(bins.length / 10));
     const grid = ticks.map(value => {
       const y = plot.top + plotHeight - value / max * plotHeight;
       return `<line class="stats-grid-line" x1="${plot.left}" y1="${y}" x2="${width - plot.right}" y2="${y}"/><text class="stats-y-label" x="${plot.left - 12}" y="${y + 4}" text-anchor="end">${value}</text>`;
     }).join("");
-    const bars = bins.map((bin, index) => {
-      const x = plot.left + index * slot + (slot - barWidth) / 2;
-      const barHeight = bin.count / max * plotHeight;
-      const y = plot.top + plotHeight - barHeight;
+    const points = bins.map((bin, index) => {
+      const x = plot.left + index * slot + slot / 2;
+      const y = plot.top + plotHeight - bin.count / max * plotHeight;
       const label = hourly ? axisHour(new Date(bin.start)) : axisDate(new Date(bin.start));
-      return `<g><rect class="stats-bar" x="${x}" y="${y}" width="${barWidth}" height="${Math.max(bin.count ? 3 : 1, barHeight)}" rx="3" tabindex="0" aria-label="${esc(label)}: ${bin.count} submission${bin.count === 1 ? "" : "s"}"><title>${esc(label)} · ${bin.count} submission${bin.count === 1 ? "" : "s"}</title></rect>${index % labelEvery === 0 || index === bins.length - 1 ? `<text class="stats-x-label" x="${x + barWidth / 2}" y="${height - 24}" text-anchor="middle">${esc(label)}</text>` : ""}</g>`;
-    }).join("");
-    return `<svg class="stats-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Column chart showing application submissions grouped ${hourly ? "by hour" : "by day"}"><text class="stats-axis-title" transform="translate(15 ${plot.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Submissions</text>${grid}<line class="stats-axis" x1="${plot.left}" y1="${plot.top + plotHeight}" x2="${width - plot.right}" y2="${plot.top + plotHeight}"/>${bars}<text class="stats-axis-title" x="${plot.left + plotWidth / 2}" y="${height - 2}" text-anchor="middle">Date / time</text></svg>`;
+      return { x, y, label, count: bin.count, showLabel: index % labelEvery === 0 || index === bins.length - 1 };
+    });
+    const path = points.map((point, index) => `${index ? "L" : "M"} ${point.x} ${point.y}`).join(" ");
+    const pointMarkup = points.map(point => `<g><circle class="stats-point" cx="${point.x}" cy="${point.y}" r="6" tabindex="0" aria-label="${esc(point.label)}: ${point.count} submission${point.count === 1 ? "" : "s"}"><title>${esc(point.label)} · ${point.count} submission${point.count === 1 ? "" : "s"}</title></circle>${point.showLabel ? `<text class="stats-x-label" x="${point.x}" y="${height - 24}" text-anchor="middle">${esc(point.label)}</text>` : ""}</g>`).join("");
+    return `<svg class="stats-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Line chart showing application submissions grouped ${hourly ? "by hour" : "by day"}"><text class="stats-axis-title" transform="translate(15 ${plot.top + plotHeight / 2}) rotate(-90)" text-anchor="middle">Submissions</text>${grid}<line class="stats-axis" x1="${plot.left}" y1="${plot.top + plotHeight}" x2="${width - plot.right}" y2="${plot.top + plotHeight}"/><path class="stats-line" d="${path}"/>${pointMarkup}<text class="stats-axis-title" x="${plot.left + plotWidth / 2}" y="${height - 2}" text-anchor="middle">Date / time</text></svg>`;
   }
 
   function updateHandles() {

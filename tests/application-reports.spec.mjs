@@ -100,7 +100,8 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   const dialog = page.locator(".application-stats-dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
-  await expect(dialog.locator(".stats-bar")).toHaveCount(3);
+  await expect(dialog.locator(".stats-line")).toHaveCount(1);
+  await expect(dialog.locator(".stats-point")).toHaveCount(3);
   await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
   await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
 
@@ -119,7 +120,7 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   await dialog.locator("#stats-to").dispatchEvent("change");
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
   await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
-  await expect(dialog.locator(".stats-bar")).toHaveCount(24);
+  await expect(dialog.locator(".stats-point")).toHaveCount(24);
 });
 
 test("essay report shows all grading states, filters, and sorts by total", async ({ page }) => {
