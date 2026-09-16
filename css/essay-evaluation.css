@@ -934,7 +934,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   min-height:0;
   padding:0
 }
-.eval-head-score-group{flex:0 1 230px}
+.eval-head-score-group{flex:0 0 265px}
 .eval-head-summary strong{color:#d4e6f8}
 .eval-header-score{
   border-radius:999px;
@@ -947,6 +947,21 @@ html.is-chromeos .eval-head-summary:before{display:none}
   padding:7px 10px;
   text-overflow:ellipsis;
   white-space:nowrap
+}
+.essay-eval-title,.essay-eval-sub,.eval-header-score,.eval-head-summary .eval-meter span,
+.eval-status,.eval-head-recommendation{
+  color:#fff!important
+}
+.essay-eval-title,.essay-eval-sub,.eval-status,.eval-head-recommendation{
+  text-shadow:0 1px 2px rgba(0,0,0,.72)
+}
+.eval-header-score{
+  font-weight:900;
+  text-shadow:0 1px 2px rgba(0,0,0,.72)
+}
+.eval-header-score{
+  color:#000!important;
+  text-shadow:none
 }
 .eval-head-progress{flex:0 0 92px}
 .eval-head-summary .eval-meter{
@@ -1013,7 +1028,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-head-person{flex-basis:112px}
   .eval-head-instructions{flex-basis:100px;padding-left:7px}
   .eval-head-summary{gap:6px}
-  .eval-head-score-group{flex-basis:205px}
+  .eval-head-score-group{flex:0 0 236px}
   .eval-head-progress{flex-basis:72px}
   .eval-head-summary .eval-meter{width:72px}
   .essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{gap:4px}

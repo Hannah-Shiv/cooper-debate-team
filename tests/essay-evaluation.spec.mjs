@@ -265,6 +265,8 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
     const progressStyle = getComputedStyle(progress);
     const progressTextStyle = getComputedStyle(progress.querySelector("span"));
     const recommendationStyle = getComputedStyle(document.querySelector(".eval-head-recommendation"));
+    const titleStyle = getComputedStyle(document.querySelector(".essay-eval-title"));
+    const instructionStyle = getComputedStyle(document.querySelector(".essay-eval-sub"));
     return {
       actionsOrdered: actionBoxes.every((box, index) => index === 0 || box.left >= actionBoxes[index - 1].right),
       actionsOneLine: Math.max(...actionBoxes.map(box => box.top + box.height / 2)) - Math.min(...actionBoxes.map(box => box.top + box.height / 2)) < 2,
@@ -280,6 +282,14 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
       progressTextLayer: Number(progressTextStyle.zIndex),
       recommendationSize: parseFloat(recommendationStyle.fontSize),
       statusSize: parseFloat(statusStyle.fontSize),
+      dataColors: [
+        titleStyle.color,
+        instructionStyle.color,
+        progressTextStyle.color,
+        statusStyle.color,
+        recommendationStyle.color,
+      ],
+      scoreColor: scoreStyle.color,
       scoreWidth: document.querySelector(".eval-header-score").getBoundingClientRect().width,
       scoreRadius: parseFloat(scoreStyle.borderRadius),
       statusRadius: parseFloat(statusStyle.borderRadius),
@@ -315,7 +325,9 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.progressTextColor).toBe("rgb(255, 255, 255)");
   expect(header.progressTextLayer).toBeGreaterThan(1);
   expect(header.recommendationSize).toBe(header.statusSize);
-  expect(header.scoreWidth).toBeGreaterThanOrEqual(205);
+  expect(header.scoreWidth).toBeGreaterThanOrEqual(236);
+  expect(header.dataColors.every(color => color === "rgb(255, 255, 255)")).toBe(true);
+  expect(header.scoreColor).toBe("rgb(0, 0, 0)");
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
   expect(header.essayTitleSize).toBeGreaterThanOrEqual(7.5);
@@ -323,7 +335,7 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.statusDivider).toBe("1px");
   expect(header.statusWidth).toBe(96);
   expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
-  expect(header.instructionColor).toBe("rgb(212, 230, 248)");
+  expect(header.instructionColor).toBe("rgb(255, 255, 255)");
   expect(header.actionHeights.every(height => height === 30)).toBe(true);
   expect(header.closeBackground).toContain("182, 59, 71");
   expect(header.finalizeBackground).toBe("none");
