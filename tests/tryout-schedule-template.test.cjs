@@ -42,15 +42,24 @@ test("tryout settings and debate entries autosave without save buttons", () => {
   assert.match(client, /"Saved just now"/);
 });
 
-test("data entry uses a five-column, three-row grid above the full-width schedule", () => {
+test("data entry uses a compact two-row grid above the full-width schedule", () => {
   const entryStart = html.indexOf('<form id="tryout-form"');
   const scheduleStart = html.indexOf('<section class="tryout-card tryout-schedule-card">');
   assert.ok(entryStart >= 0 && scheduleStart > entryStart);
-  assert.match(html, /\.tryout-data-grid\{display:grid;gap:14px;grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
+  assert.match(html, /\.tryout-data-grid\{display:grid;gap:14px;grid-template-columns:repeat\(12,minmax\(0,1fr\)\)/);
+  assert.match(html, /\.tryout-data-grid>\.span-2\{grid-column:span 2\}/);
+  assert.match(html, /\.tryout-data-grid>\.span-3\{grid-column:span 3\}/);
   assert.match(html, /class="tryout-pair-group pair-a"/);
   assert.match(html, /class="tryout-pair-group pair-b"/);
-  assert.match(html, /\.tryout-pair-group\{[^}]*grid-column:span 2/);
+  assert.match(html, /\.tryout-pair-group\{[^}]*grid-column:span 3/);
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
+});
+
+test("tryout manager typography is increased by fifteen percent", () => {
+  assert.match(html, /#tryout-manager \.tm-field label\{font-size:\.63rem\}/);
+  assert.match(html, /#tryout-manager \.tm-field input,[^}]*font-size:\.83rem/);
+  assert.match(html, /#tryout-manager \.tryout-table td\{font-size:\.71rem\}/);
+  assert.match(html, /#tryout-manager \.tryout-overview h2\{font-size:1\.98rem\}/);
 });
 
 test("debater fields search by name without exposing their source", () => {
