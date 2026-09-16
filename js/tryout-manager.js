@@ -12,7 +12,7 @@
   let currentUser = null;
   let canDelete = false;
   const $ = id => document.getElementById(id);
-  const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&quot;").replace(/'/g, "&#039;");
+  const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
     if (!/^\d{2}:\d{2}$/.test(value || "")) return value || "";
     const [hour, minute] = value.split(":").map(Number);
@@ -26,6 +26,12 @@
     });
   };
   const statusLabel = value => ({ scheduled: "Scheduled", completed: "Completed", cancelled: "Cancelled" }[value] || "Scheduled");
+  const debaterLabel = person => `${person.name}${person.grade ? ` · ${person.grade}` : ""}`;
+  const selectedDebaterId = fieldId => {
+    const value = $(fieldId).value.trim().toLowerCase();
+    const matches = debaters.filter(person => debaterLabel(person).toLowerCase() === value);
+    return matches.length === 1 ? matches[0].id : "";
+  };
 
   function setMessage(text, kind) {
     const target = $("tryout-message");
@@ -47,12 +53,12 @@
   }
 
   function renderPeopleOptions(selected = {}) {
-    const options = `<option value="">Choose a debater</option>${debaters.map(person =>
-      `<option value="${esc(person.id)}">${esc(person.name)} · ${esc(person.grade || "Grade unavailable")} · ${esc(person.sourceLabel)}</option>`
-    ).join("")}`;
+    $("tryout-debater-options").innerHTML = debaters.map(person =>
+      `<option value="${esc(debaterLabel(person))}"></option>`
+    ).join("");
     DEBATER_FIELDS.forEach(id => {
-      $(id).innerHTML = options;
-      $(id).value = selected[id] || "";
+      const person = debaters.find(candidate => candidate.id === selected[id]);
+      $(id).value = person ? debaterLabel(person) : "";
     });
     $("tryout-judge-options").innerHTML = judges.map(person =>
       `<option value="${esc(person.name)}">${esc(person.sourceLabel || "Members Directory")}</option>`
@@ -183,9 +189,9 @@
 
   async function save(event) {
     event.preventDefault();
-    const ids = DEBATER_FIELDS.map(id => $(id).value);
+    const ids = DEBATER_FIELDS.map(selectedDebaterId);
     if (ids.some(id => !id) || new Set(ids).size !== 4) {
-      setMessage("Choose four different debaters for Pair A and Pair B.", "error");
+      setMessage("Choose four different debaters from the name suggestions for Pair A and Pair B.", "error");
       return;
     }
     const assignment = {
@@ -221,8 +227,8 @@
     template = result.template || template;
     applyTemplate();
     renderPeopleOptions(editingId ? {
-      "tryout-a-one": $("tryout-a-one").value, "tryout-a-two": $("tryout-a-two").value,
-      "tryout-b-one": $("tryout-b-one").value, "tryout-b-two": $("tryout-b-two").value,
+      "tryout-a-one": selectedDebaterId("tryout-a-one"), "tryout-a-two": selectedDebaterId("tryout-a-two"),
+      "tryout-b-one": selectedDebaterId("tryout-b-one"), "tryout-b-two": selectedDebaterId("tryout-b-two"),
     } : {});
     renderSchedule();
   }
