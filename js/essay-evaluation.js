@@ -567,7 +567,7 @@
       .catch(() => {
         if (!pane.isConnected) return;
         wrapper.classList.add("status-unavailable");
-        wrapper.querySelector("p").textContent = "Evaluation status unavailable. You can still read the document and try again.";
+        wrapper.querySelector("p")?.remove();
       });
   });
 
