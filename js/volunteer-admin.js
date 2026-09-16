@@ -437,10 +437,8 @@
       user.email
     );
     const rolePresentation = ROLE_PRESENTATION[role] || ROLE_PRESENTATION.coach;
-    const roleIcon = $("member-role-icon");
     const badge = $("member-role-badge");
     const label = badge && badge.querySelector(".mub-role-label");
-    if (roleIcon) roleIcon.src = rolePresentation.icon;
     if (badge) badge.dataset.role = role;
     if (label) {
       label.textContent = rolePresentation.label;
@@ -452,7 +450,6 @@
     document.dispatchEvent(new CustomEvent("tournament-manager-ready", { detail: { role } }));
     if (role === "captain") {
       document.querySelector('[data-manager-mode="volunteers"]')?.setAttribute("hidden", "");
-      document.querySelector(".tm-preview")?.setAttribute("hidden", "");
       document.querySelectorAll("[data-volunteer-only]").forEach(item => item.setAttribute("hidden", ""));
       document.querySelector('[data-manager-mode="tryout"]')?.click();
     } else {
