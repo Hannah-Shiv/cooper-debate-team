@@ -315,7 +315,7 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
   expect(header.essayTitleSize).toBeGreaterThanOrEqual(7.5);
-  expect(header.scoreSize).toBeGreaterThanOrEqual(11);
+  expect(header.scoreSize).toBeGreaterThanOrEqual(12.1);
   expect(header.statusDivider).toBe("1px");
   expect(header.statusWidth).toBe(96);
   expect(header.instructionSize).toBeGreaterThanOrEqual(13.7);
