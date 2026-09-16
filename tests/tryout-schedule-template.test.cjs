@@ -50,6 +50,12 @@ test("coaches can save applicants and judges who are not in suggestions", () => 
   assert.match(client, /assignments\.forEach\(item =>/);
 });
 
+test("Coach is a supported judge type", () => {
+  assert.match(html, /<option value="coach">Coach<\/option>/);
+  assert.match(server, /\["member", "coach", "high-school-student", "teacher", "parent", "other"\]/);
+  assert.match(server, /coach: "Coach"/);
+});
+
 test("tryout settings and debate entries autosave without save buttons", () => {
   assert.match(html, /id="tryout-settings-status"[^>]*>Tournament saved</);
   assert.match(html, /id="tryout-record-status"[^>]*>Debate saved</);

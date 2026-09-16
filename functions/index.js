@@ -2701,10 +2701,11 @@ exports.manageTryoutSchedule = onRequest(
         const startTime = cleanTime(incoming.startTime);
         const endTime = cleanTime(incoming.endTime);
         const judge = cleanText(incoming.judge, 120);
-        const judgeType = ["member", "high-school-student", "teacher", "parent", "other"].includes(incoming.judgeType)
+        const judgeType = ["member", "coach", "high-school-student", "teacher", "parent", "other"].includes(incoming.judgeType)
           ? incoming.judgeType : "other";
         const judgeTypeLabel = {
           member: "Members Directory",
+          coach: "Coach",
           "high-school-student": "High-school student",
           teacher: "Teacher",
           parent: "Parent",
