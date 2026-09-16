@@ -195,7 +195,7 @@
    .tm-view-list{display:grid;gap:10px}.tm-view-row{display:grid;gap:14px;grid-template-columns:125px 1fr}.tm-view-row dt{color:#7990b1;font-size:.61rem}.tm-view-row dd{color:#e9f0fa;font-size:.68rem;line-height:1.5;margin:0;overflow-wrap:anywhere}
    .tm-view-setting{align-items:center;display:flex;gap:9px}.tm-view-dot{background:#65758e;border-radius:50%;height:9px;width:9px}.tm-view-dot.on{background:#30cf88;box-shadow:0 0 0 4px rgba(48,207,136,.12)}
    .tm-table-toggle{background:#32445f;border-radius:999px;display:inline-flex;height:20px;padding:3px;width:36px}.tm-table-toggle span{background:#b9c8dc;border-radius:50%;height:14px;transition:transform .18s;width:14px}.tm-table-toggle.on{background:#16a76c}.tm-table-toggle.on span{background:#effff9;transform:translateX(16px)}.tm-row-arrow{color:#7190b9;font-size:1.15rem;text-align:right;width:24px}
-   #tryout-manager{display:none}body[data-portal-role] #tryout-manager:not([hidden]){display:block}
+   #tryout-manager{display:none}body[data-portal-role] #tryout-manager:not([hidden]){display:block}.tm-tryout-entry{background:#17685e;border:1px solid #6ce0c8;color:#fff}.tm-tryout-entry:hover,.tm-tryout-entry:focus-visible{background:#218477;box-shadow:0 0 18px rgba(61,210,180,.3)}.tryout-back{background:transparent;border:0;color:#a8cbff;cursor:pointer;display:block;font-size:.59rem;font-weight:700;letter-spacing:.08em;margin:0 0 9px;padding:0;text-transform:uppercase}.tryout-back:hover,.tryout-back:focus-visible{color:#fff;text-decoration:underline}.tryout-overview-copy .tm-summary-kicker{display:block}
    @media(max-width:680px){.tm-view-grid{grid-template-columns:1fr}.tm-view-card.full{grid-column:auto}.tm-view-row{grid-template-columns:1fr;gap:3px}.tm-view-hero-top{flex-direction:column}}
 
     /* Wider tournament workspace with a fully contained data grid. */
@@ -504,7 +504,7 @@
             <div id="volunteer-manager">
              <div class="tm-manager-columns">
              <section class="tm-grid-column">
-             <div class="tm-grid-heading"><h2>All Tournaments</h2><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
+             <div class="tm-grid-heading"><h2>All Tournaments</h2><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event tm-tryout-entry" type="button" data-manager-mode="tryout">Tryout Schedule</button><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
              <div class="tm-grid-toolbar" data-volunteer-only>
                <div class="tm-grid-controls">
                  <label class="tm-control-box tm-control-search" data-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="event-grid-search" type="search" placeholder="Find a tournament…" aria-label="Search tournaments"></label>
@@ -675,6 +675,7 @@
             <section id="tryout-manager" class="tryout-manager" hidden>
               <section class="tryout-overview">
                 <div class="tryout-overview-copy">
+                  <button class="tryout-back" type="button" data-manager-mode="volunteers">← Back to All Tournaments</button>
                   <span class="tm-summary-kicker">Reusable tryout tournament template</span>
                   <h2 id="tryout-template-title">2026 Debate Tryout Schedule</h2>
                   <p>Manually schedule Pair A against Pair B with a judge, date, time, and room. Debaters come from Track Applications or the Members Directory.</p>
@@ -732,8 +733,8 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/volunteer-admin.js?v=30"></script>
-  <script src="js/tryout-manager.js?v=4"></script>
+  <script src="js/volunteer-admin.js?v=31"></script>
+  <script src="js/tryout-manager.js?v=5"></script>
   <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>
 </body>

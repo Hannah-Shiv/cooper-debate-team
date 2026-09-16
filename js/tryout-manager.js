@@ -227,6 +227,7 @@
 
   function showMode(mode) {
     const tryout = mode === "tryout";
+    $("volunteer-manager").hidden = tryout;
     $("tryout-manager").hidden = !tryout;
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.classList.toggle("active", button.dataset.managerMode === mode));

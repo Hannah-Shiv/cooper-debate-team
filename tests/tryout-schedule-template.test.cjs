@@ -15,6 +15,13 @@ test("tryout form schedules Pair A against Pair B", () => {
   assert.match(server, /studentIds\.length !== 4 \|\| new Set\(studentIds\)\.size !== 4/);
 });
 
+test("website admins have a visible way to open and leave the tryout schedule", () => {
+  assert.match(html, /data-manager-mode="tryout">Tryout Schedule</);
+  assert.match(html, /data-manager-mode="volunteers">← Back to All Tournaments</);
+  assert.match(client, /\$\("volunteer-manager"\)\.hidden = tryout/);
+  assert.doesNotMatch(fs.readFileSync("js/volunteer-admin.js", "utf8"), /appendChild\(tryoutManager\)/);
+});
+
 test("tryout template uses a reusable date range", () => {
   assert.match(html, /id="tryout-range-start"/);
   assert.match(html, /id="tryout-range-end"/);
