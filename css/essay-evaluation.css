@@ -649,6 +649,11 @@ html.is-chromeos .eval-head-summary:before{display:none}
   text-align:center;
   text-shadow:0 0 5px color-mix(in srgb,var(--category-accent) 55%,transparent)
 }
+.eval-cat-grade{
+  box-sizing:border-box;
+  flex:0 0 104px;
+  width:104px
+}
 .eval-cat-score{min-width:66px}
 .eval-category.scored .eval-cat-grade,.eval-category.scored .eval-cat-score{
   background:var(--category-accent);

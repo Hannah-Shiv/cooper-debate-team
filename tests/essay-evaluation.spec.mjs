@@ -129,6 +129,11 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
   await expect(page.locator(".eval-meter span")).toHaveText("29%");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-grade')).toHaveText("Outstanding");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-score')).toHaveText("5/5");
+  const gradeWidths = await page.locator(".eval-cat-grade").evaluateAll(elements =>
+    elements.map(element => element.getBoundingClientRect().width)
+  );
+  expect(new Set(gradeWidths).size).toBe(1);
+  expect(gradeWidths[0]).toBe(104);
   await expect.poll(async () => page.evaluate(() =>
     window.__requests.filter((request) => request.action === "save").length
   )).toBe(1);
