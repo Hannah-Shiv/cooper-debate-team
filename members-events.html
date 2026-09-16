@@ -230,15 +230,28 @@
     }
     .tm-grid-column .tm-data-grid{overflow-x:hidden}
     .tm-grid-column .tm-data-table{min-width:0;table-layout:fixed;width:100%}
-    .tm-grid-column .tm-data-table th:nth-child(1){width:28%}
-    .tm-grid-column .tm-data-table th:nth-child(2){width:16%}
-    .tm-grid-column .tm-data-table th:nth-child(3){width:15%}
-    .tm-grid-column .tm-data-table th:nth-child(4){width:15%}
-    .tm-grid-column .tm-data-table th:nth-child(5),
-    .tm-grid-column .tm-data-table th:nth-child(6){width:11%}
-    .tm-grid-column .tm-data-table th:nth-child(7){width:4%}
+    .tm-grid-column .tm-data-table th:nth-child(1){width:25%}
+    .tm-grid-column .tm-data-table th:nth-child(2){width:15%}
+    .tm-grid-column .tm-data-table th:nth-child(3){width:14%}
+    .tm-grid-column .tm-data-table th:nth-child(4){width:14%}
+    .tm-grid-column .tm-data-table th:nth-child(5){width:14%}
+    .tm-grid-column .tm-data-table th:nth-child(6){width:13%}
+    .tm-grid-column .tm-data-table th:nth-child(7){width:5%}
     .tm-grid-column .tm-data-table th,
     .tm-grid-column .tm-data-table td{overflow-wrap:anywhere;padding-left:10px;padding-right:10px}
+    .tm-grid-column .tm-data-table th{
+      font-size:.5rem;
+      letter-spacing:.08em;
+      overflow-wrap:normal;
+      white-space:nowrap;
+      word-break:normal
+    }
+    .tm-grid-column .tm-data-table .tm-kind,
+    .tm-grid-column .tm-data-table .tm-grid-status{
+      font-size:.48rem;
+      letter-spacing:.03em;
+      padding:4px 5px
+    }
 
     /* Keep the full-details modal below the fixed member header. */
     .tm-modal-backdrop{inset:88px 0 0}
@@ -466,14 +479,13 @@
             </div>
           </section>
           <section id="vol-dashboard" hidden>
-            <div class="tm-breadcrumb"><a href="members-signon.html">Member Hub</a><span>›</span><span class="current">Tournament Management</span><span>›</span><span id="tm-crumb-event">Overview</span></div>
             <div class="tm-page-row">
               <div class="tm-page-heading"><h1><span class="tm-page-title-main">Tournament Management</span><span class="tm-page-title-divider" aria-hidden="true"></span><span class="tm-page-title-context">Add, view, and manage every tournament, including internal tryouts.</span></h1></div>
             </div>
             <div id="volunteer-manager">
              <div class="tm-manager-columns">
              <section class="tm-grid-column">
-             <div class="tm-grid-heading"><div><span class="tm-eyebrow">TOURNAMENTS</span><h2>All tournaments</h2></div><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
+             <div class="tm-grid-heading"><h2>Tournaments</h2><div class="tm-grid-heading-actions"><span class="tm-grid-count" id="tm-grid-count"></span><button class="tm-new-event" type="button" data-add-tournament>+ Add Tournament</button></div></div>
              <div class="tm-grid-toolbar" data-volunteer-only>
                <div class="tm-grid-controls">
                  <label class="tm-control-box tm-control-search" data-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg><input id="event-grid-search" type="search" placeholder="Find a tournament…" aria-label="Search tournaments"></label>
@@ -686,7 +698,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/volunteer-admin.js?v=28"></script>
+  <script src="js/volunteer-admin.js?v=29"></script>
   <script src="js/tryout-manager.js?v=3"></script>
   <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>

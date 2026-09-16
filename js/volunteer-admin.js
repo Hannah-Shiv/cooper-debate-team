@@ -108,7 +108,6 @@
     $("event-season").value = "2026-2027";
     $("event-volunteer-signups").checked = true;
     setCapacityRoles();
-    $("tm-crumb-event").textContent = "New tournament";
     $("vol-save").textContent = "Create tournament";
     $("vol-cancel-edit").style.display = "none";
     $("tm-detail-heading").textContent = "Add tournament";
@@ -150,7 +149,6 @@
     $("event-lunch-provided").checked = mealPrefix.test(providedMeal);
     $("event-meal").value = providedMeal.replace(mealPrefix, "");
     setCapacityRoles(event.roles || []);
-    $("tm-crumb-event").textContent = event.title || "Tournament Management";
     $("vol-save").textContent = "Save changes";
     $("vol-cancel-edit").style.display = "block";
     selectedEventId = event.id;
