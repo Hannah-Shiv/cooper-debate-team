@@ -57,6 +57,15 @@
   .essay-reference-head .essay-reference-heading h2{align-self:center;font-size:1.342rem;margin:0}
   .essay-reference-head .essay-reference-heading p{font-size:.7975rem;line-height:1;margin:0;white-space:nowrap}
 }
+.essay-reference-head:has(.essay-launch-heading p.is-completed){display:block;padding:15px 17px}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-reference-head-divider,
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-reference-heading{display:none}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-reference-launch{width:100%}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap{align-items:flex-start;gap:12px;width:max-content}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-heading{align-items:flex-start;flex-direction:column;gap:9px;width:max-content}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-heading>strong{font-size:.72rem;letter-spacing:.11em}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap p.is-completed{gap:7px}
+.essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch{min-height:40px;padding:10px 19px;width:auto}
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
 .essay-eval { background: #071a37; border: 0; color: #eef5ff; height: 100dvh; margin: 0; max-height: none; max-width: none; overflow: hidden; padding: 0; width: 100vw; }
