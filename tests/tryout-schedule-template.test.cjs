@@ -177,7 +177,9 @@ test("tryout times show AM or PM and room identifies the school location", () =>
   assert.match(html, /id="tryout-end-period"[^>]*>AM \/ PM<\/span>/);
   assert.match(html, /\.tryout-time-box\{[^}]*min-height:102px/);
   assert.match(client, /hour >= 12 \? "PM" : "AM"/);
-  assert.match(html, /<b>Location<\/b>Cooper Middle School/);
+  assert.match(html, /class="tryout-room-stack"/);
+  assert.match(html, /class="tryout-location-display"[^>]*><b>Location<\/b>Cooper Middle School/);
+  assert.match(html, /\.tryout-room-stack\{[^}]*height:102px/);
 });
 
 test("blank debates do not autosave and member judges omit directory source text", () => {
