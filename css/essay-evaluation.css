@@ -489,3 +489,126 @@ html.is-chromeos .eval-head-summary:before{display:none}
   html.is-chromeos .eval-head-summary{border-right:0;grid-area:summary;margin:0;padding:0 0 0 22px}
   html.is-chromeos .essay-eval-head-actions{border-top:1px solid rgba(144,188,235,.22);grid-area:actions;justify-content:flex-end;padding-top:8px}
 }
+
+/* Single-line evaluation command bar. */
+.essay-eval-head,html.is-chromeos .essay-eval-head{
+  align-items:center;
+  display:flex;
+  flex:0 0 62px;
+  gap:0;
+  grid-template-areas:none;
+  min-height:62px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:8px clamp(14px,1.6vw,26px);
+  scrollbar-width:thin;
+  white-space:nowrap
+}
+.essay-eval-identity,html.is-chromeos .essay-eval-identity{
+  align-items:center;
+  display:flex;
+  flex:1 1 auto;
+  gap:0;
+  grid-area:auto;
+  min-height:38px;
+  min-width:max-content
+}
+.essay-eval-kicker,.essay-eval-title,.essay-eval-sub,.eval-head-summary,.essay-eval-head-actions{
+  align-items:center;
+  display:flex;
+  min-height:34px
+}
+.essay-eval-kicker{grid-column:auto;line-height:1;padding-right:18px}
+.essay-eval-title{border-left:1px solid rgba(144,188,235,.34);grid-column:auto;padding:0 18px}
+.essay-eval-sub{border-left:1px solid rgba(144,188,235,.34);grid-column:auto;overflow:visible;padding:0 18px;text-overflow:clip}
+.eval-head-summary,html.is-chromeos .eval-head-summary{
+  border:0;
+  border-left:1px solid rgba(144,188,235,.34);
+  display:flex;
+  flex:0 0 auto;
+  gap:12px;
+  grid-area:auto;
+  margin:0;
+  min-height:34px;
+  padding:0 18px
+}
+.eval-head-summary strong{font-size:.9rem}
+.eval-header-score{
+  background:linear-gradient(180deg,#f7d765,#d7a72d);
+  border:1px solid #ffe999;
+  border-radius:999px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 9px rgba(0,0,0,.24);
+  color:#14223b!important;
+  min-height:30px;
+  padding:7px 12px
+}
+.essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{
+  border:0;
+  border-left:1px solid rgba(144,188,235,.34);
+  display:flex;
+  flex:0 0 auto;
+  flex-wrap:nowrap;
+  gap:10px;
+  grid-area:auto;
+  justify-content:flex-start;
+  min-height:34px;
+  padding:0 0 0 18px
+}
+.eval-status{
+  align-items:center;
+  background:#123b68;
+  border:1px solid #5d93c6;
+  border-radius:999px;
+  color:#dbeeff;
+  display:flex;
+  min-height:30px;
+  min-width:0;
+  order:0;
+  padding:7px 12px;
+  text-align:center;
+  width:auto
+}
+.eval-status:before{color:#8eb7da;content:"Status";font-size:.58rem;font-weight:900;letter-spacing:.08em;margin-right:7px;text-transform:uppercase}
+.eval-status[data-kind=error]{background:#5a202d;border-color:#d76f7c;color:#ffd8dc}
+.eval-status[data-kind=saved]{background:#114d39;border-color:#57bd90;color:#d9ffec}
+.eval-reset{min-height:32px}
+.eval-close{
+  background:linear-gradient(180deg,#b63b47,#7e202d);
+  border:1px solid #ff8f99;
+  color:#fff;
+  min-height:32px
+}
+.eval-close:hover,.eval-close:focus-visible{
+  background:linear-gradient(180deg,#dc5260,#9b2837);
+  border-color:#ffd0d4;
+  box-shadow:0 0 0 3px rgba(255,87,101,.2),0 0 13px rgba(255,87,101,.32);
+  color:#fff;
+  outline:0;
+  transform:translateY(-1px)
+}
+.eval-finalize{
+  background:linear-gradient(180deg,#43c879,#218c51);
+  border:1px solid #8aefb4;
+  color:#062718;
+  margin-left:0;
+  min-height:32px
+}
+.eval-finalize:not(:disabled):hover,.eval-finalize:not(:disabled):focus-visible{
+  background:linear-gradient(180deg,#60e493,#2ba862);
+  border-color:#d6ffe6;
+  box-shadow:0 0 0 3px rgba(82,218,139,.2),0 0 13px rgba(82,218,139,.3);
+  outline:0;
+  transform:translateY(-1px)
+}
+.eval-finalize:disabled{background:linear-gradient(180deg,#43c879,#218c51);border-color:#8aefb4;color:#062718;opacity:.58}
+@media(max-width:760px){
+  .essay-eval-head,html.is-chromeos .essay-eval-head{align-items:center;display:flex;flex-direction:row;gap:0;min-height:62px;padding:8px 12px}
+  .essay-eval-identity,html.is-chromeos .essay-eval-identity{display:flex;min-height:38px}
+  .essay-eval-kicker{margin-bottom:0}
+  .essay-eval-title{display:flex;margin-bottom:0}
+  .essay-eval-sub{border-left:1px solid rgba(144,188,235,.34);display:flex;padding-left:18px}
+  .eval-head-summary,html.is-chromeos .eval-head-summary{border-left:1px solid rgba(144,188,235,.34);margin:0;padding:0 18px}
+  .essay-eval-head-actions,html.is-chromeos .essay-eval-head-actions{border-left:1px solid rgba(144,188,235,.34);flex-wrap:nowrap;padding:0 0 0 18px}
+  .eval-status{border:1px solid #5d93c6;flex:0 0 auto;padding:7px 12px;text-align:center;width:auto}
+  .eval-close{margin-left:0}
+}

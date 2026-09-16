@@ -118,14 +118,14 @@ test("loads a saved draft, renders the exact rubric, and autosaves a score", asy
   await expect(page.getByText(
     "Presents a strong, precise claim and develops a clear case with at least two well-developed reasons or contentions."
   )).toBeVisible();
-  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 scored · 4/35 · Not complete");
+  await expect(page.locator(".eval-header-score")).toHaveText("1 of 7 scored · 4/35");
   await expect(page.locator('[data-key="claimCase"] .eval-cat-grade')).toHaveText("Good");
   await expect(page.locator('[data-key="claimCase"]')).toHaveClass(/scored/);
   await expect(page.locator(".eval-source-notice")).toContainText("No valid Google Drive or Google Docs link");
 
   await page.locator('[data-key="evidenceResearch"] .eval-cat-head').click();
   await page.locator('[data-key="evidenceResearch"] .eval-score[data-score="5"]').click();
-  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 scored · 9/35 · Not complete");
+  await expect(page.locator(".eval-header-score")).toHaveText("2 of 7 scored · 9/35");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-grade')).toHaveText("Outstanding");
   await expect(page.locator('[data-key="evidenceResearch"] .eval-cat-score')).toHaveText("5/5");
   await expect.poll(async () => page.evaluate(() =>
@@ -226,41 +226,53 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
 });
 
-test("evaluation header is unboxed, spaced, and gives Close clear hover feedback", async ({ page }) => {
+test("evaluation header is a single ordered command bar with score and status pills", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await mountEvaluation(page, null);
   await page.locator(".essay-launch").click();
 
-  await expect(page.locator(".essay-eval-kicker")).toHaveText("Evaluation Workspace · Phase 1");
+  await expect(page.locator(".essay-eval-kicker")).toHaveText("Evaluation Workspace");
+  await expect(page.locator(".essay-eval-sub")).toHaveText("Read document → Score categories");
+  await expect(page.locator(".eval-head-summary strong")).toHaveText("Essay Evaluation");
+  await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 scored · 0/35");
+  await expect(page.locator(".eval-status")).toHaveText("Not started");
   const header = await page.evaluate(() => {
-    const sections = [".essay-eval-identity", ".eval-head-summary", ".essay-eval-head-actions"].map(selector => {
-      const style = getComputedStyle(document.querySelector(selector));
-      return { background: style.backgroundColor, borderTop: style.borderTopWidth };
-    });
+    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-close", ".eval-finalize"];
+    const boxes = selectors.map(selector => document.querySelector(selector).getBoundingClientRect());
+    const scoreStyle = getComputedStyle(document.querySelector(".eval-header-score"));
+    const statusStyle = getComputedStyle(document.querySelector(".eval-status"));
+    const closeStyle = getComputedStyle(document.querySelector(".eval-close"));
+    const finalizeStyle = getComputedStyle(document.querySelector(".eval-finalize"));
     const status = document.querySelector(".eval-status").getBoundingClientRect();
     const close = document.querySelector(".eval-close").getBoundingClientRect();
     const finalize = document.querySelector(".eval-finalize").getBoundingClientRect();
     return {
-      sections,
+      ordered: boxes.every((box, index) => index === 0 || box.left >= boxes[index - 1].right),
+      oneLine: Math.max(...boxes.map(box => box.top + box.height / 2)) - Math.min(...boxes.map(box => box.top + box.height / 2)) < 2,
+      scoreRadius: parseFloat(scoreStyle.borderRadius),
+      statusRadius: parseFloat(statusStyle.borderRadius),
+      closeBackground: closeStyle.backgroundImage,
+      finalizeBackground: finalizeStyle.backgroundImage,
       statusCloseGap: close.left - status.right,
       closeFinalizeGap: finalize.left - close.right,
     };
   });
-  expect(header.sections).toEqual([
-    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
-    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
-    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
-  ]);
-  expect(header.statusCloseGap).toBeGreaterThanOrEqual(13);
-  expect(header.closeFinalizeGap).toBeGreaterThanOrEqual(15);
+  expect(header.ordered).toBe(true);
+  expect(header.oneLine).toBe(true);
+  expect(header.scoreRadius).toBeGreaterThan(20);
+  expect(header.statusRadius).toBeGreaterThan(20);
+  expect(header.closeBackground).toContain("182, 59, 71");
+  expect(header.finalizeBackground).toContain("67, 200, 121");
+  expect(header.statusCloseGap).toBeGreaterThanOrEqual(9);
+  expect(header.closeFinalizeGap).toBeGreaterThanOrEqual(9);
 
   const close = page.locator(".eval-close");
-  const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundColor);
+  const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundImage);
   await close.hover();
   await page.waitForTimeout(220);
   const hoverStyle = await close.evaluate(element => {
     const style = getComputedStyle(element);
-    return { background: style.backgroundColor, shadow: style.boxShadow, transform: style.transform };
+    return { background: style.backgroundImage, shadow: style.boxShadow, transform: style.transform };
   });
   expect(hoverStyle.background).not.toBe(restingBackground);
   expect(hoverStyle.shadow).not.toBe("none");
