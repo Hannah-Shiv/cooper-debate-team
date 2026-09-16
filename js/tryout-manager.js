@@ -41,6 +41,11 @@
     });
   };
   const statusLabel = value => ({ scheduled: "Scheduled", completed: "Completed", cancelled: "Cancelled" }[value] || "Scheduled");
+  const gradeLabel = value => {
+    const grade = String(value || "").trim();
+    const middleSchoolGrade = grade.match(/\b(7|8)(?:th)?\b/i);
+    return middleSchoolGrade ? `${middleSchoolGrade[1]}th` : grade;
+  };
   const debaterLabel = person => `${person.name}${person.grade ? ` · ${person.grade}` : ""}`;
   const selectedDebaterId = fieldId => {
     const value = $(fieldId).value.trim().toLowerCase();
@@ -112,39 +117,53 @@
     return Array.isArray(names) && names.length ? names : side === "a" ? (item.studentNames || []).slice(0, 2) : [];
   }
 
+  function pairIds(item, side) {
+    const ids = side === "a" ? item.pairAIds : item.pairBIds;
+    return Array.isArray(ids) ? ids : side === "a" ? (item.studentIds || []).slice(0, 2) : [];
+  }
+
   function stackedNames(item, side) {
     const names = pairNames(item, side);
     if (!names.length) return `<span class="tryout-student-name muted">Awaiting Pair ${side.toUpperCase()}</span>`;
-    return names.map(name => `<span class="tryout-student-name">${esc(name)}</span>`).join("");
+    const ids = pairIds(item, side);
+    return names.map((name, index) => {
+      const byId = debaters.find(person => person.id === ids[index]);
+      const byName = debaters.filter(person => person.name.toLowerCase() === String(name).toLowerCase());
+      const person = byId || (byName.length === 1 ? byName[0] : null);
+      const grade = person ? gradeLabel(person.grade) : "";
+      return `<span class="tryout-student-name"><span>${esc(name)}</span>${grade ? `<small class="tryout-grade">${esc(grade)}</small>` : ""}</span>`;
+    }).join("");
   }
 
   function isDraft(item) {
-    return pairNames(item, "a").length !== 2 || pairNames(item, "b").length !== 2 ||
+    const pairBCount = pairNames(item, "b").length;
+    return pairNames(item, "a").length !== 2 || (pairBCount !== 0 && pairBCount !== 2) ||
       !item.date || !item.startTime || !item.endTime || !item.judge || !item.location;
   }
 
-  function scheduleDateTime(item) {
-    const date = dateLabel(item.date);
+  function scheduleTime(item) {
     const times = [timeLabel(item.startTime), timeLabel(item.endTime)].filter(Boolean);
-    if (!date && !times.length) return "Date and time not set";
-    return `${date ? `${esc(date)}<br>` : ""}<strong>${esc(times.join("–") || "Time not set")}</strong>`;
+    return `<strong>${esc(times.join("–") || "Time not set")}</strong>`;
   }
 
   function visibleAssignments() {
     const query = scheduleSearch.trim().toLowerCase();
     return assignments.filter(item => {
       const draft = isDraft(item);
-      if (scheduleFilter === "draft" ? !draft : scheduleFilter !== "all" && (draft || item.status !== scheduleFilter)) return false;
+      if (scheduleFilter === "draft" && !draft) return false;
+      if (scheduleFilter === "finalized" && draft) return false;
       if (!query) return true;
       const searchable = [
         ...pairNames(item, "a"), ...pairNames(item, "b"), item.date, item.startTime, item.endTime,
-        item.judge, item.location, item.notes, statusLabel(item.status), draft ? "draft" : "",
+        ...pairIds(item, "a").map(id => gradeLabel(debaters.find(person => person.id === id)?.grade)),
+        ...pairIds(item, "b").map(id => gradeLabel(debaters.find(person => person.id === id)?.grade)),
+        item.judge, item.location, item.notes, draft ? "draft incomplete" : "finalized complete",
       ].join(" ").toLowerCase();
       return searchable.includes(query);
     }).sort((left, right) => {
       const value = item => {
-        if (scheduleSort === "pair") return pairNames(item, "a").join(" ");
         if (scheduleSort === "judge") return item.judge || "";
+        if (scheduleSort === "time") return `${item.startTime || "99:99"} ${item.date || "9999-99-99"}`;
         return `${item.date || "9999-99-99"} ${item.startTime || "99:99"}`;
       };
       return value(left).localeCompare(value(right), undefined, { numeric: true }) * scheduleSortDirection;
@@ -156,8 +175,13 @@
     document.querySelectorAll("[data-tryout-sort]").forEach(button => {
       const active = button.dataset.tryoutSort === scheduleSort;
       button.classList.toggle("active", active);
-      const label = button.dataset.tryoutSort === "pair" ? "Pair A" : button.dataset.tryoutSort === "judge" ? "Judge" : "Date";
+      const label = button.dataset.tryoutSort === "time" ? "Time" : button.dataset.tryoutSort === "judge" ? "Judge" : "Date";
       button.textContent = `${label}${active ? (scheduleSortDirection === 1 ? " ↑" : " ↓") : ""}`;
+      button.setAttribute("aria-pressed", String(active));
+    });
+    document.querySelectorAll("[data-tryout-filter]").forEach(button => {
+      const active = button.dataset.tryoutFilter === scheduleFilter;
+      button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     });
   }
@@ -178,17 +202,18 @@
       return;
     }
     root.innerHTML = `<table class="tryout-table">
-      <thead><tr><th>#</th><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>#</th><th>Pair A</th><th>Pair B</th><th>Date</th><th>Time</th><th>Judge</th><th>Room</th><th>Record status</th><th>Actions</th></tr></thead>
       <tbody>${visible.map((item, index) => {
         const draft = isDraft(item);
         return `<tr>
         <td data-label="Row" class="tryout-row-number">${index + 1}</td>
         <td data-label="Pair A"><strong class="tryout-student-stack">${stackedNames(item, "a")}</strong></td>
         <td data-label="Pair B"><strong class="tryout-student-stack">${stackedNames(item, "b")}</strong>${item.notes ? `<small>${esc(item.notes)}</small>` : ""}</td>
-        <td data-label="Date & time">${scheduleDateTime(item)}</td>
+        <td data-label="Date">${esc(dateLabel(item.date) || "Date not set")}</td>
+        <td data-label="Time">${scheduleTime(item)}</td>
         <td data-label="Judge">${esc(item.judge || "Not set")}${item.judge && item.judgeType !== "member" ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
         <td data-label="Room">${esc(item.location || "Not set")}</td>
-        <td data-label="Status"><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
+        <td data-label="Record status"><span class="tm-grid-status ${draft ? "draft" : "finalized"}">${draft ? "Draft" : "Finalized"}</span></td>
         <td data-label="Actions"><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}" aria-label="Edit row ${index + 1}" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>${canDelete ? `<span class="tryout-action-divider" aria-hidden="true"></span><button type="button" data-tryout-delete="${esc(item.id)}" aria-label="Delete row ${index + 1}" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>` : ""}</div></td>
       </tr>`;
       }).join("")}</tbody>
@@ -467,10 +492,10 @@
       scheduleSearch = event.target.value;
       renderSchedule();
     });
-    $("tryout-schedule-filter").addEventListener("change", event => {
-      scheduleFilter = event.target.value;
+    document.querySelectorAll("[data-tryout-filter]").forEach(button => button.addEventListener("click", () => {
+      scheduleFilter = button.dataset.tryoutFilter;
       renderSchedule();
-    });
+    }));
     document.querySelectorAll("[data-tryout-sort]").forEach(button => button.addEventListener("click", () => {
       const nextSort = button.dataset.tryoutSort;
       if (scheduleSort === nextSort) scheduleSortDirection *= -1;

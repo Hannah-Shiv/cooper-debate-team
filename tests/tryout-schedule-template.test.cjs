@@ -123,16 +123,30 @@ test("schedule rows fit without horizontal scrolling and use accessible row acti
   assert.match(html, /\.tryout-table-wrap\{[^}]*max-width:100%;overflow-x:hidden\}/);
 });
 
-test("schedule grid supports search, status filtering, sorting, and result counts", () => {
+test("schedule grid supports search, record-completeness filtering, sorting, and result counts", () => {
   assert.match(html, /id="tryout-schedule-search"/);
-  assert.match(html, /id="tryout-schedule-filter"/);
   assert.match(html, /data-tryout-sort="date"/);
-  assert.match(html, /data-tryout-sort="pair"/);
+  assert.match(html, /data-tryout-sort="time"/);
   assert.match(html, /data-tryout-sort="judge"/);
+  assert.doesNotMatch(html, /data-tryout-sort="pair"/);
+  assert.match(html, /data-tryout-filter="all"/);
+  assert.match(html, /data-tryout-filter="draft"/);
+  assert.match(html, /data-tryout-filter="finalized"/);
+  assert.doesNotMatch(html, /id="tryout-schedule-filter"/);
   assert.match(html, /id="tryout-schedule-count"/);
   assert.match(client, /function visibleAssignments\(\)/);
   assert.match(client, /searchable\.includes\(query\)/);
   assert.match(client, /scheduleSortDirection \*= -1/);
+});
+
+test("schedule separates date and time, shows grades, and derives Draft or Finalized from completeness", () => {
+  assert.match(client, /<th>#<\/th><th>Pair A<\/th><th>Pair B<\/th><th>Date<\/th><th>Time<\/th>/);
+  assert.match(client, /data-label="Date"/);
+  assert.match(client, /data-label="Time"/);
+  assert.match(client, /class="tryout-grade"/);
+  assert.match(client, /const pairBCount = pairNames\(item, "b"\)\.length/);
+  assert.match(client, /\(pairBCount !== 0 && pairBCount !== 2\)/);
+  assert.match(client, /\$\{draft \? "Draft" : "Finalized"\}/);
 });
 
 test("entire tryout schedule grid typography is increased by ten percent", () => {
