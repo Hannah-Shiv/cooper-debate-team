@@ -67,10 +67,10 @@ test("tournament date range stays internal and the pane uses the shorter Room la
   assert.doesNotMatch(html, /Room \/ location/);
 });
 
-test("tryout manager typography is increased by fifteen percent", () => {
+test("tryout manager typography remains enlarged and the schedule receives an additional ten percent", () => {
   assert.match(html, /#tryout-manager \.tm-field label\{font-size:\.63rem\}/);
   assert.match(html, /#tryout-manager \.tm-field input,[^}]*font-size:\.83rem/);
-  assert.match(html, /#tryout-manager \.tryout-table td\{font-size:\.71rem\}/);
+  assert.match(html, /#tryout-manager \.tryout-table td\{font-size:\.78rem\}/);
   assert.match(html, /#tryout-manager \.tryout-overview h2\{font-size:1\.98rem\}/);
 });
 
@@ -118,7 +118,28 @@ test("schedule rows fit without horizontal scrolling and use accessible row acti
   assert.match(client, /class="tryout-student-name"/);
   assert.match(client, /aria-label="Edit row \$\{index \+ 1\}"/);
   assert.match(client, /aria-label="Delete row \$\{index \+ 1\}"/);
-  assert.match(html, /\.tryout-table-wrap\{max-width:100%;overflow-x:hidden\}/);
+  assert.match(client, /class="tryout-action-divider"/);
+  assert.match(html, /\.tryout-row-actions svg\{[^}]*height:15px/);
+  assert.match(html, /\.tryout-table-wrap\{[^}]*max-width:100%;overflow-x:hidden\}/);
+});
+
+test("schedule grid supports search, status filtering, sorting, and result counts", () => {
+  assert.match(html, /id="tryout-schedule-search"/);
+  assert.match(html, /id="tryout-schedule-filter"/);
+  assert.match(html, /data-tryout-sort="date"/);
+  assert.match(html, /data-tryout-sort="pair"/);
+  assert.match(html, /data-tryout-sort="judge"/);
+  assert.match(html, /id="tryout-schedule-count"/);
+  assert.match(client, /function visibleAssignments\(\)/);
+  assert.match(client, /searchable\.includes\(query\)/);
+  assert.match(client, /scheduleSortDirection \*= -1/);
+});
+
+test("entire tryout schedule grid typography is increased by ten percent", () => {
+  assert.match(html, /#tryout-manager \.tryout-table th\{font-size:\.64rem\}/);
+  assert.match(html, /#tryout-manager \.tryout-table td\{font-size:\.78rem\}/);
+  assert.match(html, /#tryout-manager \.tryout-table td::before\{font-size:\.64rem\}/);
+  assert.match(html, /#tryout-manager \.tryout-table td small\{font-size:\.68rem\}/);
 });
 
 test("deleting a tryout row uses an in-page confirmation modal", () => {

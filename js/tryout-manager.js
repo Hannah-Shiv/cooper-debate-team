@@ -22,6 +22,10 @@
   let assignmentSaving = false;
   let templateSaveQueued = false;
   let assignmentSaveQueued = false;
+  let scheduleSearch = "";
+  let scheduleSort = "date";
+  let scheduleSortDirection = 1;
+  let scheduleFilter = "all";
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
@@ -126,16 +130,56 @@
     return `${date ? `${esc(date)}<br>` : ""}<strong>${esc(times.join("–") || "Time not set")}</strong>`;
   }
 
+  function visibleAssignments() {
+    const query = scheduleSearch.trim().toLowerCase();
+    return assignments.filter(item => {
+      const draft = isDraft(item);
+      if (scheduleFilter === "draft" ? !draft : scheduleFilter !== "all" && (draft || item.status !== scheduleFilter)) return false;
+      if (!query) return true;
+      const searchable = [
+        ...pairNames(item, "a"), ...pairNames(item, "b"), item.date, item.startTime, item.endTime,
+        item.judge, item.location, item.notes, statusLabel(item.status), draft ? "draft" : "",
+      ].join(" ").toLowerCase();
+      return searchable.includes(query);
+    }).sort((left, right) => {
+      const value = item => {
+        if (scheduleSort === "pair") return pairNames(item, "a").join(" ");
+        if (scheduleSort === "judge") return item.judge || "";
+        return `${item.date || "9999-99-99"} ${item.startTime || "99:99"}`;
+      };
+      return value(left).localeCompare(value(right), undefined, { numeric: true }) * scheduleSortDirection;
+    });
+  }
+
+  function updateScheduleControls(count) {
+    $("tryout-schedule-count").innerHTML = `<strong>${count}</strong> ${count === 1 ? "debate" : "debates"}${count !== assignments.length ? ` of ${assignments.length}` : ""}`;
+    document.querySelectorAll("[data-tryout-sort]").forEach(button => {
+      const active = button.dataset.tryoutSort === scheduleSort;
+      button.classList.toggle("active", active);
+      const label = button.dataset.tryoutSort === "pair" ? "Pair A" : button.dataset.tryoutSort === "judge" ? "Judge" : "Date";
+      button.textContent = `${label}${active ? (scheduleSortDirection === 1 ? " ↑" : " ↓") : ""}`;
+      button.setAttribute("aria-pressed", String(active));
+    });
+  }
+
   function renderSchedule() {
     const root = $("tryout-schedule-list");
     if (!assignments.length) {
+      updateScheduleControls(0);
       root.innerHTML = `<div class="tryout-empty">No debates have been scheduled yet. Add the first debate using the form.</div>`;
+      renderSummary();
+      return;
+    }
+    const visible = visibleAssignments();
+    updateScheduleControls(visible.length);
+    if (!visible.length) {
+      root.innerHTML = `<div class="tryout-empty">No debates match this search and filter. Try a broader search or another status.</div>`;
       renderSummary();
       return;
     }
     root.innerHTML = `<table class="tryout-table">
       <thead><tr><th>#</th><th>Pair A</th><th>Pair B</th><th>Date &amp; time</th><th>Judge</th><th>Room</th><th>Status</th><th>Actions</th></tr></thead>
-      <tbody>${assignments.map((item, index) => {
+      <tbody>${visible.map((item, index) => {
         const draft = isDraft(item);
         return `<tr>
         <td data-label="Row" class="tryout-row-number">${index + 1}</td>
@@ -145,7 +189,7 @@
         <td data-label="Judge">${esc(item.judge || "Not set")}${item.judge && item.judgeType !== "member" ? `<br><small>${esc(item.judgeTypeLabel || "Other")}</small>` : ""}</td>
         <td data-label="Room">${esc(item.location || "Not set")}</td>
         <td data-label="Status"><span class="tm-grid-status ${draft ? "awaiting" : esc(item.status || "scheduled")}">${draft ? "Draft" : esc(statusLabel(item.status))}</span></td>
-        <td data-label="Actions"><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}" aria-label="Edit row ${index + 1}" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>${canDelete ? `<button type="button" data-tryout-delete="${esc(item.id)}" aria-label="Delete row ${index + 1}" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>` : ""}</div></td>
+        <td data-label="Actions"><div class="tryout-row-actions"><button type="button" data-tryout-edit="${esc(item.id)}" aria-label="Edit row ${index + 1}" title="Edit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h4l11-11-4-4L4 16v4Z"></path><path d="m13.5 6.5 4 4"></path></svg></button>${canDelete ? `<span class="tryout-action-divider" aria-hidden="true"></span><button type="button" data-tryout-delete="${esc(item.id)}" aria-label="Delete row ${index + 1}" title="Delete"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"></path></svg></button>` : ""}</div></td>
       </tr>`;
       }).join("")}</tbody>
     </table>`;
@@ -419,6 +463,23 @@
     $("tryout-delete-modal").addEventListener("click", event => {
       if (event.target === $("tryout-delete-modal")) closeDeleteModal();
     });
+    $("tryout-schedule-search").addEventListener("input", event => {
+      scheduleSearch = event.target.value;
+      renderSchedule();
+    });
+    $("tryout-schedule-filter").addEventListener("change", event => {
+      scheduleFilter = event.target.value;
+      renderSchedule();
+    });
+    document.querySelectorAll("[data-tryout-sort]").forEach(button => button.addEventListener("click", () => {
+      const nextSort = button.dataset.tryoutSort;
+      if (scheduleSort === nextSort) scheduleSortDirection *= -1;
+      else {
+        scheduleSort = nextSort;
+        scheduleSortDirection = 1;
+      }
+      renderSchedule();
+    }));
     document.addEventListener("keydown", event => {
       if (event.key === "Escape" && !$("tryout-delete-modal").hidden) closeDeleteModal();
     });
