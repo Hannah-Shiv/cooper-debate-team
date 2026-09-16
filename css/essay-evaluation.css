@@ -35,7 +35,9 @@
 @media(max-width:900px){.essay-entry-shell{grid-template-columns:1fr}.essay-entry-reference{min-height:0}.essay-entry-document{min-height:510px}.essay-preview-frame{min-height:430px}.essay-reference-list{max-height:540px}}
 @media(max-width:600px){.essay-entry-bar{align-items:flex-start;flex-direction:column;gap:9px}.essay-entry-tools{width:100%}.essay-source-link,.essay-fullscreen-button{flex:1;text-align:center}.essay-entry-document{min-height:430px}.essay-preview-frame{min-height:350px}.essay-reference-head{grid-template-columns:1fr}.essay-reference-head-divider{display:none}.essay-reference-head h2{font-size:1.2rem}.essay-ref-criteria span{font-size:.62rem}}
 .essay-launch-wrap p { color: #b9cce4; font-size: .68rem; line-height: 1.45; margin: 0; }
+.essay-launch-wrap p.is-completed{align-items:center;display:flex;flex-wrap:wrap;gap:4px 6px}.essay-evaluated-label{background:#5f3975;border:1px solid #c58cda;border-radius:999px;color:#fff;font-size:.58rem;font-weight:900;letter-spacing:.08em;padding:3px 7px;text-transform:uppercase}.essay-evaluated-score{color:#ffe276;font-size:.82rem;line-height:1}.essay-evaluated-detail{color:#eadcf1;font-size:.62rem}
 .essay-launch { background: #e7b83f; border: 1px solid #f3d477; border-radius: 4px; color: #081a35; cursor: pointer; font-size: .64rem; font-weight: 800; letter-spacing: .08em; padding: 10px 14px; text-transform: uppercase; white-space: nowrap; }
+.essay-reference-launch:has(>.essay-head-icon) .essay-launch.is-completed{font-size:.64rem;letter-spacing:.005em;padding-left:3px;padding-right:3px}
 .essay-launch:hover { background: #f3d477; transform: translateY(-1px); }
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 

@@ -194,7 +194,15 @@
     const completed = evaluation?.status === "finalized" || evaluation?.finalizedAt;
      const hasDraft = KEYS.some((key) => Number.isInteger(evaluation?.rubric?.[key]));
      const actionLabel = completed ? "View completed evaluation" : hasDraft ? "Continue evaluation" : "Start Essay Evaluation";
-     card.innerHTML = `<div><strong>Evaluation workspace</strong><p>${esc(launcherSummary(evaluation))}</p></div><button type="button" class="essay-launch" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
+     let summaryMarkup = esc(launcherSummary(evaluation));
+     if (completed) {
+       const rubric = evaluation?.rubric || emptyState().rubric;
+       const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
+       const band = BANDS.find(([minimum, maximum]) => score >= minimum && score <= maximum)?.[2] || "Completed";
+       const updated = timestampDate(evaluation?.finalizedAt);
+       summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-detail">${esc(band)} · ${esc(recommendationLabel(evaluation.recommendation))}${evaluation?.finalizedBy ? ` · ${esc(evaluation.finalizedBy)}` : ""}${updated ? ` · ${esc(updated.toLocaleDateString())}` : ""}</span>`;
+     }
+     card.innerHTML = `<div><strong>Evaluation workspace</strong><p class="${completed ? "is-completed" : ""}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
     card.querySelector("button").addEventListener("click", () => openWorkspace(item, evaluation));
   }
 

@@ -145,7 +145,7 @@ test("mobile view switches panels and protects changes after a failed save", asy
     finalizedBy: "coach@example.test",
     finalizedAt: { _seconds: 1789500000, _nanoseconds: 0 },
   });
-  await expect(page.locator(".essay-launch-wrap p")).toContainText("Completed · 35/35 · Outstanding");
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Outstanding");
   await page.locator(".essay-launch").click();
 
   await expect(page.locator('[data-view="essay"]')).toHaveClass(/active/);
@@ -164,7 +164,7 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".eval-close-confirm")).toBeVisible();
   await page.locator(".close-discard").click();
   await expect(page.locator(".essay-eval")).not.toBeVisible();
-  await expect(page.locator(".essay-launch-wrap p")).toContainText("Completed · 35/35 · Outstanding");
+  await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Outstanding");
 });
 
 test("launcher keeps the document beside the complete seven-category quick reference", async ({ page }) => {
