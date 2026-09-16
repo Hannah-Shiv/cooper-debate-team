@@ -40,14 +40,14 @@
     dialog.className = "application-report-dialog";
     dialog.dataset.kind = kind;
     dialog.setAttribute("aria-labelledby", "report-title");
-    dialog.innerHTML = `<div class="report-shell"><header class="report-head"><div><p class="report-kicker">Coach-only report · all applicants</p><h2 id="report-title">${isEssay ? "Essay Scores" : "Decision Status"}</h2><p>${isEssay ? "A complete view of rubric progress and coaching recommendations." : "A complete view of official application decisions and coach notes."}</p></div><div class="report-head-actions"><span class="report-count" aria-live="polite">Loading…</span><button type="button" class="report-button primary report-print">Print report</button><button type="button" class="report-button report-close" aria-label="Close report">×</button></div></header><div class="report-toolbar"><div class="report-field"><label for="report-search">Search applicants</label><input id="report-search" type="search" placeholder="Name, student ID, or grade"></div><div class="report-field"><label for="report-status">Filter status</label><select id="report-status"><option value="all">All statuses</option>${isEssay ? '<option value="not-started">Not Started</option><option value="in-progress">In Progress</option><option value="evaluated">Evaluated</option>' : '<option value="pending">Pending</option><option value="on-hold">On Hold</option><option value="accepted">Accepted</option><option value="declined">Declined</option>'}</select></div><div class="report-field"><label for="report-grade">Filter grade</label><select id="report-grade"><option value="all">All grades</option></select></div></div><div class="report-table-wrap"><div class="report-empty report-loading">Loading report…</div></div></div>`;
+    dialog.innerHTML = `<div class="report-shell"><header class="report-head"><div><p class="report-kicker">Coach-only report · application records</p><h2 id="report-title">${isEssay ? "Essay Scores" : "Decision Status"}</h2><p>${isEssay ? "A complete view of rubric progress and coaching recommendations." : "A complete view of official application decisions and coach notes."}</p></div><div class="report-head-actions"><span class="report-count" aria-live="polite">Loading…</span><button type="button" class="report-button primary report-print">Print report</button><button type="button" class="report-button report-close" aria-label="Close report">×</button></div></header><div class="report-toolbar"><div class="report-field"><label for="report-search">Search applicants</label><input id="report-search" type="search" placeholder="Name, student ID, or grade"></div><div class="report-field"><label for="report-status">Filter status</label><select id="report-status"><option value="all">All statuses</option>${isEssay ? '<option value="not-started">Not Started</option><option value="in-progress">In Progress</option><option value="evaluated">Evaluated</option>' : '<option value="pending">Pending</option><option value="on-hold">On Hold</option><option value="accepted">Accepted</option><option value="declined">Declined</option>'}</select></div><div class="report-field"><label for="report-grade">Filter grade</label><select id="report-grade"><option value="all">All grades</option></select></div><label class="report-hidden-toggle" for="report-show-hidden"><input id="report-show-hidden" type="checkbox"><span>Show hidden records</span></label></div><div class="report-table-wrap"><div class="report-empty report-loading">Loading report…</div></div></div>`;
     document.body.appendChild(dialog);
     dialog.showModal();
     dialog.querySelector(".report-close").onclick = () => dialog.close();
     dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
     dialog.addEventListener("close", () => { dialog.remove(); dialog = null; }, { once: true });
     dialog.querySelector(".report-print").onclick = () => window.print();
-    ["report-search", "report-status", "report-grade"].forEach(id => {
+    ["report-search", "report-status", "report-grade", "report-show-hidden"].forEach(id => {
       dialog.querySelector(`#${id}`).addEventListener(id === "report-search" ? "input" : "change", () => render(kind, dialog.__evaluations || {}));
     });
     if (kind === "decision") render(kind);
@@ -59,9 +59,11 @@
     const search = dialog.querySelector("#report-search").value.trim().toLowerCase();
     const statusFilter = dialog.querySelector("#report-status").value;
     const gradeFilter = dialog.querySelector("#report-grade").value;
+    const showHidden = dialog.querySelector("#report-show-hidden").checked;
     const sortKey = dialog.dataset.sort || (isEssay ? "name" : "submitted");
     const direction = Number(dialog.dataset.direction || 1);
-    const rows = context.applications.filter(item => {
+    const available = context.applications.filter(item => showHidden || item.hidden !== true);
+    const rows = available.filter(item => {
       const text = `${name(item)} ${item.student?.studentId || ""} ${item.student?.grade || ""}`.toLowerCase();
       const state = isEssay ? evaluationStatus(evaluations[item.id]) : decision(item);
       return (!search || text.includes(search)) && (statusFilter === "all" || state === statusFilter) && (gradeFilter === "all" || item.student?.grade === gradeFilter);
@@ -77,10 +79,10 @@
       else { left = dateValue(a.createdAt)?.getTime() || 0; right = dateValue(b.createdAt)?.getTime() || 0; }
       return (typeof left === "string" ? left.localeCompare(right) : left - right) * direction;
     });
-    const grades = [...new Set(context.applications.map(item => item.student?.grade).filter(Boolean))].sort();
+    const grades = [...new Set(available.map(item => item.student?.grade).filter(Boolean))].sort();
     const gradeSelect = dialog.querySelector("#report-grade");
     if (gradeSelect.options.length === 1) grades.forEach(grade => gradeSelect.insertAdjacentHTML("beforeend", `<option value="${esc(grade)}">${esc(grade)}</option>`));
-    dialog.querySelector(".report-count").textContent = `${rows.length} of ${context.applications.length} applicants`;
+    dialog.querySelector(".report-count").textContent = `${rows.length} of ${available.length} applicants`;
     const headers = isEssay ? `${buttonSort("Applicant", "name")}${buttonSort("Grade", "grade")}${buttonSort("Status", "status")}${buttonSort("Total /35", "score")}${KEYS.map((key, index) => buttonSort(LABELS[index], key)).join("")}<th>Interpretation</th><th>Recommendation</th>` : `${buttonSort("Applicant", "name")}${buttonSort("Grade", "grade")}${buttonSort("Decision", "status")}${buttonSort("Application rating", "rating")}${buttonSort("Submitted", "submitted")}${buttonSort("Decision date", "decision-date")}<th>Coach note</th>`;
     const body = rows.map(item => {
       const evaluation = evaluations[item.id] || null;

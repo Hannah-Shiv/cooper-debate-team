@@ -126,6 +126,33 @@ test("decision report distinguishes pending and on hold without Team Review data
   await expect(dialog).toContainText("No matching applicants");
 });
 
+test("reports hide hidden records by default and reveal them on request", async ({ page }) => {
+  await mountReports(page);
+  await page.evaluate(() => {
+    window.__cooperApplicationsReportContext.applications.push({
+      id: "app-hidden",
+      hidden: true,
+      student: { firstName: "Hidden", lastName: "Applicant", studentId: "999", grade: "7th Grade" },
+      createdAt: 900,
+    });
+  });
+
+  await page.locator("#decision-status-report").click();
+  let dialog = page.locator(".application-report-dialog");
+  await expect(dialog.locator("tbody tr")).toHaveCount(3);
+  await expect(dialog).not.toContainText("Hidden Applicant");
+  await dialog.locator("#report-show-hidden").check();
+  await expect(dialog.locator("tbody tr")).toHaveCount(4);
+  await expect(dialog).toContainText("Hidden Applicant");
+  await dialog.locator(".report-close").click();
+
+  await page.locator("#essay-scores-report").click();
+  dialog = page.locator(".application-report-dialog");
+  await expect(dialog.locator("tbody tr")).toHaveCount(3);
+  await dialog.locator("#report-show-hidden").check();
+  await expect(dialog.locator("tbody tr")).toHaveCount(4);
+});
+
 test("a late essay response cannot overwrite a newer decision report", async ({ page }) => {
   await page.setContent(`
     <button id="essay-scores-report">Essay Scores</button>
