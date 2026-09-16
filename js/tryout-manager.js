@@ -73,10 +73,6 @@
   function renderSummary() {
     $("tryout-student-count").textContent = debaters.length;
     $("tryout-pair-count").textContent = assignments.length;
-    const start = new Date(`${template.startDate}T12:00:00`);
-    const end = new Date(`${template.endDate}T12:00:00`);
-    const days = Number.isNaN(start.getTime()) || Number.isNaN(end.getTime()) ? 0 : Math.max(0, Math.round((end - start) / 86400000) + 1);
-    $("tryout-day-count").textContent = days;
   }
 
   function pairNames(item, side) {

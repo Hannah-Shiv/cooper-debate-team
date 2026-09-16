@@ -22,6 +22,12 @@ test("website admins have a visible way to open and leave the tryout schedule", 
   assert.doesNotMatch(fs.readFileSync("js/volunteer-admin.js", "utf8"), /appendChild\(tryoutManager\)/);
 });
 
+test("tryout header uses two summary metrics and a button-style return control", () => {
+  assert.doesNotMatch(html, /id="tryout-day-count"/);
+  assert.match(html, /class="tryout-back" type="button"/);
+  assert.match(html, /grid-template-columns:minmax\(0,1fr\) repeat\(2,minmax\(125px,.22fr\)\)/);
+});
+
 test("tryout template uses a reusable date range", () => {
   assert.match(html, /id="tryout-range-start"/);
   assert.match(html, /id="tryout-range-end"/);
