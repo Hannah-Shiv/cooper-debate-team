@@ -80,13 +80,13 @@ test("data entry uses a compact two-row grid above the full-width schedule", () 
   assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
 });
 
-test("tryout heading, data entry, and schedule grid use distinct section palettes", () => {
+test("tryout heading, data entry, and schedule grid use blue, charcoal, and dark-blue palettes", () => {
   assert.match(html, /\.tryout-overview\{background:[^}]*linear-gradient\(120deg,#174990/);
-  assert.match(html, /\.tryout-data-entry\{background:[^}]*rgba\(43,23,61/);
-  assert.match(html, /\.tryout-data-entry h2\{color:#f0abfc\}/);
-  assert.match(html, /\.tryout-schedule-card\{background:[^}]*rgba\(8,48,55/);
-  assert.match(html, /\.tryout-schedule-card h2\{color:#5eead4\}/);
-  assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(9,66,72,.64\)\}/);
+  assert.match(html, /\.tryout-data-entry\{background:[^}]*linear-gradient\(145deg,#2b3039,#181c24\)/);
+  assert.match(html, /\.tryout-data-entry h2\{color:#d8e0eb\}/);
+  assert.match(html, /\.tryout-schedule-card\{background:[^}]*linear-gradient\(145deg,#0d2850,#071a36\)/);
+  assert.match(html, /\.tryout-schedule-card h2\{color:#bfdbfe\}/);
+  assert.match(html, /\.tryout-schedule-card \.tryout-table tbody tr\{background:rgba\(18,52,96,.72\)\}/);
 });
 
 test("tournament date range stays internal and the pane uses the shorter Room label", () => {
@@ -140,6 +140,12 @@ test("tryout header uses two summary metrics and a button-style return control",
   assert.doesNotMatch(html, /id="tryout-day-count"/);
   assert.match(html, /class="tryout-back" type="button"/);
   assert.match(html, /grid-template-columns:minmax\(0,1fr\) repeat\(2,minmax\(125px,.22fr\)\)/);
+  assert.match(html, /<span>Finalized<\/span><strong id="tryout-finalized-count">0<\/strong>/);
+  assert.match(html, /<span>Drafts<\/span><strong id="tryout-draft-count">0<\/strong>/);
+  assert.doesNotMatch(html, /<span>Debaters<\/span>/);
+  assert.match(client, /const draftCount = assignments\.filter\(isDraft\)\.length/);
+  assert.match(client, /\$\("tryout-finalized-count"\)\.textContent = assignments\.length - draftCount/);
+  assert.match(client, /\$\("tryout-draft-count"\)\.textContent = draftCount/);
 });
 
 test("schedule rows fit without horizontal scrolling and use accessible row actions", () => {

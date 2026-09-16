@@ -120,8 +120,9 @@
   }
 
   function renderSummary() {
-    $("tryout-student-count").textContent = debaters.length;
-    $("tryout-pair-count").textContent = assignments.length;
+    const draftCount = assignments.filter(isDraft).length;
+    $("tryout-finalized-count").textContent = assignments.length - draftCount;
+    $("tryout-draft-count").textContent = draftCount;
   }
 
   function pairNames(item, side) {
