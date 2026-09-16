@@ -121,6 +121,10 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
   await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
   await expect(dialog.locator(".stats-point")).toHaveCount(24);
+  const onePmPoint = dialog.getByLabel("1 PM: 1 submission", { exact: true });
+  await onePmPoint.hover();
+  await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toBeVisible();
+  await expect(onePmPoint.locator("xpath=..").locator(".stats-tooltip")).toContainText("1 PM");
 });
 
 test("essay report shows all grading states, filters, and sorts by total", async ({ page }) => {
