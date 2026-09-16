@@ -16,7 +16,7 @@ npx playwright install chromium
 The suite covers the public pages `index.html`, `tournaments.html`, and
 `apply.html`, plus the member pages `members-directory.html`,
 `members-calendar.html`, `members-applications.html`, and
-`members-tournaments.html`.
+`members-events.html`.
 
 Every route is checked at 768×1024, 834×1194, and 1024×1366 in portrait mode.
 The checks fail if either the document or body scroll width exceeds the

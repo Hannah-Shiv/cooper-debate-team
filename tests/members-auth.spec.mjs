@@ -226,7 +226,7 @@ test("specified member pages share the role artwork header", async () => {
     ["members-directory.html", "member-role-icon", "member-role-badge", "member-email"],
     ["members-stats.html", "member-role-icon", "member-role-badge", "member-email"],
     ["members-blog.html", "mp-role-icon", "mp-role-badge", "mp-user-email"],
-    ["members-tournaments.html", "member-role-icon", "member-role-badge", "member-email"],
+    ["members-events.html", "member-role-icon", "member-role-badge", "member-email"],
   ];
   const pages = await Promise.all(pageSpecs.map(([file]) => readFile(file, "utf8")));
 

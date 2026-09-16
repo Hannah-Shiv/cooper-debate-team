@@ -462,6 +462,14 @@
   });
 
   document.addEventListener("DOMContentLoaded", () => {
+    const activateEventsTab = name => {
+      document.querySelectorAll("[data-events-tab]").forEach(tab => {
+        const active = tab.dataset.eventsTab === name;
+        tab.classList.toggle("active", active);
+        tab.setAttribute("aria-selected", String(active));
+      });
+    };
+    window.activateEventsTab = activateEventsTab;
     $("vol-event-form").addEventListener("submit", saveEvent);
     $("vol-cancel-edit").addEventListener("click", resetForm);
     $("vol-event-form").addEventListener("input", updateManagerSummary);
@@ -494,11 +502,13 @@
     document.querySelectorAll("[data-show-tournaments]").forEach(link => link.addEventListener("click", event => {
       event.preventDefault();
       document.querySelector('[data-manager-mode="volunteers"]')?.click();
+      activateEventsTab("tournaments");
       $("vol-event-list").scrollIntoView({ behavior: "smooth", block: "start" });
     }));
     document.querySelectorAll("[data-add-tournament]").forEach(link => link.addEventListener("click", event => {
       event.preventDefault();
       document.querySelector('[data-manager-mode="volunteers"]')?.click();
+      activateEventsTab("add");
       resetForm();
       $("event-information").scrollIntoView({ behavior: "smooth", block: "start" });
       $("event-title").focus({ preventScroll: true });

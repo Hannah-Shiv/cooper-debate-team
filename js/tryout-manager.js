@@ -174,6 +174,7 @@
     $("volunteer-manager").hidden = tryout;
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.classList.toggle("active", button.dataset.managerMode === mode));
+    window.activateEventsTab?.(tryout ? "tryout" : "overview");
     if (tryout && currentUser) {
       load().catch(error => {
         $("tryout-schedule-list").innerHTML = `<div class="tryout-empty">${esc(error.message)}</div>`;

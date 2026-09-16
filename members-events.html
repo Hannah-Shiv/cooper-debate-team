@@ -34,7 +34,7 @@
   <style>
     /* Shared member-page header — matches the Statistics page. */
     .tm-app { min-height:100vh; }
-    .tm-layout { min-height:calc(100vh - 88px); padding-top:88px; }
+    .tm-layout { grid-template-columns:minmax(0,1fr); min-height:calc(100vh - 88px); padding-top:88px; }
     .tm-main { padding-top:32px; transition:padding-top .4s cubic-bezier(.16,1,.3,1); }
     body.dome-open .tm-main { padding-top:172px; }
     .tm-summary {
@@ -159,11 +159,11 @@
       .tm-fill-rate { font-size:1.18rem!important; }
       .tm-metric.status strong { font-size:1.46rem; }
     }
-    .tm-mode-nav{display:flex;gap:8px;margin:0 0 22px}.tm-mode-button{background:rgba(5,20,48,.72);border:1px solid rgba(151,187,239,.28);border-radius:5px;color:#c8d8ee;cursor:pointer;font-size:.66rem;font-weight:700;letter-spacing:.07em;padding:11px 16px;text-transform:uppercase}.tm-mode-button.active{background:rgba(242,191,61,.14);border-color:var(--tm-gold);color:var(--tm-gold)}
+    .events-section-nav{display:flex;gap:12px;margin:0 0 24px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:thin}.events-tab{align-items:center;background:#161a20;border:1px solid var(--tab-muted);border-radius:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 4px 10px rgba(0,0,0,.22);color:var(--tab-color);cursor:pointer;display:flex;flex:1;gap:10px;justify-content:center;min-height:58px;min-width:175px;overflow:hidden;padding:9px 17px;position:relative;text-transform:uppercase;transition:background .22s,border-color .22s,box-shadow .22s,transform .22s}.events-tab::before{background:var(--tab-muted);border-radius:inherit;content:"";height:3px;left:12px;position:absolute;right:12px;top:0}.events-tab svg{fill:none;flex:0 0 23px;height:23px;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.8;width:23px}.events-tab span{font-size:.69rem;font-weight:700;letter-spacing:.08em}.events-tab:nth-child(1){--tab-color:#f4c84e;--tab-muted:#ffe28a;--tab-active:#f7d15b;--tab-text:#07162d;--tab-glow:rgba(244,200,78,.34)}.events-tab:nth-child(2){--tab-color:#78c3ff;--tab-muted:#a8d9ff;--tab-active:#1d548f;--tab-text:#fff;--tab-glow:rgba(56,150,255,.38)}.events-tab:nth-child(3){--tab-color:#ff9a7a;--tab-muted:#ffc0aa;--tab-active:#9a3f2d;--tab-text:#fff;--tab-glow:rgba(244,111,78,.38)}.events-tab:nth-child(4){--tab-color:#6ce0c8;--tab-muted:#a5f2e2;--tab-active:#17685e;--tab-text:#fff;--tab-glow:rgba(61,210,180,.34)}.events-tab:hover,.events-tab:focus-visible{border-color:var(--tab-color);box-shadow:0 0 24px var(--tab-glow),0 10px 20px rgba(0,0,0,.3);outline:2px solid var(--tab-color);outline-offset:2px;transform:translateY(-3px)}.events-tab.active,.events-tab[aria-selected="true"]{background:var(--tab-active);border-color:var(--tab-muted);box-shadow:0 0 18px var(--tab-glow),0 5px 15px rgba(0,0,0,.28);color:var(--tab-text);transform:translateY(-1px)}.events-tab.active::before,.events-tab[aria-selected="true"]::before{background:var(--tab-color)}
     .tryout-manager{display:grid;gap:18px}.tryout-overview{background:linear-gradient(110deg,#103773,#091e46);border:1px solid rgba(124,182,255,.38);border-radius:7px;display:grid;gap:18px;grid-template-columns:minmax(0,1fr) repeat(3,minmax(115px,.28fr));padding:24px 26px}.tryout-overview h2{font:700 1.75rem 'Cormorant Garamond',serif;margin:5px 0}.tryout-overview p{color:#c7d9f1;font-size:.72rem;line-height:1.55;margin:0}.tryout-stat{align-self:center;border-left:1px solid rgba(159,185,225,.2);padding-left:20px}.tryout-stat span{color:#a8cbff;display:block;font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.tryout-stat strong{display:block;font:700 1.9rem 'Cormorant Garamond',serif;margin-top:5px}
     .tryout-grid{display:grid;gap:18px;grid-template-columns:minmax(340px,.75fr) minmax(0,1.25fr)}.tryout-card{background:linear-gradient(145deg,rgba(12,30,61,.95),rgba(8,24,51,.95));border:1px solid var(--tm-line);border-radius:7px;padding:23px}.tryout-card h2{color:var(--tm-gold);font-size:.68rem;letter-spacing:.09em;margin:0 0 7px;text-transform:uppercase}.tryout-card-intro{color:var(--tm-muted);font-size:.68rem;line-height:1.55;margin:0 0 18px}.tryout-actions{align-items:center;display:flex;gap:10px;margin-top:18px}.tryout-cancel{background:transparent;border:1px solid rgba(255,255,255,.25);border-radius:3px;color:#d6e0ef;cursor:pointer;font-size:.62rem;font-weight:700;padding:11px 13px;text-transform:uppercase}.tryout-message{font-size:.67rem;line-height:1.4;margin:12px 0 0}.tryout-message.error{color:#ffb3b3}.tryout-message.ok{color:var(--tm-green)}
     .tryout-table-wrap{overflow-x:auto}.tryout-table{border-collapse:collapse;width:100%}.tryout-table th{border-bottom:1px solid rgba(242,191,61,.35);color:#a8cbff;font-size:.55rem;letter-spacing:.08em;padding:10px 9px;text-align:left;text-transform:uppercase}.tryout-table td{border-bottom:1px solid rgba(255,255,255,.08);color:#dbe6f5;font-size:.68rem;line-height:1.45;padding:13px 9px;vertical-align:top}.tryout-table td strong{color:#fff}.tryout-row-actions{display:flex;gap:8px}.tryout-row-actions button{background:transparent;border:0;color:var(--tm-gold);cursor:pointer;font-size:.58rem;font-weight:700;padding:0;text-transform:uppercase}.tryout-row-actions button:last-child{color:var(--tm-red)}.tryout-empty{border:1px dashed rgba(242,191,61,.28);border-radius:5px;color:var(--tm-muted);font-size:.7rem;line-height:1.6;padding:24px;text-align:center}
-    @media(max-width:980px){.tryout-overview{grid-template-columns:1fr 1fr}.tryout-overview-copy{grid-column:1/-1}.tryout-grid{grid-template-columns:1fr}}@media(max-width:580px){.tryout-overview{grid-template-columns:1fr}.tryout-overview-copy{grid-column:auto}.tryout-stat{border-left:0;border-top:1px solid rgba(159,185,225,.2);padding:12px 0 0}.tm-mode-nav{display:grid;grid-template-columns:1fr 1fr}.tryout-card{padding:17px}}
+    @media(max-width:980px){.tryout-overview{grid-template-columns:1fr 1fr}.tryout-overview-copy{grid-column:1/-1}.tryout-grid{grid-template-columns:1fr}}@media(max-width:580px){.tryout-overview{grid-template-columns:1fr}.tryout-overview-copy{grid-column:auto}.tryout-stat{border-left:0;border-top:1px solid rgba(159,185,225,.2);padding:12px 0 0}.events-section-nav{gap:9px}.events-tab{min-width:150px}.tryout-card{padding:17px}}
   </style>
 </head>
 <body>
@@ -193,13 +193,6 @@
   <div id="dome-nav-root"></div>
   <div class="tm-app">
     <div class="tm-layout">
-      <nav class="tm-sidebar" aria-label="Member portal">
-        <p class="tm-side-label">Tournament Management</p>
-        <a class="tm-side-link active" href="members-tournaments.html" data-manager-home><span class="tm-side-icon">♙</span>Overview</a>
-        <a class="tm-side-link" href="#vol-event-list" data-show-tournaments data-volunteer-only><span class="tm-side-icon">▦</span>All Tournaments</a>
-        <a class="tm-side-link" href="#event-information" data-add-tournament data-volunteer-only><span class="tm-side-icon">＋</span>Add Tournament</a>
-        <a class="tm-side-link" href="#tryout-manager" data-open-tryout><span class="tm-side-icon">⇄</span>Tryout</a>
-      </nav>
       <main class="tm-main">
         <div class="tm-shell">
           <section id="vol-auth" class="tm-auth">
@@ -215,9 +208,11 @@
               <div class="tm-page-heading"><h1>Tournament Management</h1><p>Manage tournament volunteers and build the September 22–23 debate tryout schedule.</p></div>
               <a class="tm-preview" href="tournaments.html#volunteer-signup" target="_blank" rel="noopener">Preview volunteer view ↗</a>
             </div>
-            <nav class="tm-mode-nav" aria-label="Tournament Management workspaces">
-              <button class="tm-mode-button active" type="button" data-manager-mode="volunteers">Tournament volunteers</button>
-              <button class="tm-mode-button" type="button" data-manager-mode="tryout">Tryout</button>
+            <nav class="events-section-nav" aria-label="Tournament Management sections" role="tablist">
+              <button class="events-tab active" type="button" role="tab" aria-selected="true" data-manager-mode="volunteers" data-events-tab="overview"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11h16M4 17h10M4 5h16"/></svg><span>Overview</span></button>
+              <button class="events-tab" type="button" role="tab" aria-selected="false" data-show-tournaments data-events-tab="tournaments" data-volunteer-only><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg><span>All Tournaments</span></button>
+              <button class="events-tab" type="button" role="tab" aria-selected="false" data-add-tournament data-events-tab="add" data-volunteer-only><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Add Tournament</span></button>
+              <button class="events-tab" type="button" role="tab" aria-selected="false" data-manager-mode="tryout" data-events-tab="tryout"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 7h11l-3-3M17 17H6l3 3"/><path d="M18 7l-3 3M6 17l3-3"/></svg><span>Tryout</span></button>
             </nav>
             <div id="volunteer-manager">
             <section class="tm-summary" aria-label="Tournament summary">
@@ -386,9 +381,9 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
   <script src="data/approved-members.js?v=7"></script>
   <script src="data/admins.js?v=12"></script>
-  <script src="js/volunteer-admin.js?v=20"></script>
-  <script src="js/tryout-manager.js?v=1"></script>
-  <script src="js/members-nav.js?v=6"></script>
+  <script src="js/volunteer-admin.js?v=21"></script>
+  <script src="js/tryout-manager.js?v=2"></script>
+  <script src="js/members-nav.js?v=10"></script>
   <script src="js/dome-nav.js"></script>
 </body>
 </html>
