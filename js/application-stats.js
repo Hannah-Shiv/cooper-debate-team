@@ -45,19 +45,20 @@
   let domainEnd = 0;
   let selectedStart = 0;
   let selectedEnd = 0;
+  let grouping = "day";
 
   function submissionTimes() {
     return context.applications.map(item => dateValue(item.createdAt)?.getTime()).filter(Number.isFinite).sort((a, b) => a - b);
   }
 
   function buildBins(start, end) {
-    const hourly = end - start <= DAY;
+    const hourly = grouping === "hour";
     const size = hourly ? HOUR : DAY;
     const first = hourly
       ? fromEasternInput(`${inputValue(new Date(start)).slice(0, 13)}:00`).getTime()
       : fromEasternInput(`${inputValue(new Date(start)).slice(0, 10)}T00:00`).getTime();
     const bins = [];
-    for (let cursor = first; cursor <= end && bins.length < 370; cursor += size) {
+    for (let cursor = first; cursor <= end && bins.length < 10000; cursor += size) {
       bins.push({ start: cursor, end: cursor + size, count: 0 });
     }
     submissionTimes().forEach(time => {
@@ -207,11 +208,16 @@
     dialog = document.createElement("dialog");
     dialog.className = "application-stats-dialog";
     dialog.setAttribute("aria-labelledby", "stats-title");
-    dialog.innerHTML = `<div class="stats-shell"><header class="stats-head"><div><p>Application records</p><h2 id="stats-title">Submissions over time</h2><span>Times shown in Eastern Time</span></div><div class="stats-head-summary"><strong class="stats-count"></strong><small class="stats-granularity"></small></div><button type="button" class="stats-close" aria-label="Close stats">✕</button></header><section class="stats-controls" aria-label="Submission date and time range"><label>From<input id="stats-from" type="datetime-local"></label><label>To<input id="stats-to" type="datetime-local"></label><button type="button" class="stats-reset">Reset range</button></section><section class="stats-visual"><div class="stats-chart-stage"></div><div class="stats-range-rail" aria-label="Draggable submission range"><div class="stats-range-selection"></div><button type="button" class="stats-range-handle from" data-stats-handle="from" role="slider" aria-label="From date and time"></button><button type="button" class="stats-range-handle to" data-stats-handle="to" role="slider" aria-label="To date and time"></button></div><p class="stats-range-help">Drag either edge inward and release to zoom. At one day or less, the chart switches to hour-by-hour data.</p></section></div>`;
+    dialog.innerHTML = `<div class="stats-shell"><header class="stats-head"><div><p>Application records</p><h2 id="stats-title">Submissions over time</h2><span>Times shown in Eastern Time</span></div><div class="stats-head-summary"><strong class="stats-count"></strong><small class="stats-granularity"></small></div><button type="button" class="stats-close" aria-label="Close stats">✕</button></header><section class="stats-controls" aria-label="Submission date and time range"><label>From<input id="stats-from" type="datetime-local"></label><label>To<input id="stats-to" type="datetime-local"></label><label>By<select id="stats-by"><option value="day">Day</option><option value="hour">Hour</option></select></label><button type="button" class="stats-reset">Reset range</button></section><section class="stats-visual"><div class="stats-chart-stage"></div><div class="stats-range-rail" aria-label="Draggable submission range"><div class="stats-range-selection"></div><button type="button" class="stats-range-handle from" data-stats-handle="from" role="slider" aria-label="From date and time"></button><button type="button" class="stats-range-handle to" data-stats-handle="to" role="slider" aria-label="To date and time"></button></div><p class="stats-range-help">Drag either edge inward and release to zoom. Use By to group the selected range by day or by hour.</p></section></div>`;
     document.body.appendChild(dialog);
     dialog.showModal();
     dialog.querySelector(".stats-close").onclick = () => dialog.close();
     dialog.querySelector(".stats-reset").onclick = () => setSelection(domainStart, domainEnd);
+    dialog.querySelector("#stats-by").value = grouping;
+    dialog.querySelector("#stats-by").addEventListener("change", event => {
+      grouping = event.target.value === "hour" ? "hour" : "day";
+      render();
+    });
     dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
     dialog.addEventListener("close", () => { dialog.remove(); dialog = null; }, { once: true });
     ["from", "to"].forEach(side => {

@@ -86,7 +86,7 @@ async function mountReports(page) {
   await page.addScriptTag({ path: "js/application-reports.js" });
 }
 
-test("stats chart groups by day and switches to hourly for a one-day range", async ({ page }) => {
+test("stats chart groups by the selected day or hour interval", async ({ page }) => {
   await mountReports(page);
   await page.evaluate(() => {
     window.__cooperApplicationsReportContext.applications = [
@@ -100,6 +100,7 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   const dialog = page.locator(".application-stats-dialog");
   await expect(dialog).toBeVisible();
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await expect(dialog.locator("#stats-by")).toHaveValue("day");
   await expect(dialog.locator(".stats-line")).toHaveCount(1);
   await expect(dialog.locator(".stats-point")).toHaveCount(3);
   await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
@@ -124,14 +125,16 @@ test("stats chart groups by day and switches to hourly for a one-day range", asy
   await page.mouse.down();
   await page.mouse.move(resetRail.x + resetRail.width * 2 / 3, fromHandle.y + 20);
   await page.mouse.up();
-  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
-  expect(await dialog.locator(".stats-point").count()).toBeGreaterThanOrEqual(24);
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
   await dialog.locator(".stats-reset").click();
 
   await dialog.locator("#stats-from").fill("2026-09-14T00:00");
   await dialog.locator("#stats-from").dispatchEvent("change");
   await dialog.locator("#stats-to").fill("2026-09-14T23:59");
   await dialog.locator("#stats-to").dispatchEvent("change");
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await expect(dialog.locator(".stats-point")).toHaveCount(1);
+  await dialog.locator("#stats-by").selectOption("hour");
   await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
   await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
   await expect(dialog.locator(".stats-point")).toHaveCount(24);
