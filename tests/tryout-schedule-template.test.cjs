@@ -28,6 +28,24 @@ test("debates can be saved as drafts with every field optional", () => {
   assert.match(server, /if \(startTime && endTime && timeMinutes\(startTime\) >= timeMinutes\(endTime\)\)/);
 });
 
+test("tryout settings and debate entries autosave without save buttons", () => {
+  assert.match(html, /id="tryout-settings-status"[^>]*>Saved</);
+  assert.match(html, /id="tryout-record-status"[^>]*>Saved</);
+  assert.doesNotMatch(html, /id="tryout-range-save"/);
+  assert.doesNotMatch(html, /id="tryout-save"/);
+  assert.match(client, /TEMPLATE_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input", \(\) => scheduleTemplateSave\(\)\)\)/);
+  assert.match(client, /ASSIGNMENT_FIELDS\.forEach\(id => \$\(id\)\.addEventListener\("input", \(\) => scheduleAssignmentSave\(\)\)\)/);
+  assert.match(client, /"Saved just now"/);
+});
+
+test("entry cards sit together above a full-width schedule", () => {
+  const entryStart = html.indexOf('<div class="tryout-entry-grid">');
+  const scheduleStart = html.indexOf('<section class="tryout-card tryout-schedule-card">');
+  assert.ok(entryStart >= 0 && scheduleStart > entryStart);
+  assert.match(html, /\.tryout-entry-grid\{align-items:start;display:grid/);
+  assert.match(html, /\.tryout-schedule-card\{margin-top:18px\}/);
+});
+
 test("debater fields search by name without exposing their source", () => {
   assert.match(html, /id="tryout-a-one" list="tryout-debater-options"/);
   assert.match(html, /id="tryout-debater-options"/);

@@ -4,6 +4,8 @@
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/manageTryoutSchedule";
   const DEBATER_FIELDS = ["tryout-a-one", "tryout-a-two", "tryout-b-one", "tryout-b-two"];
+  const TEMPLATE_FIELDS = ["tryout-tournament-name", "tryout-range-start", "tryout-range-end"];
+  const ASSIGNMENT_FIELDS = ["tryout-date", "tryout-status", ...DEBATER_FIELDS, "tryout-judge", "tryout-judge-type", "tryout-start", "tryout-end", "tryout-location", "tryout-notes"];
   let debaters = [];
   let judges = [];
   let assignments = [];
@@ -14,6 +16,12 @@
   let templateRevision = 0;
   let pendingDeleteId = "";
   let deleteTrigger = null;
+  let templateSaveTimer = null;
+  let assignmentSaveTimer = null;
+  let templateSaving = false;
+  let assignmentSaving = false;
+  let templateSaveQueued = false;
+  let assignmentSaveQueued = false;
   const $ = id => document.getElementById(id);
   const esc = value => String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
   const timeLabel = value => {
@@ -40,6 +48,12 @@
     const target = $("tryout-message");
     target.textContent = text || "";
     target.className = `tryout-message${kind ? ` ${kind}` : ""}`;
+  }
+
+  function setAutosaveStatus(id, text, kind = "") {
+    const target = $(id);
+    target.textContent = text;
+    target.className = `tryout-autosave-status${kind ? ` ${kind}` : ""}`;
   }
 
   async function manage(payload) {
@@ -141,15 +155,19 @@
   }
 
   function resetForm() {
+    clearTimeout(assignmentSaveTimer);
+    assignmentSaveTimer = null;
+    assignmentSaveQueued = false;
     editingId = "";
     $("tryout-form").reset();
     $("tryout-form-heading").textContent = "Add debate";
-    $("tryout-save").textContent = "Add debate";
-    $("tryout-cancel").hidden = true;
+    $("tryout-new-draft").hidden = true;
+    $("tryout-new-draft").disabled = false;
     renderPeopleOptions();
     applyTemplate();
     $("tryout-status").value = "scheduled";
     $("tryout-judge-type").value = "member";
+    setAutosaveStatus("tryout-record-status", "Saved");
     setMessage("");
   }
 
@@ -172,8 +190,9 @@
     $("tryout-location").value = item.location;
     $("tryout-notes").value = item.notes || "";
     $("tryout-form-heading").textContent = "Edit debate";
-    $("tryout-save").textContent = "Save changes";
-    $("tryout-cancel").hidden = false;
+    $("tryout-new-draft").hidden = false;
+    $("tryout-new-draft").disabled = false;
+    setAutosaveStatus("tryout-record-status", "Saved");
     setMessage("");
     $("tryout-form").scrollIntoView({ behavior: "smooth", block: "start" });
   }
@@ -216,48 +235,61 @@
     }
   }
 
+  function scheduleTemplateSave(delay = 800, markRevision = true) {
+    if (markRevision) templateRevision += 1;
+    clearTimeout(templateSaveTimer);
+    setAutosaveStatus("tryout-settings-status", "Saving…", "saving");
+    templateSaveTimer = setTimeout(saveTemplate, delay);
+  }
+
   async function saveTemplate() {
+    templateSaveTimer = null;
+    if (templateSaving) {
+      templateSaveQueued = true;
+      return;
+    }
     const title = $("tryout-tournament-name").value.trim();
     const startDate = $("tryout-range-start").value;
     const endDate = $("tryout-range-end").value;
     if (!title) {
-      setMessage("Enter a tournament name.", "error");
+      setAutosaveStatus("tryout-settings-status", "Enter a tournament name to save.", "error");
       return;
     }
     if (!startDate || !endDate || startDate > endDate) {
-      setMessage("Choose a valid tryout start and end date.", "error");
+      setAutosaveStatus("tryout-settings-status", "Choose a valid date range to save.", "error");
       return;
     }
     try {
-      $("tryout-range-save").disabled = true;
-      templateRevision += 1;
+      templateSaving = true;
+      setAutosaveStatus("tryout-settings-status", "Saving…", "saving");
       const result = await manage({ action: "saveTemplate", template: { title, startDate, endDate } });
       template = result.template;
       applyTemplate();
       publishTemplateToTournamentGrid();
       renderSummary();
-      setMessage("Tournament settings saved.", "ok");
+      setAutosaveStatus("tryout-settings-status", "Saved just now");
     } catch (error) {
-      setMessage(error.message, "error");
+      setAutosaveStatus("tryout-settings-status", error.message, "error");
     } finally {
-      $("tryout-range-save").disabled = false;
+      templateSaving = false;
+      if (templateSaveQueued) {
+        templateSaveQueued = false;
+        scheduleTemplateSave(0, false);
+      }
     }
   }
 
-  async function save(event) {
-    event.preventDefault();
+  function collectAssignment() {
     const values = DEBATER_FIELDS.map(id => $(id).value.trim());
     const ids = DEBATER_FIELDS.map(selectedDebaterId);
     if (values.some((value, index) => value && !ids[index])) {
-      setMessage("Choose typed debaters from the name suggestions.", "error");
-      return;
+      return { error: "Choose typed debaters from the name suggestions." };
     }
     const selectedIds = ids.filter(Boolean);
     if (new Set(selectedIds).size !== selectedIds.length) {
-      setMessage("Each debater can appear only once.", "error");
-      return;
+      return { error: "Each debater can appear only once." };
     }
-    const assignment = {
+    return { assignment: {
       pairAIds: ids.slice(0, 2).filter(Boolean),
       pairBIds: ids.slice(2).filter(Boolean),
       date: $("tryout-date").value,
@@ -268,27 +300,58 @@
       endTime: $("tryout-end").value,
       location: $("tryout-location").value.trim(),
       notes: $("tryout-notes").value.trim(),
-    };
+    } };
+  }
+
+  function scheduleAssignmentSave(delay = 800) {
+    clearTimeout(assignmentSaveTimer);
+    $("tryout-new-draft").disabled = true;
+    setAutosaveStatus("tryout-record-status", "Saving…", "saving");
+    assignmentSaveTimer = setTimeout(saveAssignment, delay);
+  }
+
+  async function saveAssignment() {
+    assignmentSaveTimer = null;
+    if (assignmentSaving) {
+      assignmentSaveQueued = true;
+      return;
+    }
+    const { assignment, error } = collectAssignment();
+    if (error) {
+      setAutosaveStatus("tryout-record-status", error, "error");
+      return;
+    }
+    let saved = false;
     try {
-      $("tryout-save").disabled = true;
-      await manage({ action: "save", assignmentId: editingId, assignment });
-      await load();
-      resetForm();
-      setMessage("Tryout debate saved.", "ok");
+      assignmentSaving = true;
+      setAutosaveStatus("tryout-record-status", "Saving…", "saving");
+      const result = await manage({ action: "save", assignmentId: editingId, assignment });
+      editingId = result.assignmentId;
+      $("tryout-form-heading").textContent = "Edit debate";
+      $("tryout-new-draft").hidden = false;
+      await load(true);
+      saved = true;
     } catch (error) {
-      setMessage(error.message, "error");
+      setAutosaveStatus("tryout-record-status", error.message, "error");
     } finally {
-      $("tryout-save").disabled = false;
+      assignmentSaving = false;
+      if (assignmentSaveQueued) {
+        assignmentSaveQueued = false;
+        scheduleAssignmentSave(0);
+      } else if (saved) {
+        $("tryout-new-draft").disabled = false;
+        setAutosaveStatus("tryout-record-status", "Saved just now");
+      }
     }
   }
 
-  async function load() {
+  async function load(preserveTemplateFields = false) {
     const requestedAtRevision = templateRevision;
     const result = await manage({ action: "list" });
     debaters = result.debaters || result.students || [];
     judges = result.judges || [];
     assignments = result.assignments || [];
-    if (requestedAtRevision === templateRevision) {
+    if (!preserveTemplateFields && requestedAtRevision === templateRevision) {
       template = result.template || template;
       applyTemplate();
       publishTemplateToTournamentGrid();
@@ -328,9 +391,10 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     enableNativePickers();
-    $("tryout-form").addEventListener("submit", save);
-    $("tryout-cancel").addEventListener("click", resetForm);
-    $("tryout-range-save").addEventListener("click", saveTemplate);
+    $("tryout-form").addEventListener("submit", event => event.preventDefault());
+    $("tryout-new-draft").addEventListener("click", resetForm);
+    TEMPLATE_FIELDS.forEach(id => $(id).addEventListener("input", () => scheduleTemplateSave()));
+    ASSIGNMENT_FIELDS.forEach(id => $(id).addEventListener("input", () => scheduleAssignmentSave()));
     $("tryout-delete-cancel").addEventListener("click", closeDeleteModal);
     $("tryout-delete-confirm").addEventListener("click", deleteAssignment);
     $("tryout-delete-modal").addEventListener("click", event => {
@@ -353,10 +417,10 @@
     currentUser = firebase.auth().currentUser;
     canDelete = event.detail?.role !== "captain";
     const isCaptain = event.detail?.role === "captain";
-    $("tryout-range-save").hidden = isCaptain;
     $("tryout-tournament-name").disabled = isCaptain;
     $("tryout-range-start").disabled = isCaptain;
     $("tryout-range-end").disabled = isCaptain;
+    if (isCaptain) setAutosaveStatus("tryout-settings-status", "View only");
     const requestedAtRevision = templateRevision;
     manage({ action: "list" }).then(result => {
       if (requestedAtRevision !== templateRevision) return;
