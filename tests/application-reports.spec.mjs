@@ -58,6 +58,7 @@ const evaluations = {
 
 async function mountReports(page) {
   await page.setContent(`
+    <button id="application-stats-report">Stats</button>
     <button id="essay-scores-report">Essay Scores</button>
     <button id="decision-status-report">Decision Status</button>
   `);
@@ -80,8 +81,46 @@ async function mountReports(page) {
     });
   }, { records: applications, essayRecords: evaluations });
   await page.addStyleTag({ path: "css/application-reports.css" });
+  await page.addStyleTag({ path: "css/application-stats.css" });
+  await page.addScriptTag({ path: "js/application-stats.js" });
   await page.addScriptTag({ path: "js/application-reports.js" });
 }
+
+test("stats chart groups by day and switches to hourly for a one-day range", async ({ page }) => {
+  await mountReports(page);
+  await page.evaluate(() => {
+    window.__cooperApplicationsReportContext.applications = [
+      { id: "one", createdAt: "2026-09-14T13:15:00-04:00" },
+      { id: "two", createdAt: "2026-09-14T17:30:00-04:00" },
+      { id: "three", createdAt: "2026-09-16T21:45:00-04:00" },
+    ];
+  });
+  await page.locator("#application-stats-report").click();
+
+  const dialog = page.locator(".application-stats-dialog");
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped by day");
+  await expect(dialog.locator(".stats-bar")).toHaveCount(3);
+  await expect(dialog.locator('[data-stats-handle="from"]')).toHaveAttribute("role", "slider");
+  await expect(dialog.locator('[data-stats-handle="to"]')).toHaveAttribute("role", "slider");
+
+  const toHandle = await dialog.locator('[data-stats-handle="to"]').boundingBox();
+  const rail = await dialog.locator(".stats-range-rail").boundingBox();
+  await page.mouse.move(toHandle.x + toHandle.width / 2, toHandle.y + 20);
+  await page.mouse.down();
+  await page.mouse.move(rail.x + rail.width / 2, toHandle.y + 20);
+  await page.mouse.up();
+  await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
+  await dialog.locator(".stats-reset").click();
+
+  await dialog.locator("#stats-from").fill("2026-09-14T00:00");
+  await dialog.locator("#stats-from").dispatchEvent("change");
+  await dialog.locator("#stats-to").fill("2026-09-14T23:59");
+  await dialog.locator("#stats-to").dispatchEvent("change");
+  await expect(dialog.locator(".stats-granularity")).toHaveText("Grouped hour by hour");
+  await expect(dialog.locator(".stats-count")).toHaveText("2 submissions");
+  await expect(dialog.locator(".stats-bar")).toHaveCount(24);
+});
 
 test("essay report shows all grading states, filters, and sorts by total", async ({ page }) => {
   await mountReports(page);
