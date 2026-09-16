@@ -237,7 +237,7 @@ test("evaluation header is a single ordered command bar with score and status pi
   await expect(page.locator(".eval-header-score")).toHaveText("0 of 7 scored · 0/35");
   await expect(page.locator(".eval-status")).toHaveText("Not started");
   const header = await page.evaluate(() => {
-    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-close", ".eval-finalize"];
+    const selectors = [".essay-eval-kicker", ".essay-eval-title", ".essay-eval-sub", ".eval-head-summary strong", ".eval-header-score", ".eval-status", ".eval-finalize", ".eval-close"];
     const boxes = selectors.map(selector => document.querySelector(selector).getBoundingClientRect());
     const scoreStyle = getComputedStyle(document.querySelector(".eval-header-score"));
     const statusStyle = getComputedStyle(document.querySelector(".eval-status"));
@@ -251,20 +251,29 @@ test("evaluation header is a single ordered command bar with score and status pi
       oneLine: Math.max(...boxes.map(box => box.top + box.height / 2)) - Math.min(...boxes.map(box => box.top + box.height / 2)) < 2,
       scoreRadius: parseFloat(scoreStyle.borderRadius),
       statusRadius: parseFloat(statusStyle.borderRadius),
+      essayTitleSize: parseFloat(getComputedStyle(document.querySelector(".eval-head-summary strong")).fontSize),
+      scoreSize: parseFloat(scoreStyle.fontSize),
+      statusDivider: getComputedStyle(document.querySelector(".eval-status"), "::before").borderRightWidth,
       closeBackground: closeStyle.backgroundImage,
       finalizeBackground: finalizeStyle.backgroundImage,
+      finalizeColor: finalizeStyle.color,
+      closeIsLast: document.querySelector(".essay-eval-head-actions").lastElementChild.classList.contains("eval-close"),
       statusCloseGap: close.left - status.right,
-      closeFinalizeGap: finalize.left - close.right,
+      finalizeCloseGap: close.left - finalize.right,
     };
   });
   expect(header.ordered).toBe(true);
   expect(header.oneLine).toBe(true);
   expect(header.scoreRadius).toBeGreaterThan(20);
   expect(header.statusRadius).toBeGreaterThan(20);
+  expect(header.essayTitleSize).toBeGreaterThanOrEqual(15.8);
+  expect(header.scoreSize).toBeGreaterThanOrEqual(13.7);
+  expect(header.statusDivider).toBe("1px");
   expect(header.closeBackground).toContain("182, 59, 71");
   expect(header.finalizeBackground).toContain("67, 200, 121");
-  expect(header.statusCloseGap).toBeGreaterThanOrEqual(9);
-  expect(header.closeFinalizeGap).toBeGreaterThanOrEqual(9);
+  expect(header.finalizeColor).toBe("rgb(255, 255, 255)");
+  expect(header.closeIsLast).toBe(true);
+  expect(header.finalizeCloseGap).toBeGreaterThanOrEqual(9);
 
   const close = page.locator(".eval-close");
   const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundImage);

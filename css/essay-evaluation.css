@@ -532,13 +532,14 @@ html.is-chromeos .eval-head-summary:before{display:none}
   min-height:34px;
   padding:0 18px
 }
-.eval-head-summary strong{font-size:.9rem}
+.eval-head-summary strong{font-size:.99rem}
 .eval-header-score{
   background:linear-gradient(180deg,#f7d765,#d7a72d);
   border:1px solid #ffe999;
   border-radius:999px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 3px 9px rgba(0,0,0,.24);
   color:#14223b!important;
+  font-size:.86rem;
   min-height:30px;
   padding:7px 12px
 }
@@ -568,7 +569,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   text-align:center;
   width:auto
 }
-.eval-status:before{color:#8eb7da;content:"Status";font-size:.58rem;font-weight:900;letter-spacing:.08em;margin-right:7px;text-transform:uppercase}
+.eval-status:before{border-right:1px solid rgba(174,211,242,.45);color:#8eb7da;content:"Status";font-size:.58rem;font-weight:900;letter-spacing:.08em;margin-right:9px;padding-right:9px;text-transform:uppercase}
 .eval-status[data-kind=error]{background:#5a202d;border-color:#d76f7c;color:#ffd8dc}
 .eval-status[data-kind=saved]{background:#114d39;border-color:#57bd90;color:#d9ffec}
 .eval-reset{min-height:32px}
@@ -589,7 +590,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
 .eval-finalize{
   background:linear-gradient(180deg,#43c879,#218c51);
   border:1px solid #8aefb4;
-  color:#062718;
+  color:#fff;
   margin-left:0;
   min-height:32px
 }
@@ -600,7 +601,7 @@ html.is-chromeos .eval-head-summary:before{display:none}
   outline:0;
   transform:translateY(-1px)
 }
-.eval-finalize:disabled{background:linear-gradient(180deg,#43c879,#218c51);border-color:#8aefb4;color:#062718;opacity:.58}
+.eval-finalize:disabled{background:linear-gradient(180deg,#43c879,#218c51);border-color:#8aefb4;color:#fff;opacity:.58}
 @media(max-width:760px){
   .essay-eval-head,html.is-chromeos .essay-eval-head{align-items:center;display:flex;flex-direction:row;gap:0;min-height:62px;padding:8px 12px}
   .essay-eval-identity,html.is-chromeos .essay-eval-identity{display:flex;min-height:38px}
