@@ -25,6 +25,7 @@
   };
 
   let editingId = null;
+  let selectedEventId = null;
   let events = [];
   let currentUser = null;
   let capacityRoles = [];
@@ -90,11 +91,18 @@
   }
   function resetForm() {
     editingId = null;
+    selectedEventId = null;
     $("vol-event-form").reset();
+    $("event-season").value = "2026-2027";
+    $("event-volunteer-signups").checked = true;
     setCapacityRoles();
     $("tm-crumb-event").textContent = "New tournament";
     $("vol-save").textContent = "Create tournament";
     $("vol-cancel-edit").style.display = "none";
+    $("tm-detail-heading").textContent = "Add tournament";
+    $("tm-detail-actions").innerHTML = "";
+    $("tm-selected-signups").querySelector(".signups-body").innerHTML = `<p class="tm-no-signups">Save the tournament before signups can be added.</p>`;
+    window.setTryoutManagerVisible?.(false);
     message("");
     updateManagerSummary();
   }
@@ -119,6 +127,11 @@
     $("event-coach-phone").value = event.coachPhone || "";
     $("event-details").value = event.details || "";
     $("event-published").checked = !!event.published;
+    $("event-type").value = ["external", "internal", "tryout"].includes(event.eventType) ? event.eventType : "external";
+    $("event-season").value = event.season || "2026-2027";
+    $("event-volunteer-signups").checked = event.volunteerSignupsEnabled !== false;
+    $("event-partner-signups").checked = event.partnerSignupsEnabled === true;
+    $("event-partner-session").value = event.partnerSession || "";
     const providedMeal = event.mealInfo || "";
     const mealPrefix = /^Lunch and refreshments provided\.?\s*(?:·\s*)?/i;
     $("event-lunch-provided").checked = mealPrefix.test(providedMeal);
@@ -127,6 +140,9 @@
     $("tm-crumb-event").textContent = event.title || "Tournament Management";
     $("vol-save").textContent = "Save changes";
     $("vol-cancel-edit").style.display = "block";
+    selectedEventId = event.id;
+    $("tm-detail-heading").textContent = event.title || "Tournament details";
+    window.setTryoutManagerVisible?.(event.eventType === "tryout");
     message("");
     updateManagerSummary();
     if (shouldScroll) window.scrollTo({ top: 0, behavior: "smooth" });
@@ -197,6 +213,11 @@
       coachPhone: $("event-coach-phone").value.trim(),
       details: $("event-details").value.trim(),
       published: $("event-published").checked,
+      eventType: $("event-type").value,
+      season: $("event-season").value.trim(),
+      volunteerSignupsEnabled: $("event-volunteer-signups").checked,
+      partnerSignupsEnabled: $("event-partner-signups").checked,
+      partnerSession: $("event-partner-session").value,
     };
   }
   async function manage(payload) {
@@ -310,6 +331,16 @@
       alert(error.message || "Unable to cancel this tournament.");
     }
   }
+  async function deleteEvent(eventId) {
+    const event = events.find(item => item.id === eventId);
+    if (!event || !confirm(`Delete “${event.title}” permanently? Past records and signups cannot be recovered.`)) return;
+    try {
+      await manage({ action: "deleteEvent", eventId });
+      resetForm();
+    } catch (error) {
+      alert(error.message || "Unable to delete this tournament.");
+    }
+  }
   function eventPayload(item, roles = item.roles || []) {
     return {
       title: item.title || "",
@@ -343,68 +374,107 @@
   function roleAvailabilityText(label) {
     return `${esc(label)}${label === "Single-slot timeslots" ? " are open" : " openings"}`;
   }
+  function tournamentStatus(item) {
+    const today = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/New_York",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(new Date());
+    if (item.cancelled || !item.published) return { key: "inactive", label: item.cancelled ? "Cancelled" : "Inactive" };
+    if (item.date && item.date < today) return { key: "completed", label: "Completed" };
+    return { key: "active", label: "Upcoming" };
+  }
+  async function renderSelectedSignups(eventId) {
+    const body = $("tm-selected-signups").querySelector(".signups-body");
+    body.innerHTML = `<p class="tm-no-signups">Loading signups…</p>`;
+    try {
+      const [signups, deliveries] = await Promise.all([
+        signupsForEvent(eventId),
+        emailDeliveriesForEvent(eventId),
+      ]);
+      body.innerHTML = signups.length ? signups.map(signup => {
+        const delivery = deliveries.get(signup.id);
+        const deliveryStyle = delivery && delivery.status === "failed" ? "#b54708" : "#8fa4c1";
+        return `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}<br><span style="color:${deliveryStyle};font-weight:600;">${esc(deliveryLabel(delivery))}</span></div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`;
+      }).join("") : `<p class="tm-no-signups">No volunteer signups for this tournament.</p>`;
+      body.querySelectorAll("[data-remove]").forEach(button => {
+        const signup = signups.find(item => item.id === button.dataset.remove);
+        button.addEventListener("click", () => removeSignup(signup));
+      });
+    } catch (error) {
+      body.innerHTML = `<p class="tm-no-signups">Unable to load signups: ${esc(error.message)}</p>`;
+    }
+  }
+  function selectTournament(item, shouldScroll = false) {
+    if (!item) return;
+    populateForm(item, false);
+    renderSelectedSignups(item.id);
+    const status = tournamentStatus(item);
+    $("tm-detail-actions").innerHTML = `
+      <button class="tm-action close" type="button" data-selected-toggle>${item.published ? "Make inactive" : "Make active"}</button>
+      <button class="tm-action" type="button" data-selected-export>Export volunteer CSV</button>
+      <button class="tm-action delete" type="button" data-selected-delete>Delete tournament</button>`;
+    $("tm-detail-actions").querySelector("[data-selected-toggle]").addEventListener("click", () => setPublished(item.id, !item.published));
+    $("tm-detail-actions").querySelector("[data-selected-export]").addEventListener("click", () => exportEvent(item.id));
+    $("tm-detail-actions").querySelector("[data-selected-delete]").addEventListener("click", () => deleteEvent(item.id));
+    document.querySelectorAll(".tm-data-table tbody tr").forEach(row => row.classList.toggle("selected", row.dataset.event === item.id));
+    $("tm-status").textContent = status.label;
+    $("tm-status-note").textContent = status.key === "completed" ? "Inactive after tournament date" : item.published ? "Active signup source" : "Not available to signups";
+    if (shouldScroll) $("tm-detail-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
   async function renderEvents(items) {
     const root = $("vol-event-list");
+    const search = ($("event-grid-search")?.value || "").trim().toLowerCase();
+    const filter = $("event-grid-filter")?.value || "all";
+    const filtered = items.filter(item => {
+      const status = tournamentStatus(item);
+      const type = item.eventType || "external";
+      const matchesSearch = !search || [item.title, item.date, item.location, item.host, type].some(value => String(value || "").toLowerCase().includes(search));
+      const matchesFilter = filter === "all" ||
+        (filter === "upcoming" && status.key === "active") ||
+        (filter === "tryout" && type === "tryout") ||
+        status.key === filter;
+      return matchesSearch && matchesFilter;
+    });
     if (!items.length) {
       root.innerHTML = `<div class="tm-empty">No tournaments have been created yet. Add the tournament details below, set judge capacity, then publish when volunteers are ready to sign up.</div>`;
       return;
     }
-    root.innerHTML = items.map(item => {
-      const roles = visibleRoles(item.roles).map(role => {
-        const label = roleDisplayLabel(role);
-        const open = Math.max(0, Number(role.capacity || 0) - Number(role.signedUp || 0));
-        return `<div class="tm-role-pill"><b>${open}/${Number(role.capacity || 0)}</b><span>${roleAvailabilityText(label)}</span></div>`;
-      }).join("");
-      return `<article class="tm-event" data-event="${esc(item.id)}">
-        <div class="tm-event-main">
-          <div class="tm-event-top"><div><h3>${esc(item.title)}</h3></div><span class="tm-status ${item.published ? "open" : "closed"}">${item.cancelled ? "Cancelled" : item.published ? "Published" : "Draft"}</span></div>
-          <div class="tm-event-actions">
-            <button class="tm-action" data-edit="${esc(item.id)}">Manage tournament</button>
-            <button class="tm-action close" data-toggle="${esc(item.id)}">${item.published ? "Close signups" : "Publish signups"}</button>
-            <button class="tm-action" data-export="${esc(item.id)}">Export CSV</button>
-            ${item.cancelled ? "" : `<button class="tm-action close" data-cancel="${esc(item.id)}">Cancel tournament</button>`}
-          </div>
-        </div>
-        <div class="tm-role-summary">${roles}</div>
-        <div class="tm-signups"><h4>Private volunteer signups</h4><div class="signups-body"><p class="tm-no-signups">Loading signups…</p></div></div>
-      </article>`;
-    }).join("");
-    root.querySelectorAll("[data-edit]").forEach(button => button.addEventListener("click", () => populateForm(events.find(item => item.id === button.dataset.edit))));
-    root.querySelectorAll("[data-toggle]").forEach(button => button.addEventListener("click", () => {
-      const event = events.find(item => item.id === button.dataset.toggle);
-      setPublished(event.id, !event.published);
-    }));
-    root.querySelectorAll("[data-export]").forEach(button => button.addEventListener("click", () => exportEvent(button.dataset.export)));
-    root.querySelectorAll("[data-cancel]").forEach(button => button.addEventListener("click", () => cancelEvent(button.dataset.cancel)));
-    await Promise.all(items.map(async item => {
-       const body = root.querySelector(`[data-event="${CSS.escape(item.id)}"] .signups-body`);
-      if (!body) return;
-      try {
-        const [signups, deliveries] = await Promise.all([
-          signupsForEvent(item.id),
-          emailDeliveriesForEvent(item.id),
-        ]);
-        body.innerHTML = signups.length ? signups.map(signup => {
-          const delivery = deliveries.get(signup.id);
-          const deliveryStyle = delivery && delivery.status === "failed" ? "#b54708" : "#54606f";
-          return `<div class="tm-signup-row"><div><div class="tm-signup-name">${esc(signup.parentName)} <span style="color:var(--tm-gold);font-weight:400;">· ${esc(signup.roleLabel)}</span></div><div class="tm-signup-details">${signup.availabilityStart && signup.availabilityEnd ? `Judging: ${esc(signup.availabilityStart)}–${esc(signup.availabilityEnd)}<br>` : ""}${esc(signup.email)} · ${esc(signup.phone)}${signup.studentName ? ` · Debater: ${esc(signup.studentName)}` : ""}${signup.notes ? `<br>${esc(signup.notes)}` : ""}<br><span style="color:${deliveryStyle};font-weight:600;">${esc(deliveryLabel(delivery))}</span></div></div><button class="tm-remove" data-remove="${esc(signup.id)}">Remove</button></div>`;
-        }).join("") : `<p class="tm-no-signups">No volunteer signups yet.</p>`;
-        body.querySelectorAll("[data-remove]").forEach(button => {
-          const signup = signups.find(item => item.id === button.dataset.remove);
-          button.addEventListener("click", () => removeSignup(signup));
-        });
-      } catch (_) {
-         body.innerHTML = `<p class="tm-no-signups">Unable to load signups.</p>`;
-      }
-    }));
+    if (!filtered.length) {
+      root.innerHTML = `<div class="tm-empty">No tournaments match the current search and filter.</div>`;
+      return;
+    }
+    root.innerHTML = `<table class="tm-data-table"><thead><tr><th>Tournament</th><th>Date</th><th>Type</th><th>Status</th><th>Volunteer signup</th><th>Partner signup</th></tr></thead><tbody>${filtered.map(item => {
+      const status = tournamentStatus(item);
+      const type = item.eventType || "external";
+      return `<tr data-event="${esc(item.id)}" tabindex="0"><td><div class="tm-grid-title">${esc(item.title)}</div><div class="tm-grid-sub">${esc(item.location || item.host || "Location not set")}</div></td><td>${esc(dateLabel(item.date))}</td><td><span class="tm-kind ${esc(type)}">${esc(type === "tryout" ? "Internal tryout" : type)}</span></td><td><span class="tm-grid-status ${status.key}">${esc(status.label)}</span></td><td>${item.volunteerSignupsEnabled === false ? "Off" : "On"}</td><td>${item.partnerSignupsEnabled === true ? "On" : "Off"}</td></tr>`;
+    }).join("")}</tbody></table>`;
+    root.querySelectorAll("[data-event]").forEach(row => {
+      const activate = () => selectTournament(events.find(item => item.id === row.dataset.event), true);
+      row.addEventListener("click", activate);
+      row.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          activate();
+        }
+      });
+    });
+    if (selectedEventId) document.querySelector(`[data-event="${CSS.escape(selectedEventId)}"]`)?.classList.add("selected");
   }
-  function startEvents() {
+  async function startEvents() {
+    await manage({ action: "ensureTryoutEvents" }).catch(error => {
+      console.warn("Unable to verify the legacy tryout tournament records:", error);
+    });
     db.collection("volunteer_events").orderBy("date", "asc").onSnapshot(snapshot => {
       events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       renderEvents(events);
-      if (!editingId) {
-        const currentOpenEvent = events.find(event => event.published) || events[0];
-        if (currentOpenEvent) populateForm(currentOpenEvent, false);
+      if (!selectedEventId) {
+        const currentOpenEvent = events.find(event => tournamentStatus(event).key === "active") || events.at(-1);
+        if (currentOpenEvent) selectTournament(currentOpenEvent);
+      } else {
+        const selected = events.find(event => event.id === selectedEventId);
+        if (selected) selectTournament(selected);
       }
     }, error => {
        $("vol-event-list").innerHTML = `<div class="tm-empty">Volunteer events could not be loaded: ${esc(error.message)}</div>`;
@@ -467,6 +537,13 @@
       });
     };
     window.activateEventsTab = activateEventsTab;
+    $("event-grid-search").addEventListener("input", () => renderEvents(events));
+    $("event-grid-filter").addEventListener("change", () => renderEvents(events));
+    $("event-type").addEventListener("change", () => {
+      const isTryout = $("event-type").value === "tryout";
+      if (!isTryout) $("event-partner-session").value = "";
+      window.setTryoutManagerVisible?.(isTryout && Boolean(editingId));
+    });
     $("vol-event-form").addEventListener("submit", saveEvent);
     $("vol-cancel-edit").addEventListener("click", resetForm);
     $("vol-event-form").addEventListener("input", updateManagerSummary);
@@ -504,8 +581,6 @@
     }));
     document.querySelectorAll("[data-add-tournament]").forEach(link => link.addEventListener("click", event => {
       event.preventDefault();
-      document.querySelector('[data-manager-mode="volunteers"]')?.click();
-      activateEventsTab("add");
       resetForm();
       $("event-information").scrollIntoView({ behavior: "smooth", block: "start" });
       $("event-title").focus({ preventScroll: true });

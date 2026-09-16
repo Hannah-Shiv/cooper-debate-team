@@ -3,7 +3,7 @@
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/manageTryoutSchedule";
-  const SESSION_META = {
+  let SESSION_META = {
     sep22: { date: "2026-09-22", label: "Tuesday, September 22", location: "Cafeteria" },
     sep23: { date: "2026-09-23", label: "Wednesday, September 23", location: "Lecture Hall" },
   };
@@ -17,6 +17,15 @@
     if (!/^\d{2}:\d{2}$/.test(value || "")) return value || "";
     const [hour, minute] = value.split(":").map(Number);
     return `${hour % 12 || 12}:${String(minute).padStart(2, "0")} ${hour >= 12 ? "PM" : "AM"}`;
+  };
+  const dateLabel = value => {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(value || "")) return value || "";
+    const [year, month, day] = value.split("-").map(Number);
+    return new Date(year, month - 1, day).toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
   };
 
   function setMessage(text, kind) {
@@ -52,7 +61,7 @@
     $("tryout-student-two").innerHTML = options;
     $("tryout-student-one").value = selectedOne;
     $("tryout-student-two").value = selectedTwo;
-    if (!editingId) $("tryout-location").value = SESSION_META[session].location;
+    if (!editingId) $("tryout-location").value = SESSION_META[session]?.location || "";
   }
 
   function renderSummary() {
@@ -87,7 +96,7 @@
   function resetForm() {
     editingId = "";
     $("tryout-form").reset();
-    $("tryout-session").value = "sep22";
+    $("tryout-session").value = Object.keys(SESSION_META).find(session => SESSION_META[session].active !== false) || Object.keys(SESSION_META)[0] || "";
     $("tryout-form-heading").textContent = "Add tryout assignment";
     $("tryout-save").textContent = "Add to schedule";
     $("tryout-cancel").hidden = true;
@@ -136,7 +145,7 @@
     }
     const assignment = {
       session,
-      date: SESSION_META[session].date,
+      date: SESSION_META[session]?.date || "",
       studentIds: [firstId, secondId],
       judge: $("tryout-judge").value.trim(),
       startTime: $("tryout-start").value,
@@ -161,6 +170,23 @@
     const result = await manage({ action: "list" });
     students = result.students || [];
     assignments = result.assignments || [];
+    if (Array.isArray(result.sessions) && result.sessions.length) {
+      SESSION_META = {};
+      result.sessions.forEach(item => {
+        if (!item.session || !item.date) return;
+        SESSION_META[item.session] = {
+          date: item.date,
+          label: dateLabel(item.date),
+          location: item.location || "Cooper Middle School",
+          tournamentId: item.tournamentId,
+          active: item.active === true,
+        };
+      });
+      const availableSessions = Object.keys(SESSION_META);
+      $("tryout-session").innerHTML = availableSessions.map(session =>
+        `<option value="${esc(session)}"${SESSION_META[session].active ? "" : " disabled"}>${esc(SESSION_META[session].label)} — ${esc(SESSION_META[session].location)}${SESSION_META[session].active ? "" : " (inactive)"}</option>`
+      ).join("");
+    }
     renderStudentOptions(
       editingId ? $("tryout-student-one").value : "",
       editingId ? $("tryout-student-two").value : ""
@@ -171,7 +197,6 @@
   function showMode(mode) {
     const tryout = mode === "tryout";
     $("tryout-manager").hidden = !tryout;
-    $("volunteer-manager").hidden = tryout;
     document.querySelectorAll("[data-manager-mode]").forEach(button =>
       button.classList.toggle("active", button.dataset.managerMode === mode));
     window.activateEventsTab?.(tryout ? "tryout" : "overview");
@@ -181,6 +206,7 @@
       });
     }
   }
+  window.setTryoutManagerVisible = visible => showMode(visible ? "tryout" : "volunteers");
 
   document.addEventListener("DOMContentLoaded", () => {
     $("tryout-form").addEventListener("submit", save);
@@ -198,6 +224,11 @@
 
   document.addEventListener("tournament-manager-ready", event => {
     currentUser = firebase.auth().currentUser;
-    if (event.detail?.role === "captain" || location.hash === "#tryout-manager") showMode("tryout");
+    if (event.detail?.role === "captain") {
+      $("volunteer-manager").hidden = true;
+      showMode("tryout");
+    } else if (location.hash === "#tryout-manager") {
+      showMode("tryout");
+    }
   });
 })();

@@ -137,6 +137,41 @@
     if (!response.ok) throw new Error(result.error || "The shared partner board is temporarily unavailable.");
     return result;
   }
+  function displayTime(value) {
+    var match = /^(\d{2}):(\d{2})$/.exec(String(value || ""));
+    if (!match) return "";
+    var hour = Number(match[1]);
+    return (hour % 12 || 12) + ":" + match[2] + " " + (hour >= 12 ? "p.m." : "a.m.");
+  }
+  async function loadConfiguredSessions() {
+    try {
+      var result = await api("sessions");
+      if (!Array.isArray(result.sessions) || !result.sessions.length) return;
+      var configured = {};
+      result.sessions.forEach(function (event) {
+        if (!event.session || !event.date) return;
+        var parts = event.date.split("-").map(Number);
+        var date = new Date(parts[0], parts[1] - 1, parts[2]);
+        configured[event.session] = {
+          weekday: date.toLocaleDateString("en-US", { weekday: "long" }),
+          date: date.toLocaleDateString("en-US", { month: "long", day: "numeric" }),
+          shortDate: date.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          location: event.location || "Cooper Middle School",
+          time: [displayTime(event.startTime), displayTime(event.endTime)].filter(Boolean).join("–") || "Time to be announced",
+          tournamentId: event.tournamentId,
+          title: event.title || "Cooper Debate Tryout"
+        };
+      });
+      if (Object.keys(configured).length) {
+        DATES = configured;
+        if (!DATES[state.date]) state.date = Object.keys(DATES)[0];
+        if (!DATES[state.signupDate]) state.signupDate = state.date;
+        renderAll();
+      }
+    } catch (ignore) {
+      // Existing fixed session details remain available if configuration cannot load.
+    }
+  }
   function applySelf(self) {
     state.self = self || null;
     state.activeId = self ? self.id : null;
@@ -722,6 +757,7 @@
       printPairs: $("tourney-tryout-print-pairs")
     };
     startPublicSubscription();
+    loadConfiguredSessions();
     dom.dates.addEventListener("change", function (event) { chooseDate(event.target.value); });
     dom.picker.addEventListener("click", function (event) {
        var acceptButton = event.target.closest("[data-accept-partner]");

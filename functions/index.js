@@ -14,6 +14,12 @@ const crypto = require("node:crypto");
 const { createVolunteerEmailService } = require("./volunteer-email");
 const { createApplicationEmailService } = require("./application-email");
 const { createTryoutBoardHandler } = require("./tryout-board");
+const {
+  isPublicVolunteerEvent,
+  newYorkCalendarDate,
+  sanitizeEventType,
+  ensureTryoutTournamentModel,
+} = require("./tournament-events");
 
 initializeApp();
 
@@ -657,6 +663,11 @@ function calendarEventSignature(data) {
     coachPhone: cleanText(data.coachPhone, 40),
     invitationUrl: cleanText(data.invitationUrl, 500),
     details: cleanText(data.details, 700),
+    eventType: sanitizeEventType(data.eventType),
+    season: cleanText(data.season, 40),
+    volunteerSignupsEnabled: data.volunteerSignupsEnabled !== false,
+    partnerSignupsEnabled: data.partnerSignupsEnabled === true,
+    partnerSession: cleanText(data.partnerSession, 80),
   });
 }
 
@@ -718,6 +729,11 @@ function publicVolunteerEvent(id, data) {
     invitationUrl:   cleanText(data.invitationUrl, 500),
     details:         cleanText(data.details, 700),
     signupDeadline:  cleanText(data.signupDeadline, 32),
+    eventType:       sanitizeEventType(data.eventType),
+    season:          cleanText(data.season, 40),
+    volunteerSignupsEnabled: data.volunteerSignupsEnabled !== false,
+    partnerSignupsEnabled: data.partnerSignupsEnabled === true,
+    partnerSession:  cleanText(data.partnerSession, 80),
     roles: cleanRoles(data.roles).map(role => ({
       id:          role.id,
       label:       role.label,
@@ -765,10 +781,10 @@ exports.publicVolunteerSignup = onRequest(
 
     if (req.method === "GET") {
       try {
-        const snap = await db.collection("volunteer_events")
-          .where("published", "==", true)
-          .get();
+        const snap = await db.collection("volunteer_events").get();
+        const todayInNewYork = newYorkCalendarDate();
         const events = await Promise.all(snap.docs.map(async doc => {
+          if (!isPublicVolunteerEvent(doc.data(), todayInNewYork)) return null;
           const event = publicVolunteerEvent(doc.id, doc.data());
           const signupSnap = await db.collection("volunteer_signups")
             .where("eventId", "==", doc.id)
@@ -781,6 +797,7 @@ exports.publicVolunteerSignup = onRequest(
           };
         }));
         const publishedEvents = events
+          .filter(Boolean)
           .filter(event => event.title && event.roles.length)
           .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
         res.status(200).json({ events: publishedEvents });
@@ -961,7 +978,7 @@ exports.publicVolunteerSignup = onRequest(
           transaction.get(duplicateRef),
         ]);
 
-        if (!eventSnap.exists || !eventSnap.data().published) {
+        if (!eventSnap.exists || !isPublicVolunteerEvent(eventSnap.data(), newYorkCalendarDate())) {
           throw new Error("This volunteer opportunity is no longer available.");
         }
         selectedEvent = { id: eventSnap.id, ...eventSnap.data() };
@@ -2212,6 +2229,51 @@ exports.manageVolunteerSignup = onRequest(
         return;
       }
 
+      if (action === "deleteEvent") {
+        const eventId = cleanText(body.eventId, 160);
+        if (!eventId) throw new Error("A tournament is required.");
+        const eventRef = db.collection("volunteer_events").doc(eventId);
+        await db.runTransaction(async transaction => {
+          const eventSnap = await transaction.get(eventRef);
+          if (!eventSnap.exists) throw new Error("That tournament no longer exists.");
+          const eventData = eventSnap.data();
+          const [signups, tryoutSignups, tryoutSchedule] = await Promise.all([
+            transaction.get(
+            db.collection("volunteer_signups").where("eventId", "==", eventId).limit(1)
+            ),
+            transaction.get(db.collection("tryout_signups")
+              .where("season", "==", "2026-2027")
+              .where("tournamentId", "==", eventId).limit(1)),
+            transaction.get(db.collection("tryout_schedule")
+              .where("season", "==", "2026-2027")
+              .where("tournamentId", "==", eventId).limit(1)),
+          ]);
+          // Legacy records without tournamentId remain protected by their
+          // session, but modern records use the authoritative relationship.
+          const legacySignups = eventData.partnerSession ? await transaction.get(
+            db.collection("tryout_signups").where("season", "==", "2026-2027")
+              .where("session", "==", cleanText(eventData.partnerSession, 80)).limit(1)
+          ) : { empty: true };
+          const legacySchedule = eventData.partnerSession ? await transaction.get(
+            db.collection("tryout_schedule").where("season", "==", "2026-2027")
+              .where("session", "==", cleanText(eventData.partnerSession, 80)).limit(1)
+          ) : { empty: true };
+          if (!signups.empty || !tryoutSignups.empty || !tryoutSchedule.empty ||
+            !legacySignups.empty || !legacySchedule.empty) {
+            throw new Error("Remove this tournament’s volunteer signups and tryout records before deleting it.");
+          }
+          transaction.delete(eventRef);
+        });
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      if (action === "ensureTryoutEvents") {
+        await ensureTryoutTournamentModel(db);
+        res.status(200).json({ ok: true });
+        return;
+      }
+
       if (action === "saveEvent") {
         const requestedId = cleanText(body.eventId, 160);
         const incoming = body.event || {};
@@ -2233,6 +2295,11 @@ exports.manageVolunteerSignup = onRequest(
         const invitationUrl = cleanText(incoming.invitationUrl, 500);
         const details = cleanText(incoming.details, 700);
         const signupDeadline = cleanText(incoming.signupDeadline, 32);
+        const eventType = sanitizeEventType(incoming.eventType);
+        const season = cleanText(incoming.season, 40);
+        const volunteerSignupsEnabled = incoming.volunteerSignupsEnabled !== false;
+        const partnerSignupsEnabled = incoming.partnerSignupsEnabled === true;
+        const partnerSession = cleanText(incoming.partnerSession, 80);
         const published = incoming.published === true;
         const rawRoles = Array.isArray(incoming.roles) ? incoming.roles : [];
         const roleIds = new Set();
@@ -2254,12 +2321,41 @@ exports.manageVolunteerSignup = onRequest(
         if ((startTime && !endTime) || (!startTime && endTime) || (startTime && timeMinutes(startTime) >= timeMinutes(endTime))) {
           throw new Error("Tournament end time must be after the start time.");
         }
+        if (partnerSignupsEnabled && (eventType !== "tryout" || !["sep22", "sep23"].includes(partnerSession))) {
+          throw new Error("Partner signup requires an internal Cooper tryout with a supported tryout session.");
+        }
 
         const eventRef = requestedId
           ? db.collection("volunteer_events").doc(requestedId)
           : db.collection("volunteer_events").doc();
+        if (partnerSignupsEnabled) {
+        }
         await db.runTransaction(async transaction => {
+          const ownerRef = db.collection("tournament_session_owners")
+            .doc(`${season}-${partnerSession}`);
+          const ownerSnap = await transaction.get(ownerRef);
           const existingSnap = await transaction.get(eventRef);
+          const existing = existingSnap.exists ? existingSnap.data() : null;
+          const oldOwnerRef = existing && existing.partnerSession
+            ? db.collection("tournament_session_owners")
+              .doc(`${cleanText(existing.season, 40)}-${cleanText(existing.partnerSession, 80)}`)
+            : null;
+          const oldOwnerSnap = oldOwnerRef && oldOwnerRef.path !== ownerRef.path
+            ? await transaction.get(oldOwnerRef) : null;
+          if (partnerSignupsEnabled) {
+            if (ownerSnap.exists && ownerSnap.data().tournamentId !== eventRef.id) {
+              throw new Error("Another active tournament already controls that partner signup session.");
+            }
+            transaction.set(ownerRef, {
+              season, session: partnerSession, tournamentId: eventRef.id,
+              updatedAt: FieldValue.serverTimestamp(),
+            }, { merge: true });
+          } else if (ownerSnap.exists && ownerSnap.data().tournamentId === eventRef.id) {
+            transaction.delete(ownerRef);
+          }
+          if (oldOwnerSnap && oldOwnerSnap.exists && oldOwnerSnap.data().tournamentId === eventRef.id) {
+            transaction.delete(oldOwnerRef);
+          }
           const currentRoles = existingSnap.exists ? cleanRoles(existingSnap.data().roles) : [];
           const currentById = new Map(currentRoles.map(role => [role.id, role]));
           const nextRoles = requestedRoles.map(role => {
@@ -2281,11 +2377,11 @@ exports.manageVolunteerSignup = onRequest(
             title, date, location, address, startTime, endTime, mealInfo, debateFormat,
             resolution, host, judgeInstructions, expectations, coachName, coachEmail,
             coachPhone, invitationUrl, details, signupDeadline, published,
+            eventType, season, volunteerSignupsEnabled, partnerSignupsEnabled, partnerSession,
             roles: nextRoles,
             updatedAt: FieldValue.serverTimestamp(),
           };
           if (existingSnap.exists) {
-            const existing = existingSnap.data();
             const sequence = Math.max(0, Math.floor(Number(existing.calendarSequence) || 0));
             data.calendarSequence = calendarEventSignature(existing) === calendarEventSignature(data)
               ? sequence
@@ -2345,11 +2441,29 @@ exports.manageTryoutSchedule = onRequest(
     const db = getFirestore();
     const scheduleCollection = db.collection("tryout_schedule");
     const signupCollection = db.collection("tryout_signups");
-    const sessionDates = { sep22: "2026-09-22", sep23: "2026-09-23" };
     const overlaps = (leftStart, leftEnd, rightStart, rightEnd) =>
       timeMinutes(leftStart) < timeMinutes(rightEnd) && timeMinutes(rightStart) < timeMinutes(leftEnd);
 
     try {
+      await ensureTryoutTournamentModel(db);
+      let tournamentSnap = await db.collection("volunteer_events")
+        .where("eventType", "==", "tryout")
+        .get();
+      const todayInNewYork = newYorkCalendarDate();
+      const sessions = tournamentSnap.docs.map(doc => {
+        const event = doc.data();
+        return {
+          tournamentId: doc.id,
+          session: cleanText(event.partnerSession, 8),
+          title: cleanText(event.title, 160),
+          date: cleanDate(event.date),
+          location: cleanText(event.location, 160),
+          startTime: cleanTime(event.startTime),
+          endTime: cleanTime(event.endTime),
+          active: event.published === true && event.cancelled !== true &&
+            event.partnerSignupsEnabled === true && cleanDate(event.date) >= todayInNewYork,
+        };
+      }).filter(session => ["sep22", "sep23"].includes(session.session));
       if (action === "list") {
         const [signupSnap, scheduleSnap] = await Promise.all([
           signupCollection.where("season", "==", "2026-2027").get(),
@@ -2383,7 +2497,7 @@ exports.manageTryoutSchedule = onRequest(
             notes: cleanText(data.notes, 500),
           };
         }).sort((a, b) => `${a.date}-${a.startTime}`.localeCompare(`${b.date}-${b.startTime}`));
-        res.status(200).json({ ok: true, students, assignments });
+        res.status(200).json({ ok: true, students, assignments, sessions });
         return;
       }
 
@@ -2408,7 +2522,8 @@ exports.manageTryoutSchedule = onRequest(
         const location = cleanText(incoming.location, 160);
         const notes = cleanText(incoming.notes, 500);
         if (studentIds.length !== 2) throw new Error("Choose two different debaters.");
-        if (!sessionDates[session] || date !== sessionDates[session]) throw new Error("Choose the September 22 or September 23 tryout session.");
+        const tournament = sessions.find(item => item.session === session && item.active);
+        if (!tournament || date !== tournament.date) throw new Error("Choose an active upcoming tryout session.");
         if (!startTime || !endTime || timeMinutes(startTime) >= timeMinutes(endTime)) throw new Error("Tryout end time must be after the start time.");
         if (!judge) throw new Error("Enter the judge’s name.");
         if (!location) throw new Error("Enter a room or location.");
@@ -2447,6 +2562,7 @@ exports.manageTryoutSchedule = onRequest(
 
           const data = {
             season: "2026-2027",
+            tournamentId: tournament.tournamentId,
             session,
             date,
             studentIds,

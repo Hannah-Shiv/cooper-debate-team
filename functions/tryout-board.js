@@ -1,5 +1,6 @@
 const crypto = require("node:crypto");
 const { FieldValue } = require("firebase-admin/firestore");
+const { newYorkCalendarDate, ensureTryoutTournamentModel } = require("./tournament-events");
 
 const SEASON = "2026-2027";
 const SESSIONS = new Set(["sep22", "sep23"]);
@@ -46,6 +47,7 @@ function firstValidMutualPreference(selfId, self, records) {
     return partner &&
       !partner.withdrawn &&
       !partner.pairedWith &&
+      partner.tournamentId === self.tournamentId &&
       normalizePreferenceIds(partner).includes(selfId);
   }) || null;
 }
@@ -62,6 +64,7 @@ function incomingRequestViews(selfId, self, records) {
       !record.withdrawn &&
       !record.pairedWith &&
       record.session === self.session &&
+      record.tournamentId === self.tournamentId &&
       normalizePreferenceIds(record).includes(selfId)
     )
     .map(([id, record]) => ({
@@ -140,6 +143,57 @@ function createTryoutBoardHandler({ db, clientAddress }) {
   const publicCollection = db.collection("public_tryout_students");
   const limitCollection = db.collection("tryout_action_limits");
 
+  async function ensureLegacyTryoutEvents() {
+    await ensureTryoutTournamentModel(db);
+  }
+
+  async function availableSessions() {
+    await ensureLegacyTryoutEvents();
+    const snapshot = await db.collection("volunteer_events")
+      .where("partnerSignupsEnabled", "==", true)
+      .get();
+    const today = newYorkCalendarDate();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(event =>
+        event.published === true &&
+        event.cancelled !== true &&
+        event.eventType === "tryout" &&
+        SESSIONS.has(event.partnerSession) &&
+        typeof event.date === "string" &&
+        event.date >= today
+      )
+      .sort((a, b) => a.date.localeCompare(b.date))
+      .map(event => ({
+        tournamentId: event.id,
+        session: event.partnerSession,
+        title: cleanText(event.title, 160),
+        date: event.date,
+        location: cleanText(event.location, 200),
+        startTime: cleanText(event.startTime, 5),
+        endTime: cleanText(event.endTime, 5),
+      }));
+  }
+  async function requireActiveSession(session) {
+    const sessions = await availableSessions();
+    const selected = sessions.find(item => item.session === session);
+    if (!selected) throw new Error("That tryout session is no longer open for partner signup.");
+    return selected;
+  }
+
+  async function readGoverningTournament(transaction, tournamentId, session) {
+    const ref = db.collection("volunteer_events").doc(tournamentId);
+    const snap = await transaction.get(ref);
+    const event = snap.exists ? snap.data() : null;
+    const today = newYorkCalendarDate();
+    if (!event || event.eventType !== "tryout" || event.season !== SEASON ||
+      event.partnerSession !== session || event.published !== true ||
+      event.cancelled === true || event.partnerSignupsEnabled !== true ||
+      typeof event.date !== "string" || event.date < today) {
+      throw new Error("That tryout session is no longer open for partner signup.");
+    }
+    return { tournamentId, session, date: event.date };
+  }
+
   async function reserveRateLimit(req) {
     const fingerprint = crypto.createHash("sha256").update(clientAddress(req) || "unknown").digest("hex");
     const bucket = Math.floor(Date.now() / 300000);
@@ -165,9 +219,11 @@ function createTryoutBoardHandler({ db, clientAddress }) {
 
   async function open(body) {
     const identity = validateIdentity(body);
+    const tournament = await requireActiveSession(identity.session);
     const keyRef = keyCollection.doc(identityKey(identity.fcpsId));
     let response;
     await db.runTransaction(async transaction => {
+      const governingTournament = await readGoverningTournament(transaction, tournament.tournamentId, identity.session);
       const keySnap = await transaction.get(keyRef);
       const id = keySnap.exists ? keySnap.data().studentId : crypto.randomUUID();
       const recordRef = privateCollection.doc(id);
@@ -182,6 +238,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           name: identity.name,
           grade: identity.grade,
           session: identity.session,
+              tournamentId: governingTournament.tournamentId,
           partnerId: null,
           partnerIds: [],
           pairedWith: null,
@@ -198,6 +255,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           name: identity.name,
           grade: record.grade,
           session: identity.session,
+          tournamentId: governingTournament.tournamentId,
           partnerId: sessionChanged ? null : record.partnerId || null,
           partnerIds: sessionChanged ? [] : normalizePreferenceIds(record),
           pairedWith: sessionChanged ? null : record.pairedWith || null,
@@ -254,6 +312,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
     const id = keySnap.data().studentId;
     const record = records.get(id);
     if (!record || record.withdrawn) throw new Error("No active signup was found for that FCPS ID.");
+    await requireActiveSession(record.session);
     return privateView(id, record, records);
   }
 
@@ -261,6 +320,16 @@ function createTryoutBoardHandler({ db, clientAddress }) {
     const fcpsId = cleanText(body.fcpsId, 7);
     if (!validFcpsId(fcpsId)) throw new Error("Enter the student’s seven-digit FCPS ID.");
     const keyRef = keyCollection.doc(identityKey(fcpsId));
+    let requestedTournament = null;
+    if (action === "request") {
+      requestedTournament = await requireActiveSession(cleanText(body.session, 8));
+    } else {
+      const keySnap = await keyRef.get();
+      if (!keySnap.exists) throw new Error("No signup was found for that FCPS ID.");
+      const recordSnap = await privateCollection.doc(keySnap.data().studentId).get();
+      if (!recordSnap.exists || recordSnap.data().withdrawn) throw new Error("No active signup was found for that FCPS ID.");
+      await requireActiveSession(recordSnap.data().session);
+    }
     let response;
     await db.runTransaction(async transaction => {
       const keySnap = await transaction.get(keyRef);
@@ -273,6 +342,11 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       if (Number.isFinite(expectedRevision) && expectedRevision !== Number(self.revision || 0)) {
         throw new Error("Your signup changed on another device. The board has been refreshed.");
       }
+      const governingTournament = await readGoverningTournament(
+        transaction,
+        action === "request" ? requestedTournament.tournamentId : self.tournamentId,
+        action === "request" ? cleanText(body.session, 8) : self.session
+      );
 
       const changed = new Map();
       const releaseReferences = (studentId, reason) => {
@@ -300,6 +374,7 @@ function createTryoutBoardHandler({ db, clientAddress }) {
           const formerPartnerId = self.pairedWith;
           self = changedRecord(self, {
             session: requestedSession,
+            tournamentId: governingTournament.tournamentId,
             partnerId: null,
             partnerIds: [],
             pairedWith: null,
@@ -330,7 +405,8 @@ function createTryoutBoardHandler({ db, clientAddress }) {
         if (submittedPreferences.includes(selfId)) throw new Error("You cannot choose yourself as a partner.");
 
         const partners = submittedPreferences.map(partnerId => records.get(partnerId));
-        if (partners.some(partner => !partner || partner.withdrawn || partner.session !== self.session)) {
+        if (partners.some(partner => !partner || partner.withdrawn || partner.session !== self.session ||
+          partner.tournamentId !== self.tournamentId)) {
           throw new Error("One of those students is no longer available for this session.");
         }
         if (partners.some(partner => partner.pairedWith && partner.pairedWith !== selfId)) {
@@ -394,6 +470,9 @@ function createTryoutBoardHandler({ db, clientAddress }) {
             });
           }
         }
+        self = changedRecord(self, { tournamentId: governingTournament.tournamentId });
+        records.set(selfId, self);
+        changed.set(selfId, self);
       } else if (action === "release" || action === "withdraw") {
         const formerPartnerId = self.pairedWith;
         self = changedRecord(self, {
@@ -439,6 +518,10 @@ function createTryoutBoardHandler({ db, clientAddress }) {
       await reserveRateLimit(req);
       const body = req.body || {};
       const action = cleanText(body.action, 20);
+      if (action === "sessions") {
+        res.status(200).json({ ok: true, sessions: await availableSessions() });
+        return;
+      }
       const self = action === "open" ? await open(body) : action === "status" ? await status(body) : await mutate(body, action);
       res.status(200).json({ ok: true, self });
     } catch (error) {
