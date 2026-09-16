@@ -45,11 +45,17 @@
 .essay-reference-launch .essay-launch:before,.essay-reference-launch .essay-launch:after,.essay-reference-launch .essay-launch.is-completed:before,.essay-reference-launch .essay-launch.is-completed:after{content:none}
 @media(min-width:601px){
   .essay-reference-head{grid-template-columns:minmax(0,1.26fr) 1px minmax(0,.74fr)}
-  .essay-reference-head:has(.essay-launch-heading p.is-completed){grid-template-columns:minmax(0,1.49fr) 1px minmax(0,.51fr)}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed){grid-template-columns:minmax(0,1.44fr) 1px minmax(0,.56fr)}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-heading>strong{font-size:.69rem;letter-spacing:.1em}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-launch-wrap p.is-completed{gap:5px}
+  .essay-reference-head:has(.essay-launch-heading p.is-completed) .essay-evaluated-recommendation{padding:5px 7px}
   .essay-reference-head .essay-reference-launch .essay-launch-wrap{max-width:100%;width:max-content}
   .essay-reference-head .essay-reference-launch .essay-launch{width:100%}
-  .essay-reference-head .essay-reference-heading{padding-right:5px}
-  .essay-reference-head .essay-reference-heading p{white-space:nowrap}
+  .essay-reference-head .essay-reference-heading{align-self:stretch;padding-right:5px}
+  .essay-reference-head .essay-reference-heading-copy{display:grid;grid-template-rows:auto 1fr auto;height:100%}
+  .essay-reference-head .essay-reference-heading .essay-entry-kicker{font-size:.605rem;margin:0}
+  .essay-reference-head .essay-reference-heading h2{align-self:center;font-size:1.342rem;margin:0}
+  .essay-reference-head .essay-reference-heading p{font-size:.7975rem;line-height:1;margin:0;white-space:nowrap}
 }
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
