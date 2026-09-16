@@ -167,7 +167,7 @@
       "strongly-recommend": "Strongly recommend",
       recommend: "Recommend",
       consider: "Consider",
-      "do-not-recommend": "Do not recommend",
+      "do-not-recommend": "Do not recommend at this time",
     }[value] || "No recommendation";
   }
 
@@ -193,13 +193,12 @@
     if (!card) return;
     const completed = evaluation?.status === "finalized" || evaluation?.finalizedAt;
      const hasDraft = KEYS.some((key) => Number.isInteger(evaluation?.rubric?.[key]));
-     const actionLabel = completed ? "View completed evaluation" : hasDraft ? "Continue evaluation" : "Start Essay Evaluation";
+      const actionLabel = completed ? "View Evaluation" : hasDraft ? "Continue Evaluation" : "Start Essay Evaluation";
      let summaryMarkup = esc(launcherSummary(evaluation));
      if (completed) {
        const rubric = evaluation?.rubric || emptyState().rubric;
        const score = KEYS.reduce((sum, key) => sum + (Number(rubric[key]) || 0), 0);
-       const band = BANDS.find(([minimum, maximum]) => score >= minimum && score <= maximum)?.[2] || "Completed";
-        summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-detail"><span class="essay-evaluated-band">${esc(band)}</span><strong class="essay-evaluated-recommendation">${esc(recommendationLabel(evaluation.recommendation))}</strong></span>`;
+        summaryMarkup = `<span class="essay-evaluated-label">Evaluated</span><b class="essay-evaluated-score">${score}/35</b><span class="essay-evaluated-recommendation">${esc(recommendationLabel(evaluation.recommendation))}</span>`;
      }
       const summaryClass = completed ? "is-completed" : hasDraft ? "is-draft" : "is-not-started";
       card.innerHTML = `<div class="essay-launch-heading"><strong>Evaluation workspace</strong><p class="${summaryClass}">${summaryMarkup}</p></div><button type="button" class="essay-launch ${completed ? "is-completed" : ""}" aria-label="${esc(actionLabel)}">${actionLabel}</button>`;
@@ -238,7 +237,7 @@
     return `<div class="eval-meter"><i></i></div>${RUBRIC.map((category, index) => {
       const bodyId = `eval-category-${category.key}`;
       return `<section class="eval-category ${index === 0 ? "open" : ""}" data-key="${category.key}"><button class="eval-cat-head" type="button" aria-expanded="${index === 0}" aria-controls="${bodyId}"><span class="eval-cat-num">0${index + 1}</span><span class="eval-cat-name">${category.title}</span><span class="eval-cat-grade"></span><span class="eval-cat-score">Not scored</span><span class="eval-chevron" aria-hidden="true">⌄</span></button><div class="eval-cat-body" id="${bodyId}" role="radiogroup" aria-label="${esc(category.title)} score">${[5, 4, 3, 2, 1].map((score) => `<button type="button" class="eval-score" role="radio" aria-checked="false" data-score="${score}"><b>${score}</b><small>${SCORE_LABELS[score]}</small><em>${esc(category.descriptions[score])}</em></button>`).join("")}</div></section>`;
-    }).join("")}<div class="eval-fields"><div class="eval-field"><label for="eval-strengths">Strengths <span>Required</span></label><textarea id="eval-strengths" placeholder="What should the student keep doing?"></textarea></div><div class="eval-field"><label for="eval-growth">Areas for growth <span>Required</span></label><textarea id="eval-growth" placeholder="What is the clearest next coaching step?"></textarea></div><div class="eval-field"><label for="eval-concerns">Concerns <span>Optional</span></label><textarea id="eval-concerns" placeholder="Flag anything that needs follow-up."></textarea></div><div class="eval-field"><label id="eval-recommendation-label">Recommendation <span>Required</span></label><div class="eval-recommendation" role="radiogroup" aria-labelledby="eval-recommendation-label">${[["strongly-recommend", "Strongly recommend"], ["recommend", "Recommend"], ["consider", "Consider"], ["do-not-recommend", "Do not recommend"]].map(([value, label]) => `<button type="button" role="radio" aria-checked="false" data-rec="${value}">${label}</button>`).join("")}</div></div></div>`;
+    }).join("")}<div class="eval-fields"><div class="eval-field"><label for="eval-strengths">Strengths <span>Required</span></label><textarea id="eval-strengths" placeholder="What should the student keep doing?"></textarea></div><div class="eval-field"><label for="eval-growth">Areas for growth <span>Required</span></label><textarea id="eval-growth" placeholder="What is the clearest next coaching step?"></textarea></div><div class="eval-field"><label for="eval-concerns">Concerns <span>Optional</span></label><textarea id="eval-concerns" placeholder="Flag anything that needs follow-up."></textarea></div><div class="eval-field"><label id="eval-recommendation-label">Recommendation <span>Required</span></label><div class="eval-recommendation" role="radiogroup" aria-labelledby="eval-recommendation-label">${[["strongly-recommend", "Strongly recommend"], ["recommend", "Recommend"], ["consider", "Consider"], ["do-not-recommend", "Do not recommend at this time"]].map(([value, label]) => `<button type="button" role="radio" aria-checked="false" data-rec="${value}">${label}</button>`).join("")}</div></div></div>`;
   }
 
   function showSourceState(message, detail, type = "error") {
