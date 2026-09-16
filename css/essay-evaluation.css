@@ -198,3 +198,4 @@
   .eval-cat-head{gap:7px}.eval-cat-grade{font-size:.68rem;padding:4px 7px}.eval-cat-score{font-size:.68rem;min-width:58px;padding:4px 6px}.eval-score { grid-template-columns: 20px 66px minmax(0, 1fr); }
   .eval-recommendation { grid-template-columns: repeat(2, 1fr); }
 }
+.essay-reference-launch .essay-launch-heading p.is-not-started{background:#fff;border:2px solid #ffd21f;box-shadow:0 2px 8px rgba(0,0,0,.28);color:#542116;padding:6px 10px}
