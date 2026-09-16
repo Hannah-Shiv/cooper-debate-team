@@ -226,6 +226,47 @@ test("mobile view switches panels and protects changes after a failed save", asy
   await expect(page.locator(".essay-launch-wrap p")).toContainText("Evaluated35/35Strongly recommend");
 });
 
+test("evaluation header is unboxed, spaced, and gives Close clear hover feedback", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await mountEvaluation(page, null);
+  await page.locator(".essay-launch").click();
+
+  await expect(page.locator(".essay-eval-kicker")).toHaveText("Evaluation Workspace · Phase 1");
+  const header = await page.evaluate(() => {
+    const sections = [".essay-eval-identity", ".eval-head-summary", ".essay-eval-head-actions"].map(selector => {
+      const style = getComputedStyle(document.querySelector(selector));
+      return { background: style.backgroundColor, borderTop: style.borderTopWidth };
+    });
+    const status = document.querySelector(".eval-status").getBoundingClientRect();
+    const close = document.querySelector(".eval-close").getBoundingClientRect();
+    const finalize = document.querySelector(".eval-finalize").getBoundingClientRect();
+    return {
+      sections,
+      statusCloseGap: close.left - status.right,
+      closeFinalizeGap: finalize.left - close.right,
+    };
+  });
+  expect(header.sections).toEqual([
+    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
+    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
+    { background: "rgba(0, 0, 0, 0)", borderTop: "0px" },
+  ]);
+  expect(header.statusCloseGap).toBeGreaterThanOrEqual(13);
+  expect(header.closeFinalizeGap).toBeGreaterThanOrEqual(15);
+
+  const close = page.locator(".eval-close");
+  const restingBackground = await close.evaluate(element => getComputedStyle(element).backgroundColor);
+  await close.hover();
+  await page.waitForTimeout(220);
+  const hoverStyle = await close.evaluate(element => {
+    const style = getComputedStyle(element);
+    return { background: style.backgroundColor, shadow: style.boxShadow, transform: style.transform };
+  });
+  expect(hoverStyle.background).not.toBe(restingBackground);
+  expect(hoverStyle.shadow).not.toBe("none");
+  expect(hoverStyle.transform).not.toBe("none");
+});
+
 test("launcher keeps the document beside the complete seven-category quick reference", async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   await page.setContent(`

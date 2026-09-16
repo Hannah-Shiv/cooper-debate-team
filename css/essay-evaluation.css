@@ -120,6 +120,134 @@
 }
 .status-unavailable { border-color: rgba(231, 184, 63, .6); }
 
+/* Evaluation header: one continuous work surface, with rhythm supplied by rules
+   rather than three competing containers. */
+.essay-eval-head {
+  background: #0a274b;
+  column-gap: 0;
+  grid-template-columns: minmax(280px, 1fr) minmax(230px, auto) auto;
+  padding: 9px clamp(16px, 2.4vw, 34px);
+}
+.essay-eval-identity,
+.eval-head-summary,
+.essay-eval-head-actions {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+.essay-eval-identity {
+  align-items: baseline;
+  display: grid;
+  gap: 3px 13px;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 44px;
+}
+.essay-eval-kicker { grid-column: 1 / -1; line-height: 1; }
+.essay-eval-title { grid-column: 1; }
+.essay-eval-sub {
+  border-left: 1px solid rgba(144,188,235,.36);
+  grid-column: 2;
+  padding-left: 13px;
+}
+.eval-head-summary {
+  align-items: center;
+  border-left: 1px solid rgba(144,188,235,.28);
+  border-right: 1px solid rgba(144,188,235,.28);
+  gap: 10px;
+  margin: 0 24px;
+  min-height: 40px;
+  padding: 0 24px;
+}
+.eval-head-summary:before,
+.essay-eval-head-actions:before { display: none; }
+.essay-eval-head-actions {
+  gap: 12px;
+  min-height: 40px;
+  padding-left: 0;
+}
+.eval-status {
+  border-right: 1px solid rgba(144,188,235,.28);
+  min-width: 132px;
+  padding-right: 16px;
+}
+.eval-close,
+.eval-finalize { min-height: 34px; }
+.eval-close {
+  border-color: rgba(173,205,238,.5);
+  transition: background .18s ease, border-color .18s ease, color .18s ease, transform .18s ease;
+}
+.eval-close:hover {
+  background: rgba(224,237,252,.1);
+  border-color: #dce9f8;
+  color: #fff;
+  transform: translateY(-1px);
+}
+.eval-close:focus-visible {
+  background: rgba(224,237,252,.13);
+  border-color: #f3d477;
+  color: #fff;
+  outline: 2px solid #f3d477;
+  outline-offset: 3px;
+}
+.eval-finalize { margin-left: 4px; }
+
+@media (max-width: 1080px) {
+  .essay-eval-head {
+    grid-template-columns: minmax(240px, 1fr) auto;
+    row-gap: 8px;
+  }
+  .eval-head-summary {
+    border-left: 1px solid rgba(144,188,235,.28);
+    border-right: 0;
+    margin: 0;
+    padding: 0 0 0 20px;
+  }
+  .essay-eval-head-actions {
+    grid-column: 1 / -1;
+    justify-content: flex-end;
+    border-top: 1px solid rgba(144,188,235,.2);
+    padding-top: 8px;
+  }
+}
+@media (max-width: 620px) {
+  .essay-eval-head {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    padding: 12px 16px;
+  }
+  .essay-eval-identity {
+    display: block;
+    min-height: 0;
+  }
+  .essay-eval-kicker { margin-bottom: 6px; }
+  .essay-eval-title { display: block; margin-bottom: 5px; }
+  .essay-eval-sub {
+    border-left: 0;
+    display: block;
+    padding-left: 0;
+  }
+  .eval-head-summary {
+    border-left: 0;
+    border-right: 0;
+    border-top: 1px solid rgba(144,188,235,.24);
+    justify-content: flex-start;
+    margin: 0;
+    min-height: 35px;
+    padding: 9px 0 0;
+  }
+  .essay-eval-head-actions {
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding-top: 10px;
+  }
+  .eval-status { flex: 1 1 100%; border-right: 0; padding: 0 0 2px; text-align: left; }
+  .eval-close { margin-left: auto; }
+}
+
 .essay-eval { background: #071a37; border: 0; color: #eef5ff; height: 100dvh; margin: 0; max-height: none; max-width: none; overflow: hidden; padding: 0; width: 100vw; }
 .essay-eval::backdrop { background: rgba(2, 8, 20, .82); }
 .essay-eval-shell { display: flex; flex-direction: column; height: 100%; }
@@ -238,3 +366,126 @@ html.is-chromeos .essay-eval-identity{grid-area:identity}
 html.is-chromeos .eval-head-summary{grid-area:summary}
 html.is-chromeos .essay-eval-head-actions{grid-area:actions}
 html.is-chromeos .eval-head-summary:before{display:none}
+
+/* Keep the evaluation header as one continuous surface. These final rules sit
+   after legacy responsive declarations so older boxed treatments cannot return. */
+.essay-eval-head{
+  align-items:center;
+  background:linear-gradient(100deg,#071d3c 0%,#0b315b 48%,#071d3c 100%);
+  border-bottom:2px solid rgba(231,184,63,.72);
+  column-gap:0;
+  flex:0 0 66px;
+  grid-template-areas:none;
+  grid-template-columns:minmax(300px,1fr) auto auto;
+  min-height:66px;
+  padding:9px clamp(18px,2.4vw,36px)
+}
+.essay-eval-identity,.eval-head-summary,.essay-eval-head-actions{
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+  padding:0
+}
+.essay-eval-identity{
+  align-items:baseline;
+  display:grid;
+  gap:3px 14px;
+  grid-area:auto;
+  grid-template-columns:auto minmax(0,1fr);
+  min-height:44px
+}
+.essay-eval-kicker{grid-column:1/-1;line-height:1}
+.essay-eval-title{grid-column:1}
+.essay-eval-sub{border-left:1px solid rgba(144,188,235,.36);grid-column:2;padding-left:14px}
+.eval-head-summary{
+  align-items:center;
+  border-left:1px solid rgba(144,188,235,.3);
+  border-right:1px solid rgba(144,188,235,.3);
+  display:flex;
+  gap:11px;
+  grid-area:auto;
+  margin:0 26px;
+  min-height:40px;
+  padding:0 26px
+}
+.eval-head-summary:before,.essay-eval-head-actions:before{display:none}
+.essay-eval-head-actions{
+  align-items:center;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:14px;
+  grid-area:auto;
+  justify-content:flex-end;
+  min-height:40px
+}
+.eval-status{
+  border-right:1px solid rgba(144,188,235,.3);
+  min-width:138px;
+  padding-right:18px;
+  text-align:right;
+  width:auto
+}
+.eval-close,.eval-finalize{min-height:34px}
+.eval-close{
+  border-color:rgba(173,205,238,.55);
+  transition:background .18s ease,border-color .18s ease,box-shadow .18s ease,color .18s ease,transform .18s ease
+}
+.eval-close:hover{
+  background:#174a78;
+  border-color:#b8ddff;
+  box-shadow:0 0 0 3px rgba(89,169,235,.18),0 0 13px rgba(89,169,235,.3);
+  color:#fff;
+  transform:translateY(-1px)
+}
+.eval-close:focus-visible{
+  background:#174a78;
+  border-color:#f3d477;
+  box-shadow:0 0 0 3px rgba(243,212,119,.2);
+  color:#fff;
+  outline:0
+}
+.eval-finalize{margin-left:2px}
+@media(max-width:1080px){
+  .essay-eval-head{
+    flex:0 0 auto;
+    gap:8px 0;
+    grid-template-areas:"identity summary" "actions actions";
+    grid-template-columns:minmax(0,1fr) auto;
+    min-height:112px;
+    padding:10px 18px
+  }
+  .essay-eval-identity{grid-area:identity}
+  .eval-head-summary{border-right:0;grid-area:summary;margin:0;padding:0 0 0 22px}
+  .essay-eval-head-actions{
+    border-top:1px solid rgba(144,188,235,.22);
+    grid-area:actions;
+    justify-content:flex-end;
+    padding-top:8px
+  }
+}
+@media(max-width:620px){
+  .essay-eval-head{align-items:stretch;display:flex;flex-direction:column;gap:11px;min-height:0;padding:12px 16px}
+  .essay-eval-identity{display:block;min-height:0}
+  .essay-eval-kicker{margin-bottom:6px}
+  .essay-eval-title{display:block;margin-bottom:5px}
+  .essay-eval-sub{border-left:0;display:block;padding-left:0}
+  .eval-head-summary{border:0;border-top:1px solid rgba(144,188,235,.24);justify-content:flex-start;margin:0;min-height:35px;padding:9px 0 0}
+  .essay-eval-head-actions{align-items:center;flex-wrap:wrap;justify-content:flex-start;padding-top:10px}
+  .eval-status{border-right:0;flex:1 1 100%;order:0;padding:0 0 2px;text-align:left;width:auto}
+  .eval-close{margin-left:auto}
+}
+@media(min-width:621px){
+  html.is-chromeos .essay-eval-head{
+    align-items:center;
+    flex:0 0 auto;
+    gap:8px 0;
+    grid-template-areas:"identity summary" "actions actions";
+    grid-template-columns:minmax(0,1fr) auto;
+    min-height:112px;
+    padding:10px 18px
+  }
+  html.is-chromeos .essay-eval-identity{grid-area:identity}
+  html.is-chromeos .eval-head-summary{border-right:0;grid-area:summary;margin:0;padding:0 0 0 22px}
+  html.is-chromeos .essay-eval-head-actions{border-top:1px solid rgba(144,188,235,.22);grid-area:actions;justify-content:flex-end;padding-top:8px}
+}
