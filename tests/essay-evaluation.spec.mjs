@@ -284,6 +284,7 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
       actionHeights: actionBoxes.map(box => box.height),
       closeBackground: closeStyle.backgroundImage,
       finalizeBackground: finalizeStyle.backgroundImage,
+      finalizeBackgroundColor: finalizeStyle.backgroundColor,
       finalizeColor: finalizeStyle.color,
       closeIsLast: document.querySelector(".essay-eval-head-actions").lastElementChild.classList.contains("eval-close"),
       recommendationBetweenStatusAndFinalize:
@@ -316,7 +317,8 @@ test("evaluation header uses compact labeled groups without small-laptop overflo
   expect(header.instructionColor).toBe("rgb(212, 230, 248)");
   expect(header.actionHeights.every(height => height === 30)).toBe(true);
   expect(header.closeBackground).toContain("182, 59, 71");
-  expect(header.finalizeBackground).toContain("67, 200, 121");
+  expect(header.finalizeBackground).toBe("none");
+  expect(header.finalizeBackgroundColor).toBe("rgb(23, 107, 76)");
   expect(header.finalizeColor).toBe("rgb(255, 255, 255)");
   expect(header.closeIsLast).toBe(true);
   expect(header.recommendationBetweenStatusAndFinalize).toBe(true);

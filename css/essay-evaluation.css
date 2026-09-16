@@ -1020,6 +1020,24 @@ html.is-chromeos .eval-head-summary:before{display:none}
   .eval-header-score{font-size:.69rem}
 }
 
+/* Finalize stays a solid dark green in every state. */
+.eval-finalize{
+  background:#176b4c;
+  border-color:#69d4a5;
+  color:#fff
+}
+.eval-finalize:not(:disabled):hover,.eval-finalize:not(:disabled):focus-visible{
+  background:#208861;
+  border-color:#a2f0cf;
+  color:#fff
+}
+.eval-finalize:disabled{
+  background:#176b4c;
+  border-color:#69d4a5;
+  color:#fff;
+  opacity:.58
+}
+
 /* Recommendation colors: selected uses the same visual state as hover. */
 .eval-recommendation{gap:8px}
 .eval-recommendation button{
