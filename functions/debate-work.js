@@ -3,7 +3,7 @@ const { FieldValue, Timestamp } = require("firebase-admin/firestore");
 
 const TOPIC_ID = "2026-data-centers";
 const SIDES = new Set(["PRO", "CON"]);
-const STAGES = ["constructive", "crossfire", "rebuttal", "summary", "finalFocus"];
+const STAGES = ["prep", "constructive", "crossfire", "rebuttal", "summary", "finalFocus"];
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
 const RATE_WINDOW_MS = 5 * 60 * 1000;
 const MAX_BODY_BYTES = 700000;
@@ -98,12 +98,12 @@ function normalizedWork(work) {
   const allowedWorkKeys = new Set(["topicId", "side", "title", "resolution", "stages"]);
   if (Object.keys(source).some(key => !allowedWorkKeys.has(key))) throw new Error("Debate work has an unsupported field.");
   if (!source.stages || typeof source.stages !== "object" || Array.isArray(source.stages)) {
-    throw new Error("Debate work must include all five stages.");
+    throw new Error("Debate work must include Prep and all five round stages.");
   }
   const allowedStageKeys = new Set(["content", "notes", "sources", "completed"]);
   if (Object.keys(source.stages).some(key => !STAGES.includes(key)) ||
       STAGES.some(stage => !Object.prototype.hasOwnProperty.call(source.stages, stage))) {
-    throw new Error("Debate work must include exactly the five supported stages.");
+    throw new Error("Debate work must include exactly Prep and the five supported round stages.");
   }
   for (const stage of STAGES) {
     const value = source.stages[stage];
@@ -147,6 +147,12 @@ function publicWork(id, data) {
       updatedAt: feedback.updatedAt || null,
     },
   };
+}
+
+function coachWork(id, data) {
+  const work = publicWork(id, data);
+  const { prep, ...roundStages } = work.stages;
+  return { ...work, stages: roundStages };
 }
 
 function clientAddress(req) {
@@ -397,7 +403,7 @@ function createDebateWorkHandler({
     const id = text(body.workId, 160);
     const snap = await works.doc(id).get();
     if (!snap.exists) throw new Error("Debate work was not found.");
-    return { work: publicWork(snap.id, snap.data()), student: {
+    return { work: coachWork(snap.id, snap.data()), student: {
       fcpsId: text(snap.data().fcpsId, 32), displayName: text(snap.data().displayName, 160),
     } };
   }

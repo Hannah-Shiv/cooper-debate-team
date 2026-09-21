@@ -9,17 +9,19 @@
   var ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/debateWork";
   var TOPIC = "2026-data-centers";
   var STAGES = [
+    ["prep", "Prep", "Get ready", "Understand the resolution before building your case."],
     ["constructive", "Constructive", "4 min speaking time", "State your position, define the problem, and make your clearest first claim."],
     ["crossfire", "Crossfire", "3 min speaking time", "Ask focused questions that test the other side's assumptions. Answer in one precise thought."],
     ["rebuttal", "Rebuttal", "4 min speaking time", "Answer the strongest opposing argument and explain why your evidence matters."],
     ["summary", "Summary", "2 min speaking time", "Weigh the round. Which issue matters most, and why does your side win it?"],
     ["finalFocus", "Final Focus", "2 min speaking time", "Leave the judge with one memorable reason to vote for your position."]
   ];
+  var ROUND_STAGES = STAGES.slice(1);
   var $ = function (id) { return document.getElementById(id); };
   var token = sessionStorage.getItem("cooper-debate-session") || "";
   var works = [];
   var current = null;
-  var currentStage = "constructive";
+  var currentStage = "prep";
   var pace = 150;
   var saveTimer = null;
   var autoSaveInFlight = false;
@@ -39,7 +41,7 @@
   function textFromHtml(html) { var node = document.createElement("div"); node.innerHTML = html || ""; return node.textContent || ""; }
   function escape(text) { return String(text || "").replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" })[c]; }); }
   function status(work) { return !work ? "Not started" : work.status === "submitted" ? "Submitted for review" : "In progress"; }
-  function progress(work) { return work ? STAGES.filter(function (s) { return work.stages && work.stages[s[0]] && (work.stages[s[0]].content || work.stages[s[0]].completed); }).length : 0; }
+  function progress(work) { return work ? ROUND_STAGES.filter(function (s) { return work.stages && work.stages[s[0]] && (work.stages[s[0]].content || work.stages[s[0]].completed); }).length : 0; }
   function localKey(work) { return "cooper-debate-unsaved:" + studentIdentity + ":" + (work.id || (TOPIC + ":" + work.side)); }
   function showError(id, message) { var el = $(id); el.textContent = message || ""; el.hidden = !message; }
   function setAutoSaveStatus(text, state) {
@@ -142,6 +144,48 @@
     }
   }
   function stageFor(key) { return STAGES.filter(function (stage) { return stage[0] === key; })[0]; }
+  function prepData(content) {
+    var value = {};
+    try { value = JSON.parse(content || "{}"); } catch (_) {}
+    value = Object.assign({ qHyperscale: "", qMoratorium: "", qFederal: "", qIssues: "", qNuances: "", qImpacts: "", proEvidence: "", conEvidence: "", proArgument: "", conArgument: "" }, value);
+    if (!value.qHyperscale && value.definitions) value.qHyperscale = value.definitions;
+    if (!value.qImpacts && value.impacts) value.qImpacts = value.impacts;
+    if (!value.proArgument && value.proArguments) value.proArgument = value.proArguments;
+    if (!value.conArgument && value.conArguments) value.conArgument = value.conArguments;
+    return value;
+  }
+  function updatePrepReady() {
+    if (!$("prepReady") || currentStage !== "prep") return;
+    var values = prepData(current.stages.prep.content);
+    var required = ["qHyperscale", "qMoratorium", "qFederal", "qIssues", "qNuances", "qImpacts", "proEvidence", "conEvidence", "proArgument", "conArgument"];
+    var complete = required.every(function (key) { return String(values[key] || "").trim(); });
+    $("prepReady").classList.toggle("ready", complete);
+    $("prepReady").textContent = complete ? "Ready for Constructive" : "Keep thinking and researching";
+  }
+  function renderPrep(data, readOnly, feedbackNote) {
+    var values = prepData(data.content);
+    function question(key, number, label, placeholder) {
+      return '<label class="prep-question"><span>' + number + '. ' + label + '</span><textarea data-prep="' + key + '" placeholder="' + placeholder + '"' + (readOnly ? ' disabled' : '') + '>' + escape(values[key]) + '</textarea></label>';
+    }
+    $("stageContent").innerHTML = feedbackNote + (readOnly ? '<div class="notice">Submitted for review. This preparation is read-only until a coach requests revisions.</div>' : '') +
+      '<section class="prep-intro"><div><div class="eyebrow">Prep · Understand the Resolution</div><h3>Think. Research. Organize.</h3><p>This is an ungraded thinking exercise, not part of coach review.</p></div><div class="prep-resolution">The United States federal government should enact a moratorium on hyperscale data center construction.</div></section>' +
+      '<section class="prep-section"><div class="prep-section-head"><h4>Quick preparation worksheet</h4><p>Questions 1–6 are shared between PRO and CON.</p></div><div class="prep-question-grid">' +
+      question("qHyperscale", "1", "What is a hyperscale data center?", "Type your answer…") +
+      question("qMoratorium", "2", "What does “moratorium” mean?", "Type your answer…") +
+      question("qFederal", "3", "Why does the resolution specify the federal government?", "Type your answer…") +
+      question("qIssues", "4", "What are the core issues in this debate?", "Type your answer…") +
+      question("qNuances", "5", "What are some important nuances?", "Type your answer…") +
+      question("qImpacts", "6", "What are the potential impacts?", "Type your answer…") +
+      '</div><div class="prep-side-grid"><section class="prep-side-card pro"><h5>PRO PREPARATION</h5><div class="prep-side-fields">' +
+      question("proEvidence", "7", "What evidence could support PRO?", "Key PRO evidence…") +
+      question("proArgument", "8", "What is your strongest PRO argument?", "Strongest PRO argument…") +
+      '</div></section><section class="prep-side-card con"><h5>CON PREPARATION</h5><div class="prep-side-fields">' +
+      question("conEvidence", "7", "What evidence could support CON?", "Key CON evidence…") +
+      question("conArgument", "8", "What is your strongest CON argument?", "Strongest CON argument…") +
+      '</div></section></div></section>';
+    Array.prototype.forEach.call($("stageContent").querySelectorAll("[data-prep]"), function (input) { input.addEventListener("input", function () { capture(); updatePrepReady(); scheduleSave(); }); });
+    updatePrepReady();
+  }
   function renderStage() {
     if (!current) return;
     var stage = stageFor(currentStage), data = current.stages[currentStage] || { content: "" };
@@ -152,9 +196,10 @@
         (feedback.note ? '<br><span>' + escape(feedback.note) + '</span>' : '') +
         (feedback.nextStep ? '<br><b>Next step:</b> ' + escape(feedback.nextStep) : '') + '</div>' : "";
     $("studioTitle").textContent = stage[1];
-    $("stageTabs").innerHTML = STAGES.map(function (item) { var done = current.stages[item[0]] && current.stages[item[0]].content; var duration = item[2].replace(" speaking time", " of speaking time"); return '<button class="stage-tab stage-' + item[0].replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); }) + ' ' + (item[0] === currentStage ? "active" : "") + '" data-stage="' + item[0] + '" type="button"><strong>' + item[1] + ' · ' + duration + '</strong><small>' + (done ? "Draft started" : "Not started") + '</small></button>'; }).join("");
-    Array.prototype.forEach.call($("stageTabs").querySelectorAll("[data-stage]"), function (button) { button.addEventListener("click", function () { capture(); currentStage = button.dataset.stage; renderStage(); }); });
-    if (currentStage === "crossfire") {
+    $("stageTabs").innerHTML = STAGES.map(function (item) { var done = current.stages[item[0]] && current.stages[item[0]].content; var duration = item[0] === "prep" ? item[2] : item[2].replace(" speaking time", " of speaking time"); return '<button class="stage-tab stage-' + item[0].replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); }) + ' ' + (item[0] === currentStage ? "active" : "") + '" data-stage="' + item[0] + '" type="button"><strong>' + item[1] + ' · ' + duration + '</strong><small>' + (done ? "Draft started" : "Not started") + '</small></button>'; }).join("");
+    if (currentStage === "prep") {
+      renderPrep(data, readOnly, feedbackNote);
+    } else if (currentStage === "crossfire") {
       var pairs = [];
       try { pairs = JSON.parse(data.content || "[]"); } catch (_) {}
       if (!Array.isArray(pairs) || !pairs.length) pairs = [{ q: "", a: "" }];
@@ -167,6 +212,10 @@
       $("editor").addEventListener("input", function () { capture(); updateStats(); scheduleSave(); });
     }
     $("submitWork").disabled = readOnly;
+    $("editorLayout").classList.toggle("prep-layout", currentStage === "prep");
+    $("prepActions").hidden = currentStage !== "prep";
+    $("reviewActions").hidden = currentStage === "prep";
+    $("savePrep").disabled = readOnly;
     $("stageContent").classList.remove("stage-changing");
     void $("stageContent").offsetWidth;
     $("stageContent").classList.add("stage-changing");
@@ -174,13 +223,23 @@
   }
   function capture() {
     if (!current) return;
-    if (currentStage === "crossfire") {
+    if (currentStage === "prep") {
+      var values = prepData(current.stages.prep.content);
+      Array.prototype.forEach.call(document.querySelectorAll("[data-prep]"), function (field) { values[field.dataset.prep] = field.value; });
+      current.stages.prep.content = JSON.stringify(values);
+      works.forEach(function (work) { if (work !== current && work.stages) work.stages.prep = JSON.parse(JSON.stringify(current.stages.prep)); });
+    } else if (currentStage === "crossfire") {
       var pairs = Array.prototype.map.call(document.querySelectorAll("[data-cf-q]"), function (q, index) { var answers = document.querySelectorAll("[data-cf-a]"); return { q: q.value, a: answers[index] ? answers[index].value : "" }; });
       current.stages.crossfire.content = JSON.stringify(pairs);
     } else if ($("editor")) current.stages[currentStage].content = $("editor").innerHTML;
     writeLocal();
   }
   function updateStats() {
+    if (currentStage === "prep") {
+      var prepText = Object.keys(prepData(current.stages.prep.content)).map(function (key) { return prepData(current.stages.prep.content)[key]; }).join(" ");
+      $("wordLabel").textContent = "Prep words"; $("charLabel").textContent = "Round status"; $("paceMetric").hidden = true;
+      $("wordStat").textContent = wordCount(prepText).toLocaleString(); $("charStat").textContent = "Before the timer"; $("timeStat").textContent = "Untimed"; return;
+    }
     if (currentStage === "crossfire") {
       var pairs = []; try { pairs = JSON.parse((current && current.stages.crossfire.content) || "[]"); } catch (_) {}
       $("wordLabel").textContent = "Prepared pairs"; $("charLabel").textContent = "Speech metrics"; $("paceMetric").hidden = true;
@@ -243,7 +302,10 @@
     try {
       var found = works.filter(function (work) { return work.side === side; })[0] || null;
       if (!found) { var response = await request("getStudentWork", { side: side }); found = response.work; }
-       current = readLocal(normalizeWork(found, side)); currentStage = "constructive"; updateSessionFacts(); setAutoSaveStatus(current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Saved last: —", ""); $("studio").hidden = false; $("positionHeader").hidden = true; $("positionHeader").style.display = "none"; $("positionDashboard").hidden = true; $("positionDashboard").style.display = "none"; $("studio").scrollIntoView({ behavior: "smooth", block: "start" }); $("sideEyebrow").textContent = side + " · " + (side === "PRO" ? "Support the resolution" : "Oppose the resolution"); renderStage();
+       current = readLocal(normalizeWork(found, side));
+       var sharedPrep = works.filter(function (work) { return work.stages && work.stages.prep && work.stages.prep.content; }).sort(function (a, b) { return String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")); })[0];
+       if (sharedPrep) current.stages.prep = JSON.parse(JSON.stringify(sharedPrep.stages.prep));
+       currentStage = "prep"; updateSessionFacts(); setAutoSaveStatus(current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Saved last: —", ""); $("studio").hidden = false; $("positionHeader").hidden = true; $("positionHeader").style.display = "none"; $("positionDashboard").hidden = true; $("positionDashboard").style.display = "none"; $("studio").scrollIntoView({ behavior: "smooth", block: "start" }); $("sideEyebrow").textContent = side + " · " + (side === "PRO" ? "Support the resolution" : "Oppose the resolution"); renderStage();
     } catch (error) { showError("listError", error.message); }
   }
   $("googleSignIn").addEventListener("click", async function () {
@@ -274,9 +336,30 @@
     button.disabled = false;
   });
   $("refreshWorks").addEventListener("click", loadWorks);
+  $("stageTabs").addEventListener("click", function (event) {
+    var button = event.target.closest("[data-stage]");
+    if (!button || !$("stageTabs").contains(button) || button.dataset.stage === currentStage) return;
+    event.preventDefault();
+    try {
+      capture();
+    } catch (error) {
+      console.error("Could not capture the current stage before switching.", error);
+      showError("saveError", "The current stage could not be saved locally, but you can continue working in the other tabs.");
+    }
+    currentStage = button.dataset.stage;
+    renderStage();
+  });
   $("backToSides").addEventListener("click", function () { clearTimeout(saveTimer); capture(); current = null; updateSessionFacts(); $("studio").hidden = true; $("positionHeader").hidden = false; $("positionHeader").style.display = ""; $("positionDashboard").hidden = false; $("positionDashboard").style.display = ""; renderCards(); });
   $("submitWork").textContent = "Submit to coach for review";
   $("submitWork").addEventListener("click", function () { if (window.confirm("Submit this side for coach review? It will be read-only unless a coach requests revisions.")) save(true); });
+  $("savePrep").addEventListener("click", async function () {
+    $("prepSaveConfirmation").hidden = true;
+    await save(false);
+    if (!$("saveError").textContent) {
+      $("prepSaveConfirmation").hidden = false;
+      setTimeout(function () { $("prepSaveConfirmation").hidden = true; }, 2200);
+    }
+  });
   $("signOut").addEventListener("click", function () { sessionStorage.removeItem("cooper-debate-session"); sessionStorage.removeItem("cooper-debate-profile"); auth.signOut().finally(function () { window.location.reload(); }); });
   Array.prototype.forEach.call(document.querySelectorAll("[data-pace]"), function (button) { button.addEventListener("click", function () { pace = Number(button.dataset.pace); document.querySelectorAll("[data-pace]").forEach(function (b) { b.classList.toggle("selected", b === button); }); updateStats(); }); });
   auth.onAuthStateChanged(function (user) {

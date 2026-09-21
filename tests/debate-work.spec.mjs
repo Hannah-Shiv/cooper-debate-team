@@ -98,7 +98,7 @@ test("student sessions are signed, expiring, and tamper resistant", () => {
   assert.equal(verifySession(tampered, secret, 4000), null);
 });
 
-test("stage normalization always returns the five bounded stages", () => {
+test("stage normalization always returns Prep and the five bounded round stages", () => {
   const stages = normalizeStages({
     constructive: { content: "  case ", completed: true, extra: "discarded" },
     rebuttal: { sources: ["  https://example.com  ", 4] },
