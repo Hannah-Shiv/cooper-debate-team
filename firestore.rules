@@ -255,6 +255,18 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Debate work and student access credentials are private. All reads and
+    // mutations go through the transaction-safe debateWork Cloud Function.
+    match /debate_student_identities/{docId} {
+      allow read, write: if false;
+    }
+    match /debate_works/{docId} {
+      allow read, write: if false;
+    }
+    match /debate_work_action_limits/{docId} {
+      allow read, write: if false;
+    }
+
     // Public clients may subscribe to this deliberately narrow projection.
     // It contains opaque IDs and privacy-safe display labels, never FCPS IDs.
     match /public_tryout_students/{docId} {

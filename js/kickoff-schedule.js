@@ -50,21 +50,6 @@
         </article>
 
         <article class="kickoff-schedule__date-card">
-          <div class="kickoff-schedule__date-heading">
-            <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-calendar.png" alt="">
-            <span>
-              <span class="kickoff-schedule__weekday">Wednesday</span>
-              <span class="kickoff-schedule__date">September 16</span>
-            </span>
-          </div>
-          <h3 class="kickoff-schedule__event-title">Debate Team Applications Due</h3>
-          <div class="kickoff-schedule__detail">
-            <span class="kickoff-schedule__detail-icon" aria-hidden="true">✓</span>
-            <span>Submit the existing Debate Team application by this deadline.</span>
-          </div>
-        </article>
-
-        <article class="kickoff-schedule__date-card">
           <div class="kickoff-schedule__hours"><strong>2</strong>hours</div>
           <div class="kickoff-schedule__date-heading">
             <img class="kickoff-schedule__date-icon" src="images/kickoff-icon-mini-debates-tuesday.png" alt="">
@@ -81,6 +66,14 @@
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
             <span>Cafeteria</span>
+          </div>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">↔</span>
+            <span>Two shortened PF rounds<strong>A Session and B Session · opposite sides</strong></span>
+          </div>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">✉</span>
+            <span>Partner and speaker details emailed Monday<strong>Late buses available</strong></span>
           </div>
         </article>
 
@@ -101,6 +94,14 @@
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">●</span>
             <span>Lecture Hall</span>
+          </div>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">↔</span>
+            <span>Two shortened PF rounds<strong>A Session and B Session · opposite sides</strong></span>
+          </div>
+          <div class="kickoff-schedule__detail">
+            <span class="kickoff-schedule__detail-icon" aria-hidden="true">✉</span>
+            <span>Partner and speaker details emailed Monday<strong>Late buses available</strong></span>
           </div>
         </article>
 
