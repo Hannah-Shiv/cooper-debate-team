@@ -11,9 +11,24 @@
    <link rel="stylesheet" href="css/main.css?v=44"/>
   <link rel="stylesheet" href="css/public-footer.css?v=10"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-    <link rel="stylesheet" href="css/homepage-readiness.css?v=65"/>
-  <link rel="stylesheet" href="css/google-form-modal.css?v=1"/>
-  <link rel="stylesheet" href="css/fcps-application-auth.css?v=20"/>
+    <link rel="stylesheet" href="css/homepage-readiness.css?v=73"/>
+  <style>
+    #season-readiness { scroll-margin-top:110px; }
+    .tryout-current { color:#fff; }
+    .tryout-facts { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin:24px 0; }
+    .tryout-facts > div { padding:16px; border:1px solid rgba(242,209,107,.34); border-top:3px solid #f2d16b; background:rgba(5,18,51,.68); border-radius:8px; }
+    .tryout-facts strong { display:block; color:#fff; font-family:'Cormorant Garamond',serif; font-size:1.25rem; line-height:1.1; }
+    .tryout-facts span { display:block; margin-top:8px; color:rgba(255,255,255,.7); font-size:.8rem; line-height:1.4; }
+    .tryout-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .tryout-grid > div { padding:20px; border:1px solid rgba(242,209,107,.3); border-radius:10px; background:rgba(5,18,51,.68); }
+    .tryout-grid h3 { margin:0 0 14px; color:#fff; font-family:'Cormorant Garamond',serif; font-size:1.7rem; }
+    .tryout-grid .homepage-readiness__bullet-list { gap:12px; }
+    .tryout-grid .homepage-readiness__bullet-list li { grid-template-columns:34px 1fr; }
+    .tryout-grid .homepage-readiness__bullet-list li > span:first-child { color:#f2d16b; font-weight:700; }
+    .tryout-links { display:grid; gap:8px; margin-top:18px; }
+    .tryout-links a { display:flex; justify-content:space-between; padding:11px 13px; border:1px solid rgba(242,209,107,.5); border-radius:7px; color:#f2d16b; text-decoration:none; font-weight:700; }
+    @media(max-width:760px){ .tryout-facts,.tryout-grid{grid-template-columns:1fr;} }
+  </style>
   <style>
     /* ── Index page mobile overrides ── */
 
@@ -2969,7 +2984,7 @@
     <p class="hero-school">Public Forum · WASDL · NSDA Nationals</p>
     <p class="hero-tagline">Speak <span>·</span> Reason <span>·</span> Lead</p>
     <div class="hero-buttons">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" class="btn btn-gold" target="_blank" rel="noopener" data-google-form-open data-google-form-direct data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application in the new tab, then return to the Cooper Debate Team website." data-form-external-label="Open full application ↗">Apply Now →</a>
+      <a href="#season-readiness" class="btn btn-gold">Tryout Update →</a>
       <a href="tournaments.html" class="btn btn-navy-gold">Tournaments</a>
     </div>
   </div>
@@ -2981,268 +2996,50 @@
   </div>
 </section>
 
-<!-- APPLICATION POLICY BANNER — appearance #3 of 5 -->
-<div style="background:var(--navy-dark);padding:28px 0 0;">
-  <div class="section-wrap">
-    <div style="background:#850000;border:1px solid rgba(255,130,130,0.22);border-radius:12px;padding:14px 32px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap;text-align:center;box-shadow:0 4px 24px rgba(120,0,0,0.35);">
-      <span style="font-size:1.1rem;">⚠</span>
-      <span style="font-family:'Josefin Sans',sans-serif;font-size:0.98rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffcccc;">New for 2026–27:</span>
-      <span style="font-family:'Josefin Sans',sans-serif;font-size:1.03rem;color:rgba(255,255,255,0.92);line-height:1.5;">
-        <strong style="color:#fff;">All students must apply — including returning members.</strong>
-        Only Metro Finals qualifiers (March 2026) are automatically on the team.
-      </span>
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" data-google-form-open data-google-form-direct data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application in the new tab, then return to the Cooper Debate Team website." data-form-external-label="Open full application ↗" style="flex-shrink:0;background:var(--gold);border:none;color:#0d1a0a;font-family:'Josefin Sans',sans-serif;font-size:0.92rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:10px 26px;border-radius:5px;text-decoration:none;white-space:nowrap;box-shadow:0 2px 10px rgba(212,160,23,0.4);">Apply Now →</a>
-    </div>
-  </div>
-</div>
-
+<!-- Applications are closed for 2026–27; current guidance lives in #season-readiness. -->
 <!-- 2026–27 SEASON READINESS GUIDE -->
 <section id="season-readiness" class="homepage-readiness" aria-labelledby="season-readiness-title">
   <div class="section-wrap">
     <div class="homepage-readiness__panel">
-      <svg class="homepage-readiness__icon-sprite" aria-hidden="true" focusable="false">
-        <symbol id="readiness-icon-book" viewBox="0 0 24 24">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v17H6.5A2.5 2.5 0 0 0 4 22V5.5Z"/>
-          <path d="M4 5.5v15M8 7h8M8 11h8M8 15h5"/>
-        </symbol>
-        <symbol id="readiness-icon-speech" viewBox="0 0 24 24">
-          <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4.5 4v-4H6.5A2.5 2.5 0 0 1 4 12.5v-7Z"/>
-          <path d="M8 8h8M8 11h5"/>
-        </symbol>
-        <symbol id="readiness-icon-star" viewBox="0 0 24 24">
-          <path d="m12 3 2.75 5.57 6.15.9-4.45 4.34 1.05 6.13L12 17.05l-5.5 2.89 1.05-6.13L3.1 9.47l6.15-.9L12 3Z"/>
-        </symbol>
-        <symbol id="readiness-icon-document" viewBox="0 0 24 24">
-          <path d="M6 3h8l4 4v14H6V3Z"/>
-          <path d="M14 3v5h4M9 12h6M9 16h6"/>
-        </symbol>
-        <symbol id="readiness-icon-calendar" viewBox="0 0 24 24">
-          <rect x="4" y="5" width="16" height="15" rx="2"/>
-          <path d="M8 3v4M16 3v4M4 10h16M8 14h2M12 14h2M16 14h0M8 17h2M12 17h2"/>
-        </symbol>
-        <symbol id="readiness-icon-users" viewBox="0 0 24 24">
-          <circle cx="9" cy="8" r="3"/>
-          <path d="M3.5 19c0-3 2.45-5.5 5.5-5.5s5.5 2.5 5.5 5.5"/>
-          <circle cx="17" cy="9" r="2.25"/>
-          <path d="M15.5 14.2c2.75-.1 5 1.95 5 4.8"/>
-        </symbol>
-        <symbol id="readiness-icon-clipboard" viewBox="0 0 24 24">
-          <path d="M8 5h8v3H8z"/>
-          <path d="M6 6H5a2 2 0 0 0-2 2v12h18V8a2 2 0 0 0-2-2h-1M7 12h8M7 16h6"/>
-        </symbol>
-        <symbol id="readiness-icon-info" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M12 10v6M12 7h.01"/>
-        </symbol>
-        <symbol id="readiness-icon-check" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="m8 12 2.6 2.6L16.5 9"/>
-        </symbol>
-        <symbol id="readiness-icon-dollar" viewBox="0 0 24 24">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M15.5 8.5c-.8-.7-1.9-1-3.2-1-1.7 0-3 .8-3 2.1 0 3.5 6.4 1.6 6.4 5.1 0 1.3-1.3 2.2-3.2 2.2-1.5 0-2.8-.5-3.7-1.4M12.3 5.5v13"/>
-        </symbol>
-        <symbol id="readiness-icon-eye" viewBox="0 0 24 24">
-          <path d="M3 12s3.3-5 9-5 9 5 9 5-3.3 5-9 5-9-5-9-5Z"/>
-          <circle cx="12" cy="12" r="2.5"/>
-        </symbol>
-        <symbol id="readiness-icon-megaphone" viewBox="0 0 24 24">
-          <path d="M4 10v4h3l8 4V6l-8 4H4Z"/>
-          <path d="M7 14l1.5 5h2l-1.2-4.4M18 9.5a4 4 0 0 1 0 5"/>
-        </symbol>
-      </svg>
-      <div class="homepage-readiness__header">
-        <div class="homepage-readiness__intro">
-          <p class="homepage-readiness__eyebrow">Cooper Debate Team</p>
-          <h2 class="homepage-readiness__title" id="season-readiness-title">Getting ready for 2026-27</h2>
-          <p class="homepage-readiness__lead">Whether you are new to debate or returning from last season, start here. Read the website, understand Public Forum, and make a plan for the application and team selection.</p>
+      <article class="tryout-current" aria-labelledby="tryout-current-title">
+        <div class="tryout-intro">
+          <div class="tryout-intro__copy">
+            <p class="homepage-readiness__eyebrow">Current 2026–27 update</p>
+            <h2 class="homepage-readiness__title" id="tryout-current-title">Debate <span>Tryout Week</span></h2>
+            <p class="homepage-readiness__lead">Applications for 2026–27 are closed. Students who are already in the tryout process should use the details below to feel prepared and steady.</p>
+          </div>
+          <img class="tryout-intro__art" src="images/tryout-microphone.webp" alt="" width="900" height="643" aria-hidden="true"/>
         </div>
-        <div class="homepage-readiness__deadline" aria-label="Application deadline">
-          <span class="homepage-readiness__deadline-label">Application deadline</span>
-          <strong>Wednesday, September 16, 2026</strong>
-          <span class="homepage-readiness__deadline-time">3:00 PM · No late applications</span>
+        <div class="tryout-facts">
+          <div><img class="tryout-fact-icon" src="images/tryout-date-icon.webp" alt="" width="160" height="180" aria-hidden="true"/><div><strong>Tuesday, September 22 or Wednesday, September 23</strong><span>Attend on the day requested in your application</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-time-icon.webp" alt="" width="143" height="180" aria-hidden="true"/><div><strong>2:30–4:30 p.m.</strong><span>Late buses are available</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-format-icon.webp" alt="" width="156" height="180" aria-hidden="true"/><div><strong>Two shortened PF rounds</strong><span>A Session on one side; B Session on the opposite side</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-details-icon.webp" alt="" width="166" height="180" aria-hidden="true"/><div><strong>Monday afternoon or evening</strong><span>Your schedule, partner, speaker assignment, and details will be emailed</span></div></div>
         </div>
-      </div>
-
-      <div class="homepage-readiness__policy">
-        <span class="homepage-readiness__policy-mark" aria-hidden="true"><svg><use href="#readiness-icon-info"></use></svg></span>
-        <p><strong>Every student must make the team this year.</strong> That includes returning debaters. The only students automatically on the team are those who qualified for Metro Finals in March 2026.</p>
-      </div>
-
-      <div class="homepage-readiness__grid">
-        <article class="homepage-readiness__card homepage-readiness__card--reading">
-          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-book"></use></svg></span><span>Before you apply</span></p>
-          <h3>Read, understand, prepare</h3>
-          <p>Review the pages below, learn how Public Forum works, and research both sides of the current resolution. The Google Form application requires a 4+ page essay: at least two pages for and two pages against the resolution.</p>
-          <div class="homepage-readiness__links">
-            <a href="about.html#why-debate-section"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-speech"></use></svg><span>Why Debate?</span></span><span aria-hidden="true">→</span></a>
-            <a href="tournaments.html?tab=overview&amp;focus=wasdl"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-speech"></use></svg><span>WASDL &amp; Public Forum overview</span></span><span aria-hidden="true">→</span></a>
-            <a href="about.html#join"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-star"></use></svg><span>Expectations for Cooper Debate Team Members</span></span><span aria-hidden="true">→</span></a>
-            <a href="resources.html"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-book"></use></svg><span>Research &amp; preparation resources</span></span><span aria-hidden="true">→</span></a>
-             <a href="resources.html#topic-analysis"><span class="homepage-readiness__link-label"><svg><use href="#readiness-icon-eye"></use></svg><span>7-slide application topic analysis</span></span><span aria-hidden="true">→</span></a>
+        <div class="tryout-grid">
+          <div>
+            <p class="homepage-readiness__card-kicker">What to expect</p>
+            <h3>Practice the parts that matter</h3>
+            <p class="tryout-feedback-note">Leadership team members and Langley mentors will provide feedback during both rounds.</p>
+            <ul class="homepage-readiness__bullet-list">
+              <li><span>01</span><span class="tryout-step-copy"><strong>Practice your speeches</strong><small>Give a 2–3 minute constructive, then Summary or Final Focus based on your speaker assignment. Stand, emphasize key points, and look up; you do not need to memorize it.</small></span></li>
+              <li><span>02</span><span class="tryout-step-copy"><strong>Prepare for Crossfire</strong><small>Prepare useful questions for both sides and practice answering likely questions clearly.</small></span></li>
+              <li><span>03</span><span class="tryout-step-copy"><strong>Impacts and weighing</strong><small>Compare scope, magnitude, and probability, then choose the most important argument to highlight in your final two-minute speech.</small></span></li>
+            </ul>
           </div>
-          <div class="homepage-readiness__resource-note homepage-readiness__deck-card" id="info-session-deck">
-            <button class="homepage-readiness__deck-cover" type="button" data-deck-open aria-label="Quick view the Cooper Debate information-session slide deck">
-              <img src="images/info-session/slide-01.jpg?v=2" alt="" loading="lazy"/>
-              <span aria-hidden="true">▶</span>
-            </button>
-            <div class="homepage-readiness__deck-details">
-              <div class="homepage-readiness__deck-copy">
-                <div class="homepage-readiness__deck-copy-title">
-                  <span class="homepage-readiness__deck-copy-icon" aria-hidden="true"><img src="images/info-session/deck-icon.png" alt="" loading="lazy"/></span>
-                  <strong>Info-session slide deck</strong>
-                </div>
-                 <p>Browse all 42 slides without leaving this page.</p>
-              </div>
-              <div class="homepage-readiness__deck-actions">
-                 <button type="button" class="homepage-readiness__deck-action homepage-readiness__deck-action--quick" data-deck-open><span class="homepage-readiness__deck-action-icon homepage-readiness__deck-action-icon--quick" aria-hidden="true"><svg><use href="#readiness-icon-eye"></use></svg></span><span>Quick View</span></button>
-                <a class="homepage-readiness__deck-action homepage-readiness__deck-action--open" href="docs/cooper-debate-info-session-sept-2026.pdf?v=2" target="_blank" rel="noopener"><span class="homepage-readiness__deck-action-icon" aria-hidden="true">↗</span><span>Open full deck</span></a>
-                <a class="homepage-readiness__deck-action homepage-readiness__deck-action--download" href="docs/cooper-debate-info-session-sept-2026.pdf?v=2" download><span class="homepage-readiness__deck-action-icon" aria-hidden="true">↓</span><span>Download PDF</span></a>
-              </div>
+          <div>
+            <p class="homepage-readiness__card-kicker">Before you arrive</p>
+            <h3>Talk it through</h3>
+            <p class="homepage-readiness__detail-copy">Talk about data centers with family members, neighbors, or friends. Their common-sense questions will help you test your explanations and understand the issue in practical terms.</p>
+            <p class="tryout-research-note">You have already researched and written arguments with reasons and evidence for both sides. Team decisions will be shared later that week.</p>
+            <div class="tryout-links">
+              <a href="debate-prep.html"><svg class="tryout-link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v14H7.5A3.5 3.5 0 0 0 4 20.5v-15Z"/><path d="M4 20.5A2.5 2.5 0 0 1 6.5 18H20M8 7h8M8 11h6"/></svg><span class="tryout-link-label">Open Debate Prep</span><span class="tryout-link-arrow">→</span></a>
+              <a href="resources.html"><svg class="tryout-link-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M15 3v5h4M9 12h7M9 16h7M9 8h2"/></svg><span class="tryout-link-label">Review Public Forum resources</span><span class="tryout-link-arrow">→</span></a>
+              <a href="tournaments.html"><svg class="tryout-link-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18M8 14h2M14 14h2M8 18h2M14 18h2"/></svg><span class="tryout-link-label">View tryout schedule and calendar</span><span class="tryout-link-arrow">→</span></a>
             </div>
           </div>
-        </article>
-
-        <article class="homepage-readiness__card homepage-readiness__card--next">
-          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-clipboard"></use></svg></span><span>Your next steps</span></p>
-          <h3>Apply, try out, compete</h3>
-          <ol class="homepage-readiness__steps">
-            <li><span>1</span><p><strong><a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" data-google-form-open data-google-form-direct data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application in the new tab, then return to the Cooper Debate Team website." data-form-external-label="Open full application ↗" style="color:inherit;text-decoration:underline;text-decoration-color:rgba(242,209,107,0.7);text-underline-offset:3px;">Complete the Google Form application</a></strong>Submit every required response by Wednesday, September 16 at 3:00 PM. Include a 4+ page essay—at least two pages for and two pages against the resolution.</p></li>
-             <li><span>2</span><p><strong>Attend Debate Try-Outs</strong>As a part of the application process, attend the after-school Debate Try-Outs on Tuesday, September 22 in the Cafeteria or Wednesday, September 23 in the Lecture Hall. Team membership will be determined later that week.</p></li>
-            <li><span>3</span><p><strong>Commit to the season</strong>Team members practice after school on Tuesdays in A and B Sessions and attend one Saturday tournament each month.</p></li>
-          </ol>
-           <div class="homepage-readiness__application-actions" aria-label="Application and QST information-session forms">
-             <button class="btn btn-gold homepage-readiness__primary-action homepage-readiness__primary-action--application" type="button" data-google-form-open data-google-form-direct data-form-url="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application in a new tab, then return to the Cooper Debate Team website." data-form-external-label="Open full application ↗"><span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-document"></use></svg></span><span>Start the application</span><span class="homepage-readiness__primary-arrow" aria-hidden="true">→</span></button>
-             <button class="btn btn-outline homepage-readiness__primary-action homepage-readiness__primary-action--qst" type="button" data-google-form-open data-form-url="https://docs.google.com/forms/d/e/1FAIpQLSfDB5GFm_Jobob9Nb0P6asib06hjaKCe69v2xtlIsqvdhn13w/viewform" data-form-kicker="Cooper Debate Team · QST" data-form-title="QST Info Session Confirmation" data-form-description="Confirm your attendance for the QST information session. After submitting, use Close to return to the Cooper Debate Team website." data-form-external-label="Open full QST form ↗"><span class="homepage-readiness__action-icon" aria-hidden="true">✓</span><span>Confirm QST info session</span><span class="homepage-readiness__primary-arrow" aria-hidden="true">→</span></button>
-           </div>
-           <div class="homepage-readiness__actions">
-             <a class="homepage-readiness__action-link homepage-readiness__action-link--partner" href="tournaments.html?tab=partner-signup">
-              <span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-users"></use></svg></span><span class="homepage-readiness__action-copy"><strong>Debate partner signups</strong><small>Choose a partner or request a pairing</small></span><span class="homepage-readiness__action-arrow" aria-hidden="true">→</span>
-            </a>
-             <a class="homepage-readiness__action-link homepage-readiness__action-link--calendar" href="tournaments.html?tab=calendar-results">
-              <span class="homepage-readiness__action-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span><span class="homepage-readiness__action-copy"><strong>Tournament calendar</strong><small>See the full season schedule in Agenda view</small></span><span class="homepage-readiness__action-arrow" aria-hidden="true">→</span>
-            </a>
-          </div>
-        </article>
-      </div>
-
-      <dialog class="homepage-readiness__deck-dialog" id="info-session-deck-dialog" aria-labelledby="info-session-deck-title">
-        <div class="homepage-readiness__deck-dialog-inner">
-          <header class="homepage-readiness__deck-dialog-header">
-            <div>
-              <p class="homepage-readiness__deck-dialog-kicker">Cooper Debate · September 2026</p>
-              <h3 id="info-session-deck-title">Information Session Slide Deck</h3>
-              <p>Take a quick look through the presentation, or open the original PDF for the full experience.</p>
-            </div>
-            <div class="homepage-readiness__deck-dialog-actions">
-               <a class="homepage-readiness__deck-dialog-action--open" href="docs/cooper-debate-info-session-sept-2026.pdf?v=2" target="_blank" rel="noopener">Open full deck ↗</a>
-               <a class="homepage-readiness__deck-dialog-action--download" href="docs/cooper-debate-info-session-sept-2026.pdf?v=2" download>Download PDF ↓</a>
-            </div>
-            <button class="homepage-readiness__deck-close" type="button" data-deck-close aria-label="Close slide deck quick view">×</button>
-          </header>
-
-          <div class="homepage-readiness__deck-stage-row">
-            <button class="homepage-readiness__deck-nav" type="button" data-deck-prev aria-label="Previous slide">←</button>
-            <figure class="homepage-readiness__deck-stage">
-              <div class="homepage-readiness__deck-slide-viewport">
-                <img id="info-session-deck-slide" class="is-current" src="images/info-session/slide-01.jpg?v=2" alt="Cooper Debate information-session slide 1"/>
-                <img id="info-session-deck-slide-secondary" aria-hidden="true" alt=""/>
-              </div>
-              <figcaption>
-                <span id="info-session-deck-counter">Slide 1 of 30</span>
-                <strong id="info-session-deck-caption">Welcome to Cooper Debate</strong>
-              </figcaption>
-            </figure>
-            <button class="homepage-readiness__deck-nav" type="button" data-deck-next aria-label="Next slide">→</button>
-          </div>
-
-          <div class="homepage-readiness__deck-progress" aria-hidden="true"><span id="info-session-deck-progress"></span></div>
-          <div class="homepage-readiness__deck-thumbnails" id="info-session-deck-thumbnails" aria-label="Choose a slide"></div>
-          <p class="homepage-readiness__deck-keyboard-note">Use the arrow keys to move through the deck · Press Esc to close</p>
         </div>
-      </dialog>
-
-      <dialog class="google-form-dialog" data-google-form-dialog aria-labelledby="google-form-dialog-title" aria-describedby="google-form-dialog-description">
-        <div class="google-form-dialog__inner">
-          <header class="google-form-dialog__header">
-            <div>
-              <p class="google-form-dialog__kicker" data-google-form-kicker>Cooper Debate Team · 2026–27</p>
-              <h2 id="google-form-dialog-title" data-google-form-title>Cooper Debate Team Form</h2>
-              <p class="google-form-dialog__description" id="google-form-dialog-description" data-google-form-description>Complete the form below. Your responses are submitted securely through Google Forms.</p>
-            </div>
-            <div class="google-form-dialog__actions">
-              <a class="google-form-dialog__external" data-google-form-external href="#" target="_blank" rel="noopener">Open full form ↗</a>
-              <button class="google-form-dialog__close" type="button" data-google-form-close aria-label="Close Google Form">Close <span aria-hidden="true">×</span></button>
-            </div>
-          </header>
-          <div class="google-form-dialog__body">
-            <iframe class="google-form-dialog__frame" data-google-form-frame title="Google Form" src="about:blank" loading="lazy"></iframe>
-          </div>
-          <p class="google-form-dialog__footer"><strong>Finished? Submit the form.</strong> Wait for Google’s confirmation, then choose Close to return to the website.</p>
-        </div>
-      </dialog>
-
-      <div class="homepage-readiness__details" aria-label="Important season information">
-        <article class="homepage-readiness__detail-card homepage-readiness__detail-card--dates">
-          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-calendar"></use></svg></span><span>How to get information</span></p>
-          <h3>Meet us and mark your calendar</h3>
-          <dl class="homepage-readiness__date-list">
-            <div>
-              <span class="homepage-readiness__date-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span>
-              <dt>September 10</dt>
-              <dd>Information Session — learn what debate is and how to get started.</dd>
-            </div>
-            <div>
-              <span class="homepage-readiness__date-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span>
-              <dt>September 14</dt>
-              <dd>Activities Fair — visit the Debate Team table, meet debaters, and ask questions.</dd>
-            </div>
-            <div>
-              <span class="homepage-readiness__date-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span>
-              <dt>September 16 · 3:00 PM</dt>
-              <dd>Google Form application deadline. No late applications.</dd>
-            </div>
-            <div>
-              <span class="homepage-readiness__date-icon" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span>
-              <dt>September 22 or 23</dt>
-              <dd>Required after-school Debate Try-Outs. Choose a session through the sign-up board.</dd>
-            </div>
-          </dl>
-          <div class="homepage-readiness__announcement">
-            <span class="homepage-readiness__announcement-icon" aria-hidden="true"><svg><use href="#readiness-icon-megaphone"></use></svg></span>
-            <p><strong>Team membership will be announced later that week.</strong></p>
-          </div>
-        </article>
-
-        <article class="homepage-readiness__detail-card homepage-readiness__detail-card--format">
-          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-speech"></use></svg></span><span>What to expect</span></p>
-          <h3>Debate together in Public Forum</h3>
-          <p class="homepage-readiness__detail-copy">Public Forum is a structured 35-minute back-and-forth with prepared, well-researched speeches, crossfire, and thinking on your feet. Every round takes two debaters working as a team.</p>
-          <ul class="homepage-readiness__bullet-list">
-            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Partner up.</strong> Choose your partner or request a pairing.</span></li>
-            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Prepare beyond practice.</strong> Research, write, and practice with your partner outside Tuesday meetings.</span></li>
-            <li><span class="homepage-readiness__list-icon" aria-hidden="true"><svg><use href="#readiness-icon-check"></use></svg></span><span><strong>Collaborate well.</strong> Communicate with your partner and contribute to a civil, prepared team.</span></li>
-          </ul>
-          <div class="homepage-readiness__detail-links">
-            <a href="about.html#why-debate-section"><span>What is Public Forum?</span><span aria-hidden="true">→</span></a>
-            <a href="about.html#join"><span>Team member expectations</span><span aria-hidden="true">→</span></a>
-          </div>
-        </article>
-
-        <article class="homepage-readiness__detail-card homepage-readiness__detail-card--family">
-          <p class="homepage-readiness__card-kicker"><span class="homepage-readiness__kicker-icon"><svg><use href="#readiness-icon-users"></use></svg></span><span>For students and families</span></p>
-          <h3>Plan for the season</h3>
-          <ul class="homepage-readiness__bullet-list">
-            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-users"></use></svg></span><span><strong>Practices:</strong> Tuesdays after school in A and B Sessions.</span></li>
-            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-calendar"></use></svg></span><span><strong>Tournaments:</strong> Monthly Saturday tournaments. Parents are responsible for transportation to and from tournaments and may arrange carpools.</span></li>
-            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-dollar"></use></svg></span><span><strong>Fees:</strong> $20 per Cooper debater each year covers annual WASDL dues and five preliminary tournaments. Metro Finals or Nationals may add $15–$20 per student.</span></li>
-            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-speech"></use></svg></span><span><strong>Communication:</strong> Coaches use Talking Points and Schoology, not the team app.</span></li>
-            <li><span class="homepage-readiness__list-icon homepage-readiness__list-icon--family" aria-hidden="true"><svg><use href="#readiness-icon-eye"></use></svg></span><span><strong>Watching rounds:</strong> Check with the judge and the other debaters before observing; remain quiet and do not signal during the round.</span></li>
-          </ul>
-          <a class="homepage-readiness__detail-cta" href="tournaments.html?tab=parent-info"><span class="homepage-readiness__detail-cta-label"><svg aria-hidden="true"><use href="#readiness-icon-book"></use></svg><span>Read the full Parent &amp; Family Guide</span></span><span aria-hidden="true">→</span></a>
-        </article>
-      </div>
-
+      </article>
     </div>
   </div>
 </section>
@@ -3674,9 +3471,9 @@
             <strong>No experience necessary — just curiosity and commitment.</strong>
           </p>
           <div class="idx-closing-actions">
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" class="idx-closing-action idx-closing-action-primary">
+            <a href="#season-readiness" class="idx-closing-action idx-closing-action-primary">
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="6"/><circle cx="32" cy="18" r="5"/><path d="M6 38v-5c0-7 5-11 12-11s12 4 12 11v5M27 25c7 0 12 4 12 10v3"/></svg>
-              <span><b>Apply to Join</b><small>Take the first step today</small></span>
+              <span><b>Tryout Update</b><small>See this week's guidance</small></span>
               <i aria-hidden="true">→</i>
             </a>
             <a href="about.html" class="idx-closing-action idx-closing-action-secondary">
@@ -3750,7 +3547,7 @@
           Connect
         </h2>
         <ul class="index-footer-nav">
-          <li><a class="index-footer-link" href="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" target="_blank" rel="noopener" data-google-form-open data-google-form-direct data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application in the new tab, then return to the Cooper Debate Team website." data-form-external-label="Open full application ↗"><span class="index-footer-chevron">›</span><span>Apply Now</span></a></li>
+          <li><a class="index-footer-link" href="index.html#season-readiness"><span class="index-footer-chevron">›</span><span>Tryout Update</span></a></li>
           <li><a class="index-footer-link" href="about.html#join"><span class="index-footer-chevron">›</span><span>How to Join</span></a></li>
           <li>
             <a class="index-footer-link" href="tournaments.html#parent-info">
@@ -3812,7 +3609,6 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js?v=2"></script>
 <script src="js/public-footer.js?v=5"></script>
-<script src="js/google-form-modal.js?v=1"></script>
 <script>
   (function () {
     var STORAGE_KEY = 'cooper-home-hero-image';
@@ -4184,7 +3980,5 @@
   });
 })();
 </script>
-<script src="js/fcps-application-auth.js?v=19"></script>
-<script src="js/info-session-deck.js?v=6"></script>
 </body>
 </html>

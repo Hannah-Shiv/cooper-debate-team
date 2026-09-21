@@ -13,7 +13,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="css/main.css?v=43"/>
   <link rel="stylesheet" href="css/dome-nav.css?v=9"/>
-  <link rel="stylesheet" href="css/google-form-modal.css?v=1"/>
   <style>
     /* +2px base: bumps all rem-based font sizes proportionally */
     html { font-size: 19px !important; }
@@ -959,14 +958,14 @@
       </div>
 
       <div class="portal-join">
-         <p>Not a member yet?</p>
-         <button type="button" class="btn btn-gold join-pill" data-google-form-open data-google-form-direct data-form-url="https://docs.google.com/forms/d/e/1FAIpQLSfo4hDx6trh1ypieMujM6gE34eas7cthc2a3xdgSxuX45UBPQ/viewform" data-form-kicker="Cooper Debate Team · 2026–27" data-form-title="2026–27 Team Application" data-form-description="Complete the application below. After submitting, return to the Cooper Debate Team website." data-form-external-label="Open full application ↗">
+         <p>Looking for current tryout information?</p>
+         <a class="btn btn-gold join-pill" href="index.html#season-readiness">
            <svg class="join-mark" viewBox="0 0 32 28" aria-hidden="true">
              <circle cx="10" cy="8" r="4" fill="currentColor"/><circle cx="22" cy="8" r="4" fill="currentColor"/>
              <path d="M2 25c.4-6 3.4-9 8-9s7.6 3 8 9M14 25c.4-6 3.4-9 8-9s7.6 3 8 9" fill="none" stroke="currentColor" stroke-width="2"/>
            </svg>
-           <span>Apply to Join the Team</span><span class="join-arrow" aria-hidden="true">→</span>
-         </button>
+            <span>View Tryout Update</span><span class="join-arrow" aria-hidden="true">→</span>
+         </a>
       </div>
 
     </div>
@@ -1038,7 +1037,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script src="data/approved-members.js?v=7"></script>
-<script src="data/admins.js?v=12"></script>
+<script src="data/admins.js?v=13"></script>
 <script src="js/members-auth.js?v=16"></script>
 
 <script src="js/dome-nav.js?v=2"></script>
@@ -1067,7 +1066,7 @@
       <div>
         <div class="footer-col-title">Quick Links</div>
         <ul class="footer-links">
-          <li><a href="apply.html">Apply Now</a></li>
+          <li><a href="index.html#season-readiness">Tryout Update</a></li>
           <li><a href="about.html#join">How to Join</a></li>
           <li><a href="tournaments.html#parent-info">Parent Information</a></li>
           <li><a href="resources.html">PF Topic Center</a></li>
@@ -1091,26 +1090,5 @@
   </div>
 </footer>
 
-<dialog class="google-form-dialog" data-google-form-dialog aria-labelledby="google-form-dialog-title" aria-describedby="google-form-dialog-description">
-  <div class="google-form-dialog__inner">
-    <header class="google-form-dialog__header">
-      <div>
-        <p class="google-form-dialog__kicker" data-google-form-kicker>Cooper Debate Team · 2026–27</p>
-        <h2 id="google-form-dialog-title" data-google-form-title>Cooper Debate Team Form</h2>
-        <p class="google-form-dialog__description" id="google-form-dialog-description" data-google-form-description>Complete the form below. Your responses are submitted securely through Google Forms.</p>
-      </div>
-      <div class="google-form-dialog__actions">
-        <a class="google-form-dialog__external" data-google-form-external href="#" target="_blank" rel="noopener">Open full form ↗</a>
-        <button class="google-form-dialog__close" type="button" data-google-form-close aria-label="Close Google Form">Close <span aria-hidden="true">×</span></button>
-      </div>
-    </header>
-    <div class="google-form-dialog__body">
-      <iframe class="google-form-dialog__frame" data-google-form-frame title="Google Form" src="about:blank" loading="lazy"></iframe>
-    </div>
-          <p class="google-form-dialog__footer"><strong>Finished? Submit the form.</strong> Wait for Google’s confirmation, then choose Close to return to the website.</p>
-  </div>
-</dialog>
-
-<script src="js/google-form-modal.js?v=1"></script>
 </body>
 </html>

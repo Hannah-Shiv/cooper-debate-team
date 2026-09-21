@@ -14,6 +14,7 @@ const crypto = require("node:crypto");
 const { createVolunteerEmailService } = require("./volunteer-email");
 const { createApplicationEmailService } = require("./application-email");
 const { createTryoutBoardHandler } = require("./tryout-board");
+const { createDebateWorkHandler } = require("./debate-work");
 const {
   isPublicVolunteerEvent,
   newYorkCalendarDate,
@@ -22,11 +23,29 @@ const {
 } = require("./tournament-events");
 
 initializeApp();
+const portalAuthApp = initializeApp({ projectId: "cooper-debate-team" }, "debate-work-portal-auth");
+const DEBATE_WORK_SESSION_SECRET = defineSecret("SESSION_SECRET");
 
 exports.tryoutBoard = onRequest(
   { region: "us-central1", cors: true },
   createTryoutBoardHandler({
     db: getFirestore(),
+    clientAddress: submissionClientAddress,
+  })
+);
+
+exports.debateWork = onRequest(
+  { region: "us-central1", cors: true, secrets: [DEBATE_WORK_SESSION_SECRET] },
+  createDebateWorkHandler({
+    db: getFirestore(),
+    verifyPortalToken: token => getAuth(portalAuthApp).verifyIdToken(token),
+    hasFullAdminAccess,
+    resolveStudentId: ({ email }) => email === "hannahbshiv@gmail.com"
+      ? "1806950"
+      : debateStudentIdFromEmail(email),
+    resolveStudentAccess: resolveDebateStudentAccess,
+    listEligibleStudents: listDebateEligibleStudents,
+    sessionSecret: () => DEBATE_WORK_SESSION_SECRET.value(),
     clientAddress: submissionClientAddress,
   })
 );
@@ -255,6 +274,82 @@ const COACH_EMAILS = new Set([
 const PROTECTED_WEBSITE_ADMIN_REVIEWERS = new Set([
   "hannahbshiv@gmail.com",
 ]);
+
+function debateStudentIdFromEmail(email) {
+  const normalizedEmail = cleanEmail(email);
+  const localPart = normalizedEmail.split("@")[0] || "";
+  return /^\d{7}$/.test(localPart) ? localPart : "";
+}
+
+function debateStudentName(data, fallback = "") {
+  const student = data && typeof data.student === "object" ? data.student : {};
+  return cleanText(
+    student.displayName ||
+    [student.firstName, student.lastName].filter(Boolean).join(" ") ||
+    data.displayName ||
+    data.name ||
+    [data.firstName, data.lastName].filter(Boolean).join(" ") ||
+    fallback,
+    160
+  );
+}
+
+async function resolveDebateStudentAccess({ email, fcpsId }) {
+  const normalizedEmail = cleanEmail(email);
+  const emailId = debateStudentIdFromEmail(normalizedEmail);
+  const isHannahWebsiteAdmin = normalizedEmail === "hannahbshiv@gmail.com" &&
+    fcpsId === "1806950" &&
+    await hasWebsiteAdminAccess(normalizedEmail);
+  if (isHannahWebsiteAdmin) {
+    return { active: true, displayName: "Hannah Shiv" };
+  }
+  if (!emailId || emailId !== fcpsId) return null;
+
+  const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
+  if (membership.exists && membership.data().active === true) {
+    return { active: true, displayName: debateStudentName(membership.data(), id) };
+  }
+
+  if (!normalizedEmail.endsWith("@fcpsschools.net")) return null;
+  const applications = await getFirestore().collection("applications")
+    .where("student.studentId", "==", id)
+    .limit(1)
+    .get();
+  if (applications.empty) return null;
+  return {
+    active: true,
+    displayName: debateStudentName(applications.docs[0].data(), id),
+  };
+}
+
+async function listDebateEligibleStudents() {
+  const [applications, members] = await Promise.all([
+    getFirestore().collection("applications").get(),
+    getFirestore().collection("portal_members").where("active", "==", true).get(),
+  ]);
+  const students = new Map();
+
+  applications.docs.forEach(document => {
+    const data = document.data() || {};
+    const id = cleanText(data.student && data.student.studentId, 32);
+    if (/^\d{7}$/.test(id)) {
+      students.set(id, { fcpsId: id, displayName: debateStudentName(data, id), active: true });
+    }
+  });
+
+  members.docs.forEach(document => {
+    const data = document.data() || {};
+    const emails = [document.id, data.email, ...(Array.isArray(data.loginEmails) ? data.loginEmails : [])];
+    emails.forEach(email => {
+      const id = debateStudentIdFromEmail(email);
+      if (id && !students.has(id)) {
+        students.set(id, { fcpsId: id, displayName: debateStudentName(data, id), active: true });
+      }
+    });
+  });
+
+  return [...students.values()];
+}
 
 async function hasFullAdminAccess(email) {
   const normalizedEmail = cleanEmail(email);
@@ -1155,6 +1250,8 @@ exports.publicVolunteerSignup = onRequest(
   }
 );
 
+const TEAM_APPLICATIONS_OPEN = false;
+
 // ── Public team application submission ───────────────────────────
 // Applications are validated and written by the Admin SDK. Browser clients
 // never receive read access to these private records.
@@ -1168,6 +1265,13 @@ exports.submitApplication = onRequest(
     if (req.method !== "POST") {
       res.set("Allow", "POST");
       res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    if (!TEAM_APPLICATIONS_OPEN) {
+      res.status(410).json({
+        error: "Applications for the 2026–27 Cooper Debate Team are closed.",
+      });
       return;
     }
 
@@ -1307,6 +1411,13 @@ exports.syncApplicationFromSheet = onRequest(
         error: expectedSecret
           ? "The application sheet sync request could not be authenticated."
           : "Application sheet sync is not configured yet.",
+      });
+      return;
+    }
+
+    if (!TEAM_APPLICATIONS_OPEN) {
+      res.status(410).json({
+        error: "Applications for the 2026–27 Cooper Debate Team are closed.",
       });
       return;
     }

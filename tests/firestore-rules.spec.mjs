@@ -451,3 +451,18 @@ test("approved members can manage only their own notification-token record", asy
     token: "other-token",
   }));
 });
+
+test("debate identities and work remain server-only for every browser role", async () => {
+  for (const db of [
+    testEnv.unauthenticatedContext().firestore(),
+    dbFor(STUDENT_EMAIL, "google.com"),
+    dbFor(COACH_EMAIL, "google.com"),
+  ]) {
+    await assertFails(getDoc(doc(db, "debate_student_identities", "student")));
+    await assertFails(setDoc(doc(db, "debate_student_identities", "student"), { active: true }));
+    await assertFails(getDoc(doc(db, "debate_works", "student_pro")));
+    await assertFails(setDoc(doc(db, "debate_works", "student_pro"), { side: "PRO" }));
+    await assertFails(getDoc(doc(db, "debate_work_action_limits", "fingerprint")));
+    await assertFails(setDoc(doc(db, "debate_work_action_limits", "fingerprint"), { count: 1 }));
+  }
+});

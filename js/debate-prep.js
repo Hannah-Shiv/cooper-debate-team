@@ -1,554 +1,290 @@
 (function () {
-  'use strict';
-
-  var storageKey = 'cooper-debate-prep-draft-v2';
-  var emailKey = 'cooper-debate-prep-email-v1';
-  var $ = function (id) { return document.getElementById(id); };
-  var fields = {
-    name: $('studentName'),
-    studentId: $('studentId'),
-    email: $('studentEmail'),
-    title: $('paperTitle'),
-    essay: $('essay'),
-    contentions: $('contentions'),
-    reasoning: $('reasoning'),
-    evidence: $('evidence'),
-    impacts: $('impacts')
+  "use strict";
+  var FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD0LYz6AAdiOKIrZ8cmaJEpfHBuYfm_TSc",
+    authDomain: "cooper-debate-team.firebaseapp.com",
+    projectId: "cooper-debate-team",
+    appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
   };
-  var sources = [];
-  var route = 'guided';
-  var autosaveTimer = null;
-  var state = $('saveState');
-  var time = $('savedTime');
-  var gate = $('prepGate');
-  var gateForm = $('prepGateForm');
-  var gateName = $('prepGateName');
-  var gateEmail = $('prepGateEmail');
-  var gateStudentId = $('prepGateStudentId');
-  var gateError = $('prepGateError');
-  var studio = document.querySelector('.studio-shell');
-  var studioContent = $('studioContent');
-  var previewReturnFocus = null;
+  var ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/debateWork";
+  var TOPIC = "2026-data-centers";
+  var STAGES = [
+    ["constructive", "Constructive", "4 min speaking time", "State your position, define the problem, and make your clearest first claim."],
+    ["crossfire", "Crossfire", "3 min speaking time", "Ask focused questions that test the other side's assumptions. Answer in one precise thought."],
+    ["rebuttal", "Rebuttal", "4 min speaking time", "Answer the strongest opposing argument and explain why your evidence matters."],
+    ["summary", "Summary", "2 min speaking time", "Weigh the round. Which issue matters most, and why does your side win it?"],
+    ["finalFocus", "Final Focus", "2 min speaking time", "Leave the judge with one memorable reason to vote for your position."]
+  ];
+  var $ = function (id) { return document.getElementById(id); };
+  var token = sessionStorage.getItem("cooper-debate-session") || "";
+  var works = [];
+  var current = null;
+  var currentStage = "constructive";
+  var pace = 150;
+  var saveTimer = null;
+  var autoSaveInFlight = false;
+  var autoSaveQueued = false;
+  var studentIdentity = token ? token.split(".")[0].slice(0, 24) : "session";
+  var studentProfile = {};
+  try { studentProfile = JSON.parse(sessionStorage.getItem("cooper-debate-profile") || "{}"); } catch (_) {}
+  if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+  var auth = firebase.auth();
 
-  function wordCount(value) {
-    return value.trim() ? value.trim().split(/\s+/).length : 0;
+  function emptyStages() {
+    var result = {};
+    STAGES.forEach(function (stage) { result[stage[0]] = { content: "", notes: "", sources: [], completed: false }; });
+    return result;
   }
-
-  function validEmail(value) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+  function wordCount(text) { return (text || "").trim() ? (text || "").trim().split(/\s+/).length : 0; }
+  function textFromHtml(html) { var node = document.createElement("div"); node.innerHTML = html || ""; return node.textContent || ""; }
+  function escape(text) { return String(text || "").replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;" })[c]; }); }
+  function status(work) { return !work ? "Not started" : work.status === "submitted" ? "Submitted for review" : "In progress"; }
+  function progress(work) { return work ? STAGES.filter(function (s) { return work.stages && work.stages[s[0]] && (work.stages[s[0]].content || work.stages[s[0]].completed); }).length : 0; }
+  function localKey(work) { return "cooper-debate-unsaved:" + studentIdentity + ":" + (work.id || (TOPIC + ":" + work.side)); }
+  function showError(id, message) { var el = $(id); el.textContent = message || ""; el.hidden = !message; }
+  function setAutoSaveStatus(text, state) {
+    var status = $("autosaveStatus");
+    status.textContent = text;
+    status.className = "autosave-status" + (state ? " " + state : "");
   }
-
-  function isRichTextField(field) {
-    return field && field.getAttribute && field.getAttribute('contenteditable') === 'true';
+  function savedTime(value) {
+    var date = value ? new Date(value) : new Date();
+    return isNaN(date.getTime()) ? new Date().toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }) : date.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
   }
-
-  function sanitizeRichText(html) {
-    var template = document.createElement('template');
-    var allowedTags = ['B', 'STRONG', 'I', 'EM', 'U', 'UL', 'OL', 'LI', 'P', 'BR', 'DIV'];
-    template.innerHTML = html;
-    Array.from(template.content.querySelectorAll('*')).forEach(function (node) {
-      if (allowedTags.indexOf(node.tagName) === -1) {
-        node.replaceWith(document.createTextNode(node.textContent || ''));
+  function sanitizeRichHtml(html) {
+    var template = document.createElement("template");
+    template.innerHTML = typeof html === "string" ? html : "";
+    var allowed = { P: 1, BR: 1, B: 1, STRONG: 1, I: 1, EM: 1, U: 1, UL: 1, OL: 1, LI: 1 };
+    Array.prototype.slice.call(template.content.querySelectorAll("*")).forEach(function (node) {
+      if (!allowed[node.tagName]) {
+        node.replaceWith(document.createTextNode(node.textContent || ""));
         return;
       }
-      Array.from(node.attributes).forEach(function (attribute) {
-        node.removeAttribute(attribute.name);
-      });
+      Array.prototype.slice.call(node.attributes).forEach(function (attribute) { node.removeAttribute(attribute.name); });
     });
     return template.innerHTML;
   }
-
-  function valueOf(field) {
-    if (typeof field.value === 'string') return field.value;
-    if (isRichTextField(field)) return sanitizeRichText(field.innerHTML);
-    return field.dataset.value || '';
+  function isEditable(work) {
+    return !(work && work.status === "submitted") ||
+      (work.feedback && work.feedback.status === "needs-revision");
+  }
+  function fcpsIdFromEmail(email) {
+    var normalized = String(email || "").trim().toLowerCase();
+    if (normalized === "hannahbshiv@gmail.com") return "1806950";
+    var localPart = normalized.split("@")[0] || "";
+    return /^\d{7}$/.test(localPart) ? localPart : "";
+  }
+  function setStudentProfile(profile) {
+    studentProfile = Object.assign({}, studentProfile, profile || {});
+    try { sessionStorage.setItem("cooper-debate-profile", JSON.stringify(studentProfile)); } catch (_) {}
+    $("studentName").textContent = studentProfile.displayName || "Student";
+    $("studentFcpsId").textContent = studentProfile.fcpsId || "—";
+  }
+  function updateSessionFacts() {
+    $("studentSide").textContent = current && current.side ? current.side : "Not selected";
+    $("workMode").textContent = current && current.status === "submitted"
+      ? "Submitted"
+      : current && current.feedback && current.feedback.status === "needs-revision"
+        ? "Revision"
+        : "Draft";
   }
 
-  function textValueOf(field) {
-    if (typeof field.value === 'string') return field.value;
-    if (isRichTextField(field)) return (field.innerText || '').replace(/\u00a0/g, ' ');
-    return field.dataset.value || '';
+  async function request(action, body) {
+    var response = await fetch(ENDPOINT, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(Object.assign({ action: action, topicId: TOPIC, sessionToken: token }, body || {})) });
+    var data = {};
+    try { data = await response.json(); } catch (_) {}
+    if (!response.ok || data.ok === false) throw new Error(data.error || "The debate-work service is unavailable. Try again.");
+    return data;
   }
-
-  function setValue(field, value) {
-    var nextValue = typeof value === 'string' ? value : '';
-    if (typeof field.value === 'string') {
-      field.value = nextValue;
-      return;
-    }
-    if (isRichTextField(field)) {
-      if (/<(?:b|strong|i|em|u|ul|ol|li|p|br|div)\b/i.test(nextValue)) {
-        field.innerHTML = sanitizeRichText(nextValue);
-      } else {
-        field.textContent = nextValue;
-      }
-      return;
-    }
-    field.dataset.value = nextValue;
-    field.textContent = nextValue || '—';
+  function normalizeWork(work, side) {
+    var value = work || { topicId: TOPIC, side: side, title: "", resolution: "", stages: emptyStages(), revision: 0 };
+    value.stages = Object.assign(emptyStages(), value.stages || {});
+    return value;
   }
-
-  function initialsFor(name) {
-    var parts = name.trim().split(/\s+/).filter(Boolean);
-    if (!parts.length) return '—';
-    return (parts[0].charAt(0) + (parts.length > 1 ? parts[parts.length - 1].charAt(0) : '')).toUpperCase();
-  }
-
-  function updatePaperSaveState(label, detail) {
-    $('paperSaveState').textContent = label;
-    $('paperSavedTime').textContent = detail;
-    var editorSaveState = $('paperEditorSaveState');
-    var editorSavedTime = $('paperEditorSavedTime');
-    if (editorSaveState) editorSaveState.textContent = label;
-    if (editorSavedTime) editorSavedTime.textContent = detail;
-  }
-
-  function initializePaperSaveHint() {
-    var hint = document.querySelector('.editor-hint');
-    if (!hint) return;
-    hint.classList.add('editor-save-hint');
-    hint.setAttribute('aria-live', 'polite');
-    var editorSaveState = document.createElement('strong');
-    var divider = document.createElement('span');
-    var editorSavedTime = document.createElement('span');
-    editorSaveState.id = 'paperEditorSaveState';
-    editorSaveState.textContent = 'Saved automatically';
-    divider.setAttribute('aria-hidden', 'true');
-    divider.textContent = '·';
-    editorSavedTime.id = 'paperEditorSavedTime';
-    editorSavedTime.textContent = 'Not saved yet';
-    hint.replaceChildren(editorSaveState, divider, editorSavedTime);
-  }
-
-  function openStudio(email, name, studentId) {
-    setValue(fields.name, name);
-    setValue(fields.studentId, studentId);
-    setValue(fields.email, email);
-    gateName.value = name;
-    gateStudentId.value = studentId;
-    gateEmail.value = email;
-    $('studentInitials').textContent = initialsFor(name);
+  function readLocal(work) {
     try {
-      localStorage.setItem(emailKey, email);
-    } catch (error) {
-      // The draft save path reports local storage failures when it saves.
-    }
-    studio.classList.remove('is-locked');
-    studioContent.inert = false;
-    studioContent.removeAttribute('aria-disabled');
-    gate.classList.add('is-complete');
-    document.body.classList.remove('prep-gated');
-  }
-
-  function initializeGate() {
-    var rememberedEmail = '';
-    try {
-      rememberedEmail = localStorage.getItem(emailKey) || valueOf(fields.email) || '';
-    } catch (error) {
-      rememberedEmail = valueOf(fields.email) || '';
-    }
-    gateName.value = valueOf(fields.name);
-    gateEmail.value = rememberedEmail;
-    gateStudentId.value = valueOf(fields.studentId);
-    studio.classList.add('is-locked');
-    studioContent.inert = true;
-    studioContent.setAttribute('aria-disabled', 'true');
-    if (validEmail(rememberedEmail) && gateName.value.trim() && gateStudentId.value.trim()) {
-      openStudio(rememberedEmail, gateName.value.trim(), gateStudentId.value.trim());
-      return;
-    }
-    document.body.classList.add('prep-gated');
-    if (!studio.closest('[hidden]')) gateName.focus({ preventScroll: true });
-  }
-
-  function updateDaysRemaining() {
-    var dueDate = new Date('2026-09-16T15:00:00-04:00');
-    var days = Math.ceil((dueDate.getTime() - Date.now()) / 86400000);
-    $('daysLeft').textContent = days > 0
-      ? days + (days === 1 ? ' day left' : ' days left')
-      : 'Deadline passed';
-  }
-
-  function collect() {
-    var savedName = valueOf(fields.name).trim() || gateName.value.trim();
-    var savedStudentId = valueOf(fields.studentId).trim() || gateStudentId.value.trim();
-    var savedEmail = valueOf(fields.email).trim() || gateEmail.value.trim();
-    return {
-      version: 2,
-      updatedAt: new Date().toISOString(),
-      name: savedName,
-      studentId: savedStudentId,
-      email: savedEmail,
-      title: fields.title.value,
-      essay: valueOf(fields.essay),
-      contentions: fields.contentions.value,
-      reasoning: fields.reasoning.value,
-      evidence: fields.evidence.value,
-      impacts: fields.impacts.value,
-      stance: document.querySelector('input[name="stance"]:checked').value,
-       route: route,
-       sources: sources
-    };
-  }
-
-  function renderStats() {
-    var essayText = textValueOf(fields.essay);
-    var words = wordCount(essayText);
-    var characters = essayText.replace(/\s/g, '').length;
-    var pages = words ? Math.max(1, Math.ceil(words / 500)) : 0;
-    $('wordCount').textContent = words.toLocaleString();
-    $('editorWordCount').textContent = words.toLocaleString();
-    $('pageCount').textContent = pages;
-    $('sourceCount').textContent = sources.length;
-    $('statSources').textContent = sources.length;
-    $('characterCount').textContent = characters.toLocaleString();
-    $('wordProgressBar').style.width = Math.min(100, (words / 2000) * 100) + '%';
-    ['contentions', 'reasoning', 'evidence', 'impacts'].forEach(function (key) {
-      var status = document.querySelector('[data-case-status="' + key + '"]');
-      var started = Boolean(fields[key].value.trim());
-      status.textContent = started ? 'Notes added' : 'Optional';
-      status.classList.toggle('done', started);
-    });
-  }
-
-  function renderSources() {
-    var list = $('sourceList');
-    list.innerHTML = '';
-    if (!sources.length) {
-      list.innerHTML = '<p class="studio-note">Add sources as you find them.</p>';
-      return;
-    }
-    sources.forEach(function (source, index) {
-      var row = document.createElement('div');
-      var number = document.createElement('span');
-      var label = document.createElement('span');
-      var remove = document.createElement('button');
-      row.className = 'source-item';
-      number.className = 'source-index';
-      number.textContent = String(index + 1).padStart(2, '0');
-      label.className = 'source-label';
-      label.textContent = source;
-      if (/^https?:\/\//i.test(source)) {
-        var link = document.createElement('a');
-        link.className = 'source-label';
-        link.href = source;
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-        link.textContent = source;
-        label = link;
+      var saved = JSON.parse(localStorage.getItem(localKey(work)) || "null");
+      if (saved && saved.stages) {
+        if (!work || !work.revision || saved.baseRevision === Number(work.revision)) return Object.assign({}, work, saved);
+        if (window.confirm("Unsaved local work has revision " + saved.baseRevision + ", while the server has revision " + work.revision + ". Restore the local copy? Choose Cancel to use the server copy.")) return Object.assign({}, work, saved);
       }
-      remove.className = 'remove-source';
-      remove.type = 'button';
-      remove.setAttribute('aria-label', 'Remove source ' + (index + 1));
-      remove.textContent = '×';
-      remove.addEventListener('click', function () {
-        sources.splice(index, 1);
-        renderSources();
-        renderStats();
-        markDirty();
-      });
-      row.append(number, label, remove);
-      list.appendChild(row);
-    });
+    } catch (_) {}
+    return work;
   }
-
-  function savedLabel(date) {
-    return 'Last saved ' + date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+  function writeLocal() {
+    if (!current) return;
+    try { localStorage.setItem(localKey(current), JSON.stringify({ title: current.title, stages: current.stages, baseRevision: Number(current.revision || 0), savedAt: Date.now() })); } catch (_) {}
   }
-
-  function save(options) {
-    var quiet = options && options.quiet;
-    clearTimeout(autosaveTimer);
+  function clearLocal(work) { try { localStorage.removeItem(localKey(work)); } catch (_) {} }
+  function renderCards() {
+    var container = $("workCards");
+    container.innerHTML = ["PRO", "CON"].map(function (side) {
+      var work = works.filter(function (item) { return item.side === side; })[0] || null;
+      var count = progress(work);
+      return '<button class="work-card ' + side.toLowerCase() + '" data-side="' + side + '" type="button"><div class="work-card-top"><div class="work-art"><img src="images/debate-courthouse-' + side.toLowerCase() + '.png" alt=""></div><span class="work-card-divider" aria-hidden="true"></span><div class="work-card-heading"><span class="eyebrow">' + side + ' · ' + (side === "PRO" ? "Support" : "Oppose") + '</span><h3>' + side + '</h3></div></div><div class="work-card-details"><p>' + (work ? status(work) : "Start a new side") + ' · ' + count + ' of 5 stages touched</p><div class="progress"><span style="width:' + (count / 5 * 100) + '%"></span></div><div class="card-meta"><span>' + (work && work.updatedAt ? "Updated recently" : "Ready when you are") + '</span><strong>Open side →</strong></div></div></button>';
+    }).join("");
+    Array.prototype.forEach.call(container.querySelectorAll("[data-side]"), function (button) { button.addEventListener("click", function () { openSide(button.dataset.side); }); });
+  }
+  async function loadWorks() {
+    showError("listError", "");
+    $("workCards").innerHTML = '<div class="loading">Loading your debate work…</div>';
     try {
-      var draft = collect();
-      localStorage.setItem(storageKey, JSON.stringify(draft));
-      var savedAt = new Date(draft.updatedAt);
-       state.textContent = 'Autosaved';
-      state.style.color = '';
-      time.textContent = savedLabel(savedAt);
-      updatePaperSaveState(quiet ? 'Saved automatically' : 'Draft saved',
-        'Last saved ' + savedAt.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }));
+      var response = await request("listStudentWorks");
+      works = (response.works || []).map(function (work) { return normalizeWork(work, work.side); });
+      renderCards();
     } catch (error) {
-      state.textContent = 'Local save unavailable';
-      state.style.color = '#f4a6a6';
-      time.textContent = 'Copy your work before leaving this page';
-      updatePaperSaveState('Local save unavailable', 'Copy your work before leaving');
-    }
-  }
-
-  function markDirty() {
-    state.textContent = 'Saving changes';
-    state.style.color = '#f2d16b';
-    updatePaperSaveState('Saving changes', 'Autosave in progress');
-    clearTimeout(autosaveTimer);
-    autosaveTimer = setTimeout(function () {
-      save({ quiet: true });
-    }, 900);
-  }
-
-  function restoreValue(data, key) {
-    if (typeof data[key] === 'string') setValue(fields[key], data[key]);
-  }
-
-  function load() {
-    try {
-      var raw = localStorage.getItem(storageKey);
-      if (!raw) return;
-      var data = JSON.parse(raw);
-      Object.keys(fields).forEach(function (key) {
-        restoreValue(data, key);
-      });
-      route = data.route === 'essay' ? 'essay' : 'guided';
-      sources = Array.isArray(data.sources) ? data.sources.filter(function (source) {
-        return typeof source === 'string';
-      }).slice(0, 20) : [];
-      var stance = document.querySelector('input[name="stance"][value="' + (data.stance || 'Pro') + '"]');
-      if (stance) stance.checked = true;
-      setRoute(route);
-      renderSources();
-      renderStats();
-       state.textContent = 'Autosaved';
-      state.style.color = '';
-      time.textContent = data.updatedAt ? savedLabel(new Date(data.updatedAt)) : 'Recovered from this device';
-      updatePaperSaveState('Draft recovered', data.updatedAt
-        ? 'Last saved ' + new Date(data.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-        : 'Recovered from this device');
-    } catch (error) {
-      state.textContent = 'Draft could not be recovered';
-      state.style.color = '#f4a6a6';
-      updatePaperSaveState('Draft could not be recovered', 'Start a new draft');
-    }
-  }
-
-  function setRoute(next) {
-    route = next === 'essay' ? 'essay' : 'guided';
-    document.querySelectorAll('.route-card').forEach(function (card) {
-      card.classList.toggle('active', card.dataset.route === route);
-      var input = card.querySelector('input');
-      input.checked = input.value === route;
-    });
-    $('caseSection').hidden = route === 'essay';
-    document.querySelectorAll('.guided-check').forEach(function (item) {
-      item.hidden = route === 'essay';
-    });
-    $('routeNote').querySelector('span').textContent = route === 'essay'
-      ? 'Essay Only is a complete route. Contentions, position reasoning, evidence notes, and impacts are not required.'
-      : 'Use as many coaching notes as you find helpful. You can still begin the essay at any time.';
-  }
-
-  function syncStanceCards() {
-    document.querySelectorAll('.choice').forEach(function (card) {
-      card.classList.toggle('is-selected', card.querySelector('input').checked);
-    });
-  }
-
-  document.querySelectorAll('input[name="route"]').forEach(function (input) {
-    input.addEventListener('change', function () {
-      setRoute(input.value);
-      markDirty();
-      if (route === 'essay') {
-        fields.essay.focus({ preventScroll: true });
-        fields.essay.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      if (/session|token|auth|expired|recognized/i.test(error.message)) {
+        token = ""; sessionStorage.removeItem("cooper-debate-session"); $("gate").hidden = false; $("appView").hidden = true; $("identity").hidden = true;
+        showError("authError", "Your session expired. Sign in with your FCPS Google account again.");
       }
-    });
-  });
-
-  Object.keys(fields).forEach(function (key) {
-    fields[key].addEventListener('input', function () {
-      if (typeof fields[key].value !== 'string' && !isRichTextField(fields[key])) return;
-      renderStats();
-      markDirty();
-      if (key === 'email') gateEmail.value = valueOf(fields.email);
-      if (key === 'email' && validEmail(valueOf(fields.email))) {
-        try {
-          localStorage.setItem(emailKey, valueOf(fields.email).trim());
-        } catch (error) {
-          // The draft save path reports local storage failures when it saves.
-        }
-      }
-    });
-  });
-
-  [gateName, gateEmail, gateStudentId].forEach(function (input) {
-    input.addEventListener('input', function () {
-      markDirty();
-      if (input === gateEmail && validEmail(input.value)) {
-        try {
-          localStorage.setItem(emailKey, input.value.trim());
-        } catch (error) {
-          // The draft save path reports local storage failures when it saves.
-        }
-      }
-    });
-  });
-
-  function continueFromGate(event) {
-    event.preventDefault();
-    var name = gateName.value.trim();
-    var email = gateEmail.value.trim();
-    var studentId = gateStudentId.value.trim();
-    if (!name || !validEmail(email) || !studentId) {
-      gateError.hidden = false;
-      if (!name) gateName.focus();
-      else if (!validEmail(email)) gateEmail.focus();
-      else gateStudentId.focus();
-      return;
+      $("workCards").innerHTML = "";
+      showError("listError", error.message);
     }
-    gateError.hidden = true;
-    openStudio(email, name, studentId);
-    renderStats();
-    syncStanceCards();
-    markDirty();
   }
-
-  gateForm.addEventListener('submit', continueFromGate);
-  $('prepGateOpen').addEventListener('click', continueFromGate);
-
-  document.querySelectorAll('input[name="stance"]').forEach(function (input) {
-    input.addEventListener('change', function () {
-      syncStanceCards();
-      markDirty();
-    });
-  });
-
-  document.querySelectorAll('[data-editor-command]').forEach(function (button) {
-    button.addEventListener('mousedown', function (event) {
-      event.preventDefault();
-    });
-    button.addEventListener('click', function () {
-      fields.essay.focus();
-      document.execCommand(button.dataset.editorCommand, false, null);
-      fields.essay.dispatchEvent(new Event('input', { bubbles: true }));
-    });
-  });
-
-  fields.essay.addEventListener('paste', function (event) {
-    event.preventDefault();
-    var plainText = event.clipboardData.getData('text/plain');
-    document.execCommand('insertText', false, plainText);
-  });
-
-  $('addSource').addEventListener('click', function () {
-    var value = $('sourceInput').value.trim();
-    if (!value) return;
-    $('sourceInput').value = '';
-    sources.push(value.slice(0, 500));
-    renderSources();
-    renderStats();
-    markDirty();
-  });
-
-  $('sourceInput').addEventListener('keydown', function (event) {
-    if (event.key === 'Enter') {
-      event.preventDefault();
-      $('addSource').click();
-    }
-  });
-
-  $('saveBtn').addEventListener('click', function () {
-    save({ quiet: false });
-  });
-
-  $('clearDraftBtn').addEventListener('click', function () {
-    if (!window.confirm('Clear the saved Debate Prep draft from this device?')) return;
-    clearTimeout(autosaveTimer);
-    state.textContent = 'Draft cleared';
-    try {
-      localStorage.removeItem(storageKey);
-      localStorage.removeItem(emailKey);
-      window.location.reload();
-    } catch (error) {
-      state.textContent = 'Draft could not be cleared';
-      state.style.color = '#f4a6a6';
-      time.textContent = 'Browser storage is unavailable';
-      updatePaperSaveState('Draft could not be cleared', 'Browser storage is unavailable');
-    }
-  });
-
-  $('changeRouteBtn').addEventListener('click', function () {
-    gate.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    gateName.focus({ preventScroll: true });
-  });
-
-  function openPreview() {
-    var essayWords = wordCount(textValueOf(fields.essay));
-    $('previewHeading').textContent = fields.title.value || 'Untitled position paper';
-    $('previewMeta').textContent = (valueOf(fields.name) || 'Unnamed student') + ' · ' +
-      document.querySelector('input[name="stance"]:checked').value + ' · ' +
-      essayWords.toLocaleString() + (essayWords === 1 ? ' word' : ' words') + ' · ' +
-      sources.length + (sources.length === 1 ? ' source' : ' sources');
-    if (textValueOf(fields.essay).trim()) {
-      $('previewCopy').innerHTML = valueOf(fields.essay);
+  function stageFor(key) { return STAGES.filter(function (stage) { return stage[0] === key; })[0]; }
+  function renderStage() {
+    if (!current) return;
+    var stage = stageFor(currentStage), data = current.stages[currentStage] || { content: "" };
+    var readOnly = !isEditable(current);
+    var feedback = current.feedback && typeof current.feedback === "object" ? current.feedback : null;
+    var feedbackNote = feedback && (feedback.note || feedback.nextStep || feedback.status)
+      ? '<div class="notice"><strong>Coach review · ' + escape(feedback.status || "Feedback") + '</strong>' +
+        (feedback.note ? '<br><span>' + escape(feedback.note) + '</span>' : '') +
+        (feedback.nextStep ? '<br><b>Next step:</b> ' + escape(feedback.nextStep) : '') + '</div>' : "";
+    $("studioTitle").textContent = stage[1];
+    $("stageTabs").innerHTML = STAGES.map(function (item) { var done = current.stages[item[0]] && current.stages[item[0]].content; var duration = item[2].replace(" speaking time", " of speaking time"); return '<button class="stage-tab stage-' + item[0].replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); }) + ' ' + (item[0] === currentStage ? "active" : "") + '" data-stage="' + item[0] + '" type="button"><strong>' + item[1] + ' · ' + duration + '</strong><small>' + (done ? "Draft started" : "Not started") + '</small></button>'; }).join("");
+    Array.prototype.forEach.call($("stageTabs").querySelectorAll("[data-stage]"), function (button) { button.addEventListener("click", function () { capture(); currentStage = button.dataset.stage; renderStage(); }); });
+    if (currentStage === "crossfire") {
+      var pairs = [];
+      try { pairs = JSON.parse(data.content || "[]"); } catch (_) {}
+      if (!Array.isArray(pairs) || !pairs.length) pairs = [{ q: "", a: "" }];
+      $("stageContent").innerHTML = feedbackNote + (readOnly ? '<div class="notice">Submitted for review. This work is read-only until a coach requests revisions.</div>' : '') + '<h3>Crossfire practice</h3><p class="prompt">' + stage[3] + '</p><div class="crossfire">' + pairs.map(function (pair, index) { return '<div class="cross-row"><label>Question ' + (index + 1) + '<textarea data-cf-q' + (readOnly ? ' disabled' : '') + '>' + escape(pair.q) + '</textarea></label><label>Answer ' + (index + 1) + '<textarea data-cf-a' + (readOnly ? ' disabled' : '') + '>' + escape(pair.a) + '</textarea></label></div>'; }).join("") + (readOnly ? '' : '<button class="btn" id="addQuestion" type="button">Add question</button>') + '</div>';
+      if ($("addQuestion")) $("addQuestion").addEventListener("click", function () { capture(); current.stages.crossfire.content = JSON.stringify((JSON.parse(current.stages.crossfire.content || "[]") || []).concat([{ q: "", a: "" }])); renderStage(); scheduleSave(); });
+      Array.prototype.forEach.call($("stageContent").querySelectorAll("[data-cf-q],[data-cf-a]"), function (field) { field.addEventListener("input", function () { capture(); updateStats(); scheduleSave(); }); });
     } else {
-      $('previewCopy').textContent = 'Your essay preview will appear here once you begin writing.';
+      $("stageContent").innerHTML = feedbackNote + (readOnly ? '<div class="notice">Submitted for review. This speech is read-only until a coach requests revisions.</div>' : '') + '<h3>' + stage[1] + '</h3><p class="prompt">' + stage[3] + '</p><div class="toolbar" role="toolbar" aria-label="Speech formatting"><button type="button" data-command="bold" title="Bold" aria-label="Bold"' + (readOnly ? " disabled" : "") + '><strong>B</strong></button><button type="button" data-command="italic" title="Italic" aria-label="Italic"' + (readOnly ? " disabled" : "") + '><em>I</em></button><button type="button" data-command="underline" title="Underline" aria-label="Underline"' + (readOnly ? " disabled" : "") + '><u>U</u></button><span class="toolbar-divider" aria-hidden="true"></span><button type="button" data-command="insertUnorderedList" title="Bullet list" aria-label="Bullet list"' + (readOnly ? " disabled" : "") + '><span aria-hidden="true">• List</span></button><button type="button" data-command="insertOrderedList" title="Numbered list" aria-label="Numbered list"' + (readOnly ? " disabled" : "") + '><span aria-hidden="true">1. List</span></button><span class="toolbar-divider" aria-hidden="true"></span><button type="button" data-command="undo" title="Undo" aria-label="Undo"' + (readOnly ? " disabled" : "") + '>↶</button><button type="button" data-command="redo" title="Redo" aria-label="Redo"' + (readOnly ? " disabled" : "") + '>↷</button><button type="button" data-command="removeFormat" title="Clear formatting" aria-label="Clear formatting"' + (readOnly ? " disabled" : "") + '>Clear</button></div><div class="editor" id="editor" contenteditable="' + (!readOnly) + '" role="textbox" aria-label="' + stage[1] + ' speech editor" data-placeholder="Start writing your ' + stage[1].toLowerCase() + '…">' + sanitizeRichHtml(data.content) + '</div>';
+      Array.prototype.forEach.call($("stageContent").querySelectorAll("[data-command]"), function (button) { button.addEventListener("mousedown", function (event) { event.preventDefault(); }); button.addEventListener("click", function () { $("editor").focus(); document.execCommand(button.dataset.command, false, null); capture(); updateStats(); scheduleSave(); }); });
+      $("editor").addEventListener("input", function () { capture(); updateStats(); scheduleSave(); });
     }
-    previewReturnFocus = document.activeElement;
-    $('previewPanel').classList.add('open');
-    document.body.style.overflow = 'hidden';
-    $('closePreview').focus();
+    $("submitWork").disabled = readOnly;
+    $("stageContent").classList.remove("stage-changing");
+    void $("stageContent").offsetWidth;
+    $("stageContent").classList.add("stage-changing");
+    updateStats();
   }
-
-  $('previewBtn').addEventListener('click', openPreview);
-
-  function closePreview(options) {
-    var restoreFocus = !options || options.restoreFocus !== false;
-    $('previewPanel').classList.remove('open');
-    document.body.style.overflow = '';
-    if (restoreFocus) {
-      var focusTarget = previewReturnFocus && document.contains(previewReturnFocus)
-        ? previewReturnFocus
-        : $('previewBtn');
-      focusTarget.focus({ preventScroll: true });
-    } else if ($('previewPanel').contains(document.activeElement)) {
-      document.activeElement.blur();
-    }
-    previewReturnFocus = null;
+  function capture() {
+    if (!current) return;
+    if (currentStage === "crossfire") {
+      var pairs = Array.prototype.map.call(document.querySelectorAll("[data-cf-q]"), function (q, index) { var answers = document.querySelectorAll("[data-cf-a]"); return { q: q.value, a: answers[index] ? answers[index].value : "" }; });
+      current.stages.crossfire.content = JSON.stringify(pairs);
+    } else if ($("editor")) current.stages[currentStage].content = $("editor").innerHTML;
+    writeLocal();
   }
-
-  $('closePreview').addEventListener('click', closePreview);
-  $('previewPanel').addEventListener('click', function (event) {
-    if (event.target === $('previewPanel')) closePreview();
-  });
-  document.addEventListener('keydown', function (event) {
-    if (!$('previewPanel').classList.contains('open')) return;
-    if (event.key === 'Escape') {
-      closePreview();
-    } else if (event.key === 'Tab') {
-      event.preventDefault();
-      $('closePreview').focus();
+  function updateStats() {
+    if (currentStage === "crossfire") {
+      var pairs = []; try { pairs = JSON.parse((current && current.stages.crossfire.content) || "[]"); } catch (_) {}
+      $("wordLabel").textContent = "Prepared pairs"; $("charLabel").textContent = "Speech metrics"; $("paceMetric").hidden = true;
+      $("wordStat").textContent = pairs.filter(function (pair) { return pair.q || pair.a; }).length;
+      $("charStat").textContent = "Not used"; $("timeStat").textContent = "3:00 target"; return;
     }
-  });
-
-  document.addEventListener('applicationsectionbeforechange', function (event) {
-    if (event.detail && event.detail.from === 'debate-prep' && event.detail.to !== 'debate-prep') {
-      closePreview({ restoreFocus: false });
-    }
-  });
-
-  document.addEventListener('applicationsectionchange', function (event) {
-    if (
-      event.detail &&
-      event.detail.section === 'debate-prep' &&
-      studio.classList.contains('is-locked')
-    ) {
-      gateName.focus({ preventScroll: true });
-    }
-  });
-
-  function flushPendingDraft() {
-    if (state.textContent === 'Saving changes') save({ quiet: true });
+    $("wordLabel").textContent = "Words"; $("charLabel").textContent = "Characters"; $("paceMetric").hidden = false;
+    var text = textFromHtml((current && current.stages[currentStage] && current.stages[currentStage].content) || "");
+    var words = wordCount(text), chars = text.replace(/\s/g, "").length;
+    var targetMinutes = Number(stageFor(currentStage)[2].split(" ")[0]) || 0;
+    var currentMinutes = words / pace;
+    var currentLabel = Math.floor(currentMinutes) + ":" + String(Math.round(currentMinutes % 1 * 60)).padStart(2, "0");
+    var guidance = currentMinutes > targetMinutes ? " · Over target" : currentMinutes > targetMinutes * .8 ? " · On pace" : " · Under target";
+    $("wordStat").textContent = words.toLocaleString(); $("charStat").textContent = chars.toLocaleString(); $("timeStat").textContent = currentLabel + " / " + targetMinutes + ":00" + guidance;
   }
-
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'hidden') flushPendingDraft();
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    writeLocal();
+    setAutoSaveStatus("Saving…", "saving");
+    saveTimer = setTimeout(autoSaveDraft, 1200);
+  }
+  async function autoSaveDraft() {
+    if (!current || !isEditable(current)) return;
+    if (autoSaveInFlight) { autoSaveQueued = true; return; }
+    autoSaveInFlight = true;
+    autoSaveQueued = false;
+    $("submitWork").disabled = true;
+    capture();
+    var savingSide = current.side;
+    var expectedRevision = Number(current.revision || 0);
+    var snapshot = JSON.parse(JSON.stringify({ topicId: TOPIC, side: current.side, title: current.title || "", resolution: current.resolution || "", stages: current.stages }));
+    try {
+      var response = await request("saveStudentWork", { expectedRevision: expectedRevision, work: snapshot });
+      if (current && current.side === savingSide) {
+        current.revision = Number(response.work.revision || current.revision || 0);
+        current.updatedAt = response.work.updatedAt || new Date().toISOString();
+        works = works.filter(function (work) { return work.side !== current.side; }).concat([current]);
+        if (!autoSaveQueued) clearLocal(current);
+        setAutoSaveStatus("Saved last: " + savedTime(current.updatedAt), "");
+        showError("saveError", "");
+      }
+    } catch (error) {
+      setAutoSaveStatus("Draft not saved", "failed");
+      showError("saveError", error.message + " Your local unsaved work remains on this device.");
+    }
+    autoSaveInFlight = false;
+    $("submitWork").disabled = !current || !isEditable(current);
+    if (autoSaveQueued) { autoSaveQueued = false; autoSaveDraft(); }
+  }
+  async function save(submit) {
+    if (!current) return;
+    clearTimeout(saveTimer); capture(); showError("saveError", ""); $("submitWork").disabled = true;
+    try {
+      var response = await request(submit ? "submitStudentWork" : "saveStudentWork", { expectedRevision: Number(current.revision || 0), work: { topicId: TOPIC, side: current.side, title: current.title || "", resolution: current.resolution || "", stages: current.stages } });
+      current = normalizeWork(response.work, current.side); works = works.filter(function (w) { return w.side !== current.side; }).concat([current]); clearLocal(current); updateSessionFacts(); renderCards(); renderStage();
+    } catch (error) { showError("saveError", error.message + " Your local unsaved work remains on this device."); }
+    $("submitWork").disabled = false;
+  }
+  async function openSide(side) {
+    try {
+      var found = works.filter(function (work) { return work.side === side; })[0] || null;
+      if (!found) { var response = await request("getStudentWork", { side: side }); found = response.work; }
+       current = readLocal(normalizeWork(found, side)); currentStage = "constructive"; updateSessionFacts(); setAutoSaveStatus(current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Saved last: —", ""); $("studio").hidden = false; $("positionHeader").hidden = true; $("positionHeader").style.display = "none"; $("positionDashboard").hidden = true; $("positionDashboard").style.display = "none"; $("studio").scrollIntoView({ behavior: "smooth", block: "start" }); $("sideEyebrow").textContent = side + " · " + (side === "PRO" ? "Support the resolution" : "Oppose the resolution"); renderStage();
+    } catch (error) { showError("listError", error.message); }
+  }
+  $("googleSignIn").addEventListener("click", async function () {
+    showError("authError", "");
+    var button = $("googleSignIn"); button.disabled = true;
+    try {
+      await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.setCustomParameters({ prompt: "select_account" });
+      var signIn = await auth.signInWithPopup(provider);
+      var idToken = await signIn.user.getIdToken();
+      var response = await request("authenticate", { idToken: idToken, sessionToken: undefined });
+      token = response.sessionToken;
+      studentIdentity = response.student.id || token.split(".")[0].slice(0, 24);
+      sessionStorage.setItem("cooper-debate-session", token);
+      setStudentProfile({
+        displayName: response.student.displayName || signIn.user.displayName || "Student",
+        fcpsId: fcpsIdFromEmail(signIn.user.email)
+      });
+      $("gate").hidden = true; $("appView").hidden = false; $("identity").hidden = false;
+      updateSessionFacts();
+      await loadWorks();
+    } catch (error) {
+      token = ""; sessionStorage.removeItem("cooper-debate-session");
+      if (!/popup-closed-by-user|cancelled-popup-request/i.test(error.code || "")) showError("authError", error.message);
+      try { await auth.signOut(); } catch (_) {}
+    }
+    button.disabled = false;
   });
-  window.addEventListener('pagehide', flushPendingDraft);
-  window.addEventListener('beforeunload', flushPendingDraft);
-
-  initializePaperSaveHint();
-  load();
-  syncStanceCards();
-  renderStats();
-  updateDaysRemaining();
-  initializeGate();
-})();
+  $("refreshWorks").addEventListener("click", loadWorks);
+  $("backToSides").addEventListener("click", function () { clearTimeout(saveTimer); capture(); current = null; updateSessionFacts(); $("studio").hidden = true; $("positionHeader").hidden = false; $("positionHeader").style.display = ""; $("positionDashboard").hidden = false; $("positionDashboard").style.display = ""; renderCards(); });
+  $("submitWork").textContent = "Submit to coach for review";
+  $("submitWork").addEventListener("click", function () { if (window.confirm("Submit this side for coach review? It will be read-only unless a coach requests revisions.")) save(true); });
+  $("signOut").addEventListener("click", function () { sessionStorage.removeItem("cooper-debate-session"); sessionStorage.removeItem("cooper-debate-profile"); auth.signOut().finally(function () { window.location.reload(); }); });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-pace]"), function (button) { button.addEventListener("click", function () { pace = Number(button.dataset.pace); document.querySelectorAll("[data-pace]").forEach(function (b) { b.classList.toggle("selected", b === button); }); updateStats(); }); });
+  auth.onAuthStateChanged(function (user) {
+    if (!token || !user) return;
+    setStudentProfile({
+      displayName: studentProfile.displayName || user.displayName || "Student",
+      fcpsId: studentProfile.fcpsId || fcpsIdFromEmail(user.email)
+    });
+  });
+  if (token) { setStudentProfile(studentProfile); updateSessionFacts(); $("gate").hidden = true; $("appView").hidden = false; $("identity").hidden = false; loadWorks(); }
+}());

@@ -18,7 +18,6 @@
   const KICKOFF_EVENTS = [
     { id:"kickoff-info", title:"Debate Info Session", type:"meeting", start:"2026-09-10T09:35:00-04:00", end:"2026-09-10T10:25:00-04:00", allDay:false, location:"Lecture Hall" },
     { id:"kickoff-fair", title:"Activity Fair · A Session", type:"meeting", start:"2026-09-14T12:00:00Z", allDay:true, location:"" },
-    { id:"kickoff-application", title:"Debate Team Applications Due", type:"deadline", start:"2026-09-16T12:00:00Z", allDay:true, location:"" },
     { id:"kickoff-tryouts-1", title:"Debate Team Tryouts", type:"practice", start:"2026-09-22T14:30:00-04:00", end:"2026-09-22T16:30:00-04:00", allDay:false, location:"Cafeteria" },
     { id:"kickoff-tryouts-2", title:"Debate Team Tryouts", type:"practice", start:"2026-09-23T14:30:00-04:00", end:"2026-09-23T16:30:00-04:00", allDay:false, location:"Lecture Hall" },
     { id:"kickoff-parent-meeting", title:"Parent meeting", type:"meeting", start:"2026-09-29T19:30:00-04:00", allDay:false, location:"Google Meet", isVirtual:true },

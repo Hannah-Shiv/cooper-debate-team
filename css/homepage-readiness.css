@@ -321,6 +321,436 @@
   }
 }
 
+/* -------------------------------------------------------------------------
+   Tryout Week — editorial update
+   Scoped to the current season panel so the legacy homepage remains intact.
+   The palette follows the program mark: deep navy, signal gold, electric blue,
+   and one deliberate red alert for the closed-application message.
+   ------------------------------------------------------------------------- */
+#season-readiness {
+  --tryout-ink: #06142f;
+  --tryout-navy: #071a3d;
+  --tryout-navy-2: #0b2858;
+  --tryout-blue: #2d83ff;
+  --tryout-blue-soft: #8fc4ff;
+  --tryout-gold: #f2c94c;
+  --tryout-gold-light: #ffe394;
+  --tryout-red: #b30000;
+  --tryout-paper: #f4f0e6;
+  background:
+    linear-gradient(180deg, #071a3d 0%, #06142f 100%);
+}
+
+#season-readiness .section-wrap {
+  position: relative;
+}
+
+#season-readiness .homepage-readiness__panel {
+  padding: clamp(22px, 3.8vw, 38px);
+  border: 1px solid rgba(143, 196, 255, .42);
+  border-radius: 12px;
+  background: #071a3d;
+  box-shadow: 0 18px 42px rgba(1, 8, 24, .42), inset 0 1px 0 rgba(255, 255, 255, .09);
+}
+
+#season-readiness .tryout-current {
+  position: relative;
+  z-index: 1;
+}
+
+#season-readiness .tryout-intro {
+  position: relative;
+  min-height: clamp(145px, 15vw, 180px);
+  overflow: hidden;
+}
+
+#season-readiness .tryout-intro__copy {
+  position: relative;
+  z-index: 2;
+  width: min(78%, 790px);
+  padding-top: 4px;
+}
+
+#season-readiness .tryout-intro__art {
+  position: absolute;
+  top: 50%;
+  right: clamp(-26px, -1.5vw, -10px);
+  z-index: 1;
+  width: clamp(150px, 19.5vw, 260px);
+  height: auto;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, .32));
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+#season-readiness .homepage-readiness__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: var(--tryout-gold-light);
+  font-size: .68rem;
+  letter-spacing: .18em;
+}
+
+#season-readiness .homepage-readiness__eyebrow::after {
+  width: 58px;
+  height: 2px;
+  background: var(--tryout-gold);
+  content: "";
+}
+
+#season-readiness .homepage-readiness__title {
+  max-width: 790px;
+  margin-bottom: 8px;
+  color: var(--tryout-paper);
+  font-size: clamp(2.45rem, 6vw, 4.8rem);
+  letter-spacing: -.035em;
+  line-height: .9;
+}
+
+#season-readiness .homepage-readiness__title::first-letter {
+  color: var(--tryout-paper);
+}
+
+#season-readiness .homepage-readiness__title span {
+  color: var(--tryout-gold);
+}
+
+#season-readiness .homepage-readiness__lead {
+  max-width: 720px;
+  color: rgba(244, 240, 230, .78);
+  font-size: clamp(.88rem, 1.4vw, 1rem);
+  line-height: 1.55;
+}
+
+#season-readiness .tryout-facts {
+  position: relative;
+  z-index: 1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 26px 0 14px;
+}
+
+#season-readiness .tryout-facts > div {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  position: relative;
+  min-height: 96px;
+  padding: 13px 14px 13px 10px;
+  border: 1px solid rgba(45, 131, 255, .62);
+  border-top: 2px solid var(--tryout-blue);
+  border-radius: 7px;
+  background: rgba(5, 18, 51, .82);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05);
+  transition: transform .18s ease, border-color .18s ease, background .18s ease;
+}
+
+#season-readiness .tryout-fact-icon {
+  width: 52px;
+  height: 52px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .34));
+}
+
+#season-readiness .tryout-facts > div:first-child {
+  border-color: rgba(255, 255, 255, .95);
+  background: linear-gradient(145deg, rgba(179, 0, 0, .92), rgba(91, 0, 12, .92));
+}
+
+#season-readiness .tryout-facts > div:nth-child(2) {
+  border-color: rgba(242, 201, 76, .68);
+  border-top-color: var(--tryout-gold);
+}
+
+#season-readiness .tryout-facts > div:hover,
+#season-readiness .tryout-facts > div:focus-within {
+  transform: translateY(-2px);
+  border-color: var(--tryout-blue-soft);
+  background-color: rgba(12, 43, 93, .94);
+}
+
+#season-readiness .tryout-facts > div:first-child:hover,
+#season-readiness .tryout-facts > div:first-child:focus-within {
+  border-color: #fff;
+  background: linear-gradient(145deg, rgba(179, 0, 0, .98), rgba(112, 0, 13, .96));
+}
+
+#season-readiness .tryout-facts strong {
+  color: var(--tryout-paper);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: clamp(.88rem, 1.45vw, 1.04rem);
+  font-weight: 700;
+  line-height: 1.18;
+}
+
+#season-readiness .tryout-facts span {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, .9);
+  font-size: .792rem;
+  line-height: 1.35;
+}
+
+#season-readiness .tryout-grid {
+  position: relative;
+  z-index: 1;
+  gap: 12px;
+}
+
+#season-readiness .tryout-grid > div {
+  min-height: 208px;
+  padding: 20px;
+  border: 1px solid rgba(45, 131, 255, .48);
+  border-radius: 9px;
+  background: rgba(5, 18, 51, .7);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045);
+  transition: border-color .18s ease, background .18s ease;
+}
+
+#season-readiness .tryout-grid > div:first-child {
+  border-top: 2px solid var(--tryout-blue);
+}
+
+#season-readiness .tryout-grid > div:last-child {
+  border-top: 2px solid var(--tryout-gold);
+}
+
+#season-readiness .tryout-grid > div:hover,
+#season-readiness .tryout-grid > div:focus-within {
+  border-color: rgba(143, 196, 255, .82);
+  background: rgba(8, 31, 70, .9);
+}
+
+#season-readiness .tryout-grid .homepage-readiness__card-kicker {
+  margin-bottom: 8px;
+  color: var(--tryout-gold-light);
+  font-size: .66rem;
+  letter-spacing: .16em;
+}
+
+#season-readiness .tryout-grid > div:last-child .homepage-readiness__card-kicker {
+  color: var(--tryout-blue-soft);
+}
+
+#season-readiness .tryout-grid h3 {
+  margin-bottom: 15px;
+  color: var(--tryout-paper);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: .98;
+}
+
+#season-readiness .tryout-grid .homepage-readiness__bullet-list {
+  position: relative;
+  gap: 16px;
+}
+
+#season-readiness .tryout-grid .homepage-readiness__bullet-list li {
+  position: relative;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 16px;
+  min-height: 58px;
+  align-items: center;
+  color: rgba(244, 240, 230, .74);
+}
+
+#season-readiness .tryout-grid .homepage-readiness__bullet-list li > span:first-child {
+  display: grid;
+  position: relative;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #d21f36;
+  box-shadow: none;
+  color: #fff;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+#season-readiness .tryout-grid .homepage-readiness__bullet-list li:nth-child(2) > span:first-child {
+  background: #ffd04a;
+  box-shadow: none;
+  color: #102247;
+}
+
+#season-readiness .tryout-grid .homepage-readiness__bullet-list li:nth-child(3) > span:first-child {
+  background: #3b8fff;
+  box-shadow: none;
+  color: #071a3d;
+}
+
+#season-readiness .tryout-step-copy {
+  display: grid;
+  gap: 4px;
+}
+
+#season-readiness .tryout-step-copy strong {
+  width: fit-content;
+  color: #ff314a;
+  font-family: "Josefin Sans", sans-serif;
+  font-size: 1rem;
+  line-height: 1.25;
+  text-decoration: none;
+}
+
+#season-readiness .homepage-readiness__bullet-list li:nth-child(2) .tryout-step-copy strong {
+  color: #ffd04a;
+}
+
+#season-readiness .homepage-readiness__bullet-list li:nth-child(3) .tryout-step-copy strong {
+  color: #4b9bff;
+}
+
+#season-readiness .tryout-step-copy small {
+  color: rgba(255, 255, 255, .88);
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+#season-readiness .tryout-feedback-note,
+#season-readiness .tryout-research-note {
+  margin: -4px 0 16px;
+  color: rgba(255, 255, 255, .78);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+#season-readiness .tryout-research-note {
+  margin: 12px 0 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--tryout-gold);
+  color: rgba(255, 255, 255, .86);
+}
+
+#season-readiness .tryout-grid .homepage-readiness__detail-copy {
+  color: rgba(244, 240, 230, .7);
+}
+
+#season-readiness .tryout-links {
+  gap: 7px;
+  margin-top: 16px;
+}
+
+#season-readiness .tryout-links a {
+  display: grid;
+  grid-template-columns: 31px minmax(0, 1fr) auto;
+  gap: 10px;
+  min-height: 39px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 1px solid rgba(242, 201, 76, .42);
+  border-radius: 7px;
+  background: linear-gradient(100deg, rgba(47, 55, 68, .96), rgba(36, 43, 56, .96));
+  color: var(--tryout-paper);
+  font-family: "Josefin Sans", sans-serif;
+  font-size: .78rem;
+  letter-spacing: .025em;
+  transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+}
+
+#season-readiness .tryout-link-icon {
+  width: 27px;
+  height: 27px;
+  fill: none;
+  stroke: var(--tryout-gold-light);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#season-readiness .tryout-link-arrow {
+  color: #fff;
+  font-size: 1.15rem;
+  transition: transform .18s ease;
+}
+
+#season-readiness .tryout-links a:hover,
+#season-readiness .tryout-links a:focus-visible {
+  border-color: var(--tryout-gold);
+  background: linear-gradient(100deg, rgba(59, 68, 83, .98), rgba(43, 51, 66, .98));
+  color: #fff;
+  outline: 2px solid rgba(242, 201, 76, .18);
+  outline-offset: 2px;
+  transform: translateX(2px);
+}
+
+#season-readiness .tryout-links a:hover .tryout-link-arrow,
+#season-readiness .tryout-links a:focus-visible .tryout-link-arrow {
+  transform: translateX(3px);
+}
+
+@media (max-width: 760px) {
+  #season-readiness .homepage-readiness__panel {
+    padding: 24px 18px;
+  }
+
+  #season-readiness .tryout-intro {
+    min-height: 175px;
+  }
+
+  #season-readiness .tryout-intro__copy {
+    width: 100%;
+  }
+
+  #season-readiness .tryout-intro__art {
+    top: 4px;
+    right: -27px;
+    width: 115px;
+    opacity: .36;
+    transform: none;
+  }
+
+  #season-readiness .homepage-readiness__title,
+  #season-readiness .homepage-readiness__lead {
+    position: relative;
+    z-index: 2;
+  }
+
+  #season-readiness .tryout-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  #season-readiness .tryout-facts,
+  #season-readiness .tryout-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #season-readiness .tryout-facts > div {
+    min-height: auto;
+  }
+
+  #season-readiness .tryout-grid > div {
+    min-height: 0;
+    padding: 18px 16px;
+  }
+
+  #season-readiness .tryout-intro {
+    min-height: 190px;
+  }
+
+  #season-readiness .tryout-intro__art {
+    top: 34px;
+    right: -24px;
+    width: 90px;
+    opacity: .3;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #season-readiness .tryout-facts > div,
+  #season-readiness .tryout-grid > div,
+  #season-readiness .tryout-links a,
+  #season-readiness .tryout-links a span {
+    transition: none;
+  }
+}
+
 .homepage-readiness__card h3 {
   margin: 0 0 10px;
   color: #fff;

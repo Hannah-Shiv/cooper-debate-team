@@ -63,6 +63,10 @@ function isFullAdminRole(role) {
   return role === "coach" || role === "website-admin";
 }
 
+function canReviewDebateWorkRole(role) {
+  return role === "coach" || role === "website-admin";
+}
+
 function canManageMemberContentRole(role) {
   return isFullAdminRole(role) || role === "captain";
 }
