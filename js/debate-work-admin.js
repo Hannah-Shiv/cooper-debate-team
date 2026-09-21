@@ -30,6 +30,7 @@
   let works = [];
   let selected = null;
   let selectedSide = "PRO";
+  let selectedStage = "constructive";
   let authReady = false;
 
   function show(id) {
@@ -60,6 +61,9 @@
     if (!work) return "not-started";
     if (work.submittedAt || work.status === "submitted") return "submitted";
     return work.status || "started";
+  }
+  function isInProgressStatus(status) {
+    return status !== "submitted" && status !== "not-started";
   }
   function hasStageContent(stage) {
     if (stage == null) return false;
@@ -105,47 +109,120 @@
     if (side !== "all" && !workFor(item, side)) return false;
     if (status !== "all") {
       const statuses = [workStatus(workFor(item, "PRO")), workStatus(workFor(item, "CON"))];
-      if (!statuses.includes(status)) return false;
+      if (status === "started" ? !statuses.some(isInProgressStatus) : !statuses.includes(status)) return false;
     }
     return true;
   }
+  function studentProgress(item) {
+    return progress(workFor(item, "PRO")) + progress(workFor(item, "CON"));
+  }
+  function activityTime(item) {
+    const value = item.updatedAt;
+    if (typeof value?.toMillis === "function") return value.toMillis();
+    return Number(value) || Date.parse(value || "") || 0;
+  }
+  function sortedList(list) {
+    const sort = $("sort").value;
+    return [...list].sort((a, b) => {
+      if (sort === "activity") return activityTime(b) - activityTime(a) || studentName(a).localeCompare(studentName(b));
+      if (sort === "progress") return studentProgress(b) - studentProgress(a) || studentName(a).localeCompare(studentName(b));
+      return studentName(a).localeCompare(studentName(b));
+    });
+  }
+  function renderStats() {
+    let inProgress = 0;
+    let submitted = 0;
+    let notStarted = 0;
+    works.forEach(item => {
+      const statuses = ["PRO", "CON"].map(side => workStatus(workFor(item, side)));
+      if (statuses.includes("submitted")) submitted += 1;
+      else if (statuses.some(isInProgressStatus)) inProgress += 1;
+      else notStarted += 1;
+    });
+    $("stat-eligible").textContent = works.length;
+    $("stat-progress").textContent = inProgress;
+    $("stat-submitted").textContent = submitted;
+    $("stat-not-started").textContent = notStarted;
+  }
   function renderList() {
-    const list = works.filter(matches);
-    $("student-count").textContent = `${list.length} of ${works.length}`;
+    const list = sortedList(works.filter(matches));
+    $("student-count").textContent = `${list.length} total`;
+    const selectedKey = selected && String(selected.id || selected.studentKey || selected.fcpsId || "");
+    const selectedIndex = list.findIndex(item => String(item.id || item.studentKey || item.fcpsId || "") === selectedKey);
+    $("student-first").disabled = selectedIndex <= 0;
+    $("student-previous").disabled = selectedIndex <= 0;
+    $("student-next").disabled = selectedIndex < 0 || selectedIndex >= list.length - 1;
+    $("student-last").disabled = selectedIndex < 0 || selectedIndex >= list.length - 1;
     $("student-list").innerHTML = list.length ? list.map(item => {
       const pro = workFor(item, "PRO"), con = workFor(item, "CON");
       const id = item.id || item.studentKey || item.fcpsId || "";
       const pill = (side, work) => `<span class="pill ${work ? side.toLowerCase() : "none"}">${side} ${work ? `${progress(work)}/5 · ${escapeHtml(workStatus(work))}` : "not started"}</span>`;
-      return `<button class="student-row ${selected?.id === id ? "active" : ""}" type="button" data-id="${escapeHtml(id)}"><div class="student-name">${escapeHtml(studentName(item))}</div><div class="student-meta">${escapeHtml(item.fcpsId || item.studentId || "FCPS ID hidden")}</div><div class="side-pills">${pill("PRO", pro)}${pill("CON", con)}</div></button>`;
+      const isActive = selectedKey === String(id);
+      return `<button class="student-row ${isActive ? "active" : ""}" type="button" data-id="${escapeHtml(id)}"><div class="student-name">${escapeHtml(studentName(item))}</div><div class="student-meta">${escapeHtml(item.fcpsId || item.studentId || "FCPS ID hidden")}</div><div class="side-pills">${pill("PRO", pro)}${pill("CON", con)}</div></button>`;
     }).join("") : '<div class="empty">No students match these filters.</div>';
-    document.querySelectorAll(".student-row").forEach(row => row.addEventListener("click", () => {
-      selected = works.find(item => String(item.id || item.studentKey || item.fcpsId || "") === row.dataset.id) || null;
-      renderList();
-      renderDetail();
-      if (selected) {
-        pageMessage("Loading the selected student's saved stages…");
-        Promise.all(["PRO", "CON"].map(side => openWork(side))).finally(() => pageMessage(""));
-      }
-    }));
+    document.querySelectorAll(".student-row").forEach(row => row.addEventListener("click", () => selectStudent(
+      works.find(item => String(item.id || item.studentKey || item.fcpsId || "") === row.dataset.id) || null
+    )));
+  }
+  function selectStudent(item) {
+    selected = item;
+    selectedSide = "PRO";
+    selectedStage = "constructive";
+    renderList();
+    renderDetail();
+    if (!selected) return;
+    pageMessage("Loading the selected student's saved stages…");
+    Promise.all(["PRO", "CON"].map(side => openWork(side))).finally(() => pageMessage(""));
+  }
+  function navigateStudents(position) {
+    const list = sortedList(works.filter(matches));
+    if (!list.length) return;
+    const key = selected && String(selected.id || selected.studentKey || selected.fcpsId || "");
+    const current = list.findIndex(item => String(item.id || item.studentKey || item.fcpsId || "") === key);
+    const index = position === "first" ? 0 : position === "last" ? list.length - 1 :
+      position === "previous" ? Math.max(0, current - 1) : Math.min(list.length - 1, current + 1);
+    selectStudent(list[index]);
+  }
+  function plainText(value) {
+    const container = document.createElement("div");
+    container.innerHTML = String(value || "").replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n");
+    return (container.textContent || "").replace(/\n{3,}/g, "\n\n").trim();
+  }
+  function readableContent(content, stageKey) {
+    if (!content) return '<p class="content-copy">No speech content recorded.</p>';
+    if (stageKey === "crossfire") {
+      try {
+        const pairs = JSON.parse(content);
+        if (Array.isArray(pairs) && pairs.length) return `<div class="crossfire-list">${pairs.map((pair, index) =>
+          `<div class="crossfire-pair"><div><b>Question ${index + 1}</b><span class="content-copy">${escapeHtml(pair?.q || "No question recorded.")}</span></div><div><b>Answer ${index + 1}</b><span class="content-copy">${escapeHtml(pair?.a || "No answer recorded.")}</span></div></div>`
+        ).join("")}</div>`;
+      } catch (_) {}
+    }
+    return `<p class="content-copy">${escapeHtml(plainText(content)) || "No speech content recorded."}</p>`;
   }
   function stageContent(stage) {
-    const values = stage && typeof stage === "object" ? stage : {};
-    const entries = Object.entries(values).filter(([key, value]) => key !== "updatedAt" && value !== "" && value != null);
-    if (!entries.length) return '<div class="content-block"><pre>No content recorded for this stage.</pre></div>';
-    return entries.map(([key, value]) => {
-      const text = typeof value === "string" ? value : JSON.stringify(value, null, 2);
-      return `<div class="content-block"><label>${escapeHtml(key.replace(/([A-Z])/g, " $1"))}</label><pre>${escapeHtml(text)}</pre></div>`;
-    }).join("");
+    const value = stage && typeof stage === "object" ? stage : { content: stage || "" };
+    const sources = Array.isArray(value.sources) ? value.sources.filter(Boolean) : [];
+    const sourceItem = source => {
+      const text = String(source);
+      const isWebLink = /^https?:\/\//i.test(text);
+      return isWebLink
+        ? `<li><a href="${escapeHtml(text)}" target="_blank" rel="noopener">${escapeHtml(text)}</a></li>`
+        : `<li class="content-copy">${escapeHtml(text)}</li>`;
+    };
+    return `<div class="content-block"><label>Speech content</label>${readableContent(value.content, selectedStage)}</div>
+      ${value.notes ? `<div class="content-block"><label>Student notes</label><p class="content-copy">${escapeHtml(plainText(value.notes))}</p></div>` : ""}
+      <div class="content-block"><label>Sources</label>${sources.length ? `<ul class="source-list">${sources.map(sourceItem).join("")}</ul>` : '<p class="content-copy">No sources recorded.</p>'}</div>`;
   }
   function workPanel(side, work) {
     const feedback = work?.feedback || {};
     const stageTiles = STAGES.map(([key, label]) => {
       const stage = work?.stages?.[key] || work?.[key];
       const complete = hasStageContent(stage);
-      return `<div class="stage ${complete ? "complete" : ""}"><div class="stage-name">${label}</div><span class="stage-status">${complete ? "Content saved" : "Not started"}</span></div>`;
+      return `<button type="button" class="stage ${complete ? "complete" : ""} ${selectedStage === key ? "active" : ""}" data-stage="${key}"><div class="stage-name">${label}</div><span class="stage-status">${complete ? "Content saved" : "Not started"}</span></button>`;
     }).join("");
-    const content = STAGES.map(([key, label]) => `<div class="content-block"><label>${label}</label>${stageContent(work?.stages?.[key] || work?.[key])}</div>`).join("");
-    return `<section class="work-card"><div class="side-heading"><h3 class="side-label ${side.toLowerCase()}">${side}</h3><span class="count">${progress(work)}/5 stages · ${escapeHtml(workStatus(work))}</span></div><div class="stage-grid">${stageTiles}</div><div class="stage-content">${content}</div><div class="work-card"><h3>Coach feedback</h3><div class="feedback-grid"><div><label for="feedback-${side.toLowerCase()}">Private feedback</label><textarea id="feedback-${side.toLowerCase()}" maxlength="4000" data-feedback-side="${side}" placeholder="Feedback for this side…">${escapeHtml(feedback.note || "")}</textarea></div><div><label for="next-${side.toLowerCase()}">Next coaching focus</label><textarea id="next-${side.toLowerCase()}" maxlength="2000" data-feedback-side="${side}" data-feedback-field="nextStep" placeholder="What should the student work on next?">${escapeHtml(feedback.nextStep || "")}</textarea><label for="status-${side.toLowerCase()}">Review status</label><select id="status-${side.toLowerCase()}" data-feedback-side="${side}" aria-label="${side} review status"><option value="pending" ${feedback.status === "pending" || !feedback.status ? "selected" : ""}>Pending review</option><option value="needs-revision" ${feedback.status === "needs-revision" ? "selected" : ""}>Needs revision</option><option value="reviewed" ${feedback.status === "reviewed" ? "selected" : ""}>Reviewed</option></select></div></div><div class="feedback-actions"><span class="feedback-status" id="feedback-status-${side.toLowerCase()}"></span><button class="btn save-feedback" type="button" data-side="${side}">Save ${side} feedback</button></div></div></section>`;
+    const stageLabel = STAGES.find(([key]) => key === selectedStage)?.[1] || "Stage";
+    return `<section class="work-card side-panel"><div class="side-heading"><h3 class="side-label ${side.toLowerCase()}">${side}</h3><span class="count">${progress(work)}/5 stages · ${escapeHtml(workStatus(work))}</span></div><div class="stage-grid">${stageTiles}</div><div class="stage-content"><h4 class="stage-pane-title">${stageLabel}</h4>${stageContent(work?.stages?.[selectedStage] || work?.[selectedStage])}</div><div class="work-card feedback-card"><h3>Coach feedback</h3><div class="feedback-grid"><div><label for="feedback-${side.toLowerCase()}">Private feedback</label><textarea id="feedback-${side.toLowerCase()}" maxlength="4000" data-feedback-side="${side}" placeholder="Feedback for this side…">${escapeHtml(feedback.note || "")}</textarea></div><div><label for="next-${side.toLowerCase()}">Next coaching focus</label><textarea id="next-${side.toLowerCase()}" maxlength="2000" data-feedback-side="${side}" data-feedback-field="nextStep" placeholder="What should the student work on next?">${escapeHtml(feedback.nextStep || "")}</textarea><label for="status-${side.toLowerCase()}">Review status</label><select id="status-${side.toLowerCase()}" data-feedback-side="${side}" aria-label="${side} review status"><option value="pending" ${feedback.status === "pending" || !feedback.status ? "selected" : ""}>Pending review</option><option value="needs-revision" ${feedback.status === "needs-revision" ? "selected" : ""}>Needs revision</option><option value="reviewed" ${feedback.status === "reviewed" ? "selected" : ""}>Reviewed</option></select></div></div><div class="feedback-actions"><span class="feedback-status" id="feedback-status-${side.toLowerCase()}"></span><button class="btn save-feedback" type="button" data-side="${side}">Save ${side} feedback</button></div></div></section>`;
   }
   function renderDetail() {
     if (!selected) {
@@ -153,7 +230,9 @@
       return;
     }
     const id = selected.id || selected.studentKey || selected.fcpsId;
-    $("detail").innerHTML = `<div class="detail-content"><div class="detail-heading"><div><div class="eyebrow">Current topic · ${TOPIC_ID}</div><h2>${escapeHtml(studentName(selected))}</h2><p>${escapeHtml(selected.fcpsId || selected.studentId || "Student ID protected")} · Last activity ${escapeHtml(dateLabel(selected.updatedAt))}</p></div></div>${workPanel("PRO", workFor(selected, "PRO"))}${workPanel("CON", workFor(selected, "CON"))}</div>`;
+    $("detail").innerHTML = `<div class="detail-content"><div class="detail-heading"><div class="detail-identity-line"><div class="eyebrow">Current topic · ${TOPIC_ID}</div><span class="detail-identity-divider" aria-hidden="true"></span><h2>${escapeHtml(studentName(selected))}</h2><span class="detail-identity-divider" aria-hidden="true"></span><p>${escapeHtml(selected.fcpsId || selected.studentId || "Student ID protected")} · Last activity ${escapeHtml(dateLabel(selected.updatedAt))}</p></div></div><div class="side-tabs" role="tablist" aria-label="Debate side"><button class="side-tab ${selectedSide === "PRO" ? "active" : ""}" data-side="PRO" type="button">PRO</button><button class="side-tab ${selectedSide === "CON" ? "active" : ""}" data-side="CON" type="button">CON</button></div>${workPanel(selectedSide, workFor(selected, selectedSide))}</div>`;
+    document.querySelectorAll(".side-tab").forEach(button => button.addEventListener("click", () => { selectedSide = button.dataset.side; selectedStage = "constructive"; renderDetail(); }));
+    document.querySelectorAll(".stage").forEach(button => button.addEventListener("click", () => { selectedStage = button.dataset.stage; renderDetail(); }));
     document.querySelectorAll(".save-feedback").forEach(button => button.addEventListener("click", () => saveFeedback(button.dataset.side)));
   }
   async function loadWorks() {
@@ -166,13 +245,12 @@
         const selectedKey = selected.id || selected.studentKey || selected.fcpsId;
         selected = works.find(item => String(item.id || item.studentKey || item.fcpsId || "") === String(selectedKey)) || null;
       }
-      renderList(); renderDetail(); pageMessage("");
+      renderStats(); renderList(); renderDetail(); pageMessage("");
     } catch (error) {
-      works = []; renderList(); pageMessage(error.message || "Student debate work could not be loaded.", "error");
+      works = []; renderStats(); renderList(); pageMessage(error.message || "Student debate work could not be loaded.", "error");
     }
   }
   async function openWork(side) {
-    selectedSide = side;
     const summary = workFor(selected, side);
     const workId = summary?.workId || summary?.id;
     if (!workId) return;
@@ -202,8 +280,12 @@
     button.disabled = false;
   }
   function bindControls() {
-    ["search", "side-filter", "status-filter"].forEach(id => $(id).addEventListener("input", renderList));
+    ["search", "side-filter", "status-filter", "sort"].forEach(id => $(id).addEventListener("input", renderList));
     $("refresh").addEventListener("click", loadWorks);
+    $("student-first").addEventListener("click", () => navigateStudents("first"));
+    $("student-previous").addEventListener("click", () => navigateStudents("previous"));
+    $("student-next").addEventListener("click", () => navigateStudents("next"));
+    $("student-last").addEventListener("click", () => navigateStudents("last"));
   }
   async function boot(user) {
     if (!user) { authReady = true; show("auth-required"); return; }

@@ -456,8 +456,11 @@
 }
 
 #season-readiness .tryout-facts > div:first-child {
-  border-color: rgba(255, 255, 255, .95);
+  border: 1px solid rgba(255, 160, 160, .72);
+  border-top: 3px solid var(--tryout-gold);
+  border-radius: 12px;
   background: linear-gradient(145deg, rgba(179, 0, 0, .92), rgba(91, 0, 12, .92));
+  box-shadow: 0 14px 28px rgba(37, 0, 0, .28), inset 0 1px rgba(255, 255, 255, .08);
 }
 
 #season-readiness .tryout-facts > div:nth-child(2) {
@@ -474,7 +477,8 @@
 
 #season-readiness .tryout-facts > div:first-child:hover,
 #season-readiness .tryout-facts > div:first-child:focus-within {
-  border-color: #fff;
+  border-color: rgba(255, 160, 160, .9);
+  border-top-color: var(--tryout-gold);
   background: linear-gradient(145deg, rgba(179, 0, 0, .98), rgba(112, 0, 13, .96));
 }
 

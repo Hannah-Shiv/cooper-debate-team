@@ -76,6 +76,27 @@
     #stageContent.stage-changing{animation:stageContentIn .22s ease-out}
     @keyframes stageContentIn{from{opacity:.35;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
     @media(max-width:800px){.studio-top{display:grid;grid-template-columns:1fr auto;gap:8px 14px;align-items:center}.studio-top::before,.studio-top::after{display:none}.studio-top h2{grid-column:1;grid-row:1}.studio-top .eyebrow{grid-column:1;grid-row:2;justify-self:start;text-align:left}.studio-top .studio-top-actions>.btn{grid-column:2;grid-row:1/3;align-self:center}#stageContent{min-height:0}.cross-row textarea{min-height:220px}}
+    .debate-app:has(.gate:not([hidden])){display:flex;justify-content:center;max-width:none;min-height:100vh;box-sizing:border-box;padding:112px 20px 28px;background:radial-gradient(ellipse 70% 42% at 50% 17%,rgba(88,145,202,.16),transparent 72%)}
+    .debate-app:has(.gate:not([hidden])) .mast{display:none}
+    .gate.practice-signin{width:min(100%,612px);margin:0;padding:30px 27px 28px;box-sizing:border-box;text-align:center;background:radial-gradient(ellipse 80% 27% at 50% 0%,rgba(91,143,198,.34),transparent 75%),linear-gradient(180deg,#294f76 0%,#1b3a5d 100%);border:2px solid rgba(132,190,232,.9);border-radius:20px;box-shadow:0 0 32px rgba(86,160,218,.2),0 24px 55px rgba(3,12,25,.34)}
+    .practice-signin-mark{display:block;width:220px;height:auto;margin:0 auto 14px;filter:drop-shadow(0 11px 18px rgba(0,0,0,.25))}
+    .practice-signin-title{margin:0;color:#fff;font-size:clamp(3.1rem,8vw,4.2rem)!important;line-height:.92;letter-spacing:-.025em}
+    .practice-signin-divider,.practice-card-divider{display:flex;align-items:center;justify-content:center;gap:10px}
+    .practice-signin-divider{width:154px;margin:17px auto}
+    .practice-signin-divider::before,.practice-signin-divider::after,.practice-card-divider::before,.practice-card-divider::after{content:"";flex:1;height:1px;background:#d39f2f}
+    .practice-signin-divider span,.practice-card-divider span{width:8px;height:8px;background:#e9b83d;transform:rotate(45deg)}
+    .practice-signin-sub{max-width:530px;margin:0 auto 18px!important;color:rgba(247,249,253,.92)!important;font-size:1rem;line-height:1.55}
+    .practice-login-card{width:min(100%,558px);margin:0 auto;padding:15px 17px 20px;box-sizing:border-box;background:rgba(5,23,47,.78);border:1px solid rgba(222,194,125,.72);border-radius:14px;box-shadow:0 12px 28px rgba(4,16,33,.22),inset 0 1px rgba(255,255,255,.05)}
+    .practice-google-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:64px;padding:0 16px;box-sizing:border-box;border:1px solid rgba(255,255,255,.85);border-radius:7px;background:#fff;color:#101a31;cursor:pointer;font:700 1.15rem Josefin Sans,sans-serif;box-shadow:0 4px 0 rgba(7,20,43,.3),0 8px 18px rgba(0,0,0,.16);transition:background .2s,border-color .2s,box-shadow .2s,transform .2s}
+    .practice-google-btn:hover:not(:disabled){background:linear-gradient(180deg,#fff 0%,#f1f4f8 100%);border-color:#f0c34f;box-shadow:0 7px 0 rgba(7,20,43,.28),0 13px 24px rgba(0,0,0,.22);transform:translateY(-2px)}
+    .practice-google-btn:focus-visible{outline:3px solid #f7cf55;outline-offset:3px}.practice-google-btn:disabled{cursor:wait;opacity:.68}
+    .practice-fcps-logo{position:relative;left:-12px;width:55px;height:55px;object-fit:contain;flex:0 0 auto}.practice-google-mark{width:38px;height:38px;flex:0 0 auto}.practice-google-label{margin-left:12px;white-space:nowrap}
+    .practice-card-divider{height:8px;margin:16px 25px 8px;gap:8px}.practice-card-divider::before,.practice-card-divider::after{background:rgba(218,174,57,.38)}.practice-card-divider span{width:7px;height:7px;background:#e3af31}
+    .practice-access-note{margin:15px 5px 0;color:rgba(231,239,255,.72);font:.78rem/1.55 Josefin Sans,sans-serif}.practice-access-note strong{color:#fff}
+    .practice-intro{width:min(100%,558px);margin:22px auto 0;padding:20px 23px 22px;box-sizing:border-box;text-align:left;background:linear-gradient(145deg,#970808,#650000);border:1px solid rgba(255,160,160,.72);border-top:3px solid var(--gold);border-radius:12px;box-shadow:0 14px 28px rgba(37,0,0,.28),inset 0 1px rgba(255,255,255,.08)}
+    .practice-intro .kicker{color:#f7d96f}.practice-intro h2{margin:7px 0 5px;color:#fff;font-size:clamp(2.45rem,6vw,3.45rem);line-height:.92}.practice-intro p{margin:0;color:rgba(255,244,244,.88);font:.83rem/1.55 Josefin Sans,sans-serif}
+    .practice-login-card .error{text-align:left}
+    @media(max-width:600px){.debate-app:has(.gate:not([hidden])){padding:91px 14px 18px}.gate.practice-signin{padding:25px 16px 22px;border-radius:16px}.practice-signin-mark{width:206px}.practice-signin-title{font-size:clamp(2.8rem,13vw,4rem)!important}.practice-login-card{padding:14px 16px 19px}.practice-google-btn{gap:4px;padding:6px;font-size:1.05rem}.practice-fcps-logo{left:-2px;width:49px;height:49px}.practice-google-mark{width:34px;height:34px}.practice-google-label{flex:1;margin-left:8px;text-align:left;white-space:normal;line-height:1.2}.practice-intro{padding:18px 19px 20px}.practice-intro h2{font-size:2.55rem}}
   </style>
 </head>
 <body class="studio-body">
@@ -96,9 +117,26 @@
       <div class="mast-copy"><div class="kicker">Cooper Debate · Practice Studio</div><h1>Make the case.</h1><p>Build a clear, timed speech for the 2026 data-centers resolution. Your work stays private until you submit it for review.</p></div>
       <div class="identity" id="identity" hidden><div class="identity-session"><div class="mast-status"><span class="session-light" aria-label="Signed in"></span><div class="session-facts"><span class="session-fact"><b>Name:</b><strong id="studentName">Student</strong></span><span class="session-fact"><b>FCPS ID:</b><strong id="studentFcpsId">—</strong></span><span class="session-fact"><b>Position:</b><strong id="studentSide">Not selected</strong></span><span class="session-fact"><b>Mode:</b><strong id="workMode">Draft</strong></span></div></div><span class="autosave-status" id="autosaveStatus" role="status" aria-live="polite">Saved last: —</span></div><button class="btn sign-out" id="signOut" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>Sign out</button></div>
     </header>
-    <section class="gate" id="gate">
-      <div class="eyebrow">Student access</div><h2>Welcome back.</h2><p>Sign in with your FCPS Google account. Your verified email identifies your FCPS ID—there is no coach code or PIN.</p>
-      <div class="google-entry"><button class="btn primary" id="googleSignIn" type="button">Continue with Google</button><small>Access is limited to students already listed in Track Applications or as active members.</small></div><div class="error" id="authError" role="alert" hidden></div>
+    <section class="gate practice-signin" id="gate">
+      <img class="practice-signin-mark" src="images/member-portal-keyhole.png" alt="" aria-hidden="true">
+      <h1 class="practice-signin-title">Debate Prep Studio</h1>
+      <div class="practice-signin-divider" aria-hidden="true"><span></span></div>
+      <p class="practice-signin-sub">Sign in with your FCPS Google Workspace account to build, save, and submit your debate speeches for coach review.</p>
+      <div class="practice-login-card">
+        <button class="practice-google-btn" id="googleSignIn" type="button">
+          <img class="practice-fcps-logo" src="images/fcps-google-logo.png" alt="" aria-hidden="true">
+          <svg class="practice-google-mark" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/><path fill="#34A853" d="M12 21.67c2.63 0 4.84-.87 6.45-2.36l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.67z"/><path fill="#FBBC05" d="M6.51 13.74a5.85 5.85 0 0 1 0-3.48V7.73H3.27a9.75 9.75 0 0 0 0 8.54l3.24-2.53z"/><path fill="#EA4335" d="M12 6.22c1.43 0 2.72.49 3.73 1.45l2.8-2.8C16.83 3.3 14.63 2.33 12 2.33a9.74 9.74 0 0 0-8.73 5.4l3.24 2.53C7.29 7.94 9.45 6.22 12 6.22z"/></svg>
+          <span class="practice-google-label">Sign in with fcpsschools.net</span>
+        </button>
+        <div class="practice-card-divider" aria-hidden="true"><span></span></div>
+        <p class="practice-access-note"><strong>Student access:</strong> Your verified FCPS email identifies your student record. Access is limited to students listed in Track Applications or as active members.</p>
+        <div class="error" id="authError" role="alert" hidden></div>
+      </div>
+      <aside class="practice-intro">
+        <div class="kicker">Cooper Debate · Practice Studio</div>
+        <h2>Make the case.</h2>
+        <p>Build a clear, timed speech for the 2026 data-centers resolution. Your work stays private until you submit it for review.</p>
+      </aside>
     </section>
     <section class="app-view" id="appView" hidden>
       <div class="view-head" id="positionHeader"><div class="view-head-main"><div class="view-head-title"><div class="eyebrow">Current resolution · 2026-data-centers</div><h2>Choose your position.</h2></div><span class="view-head-divider" aria-hidden="true"></span><p class="view-head-guidance">You can switch sides later. Your drafts and progress are saved separately.</p></div><button class="btn" id="refreshWorks" type="button">Refresh</button></div>
