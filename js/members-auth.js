@@ -1128,20 +1128,220 @@ function updateNotifBtn() {
   if (badge) badge.classList.toggle("on", perm === "granted");
 }
 
+let notificationModalReturnFocus = null;
+
+function ensureNotificationModal() {
+  let modal = document.getElementById("portal-notification-modal");
+  if (modal) return modal;
+
+  const style = document.createElement("style");
+  style.textContent = `
+    .portal-notification-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(2, 8, 24, .82);
+      backdrop-filter: blur(8px);
+    }
+    .portal-notification-modal.is-open { display: flex; }
+    .portal-notification-dialog {
+      width: min(100%, 470px);
+      overflow: hidden;
+      border: 1px solid rgba(232, 184, 75, .34);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #102a59 0%, #07152f 100%);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, .62), 0 0 50px rgba(59, 130, 246, .1);
+      color: #fff;
+      animation: portal-notification-modal-in .2s ease-out;
+    }
+    .portal-notification-dialog-body { padding: 32px 32px 25px; text-align: center; }
+    .portal-notification-icon {
+      display: grid;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 20px;
+      place-items: center;
+      border: 1px solid rgba(74, 222, 128, .42);
+      border-radius: 50%;
+      background: rgba(34, 197, 94, .13);
+      color: #86efac;
+    }
+    .portal-notification-icon.is-warning {
+      border-color: rgba(251, 191, 36, .45);
+      background: rgba(245, 158, 11, .13);
+      color: #fcd34d;
+    }
+    .portal-notification-icon.is-muted {
+      border-color: rgba(148, 163, 184, .36);
+      background: rgba(148, 163, 184, .1);
+      color: #cbd5e1;
+    }
+    .portal-notification-kicker {
+      margin: 0 0 8px;
+      color: #e8b84b;
+      font: 700 .72rem/1.3 "Josefin Sans", sans-serif;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+    }
+    .portal-notification-title {
+      margin: 0 0 13px;
+      color: #fff;
+      font: 700 1.75rem/1.15 "Cormorant Garamond", Georgia, serif;
+    }
+    .portal-notification-message {
+      max-width: 365px;
+      margin: 0 auto;
+      color: rgba(226, 236, 251, .82);
+      font-size: .98rem;
+      line-height: 1.65;
+    }
+    .portal-notification-dialog-footer {
+      display: flex;
+      justify-content: center;
+      padding: 18px 24px 22px;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(0, 0, 0, .1);
+    }
+    .portal-notification-done {
+      min-width: 132px;
+      border: 1px solid rgba(232, 184, 75, .52);
+      border-radius: 9px;
+      padding: 11px 24px;
+      background: rgba(232, 184, 75, .14);
+      color: #f5cf72;
+      cursor: pointer;
+      font: 700 .78rem/1 "Josefin Sans", sans-serif;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      transition: background .18s, border-color .18s;
+    }
+    .portal-notification-done:hover,
+    .portal-notification-done:focus-visible {
+      border-color: #e8b84b;
+      background: rgba(232, 184, 75, .23);
+      outline: none;
+    }
+    @keyframes portal-notification-modal-in {
+      from { opacity: 0; transform: translateY(10px) scale(.985); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @media (max-width: 520px) {
+      .portal-notification-modal { padding: 14px; }
+      .portal-notification-dialog-body { padding: 28px 22px 23px; }
+      .portal-notification-title { font-size: 1.55rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .portal-notification-dialog { animation: none; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  modal = document.createElement("div");
+  modal.className = "portal-notification-modal";
+  modal.id = "portal-notification-modal";
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = `
+    <section class="portal-notification-dialog" role="dialog" aria-modal="true"
+      aria-labelledby="portal-notification-title" aria-describedby="portal-notification-message">
+      <div class="portal-notification-dialog-body">
+        <div class="portal-notification-icon" id="portal-notification-icon" aria-hidden="true"></div>
+        <p class="portal-notification-kicker" id="portal-notification-kicker"></p>
+        <h2 class="portal-notification-title" id="portal-notification-title"></h2>
+        <p class="portal-notification-message" id="portal-notification-message"></p>
+      </div>
+      <div class="portal-notification-dialog-footer">
+        <button class="portal-notification-done" type="button">Done</button>
+      </div>
+    </section>
+  `;
+  modal.addEventListener("click", event => {
+    if (event.target === modal || event.target.closest(".portal-notification-done")) {
+      closeNotificationStatusModal();
+    }
+  });
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function closeNotificationStatusModal() {
+  const modal = document.getElementById("portal-notification-modal");
+  if (!modal) return;
+  modal.classList.remove("is-open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = modal.dataset.previousOverflow || "";
+  if (notificationModalReturnFocus) notificationModalReturnFocus.focus();
+  notificationModalReturnFocus = null;
+}
+
+function showNotificationStatusModal(status) {
+  const modal = ensureNotificationModal();
+  const content = {
+    granted: {
+      iconClass: "",
+      icon: '<svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+      kicker: "Notification settings",
+      title: "Notifications enabled",
+      message: "You’ll receive an alert when a Coach or Captain posts a new team announcement.",
+    },
+    denied: {
+      iconClass: "is-warning",
+      icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.7 2.2 18a2 2 0 0 0 1.8 3h16a2 2 0 0 0 1.8-3L13.7 3.7a2 2 0 0 0-3.4 0Z"/></svg>',
+      kicker: "Notification settings",
+      title: "Notifications are blocked",
+      message: "To turn them on, open your browser’s site settings from the address bar, set Notifications to Allow, then refresh this page.",
+    },
+    unsupported: {
+      iconClass: "is-muted",
+      icon: '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="m4 4 16 16"/></svg>',
+      kicker: "Notification settings",
+      title: "Notifications unavailable",
+      message: "This browser does not support portal notifications. You can still read every announcement inside the Member Portal.",
+    },
+  }[status];
+
+  const icon = modal.querySelector("#portal-notification-icon");
+  icon.className = `portal-notification-icon ${content.iconClass}`.trim();
+  icon.innerHTML = content.icon;
+  modal.querySelector("#portal-notification-kicker").textContent = content.kicker;
+  modal.querySelector("#portal-notification-title").textContent = content.title;
+  modal.querySelector("#portal-notification-message").textContent = content.message;
+  notificationModalReturnFocus = document.activeElement;
+  modal.dataset.previousOverflow = document.body.style.overflow;
+  document.body.style.overflow = "hidden";
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+  modal.querySelector(".portal-notification-done").focus();
+}
+
+document.addEventListener("keydown", event => {
+  if (event.key === "Escape" && document.getElementById("portal-notification-modal")?.classList.contains("is-open")) {
+    closeNotificationStatusModal();
+  }
+});
+
 function toggleNotifications() {
   if (!("Notification" in window)) {
-    alert("Your browser does not support notifications.");
+    showNotificationStatusModal("unsupported");
     return;
   }
   if (Notification.permission === "granted") {
-    alert("Notifications are on.\nYou'll see a pop-up whenever Coach or a Captain posts an announcement.");
+    showNotificationStatusModal("granted");
     return;
   }
   if (Notification.permission === "denied") {
-    alert("Notifications are blocked.\nTo enable: click the lock icon in your browser address bar → Notifications → Allow.");
+    showNotificationStatusModal("denied");
     return;
   }
-  Notification.requestPermission().then(updateNotifBtn);
+  Notification.requestPermission().then(permission => {
+    updateNotifBtn();
+    if (permission === "granted" || permission === "denied") {
+      showNotificationStatusModal(permission);
+    }
+  });
 }
 
 function notifyNewAnnouncement(data) {
