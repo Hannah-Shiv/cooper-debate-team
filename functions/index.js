@@ -307,18 +307,18 @@ async function resolveDebateStudentAccess({ email, fcpsId }) {
 
   const membership = await getFirestore().collection("portal_members").doc(normalizedEmail).get();
   if (membership.exists && membership.data().active === true) {
-    return { active: true, displayName: debateStudentName(membership.data(), id) };
+    return { active: true, displayName: debateStudentName(membership.data(), fcpsId) };
   }
 
   if (!normalizedEmail.endsWith("@fcpsschools.net")) return null;
   const applications = await getFirestore().collection("applications")
-    .where("student.studentId", "==", id)
+    .where("student.studentId", "==", fcpsId)
     .limit(1)
     .get();
   if (applications.empty) return null;
   return {
     active: true,
-    displayName: debateStudentName(applications.docs[0].data(), id),
+    displayName: debateStudentName(applications.docs[0].data(), fcpsId),
   };
 }
 

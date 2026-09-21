@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import fs from "node:fs/promises";
 import { test } from "node:test";
 import {
   TOPIC_ID,
@@ -187,4 +188,16 @@ test("handler authenticates eligible verified Google students and groups eligibl
   assert.equal(blockedAfterResubmit.statusCode, 400);
   const blockedResubmitAgain = await request(handler, { ...saveBody("submit"), expectedRevision: 5 });
   assert.equal(blockedResubmitAgain.statusCode, 400);
+});
+
+test("the production FCPS access resolver consistently uses the supplied student ID", async () => {
+  const source = await fs.readFile(new URL("../functions/index.js", import.meta.url), "utf8");
+  const resolver = source.match(
+    /async function resolveDebateStudentAccess\(\{ email, fcpsId \}\) \{[\s\S]*?\n\}/
+  )?.[0] || "";
+
+  assert.match(resolver, /debateStudentName\(membership\.data\(\), fcpsId\)/);
+  assert.match(resolver, /\.where\("student\.studentId", "==", fcpsId\)/);
+  assert.match(resolver, /debateStudentName\(applications\.docs\[0\]\.data\(\), fcpsId\)/);
+  assert.doesNotMatch(resolver, /\bid\b/);
 });
