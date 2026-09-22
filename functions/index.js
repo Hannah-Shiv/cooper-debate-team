@@ -299,7 +299,8 @@ async function resolveDebateStudentAccess({ email, fcpsId }) {
   const emailId = debateStudentIdFromEmail(normalizedEmail);
   const isHannahWebsiteAdmin = normalizedEmail === "hannahbshiv@gmail.com" &&
     fcpsId === "1806950" &&
-    await hasWebsiteAdminAccess(normalizedEmail);
+    PROTECTED_WEBSITE_ADMIN_REVIEWERS.has(normalizedEmail) &&
+    await hasFullAdminAccess(normalizedEmail);
   if (isHannahWebsiteAdmin) {
     return { active: true, displayName: "Hannah Shiv" };
   }

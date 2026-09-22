@@ -192,10 +192,15 @@ test("handler authenticates eligible verified Google students and groups eligibl
 
 test("the production FCPS access resolver consistently uses the supplied student ID", async () => {
   const source = await fs.readFile(new URL("../functions/index.js", import.meta.url), "utf8");
+  assert.match(source, /email === "hannahbshiv@gmail\.com"\s*\?\s*"1806950"/);
   const resolver = source.match(
     /async function resolveDebateStudentAccess\(\{ email, fcpsId \}\) \{[\s\S]*?\n\}/
   )?.[0] || "";
 
+  assert.match(resolver, /normalizedEmail === "hannahbshiv@gmail\.com"/);
+  assert.match(resolver, /fcpsId === "1806950"/);
+  assert.match(resolver, /await hasFullAdminAccess\(normalizedEmail\)/);
+  assert.doesNotMatch(resolver, /hasWebsiteAdminAccess/);
   assert.match(resolver, /debateStudentName\(membership\.data\(\), fcpsId\)/);
   assert.match(resolver, /\.where\("student\.studentId", "==", fcpsId\)/);
   assert.match(resolver, /debateStudentName\(applications\.docs\[0\]\.data\(\), fcpsId\)/);
