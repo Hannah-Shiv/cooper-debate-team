@@ -26,6 +26,7 @@
   var saveTimer = null;
   var autoSaveInFlight = false;
   var autoSaveQueued = false;
+  var pendingLocalConflict = null;
   var studentIdentity = token ? token.split(".")[0].slice(0, 24) : "session";
   var studentProfile = {};
   try { studentProfile = JSON.parse(sessionStorage.getItem("cooper-debate-profile") || "{}"); } catch (_) {}
@@ -108,10 +109,13 @@
       var saved = JSON.parse(localStorage.getItem(localKey(work)) || "null");
       if (saved && saved.stages) {
         if (!work || !work.revision || saved.baseRevision === Number(work.revision)) return Object.assign({}, work, saved);
-        if (window.confirm("Unsaved local work has revision " + saved.baseRevision + ", while the server has revision " + work.revision + ". Restore the local copy? Choose Cancel to use the server copy.")) return Object.assign({}, work, saved);
+        pendingLocalConflict = { saved: saved, serverRevision: Number(work.revision || 0) };
       }
     } catch (_) {}
     return work;
+  }
+  function showDraftConflict() {
+    $("draftConflict").hidden = !pendingLocalConflict;
   }
   function writeLocal() {
     if (!current) return;
@@ -196,7 +200,7 @@
         (feedback.note ? '<br><span>' + escape(feedback.note) + '</span>' : '') +
         (feedback.nextStep ? '<br><b>Next step:</b> ' + escape(feedback.nextStep) : '') + '</div>' : "";
     $("studioTitle").textContent = stage[1];
-    $("stageTabs").innerHTML = STAGES.map(function (item) { var done = current.stages[item[0]] && current.stages[item[0]].content; var duration = item[0] === "prep" ? item[2] : item[2].replace(" speaking time", " of speaking time"); return '<button class="stage-tab stage-' + item[0].replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); }) + ' ' + (item[0] === currentStage ? "active" : "") + '" data-stage="' + item[0] + '" type="button"><strong>' + item[1] + ' · ' + duration + '</strong><small>' + (done ? "Draft started" : "Not started") + '</small></button>'; }).join("");
+    $("stageTabs").innerHTML = STAGES.map(function (item) { var done = current.stages[item[0]] && current.stages[item[0]].content; var active = item[0] === currentStage; var duration = item[0] === "prep" ? item[2] : item[2].replace(" speaking time", " of speaking time"); return '<button class="stage-tab stage-' + item[0].replace(/[A-Z]/g, function (letter) { return "-" + letter.toLowerCase(); }) + ' ' + (active ? "active" : "") + '" data-stage="' + item[0] + '" type="button" role="tab" aria-selected="' + active + '"><strong>' + item[1] + ' · ' + duration + '</strong><small>' + (done ? "Draft started" : "Not started") + '</small></button>'; }).join("");
     if (currentStage === "prep") {
       renderPrep(data, readOnly, feedbackNote);
     } else if (currentStage === "crossfire") {
@@ -300,12 +304,13 @@
   }
   async function openSide(side) {
     try {
+       pendingLocalConflict = null;
       var found = works.filter(function (work) { return work.side === side; })[0] || null;
       if (!found) { var response = await request("getStudentWork", { side: side }); found = response.work; }
        current = readLocal(normalizeWork(found, side));
        var sharedPrep = works.filter(function (work) { return work.stages && work.stages.prep && work.stages.prep.content; }).sort(function (a, b) { return String(b.updatedAt || "").localeCompare(String(a.updatedAt || "")); })[0];
        if (sharedPrep) current.stages.prep = JSON.parse(JSON.stringify(sharedPrep.stages.prep));
-       currentStage = "prep"; updateSessionFacts(); setAutoSaveStatus(current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Saved last: —", ""); $("studio").hidden = false; $("positionHeader").hidden = true; $("positionHeader").style.display = "none"; $("positionDashboard").hidden = true; $("positionDashboard").style.display = "none"; $("studio").scrollIntoView({ behavior: "smooth", block: "start" }); $("sideEyebrow").textContent = side + " · " + (side === "PRO" ? "Support the resolution" : "Oppose the resolution"); renderStage();
+        currentStage = "prep"; updateSessionFacts(); setAutoSaveStatus(current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Saved last: —", ""); $("studio").hidden = false; $("positionHeader").hidden = true; $("positionHeader").style.display = "none"; $("positionDashboard").hidden = true; $("positionDashboard").style.display = "none"; $("studio").scrollIntoView({ behavior: "smooth", block: "start" }); $("sideEyebrow").textContent = side + " · " + (side === "PRO" ? "Support the resolution" : "Oppose the resolution"); showDraftConflict(); renderStage();
     } catch (error) { showError("listError", error.message); }
   }
   $("googleSignIn").addEventListener("click", async function () {
@@ -336,6 +341,22 @@
     button.disabled = false;
   });
   $("refreshWorks").addEventListener("click", loadWorks);
+  $("restoreLocalDraft").addEventListener("click", function () {
+    if (!current || !pendingLocalConflict) return;
+    var serverRevision = Number(current.revision || pendingLocalConflict.serverRevision || 0);
+    current = Object.assign({}, current, pendingLocalConflict.saved, { revision: serverRevision });
+    pendingLocalConflict = null;
+    showDraftConflict();
+    renderStage();
+    setAutoSaveStatus("Older browser draft restored · Saving…", "saving");
+    scheduleSave();
+  });
+  $("keepServerDraft").addEventListener("click", function () {
+    if (current) clearLocal(current);
+    pendingLocalConflict = null;
+    showDraftConflict();
+    setAutoSaveStatus(current && current.updatedAt ? "Saved last: " + savedTime(current.updatedAt) : "Latest saved version loaded", "");
+  });
   $("stageTabs").addEventListener("click", function (event) {
     var button = event.target.closest("[data-stage]");
     if (!button || !$("stageTabs").contains(button) || button.dataset.stage === currentStage) return;
