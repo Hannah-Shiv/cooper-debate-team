@@ -2339,6 +2339,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging-compat.js"></script>
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=13"></script>
+<script src="js/member-score-access.js?v=1"></script>
 <script src="js/members-auth.js?v=17"></script>
 
 <script>
@@ -2354,6 +2355,9 @@
   }
 
   window.showState = function (state) {
+    // A previous account's full profile sits outside mp-content.
+    // Never leave it on screen during sign-out or a new login.
+    document.getElementById('debater-profile-section').style.display = 'none';
     if (state === 'login') {
       cancelLoginRedirect();
       loginRedirectTimer = window.setTimeout(function () {
@@ -2787,6 +2791,24 @@ async function initStats() {
   }
   await loadTournaments();
 
+  if (!isFullAdminRole(currentUserRole)) {
+    const myName = MemberScoreAccess.ownName(currentMemberAccess);
+    document.querySelector('.portal-page-title h1').textContent = 'My Statistics';
+    document.querySelector('.portal-page-title p').textContent = 'Your tournament results';
+    const backLink = document.querySelector('#debater-profile-section .profile-back-btn');
+    backLink.href = 'members-resources.html';
+    backLink.textContent = '← Back to Member Portal';
+    if (myName && computeLeaderboard(allTournaments).some(d => d.name.toLowerCase() === myName.toLowerCase())) {
+      showDebaterProfile(myName);
+    } else if (!allTournaments.length) {
+      document.getElementById('stats-dashboard').style.display = 'none';
+      document.getElementById('stats-empty').style.display = 'block';
+      document.querySelector('#stats-empty .empty-sub').textContent =
+        'No results are linked to your member profile yet. Ask a coach to check the name on your portal account.';
+    }
+    return;
+  }
+
   // Check for ?debater=first-last URL param → show full profile view
   const params = new URLSearchParams(window.location.search);
   const debSlug = params.get('debater');
@@ -2943,9 +2965,13 @@ function clearImportForm() {
    FIRESTORE  load / save / delete
 ═══════════════════════════════════════════════════════════════ */
 async function loadTournaments() {
+  allTournaments = [];
   try {
     const snap = await statsDb.collection('stat_results').orderBy('meta.date', 'desc').get();
-    allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allTournaments = isFullAdminRole(currentUserRole)
+      ? results
+      : MemberScoreAccess.personalTournaments(results, currentMemberAccess);
     renderAll();
   } catch (e) {
     console.error('loadTournaments error:', e);
@@ -5023,7 +5049,10 @@ function debaterSlug(name) {
 }
 
 function openDebModalByName(name) {
-  const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
+  const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase()) ||
+    (!isFullAdminRole(currentUserRole)
+      ? computeLeaderboard(allTournaments).find(x => x.name.toLowerCase() === name.toLowerCase())
+      : null);
   if (d) openDebModalData(d);
 }
 
@@ -5039,8 +5068,12 @@ function openDebModal(idx) {
 
 function openDebModalData(d) {
   currentDebater = d;
+  const sharedPartnerProfile = !isFullAdminRole(currentUserRole) &&
+    d.name.toLowerCase() !== MemberScoreAccess.ownName(currentMemberAccess).toLowerCase();
   document.getElementById('deb-modal-name').textContent = d.name;
-  document.getElementById('deb-modal-meta').textContent = `Partner(s): ${d.partnerList || '—'}`;
+  document.getElementById('deb-modal-meta').textContent = sharedPartnerProfile
+    ? `Only tournaments partnered with ${MemberScoreAccess.ownName(currentMemberAccess)}`
+    : `Partner(s): ${d.partnerList || '—'}`;
 
   document.getElementById('deb-modal-stats').innerHTML = `
     <div class="deb-modal-stat"><div class="deb-modal-stat-label">Record</div><div class="deb-modal-stat-val">${d.wins}–${d.losses}</div></div>
@@ -5058,6 +5091,7 @@ function openDebModalData(d) {
   // Full Profile button
   const slug = debaterSlug(d.name);
   const profileBtn = document.getElementById('deb-modal-profile-btn');
+  profileBtn.style.display = sharedPartnerProfile ? 'none' : 'inline-flex';
   profileBtn.href = `members-stats.html?debater=${slug}`;
 
   const body = document.getElementById('deb-modal-body');
@@ -5104,6 +5138,8 @@ function closeDebModal() {
    FULL  DEBATER  PROFILE
 ═══════════════════════════════════════════════════════════════ */
 function showDebaterProfile(name) {
+  if (!isFullAdminRole(currentUserRole) &&
+      name.toLowerCase() !== MemberScoreAccess.ownName(currentMemberAccess).toLowerCase()) return;
   // Find in leaderboard (all-time — ignore time filter for profiles)
   const allLb = computeLeaderboard(allTournaments);
   const d = allLb.find(x => x.name.toLowerCase() === name.toLowerCase());

@@ -1831,6 +1831,7 @@
 
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=13"></script>
+<script src="js/member-score-access.js?v=1"></script>
 
 <script>window.__NAV_PAGE = "directory";</script>
 <script src="js/members-auth.js?v=17"></script>
@@ -1975,9 +1976,13 @@ let tablePage      = 1;
 const TABLE_PAGE_SIZE = 10;
 
 async function loadTournaments() {
+  allTournaments = [];
   try {
     const snap = await dirDb.collection('stat_results').orderBy('meta.date','desc').get();
-    allTournaments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const results = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    allTournaments = isFullAdminRole(currentUserRole)
+      ? results
+      : MemberScoreAccess.personalTournaments(results, currentMemberAccess);
   } catch (e) { console.error('loadTournaments:', e); }
   leaderboard = computeLeaderboard(getDirectorySeasonTournaments());
   updateSortButtons();
@@ -2126,6 +2131,9 @@ function renderDirectory() {
   count.textContent = list.length === leaderboard.length
     ? `Showing ${list.length} debater${list.length !== 1 ? 's' : ''}`
     : `${list.length} of ${leaderboard.length} debaters`;
+  if (!isFullAdminRole(currentUserRole)) {
+    count.textContent += ' · Partner scores include only tournaments you competed in together';
+  }
 
   if (currentView === 'table') {
     renderTableView(list);
@@ -2160,6 +2168,7 @@ function renderDirectory() {
 }
 
 function directoryEmptyMessage() {
+  if (!isFullAdminRole(currentUserRole)) return 'No tournament results are linked to your member profile yet. Ask a coach to check the name on your portal account.';
   if (allTournaments.length === 0) return 'No tournament data imported yet.';
   if (leaderboard.length === 0) return `No tournament data for ${currentDirectorySeason} yet.`;
   return 'No debaters match.';
@@ -2771,6 +2780,8 @@ function applySeasonFilter(d) {
 
 /* ── Profile ──────────────────────────────────────────── */
 async function openProfile(name) {
+  if (!isFullAdminRole(currentUserRole) &&
+      !leaderboard.some(d => d.name.toLowerCase() === name.toLowerCase())) return;
   currentSeason = '';   /* renderSeasonSelector will pick latest season */
   const d = leaderboard.find(x => x.name.toLowerCase() === name.toLowerCase());
   document.getElementById('dir-view').style.display      = 'none';
@@ -2829,10 +2840,18 @@ function checkUrlProfile() {
 
 function renderProfile(d, memberDoc) {
   document.getElementById('prof-name').textContent = d.name;
+  const sharedPartnerProfile = !isFullAdminRole(currentUserRole) &&
+    d.name.toLowerCase() !== MemberScoreAccess.ownName(currentMemberAccess).toLowerCase();
+  document.querySelector('#prof-panel-overview .profile-section-title').textContent =
+    sharedPartnerProfile ? 'Shared Tournaments — Speaker Points Over Time' : 'Career Arc — Speaker Points Over Time';
+  document.querySelector('#prof-round-rate-section .profile-section-title').textContent =
+    sharedPartnerProfile ? 'Shared Tournaments — Round-by-Round Win Rate' : 'Career Round-by-Round Win Rate';
   const partnerLinks = d.partners && d.partners.size
     ? [...d.partners].map(p => `<span class="prof-partner-link" onclick="openProfile('${escJs(p)}')">${escHtml(p)}</span>`).join(', ')
     : null;
-  document.getElementById('prof-meta').innerHTML = partnerLinks ? 'Partner(s): ' + partnerLinks : 'No partner data';
+  document.getElementById('prof-meta').innerHTML = sharedPartnerProfile
+    ? `Only tournaments partnered with ${escHtml(MemberScoreAccess.ownName(currentMemberAccess))}`
+    : partnerLinks ? 'Partner(s): ' + partnerLinks : 'No partner data';
 
   /* Avatar */
   const avatarWrap = document.getElementById('prof-avatar-wrap');
@@ -2856,12 +2875,13 @@ function renderProfile(d, memberDoc) {
   document.getElementById('prof-identity-pills').innerHTML = pills.map(p => `<span class="prof-id-pill ${escHtml(p.cls)}">${escHtml(p.label)}</span>`).join('');
 
   /* Metro badge — always career */
-  document.getElementById('prof-metro-badge').innerHTML = d.metroEligible
+  document.getElementById('prof-metro-badge').innerHTML = sharedPartnerProfile ? '' : d.metroEligible
     ? '<span class="profile-metro-badge eligible">✓ Metro Finals Eligible</span>'
     : '<span class="profile-metro-badge not-eligible">✗ Not Yet Metro Finals Eligible</span>';
 
   /* Badges — always career */
-  renderBadges(d);
+  if (sharedPartnerProfile) document.getElementById('prof-badges').style.display = 'none';
+  else renderBadges(d);
 
   /* Season selector */
   renderSeasonSelector(d);
@@ -2875,8 +2895,13 @@ function renderProfile(d, memberDoc) {
   /* Show coaches tab only for debater themselves + coaches/captains */
   const profileEmails = getMemberLoginEmails(memberDoc);
   const isOwnerProf = profileEmails.some(email => (email || '').toLowerCase() === currentUserEmail.toLowerCase());
-  const canSeeCoachTab = isOwnerProf || isFullAdminRole(currentUserRole) || currentUserRole === 'captain';
+  const canSeeCoachTab = !sharedPartnerProfile &&
+    (isOwnerProf || isFullAdminRole(currentUserRole) || currentUserRole === 'captain');
   document.getElementById('prof-tab-btn-coaches').style.display = canSeeCoachTab ? '' : 'none';
+
+  // A partner's tournament results are visible, not their private coaching
+  // questionnaire, skill assessment, or notes.
+  if (sharedPartnerProfile) return;
 
   /* Debate Style Profile */
   renderStyleSection(d.name, memberDoc);
