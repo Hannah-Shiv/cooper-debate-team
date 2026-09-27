@@ -25,6 +25,107 @@ const {
 initializeApp();
 const portalAuthApp = initializeApp({ projectId: "cooper-debate-team" }, "debate-work-portal-auth");
 const DEBATE_WORK_SESSION_SECRET = defineSecret("SESSION_SECRET");
+const LEGACY_MEMBERS = new Set([
+  "pgkonde@fcps.edu",
+  "pgkonde@fcpsschools.net",
+  "hannahbshiv@gmail.com",
+  "cooperdebateteam@gmail.com",
+  "1806950@fcpsschools.net",
+]);
+
+// The PDF is stored in Firestore, never in the public site repository.
+exports.memberMembershipContract = onRequest(
+  {
+    region: "us-central1",
+    cors: [
+      "https://cooperdebateteam.com",
+      "https://www.cooperdebateteam.com",
+      "http://localhost:5000",
+      "http://127.0.0.1:5000",
+    ],
+    maxInstances: 10,
+  },
+  async (req, res) => {
+    res.set("Cache-Control", "private, no-store, no-cache, max-age=0, must-revalidate");
+    res.set("Pragma", "no-cache");
+    res.set("X-Content-Type-Options", "nosniff");
+
+    if ((process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT) !== "cooper-debate-team") {
+      res.status(503).json({ error: "This private document is unavailable in this environment." });
+      return;
+    }
+    if (req.method !== "GET") {
+      res.set("Allow", "GET");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+    const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
+    if (!token) {
+      res.status(401).json({ error: "Sign in to access this document." });
+      return;
+    }
+
+    let decoded;
+    try {
+      decoded = await getAuth(portalAuthApp).verifyIdToken(token);
+    } catch (_) {
+      res.status(401).json({ error: "Your sign-in session has expired. Please sign in again." });
+      return;
+    }
+    const email = cleanEmail(decoded.email);
+    const provider = cleanText(decoded.firebase && decoded.firebase.sign_in_provider, 80);
+    const verifiedIdentity = decoded.email_verified === true &&
+      (provider !== "google.com" || /@(fcps\.edu|fcpsschools\.net)$/.test(email));
+    if (!verifiedIdentity || !email) {
+      res.status(403).json({ error: "Use your verified, approved portal sign-in to access this document." });
+      return;
+    }
+
+    try {
+      const member = await getFirestore().collection("portal_members").doc(email).get();
+      const approved = member.exists
+        ? (member.data() || {}).active === true
+        : LEGACY_MEMBERS.has(email);
+      if (!approved) {
+        res.status(403).json({ error: "Only active, approved portal members can access this document." });
+        return;
+      }
+      const snapshot = await getFirestore()
+        .collection("private_member_documents")
+        .doc("membership_contract_2026_2027")
+        .get();
+      const payload = snapshot.exists ? snapshot.data() || {} : {};
+      const encodedPdf = payload.pdfBase64;
+      if (
+        payload.mimeType !== "application/pdf" ||
+        typeof encodedPdf !== "string" ||
+        encodedPdf.length > 900000 ||
+        encodedPdf.length % 4 !== 0 ||
+        !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(encodedPdf)
+      ) {
+        res.status(503).json({ error: "The private document has not yet been securely uploaded by an admin." });
+        return;
+      }
+      const pdfBytes = Buffer.from(encodedPdf, "base64");
+      if (pdfBytes.length > 675000 || pdfBytes.subarray(0, 5).toString("ascii") !== "%PDF-") {
+        res.status(503).json({ error: "The private document has not yet been securely uploaded by an admin." });
+        return;
+      }
+      res.set("Content-Type", "application/pdf");
+      res.set("Content-Length", String(pdfBytes.length));
+      res.set(
+        "Content-Disposition",
+        req.query && req.query.download === "1"
+          ? 'attachment; filename="Cooper-Debate-Membership-Contract-2026-2027.pdf"'
+          : 'inline; filename="Cooper-Debate-Membership-Contract-2026-2027.pdf"'
+      );
+      res.status(200).send(pdfBytes);
+    } catch (error) {
+      console.error("private member document failed:", error);
+      res.status(500).json({ error: "Unable to load the document right now." });
+    }
+  }
+);
 
 exports.tryoutBoard = onRequest(
   { region: "us-central1", cors: true },

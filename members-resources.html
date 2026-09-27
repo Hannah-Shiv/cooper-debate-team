@@ -597,6 +597,20 @@
       position: relative;
       overflow: hidden;
     }
+    #october-tournament-document {
+      --ca: 232,184,75;
+      width: 100%;
+      color: inherit;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+      background: linear-gradient(145deg, #4a3510 0%, #1e1a13 100%);
+    }
+    #october-tournament-document:focus-visible {
+      outline: 3px solid #f5d47b;
+      outline-offset: 3px;
+    }
+    #october-document-status.october-document-error { color: #fca5a5; }
     /* inner corner glow using card's own colour */
     .portal-card::before {
       content: '';
@@ -1061,6 +1075,8 @@
     }
 
   </style>
+  <link rel="stylesheet" href="css/member-resources-redesign.css?v=3"/>
+  <link rel="stylesheet" href="css/member-resource-library.css?v=17"/>
 </head>
 <body>
 
@@ -1101,157 +1117,90 @@
 <div id="mp-content" style="display:none;">
 <main class="portal-main">
   <div id="state-dashboard" class="dashboard-wrap">
-    <div class="portal-page-title">
-      <h1>Resources</h1>
-      <p class="portal-intro">Official team materials, organized for practice, tournaments, and families.</p>
-    </div>
+    <header class="resources-hero">
+      <div class="resources-hero-copy">
+        <p class="resources-eyebrow">Cooper Debate Team <span aria-hidden="true">•</span> Member Resources</p>
+        <h1>Resources &amp; <span>Team Documents</span></h1>
+        <p>Everything you need to prepare, practice, compete, and stay connected.</p>
+      </div>
+    </header>
     <div class="dashboard-content">
-
-    <div class="resource-boundary" role="note">
-      <div class="resource-boundary-kicker">Official team workspace</div>
-      <p>These materials are maintained by Cooper Debate Team coaches and captains. For time-sensitive updates, open <a href="members-calendar.html">Calendar / Announcements</a>.</p>
-    </div>
-
-    <!-- Section divider -->
-    <hr class="section-divider">
-
-    <!-- All 6 Drive resource cards — flat 2-column grid (3 even rows) -->
-    <div class="portal-section">
-      <div class="portal-section-title">Team Resources</div>
-      <div class="portal-cards">
-
-        <a href="https://drive.google.com/drive/folders/10PY63bQqPJl40fIvwCnyii8vBS890cL1?usp=sharing" target="_blank" class="portal-card" id="drive-evidence-link">
-          <span class="portal-card-icon">Briefs</span>
-          <div class="portal-card-title">Evidence &amp; Case Briefs</div>
-          <div class="portal-card-desc">Full evidence files, case briefs, and research for the current resolution.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-        <a href="https://drive.google.com/drive/folders/1SHmgfvi6YlGFBtaM6bdcdcBsFU8Kqr8E?usp=drive_link" target="_blank" class="portal-card" id="drive-flows-link">
-          <span class="portal-card-icon">Flows</span>
-          <div class="portal-card-title">Flows &amp; Notes</div>
-          <div class="portal-card-desc">Round flows and post-round notes from practice and tournaments.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-        <a href="https://drive.google.com/drive/folders/1ZDlvJJLC0HqXGtHIIqlrDbFgjyuQKAEx?usp=drive_link" target="_blank" class="portal-card" id="drive-research-link">
-          <span class="portal-card-icon">Research</span>
-          <div class="portal-card-title">Research Materials</div>
-          <div class="portal-card-desc">Background reading, source documents, and topic analysis.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-        <a href="https://drive.google.com/drive/folders/1WBwF33mAmuHzIBshaOGa0l9z-ptBovP4?usp=sharing" target="_blank" class="portal-card" id="drive-schedule-link">
-          <span class="portal-card-icon">Schedule</span>
-          <div class="portal-card-title">Practice Schedule</div>
-          <div class="portal-card-desc">Weekly practice times, locations, and any changes from Coach Konde.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-        <a href="https://drive.google.com/drive/folders/112MTL_rSk-sJF7_hfBUbm4SRMTfsy0g_?usp=sharing" target="_blank" class="portal-card" id="drive-assignments-link">
-          <span class="portal-card-icon">✏️</span>
-          <div class="portal-card-title">Assignments</div>
-          <div class="portal-card-desc">Current assignments, due dates, and submission instructions.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-        <a href="https://drive.google.com/drive/folders/1bRpZgA1kYIMl-LjnmnMOzSOH3Cn4BToM?usp=sharing" target="_blank" class="portal-card" id="drive-tournament-link">
-          <span class="portal-card-icon">Tournaments</span>
-          <div class="portal-card-title">Tournament Prep Docs</div>
-          <div class="portal-card-desc">Coach strategy notes, pairings, registration info, and what to expect.</div>
-          <div class="card-drive-meta"></div>
-          <div class="card-pin"></div>
-          <div class="card-files"></div>
-          <span class="portal-card-status status-live">Open in Drive</span>
-        </a>
-
-      </div>
-    </div>
-
-    <section class="community-exchange" aria-labelledby="community-title">
-      <div class="community-copy">
-        <span class="resource-eyebrow">Community Prep Exchange</span>
-        <h2 id="community-title">Shared practice material from the wider debate community</h2>
-        <p>This public Drive folder is external and unvetted. Use it to compare approaches, not as official Cooper guidance. Verify every claim, citation, and date with a coach before relying on it.</p>
-        <div class="evidence-notice" role="note"><strong>Evidence verification required.</strong> Community files may be incomplete, outdated, or incorrect.</div>
-        <div class="community-actions">
-          <button class="resource-button" type="button" onclick="openCommunityLibrary()">Browse file library</button>
-          <a class="resource-button resource-button-muted" href="https://drive.google.com/drive/folders/1yOjHY7NWPewWMr34oY_QkftJ5U1pcTNS" target="_blank" rel="noopener">Open public Drive folder</a>
+    <section id="resources-landing" class="rl-layout" aria-label="Resources overview">
+      <div class="rl-primary">
+        <div class="rl-heading"><h2>Browse Resources</h2><a href="?library=all" data-library="all">View all resources →</a></div>
+        <div class="rl-categories">
+          <a class="rl-category rl-briefs" href="?library=briefs" data-library="briefs"><span class="rl-icon" aria-hidden="true"></span><strong>Briefs &amp; Case Files</strong><small>Evidence files, case briefs, block files, and topic research.</small><span class="rl-count" data-count="briefs">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
+          <a class="rl-category rl-flows" href="?library=flows" data-library="flows"><span class="rl-icon" aria-hidden="true"></span><strong>Flows &amp; Notes</strong><small>Round flows, practice notes, and debate templates.</small><span class="rl-count" data-count="flows">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
+          <a class="rl-category rl-research" href="?library=research" data-library="research"><span class="rl-icon" aria-hidden="true"></span><strong>Research Materials</strong><small>Background research, source documents, and topic analysis.</small><span class="rl-count" data-count="research">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
+          <a class="rl-category rl-tournaments" href="?library=tournaments" data-library="tournaments"><span class="rl-icon" aria-hidden="true"></span><strong>Tournaments &amp; Prep</strong><small>Tournament details, partner lists, checklists, and logistics.</small><span class="rl-count" data-count="tournaments">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
+          <a class="rl-category rl-training" href="?library=training" data-library="training"><span class="rl-icon" aria-hidden="true"></span><strong>Training &amp; Skills</strong><small>Guides, practice materials, and debate strategy.</small><span class="rl-count" data-count="training">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
+          <a class="rl-category rl-team" href="?library=team" data-library="team"><span class="rl-icon" aria-hidden="true"></span><strong>Team Information</strong><small>Roles, responsibilities, and internal resources.</small><span class="rl-count" data-count="team">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
         </div>
+        <section class="rl-recent rl-panel" aria-labelledby="recent-title">
+          <div class="rl-heading"><h2 id="recent-title">Recently Added</h2><a href="?library=all" data-library="all">View all →</a></div>
+          <div id="rl-recent-list" aria-live="polite"><p class="rl-empty">Loading recent resources…</p></div>
+        </section>
       </div>
-      <div class="community-mark" aria-hidden="true"><span>EXT</span><small>NOT OFFICIAL</small></div>
+      <aside class="rl-secondary">
+        <section class="rl-panel rl-official" aria-labelledby="official-title">
+          <div class="rl-heading"><h2 id="official-title">Official Team Documents</h2></div>
+          <p>Forms, contracts, and important team documents.</p>
+          <ul class="rl-documents" id="rl-official-list">
+            <li data-official="2026–27 Membership Contract"><button type="button" id="membership-contract-document" class="rl-doc-check" aria-describedby="membership-contract-status"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>2026–27 Membership Contract</strong><small id="membership-contract-status" role="status" aria-live="polite">Team membership &amp; expectations</small></span><span class="rl-view">View</span></button></li>
+            <li data-official="WASDL Tournament Permission Slip"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>WASDL Tournament Permission Slip</strong><small>Required for all WASDL tournaments</small></span><span class="rl-pending">Pending</span></li>
+            <li data-official="October 24 Tournament Day Details"><button type="button" id="october-tournament-document" class="rl-doc-check" aria-describedby="october-document-status"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>October 24 Tournament Day Details</strong><small id="october-document-status" role="status" aria-live="polite">Secure copy pending upload</small></span><span class="rl-pending">Check →</span></button></li>
+            <li data-official="Tournament Sign-Up Sheet"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>Tournament Sign-Up Sheet</strong><small>Partner list, availability, and notes</small></span><span class="rl-pending">Pending</span></li>
+            <li data-official="How to Win a PF Debate"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>How to Win a PF Debate</strong><small>Official team guide</small></span><span class="rl-pending">Pending</span></li>
+          </ul>
+        </section>
+        <section class="rl-panel rl-request" aria-labelledby="request-title">
+          <div class="rl-heading"><h2 id="request-title">Need Something?</h2></div>
+          <p>Don’t see a resource you’re looking for?</p>
+          <button type="button" id="rl-request-open" class="rl-outline">✉ &nbsp; Request a resource →</button>
+        </section>
+      </aside>
+    </section>
+
+    <section id="resource-library" class="rl-library" aria-labelledby="library-title" hidden>
+      <div class="rl-library-head"><a href="members-resources.html" data-library="home">← Back to Resources</a><h2 id="library-title">Resource Library</h2><p>Browse approved Cooper Debate resources. Documents open in a new tab.</p></div>
+      <div class="rl-controls"><label>Search resources<input id="rl-search" type="search" placeholder="Search title, topic, type, or description"/></label><label>Type<select id="rl-type"><option value="all">All Types</option></select></label><label>Topic<select id="rl-topic"><option value="all">All Topics</option></select></label><label>Sort<select id="rl-sort"><option value="newest">Newest first</option><option value="oldest">Oldest first</option><option value="title">Title A–Z</option></select></label></div>
+      <p id="rl-results-status" class="rl-results-status" role="status" aria-live="polite"></p>
+      <div id="rl-results" class="rl-results"></div>
+    </section>
+    <section id="rl-management" class="rl-management rl-panel" hidden aria-labelledby="management-title">
+      <div class="rl-heading"><h2 id="management-title">Manage Resources</h2><button type="button" id="rl-add-open" class="rl-outline">+ Add resource</button></div>
+      <p>Coaches, website admins, and captains can publish or edit links. Deactivated resources are hidden from members.</p>
+      <div id="rl-manage-list"></div>
+      <div id="rl-request-queue" hidden><h3>Resource Requests</h3><div id="rl-request-list"></div></div>
     </section>
 
     </div><!-- end .dashboard-content -->
   </div><!-- /dashboard-wrap -->
 
-  <div class="modal-overlay" id="community-library-modal" style="display:none" onclick="if(event.target===this)closeCommunityLibrary()">
-    <div class="modal-box modal-tall community-modal">
-      <div class="modal-header">
-        <span>Community file library</span>
-        <button class="modal-close-btn" type="button" onclick="closeCommunityLibrary()" aria-label="Close file library">×</button>
-      </div>
-      <div class="evidence-notice"><strong>External and unvetted.</strong> Verify evidence before using it in a round.</div>
-      <div id="community-file-status" class="library-status">Loading public Drive metadata…</div>
-      <div id="community-file-list" class="community-file-list"></div>
-      <a class="resource-button resource-button-muted" href="https://drive.google.com/drive/folders/1yOjHY7NWPewWMr34oY_QkftJ5U1pcTNS" target="_blank" rel="noopener">Open in Drive</a>
-    </div>
-  </div>
-  <div class="modal-overlay drive-preview-overlay" id="drive-preview-modal" style="display:none" onclick="if(event.target===this)closeDrivePreview()">
-    <div class="modal-box drive-preview-modal">
-      <div class="modal-header"><span id="drive-preview-title">Document preview</span><button class="modal-close-btn" type="button" onclick="closeDrivePreview()" aria-label="Close preview">×</button></div>
-      <iframe id="drive-preview-frame" title="Google Drive document preview" loading="lazy"></iframe>
-      <div class="drive-preview-footer"><span>Preview availability depends on Google Drive permissions and browser support.</span><a id="drive-preview-open" class="resource-button resource-button-muted" target="_blank" rel="noopener">Open in Drive</a></div>
-    </div>
-  </div>
-
-
-  <!-- ── Pin File Modal (coach / captain only) ─────────────── -->
-  <div class="modal-overlay" id="pin-modal" style="display:none" onclick="if(event.target===this)closePinModal()">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span id="pin-modal-title">Pin a File</span>
-        <button class="modal-close-btn" onclick="closePinModal()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-        </button>
-      </div>
-      <div class="announce-form" style="padding-top:8px">
-        <div class="form-group">
-          <label class="form-label" for="pin-link">Google Drive Link *</label>
-          <input class="form-input" id="pin-link" type="url" placeholder="https://docs.google.com/…"/>
-        </div>
-        <div class="form-group" style="margin-top:12px">
-          <label class="form-label" for="pin-label-input">Display Label *</label>
-          <input class="form-input" id="pin-label-input" type="text" placeholder="e.g. Current Tournament Brief" maxlength="80"/>
-        </div>
-        <div style="display:flex;gap:10px;margin-top:20px;justify-content:flex-end;flex-wrap:wrap;align-items:center">
-          <button id="pin-remove-btn" class="ann-det-delete" style="display:none;margin-right:auto"
-                  onclick="removePinForCard()">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
-            Remove Pin
-          </button>
-          <button class="modal-close-btn" style="position:static;background:rgba(255,255,255,0.07);padding:8px 16px;border-radius:8px;font-size:0.8rem;font-family:'Josefin Sans',sans-serif;letter-spacing:0.05em" onclick="closePinModal()">Cancel</button>
-          <button onclick="savePinForCard()" style="background:rgba(232,184,75,0.14);border:1px solid rgba(232,184,75,0.4);color:#e8b84b;font-family:'Josefin Sans',sans-serif;font-size:0.8rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:8px 20px;border-radius:8px;cursor:pointer;transition:background 0.15s">Save Pin</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
+  <dialog id="rl-editor-dialog" class="rl-dialog" aria-labelledby="rl-editor-title">
+    <form id="rl-editor-form">
+      <div class="rl-dialog-header"><h2 id="rl-editor-title">Add Resource</h2><button type="button" class="rl-close" data-close="rl-editor-dialog" aria-label="Close">×</button></div>
+      <input type="hidden" name="id"/>
+      <label>Title<input name="title" maxlength="160" required/></label>
+      <label>Description<textarea name="description" maxlength="3000" rows="2" required></textarea></label>
+      <div class="rl-form-pair"><label>Category<select name="category" required><option value="briefs">Briefs &amp; Case Files</option><option value="flows">Flows &amp; Notes</option><option value="research">Research Materials</option><option value="tournaments">Tournaments &amp; Prep</option><option value="training">Training &amp; Skills</option><option value="team">Team Information</option><option value="official">Official Team Documents</option></select></label><label>Type<select name="type" required><option>Brief</option><option>Block File</option><option>Research</option><option>Guide</option><option>Training</option><option>Flow</option><option>Template</option><option>Tournament</option><option>Form</option><option>Other</option></select></label></div>
+      <label>Topic<input name="topic" maxlength="120" placeholder="e.g. General PF"/></label>
+      <label>Resource URL<input name="url" type="url" maxlength="2048" placeholder="https://…" required/></label>
+      <div class="rl-checks"><label><input name="isPinned" type="checkbox"/> Pin resource</label><label><input name="isActive" type="checkbox" checked/> Visible to members</label></div>
+      <p class="rl-form-status" id="rl-editor-status" role="status"></p>
+      <div class="rl-form-actions"><button type="button" data-close="rl-editor-dialog">Cancel</button><button type="submit">Save resource</button></div>
+    </form>
+  </dialog>
+  <dialog id="rl-request-dialog" class="rl-dialog" aria-labelledby="rl-request-title">
+    <form id="rl-request-form">
+      <div class="rl-dialog-header"><h2 id="rl-request-title">Request a Resource</h2><button type="button" class="rl-close" data-close="rl-request-dialog" aria-label="Close">×</button></div>
+      <label>What are you looking for?<input name="title" maxlength="120" required/></label>
+      <label>Details<textarea name="details" maxlength="1500" rows="3" required placeholder="Tell the coach what would help."></textarea></label>
+      <label>Category<select name="category"><option value="briefs">Briefs &amp; Case Files</option><option value="flows">Flows &amp; Notes</option><option value="research">Research Materials</option><option value="tournaments">Tournaments &amp; Prep</option><option value="training">Training &amp; Skills</option><option value="team">Team Information</option></select></label>
+      <p class="rl-form-status" id="rl-request-status" role="status"></p>
+      <div class="rl-form-actions"><button type="button" data-close="rl-request-dialog">Cancel</button><button type="submit">Send request</button></div>
+    </form>
+  </dialog>
 </main>
 
 </div><!-- /mp-content -->
@@ -1264,8 +1213,9 @@
 
 <script src="data/approved-members.js?v=7"></script>
 <script src="data/admins.js?v=13"></script>
-<script src="js/drive-api.js?v=4"></script>
-<script src="js/members-auth.js?v=32"></script>
+<script src="js/members-auth.js?v=33"></script>
+<script src="js/member-october-document.js?v=2"></script>
+<script src="js/member-resource-library.js?v=6"></script>
 
 <script>
 /* ── Patch showState for members-resources.html ───────────────
@@ -1280,6 +1230,7 @@
       return;
     }
     if (state === 'completing') {
+      document.body.classList.remove('resources-view-active');
       var loading = document.getElementById('mp-loading');
       var content = document.getElementById('mp-content');
       if (loading) loading.style.display = 'flex';
@@ -1291,6 +1242,8 @@
       var content = document.getElementById('mp-content');
       if (loading) loading.style.display = 'none';
       if (content) content.style.display = 'block';
+      document.body.classList.add('resources-view-active');
+      if (window.startMemberResourceLibrary) window.startMemberResourceLibrary();
     }
     if (_orig) _orig(state);
   };

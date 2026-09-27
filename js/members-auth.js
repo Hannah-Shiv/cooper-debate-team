@@ -356,6 +356,8 @@ async function handleAuthenticatedUser(email, options = {}) {
   const access = await getMemberAccess(db, normalizedEmail);
   currentMemberAccess = access;
   currentUserRole = access.role;
+  window.currentPortalRole = currentUserRole;
+  window.dispatchEvent(new CustomEvent("portalrolechange", { detail: { role: currentUserRole } }));
 
   if (access.approved) {
     // members-signon.html and members.html are auth gateways — redirect to portal home.
