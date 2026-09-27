@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Cooper Debate Team — Metro Finals top-four finish, Nationals 4th Place. Cooper Middle School, McLean VA. Speak. Reason. Lead."/>
+  <meta name="description" content="Follow the Cooper Debate Team's 2026–27 season: tournaments, team updates, Public Forum resources, and life at Cooper Middle School."/>
   <title>Cooper Debate Team — Speak · Reason · Lead</title>
+  <link rel="icon" type="image/png" href="images/cooper-debate-badge.png"/>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Great+Vibes&family=Josefin+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"/>
@@ -2842,6 +2843,11 @@
       }
     }
 
+    .home-hero .hero-buttons .btn {
+      width: 184px;
+      box-sizing: border-box;
+    }
+
     /* Homepage responsive safeguards: keep the portrait hero and footer
        comfortably inside phone and tablet viewports without affecting desktop. */
     @media (max-width: 600px) {
@@ -2912,6 +2918,29 @@
     })();
   </script>
   <link rel="stylesheet" href="css/tablet-portrait.css?v=8"/>
+  <link rel="stylesheet" href="css/home-season-hub.css?v=71"/>
+  <link rel="stylesheet" href="css/home-season-journey.css?v=7"/>
+  <style>
+    .team-launch { background: #0b1d35; color: #fff; padding: clamp(32px, 6vw, 76px) 20px; border-block: 1px solid rgba(212,160,23,.38); }
+    .team-launch__inner { max-width: 1160px; margin: auto; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(24px, 5vw, 70px); align-items: center; }
+    .team-launch__eyebrow { color: #e3b84b; text-transform: uppercase; letter-spacing: .16em; font-size: .78rem; font-weight: 700; }
+    .team-launch h2 { font-family: 'Playfair Display', Georgia, serif; font-size: clamp(2rem, 4vw, 3.9rem); line-height: 1.12; margin: 12px 0 18px; color: #fff; }
+    .team-launch p { line-height: 1.65; color: #e3e8f0; }
+    .team-launch__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+    .team-launch__actions a { display: inline-flex; justify-content: center; align-items: center; min-height: 46px; padding: 10px 20px; border: 1px solid #d4a017; border-radius: 5px; font-weight: 700; text-decoration: none; color: #101d31; background: #e3b84b; }
+    .team-launch__actions a + a { color: #f5d480; background: transparent; }
+    .team-launch__dates { padding: 25px; border: 1px solid rgba(227,184,75,.48); background: linear-gradient(145deg, #152e4c, #0b1d35); border-radius: 14px; box-shadow: 0 18px 55px rgba(0,0,0,.18); }
+    .team-launch__dates h3 { color: #e3b84b; text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; margin: 0 0 15px; }
+    .team-launch__dates ol { display: grid; gap: 0; padding: 0; margin: 0; list-style: none; }
+    .team-launch__dates li { padding: 12px 0; border-top: 1px solid rgba(255,255,255,.18); display: flex; justify-content: space-between; gap: 12px; }
+    .team-launch__dates li strong { color: #fff; }
+    .team-launch__dates li span { color: #d5ddeb; text-align: right; }
+    .team-launch__dates p { margin: 15px 0 0; font-size: .92rem; }
+    .team-launch a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .homepage-readiness[hidden] { display: none !important; }
+    @media (max-width: 780px) { .team-launch__inner { grid-template-columns: 1fr; } }
+    @media (max-width: 420px) { .team-launch__dates { padding: 19px; } .team-launch__dates li { flex-direction: column; gap: 3px; } .team-launch__dates li span { text-align: left; } }
+  </style>
 </head>
 <body class="homepage-shell" style="--navy-dark:#1c2030;">
 
@@ -2984,7 +3013,7 @@
     <p class="hero-school">Public Forum · WASDL · NSDA Nationals</p>
     <p class="hero-tagline">Speak <span>·</span> Reason <span>·</span> Lead</p>
     <div class="hero-buttons">
-      <a href="#season-readiness" class="btn btn-gold">Tryout Update →</a>
+      <a href="team-2026-2027.html" class="btn btn-gold">The Team</a>
       <a href="tournaments.html" class="btn btn-navy-gold">Tournaments</a>
     </div>
   </div>
@@ -2996,9 +3025,162 @@
   </div>
 </section>
 
-<!-- Applications are closed for 2026–27; current guidance lives in #season-readiness. -->
-<!-- 2026–27 SEASON READINESS GUIDE -->
-<section id="season-readiness" class="homepage-readiness" aria-labelledby="season-readiness-title">
+<!-- Season-long public homepage; keep the original hero above this section. -->
+<main id="season-hub" class="season-hub">
+  <div class="sh-container">
+    <section class="sh-opening" aria-labelledby="sh-title">
+      <div class="sh-opening__topline">
+        <p class="sh-opening__strap"><span class="sh-opening__count-group"><img src="images/season-count-icon.webp" alt="50" width="716" height="698"/> <span>Debaters</span></span><span class="sh-opening__team"><img src="images/season-team-icon.webp" alt="" width="748" height="673"/> <span>One team</span></span><span><img src="images/season-calendar-icon.webp" alt="" width="586" height="655"/> <span>Season begins</span></span></p>
+      </div>
+      <div class="sh-opening__copy">
+        <h2 id="sh-title"><span class="sh-opening__road">The&nbsp;road</span><br><span class="sh-opening__ahead">ahead</span></h2>
+        <p class="sh-opening__intro">The 2026–27 team is here. Follow our tournaments, explore what we’re debating, and see what’s next for Cooper’s debaters.</p>
+        <div class="sh-opening__actions">
+          <a class="sh-button sh-button--gold" href="team-2026-2027.html"><span class="sh-opening__action-icon sh-opening__action-icon--team" aria-hidden="true"></span><span class="sh-opening__action-label">Explore<br>the team</span><svg class="sh-opening__action-arrow" aria-hidden="true" viewBox="0 0 28 40" fill="none"><path d="M5 5 22 20 5 35" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="sh-button sh-button--red" href="tournaments.html"><span class="sh-opening__action-icon sh-opening__action-icon--trophy" aria-hidden="true"></span><span class="sh-opening__action-label">Explore<br>tournaments</span><svg class="sh-opening__action-arrow" aria-hidden="true" viewBox="0 0 28 40" fill="none"><path d="M5 5 22 20 5 35" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </div>
+      <picture>
+        <source media="(max-width: 720px)" srcset="images/season-stage-road-ahead-mobile.webp"/>
+        <img class="sh-opening__stage" src="images/season-stage-road-ahead.webp" alt="A microphone on the Cooper Debate stage, with banners and the words More than debate" width="1602" height="982" decoding="async"/>
+      </picture>
+    </section>
+
+    <section class="sh-quick" aria-label="Season essentials">
+      <a class="sh-card sh-card--tournament" href="tournaments.html">
+        <div class="sh-card__top"><img class="sh-card__icon" src="images/season-card-calendar.webp" alt="" width="502" height="631"><span class="sh-kicker">Next tournament</span></div>
+        <h3 id="sh-next-name"><span>October 24,</span><em>2026</em></h3>
+        <p class="sh-card__place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><span id="sh-next-place">Congressional School<br>Falls Church, VA</span></p>
+      </a>
+      <a class="sh-card sh-card--practice" href="tournaments.html">
+        <div class="sh-card__top"><img class="sh-card__icon" src="images/season-card-team.webp" alt="" width="487" height="582"><span class="sh-kicker">Team practice</span></div>
+        <h3>Tuesdays</h3>
+        <p class="sh-card__time">2:30 – 4:30 p.m.</p>
+        <p class="sh-card__place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg><span>Cooper Middle School</span></p>
+      </a>
+      <a class="sh-card sh-card--ready" href="team-2026-2027.html">
+        <div class="sh-card__top"><img class="sh-card__icon" src="images/season-card-ready-gold.webp" alt="" width="312" height="320"><span class="sh-kicker">Season essentials</span></div>
+        <h3>Get ready.</h3>
+        <ul><li>Team Contract</li><li>Tournament commitments</li><li>Stay connected with your partner</li></ul>
+      </a>
+      <a class="sh-card sh-card--partner" href="members-signon.html">
+        <div class="sh-card__top"><img class="sh-card__icon" src="images/season-card-preparing-teal.webp" alt="" width="320" height="273"><span class="sh-kicker">Your next move</span></div>
+        <h3>Start preparing.</h3>
+        <ul><li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 5c-2.5-1.4-5.1-1.7-9-1v14c3.8-.7 6.5-.4 9 1 2.5-1.4 5.2-1.7 9-1V4c-3.9-.7-6.5-.4-9 1Zm-1 11.5a16 16 0 0 0-6-1V6.2a15 15 0 0 1 6 1v9.3Zm8-1a16 16 0 0 0-6 1V7.2a15 15 0 0 1 6-1v9.3Z"/></svg>Build your arguments.</li><li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3 15h4v6H3zm7-6h4v12h-4zm7-6h4v18h-4zM3 4h4v7H3z"/></svg>Research the topic.</li><li><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="m2 10 4-4 4 2 2-1 2 1 4-2 4 4-3 4-4 5-3-1-3 1-4-5-3-4Zm5-1-3 2 4 5 2-1 2 1 2-1 2 1 4-5-2-2-3 1-3 4-2-1 2-4-2 1-3-1Z"/></svg>Get tournament ready.</li></ul>
+      </a>
+    </section>
+
+    <section class="sh-journey sh-panel" aria-labelledby="sh-journey-title">
+      <div class="sh-section-head">
+        <div><p class="sh-kicker">Season at a glance</p><h2 id="sh-journey-title">The 2026–27 season journey <span class="sh-rule" aria-hidden="true"></span></h2></div>
+        <a class="sh-journey__schedule-link" href="tournaments.html?tab=calendar-results">View full schedule <span aria-hidden="true">↗</span></a>
+      </div>
+      <p class="sh-journey__swipe">Tap a neighboring milestone or use the arrows to move through the season.</p>
+      <ol class="sh-journey__track" aria-label="Season milestones">
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="Team launch" data-place="Cooper Middle School · 2:30–4:30 p.m." data-extra="Parent/guardian meeting · 7:30 p.m. via Google Meet"><time datetime="2026-09-29">Sep 29</time><span class="sh-journey__dot">S</span><strong>Team launch</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="MS PF #1" data-place="Congressional School · Falls Church"><time datetime="2026-10-24">Oct 24</time><span class="sh-journey__dot">1</span><strong>First tournament</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="MS PF #2 · Cooper hosts" data-place="Cooper Middle School · McLean"><time datetime="2026-11-14">Nov 14</time><span class="sh-journey__dot">2</span><strong>Cooper hosts</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="MS PF #3" data-place="Longfellow Middle School · McLean"><time datetime="2026-12-05">Dec 5</time><span class="sh-journey__dot">3</span><strong>Longfellow</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="MS PF #4" data-place="Norwood School · Bethesda"><time datetime="2027-01-30">Jan 30</time><span class="sh-journey__dot">4</span><strong>Norwood</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="PF #5 · Online" data-place="Virtual extravaganza tournament"><time datetime="2027-02-20">Feb 20</time><span class="sh-journey__dot">5</span><strong>Online</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="Public Forum &amp; Policy Metro Finals" data-place="George C. Marshall · PF one day in person; Policy Friday/Saturday" data-extra="Participation is by qualification."><time datetime="2027-03-12">Mar 12–13</time><span class="sh-journey__dot sh-journey__dot--final" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><rect x="6" y="5" width="28" height="30" rx="3" stroke="currentColor" stroke-width="2"/><rect x="10" y="9" width="20" height="22" rx="1" stroke="currentColor" stroke-opacity=".55"/><path d="M20 12l1.8 4.6 4.9.3-3.8 3.2 1.2 4.8-4.1-2.7-4.1 2.7 1.2-4.8-3.8-3.2 4.9-.3L20 12Z" fill="currentColor"/><path d="M15 28h10" stroke="currentColor" stroke-width="1.5"/></svg></span><strong>Metro Finals</strong></button></li>
+        <li><button type="button" class="sh-journey__milestone" aria-controls="sh-journey-details" data-name="Nationals" data-place="Date and location to be announced" data-extra="Participation is by qualification. Check the official team schedule for updates."><span class="sh-journey__date">Date TBA</span><span class="sh-journey__dot sh-journey__dot--nationals" aria-hidden="true"><svg viewBox="0 0 40 40" fill="none"><path d="M12 7h16v8c0 7-3.5 11-8 11s-8-4-8-11V7Z" stroke="currentColor" stroke-width="2"/><path d="M12 10H7v3c0 5 2 7 7 7m14-10h5v3c0 5-2 7-7 7M20 26v6m-7 2h14m-13-2h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="m20 10 1.5 3.2 3.5.5-2.5 2.5.6 3.4-3.1-1.6-3.1 1.6.6-3.4-2.5-2.5 3.5-.5L20 10Z" fill="currentColor"/></svg></span><strong>Nationals</strong></button></li>
+      </ol>
+      <div class="sh-journey__controls" role="group" aria-label="Browse season milestones">
+        <button type="button" class="sh-journey__step sh-journey__step--previous" aria-label="Previous milestone" aria-controls="sh-journey-details">←</button>
+        <span class="sh-journey__position" aria-live="off">1 of 8</span>
+        <button type="button" class="sh-journey__step sh-journey__step--next" aria-label="Next milestone" aria-controls="sh-journey-details">→</button>
+      </div>
+      <div id="sh-journey-details" class="sh-journey__details" aria-live="polite" aria-atomic="true" tabindex="0">
+        <span class="sh-journey__details-date" id="sh-journey-details-date">Sep 29</span>
+        <strong class="sh-journey__details-name" id="sh-journey-details-name">Team launch</strong>
+        <span class="sh-journey__details-place" id="sh-journey-details-place">Cooper Middle School · 2:30–4:30 p.m.</span>
+        <small class="sh-journey__details-extra" id="sh-journey-details-extra">Parent/guardian meeting · 7:30 p.m. via Google Meet</small>
+      </div>
+      <p class="sh-journey__note">Metro Finals and Nationals participation is by qualification. Dates and details are subject to the official team schedule.</p>
+    </section>
+
+    <div class="sh-editorial">
+      <section class="sh-topic sh-panel" aria-labelledby="sh-topic-title">
+        <a class="sh-panel__cover" href="resources.html" aria-label="Explore the Public Forum topic and resources"></a>
+        <div class="sh-topic__content">
+          <p class="sh-kicker" id="sh-topic-kicker">September / October 2026 · Public Forum</p>
+          <h2 id="sh-topic-title">The question on the table.</h2>
+          <p class="sh-topic__resolution" id="sh-topic-resolution">The United States federal government should enact a moratorium on hyperscale data center construction.</p>
+          <a class="sh-button sh-button--blue" href="resources.html">Explore the topic <span aria-hidden="true">↗</span></a>
+        </div>
+        <nav class="sh-topic__links" aria-label="Public Forum resources">
+          <a href="resources.html">Topic guide <span aria-hidden="true">↗</span></a>
+          <a href="resources.html">Research <span aria-hidden="true">↗</span></a>
+          <a href="resources.html">Evidence <span aria-hidden="true">↗</span></a>
+          <a href="resources.html">PF basics <span aria-hidden="true">↗</span></a>
+        </nav>
+      </section>
+      <section class="sh-calendar sh-panel" aria-labelledby="sh-calendar-title">
+        <a class="sh-panel__cover" href="tournaments.html?tab=calendar-results" aria-label="Open the tournament calendar"></a>
+        <div class="sh-section-head">
+          <div><p class="sh-kicker">On the calendar</p><h2 id="sh-calendar-title"><span id="sh-calendar-month">September</span> <span class="sh-rule" aria-hidden="true"></span></h2></div>
+          <img class="sh-calendar__icon" src="images/season-card-calendar.webp" alt="" width="502" height="631" decoding="async">
+        </div>
+        <div id="sh-calendar-events" class="sh-calendar__events" aria-live="polite">
+          <a href="tournaments.html?tab=calendar-results" class="sh-event"><span class="sh-event__date"><small>Sep</small><strong>29</strong></span><span><strong>First team meeting</strong><small>Cooper Middle School · 2:30–4:30 p.m.</small></span><span aria-hidden="true">↗</span></a>
+          <a href="tournaments.html?tab=calendar-results" class="sh-event"><span class="sh-event__date"><small>Oct</small><strong>24</strong></span><span><strong>First tournament</strong><small>Congressional School · Falls Church</small></span><span aria-hidden="true">↗</span></a>
+        </div>
+        <a href="announcements.html" class="sh-calendar__news">Latest news &amp; announcements <span aria-hidden="true">↗</span></a>
+      </section>
+    </div>
+
+    <div class="sh-lower">
+      <section class="sh-numbers sh-panel" aria-labelledby="sh-numbers-title">
+        <a class="sh-panel__cover" href="team-2026-2027.html" aria-label="Meet the 2026–27 Cooper Debate Team"></a>
+        <p class="sh-kicker">A season to remember</p>
+        <h2 id="sh-numbers-title">The Cooper Debate Team <em>by the numbers.</em></h2>
+        <div class="sh-numbers__grid">
+          <div><strong>50</strong><span>Team members</span><small>New and returning debaters</small></div>
+          <div><strong>5</strong><span>Prelim tournaments</span><small>Across the season</small></div>
+          <div><strong>3</strong><span>Minimum to attend</span><small>Of the five prelims</small></div>
+          <div><strong>2:30–4:30</strong><span>Tuesday practice</span><small>See calendar for updates</small></div>
+        </div>
+      </section>
+      <section class="sh-feature sh-panel" aria-labelledby="sh-feature-title">
+        <a class="sh-panel__cover" href="announcements.html" aria-label="Read the latest team news and announcements"></a>
+        <p class="sh-kicker">From the team desk</p>
+        <h2 id="sh-feature-title">Stay in the conversation.</h2>
+        <p>What’s happening next? Team updates, event reminders, and new ideas all start here.</p>
+        <a class="sh-button sh-button--gold" href="announcements.html">Read the latest news <span aria-hidden="true">↗</span></a>
+      </section>
+    </div>
+  </div>
+</main>
+
+<section class="team-launch" aria-labelledby="team-launch-title" hidden>
+  <div class="team-launch__inner">
+    <div>
+      <div class="team-launch__eyebrow">2026–27 · The team is announced</div>
+      <h2 id="team-launch-title">A new season starts here.</h2>
+      <p>Congratulations to every new and returning Cooper debater. The team list is out, and our first meeting is Tuesday, September 29, from 2:30–4:30 PM. Families: the required parent/guardian Google Meet is September 29 at 7:30 PM; meeting details will come from Coach Konde.</p>
+      <div class="team-launch__actions">
+        <a href="team-2026-2027.html">See the team announcement →</a>
+        <a href="members-resources.html">View the team contract in the Members Portal →</a>
+      </div>
+    </div>
+    <div class="team-launch__dates" aria-label="2026–27 preliminary tournament dates">
+      <h3>Five dates. One commitment.</h3>
+      <ol>
+        <li><strong>October 24, 2026</strong><span>Congressional School</span></li>
+        <li><strong>November 14, 2026</strong><span>Cooper hosts</span></li>
+        <li><strong>December 5, 2026</strong><span>Longfellow</span></li>
+        <li><strong>January 30, 2027</strong><span>Norwood</span></li>
+        <li><strong>February 20, 2027</strong><span>Online</span></li>
+      </ol>
+      <p>Debaters commit to at least <strong>three of the five</strong> preliminary tournaments. <a href="tournaments.html" style="color:#f5d480">View the full tournament schedule →</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- Preserve the completed 2026–27 Tryout experience for the next annual cycle. -->
+<!-- 2026–27 SEASON READINESS GUIDE (archived, not shown after team selections) -->
+<section id="season-readiness" class="homepage-readiness" aria-labelledby="season-readiness-title" hidden>
   <div class="section-wrap">
     <div class="homepage-readiness__panel">
       <article class="tryout-current" aria-labelledby="tryout-current-title">
@@ -3008,13 +3190,13 @@
             <h2 class="homepage-readiness__title" id="tryout-current-title">Debate <span>Tryout Week</span></h2>
             <p class="homepage-readiness__lead">Applications for 2026–27 are closed. Students who are already in the tryout process should use the details below to feel prepared and steady.</p>
           </div>
-          <img class="tryout-intro__art" src="images/tryout-microphone.webp" alt="" width="900" height="643" aria-hidden="true"/>
+          <img class="tryout-intro__art" src="images/tryout-microphone.webp" alt="" width="900" height="643" loading="lazy" aria-hidden="true"/>
         </div>
         <div class="tryout-facts">
-          <div><img class="tryout-fact-icon" src="images/tryout-date-icon.webp" alt="" width="160" height="180" aria-hidden="true"/><div><strong>Tuesday, September 22 or Wednesday, September 23</strong><span>Attend on the day requested in your application</span></div></div>
-          <div><img class="tryout-fact-icon" src="images/tryout-time-icon.webp" alt="" width="143" height="180" aria-hidden="true"/><div><strong>2:30–4:30 p.m.</strong><span>Late buses are available</span></div></div>
-          <div><img class="tryout-fact-icon" src="images/tryout-format-icon.webp" alt="" width="156" height="180" aria-hidden="true"/><div><strong>Two shortened PF rounds</strong><span>A Session on one side; B Session on the opposite side</span></div></div>
-          <div><img class="tryout-fact-icon" src="images/tryout-details-icon.webp" alt="" width="166" height="180" aria-hidden="true"/><div><strong>Monday afternoon or evening</strong><span>Your schedule, partner, speaker assignment, and details will be emailed</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-date-icon.webp" alt="" width="160" height="180" loading="lazy" aria-hidden="true"/><div><strong>Tuesday, September 22 or Wednesday, September 23</strong><span>Attend on the day requested in your application</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-time-icon.webp" alt="" width="143" height="180" loading="lazy" aria-hidden="true"/><div><strong>2:30–4:30 p.m.</strong><span>Late buses are available</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-format-icon.webp" alt="" width="156" height="180" loading="lazy" aria-hidden="true"/><div><strong>Two shortened PF rounds</strong><span>A Session on one side; B Session on the opposite side</span></div></div>
+          <div><img class="tryout-fact-icon" src="images/tryout-details-icon.webp" alt="" width="166" height="180" loading="lazy" aria-hidden="true"/><div><strong>Monday afternoon or evening</strong><span>Your schedule, partner, speaker assignment, and details will be emailed</span></div></div>
         </div>
         <div class="tryout-grid">
           <div>
@@ -3045,7 +3227,7 @@
 </section>
 
 <!-- CURRENT RESOLUTION + NEWS -->
-<section id="idx-season-pulse" class="idx-season-pulse" aria-label="Season updates">
+<section id="idx-season-pulse" class="idx-season-pulse" aria-label="Season updates" hidden>
   <div class="section-wrap idx-season-pulse__grid">
     <article id="idx-news-section" class="idx-season-pulse__column idx-season-pulse__news" aria-labelledby="idx-news-title">
       <div id="idx-news-box">
@@ -3096,7 +3278,7 @@
 </div>
 
 <!-- AWARDS SHOWCASE — live season label and Metro metrics are updated from Firebase -->
-<section id="idx-stats-section" class="stats-section idx-awards-section">
+<section id="idx-stats-section" class="stats-section idx-awards-section" hidden>
   <div class="section-wrap">
     <div id="idx-stats-outer" class="idx-awards-showcase">
       <header id="idx-stats-heading" class="idx-awards-heading">
@@ -3471,9 +3653,9 @@
             <strong>No experience necessary — just curiosity and commitment.</strong>
           </p>
           <div class="idx-closing-actions">
-            <a href="#season-readiness" class="idx-closing-action idx-closing-action-primary">
+            <a href="team-2026-2027.html" class="idx-closing-action idx-closing-action-primary">
               <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="18" cy="16" r="6"/><circle cx="32" cy="18" r="5"/><path d="M6 38v-5c0-7 5-11 12-11s12 4 12 11v5M27 25c7 0 12 4 12 10v3"/></svg>
-              <span><b>Tryout Update</b><small>See this week's guidance</small></span>
+              <span><b>Meet the Team</b><small>See the 2026–27 season</small></span>
               <i aria-hidden="true">→</i>
             </a>
             <a href="about.html" class="idx-closing-action idx-closing-action-secondary">
@@ -3547,7 +3729,7 @@
           Connect
         </h2>
         <ul class="index-footer-nav">
-          <li><a class="index-footer-link" href="index.html#season-readiness"><span class="index-footer-chevron">›</span><span>Tryout Update</span></a></li>
+          <li><a class="index-footer-link" href="team-2026-2027.html"><span class="index-footer-chevron">›</span><span>2026–27 Team</span></a></li>
           <li><a class="index-footer-link" href="about.html#join"><span class="index-footer-chevron">›</span><span>How to Join</span></a></li>
           <li>
             <a class="index-footer-link" href="tournaments.html#parent-info">
@@ -3609,6 +3791,8 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js?v=2"></script>
 <script src="js/public-footer.js?v=5"></script>
+<script src="js/home-season-hub.js?v=9"></script>
+<script src="js/season-journey.js?v=4"></script>
 <script>
   (function () {
     var STORAGE_KEY = 'cooper-home-hero-image';
@@ -3644,7 +3828,7 @@
     });
   })();
 </script>
-<script src="data/announcements.js?v=2"></script>
+<script src="data/announcements.js?v=3"></script>
 <script>
   const tagClasses = { resolution:'tag-resolution', tournament:'tag-tournament', team:'tag-team', news:'tag-news-ann' };
   const container = document.getElementById('home-news-cards');

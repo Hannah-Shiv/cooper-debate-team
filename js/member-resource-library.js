@@ -122,8 +122,9 @@
     const list = $("rl-official-list");
     list.querySelectorAll(".rl-doc-link, [data-dynamic='true']").forEach(element => element.remove());
     list.querySelectorAll("[data-official]").forEach(element => element.classList.remove("has-link"));
+    const hiddenOfficialTitles = new Set(["position descriptions", "tournament sign-up sheet"]);
     const official = activeResources().filter(item =>
-      item.category === "official" && item.title.trim().toLowerCase() !== "position descriptions"
+      item.category === "official" && !hiddenOfficialTitles.has(item.title.trim().toLowerCase())
     ).sort(recentOrder);
     for (const resource of official) {
       let placeholder = Array.from(list.querySelectorAll("[data-official]"))

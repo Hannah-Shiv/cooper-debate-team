@@ -1,0 +1,258 @@
+/* Interactive 2026–27 season milestones; loaded after the season hub styles. */
+.sh-journey {
+  padding: 32px 34px 24px;
+  cursor: default;
+  background: radial-gradient(ellipse at 88% 9%, rgba(177,121,38,.11), transparent 37%),
+              linear-gradient(145deg, #102848, #091932 70%);
+}
+.sh-journey .sh-journey__schedule-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 10px 18px;
+  border: 1px solid rgba(243,196,92,.72);
+  border-radius: 999px;
+  background: rgba(17,48,82,.9);
+  color: #ffe29a;
+  font-size: .77rem;
+  font-weight: 700;
+  letter-spacing: .03em;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(0,0,0,.14);
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, color .2s ease;
+}
+.sh-journey .sh-journey__schedule-link span {
+  display: inline-block;
+  font-size: 1rem;
+  transition: transform .2s ease;
+}
+.sh-journey .sh-journey__schedule-link:hover {
+  border-color: #ffdf86;
+  background: #25547c;
+  color: #fff;
+  box-shadow: 0 5px 18px rgba(243,196,92,.2);
+}
+.sh-journey .sh-journey__schedule-link:hover span { transform: translate(2px, -2px); }
+.sh-journey .sh-journey__schedule-link:focus-visible {
+  outline: 3px solid #ffe17c;
+  outline-offset: 3px;
+}
+.sh-journey__track {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 4px;
+  margin-top: 28px;
+  pointer-events: auto;
+}
+.sh-journey__swipe,
+.sh-journey__controls { display: none; }
+.sh-journey__track::before {
+  left: 6.25%;
+  right: 6.25%;
+  top: 52px;
+  background: linear-gradient(90deg, #bd3150, #619bdf 65%, #f3ca69);
+}
+.sh-journey__track li { display: block; min-width: 0; }
+.sh-journey__milestone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 125px;
+  padding: 11px 3px 9px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #edf2fc;
+  font: inherit;
+  cursor: pointer;
+  transition: background .2s, border-color .2s, transform .2s;
+}
+.sh-journey__milestone:hover,
+.sh-journey__track li.is-selected .sh-journey__milestone {
+  border-color: rgba(242,203,113,.3);
+  background: linear-gradient(180deg, rgba(242,203,113,.12), rgba(75,134,205,.07));
+  transform: translateY(-3px);
+}
+.sh-journey__milestone:focus-visible { outline: 2px solid #ffe17c; outline-offset: 2px; }
+.sh-journey__milestone time,
+.sh-journey__date {
+  display: block;
+  min-height: 17px;
+  color: #ffdf8b;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.sh-journey__dot {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-color: #86b5ed;
+  font: 700 .95rem/1 'Cormorant Garamond', Georgia, serif;
+  box-shadow: 0 0 0 5px #0b203c, 0 3px 12px rgba(0,0,0,.3);
+}
+.sh-journey__dot svg { display: block; width: 30px; height: 30px; }
+.sh-journey__dot--final {
+  border-color: #f1c65c;
+  color: #f8da86;
+  background: #382915;
+}
+.sh-journey__dot--nationals {
+  border-color: #ffe29b;
+  color: #ffe29b;
+  background: #613316;
+  box-shadow: 0 0 0 5px #0b203c, 0 0 22px rgba(247,197,92,.3);
+}
+.sh-journey__track li.is-past .sh-journey__dot:not(.sh-journey__dot--final):not(.sh-journey__dot--nationals) { background: #315d98; }
+.sh-journey__track li.is-next .sh-journey__dot:not(.sh-journey__dot--final):not(.sh-journey__dot--nationals) {
+  border-color: #f3ce68;
+  background: #b30000;
+  box-shadow: 0 0 0 5px #0b203c, 0 0 18px #d79a4b;
+}
+.sh-journey__track strong {
+  max-width: 120px;
+  color: #eff4fd;
+  font-size: .72rem;
+  line-height: 1.35;
+  font-weight: 700;
+}
+.sh-journey__track li:nth-last-child(-n+2) strong { color: #ffdf8b; }
+.sh-journey__details {
+  display: flex;
+  align-items: center;
+  height: 72px;
+  box-sizing: border-box;
+  margin-top: 12px;
+  padding: 0 20px;
+  border: 1px solid rgba(242,203,113,.32);
+  border-radius: 9px;
+  background: linear-gradient(100deg, rgba(242,203,113,.13), rgba(31,65,111,.24) 70%);
+  box-shadow: inset 3px 0 #edc45e;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  scrollbar-color: #b99254 #122846;
+}
+.sh-journey__details-date {
+  flex: 0 0 auto;
+  color: #ffdf8b;
+  font: 700 1.28rem/1 'Cormorant Garamond', Georgia, serif;
+  text-transform: uppercase;
+}
+.sh-journey__details-name,
+.sh-journey__details-place,
+.sh-journey__details-extra {
+  flex: 0 0 auto;
+  margin-left: 18px;
+  padding-left: 18px;
+  border-left: 1px solid rgba(237,196,94,.48);
+  white-space: nowrap;
+}
+.sh-journey__details-name { color: #fff; font-size: .91rem; }
+.sh-journey__details-place,
+.sh-journey__details-extra { color: #cedbed; font-size: .78rem; }
+.sh-journey__details-extra { color: #ffdf8b; }
+.sh-journey__details-extra[hidden] { display: none; }
+.sh-journey__details:focus-visible { outline: 2px solid #ffe17c; outline-offset: 2px; }
+.sh-journey__note { margin-top: 14px; color: #b9c9de; font-size: .72rem; line-height: 1.5; text-align: center; }
+@media (max-width: 720px) {
+  .sh-journey { padding: 24px 16px; }
+  .sh-journey__swipe {
+    display: block;
+    margin: 14px 0 0;
+    color: #e2c98e;
+    font-size: .71rem;
+    line-height: 1.4;
+    letter-spacing: .02em;
+    text-align: center;
+  }
+  .sh-journey__track {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    margin-top: 14px;
+    padding: 5px 0 12px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .sh-journey__track::-webkit-scrollbar { display: none; }
+  .sh-journey__track::before {
+    left: calc(100% / 6);
+    right: auto;
+    top: 57px;
+    width: calc(100% * 7 / 3);
+    pointer-events: none;
+  }
+  .sh-journey__track li { flex: 0 0 33.333333%; scroll-snap-align: center; }
+  .sh-journey__track strong { max-width: 100%; }
+  .sh-journey__controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    margin: 4px 0 10px;
+  }
+  .sh-journey__step {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 38px;
+    border: 1px solid rgba(243,196,92,.65);
+    border-radius: 5px;
+    background: #142d4b;
+    color: #ffdf8b;
+    font: 700 1.35rem/1 'Josefin Sans', sans-serif;
+    cursor: pointer;
+  }
+  .sh-journey__step:disabled { opacity: .35; cursor: not-allowed; }
+  .sh-journey__step:not(:disabled):hover { background: #214466; }
+  .sh-journey__step:focus-visible { outline: 2px solid #ffdf8b; outline-offset: 3px; }
+  .sh-journey__position {
+    min-width: 70px;
+    color: #e8d8ab;
+    font-size: .72rem;
+    font-weight: 700;
+    text-align: center;
+  }
+  .sh-journey__details {
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 5px 0;
+    height: auto;
+    min-height: 94px;
+    padding: 12px 14px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    white-space: normal;
+  }
+  .sh-journey__details-date { font-size: 1.3rem; }
+  .sh-journey__details-name {
+    max-width: calc(100% - 12px);
+    margin-left: 12px;
+    padding-left: 12px;
+    white-space: normal;
+  }
+  .sh-journey__details-place,
+  .sh-journey__details-extra {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 0;
+    border: 0;
+    white-space: normal;
+  }
+  .sh-journey__note { text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sh-journey__milestone { transition: none; }
+  .sh-journey .sh-journey__schedule-link,
+  .sh-journey .sh-journey__schedule-link span { transition: none; }
+}

@@ -343,7 +343,11 @@
         </div>
       </div>
     </a>
-    <div class="kickoff-schedule-mount" style="margin-bottom:28px;"></div>
+    <p style="margin:0 0 22px"><a href="team-2026-2027.html" class="btn btn-gold">Meet the 2026–27 team →</a></p>
+    <div role="note" style="margin-bottom:28px;padding:18px 22px;border-left:4px solid #d4a017;background:#11294a;color:#fff">
+      <strong>Required Debate Team Meetings every Tuesday from 2:30–4:30 PM.</strong>
+      <span style="display:block;margin-top:6px">The first meeting is September 29. A parent or guardian should attend the required Google Meet that evening at 7:30 PM; Coach Konde will share joining details.</span>
+    </div>
     <div id="ann-list">
       <div class="ann-empty">Loading announcements…</div>
     </div>
@@ -399,8 +403,7 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=5"></script>
-<script src="js/kickoff-schedule.js?v=8"></script>
-<script src="data/announcements.js?v=2"></script>
+<script src="data/announcements.js?v=3"></script>
 <script>
   const tagClasses = {
     resolution: 'tag-resolution',
@@ -426,6 +429,7 @@
           </div>
         </div>
         <div class="ann-card-body">${post.body}</div>
+        ${post.href ? `<a href="${post.href}" class="btn btn-gold" style="margin-top:16px">Read the team announcement →</a>` : ''}
       </div>
     `).join('');
   }

@@ -1,0 +1,331 @@
+/* Team-page composition around the same interactive timeline as the homepage. */
+.team-season-journey {
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  cursor: default;
+  background: #081b34;
+}
+.team-season-journey .tournament-inner { width: min(90.4%, 1600px); padding: 0 0 30px; }
+.team-season-journey .tournament-intro {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) 24px minmax(0, .84fr) 24px minmax(0, 1.06fr);
+  align-items: center;
+  gap: clamp(10px, 1.2vw, 20px);
+  min-height: clamp(220px, 19vw, 310px);
+  margin-bottom: 0;
+  padding: 8px 0;
+  background: #081b34;
+}
+.team-season-journey .tournament-intro > div { min-width: 0; }
+.team-season-journey .tournament-intro .section-kicker { color: #f4c66e; }
+.team-season-journey .tournament-intro .section-kicker::after {
+  display: inline-block; vertical-align: middle; width: 78px; height: 1px;
+  margin-left: 13px; background: #e2b967; content: "";
+}
+.team-season-journey .tournament-intro h2 { font-size: clamp(3.4rem, 5.3vw, 6rem); }
+.roster-section .section-heading h2,
+.closing-section h2 {
+  font: 600 clamp(3.4rem, 5.3vw, 6rem)/.83 var(--ta-display);
+  letter-spacing: -.035em;
+}
+.team-season-journey .team-journey-intro-copy {
+  width: 100%;
+  max-width: 320px;
+  justify-self: center;
+  text-align: center;
+}
+.team-season-journey .team-journey-intro-copy p {
+  margin: 0;
+  font-size: .943rem; line-height: 1.5;
+}
+.team-season-journey .team-journey-intro-copy p strong { color: #f3c76a; }
+.team-season-journey .team-journey-intro-copy .sh-journey__schedule-link {
+  display: flex;
+  width: max-content;
+  margin: 16px auto 0;
+}
+.team-intro-separator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  justify-self: center;
+  height: 140px;
+  color: #f3c45c;
+  font-size: 12px;
+  line-height: 1;
+}
+.team-intro-separator::before,
+.team-intro-separator::after {
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(243,196,92,.75));
+  content: "";
+}
+.team-intro-separator::after { transform: rotate(180deg); }
+.team-season-journey .team-journey-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 450px;
+  justify-self: end;
+  pointer-events: none;
+}
+.team-season-journey .tournament-intro::after { display: none; }
+.team-season-journey .sh-journey__track { margin-top: 6px; }
+.team-season-journey .sh-journey__details {
+  margin-top: 12px; height: 65px; border-color: rgba(242,203,113,.4);
+  background: linear-gradient(100deg,rgba(242,203,113,.08),rgba(13,40,73,.68));
+}
+.team-season-journey .sh-journey__details-date { font-size: 1.55rem; }
+.team-season-journey .next-steps {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.team-season-journey .next-steps > div {
+  position: relative;
+  min-width: 0;
+  min-height: 95px;
+  justify-content: center;
+  padding: 10px 24px;
+  border: 0;
+}
+.team-season-journey .next-steps > div:not(:first-child) {
+  align-items: center;
+  text-align: center;
+}
+.team-season-journey .next-steps > div:not(:last-child)::after {
+  position: absolute;
+  top: 50%;
+  right: -8px;
+  color: #f3c45c;
+  font-size: 16px;
+  line-height: 1;
+  content: "★";
+  transform: translateY(-50%);
+}
+
+/* Flat navy section bands, separated by centered stars and fading rules. */
+body { background: #07172f; }
+.season-snapshot { background: #091d36; }
+.roster-section { padding-top: 22px; }
+.team-season-journey.sh-panel,
+.team-season-journey.sh-journey { background: #081b34; }
+.closing-section { background: #081b34; }
+.closing-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) 24px minmax(0, .84fr) 24px minmax(0, 1.06fr);
+  gap: clamp(10px, 1.2vw, 20px);
+}
+.closing-copy {
+  min-width: 0;
+  width: 100%;
+  justify-self: center;
+  text-align: center;
+}
+.closing-section .closing-button {
+  background: #0b6068;
+  border-color: #3b9296;
+  color: #fff;
+}
+@media (min-width: 1001px) {
+  .closing-section .closing-button { position: relative; left: calc(-1 * min(1.6vw, 28.65px)); }
+}
+.closing-section .closing-button:hover {
+  background: #16747b;
+  border-color: #62a5a8;
+  color: #fff;
+}
+.closing-section .closing-button:focus-visible {
+  outline: 2px solid #f3c45c;
+  outline-offset: 3px;
+}
+.closing-art {
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  height: auto;
+  justify-self: end;
+}
+body .index-footer { background: #07172f; }
+.team-section-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  min-height: 44px;
+  padding: 0 20px;
+  background: #07172f;
+  color: #f3c45c;
+  line-height: 1;
+}
+.team-section-divider::before,
+.team-section-divider::after {
+  flex: 1 1 0;
+  max-width: 320px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(243,196,92,.83));
+  content: "";
+}
+.team-section-divider::after { transform: rotate(180deg); }
+.team-section-divider--short-rules::before,
+.team-section-divider--short-rules::after { flex: 0 1 180px; }
+.team-section-divider--to-closing { background: #081b34; }
+.team-section-divider span {
+  flex: none;
+  font-size: 16px;
+  text-shadow: 0 0 12px rgba(243,196,92,.38);
+}
+body .index-footer-crown { width: min(calc(100% - 44px), 760px); }
+@media (min-width: 1001px) and (max-width: 1120px) {
+  .team-season-journey .tournament-intro .section-kicker::after {
+    width: 40px;
+    margin-left: 8px;
+  }
+}
+@media (max-width: 720px) {
+  .team-section-divider { gap: 13px; min-height: 38px; }
+  .team-section-divider--short-rules::before,
+  .team-section-divider--short-rules::after { flex-basis: 100px; }
+}
+@media (max-width: 1000px) {
+  .team-season-journey .tournament-inner { padding-top: 8px; }
+  .team-season-journey .tournament-intro {
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, .7fr);
+    gap: 10px 14px;
+    min-height: 245px;
+  }
+  .team-season-journey .tournament-intro > div:first-child { grid-column: 1; grid-row: 1; align-self: end; }
+  .team-season-journey .team-journey-intro-copy {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    justify-self: start;
+    max-width: 390px;
+    text-align: left;
+  }
+  .team-season-journey .team-intro-separator--first { grid-column: 2; grid-row: 1 / span 2; }
+  .team-season-journey .team-intro-separator--second { display: none; }
+  .team-season-journey .team-journey-art { grid-column: 3; grid-row: 1 / span 2; }
+  .team-season-journey .tournament-intro h2 { font-size: clamp(3.2rem, 5.5vw, 4.5rem); }
+  .roster-section .section-heading h2,
+  .closing-section h2 { font-size: clamp(3.2rem, 5.5vw, 4.5rem); }
+  .closing-inner {
+    grid-template-columns: minmax(0, 1fr) 24px minmax(0, .7fr);
+    gap: 10px 14px;
+  }
+  .closing-inner > div:first-child { grid-column: 1; grid-row: 1; align-self: end; }
+  .closing-copy {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: start;
+    justify-self: start;
+    text-align: left;
+  }
+  .closing-inner .team-intro-separator--first { grid-column: 2; grid-row: 1 / span 2; }
+  .closing-inner .team-intro-separator--second { display: none; }
+  .closing-art { grid-column: 3; grid-row: 1 / span 2; }
+}
+@media (max-width: 900px) {
+  .team-season-journey .tournament-inner { width: 92%; }
+}
+@media (max-width: 720px) {
+  .closing-inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    width: calc(100% - 32px);
+  }
+  .closing-inner > div:first-child,
+  .closing-copy,
+  .closing-art { grid-column: 1; grid-row: auto; }
+  .closing-inner > div:first-child { text-align: center; }
+  .closing-section .section-kicker { display: inline-block; }
+  .closing-copy { justify-self: center; text-align: center; }
+  .closing-inner .team-intro-separator--first { display: none; }
+  .closing-inner .team-intro-separator--second {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    width: min(100%, 240px);
+    height: auto;
+    margin: 19px auto 0;
+  }
+  .closing-inner .team-intro-separator--second::before,
+  .closing-inner .team-intro-separator--second::after {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(243,196,92,.75));
+  }
+  .closing-art {
+    width: min(100%, 420px);
+    margin: 22px auto 0;
+    justify-self: center;
+  }
+  .team-season-journey .tournament-inner { width: 100%; padding: 14px 16px 28px; }
+  .team-season-journey .tournament-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    min-height: 0;
+    padding: 0 0 20px;
+  }
+  .team-season-journey .tournament-intro > div:first-child,
+  .team-season-journey .team-journey-intro-copy,
+  .team-season-journey .team-journey-art { grid-column: 1; grid-row: auto; }
+  .team-season-journey .tournament-intro h2 { font-size: clamp(3.4rem, 10vw, 4.4rem); }
+  .roster-section .section-heading h2,
+  .closing-section h2 { font-size: clamp(3.4rem, 10vw, 4.4rem); }
+  .team-season-journey .team-journey-intro-copy {
+    max-width: 100%;
+    margin-top: 16px;
+  }
+  .team-season-journey .team-intro-separator--first { display: none; }
+  .team-season-journey .team-intro-separator--second {
+    display: flex;
+    flex-direction: row;
+    gap: 14px;
+    width: min(100%, 240px);
+    height: auto;
+    margin: 19px auto 0;
+  }
+  .team-season-journey .team-intro-separator--second::before,
+  .team-season-journey .team-intro-separator--second::after {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(243,196,92,.75));
+  }
+  .team-season-journey .team-journey-art {
+    width: min(100%, 370px);
+    margin: 16px auto 0;
+    justify-self: center;
+    transform: translateX(calc(-1 * min(5vw, 19px)));
+  }
+  .team-season-journey .sh-journey__track { margin-top: 14px; }
+  .team-season-journey .sh-journey__details { height: auto; }
+  .team-season-journey .next-steps {
+    grid-template-columns: 1fr;
+    margin-top: 18px;
+  }
+  .team-season-journey .next-steps > div,
+  .team-season-journey .next-steps > div:first-child {
+    grid-column: auto;
+    min-height: 75px;
+    margin: 0;
+    padding: 15px 8px;
+    border: 0;
+  }
+  .team-season-journey .next-steps > div:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -9px;
+    transform: translateX(50%);
+  }
+}
+@media (max-width: 480px) {
+  .team-season-journey .team-journey-intro-copy p { font-size: .874rem; }
+  .team-season-journey .sh-journey__details { flex-wrap: wrap; align-content: center; gap: 3px 0; height: auto; min-height: 105px; padding-block: 9px; white-space: normal; }
+  .team-season-journey .sh-journey__details-date { font-size: 1.3rem; }
+  .team-season-journey .sh-journey__details-place { width: 100%; margin-left: 0; padding-left: 0; border: 0; white-space: normal; }
+}

@@ -11,6 +11,16 @@
 
 const ANNOUNCEMENTS = [
   {
+    id: 3,
+    date: "September 25, 2026",
+    tag: "team",
+    tagLabel: "Team Announcement",
+    emoji: "★",
+    title: "The 2026–27 Cooper Debate Team Is Announced",
+    href: "team-2026-2027.html",
+    body: `Congratulations to our new and returning debaters! See the team announcement and read the membership contract, which every debater—including returning members—should sign.\n\nOur first required team meeting is Tuesday, September 29, from 2:30–4:30 PM. A parent or guardian should attend the September 29 Google Meet at 7:30 PM; Coach Konde will share meeting details. The first tournament is October 24. Debaters commit to at least three of the five preliminary WASDL tournaments.`
+  },
+  {
     id: 2,
     date: "August 20, 2026",
     tag: "team",

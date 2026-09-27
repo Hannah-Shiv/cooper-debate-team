@@ -1,0 +1,316 @@
+:root {
+  color-scheme: dark;
+  --ta-navy: #081a38;
+  --ta-deep: #06132b;
+  --ta-blue: #102b55;
+  --ta-gold: #e7b642;
+  --ta-gold-light: #f5d988;
+  --ta-cream: #f3f0e7;
+  --ta-muted: #aeb9ca;
+  --ta-line: rgba(231,182,66,.28);
+  --ta-display: "Cormorant Garamond", Georgia, serif;
+  --ta-body: "Josefin Sans", sans-serif;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 1rem; }
+body { min-height: 100vh; margin: 0; overflow-x: hidden; background: var(--ta-navy); color: var(--ta-cream); font-family: var(--ta-body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+body::before { position: fixed; z-index: 10; inset: 0; pointer-events: none; content: ""; opacity: .09; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E"); mix-blend-mode: soft-light; }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--ta-gold-light); outline-offset: 4px; }
+.skip-link { position: absolute; z-index: 10000; top: 8px; left: 8px; padding: .75rem 1rem; transform: translateY(-150%); background: var(--ta-gold); color: var(--ta-deep); font-weight: 700; }
+.skip-link:focus { transform: translateY(0); }
+#site-badge { position:fixed; top:8px; left:16px; width:72px; height:72px; z-index:9997; display:block; transition:transform .2s ease,opacity .2s ease; opacity:.92; }
+#site-badge:hover { transform:scale(1.06); opacity:1; }
+#site-badge img { width:72px; height:72px; object-fit:contain; display:block; }
+.mp-topbar { position:fixed; top:0; left:0; right:0; height:88px; background:rgba(7,13,32,.92); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); border-bottom:1px solid rgba(255,255,255,.08); z-index:9990; pointer-events:none; }
+@media (min-width:1101px), (min-width:601px) and (orientation:landscape) {
+  #member-login-btn { font-size:12.24px; line-height:1.6; }
+}
+.hero { position:relative; isolation:isolate; min-height:clamp(500px,55vw,700px); padding-top:88px; overflow:hidden; background:radial-gradient(ellipse at 70% 36%,#145080 0%,#0b3264 28%,transparent 62%),linear-gradient(110deg,#03142e,#0a2b57 76%,#183d71); }
+.hero::before { position:absolute; z-index:-2; inset:0; background:url("../images/cooper-school-team-hero-2026.png?v=3") 75% center/cover no-repeat; content:""; }
+.hero::after { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(1,13,33,.91) 0%,rgba(2,17,40,.76) 27%,rgba(4,20,45,.12) 55%,rgba(2,18,39,.02) 100%),linear-gradient(0deg,rgba(2,13,31,.25),transparent 40%); content:""; }
+.hero-inner { position:relative; max-width:1320px; margin:auto; padding:24px 4.7vw 52px; }
+.hero-meta { display:flex; justify-content:space-between; gap:20px; color:#eee9df; font-size:.66rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; }
+.hero-meta span:last-child { text-shadow:0 1px 6px rgba(1,13,33,.95),0 0 12px rgba(1,13,33,.75); }
+.hero-meta i { margin:0 14px; color:#d8bc81; font-style:normal; }
+.hero-copy { width:min(700px,72%); margin-top:clamp(38px,5vw,74px); margin-left:calc(clamp(-50px,-4vw,-20px) + min(0px, calc(330px - 25vw))); }
+.eyebrow,.season-label,.section-kicker,.group-overline,.meeting-label,.meeting-date span,.tournament-timeline time span,.tournament-timeline time small { font-size:.65rem; font-weight:700; letter-spacing:.17em; text-transform:uppercase; }
+.eyebrow { display:flex; align-items:center; gap:10px; margin:0; color:var(--ta-gold-light); }
+.eyebrow span { width:28px; height:1px; background:var(--ta-gold); }
+.eyebrow i { color:rgba(255,255,255,.45); font-style:normal; }
+.season-label { position:relative; margin:0 0 16px; padding-top:25px; color:var(--ta-gold); font-size:.83rem; font-weight:600; letter-spacing:.19em; }
+.season-label::before { position:absolute; top:0; left:0; width:42px; height:2px; background:var(--ta-gold); content:""; }
+.season-label::after { position:absolute; top:1px; left:54px; width:12px; height:1px; background:var(--ta-gold); content:""; }
+.season-label b { padding:0 .4em; color:rgba(255,255,255,.4); }
+.hero h1 { margin:0; color:#fff; font:700 clamp(3.7rem,9vw,8.2rem)/.84 var(--ta-display); letter-spacing:-.043em; }
+.hero h1 em,.section-heading h2 em,.season-copy h2 em,.tournament-heading h2 em,.closing-section h2 em { color:var(--ta-gold); font-weight:500; }
+.hero-intro { position:relative; max-width:470px; margin:22px 0 17px; padding-top:19px; color:#f0f0f0; font-size:clamp(.74rem,1.1vw,.92rem); line-height:1.55; text-shadow:0 1px 5px rgba(0,0,0,.7); }
+.hero-intro::before { position:absolute; top:0; left:0; width:120px; height:2px; background:var(--ta-gold); content:""; }
+.hero-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.button { display:inline-flex; align-items:center; justify-content:center; gap:16px; min-height:39px; padding:10px 15px; border:1px solid var(--ta-gold); border-radius:3px; font-size:.62rem; font-weight:700; letter-spacing:.06em; text-decoration:none; text-transform:uppercase; transition:transform .2s ease,background .2s ease; }
+.button:hover { transform:translateY(-2px); }
+.button-gold { background:var(--ta-gold); color:#10203b; }
+.button-gold:hover { background:var(--ta-gold-light); }
+.button-outline { background:rgba(2,17,39,.72); color:var(--ta-gold-light); }
+.button-outline:hover { background:rgba(231,182,66,.15); }
+.button span { font-size:.95rem; }
+.season-snapshot { position:relative; z-index:2; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:center; max-width:1240px; width:calc(100% - 56px); min-height:96px; margin:-8px auto 0; padding:18px 12px; border:1px solid rgba(240,197,103,.8); border-radius:7px; background:#04142e; box-shadow:0 12px 30px rgba(0,0,0,.23); }
+.snapshot-fact { display:flex; align-items:center; justify-content:center; gap:13px; min-width:0; min-height:54px; padding:0 10px; border-right:1px solid rgba(236,196,112,.45); }
+.snapshot-fact:last-child { border:0; }
+.snapshot-fact svg { width:clamp(36px,4.6vw,62px); height:clamp(36px,4.6vw,62px); flex:none; fill:none; stroke:var(--ta-gold-light); stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+.snapshot-fact strong { display:block; color:#fff; font:600 clamp(1.9rem,3.4vw,3.5rem)/.9 var(--ta-display); }
+.snapshot-fact .snapshot-words { font:600 clamp(.83rem,1.5vw,1.3rem)/1.12 var(--ta-body); text-transform:uppercase; }
+.snapshot-fact span,.snapshot-fact small { display:block; color:#fff; font-size:clamp(.48rem,.8vw,.76rem); letter-spacing:.04em; text-transform:uppercase; }
+.snapshot-fact small { margin-top:3px; color:#c3cbd7; font-size:clamp(.44rem,.65vw,.65rem); letter-spacing:0; text-transform:none; }
+.roster-section { max-width:1320px; margin:auto; padding:32px 4.7vw 86px; }
+.section-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:26px; margin-bottom:24px; }
+.section-kicker { margin:0 0 10px; color:var(--ta-gold); }
+.section-kicker span { padding:0 5px; color:rgba(255,255,255,.42); }
+.section-heading h2,.season-copy h2,.tournament-heading h2,.closing-section h2 { margin:0; color:var(--ta-cream); font:600 clamp(3rem,6vw,5.3rem)/.9 var(--ta-display); letter-spacing:-.035em; }
+.section-heading h2 { font-size:clamp(3.35rem,7.6vw,6.5rem); }
+.roster-summary { display:flex; align-items:center; gap:13px; margin-bottom:5px; padding:7px 0 7px 18px; border-left:1px solid var(--ta-line); }
+.roster-summary strong { color:var(--ta-gold-light); font:600 2.7rem/.9 var(--ta-display); }
+.roster-summary span { color:#aeb9ca; font-size:.65rem; line-height:1.4; }
+.section-intro { position:relative; max-width:290px; margin:0 0 5px; padding-bottom:12px; color:#e0e3e9; font-size:clamp(.69rem,1vw,.85rem); line-height:1.55; }
+.section-intro::after { position:absolute; bottom:0; left:0; width:95px; height:1px; background:var(--ta-gold); content:""; }
+.roster-previews { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:11px; }
+.roster-preview { position:relative; isolation:isolate; display:flex; flex-direction:column; align-items:flex-start; min-width:0; min-height:clamp(228px,28vw,325px); overflow:hidden; padding:clamp(16px,2vw,25px); border:1px solid rgba(184,205,234,.3); border-radius:6px; background:#091d42; }
+.roster-preview::before { position:absolute; z-index:-2; inset:0; content:""; }
+.preview-leadership::before { background:linear-gradient(0deg,#06142e 2%,transparent 100%),linear-gradient(135deg,transparent 42%,#102c56 43% 55%,transparent 56%),linear-gradient(28deg,transparent 42%,#123565 43% 55%,transparent 56%),linear-gradient(155deg,#071939,#163a69); }
+.preview-returning::before { background:linear-gradient(0deg,#06142e 0%,transparent 85%),repeating-linear-gradient(0deg,transparent 0 27px,rgba(192,157,106,.15) 28px 30px,transparent 31px 38px),linear-gradient(135deg,#051732,#18395f); }
+.preview-eighth::before { background:linear-gradient(0deg,#06142e 0%,transparent 86%),repeating-linear-gradient(90deg,transparent 0 33px,rgba(234,218,175,.11) 34px 35px,transparent 36px 75px),linear-gradient(130deg,#071c39,#39435b); }
+.preview-seventh::before { background:linear-gradient(0deg,#06142e 0%,transparent 86%),radial-gradient(circle at 74% 63%,transparent 0 30px,rgba(215,177,109,.23) 31px 33px,transparent 34px 44px,rgba(215,177,109,.19) 45px 46px,transparent 47px),linear-gradient(145deg,#071831,#1c3855); }
+.roster-preview::after { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(3,16,37,.35),transparent); content:""; }
+.preview-index { position:absolute; top:13px; right:14px; color:var(--ta-gold-light); font-size:.63rem; }
+.preview-icon { display:grid; width:clamp(52px,6vw,76px); height:clamp(52px,6vw,76px); margin-bottom:auto; place-items:center; border:1px solid var(--ta-gold-light); border-radius:50%; color:var(--ta-gold-light); }
+.preview-icon svg { width:58%; height:58%; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.roster-preview h3 { margin:10px 0 0; color:#fff; font:600 clamp(1.35rem,2.6vw,2.5rem)/.96 var(--ta-display); }
+.preview-rule { width:35px; height:2px; margin:12px 0 9px; background:var(--ta-gold); }
+.roster-preview p { margin:0 0 13px; color:#fff; font-size:.62rem; letter-spacing:.08em; text-transform:uppercase; }
+.roster-preview p strong { margin-right:5px; color:var(--ta-gold); font:700 clamp(1.8rem,3vw,2.7rem)/1 var(--ta-display); }
+.roster-preview button { display:flex; align-items:center; justify-content:center; gap:12px; width:100%; min-height:36px; margin-top:auto; padding:8px 10px; border:1px solid var(--ta-gold); border-radius:3px; background:rgba(4,16,36,.75); color:var(--ta-gold-light); font:700 .62rem var(--ta-body); letter-spacing:.09em; text-transform:uppercase; cursor:pointer; }
+.roster-preview button:hover { background:var(--ta-gold); color:var(--ta-deep); }
+.roster-group { scroll-margin-top:108px; }
+.roster-layout { display:grid; grid-template-columns:1.05fr .95fr; gap:14px; align-items:stretch; }
+.roster-group { position:relative; overflow:hidden; padding:24px 26px 25px; border:1px solid rgba(197,211,231,.14); background:#0a1b37; box-shadow:0 12px 30px rgba(0,0,0,.1); }
+.roster-group::before { position:absolute; top:0; left:0; width:62px; height:3px; background:var(--ta-gold); content:""; }
+.roster-leadership { background:linear-gradient(135deg,#132e56,#0a1b37 75%); border-color:rgba(231,182,66,.34); }
+.roster-eighth { grid-column:1; grid-row:2; }
+.roster-seventh { grid-column:2; grid-row:2; }
+.group-head { display:grid; grid-template-columns:34px 1fr auto; align-items:center; gap:12px; margin-bottom:17px; padding-bottom:14px; border-bottom:1px solid rgba(255,255,255,.1); }
+.group-index { display:grid; width:30px; height:30px; place-items:center; border:1px solid rgba(231,182,66,.55); border-radius:50%; color:var(--ta-gold-light); font-size:.7rem; font-weight:700; }
+.group-overline { margin:0 0 2px; color:#9caac0; font-size:.52rem; letter-spacing:.12em; }
+.group-head h3 { margin:0; color:var(--ta-cream); font:600 1.5rem/1.1 var(--ta-display); }
+.group-count { color:var(--ta-gold-light); font:700 .8rem var(--ta-body); letter-spacing:.1em; text-align:right; }
+.group-count small { display:block; margin-top:2px; color:#8593a9; font-size:.47rem; font-weight:500; letter-spacing:.08em; text-transform:uppercase; }
+.name-list { display:grid; grid-template-columns:1fr 1fr; gap:0 18px; margin:0; padding:0; list-style:none; }
+.name-list li { padding:6px 0; border-bottom:1px solid rgba(255,255,255,.055); color:#e1e5eb; font-size:.78rem; font-weight:500; }
+.roster-leadership .name-list li { font-size:.88rem; }
+.name-list--columns { column-gap:26px; }
+.roster-note { margin:18px 0 0; color:var(--ta-muted); font-size:.66rem; letter-spacing:.07em; }
+.roster-note span { margin-right:8px; color:var(--ta-gold); }
+.season-section { position:relative; overflow:hidden; background:#edeae1; color:#111f36; }
+.season-section::before { position:absolute; top:-125px; left:-125px; width:420px; height:420px; border:1px solid rgba(19,43,79,.12); border-radius:50%; box-shadow:0 0 0 43px rgba(19,43,79,.025),0 0 0 86px rgba(19,43,79,.02); content:""; }
+.season-wrap { position:relative; display:grid; grid-template-columns:.95fr 1.05fr; gap:7vw; max-width:1320px; margin:auto; padding:92px 7vw 98px; }
+.season-copy .section-kicker { color:#936b12; }
+.season-copy h2 { color:#122344; font-size:clamp(2.8rem,5vw,4.45rem); }
+.season-copy h2 em { color:#a8790d; }
+.season-copy>p:not(.section-kicker) { max-width:390px; margin:21px 0 25px; color:#526077; font-size:.88rem; }
+.contract-link { display:flex; align-items:center; gap:14px; max-width:420px; min-height:74px; padding:13px 15px; border:1px solid #d1a332; background:#11264a; color:#f4f0e6; text-decoration:none; transition:background .2s ease,transform .2s ease; }
+.contract-link:hover { background:#1a355f; transform:translateY(-2px); }
+.contract-icon { display:grid; width:37px; height:37px; place-items:center; border:1px solid rgba(231,182,66,.55); color:var(--ta-gold-light); font-size:1.1rem; }
+.contract-link b,.contract-link small { display:block; }
+.contract-link b { font-size:.77rem; letter-spacing:.04em; }
+.contract-link small { margin-top:2px; color:#b5c0d0; font-size:.65rem; }
+.contract-arrow { margin-left:auto; color:var(--ta-gold-light); font-size:1.2rem; }
+.portal-link { display:inline-block; margin-top:17px; color:#243856; font-size:.7rem; font-weight:700; letter-spacing:.05em; }
+.portal-link span { padding-left:4px; color:#9d7011; }
+.meeting-stack { display:grid; gap:13px; align-content:center; }
+.meeting-card { position:relative; display:grid; grid-template-columns:80px 1fr; align-items:center; gap:18px; min-height:146px; overflow:hidden; padding:22px 26px; border:1px solid rgba(231,182,66,.43); background:#12264a; color:#f6f3eb; box-shadow:0 12px 28px rgba(11,25,50,.12); }
+.meeting-card--family { background:#10203e; border-color:rgba(19,43,79,.22); }
+.meeting-label { position:absolute; top:12px; left:26px; color:var(--ta-gold-light); font-size:.51rem; }
+.meeting-date { grid-column:1; grid-row:1; margin-top:20px; text-align:center; border-right:1px solid rgba(231,182,66,.38); }
+.meeting-date span { display:block; color:var(--ta-gold); font-size:.55rem; }
+.meeting-date strong { display:block; font:700 2.65rem/.95 var(--ta-display); }
+.meeting-detail { grid-column:2; grid-row:1; margin-top:20px; }
+.meeting-detail h3 { margin:0 0 5px; font:600 1.3rem/1.1 var(--ta-display); }
+.meeting-detail p { margin:0; color:#c8d0dc; font-size:.73rem; }
+.meeting-detail small { display:block; margin-top:5px; color:#aebbd0; font-size:.64rem; }
+.meeting-side { position:absolute; right:14px; bottom:4px; color:rgba(231,182,66,.12); font:700 3.2rem/.9 var(--ta-display); }
+.tournament-section { position:relative; overflow:hidden; background:#06132b; }
+.tournament-section::after { position:absolute; top:-230px; right:-250px; width:620px; height:620px; border:1px solid rgba(231,182,66,.14); border-radius:50%; box-shadow:0 0 0 65px rgba(231,182,66,.02),0 0 0 130px rgba(231,182,66,.015); content:""; pointer-events:none; }
+.tournament-inner { position:relative; z-index:1; max-width:1320px; margin:auto; padding:94px 7vw 84px; }
+.tournament-heading { display:flex; align-items:flex-end; justify-content:space-between; gap:32px; margin-bottom:43px; }
+.tournament-heading h2 { font-size:clamp(3rem,6vw,5.15rem); }
+.attendance-note { display:grid; grid-template-columns:auto 1fr; align-items:center; gap:14px; width:min(330px,40%); padding:14px 18px; border-left:2px solid var(--ta-gold); background:rgba(17,40,79,.68); }
+.attendance-note strong { color:var(--ta-gold-light); font:700 2.25rem/.95 var(--ta-display); white-space:nowrap; }
+.attendance-note span { color:#c5ccda; font-size:.7rem; line-height:1.4; }
+.tournament-timeline { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; margin:0; padding:0; list-style:none; }
+.tournament-timeline li { position:relative; min-width:0; min-height:230px; padding:22px 19px; border:1px solid rgba(231,182,66,.27); background:linear-gradient(150deg,#112a50,#0b1e3d 80%); box-shadow:0 12px 30px rgba(0,0,0,.13); }
+.tournament-timeline li:first-child { border-color:rgba(231,182,66,.63); background:linear-gradient(145deg,#173358,#0c2345 80%); }
+.tourney-num { display:block; margin-bottom:14px; color:#7f8ca2; font-size:.59rem; font-weight:700; letter-spacing:.16em; }
+.tournament-timeline time { display:block; width:max-content; }
+.tournament-timeline time span { display:block; color:var(--ta-gold); font-size:.58rem; }
+.tournament-timeline time b { display:block; margin-top:1px; color:#f4f0e6; font:700 clamp(2.8rem,5vw,4.25rem)/.92 var(--ta-display); }
+.tournament-timeline time small { display:block; margin-top:6px; color:#a1adbf; font-size:.52rem; }
+.tourney-line { position:relative; height:1px; margin:22px 0 15px; background:rgba(231,182,66,.4); }
+.tourney-line::before { position:absolute; top:-4px; left:0; width:9px; height:9px; border:1px solid var(--ta-gold); border-radius:50%; background:var(--ta-navy); content:""; }
+.tournament-timeline li p { margin:0; color:#d4dae4; font-size:.7rem; font-weight:600; }
+.tournament-timeline li p span { display:block; margin-top:4px; color:#8290a6; font-size:.63rem; font-weight:400; }
+.schedule-footnote { margin:28px 0 0; padding-top:14px; border-top:1px solid rgba(255,255,255,.1); color:#95a2b6; font-size:.66rem; }
+.closing-section { position:relative; overflow:hidden; padding:82px 24px 88px; background:linear-gradient(125deg,#0e2449,#102b56); text-align:center; }
+.closing-section::before,.closing-section::after { position:absolute; top:50%; left:50%; width:550px; aspect-ratio:1; border:1px solid rgba(231,182,66,.13); border-radius:50%; content:""; transform:translate(-50%,-50%); pointer-events:none; }
+.closing-section::after { width:740px; border-color:rgba(231,182,66,.08); }
+.closing-section>* { position:relative; z-index:1; }
+.closing-section .section-kicker { margin-bottom:14px; }
+.closing-section h2 { font-size:clamp(3.5rem,8vw,7rem); }
+.closing-section>p:not(.section-kicker) { margin:18px 0 22px; color:#c2ccdb; font-size:.85rem; }
+.closing-button { display:inline-flex; align-items:center; gap:20px; min-height:48px; padding:13px 19px; border:1px solid var(--ta-gold); background:var(--ta-gold); color:#10203b; font-size:.68rem; font-weight:700; letter-spacing:.07em; text-decoration:none; text-transform:uppercase; transition:transform .2s ease,background .2s ease; }
+.closing-button:hover { transform:translateY(-2px); background:var(--ta-gold-light); }
+.closing-button span { font-size:1.1rem; }
+.page-footer { background:#021327; }
+.fallback-footer { display:grid; grid-template-columns:1fr auto; align-items:center; gap:22px; max-width:1180px; margin:auto; padding:28px 5vw; color:#aeb9ca; }
+.fallback-brand { display:flex; align-items:center; gap:12px; color:var(--ta-gold-light); font-size:.75rem; font-weight:700; letter-spacing:.1em; text-decoration:none; text-transform:uppercase; }
+.fallback-brand img { object-fit:contain; }
+.fallback-brand small { display:block; margin-top:4px; color:#aeb9ca; font-size:.56rem; font-weight:400; letter-spacing:.14em; }
+.fallback-footer nav { display:flex; flex-wrap:wrap; gap:22px; }
+.fallback-footer nav a { color:#e1e5eb; font-size:.65rem; text-decoration:none; }
+.fallback-footer nav a:hover { color:var(--ta-gold); }
+.fallback-footer p { grid-column:1/-1; margin:0; padding-top:14px; border-top:1px solid rgba(231,182,66,.2); font-size:.61rem; letter-spacing:.08em; }
+
+@media (max-width:760px) {
+  .hero { min-height:0; }
+  .hero::after { top:0; bottom:auto; width:100%; height:360px; background:linear-gradient(180deg,rgba(7,21,47,.22),#0a1d3d 95%),url("../images/season-stage-2026.webp") center top/contain no-repeat; opacity:.52; }
+  .hero::before { top:17%; right:-50vw; width:120vw; }
+  .hero-inner { min-height:655px; align-items:flex-end; padding:110px 24px 44px; }
+  .hero-copy { width:100%; }
+  .season-label { margin-top:38px; }
+  .hero h1 { font-size:clamp(4.7rem,19vw,7.6rem); }
+  .hero-intro { max-width:400px; margin:25px 0 20px; font-size:.87rem; }
+  .hero-stamp { position:absolute; right:28px; top:125px; width:94px; height:94px; margin:0; }
+  .hero-stamp b { font-size:1.45rem; }
+  .hero-stamp span,.hero-stamp small { font-size:.42rem; }
+  .hero-bottomline { padding:13px 24px 15px; font-size:.5rem; }
+  .season-snapshot { grid-template-columns:1fr; margin:0; padding:10px 24px; border-right:0; border-left:0; }
+  .snapshot-intro { padding:12px 0; }
+  .snapshot-fact { display:grid; grid-template-columns:1fr auto; align-items:center; gap:0 12px; min-height:65px; padding:10px 0; border-top:1px solid var(--ta-line); border-left:0; }
+  .snapshot-fact span { grid-column:1; }
+  .snapshot-fact strong { grid-column:1; }
+  .snapshot-fact small { grid-column:2; grid-row:1 / span 2; text-align:right; }
+  .roster-section { padding:73px 22px 68px; }
+  .roster-summary { gap:9px; padding-left:12px; }
+  .roster-summary strong { font-size:2.2rem; }
+  .roster-summary span { font-size:.57rem; }
+  .section-heading { align-items:flex-start; }
+  .section-heading h2 { font-size:clamp(2.8rem,11vw,4.1rem); }
+  .section-intro { margin:15px 0 24px; }
+  .roster-layout { grid-template-columns:1fr; }
+  .roster-eighth,.roster-seventh { grid-column:auto; grid-row:auto; }
+  .roster-group { padding:21px 19px; }
+  .season-wrap { grid-template-columns:1fr; gap:34px; padding:70px 23px 72px; }
+  .season-copy h2 { font-size:clamp(2.75rem,10.5vw,4rem); }
+  .meeting-card { grid-template-columns:68px 1fr; gap:12px; padding:22px 15px; }
+  .meeting-label { left:15px; }
+  .meeting-detail h3 { font-size:1.15rem; }
+  .tournament-inner { padding:72px 23px 62px; }
+  .tournament-heading { align-items:flex-start; flex-direction:column; gap:22px; margin-bottom:28px; }
+  .attendance-note { width:min(100%,390px); }
+  .tournament-timeline { grid-template-columns:1fr; }
+  .tournament-timeline li { display:grid; grid-template-columns:32px 72px 1fr; align-items:center; gap:12px; min-height:96px; padding:14px; }
+  .tourney-num { margin:0; }
+  .tournament-timeline time { display:grid; grid-template-columns:30px 1fr; column-gap:8px; align-items:baseline; }
+  .tournament-timeline time span { grid-column:1; grid-row:1; font-size:.52rem; }
+  .tournament-timeline time b { grid-column:2; grid-row:1 / span 2; font-size:2.25rem; }
+  .tournament-timeline time small { grid-column:1; grid-row:2; margin:0; font-size:.45rem; }
+  .tourney-line { display:none; }
+  .tournament-timeline li p { grid-column:3; grid-row:1; align-self:center; }
+  .tournament-timeline li p span { display:inline; margin-left:5px; }
+  .closing-section { padding:70px 18px 74px; }
+  .fallback-footer { grid-template-columns:1fr; gap:16px; padding:24px; }
+  .fallback-footer p { grid-column:auto; }
+}
+@media (max-width:430px) {
+  .hero-inner { min-height:620px; padding-top:105px; }
+  .eyebrow { font-size:.55rem; letter-spacing:.12em; }
+  .hero h1 { font-size:4.5rem; }
+  .hero-stamp { right:21px; top:132px; width:78px; height:78px; }
+  .hero-bottomline span:last-child { max-width:145px; text-align:right; }
+  .section-heading { flex-direction:column; gap:16px; }
+  .roster-summary { margin:0; }
+  .group-head h3 { font-size:1.33rem; }
+  .name-list { column-gap:10px; }
+  .name-list li { font-size:.72rem; }
+  .meeting-card { grid-template-columns:58px 1fr; gap:8px; }
+  .meeting-detail p { font-size:.66rem; }
+  .meeting-detail small { max-width:190px; }
+  .tournament-timeline li { grid-template-columns:28px 68px 1fr; gap:9px; }
+  .tournament-timeline li p { font-size:.65rem; }
+  .tournament-timeline li p span { display:block; margin:3px 0 0; }
+  .fallback-footer nav { gap:12px; }
+}
+@media (max-width:600px) {
+  .mp-topbar { height:70px; }
+  #site-badge { width:54px; height:54px; top:8px; left:10px; }
+  #site-badge img { width:54px; height:54px; }
+  .hero { padding-top:70px; }
+}
+@media (max-width:760px) {
+  .hero { min-height:clamp(480px,72vw,550px); }
+  .hero::before { background-position:75% center; }
+  .hero::after { top:0; right:0; bottom:0; width:100%; height:auto; opacity:1; background:linear-gradient(90deg,rgba(1,13,33,.89),rgba(1,15,34,.62) 36%,rgba(2,16,36,.06) 90%),linear-gradient(0deg,rgba(2,13,31,.32),transparent 54%); }
+  .hero-inner { min-height:0; padding:22px 4.7vw 50px; }
+  .hero-copy { width:65%; margin-top:6px; margin-left:clamp(-25px,-3.6vw,-17px); }
+  .season-label { margin:0 0 11px; font-size:.69rem; }
+  .hero h1 { font-size:clamp(3.3rem,9vw,4.5rem); }
+  .hero-intro { max-width:340px; margin:19px 0 14px; font-size:.72rem; }
+  .season-snapshot { grid-template-columns:repeat(4,minmax(0,1fr)); width:calc(100% - 56px); margin:-8px auto 0; padding:16px 8px; border:1px solid rgba(240,197,103,.8); }
+  .snapshot-fact { display:flex; grid-template-columns:none; gap:8px; min-height:52px; padding:0 8px; border:0; border-right:1px solid rgba(236,196,112,.45); }
+  .snapshot-fact:last-child { border:0; }
+  .snapshot-fact svg { width:36px; height:36px; }
+  .snapshot-fact strong { font-size:2rem; }
+  .snapshot-fact .snapshot-words { font-size:.72rem; }
+  .snapshot-fact span { font-size:.55rem; }
+  .snapshot-fact small { font-size:.48rem; }
+  .roster-section { padding:16px 4.7vw 70px; }
+  .section-heading { align-items:flex-end; flex-direction:row; gap:18px; }
+  .section-heading h2 { font-size:clamp(3rem,7.6vw,4.5rem); }
+  .section-intro { max-width:200px; margin:0 0 4px; font-size:.68rem; }
+  .roster-previews { grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+  .roster-preview { min-height:230px; padding:16px; }
+  .roster-preview h3 { font-size:1.36rem; }
+  .roster-preview p strong { font-size:1.9rem; }
+  .roster-preview button { font-size:.57rem; }
+}
+@media (max-width:560px) {
+  .hero { min-height:600px; }
+  .hero::before { background-position:75% center; }
+  .hero::after { background:linear-gradient(180deg,rgba(2,16,38,.36),rgba(2,16,38,.52) 42%,rgba(2,16,38,.7) 74%,rgba(4,21,47,.87) 100%),linear-gradient(90deg,rgba(2,16,38,.75),transparent 95%); }
+  .hero-meta { flex-direction:column; gap:5px; font-size:.55rem; }
+  .hero-meta span:last-child { display:none; }
+  .hero-copy { width:100%; margin-top:75px; margin-left:-8px; }
+  .hero h1 { font-size:clamp(3.7rem,13vw,5rem); }
+  .hero-intro { max-width:345px; font-size:.78rem; }
+  .season-snapshot { grid-template-columns:repeat(2,minmax(0,1fr)); width:calc(100% - 36px); padding:13px 8px; }
+  .snapshot-fact { justify-content:flex-start; min-height:70px; padding:8px; }
+  .snapshot-fact:nth-child(2) { border-right:0; }
+  .snapshot-fact:nth-child(-n+2) { border-bottom:1px solid rgba(236,196,112,.45); }
+  .snapshot-fact strong { font-size:2rem; }
+  .snapshot-fact .snapshot-words { font-size:.85rem; }
+  .snapshot-fact span,.snapshot-fact small { font-size:.55rem; }
+  .roster-section { padding:50px 18px 68px; }
+  .section-heading { align-items:flex-start; flex-direction:column; gap:13px; }
+  .section-heading h2 { font-size:clamp(3.2rem,12vw,4.5rem); }
+  .section-intro { max-width:335px; font-size:.78rem; }
+  .roster-previews { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+  .roster-preview { min-height:242px; }
+}
+@media (max-width:360px) {
+  .hero-actions { gap:7px; }
+  .button { gap:8px; padding:8px; font-size:.53rem; }
+  .roster-preview { padding:12px; }
+  .roster-preview h3 { font-size:1.2rem; }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *,*::before,*::after { transition-duration:.01ms !important; animation-duration:.01ms !important; scroll-behavior:auto !important; }
+}

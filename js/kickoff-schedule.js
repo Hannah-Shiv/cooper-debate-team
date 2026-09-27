@@ -116,19 +116,19 @@
           <h3 class="kickoff-schedule__event-title">First Debate Team Meeting</h3>
           <div class="kickoff-schedule__detail">
             <span class="kickoff-schedule__detail-icon" aria-hidden="true">★</span>
-            <span>The 2026–27 season begins.</span>
+          <span>The 2026–27 season begins.<strong>2:30 PM – 4:30 PM</strong></span>
           </div>
         </article>
       </div>
 
       <div class="kickoff-schedule__weekly">
         <h3 class="kickoff-schedule__weekly-heading">Weekly Debate Meetings <span aria-hidden="true">★</span></h3>
-        <p class="kickoff-schedule__weekly-subtitle">Starting September 29, members should keep Tuesday and Wednesday afternoons clear for team meetings.</p>
+        <p class="kickoff-schedule__weekly-subtitle">Required Debate Team meetings are every Tuesday from 2:30–4:30 PM.</p>
         <div class="kickoff-schedule__weekly-columns kickoff-schedule__weekly-columns--single">
           <div class="kickoff-schedule__weekly-card">
             <div class="kickoff-schedule__optional-copy">
               <span class="kickoff-schedule__event-icon" data-icon="people" aria-hidden="true"></span>
-              <span><strong>Tuesday and Wednesday team meetings</strong>Exact meeting time and location will be shared with team members.</span>
+              <span><strong>Required Debate Team Meetings</strong>Every Tuesday from 2:30–4:30 PM.</span>
             </div>
           </div>
         </div>
