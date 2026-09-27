@@ -16,6 +16,20 @@
       endpoint: "https://us-central1-cooper-debate-team.cloudfunctions.net/memberMembershipContract",
       fileName: "Cooper-Debate-Membership-Contract-2026-2027.pdf",
       label: "2026–27 membership contract"
+    },
+    {
+      buttonId: "wasdl-permission-document",
+      statusId: "wasdl-permission-status",
+      endpoint: "https://us-central1-cooper-debate-team.cloudfunctions.net/memberWasdlPermissionSlip",
+      fileName: "WASDL-Tournament-Permission-Slip-2026-2027.pdf",
+      label: "WASDL tournament permission slip (draft)"
+    },
+    {
+      buttonId: "pf-guide-document",
+      statusId: "pf-guide-status",
+      endpoint: "https://us-central1-cooper-debate-team.cloudfunctions.net/memberPfGuide",
+      fileName: "How-to-Win-a-PF-Debate-2025.pdf",
+      label: "October 2025 PF debate meeting deck"
     }
   ];
   var objectUrls = [];

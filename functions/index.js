@@ -15,6 +15,7 @@ const { createVolunteerEmailService } = require("./volunteer-email");
 const { createApplicationEmailService } = require("./application-email");
 const { createTryoutBoardHandler } = require("./tryout-board");
 const { createDebateWorkHandler } = require("./debate-work");
+const { createPrivateMemberPdfHandler } = require("./private-member-pdf");
 const {
   isPublicVolunteerEvent,
   newYorkCalendarDate,
@@ -125,6 +126,38 @@ exports.memberMembershipContract = onRequest(
       res.status(500).json({ error: "Unable to load the document right now." });
     }
   }
+);
+
+const PRIVATE_MEMBER_DOCUMENT_OPTIONS = {
+  region: "us-central1",
+  cors: [
+    "https://cooperdebateteam.com",
+    "https://www.cooperdebateteam.com",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+  ],
+  maxInstances: 10,
+};
+
+function additionalPrivateMemberPdf(documentId, fileName) {
+  return onRequest(PRIVATE_MEMBER_DOCUMENT_OPTIONS, createPrivateMemberPdfHandler({
+    db: getFirestore(),
+    verifyIdToken: token => getAuth(portalAuthApp).verifyIdToken(token),
+    projectId: "cooper-debate-team",
+    legacyMembers: LEGACY_MEMBERS,
+    documentId,
+    fileName,
+  }));
+}
+
+exports.memberOctoberDocument = additionalPrivateMemberPdf(
+  "october_24_tournament", "October-24-Debate-Tournament.pdf"
+);
+exports.memberWasdlPermissionSlip = additionalPrivateMemberPdf(
+  "wasdl_tournament_permission_slip_2026_2027", "WASDL-Tournament-Permission-Slip-2026-2027.pdf"
+);
+exports.memberPfGuide = additionalPrivateMemberPdf(
+  "how_to_win_pf_debate", "How-to-Win-a-PF-Debate-2025.pdf"
 );
 
 exports.tryoutBoard = onRequest(
