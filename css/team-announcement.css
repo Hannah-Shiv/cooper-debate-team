@@ -27,7 +27,7 @@ a:focus-visible, button:focus-visible { outline: 3px solid var(--ta-gold-light);
   #member-login-btn { font-size:12.24px; line-height:1.6; }
 }
 .hero { position:relative; isolation:isolate; min-height:clamp(500px,55vw,700px); padding-top:88px; overflow:hidden; background:radial-gradient(ellipse at 70% 36%,#145080 0%,#0b3264 28%,transparent 62%),linear-gradient(110deg,#03142e,#0a2b57 76%,#183d71); }
-.hero::before { position:absolute; z-index:-2; inset:0; background:url("../images/cooper-school-team-hero-2026.png?v=3") 75% center/cover no-repeat; content:""; }
+.hero::before { position:absolute; z-index:-2; inset:0; background:url("../images/cooper-school-team-hero-2026-lossless.webp?v=1") 75% center/cover no-repeat; content:""; }
 .hero::after { position:absolute; z-index:-1; inset:0; background:linear-gradient(90deg,rgba(1,13,33,.91) 0%,rgba(2,17,40,.76) 27%,rgba(4,20,45,.12) 55%,rgba(2,18,39,.02) 100%),linear-gradient(0deg,rgba(2,13,31,.25),transparent 40%); content:""; }
 .hero-inner { position:relative; max-width:1320px; margin:auto; padding:24px 4.7vw 52px; }
 .hero-meta { display:flex; justify-content:space-between; gap:20px; color:#eee9df; font-size:.66rem; font-weight:600; letter-spacing:.15em; text-transform:uppercase; }

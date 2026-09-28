@@ -30,6 +30,8 @@
   font: 600 clamp(3.4rem, 5.3vw, 6rem)/.83 var(--ta-display);
   letter-spacing: -.035em;
 }
+#roster-title em,
+#tournament-title em { color: var(--hero-accent); }
 .team-season-journey .team-journey-intro-copy {
   width: 100%;
   max-width: 320px;
@@ -128,6 +130,7 @@ body { background: #07172f; }
   justify-self: center;
   text-align: center;
 }
+.closing-section .closing-copy p { color: #f8f5ee; font-size: 1rem; }
 .closing-section .closing-button {
   background: #0b6068;
   border-color: #3b9296;
