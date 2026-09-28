@@ -31,7 +31,8 @@
   letter-spacing: -.035em;
 }
 #roster-title em,
-#tournament-title em { color: var(--hero-accent); }
+#tournament-title em,
+#closing-title em { color: var(--hero-accent); }
 .team-season-journey .team-journey-intro-copy {
   width: 100%;
   max-width: 320px;
