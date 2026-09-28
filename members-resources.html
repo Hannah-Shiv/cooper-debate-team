@@ -1076,7 +1076,7 @@
 
   </style>
   <link rel="stylesheet" href="css/member-resources-redesign.css?v=3"/>
-  <link rel="stylesheet" href="css/member-resource-library.css?v=17"/>
+  <link rel="stylesheet" href="css/member-resource-library.css?v=20"/>
 </head>
 <body>
 
@@ -1136,14 +1136,22 @@
           <a class="rl-category rl-training" href="?library=training" data-library="training"><span class="rl-icon" aria-hidden="true"></span><strong>Training &amp; Skills</strong><small>Guides, practice materials, and debate strategy.</small><span class="rl-count" data-count="training">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
           <a class="rl-category rl-team" href="?library=team" data-library="team"><span class="rl-icon" aria-hidden="true"></span><strong>Team Information</strong><small>Roles, responsibilities, and internal resources.</small><span class="rl-count" data-count="team">0 resources</span><span class="rl-arrow" aria-hidden="true">→</span></a>
         </div>
-        <section class="rl-recent rl-panel" aria-labelledby="recent-title">
-          <div class="rl-heading"><h2 id="recent-title">Recently Added</h2><a href="?library=all" data-library="all">View all →</a></div>
-          <div id="rl-recent-list" aria-live="polite"><p class="rl-empty">Loading recent resources…</p></div>
-        </section>
+        <div class="rl-primary-data">
+          <section class="rl-recent rl-panel" aria-labelledby="recent-title">
+            <div class="rl-heading"><h2 id="recent-title">Recently Added</h2><a href="?library=all" data-library="all">View all →</a></div>
+            <div id="rl-recent-list" aria-live="polite"><p class="rl-empty">Loading recent resources…</p></div>
+          </section>
+          <section id="rl-management" class="rl-management rl-panel" hidden aria-labelledby="management-title">
+            <div class="rl-heading"><h2 id="management-title">Manage Resources</h2></div>
+            <p>Coaches, website admins, and captains can publish or edit links. Deactivated resources are hidden from members.</p>
+            <div id="rl-manage-list"></div>
+            <div id="rl-request-queue" hidden><h3>Resource Requests</h3><div id="rl-request-list"></div></div>
+          </section>
+        </div>
       </div>
       <aside class="rl-secondary">
+        <div class="rl-heading"><h2 id="official-title">Official Team Documents</h2></div>
         <section class="rl-panel rl-official" aria-labelledby="official-title">
-          <div class="rl-heading"><h2 id="official-title">Official Team Documents</h2></div>
           <p>Forms, contracts, and important team documents.</p>
           <ul class="rl-documents" id="rl-official-list">
             <li data-official="2026–27 Membership Contract"><button type="button" id="membership-contract-document" class="rl-doc-check" aria-describedby="membership-contract-status"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>2026–27 Membership Contract</strong><small id="membership-contract-status" role="status" aria-live="polite">Team membership &amp; expectations</small></span><span class="rl-view">View</span></button></li>
@@ -1152,10 +1160,16 @@
             <li data-official="How to Win a PF Debate"><button type="button" id="pf-guide-document" class="rl-doc-check" aria-describedby="pf-guide-status"><span class="rl-doc-icon" aria-hidden="true"></span><span><strong>How to Win a PF Debate</strong><small id="pf-guide-status" role="status" aria-live="polite">October 2025 meeting deck · past season</small></span><span class="rl-view">View</span></button></li>
           </ul>
         </section>
-        <section class="rl-panel rl-request" aria-labelledby="request-title">
-          <div class="rl-heading"><h2 id="request-title">Need Something?</h2></div>
-          <p>Don’t see a resource you’re looking for?</p>
-          <button type="button" id="rl-request-open" class="rl-outline">✉ &nbsp; Request a resource →</button>
+        <section class="rl-panel rl-request" aria-labelledby="resource-actions-title">
+          <div class="rl-heading"><h2 id="resource-actions-title">Resource Actions</h2></div>
+          <div class="rl-action-row">
+            <div><strong>Need something?</strong><small>Ask for a resource you can’t find.</small></div>
+            <button type="button" id="rl-request-open" class="rl-outline">Request a resource →</button>
+          </div>
+          <div class="rl-action-row" id="rl-add-action" hidden>
+            <div><strong>Share with the team</strong><small>Publish a new resource link.</small></div>
+            <button type="button" id="rl-add-open" class="rl-outline">+ Add resource</button>
+          </div>
         </section>
       </aside>
     </section>
@@ -1166,13 +1180,6 @@
       <p id="rl-results-status" class="rl-results-status" role="status" aria-live="polite"></p>
       <div id="rl-results" class="rl-results"></div>
     </section>
-    <section id="rl-management" class="rl-management rl-panel" hidden aria-labelledby="management-title">
-      <div class="rl-heading"><h2 id="management-title">Manage Resources</h2><button type="button" id="rl-add-open" class="rl-outline">+ Add resource</button></div>
-      <p>Coaches, website admins, and captains can publish or edit links. Deactivated resources are hidden from members.</p>
-      <div id="rl-manage-list"></div>
-      <div id="rl-request-queue" hidden><h3>Resource Requests</h3><div id="rl-request-list"></div></div>
-    </section>
-
     </div><!-- end .dashboard-content -->
   </div><!-- /dashboard-wrap -->
 
@@ -1214,7 +1221,7 @@
 <script src="data/admins.js?v=13"></script>
 <script src="js/members-auth.js?v=33"></script>
 <script src="js/member-october-document.js?v=3"></script>
-<script src="js/member-resource-library.js?v=7"></script>
+<script src="js/member-resource-library.js?v=8"></script>
 
 <script>
 /* ── Patch showState for members-resources.html ───────────────

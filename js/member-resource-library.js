@@ -100,7 +100,7 @@
     }
     const recent = activeResources().sort(addedOrder).slice(0, 5);
     if (!recent.length) {
-      target.append(node("p", "rl-empty", loaded ? "No resources have been added yet. A coach, website admin, or captain can add the first link from Manage Resources." : "Loading recent resources…"));
+      target.append(node("p", "rl-empty", loaded ? "No resources have been added yet. A coach, website admin, or captain can add the first link from Resource Actions." : "Loading recent resources…"));
       return;
     }
     for (const resource of recent) {
@@ -132,9 +132,8 @@
       if (!placeholder && /^october 24 tournament/i.test(resource.title)) {
         placeholder = list.querySelector("[data-official='October 24 Tournament Day Details']");
       }
-      // Keep authenticated PDF actions when another link shares their title.
-      if (placeholder?.dataset.official === "October 24 Tournament Day Details" ||
-          placeholder?.dataset.official === "2026–27 Membership Contract") placeholder = null;
+      // A manually added link must not replace or duplicate an authenticated PDF action.
+      if (placeholder?.querySelector(".rl-doc-check")) continue;
       const entry = placeholder || node("li", "");
       if (!placeholder) { entry.dataset.dynamic = "true"; list.append(entry); }
       entry.classList.add("has-link");
@@ -331,6 +330,7 @@
       $(id).addEventListener("click", event => { if (event.target === $(id)) $(id).close(); });
     }
     $("rl-add-open").hidden = !manager();
+    $("rl-add-action").hidden = !manager();
     $("rl-manage-list").hidden = !manager();
     $("rl-request-queue").hidden = !manager();
     route(new URL(location.href).searchParams.get("library") || "home", false);

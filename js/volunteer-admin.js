@@ -115,6 +115,8 @@
     $("tm-modal-title").textContent = "Add tournament";
     $("tm-detail-actions").innerHTML = "";
     $("tm-selected-signups").querySelector(".signups-body").innerHTML = `<p class="tm-no-signups">Save the tournament before signups can be added.</p>`;
+    $("tm-save-roster-pdf").hidden = true;
+    $("tm-roster-pdf-status").hidden = true;
     window.setTryoutManagerVisible?.(false);
     message("");
     updateManagerSummary();
@@ -315,6 +317,28 @@
       alert(error.message || "Unable to export signups.");
     }
   }
+  async function saveRosterPdf() {
+    if (!["coach", "website-admin"].includes(currentUserRole) || !currentUser) return;
+    const event = events.find(item => item.id === selectedEventId);
+    if (!event) return;
+    const button = $("tm-save-roster-pdf");
+    const status = $("tm-roster-pdf-status");
+    button.disabled = true;
+    button.textContent = "Preparing PDF…";
+    status.hidden = true;
+    try {
+      const signups = await signupsForEvent(event.id);
+      await window.VolunteerRosterPdf.save(event, signups);
+      status.textContent = `Saved the ${event.title} volunteer roster as a PDF.`;
+    } catch (error) {
+      console.error("Volunteer roster PDF failed:", error);
+      status.textContent = error.message || "Could not create the PDF. Please try again.";
+    } finally {
+      status.hidden = false;
+      button.disabled = false;
+      button.textContent = "Save roster to PDF";
+    }
+  }
   async function removeSignup(signup) {
     if (!confirm(`Remove ${signup.parentName}'s ${signup.roleLabel} signup?`)) return;
     try {
@@ -449,6 +473,8 @@
     populateForm(item, false);
     const canManagePrivateSignups = ["coach", "website-admin"].includes(currentUserRole);
     if (canManagePrivateSignups) renderSelectedSignups(item.id);
+    $("tm-save-roster-pdf").hidden = !canManagePrivateSignups;
+    $("tm-roster-pdf-status").hidden = true;
     const status = tournamentStatus(item);
     $("tm-detail-actions").innerHTML = `
       <button class="tm-action close" type="button" data-selected-details>View Full Details</button>
@@ -686,6 +712,7 @@
       window.setTryoutManagerVisible?.(isTryout && Boolean(editingId));
     });
     $("vol-event-form").addEventListener("submit", saveEvent);
+    $("tm-save-roster-pdf").addEventListener("click", saveRosterPdf);
     $("vol-cancel-edit").addEventListener("click", resetForm);
     $("vol-event-form").addEventListener("input", updateManagerSummary);
     $("vol-event-form").addEventListener("change", updateManagerSummary);
