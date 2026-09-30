@@ -1,0 +1,2233 @@
+.vol-season-signup-callout {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: min(100%, 1152px);
+  margin: 0 auto 26px;
+  padding: 26px 30px;
+  border: 1px solid rgba(242, 209, 107, .66);
+  border-radius: 14px;
+  background: linear-gradient(130deg, #102b59, #071a3b);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .22);
+}
+.vol-season-signup-callout > div { min-width: 0; }
+.vol-season-signup-callout p {
+  margin: 0 0 5px;
+  color: #f2d16b;
+  font: 700 .62rem/1.35 'Josefin Sans', sans-serif;
+  letter-spacing: .14em;
+}
+.vol-season-signup-callout h3 {
+  margin: 0 0 5px;
+  color: #fff;
+  font: 700 clamp(1.25rem, 2.1vw, 1.7rem)/1.1 'Cormorant Garamond', serif;
+}
+.vol-season-signup-callout > div > span {
+  color: #d1dcef;
+  font-size: .78rem;
+  line-height: 1.6;
+}
+.vol-season-primary-action,
+.vol-season-card-action {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 19px;
+  border: 1px solid #f2d16b;
+  border-radius: 7px;
+  background: linear-gradient(100deg, #e6ad2c, #f2c94c);
+  color: #071a35;
+  cursor: pointer;
+  font: 700 .68rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: .075em;
+  text-align: center;
+  text-transform: uppercase;
+  transition: filter .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.vol-season-primary-action:hover,
+.vol-season-card-action:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .25);
+  transform: translateY(-1px);
+}
+.vol-season-primary-action:focus-visible,
+.vol-season-card-action:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+.vol-season-card-notice {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 5px 22px;
+  padding: 20px 25px 24px;
+  border-top: 1px solid rgba(242, 209, 107, .3);
+  background: rgba(3, 15, 37, .36);
+}
+.vol-season-card-notice > strong {
+  color: #f2d16b;
+  font: 700 .72rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.vol-season-card-notice > p {
+  grid-column: 1;
+  margin: 0;
+  color: #d4deee;
+  font-size: .75rem;
+  line-height: 1.55;
+}
+.vol-season-card-action {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-height: 42px;
+  padding: 9px 15px;
+  font-size: .6rem;
+}
+
+#volunteer-modal .vol-judge-modal {
+  box-sizing: border-box;
+  width: min(1265px, calc(100vw - 28px));
+  max-width: none;
+  max-height: min(94vh, 900px);
+  min-height: 0;
+  overflow: auto;
+  padding: clamp(16px, 2vw, 24px);
+  border: 1px solid rgba(242, 209, 107, .72);
+  background: linear-gradient(145deg, #0a2046, #06162f);
+  color: #f7f9fc;
+  scrollbar-color: #bb9140 #07162e;
+  zoom: 1;
+}
+#volunteer-modal .vol-modal-close { position: sticky; z-index: 4; top: 0; float: right; }
+#volunteer-modal .vol-modal-heading { padding-right: 44px; }
+#volunteer-modal .vol-modal-context { max-width: 330px; }
+#volunteer-modal .vol-stepper {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 21px 0 24px;
+}
+#volunteer-modal .vol-stepper > span {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 9px 10px;
+  border: 1px solid rgba(173, 195, 228, .24);
+  border-radius: 8px;
+  background: rgba(4, 15, 35, .62);
+  color: #b8c6dc;
+  font: 600 .66rem/1.3 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-stepper > span b {
+  display: grid;
+  flex: 0 0 25px;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border: 1px solid #71809b;
+  border-radius: 50%;
+  font-size: .68rem;
+}
+#volunteer-modal .vol-stepper > span.is-active {
+  border-color: rgba(242, 209, 107, .56);
+  color: #f2d16b;
+}
+#volunteer-modal .vol-stepper > span.is-current {
+  background: rgba(222, 168, 46, .13);
+}
+#volunteer-modal .vol-stepper > span.is-current b {
+  border-color: #f2d16b;
+  background: #f2d16b;
+  color: #091a37;
+}
+#volunteer-modal form { min-width: 0; }
+#volunteer-modal section[data-vol-step][hidden] { display: none !important; }
+#volunteer-modal section[data-vol-step="1"],
+#volunteer-modal section[data-vol-step="2"] { display: block; }
+#volunteer-modal .vol-season-first-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.85fr) minmax(340px, 1fr);
+  align-items: stretch;
+  gap: 16px;
+}
+#volunteer-modal .vol-season-choices { min-width: 0; }
+#volunteer-modal section[data-vol-step="1"] .vol-season-screen-heading { margin-bottom: 12px; }
+#volunteer-modal .vol-season-first-layout .vol-season-tournament-card {
+  min-height: 139px;
+  gap: 3px;
+  padding: 12px 10px 11px 42px;
+}
+#volunteer-modal .vol-season-first-layout .vol-season-tournament-card input {
+  top: 12px;
+  left: 12px;
+}
+#volunteer-modal section[data-vol-step="1"] .vol-modal-actions {
+  margin-top: 8px;
+}
+#volunteer-modal .vol-season-screen-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin: 0 0 21px;
+}
+#volunteer-modal .vol-season-step-number {
+  display: grid;
+  flex: 0 0 37px;
+  width: 37px;
+  height: 37px;
+  place-items: center;
+  border: 1px solid rgba(242, 209, 107, .78);
+  border-radius: 50%;
+  background: rgba(242, 209, 107, .12);
+  color: #f2d16b;
+  font: 700 .9rem/1 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-season-screen-heading h3 {
+  margin: 0 0 6px;
+  color: #fff;
+  font: 700 clamp(1.35rem, 2.4vw, 1.8rem)/1.15 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-season-screen-heading p {
+  max-width: 850px;
+  margin: 0;
+  color: #cad6e8;
+  font-size: .76rem;
+  line-height: 1.6;
+}
+#volunteer-modal .vol-season-screen-heading p strong { color: #ffe082; }
+#volunteer-modal .vol-season-selection-count {
+  margin: 0 0 10px;
+  color: #ffe082;
+  font: 700 .68rem/1.4 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-tournament-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.vol-season-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+  border: 0;
+}
+#volunteer-modal .vol-season-tournament-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 11px;
+}
+#volunteer-modal .vol-season-tournament-card {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 185px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+  padding: 18px 16px 15px 49px;
+  overflow: hidden;
+  border: 1px solid rgba(142, 168, 211, .43);
+  border-radius: 9px;
+  background: linear-gradient(150deg, rgba(19, 48, 91, .82), rgba(5, 21, 48, .88));
+  color: #f3f6fc;
+  cursor: pointer;
+  transition: border-color .17s ease, background .17s ease, box-shadow .17s ease, transform .17s ease;
+}
+#volunteer-modal .vol-season-tournament-card:hover {
+  border-color: rgba(242, 209, 107, .82);
+  transform: translateY(-1px);
+}
+#volunteer-modal .vol-season-tournament-card.is-selected {
+  border-color: #f2d16b;
+  background: linear-gradient(145deg, rgba(26, 65, 104, .94), rgba(7, 32, 65, .96));
+  box-shadow: inset 0 0 0 1px rgba(242, 209, 107, .35), 0 0 17px rgba(242, 209, 107, .12);
+}
+#volunteer-modal .vol-season-tournament-card input {
+  position: absolute;
+  top: 17px;
+  left: 15px;
+  z-index: 1;
+  width: 21px;
+  height: 21px;
+  margin: 0;
+  accent-color: #f2d16b;
+  cursor: pointer;
+}
+#volunteer-modal .vol-season-tournament-card input:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+#volunteer-modal .vol-season-card-date {
+  color: #ffe082;
+  font: 700 .59rem/1.4 'Josefin Sans', sans-serif;
+  letter-spacing: .025em;
+}
+#volunteer-modal .vol-season-tournament-card > strong {
+  color: #fff;
+  font: 700 .93rem/1.2 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-season-card-location {
+  color: #e1e9f5;
+  font: 600 .66rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-card-address {
+  color: #b5c5dd;
+  font-size: .62rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+#volunteer-modal .vol-season-card-hours {
+  margin-top: auto;
+  padding-top: 7px;
+  color: #c9e3ff;
+  font: 700 .61rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-tournament-card::after {
+  position: absolute;
+  top: 14px;
+  right: 12px;
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 20px;
+  color: transparent;
+  content: "Selected";
+  font: 700 .49rem/1 'Josefin Sans', sans-serif;
+  text-transform: uppercase;
+}
+#volunteer-modal .vol-season-tournament-card.is-selected::after {
+  border-color: rgba(133, 191, 240, .5);
+  background: rgba(57, 125, 186, .28);
+  color: #c9e3ff;
+}
+#volunteer-modal .vol-day-commitment {
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid rgba(142, 168, 211, .38);
+  border-radius: 9px;
+  background: #0e284f;
+  color: #fff;
+}
+#volunteer-modal .vol-day-commitment-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+#volunteer-modal .vol-day-commitment-heading > span {
+  color: #f3ca52;
+  font-size: 2rem;
+  line-height: 1;
+}
+#volunteer-modal .vol-day-commitment-heading h4 {
+  margin: 0 0 3px;
+  font: 700 1.4rem/1.1 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-day-commitment-heading p {
+  margin: 0;
+  color: #d8e7ef;
+  font-size: .7rem;
+}
+#volunteer-modal .vol-day-commitment-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  padding: 9px 12px;
+  border: 1px solid rgba(242, 209, 107, .45);
+  border-left: 4px solid #f2c94c;
+  border-radius: 8px;
+  background: #1b385d;
+}
+#volunteer-modal .vol-day-info-icon {
+  display: grid;
+  flex: 0 0 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  background: #f3ca52;
+  color: #24332d;
+  font: italic 800 1.6rem/1 Georgia, serif;
+  box-shadow: 0 0 0 3px rgba(242, 209, 107, .18);
+}
+#volunteer-modal .vol-day-commitment-notice strong {
+  display: block;
+  color: #ffdf81;
+  font: 700 .8rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: .075em;
+}
+#volunteer-modal .vol-day-commitment-notice p {
+  margin: 3px 0 0;
+  font-size: .72rem;
+  line-height: 1.45;
+}
+#volunteer-modal .vol-day-commitment-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 0;
+  padding: 12px;
+  border: 2px solid #59626e;
+  border-radius: 12px;
+  background: #172c4b;
+  color: #fff;
+  cursor: pointer;
+}
+#volunteer-modal .vol-day-commitment-card.is-confirmed {
+  border-color: #85bff0;
+  background: #19385e;
+}
+#volunteer-modal .vol-day-commitment-card:has(input:focus-visible) {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+#volunteer-modal .vol-day-card-icon {
+  flex: 0 0 32px;
+  color: #f3ca52;
+  font-size: 2.2rem;
+  line-height: 1;
+}
+#volunteer-modal .vol-day-card-copy {
+  display: flex;
+  flex: 1 1 calc(100% - 48px);
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+}
+#volunteer-modal .vol-day-card-copy strong {
+  font: 700 1.08rem/1.05 'Josefin Sans', sans-serif;
+  letter-spacing: .02em;
+}
+#volunteer-modal .vol-day-card-copy > span {
+  color: #d4dee9;
+  font-size: .69rem;
+  line-height: 1.5;
+}
+#volunteer-modal .vol-day-toggle {
+  position: relative;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border: 1px solid rgba(142, 191, 234, .6);
+  border-radius: 999px;
+  background: #121c27;
+  font: 700 .58rem/1 'Josefin Sans', sans-serif;
+  white-space: nowrap;
+}
+#volunteer-modal .vol-day-toggle-off { color: #ffe082; }
+#volunteer-modal .vol-day-toggle-on { color: #a7b9d3; }
+#volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-off { color: #a7b9d3; }
+#volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-on { color: #c4e5ff; }
+#volunteer-modal #vol-full-day-commitment {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+#volunteer-modal .vol-day-toggle-track {
+  display: block;
+  box-sizing: border-box;
+  width: 58px;
+  height: 29px;
+  padding: 3px;
+  border: 1px solid #94a1b2;
+  border-radius: 999px;
+  background: #526175;
+}
+#volunteer-modal .vol-day-toggle-track i {
+  display: block;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: linear-gradient(#fff4c8, #e5b845);
+  box-shadow: 0 2px 5px #111a22;
+  transition: transform .2s ease;
+}
+#volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-track {
+  border-color: #9acfff;
+  background: #317ab4;
+}
+#volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-track i { transform: translateX(28px); }
+#volunteer-modal .vol-day-duration {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #304668;
+  color: #ffdf81;
+  font: 700 .73rem/1 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-day-continue {
+  display: block;
+  width: 100%;
+  min-height: 39px;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border: 0;
+  border-radius: 5px;
+  background: #e8bd48;
+  color: #142432;
+  cursor: pointer;
+  font: 700 .68rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: .065em;
+}
+#volunteer-modal .vol-day-continue:disabled {
+  background: #304c69;
+  color: #a8bed0;
+  cursor: not-allowed;
+}
+#volunteer-modal .vol-day-continue:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+#volunteer-modal .vol-season-info-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(265px, .7fr);
+  align-items: start;
+  gap: 22px;
+}
+#volunteer-modal .vol-season-info-fields,
+#volunteer-modal .vol-season-summary-card,
+#volunteer-modal .vol-season-review-section {
+  min-width: 0;
+  padding: 19px;
+  border: 1px solid rgba(135, 164, 210, .29);
+  border-radius: 9px;
+  background: rgba(5, 21, 47, .62);
+}
+#volunteer-modal .vol-season-info-fields .vol-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+#volunteer-modal .vol-season-info-fields .vol-form-field { min-width: 0; }
+#volunteer-modal .vol-season-info-fields .vol-form-field.full { grid-column: auto; }
+#volunteer-modal .vol-season-info-fields .vol-form-field.vol-notes-wide { grid-column: 1 / -1; }
+#volunteer-modal .vol-season-info-fields .vol-form-field label {
+  display: block;
+  margin: 0 0 6px;
+  color: #e7edf8;
+  font: 700 .62rem/1.35 'Josefin Sans', sans-serif;
+  letter-spacing: .035em;
+}
+#volunteer-modal .vol-season-info-fields .vol-form-field label span:first-child { color: #ffe082; }
+#volunteer-modal .vol-season-info-fields .vol-form-field input,
+#volunteer-modal .vol-season-info-fields .vol-form-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 43px;
+  padding: 10px 12px;
+  border: 1px solid rgba(152, 176, 216, .4);
+  border-radius: 6px;
+  background: rgba(2, 11, 28, .76);
+  color: #fff;
+  font: 400 .73rem/1.5 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-info-fields .vol-form-field textarea {
+  min-height: 58px;
+  resize: vertical;
+}
+#volunteer-modal .vol-season-info-fields .vol-form-field input:focus,
+#volunteer-modal .vol-season-info-fields .vol-form-field textarea:focus {
+  border-color: #f2d16b;
+  outline: 2px solid rgba(242, 209, 107, .22);
+}
+#volunteer-modal .vol-season-info-fields .vol-form-field small {
+  display: block;
+  margin-top: 5px;
+  color: #b5c5dd;
+  font-size: .62rem;
+  line-height: 1.5;
+}
+#volunteer-modal .vol-season-info-fields .vol-form-grid { margin: 0; }
+#volunteer-modal .vol-tabroom-account-card {
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid rgba(133, 191, 240, .38);
+  border-radius: 8px;
+  background: #0e284f;
+}
+#volunteer-modal .vol-tabroom-card-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+#volunteer-modal .vol-tabroom-card-heading > div { min-width: 0; }
+#volunteer-modal .vol-tabroom-mark {
+  display: grid;
+  flex: 0 0 35px;
+  height: 35px;
+  place-items: center;
+  border: 1px solid #61b9ee;
+  border-radius: 5px;
+  color: #fff;
+  font: 700 1.15rem/1 'Josefin Sans', sans-serif;
+  box-shadow: inset 0 0 12px rgba(59, 159, 223, .24);
+}
+#volunteer-modal .vol-tabroom-card-heading h4 {
+  margin: 0 0 2px;
+  color: #fff;
+  font: 700 1.2rem/1.1 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-season-summary-card h4 {
+  color: #ffe082;
+  font: 700 .84rem/1.25 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-tabroom-account-card p {
+  margin: 0;
+  color: #ccd7e9;
+  font-size: .65rem;
+  line-height: 1.4;
+}
+#volunteer-modal .vol-tabroom-options {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 8px;
+}
+#volunteer-modal .vol-tabroom-option {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid rgba(132, 187, 223, .35);
+  border-radius: 6px;
+  background: rgba(4, 25, 51, .62);
+}
+#volunteer-modal .vol-tabroom-option strong,
+#volunteer-modal .vol-season-info-fields .vol-tabroom-option--existing label {
+  margin: 0;
+  color: #fff;
+  font: 700 .75rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: 0;
+  text-transform: none;
+}
+#volunteer-modal .vol-tabroom-or {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  color: #e1eafa;
+  font: 700 .64rem/1 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-tabroom-or::before,
+#volunteer-modal .vol-tabroom-or::after {
+  flex: 1;
+  width: 1px;
+  background: rgba(143, 188, 221, .43);
+  content: "";
+}
+#volunteer-modal .vol-tabroom-option--existing input {
+  margin-top: 3px;
+}
+#volunteer-modal .vol-tabroom-option--existing small {
+  margin-top: 0;
+}
+#volunteer-modal .vol-tabroom-account-card a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 35px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 4px;
+  padding: 7px 11px;
+  border: 1px solid #f2d16b;
+  border-radius: 5px;
+  background: #e8b431;
+  color: #071a35;
+  font: 700 .65rem/1.35 'Josefin Sans', sans-serif;
+  text-align: center;
+  text-decoration: none;
+}
+#volunteer-modal .vol-tabroom-account-card a:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+#volunteer-modal .vol-tabroom-return-reminder {
+  margin: 8px 0 0;
+  color: #c7d5e9;
+  font-size: .63rem;
+  line-height: 1.55;
+}
+#volunteer-modal .vol-season-draft-note {
+  margin: 9px 0 0;
+  color: #9fb2cf;
+  font-size: .58rem;
+  line-height: 1.5;
+}
+#volunteer-modal .vol-season-summary-card { position: sticky; top: 8px; }
+#volunteer-modal .vol-season-summary-card h4 { margin: 0 0 5px; font-size: 1.05rem; }
+#volunteer-modal #vol-season-summary-count {
+  margin: 0;
+  color: #c8d5e8;
+  font-size: .65rem;
+}
+#volunteer-modal .vol-season-summary-card ul,
+#volunteer-modal .vol-season-review-tournaments {
+  display: grid;
+  gap: 9px;
+  margin: 13px 0;
+  padding: 0;
+  list-style: none;
+}
+#volunteer-modal .vol-season-summary-card li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 9px 10px;
+  border: 1px solid rgba(107, 200, 157, .24);
+  border-radius: 6px;
+  background: rgba(41, 147, 105, .08);
+}
+#volunteer-modal .vol-season-summary-card li > span { display: none; }
+#volunteer-modal .vol-season-summary-card li strong {
+  color: #e9f8ef;
+  font: 600 .66rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-summary-card li time { color: #b9c8df; font-size: .59rem; }
+#volunteer-modal .vol-season-summary-card li.vol-season-summary-empty {
+  border-color: rgba(152, 176, 216, .22);
+  color: #b6c4da;
+  font-size: .64rem;
+}
+#volunteer-modal .vol-season-edit-selection {
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(242, 209, 107, .53);
+  border-radius: 5px;
+  background: transparent;
+  color: #ffe082;
+  cursor: pointer;
+  font: 700 .57rem/1.3 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-edit-selection:hover,
+#volunteer-modal .vol-season-edit-selection:focus-visible {
+  border-color: #ffe082;
+  background: rgba(242, 209, 107, .09);
+}
+#volunteer-modal .vol-season-commitment-summary,
+#volunteer-modal .vol-season-important-note {
+  display: grid;
+  gap: 5px;
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid rgba(154, 176, 209, .23);
+}
+#volunteer-modal .vol-season-commitment-summary strong,
+#volunteer-modal .vol-season-important-note strong {
+  color: #ffe082;
+  font: 700 .61rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-commitment-summary span,
+#volunteer-modal .vol-season-important-note p {
+  margin: 0;
+  color: #c3d0e3;
+  font-size: .63rem;
+  line-height: 1.55;
+}
+#volunteer-modal .vol-season-review {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+#volunteer-modal .vol-season-review-section h4 {
+  margin: 0 0 13px;
+  color: #ffe082;
+  font: 700 1.05rem/1.2 'Cormorant Garamond', serif;
+}
+#volunteer-modal .vol-season-review-section dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+  margin: 0;
+}
+#volunteer-modal .vol-season-review-section dl > div {
+  min-width: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(144, 165, 198, .19);
+}
+#volunteer-modal .vol-season-review-section dt {
+  color: #aebed5;
+  font: 700 .57rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-review-section dd {
+  margin: 4px 0 0;
+  color: #f6f8fc;
+  font-size: .73rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+#volunteer-modal .vol-season-review-section > .vol-season-edit-selection { margin-top: 13px; }
+#volunteer-modal .vol-season-review-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+#volunteer-modal .vol-season-review-heading h4 { margin-bottom: 4px; }
+#volunteer-modal .vol-season-review-heading p {
+  margin: 0;
+  color: #bdcbe1;
+  font-size: .65rem;
+  line-height: 1.5;
+}
+#volunteer-modal .vol-season-review-tournaments li {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 11px;
+  border: 1px solid rgba(133, 191, 240, .35);
+  border-radius: 6px;
+  background: rgba(57, 125, 186, .12);
+}
+#volunteer-modal .vol-season-review-tournaments li > span {
+  display: grid;
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(57, 125, 186, .28);
+  color: #c9e3ff;
+}
+#volunteer-modal .vol-season-review-tournaments li div { display: grid; gap: 3px; }
+#volunteer-modal .vol-season-review-tournaments strong {
+  color: #f2f7fc;
+  font: 700 .69rem/1.35 'Josefin Sans', sans-serif;
+}
+#volunteer-modal .vol-season-review-tournaments li div > span {
+  color: #bfcee2;
+  font-size: .63rem;
+  line-height: 1.45;
+}
+#volunteer-modal .vol-season-submit-panel {
+  margin-top: 15px;
+  padding: 17px;
+  border: 1px solid rgba(242, 209, 107, .33);
+  border-radius: 8px;
+  background: rgba(5, 17, 39, .6);
+}
+#volunteer-modal .vol-season-submit-panel .vol-secure-note { margin: 9px 0 14px; }
+.vol-season-cancellation {
+  max-width: 880px;
+  margin: 28px auto 42px;
+  padding: 24px;
+  border: 1px solid rgba(242, 209, 107, .55);
+  border-radius: 12px;
+  background: #0b3235;
+  color: #f1f5ed;
+}
+.volunteer-cancel-link { color: #e8efe8; margin: 6px 0 0; }
+.volunteer-cancel-link a { color: #f2d16b; text-decoration: underline; }
+.vol-season-cancellation h3 { margin: 8px 0; color: #f2d16b; font-size: 1.55rem; }
+.vol-season-cancellation p { line-height: 1.6; }
+.vol-season-cancellation label { display: block; margin: 16px 0 7px; font-weight: 700; }
+.vol-cancel-row { display: flex; flex-wrap: wrap; gap: 10px; }
+.vol-cancel-row input { flex: 1 1 260px; min-width: 0; padding: 12px; border-radius: 6px; border: 1px solid #a5bdb7; }
+.vol-season-cancellation button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #f2d16b;
+  border-radius: 6px;
+  background: #f2d16b;
+  color: #103d34;
+  font-weight: 700;
+  cursor: pointer;
+}
+.vol-season-cancellation button:disabled { opacity: .6; cursor: wait; }
+.vol-season-cancellation [hidden] { display: none !important; }
+#vol-cancel-confirm { margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(242, 209, 107, .4); }
+#vol-cancel-confirm-button { background: #a94332; border-color: #d98d79; color: #fff; }
+#vol-cancel-request-status, #vol-cancel-confirm-status { min-height: 1.5em; }
+#volunteer-modal .vol-season-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+#volunteer-modal .vol-season-actions > button { min-height: 44px; }
+#volunteer-modal #vol-submit:disabled { cursor: not-allowed; opacity: .55; }
+#volunteer-modal .vol-season-sr-only { position: absolute; }
+#volunteer-modal .vol-form-status[hidden] { display: none; }
+@media (min-width: 901px) and (max-height: 760px) {
+  #volunteer-modal .vol-judge-modal { padding: 12px 18px; }
+}
+@media (min-width: 901px) and (max-width: 1100px) {
+  #volunteer-modal .vol-season-first-layout { grid-template-columns: minmax(0, 1.85fr) minmax(320px, 1fr); }
+  #volunteer-modal .vol-season-tournament-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #volunteer-modal .vol-season-first-layout .vol-season-tournament-card { min-height: 125px; }
+}
+#volunteer-thank-you-modal .vol-confirmation-summary { gap: 14px; }
+#volunteer-thank-you-modal .vol-confirmation-summary-message p {
+  margin: 6px 0 0;
+  color: #c5d3e8;
+  font-size: .7rem;
+  line-height: 1.6;
+}
+#volunteer-thank-you-modal .vol-thank-you-edit-note {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(101, 160, 190, .35);
+  border-radius: 6px;
+  background: rgba(9, 41, 65, .32);
+  color: #c2d9e9;
+  font-size: .62rem;
+  line-height: 1.55;
+}
+#volunteer-thank-you-modal #vol-thank-you-edit[hidden] { display: none; }
+#volunteer-thank-you-modal .vol-confirmation-actions { justify-content: flex-end; }
+
+@media (max-width: 900px) {
+  #volunteer-modal .vol-season-first-layout { grid-template-columns: minmax(0, 1fr); }
+  #volunteer-modal .vol-season-tournament-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #volunteer-modal .vol-day-commitment { margin-top: 14px; }
+  #volunteer-modal .vol-season-info-layout { grid-template-columns: minmax(0, 1fr); }
+  #volunteer-modal .vol-season-info-fields .vol-form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #volunteer-modal .vol-season-summary-card { position: static; }
+  #volunteer-modal .vol-day-commitment-card { flex-wrap: wrap; }
+  .vol-season-signup-callout { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 600px) {
+  #volunteer-modal .vol-judge-modal { width: calc(100vw - 16px); max-height: 94vh; padding: 17px 14px; }
+  #volunteer-modal .vol-stepper { gap: 5px; }
+  #volunteer-modal .vol-stepper > span { flex-direction: column; align-items: flex-start; gap: 4px; padding: 8px 6px; font-size: .56rem; }
+  #volunteer-modal .vol-season-tournament-grid,
+  #volunteer-modal .vol-season-info-fields .vol-form-grid,
+  #volunteer-modal .vol-season-review-section dl { grid-template-columns: minmax(0, 1fr); }
+  #volunteer-modal .vol-season-first-layout .vol-season-tournament-card { min-height: 154px; }
+  #volunteer-modal .vol-season-review { grid-template-columns: minmax(0, 1fr); }
+  #volunteer-modal .vol-day-commitment { padding: 16px 12px; }
+  #volunteer-modal .vol-day-commitment-notice { gap: 13px; padding: 12px; }
+  #volunteer-modal .vol-day-commitment-card { gap: 12px; padding: 16px; }
+  #volunteer-modal .vol-day-card-icon { flex-basis: 30px; font-size: 1.8rem; }
+  #volunteer-modal .vol-day-card-copy { flex-basis: calc(100% - 45px); }
+  #volunteer-modal .vol-day-toggle { flex: 0 1 auto; max-width: 100%; gap: 6px; font-size: .52rem; }
+  #volunteer-modal .vol-day-duration { margin-left: auto; }
+  #volunteer-modal .vol-tabroom-options { grid-template-columns: minmax(0, 1fr); }
+  #volunteer-modal .vol-tabroom-or { flex-direction: row; }
+  #volunteer-modal .vol-tabroom-or::before,
+  #volunteer-modal .vol-tabroom-or::after { width: auto; height: 1px; }
+  #volunteer-modal .vol-tabroom-account-card a { width: 100%; box-sizing: border-box; }
+  #volunteer-modal .vol-season-info-fields,
+  #volunteer-modal .vol-season-summary-card,
+  #volunteer-modal .vol-season-review-section { padding: 14px; }
+  #volunteer-modal .vol-season-review-heading { align-items: flex-start; flex-direction: column; }
+  #volunteer-modal .vol-season-actions { align-items: stretch; flex-direction: column-reverse; }
+  #volunteer-modal .vol-season-actions > button { width: 100%; }
+  .vol-season-signup-callout { padding: 21px 18px; }
+  .vol-season-primary-action { width: 100%; }
+  .vol-season-card-notice { grid-template-columns: minmax(0, 1fr); padding: 17px; }
+  .vol-season-card-action { grid-column: 1; grid-row: auto; width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vol-season-primary-action,
+  .vol-season-card-action,
+  #volunteer-modal .vol-season-tournament-card { transition: none; }
+}
+
+/* The volunteer signup is an inline workspace; only the confirmation stays modal. */
+#volunteer-signup .volunteer-view-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 9px 0 12px;
+  border-bottom: 1px solid rgba(108, 208, 255, .5);
+}
+#volunteer-signup .volunteer-view-tabs button {
+  appearance: none;
+  border: 1px solid var(--tab-border);
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  background: var(--tab-start);
+  color: #fff;
+  cursor: pointer;
+  font: 700 .74rem/1.2 'Josefin Sans', sans-serif;
+  min-width: 180px;
+  min-height: 38px;
+  padding: 9px 22px;
+  box-shadow: inset 0 1px rgba(255,255,255,.25), 0 3px 9px var(--tab-glow);
+  transition: background .2s ease, border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="signup"] {
+  --tab-start: #0c6874;
+  --tab-active-start: #0b7885;
+  --tab-hover-start: #108292;
+  --tab-border: #58cfc6;
+  --tab-line: #b2f4e4;
+  --tab-glow: rgba(31, 191, 177, .29);
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"] {
+  --tab-start: #176fa6;
+  --tab-active-start: #247bb4;
+  --tab-hover-start: #2d88c1;
+  --tab-border: #79c8f0;
+  --tab-line: #c0edff;
+  --tab-glow: rgba(65, 162, 235, .3);
+}
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"] {
+  background: var(--tab-active-start);
+  border-color: var(--tab-line);
+  color: #fff;
+  box-shadow: inset 0 2px var(--tab-line), 0 0 14px var(--tab-glow);
+}
+#volunteer-signup .volunteer-view-tabs button:hover {
+  background: var(--tab-hover-start);
+  border-color: var(--tab-line);
+  color: #fff;
+  box-shadow: inset 0 2px var(--tab-line), 0 0 18px var(--tab-glow);
+  transform: translateY(-1px);
+}
+#volunteer-signup .volunteer-view-tabs button:focus-visible {
+  outline: 2px solid #e3faff;
+  outline-offset: 3px;
+}
+@media (prefers-reduced-motion: reduce) {
+  #volunteer-signup .volunteer-view-tabs button { transition: none; }
+  #volunteer-signup .volunteer-view-tabs button:hover { transform: none; }
+}
+#volunteer-signup .volunteer-view[hidden] { display: none !important; }
+#volunteer-signup .volunteer-view { min-width: 0; }
+.tournaments-page #volunteer-signup .vol-unified-card {
+  display: block;
+  min-width: 0;
+}
+.tournaments-page #volunteer-signup .vol-roster-stats-panel,
+.tournaments-page #volunteer-signup .vol-public-roster {
+  background: linear-gradient(145deg, #102d59, #071d41);
+  border-color: rgba(130, 189, 241, .55);
+}
+.tournaments-page #volunteer-signup .vol-results-event-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 0 2px;
+}
+.tournaments-page #volunteer-signup .vol-results-event-heading h3 {
+  margin: 0;
+  color: #fff;
+  font: 700 1.55rem/1.2 'Cormorant Garamond', serif;
+}
+.tournaments-page #volunteer-signup .vol-results-event-heading span {
+  color: #b5dbfa;
+  font: 700 .7rem/1.3 'Josefin Sans', sans-serif;
+}
+.tournaments-page #volunteer-signup .vol-results-column {
+  display: grid;
+  grid-template-columns: minmax(300px, .75fr) minmax(0, 1.25fr);
+  position: static;
+  align-items: start;
+}
+.tournaments-page #volunteer-signup .vol-panel-purpose--stats,
+.tournaments-page #volunteer-signup .vol-panel-purpose--results {
+  background: linear-gradient(90deg, #10396d, #1c5186);
+  border-color: rgba(130, 189, 241, .4);
+}
+.tournaments-page #volunteer-signup .vol-panel-purpose--stats span,
+.tournaments-page #volunteer-signup .vol-panel-purpose--stats .vol-panel-purpose-art,
+.tournaments-page #volunteer-signup .vol-panel-purpose--results span,
+.tournaments-page #volunteer-signup .vol-panel-purpose--results .vol-panel-purpose-art {
+  color: #b5dbfa;
+}
+.tournaments-page #volunteer-signup .vol-panel-purpose--stats .vol-panel-purpose-icon,
+.tournaments-page #volunteer-signup .vol-panel-purpose--results .vol-panel-purpose-icon {
+  background: rgba(143, 202, 250, .15);
+  border-color: rgba(143, 202, 250, .55);
+  color: #b5dbfa;
+}
+#volunteer-signup-panel #volunteer-modal {
+  position: static;
+  inset: auto;
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  backdrop-filter: none;
+  z-index: auto;
+}
+#volunteer-signup-panel #volunteer-modal .vol-judge-modal {
+  width: 100%;
+  max-width: none;
+  max-height: none;
+  min-height: 0;
+  overflow: visible;
+  zoom: 1;
+  background: linear-gradient(145deg, #102d59 0%, #071d41 100%);
+  border-color: rgba(130, 189, 241, .55);
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-heading {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  min-height: 52px;
+  margin: 0 0 11px;
+  padding: 0 12px 0 0;
+  overflow: hidden;
+  border: 1px solid rgba(120, 230, 208, .7);
+  border-radius: 7px;
+  background: linear-gradient(100deg, #087667 0%, #09666f 48%, #0b4864 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.23), 0 5px 14px rgba(0, 13, 39, .18);
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-mark {
+  align-self: stretch;
+  display: grid;
+  flex: 0 0 55px;
+  place-items: center;
+  border-right: 1px solid rgba(182, 250, 225, .24);
+  background: radial-gradient(circle, rgba(232,255,245,.17) .7px, transparent 1px) 0 0 / 5px 5px, rgba(4, 56, 64, .25);
+  color: #c8f9e7;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-mark svg {
+  width: 24px;
+  height: 24px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-main {
+  min-width: 0;
+  padding: 7px 15px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-main .vol-modal-kicker {
+  margin: 0 0 3px;
+  color: #c7f5e4;
+  font: 700 .49rem/1.1 'Josefin Sans', sans-serif;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-main h2 {
+  margin: 0;
+  color: #fff;
+  font: 700 1.38rem/1 'Cormorant Garamond', serif;
+  white-space: nowrap;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-arrow {
+  margin-left: auto;
+  padding: 0 13px;
+  color: #f2d16b;
+  font-size: 1.3rem;
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-context {
+  max-width: none;
+  margin: 0;
+  color: #e1f7f2;
+  font: 600 .64rem/1.2 'Josefin Sans', sans-serif;
+  text-align: left;
+  white-space: nowrap;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-seal {
+  display: grid;
+  flex: 0 0 31px;
+  height: 31px;
+  place-items: center;
+  margin-left: 15px;
+  border: 1px solid rgba(242, 209, 107, .5);
+  border-radius: 50%;
+  background: rgba(242, 209, 107, .14);
+  color: #ffe08a;
+  font: 700 1rem/1 'Josefin Sans', sans-serif;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper {
+  margin: 10px 0 14px;
+  padding: 0;
+}
+@media (max-width: 900px) {
+  .tournaments-page #volunteer-signup .vol-results-column { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 700px) {
+  #volunteer-signup-panel #volunteer-modal .vol-heading-arrow,
+  #volunteer-signup-panel #volunteer-modal .vol-modal-context { display: none; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-seal { margin-left: auto; }
+}
+@media (max-width: 600px) {
+  #volunteer-signup-panel #volunteer-modal .vol-modal-heading { min-height: 48px; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-mark { flex-basis: 42px; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-main { padding: 6px 8px; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-main .vol-modal-kicker { font-size: .42rem; letter-spacing: .09em; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-main h2 { font-size: 1.16rem; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-seal { flex-basis: 26px; height: 26px; margin-left: auto; font-size: .8rem; }
+  #volunteer-signup .volunteer-view-tabs { gap: 4px; }
+  #volunteer-signup .volunteer-view-tabs button { flex: 1; min-width: 0; padding: 9px 8px; font-size: .66rem; }
+  .tournaments-page #volunteer-signup .vol-results-event-heading { flex-direction: column; gap: 3px; }
+  #volunteer-signup-panel #volunteer-modal .vol-judge-modal {
+    width: 100%;
+    max-height: none;
+  }
+}
+@media (max-width: 360px) {
+  #volunteer-signup-panel #volunteer-modal .vol-heading-mark { flex-basis: 36px; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-main { padding-inline: 7px; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-main h2 { font-size: .95rem; }
+  #volunteer-signup-panel #volunteer-modal .vol-heading-seal { display: none; }
+}
+
+/* The season signup is one calm teal workspace; roster styling is separate. */
+#volunteer-signup-panel {
+  --signup-deep: #042225;
+  --signup-surface: #092f31;
+  --signup-raised: #0e3a3d;
+  --signup-hover: #14474c;
+  --signup-line: rgba(158, 225, 203, .27);
+  --signup-text: #f7faf5;
+  --signup-muted: #c9ded5;
+  --signup-gold: #f2d16b;
+}
+#volunteer-signup .tourney-panel-intro--volunteer .volunteer-privacy { color: #e1ece5; }
+#volunteer-signup .tourney-panel-intro--volunteer .volunteer-privacy strong { color: #f2d16b; }
+.tournaments-page #volunteer-signup-panel #volunteer-modal .vol-judge-modal {
+  border-color: rgba(150, 216, 194, .32);
+  background: radial-gradient(circle at 84% 0%, rgba(20, 90, 83, .18), transparent 38%), linear-gradient(145deg, #073235, #042225 75%);
+  color: var(--signup-text);
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-heading {
+  border-color: rgba(167, 235, 204, .5);
+  background: linear-gradient(100deg, #085e53, #094849 65%, #093739);
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-seal {
+  border-color: rgba(242, 209, 107, .35);
+  background: rgba(242, 209, 107, .1);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper {
+  gap: 8px;
+  border: 0;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span {
+  padding: 8px 6px 9px;
+  border: 0;
+  border-bottom: 2px solid rgba(181, 227, 210, .16);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--signup-muted);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span::after { display: none; }
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-active {
+  border-color: var(--signup-gold);
+  color: var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-current { background: transparent; }
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span b,
+#volunteer-signup-panel #volunteer-modal .vol-season-step-number {
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-current b {
+  border: 0;
+  background: transparent;
+  color: var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-step-number { display: none; }
+#volunteer-signup-panel #volunteer-modal .vol-season-screen-heading { gap: 0; }
+#volunteer-signup-panel #volunteer-modal .vol-season-screen-heading p,
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-heading p,
+#volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-field small,
+#volunteer-signup-panel #volunteer-modal .vol-season-summary-card li time,
+#volunteer-signup-panel #volunteer-modal .vol-season-review-heading p,
+#volunteer-signup-panel #volunteer-modal .vol-season-review-tournaments li div > span {
+  color: var(--signup-muted);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-grid { gap: 12px; }
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card {
+  border: 1px solid var(--signup-line);
+  border-radius: 10px;
+  background: linear-gradient(145deg, var(--signup-raised), var(--signup-surface));
+  color: var(--signup-text);
+  box-shadow: 0 4px 13px rgba(0, 15, 17, .12);
+  transition: transform .22s ease, border-color .22s ease, background .22s ease, box-shadow .22s ease;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card::after { content: none; }
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(242, 209, 107, .8);
+  background: linear-gradient(145deg, #154d4c, #0a3738);
+  box-shadow: 0 11px 24px rgba(0, 12, 14, .34), 0 0 0 1px rgba(242, 209, 107, .14);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card:has(input:focus-visible) {
+  border-color: var(--signup-gold);
+  box-shadow: 0 0 0 2px var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected {
+  border-color: var(--signup-gold);
+  background: linear-gradient(145deg, #19514b, #0b3939);
+  box-shadow: 0 5px 16px rgba(0, 14, 16, .22);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected:hover {
+  background: linear-gradient(145deg, #22635b, #104847);
+  box-shadow: 0 11px 24px rgba(0, 12, 14, .34);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card input { accent-color: var(--signup-gold); }
+#volunteer-signup-panel #volunteer-modal .vol-season-card-date,
+#volunteer-signup-panel #volunteer-modal .vol-season-selection-count,
+#volunteer-signup-panel #volunteer-modal .vol-season-screen-heading p strong {
+  color: var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card > strong { font-size: 1.02rem; }
+#volunteer-signup-panel #volunteer-modal .vol-season-card-location,
+#volunteer-signup-panel #volunteer-modal .vol-season-card-address,
+#volunteer-signup-panel #volunteer-modal .vol-season-card-hours { color: var(--signup-muted); }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment {
+  padding: 0 0 0 8px;
+  border: 0;
+  background: transparent;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-heading {
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-heading > span { color: var(--signup-gold); }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-notice {
+  gap: 10px;
+  padding: 11px 12px;
+  border: 0;
+  border-radius: 8px;
+  background: rgba(242, 209, 107, .08);
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-notice strong { color: var(--signup-gold); }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-notice p { color: var(--signup-text); }
+#volunteer-signup-panel #volunteer-modal .vol-day-info-icon { box-shadow: none; }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card {
+  padding: 12px;
+  border: 1px solid var(--signup-line);
+  background: var(--signup-surface);
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(242, 209, 107, .7);
+  background: var(--signup-hover);
+  box-shadow: 0 8px 18px rgba(0, 12, 14, .26);
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed {
+  border-color: var(--signup-gold);
+  background: #174b45;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-card-copy > span,
+#volunteer-signup-panel #volunteer-modal .vol-day-toggle-on,
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-off { color: var(--signup-muted); }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-on { color: var(--signup-gold); }
+#volunteer-signup-panel #volunteer-modal .vol-day-toggle {
+  border: 1px solid var(--signup-line);
+  background: var(--signup-deep);
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-toggle-track {
+  border-color: #7eb5a4;
+  background: #2e5450;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-track {
+  border-color: var(--signup-gold);
+  background: #94741e;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-duration {
+  background: rgba(242, 209, 107, .12);
+  color: var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-continue:disabled {
+  background: #49615b;
+  color: #f5f7f0;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-info-fields,
+#volunteer-signup-panel #volunteer-modal .vol-season-summary-card,
+#volunteer-signup-panel #volunteer-modal .vol-season-review-section,
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-account-card,
+#volunteer-signup-panel #volunteer-modal .vol-season-submit-panel {
+  border: 0;
+  background: rgba(2, 26, 28, .32);
+}
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-account-card {
+  padding: 13px 0 0;
+  background: transparent;
+}
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-or::before,
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-or::after { display: none; }
+#volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-field input,
+#volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-field textarea,
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-option,
+#volunteer-signup-panel #volunteer-modal .vol-season-summary-card li,
+#volunteer-signup-panel #volunteer-modal .vol-season-review-tournaments li {
+  border-color: var(--signup-line);
+  background: var(--signup-surface);
+  color: var(--signup-text);
+}
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-mark {
+  border-color: var(--signup-gold);
+  box-shadow: none;
+}
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-account-card p,
+#volunteer-signup-panel #volunteer-modal .vol-tabroom-return-reminder,
+#volunteer-signup-panel #volunteer-modal .vol-season-draft-note,
+#volunteer-signup-panel #volunteer-modal #vol-season-summary-count,
+#volunteer-signup-panel #volunteer-modal .vol-season-important-note p,
+#volunteer-signup-panel #volunteer-modal .vol-season-commitment-summary span,
+#volunteer-signup-panel #volunteer-modal .vol-season-review-section dt { color: var(--signup-muted); }
+#volunteer-signup-panel #volunteer-modal .vol-season-review-tournaments li > span {
+  background: rgba(242, 209, 107, .14);
+  color: var(--signup-gold);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-review-section dl > div,
+#volunteer-signup-panel #volunteer-modal .vol-season-commitment-summary,
+#volunteer-signup-panel #volunteer-modal .vol-season-important-note {
+  border: 0;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-review-section dl > div { padding: 8px 0; }
+#volunteer-signup-panel #volunteer-modal .vol-season-commitment-summary,
+#volunteer-signup-panel #volunteer-modal .vol-season-important-note { padding-top: 3px; }
+#volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-submit,
+#volunteer-signup-panel #volunteer-modal .vol-day-continue:not(:disabled) {
+  border-color: var(--signup-gold);
+  background: var(--signup-gold);
+  color: #082526;
+  box-shadow: none;
+  transition: background .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-submit:not(:disabled):hover,
+#volunteer-signup-panel #volunteer-modal .vol-day-continue:not(:disabled):hover {
+  transform: translateY(-2px);
+  background: #ffe398;
+  box-shadow: 0 8px 20px rgba(0, 12, 14, .27);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-cancel {
+  border-color: var(--signup-line);
+  background: transparent;
+  color: var(--signup-text);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-cancel:hover {
+  border-color: var(--signup-gold);
+  background: rgba(242, 209, 107, .1);
+}
+#volunteer-signup-panel #volunteer-modal .vol-review-email-check,
+#volunteer-signup-panel #volunteer-modal .vol-secure-note {
+  border-color: transparent;
+  box-shadow: none;
+  background: rgba(242, 209, 107, .08);
+  color: var(--signup-text);
+}
+#volunteer-signup-panel #volunteer-modal .vol-review-email-check p { color: var(--signup-muted); }
+@media (max-width: 900px) {
+  #volunteer-signup-panel #volunteer-modal .vol-day-commitment { padding: 12px 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-tournament-card,
+  #volunteer-signup-panel #volunteer-modal .vol-day-commitment-card,
+  #volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-submit,
+  #volunteer-signup-panel #volunteer-modal .vol-day-continue { transition: none; }
+  #volunteer-signup-panel #volunteer-modal .vol-season-tournament-card:hover,
+  #volunteer-signup-panel #volunteer-modal .vol-day-commitment-card:hover,
+  #volunteer-signup-panel #volunteer-modal .vol-season-actions .vol-submit:hover,
+  #volunteer-signup-panel #volunteer-modal .vol-day-continue:hover { transform: none; }
+}
+
+/* Full-bleed form masthead, luminous selections, and a quieter guided path. */
+.tournaments-page #volunteer-signup-panel #volunteer-modal .vol-judge-modal {
+  padding: 0;
+  border-radius: 10px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-heading {
+  position: relative;
+  isolation: isolate;
+  min-height: 55px;
+  margin: 0;
+  padding: 0 clamp(14px, 2vw, 24px) 0 0;
+  border: 0;
+  border-bottom: 1px solid rgba(219, 255, 233, .27);
+  border-radius: 9px 9px 0 0;
+  background: linear-gradient(100deg, #07574f 0%, #095651 48%, #083c3f 100%);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .19), 0 5px 16px rgba(0, 15, 17, .14);
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-heading::before {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(240, 255, 235, .27) .8px, transparent 1.2px) 0 0 / 6px 6px;
+  -webkit-mask-image: linear-gradient(90deg, #000, transparent 43%, transparent 72%, #000);
+  mask-image: linear-gradient(90deg, #000, transparent 43%, transparent 72%, #000);
+  content: "";
+  opacity: .9;
+  pointer-events: none;
+}
+#volunteer-signup-panel #volunteer-modal .vol-modal-heading > * {
+  position: relative;
+  z-index: 1;
+}
+#volunteer-signup-panel #volunteer-modal .vol-heading-mark {
+  flex-basis: 64px;
+  background: radial-gradient(circle, rgba(236, 255, 238, .26) .8px, transparent 1.2px) 0 0 / 5px 5px, rgba(2, 43, 41, .24);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper {
+  margin: 10px clamp(16px, 2vw, 24px) 15px;
+}
+#volunteer-signup-panel #volunteer-modal #volunteer-signup-form {
+  padding: 0 clamp(16px, 2vw, 24px) clamp(16px, 2vw, 24px);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span {
+  position: relative;
+  gap: 10px;
+  min-height: 34px;
+  padding: 6px 12px 9px;
+  border-bottom: 1px solid rgba(205, 244, 223, .2);
+  color: #dceee5;
+  letter-spacing: .075em;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-active {
+  border-color: transparent;
+  border-radius: 7px 7px 0 0;
+  background: linear-gradient(90deg, rgba(242, 209, 107, .13), transparent 82%);
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-active::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f2d16b 0%, #ffeaa3 65%, rgba(242, 209, 107, .15));
+  box-shadow: 0 0 10px rgba(242, 209, 107, .4);
+  content: "";
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span b {
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(205, 244, 223, .38);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .06);
+  color: #f7fff8;
+  font-size: .67rem;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-active b {
+  border-color: rgba(242, 209, 107, .85);
+  background: rgba(242, 209, 107, .15);
+  color: #ffe7a0;
+}
+#volunteer-signup-panel #volunteer-modal .vol-stepper > span.is-current b {
+  border-color: #fff1b6;
+  background: #f2d16b;
+  box-shadow: 0 0 0 3px rgba(242, 209, 107, .16), 0 0 14px rgba(242, 209, 107, .3);
+  color: #0b3535;
+}
+@media (min-width: 901px) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-first-layout {
+    grid-template-columns: minmax(0, 1.85fr) 3px minmax(300px, 1fr);
+    gap: 14px;
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-first-layout::before {
+    grid-column: 2;
+    grid-row: 1;
+    background: linear-gradient(180deg, transparent 0%, rgba(255, 243, 189, .76) 15%, #f2d16b 40%, #f2d16b 60%, rgba(242, 209, 107, .55) 85%, transparent 100%);
+    border-radius: 3px;
+    filter: drop-shadow(0 0 5px rgba(255, 224, 129, .4));
+    content: "";
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-choices { grid-column: 1; grid-row: 1; }
+  #volunteer-signup-panel #volunteer-modal .vol-day-commitment { grid-column: 3; grid-row: 1; padding-left: 0; }
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card {
+  border-color: rgba(237, 255, 244, .33);
+  background: linear-gradient(145deg, rgba(242, 255, 248, .119), rgba(157, 227, 209, .064) 48%, rgba(4, 40, 42, .52));
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .16), 0 7px 20px rgba(0, 18, 19, .16);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card:hover {
+  border-color: rgba(255, 245, 189, .95);
+  background: linear-gradient(145deg, rgba(239, 255, 246, .196), rgba(149, 228, 206, .111) 55%, rgba(11, 68, 65, .68));
+  box-shadow: inset 0 1px rgba(255, 255, 255, .28), 0 14px 27px rgba(0, 16, 18, .32), 0 0 19px rgba(242, 209, 107, .12);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected {
+  border-color: rgba(255, 232, 157, .9);
+  background: linear-gradient(145deg, rgba(80, 105, 52, .96), rgba(34, 103, 76, .95) 58%, rgba(19, 72, 65, .98));
+  box-shadow: inset 0 1px rgba(255, 245, 188, .3), 0 10px 24px rgba(0, 17, 17, .3);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected:hover {
+  background: linear-gradient(145deg, #69743c, #287f61 58%, #175952);
+  box-shadow: inset 0 1px rgba(255, 245, 188, .4), 0 16px 30px rgba(0, 16, 18, .36);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-card-date,
+#volunteer-signup-panel #volunteer-modal .vol-season-card-location,
+#volunteer-signup-panel #volunteer-modal .vol-season-card-hours { color: #fff; }
+#volunteer-signup-panel #volunteer-modal .vol-season-card-address { color: #e3f4e9; }
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card > strong {
+  color: #fff;
+  text-shadow: 0 1px 8px rgba(0, 22, 21, .23);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-selected-pill {
+  display: none;
+  align-self: flex-start;
+  margin-top: 5px;
+  padding: 6px 11px 5px;
+  border-radius: 999px;
+  background: #ffe49a;
+  color: #173b31;
+  box-shadow: 0 3px 12px rgba(0, 21, 15, .22);
+  font: 700 .56rem/1 'Josefin Sans', sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-selected-pill {
+  display: inline-flex;
+}
+@media (max-width: 600px) {
+  #volunteer-signup-panel #volunteer-modal .vol-heading-mark { flex-basis: 42px; }
+  #volunteer-signup-panel #volunteer-modal .vol-modal-heading { min-height: 48px; }
+  #volunteer-signup-panel #volunteer-modal .vol-stepper { margin: 9px 14px 13px; }
+  #volunteer-signup-panel #volunteer-modal #volunteer-signup-form { padding: 0 14px 18px; }
+  #volunteer-signup-panel #volunteer-modal .vol-stepper > span {
+    gap: 5px;
+    padding: 6px 4px 10px;
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-stepper > span b {
+    flex-basis: 24px;
+    width: 24px;
+    height: 24px;
+  }
+}
+@media (max-width: 360px) {
+  #volunteer-signup-panel #volunteer-modal .vol-heading-mark { flex-basis: 36px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-tournament-card:hover,
+  #volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected:hover { transform: none; }
+}
+
+/* Stage-like tab lights: only the current or hovered tab illuminates. */
+#volunteer-signup .volunteer-view-tabs {
+  gap: 10px;
+  border-bottom-color: rgba(255, 255, 255, .45);
+}
+#volunteer-signup .volunteer-view-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  position: relative;
+  isolation: isolate;
+  min-width: 200px;
+  min-height: 54px;
+  margin-bottom: -1px;
+  padding: 11px 25px;
+  border: 1px solid color-mix(in srgb, var(--tab-border) 38%, transparent);
+  border-radius: 15px 15px 0 0;
+  background: var(--tab-start);
+  color: #b9cfca;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .07), 0 4px 12px rgba(0, 13, 17, .16);
+  font-size: .78rem;
+  letter-spacing: .045em;
+  transition: background .25s ease, border-color .25s ease, box-shadow .25s ease, color .25s ease, transform .25s ease;
+}
+#volunteer-signup .volunteer-view-tabs button svg {
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  color: var(--tab-icon);
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"] {
+  background: var(--tab-start);
+  color: #b5c7d6;
+}
+#volunteer-signup .volunteer-view-tabs button::before,
+#volunteer-signup .volunteer-view-tabs button::after {
+  position: absolute;
+  top: 7px;
+  bottom: 7px;
+  width: 3px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 8px var(--tab-line), 0 0 19px var(--tab-glow);
+  content: "";
+  opacity: .17;
+  transform: scaleY(.58);
+  transition: opacity .25s ease, transform .25s ease, box-shadow .25s ease;
+  pointer-events: none;
+}
+#volunteer-signup .volunteer-view-tabs button::before { left: 8px; }
+#volunteer-signup .volunteer-view-tabs button::after { right: 8px; }
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"] {
+  background: var(--tab-active-start);
+  border: 2px solid var(--tab-line);
+  color: #fff;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .25), 0 0 24px var(--tab-glow), 0 8px 22px rgba(0, 14, 17, .28);
+  transform: translateY(-2px);
+}
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"] svg { color: #ffe184; }
+#volunteer-signup .volunteer-view-tabs button:hover,
+#volunteer-signup .volunteer-view-tabs button:focus-visible {
+  background: var(--tab-hover-start);
+  border-color: var(--tab-line);
+  color: #fff;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .3), 0 0 28px var(--tab-glow), 0 10px 23px rgba(0, 14, 17, .3);
+  transform: translateY(-3px);
+}
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"]::before,
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"]::after,
+#volunteer-signup .volunteer-view-tabs button:hover::before,
+#volunteer-signup .volunteer-view-tabs button:hover::after,
+#volunteer-signup .volunteer-view-tabs button:focus-visible::before,
+#volunteer-signup .volunteer-view-tabs button:focus-visible::after {
+  opacity: 1;
+  transform: scaleY(1);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-selection-count {
+  text-align: right;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected {
+  border-color: #ffe693;
+  background: #f2d16b;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .7), 0 10px 23px rgba(0, 19, 17, .28);
+  transition: border-color .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected:hover {
+  border-color: #fff6cb;
+  background: #f2d16b;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .85), 0 16px 30px rgba(0, 17, 16, .35), 0 0 20px rgba(242, 209, 107, .25);
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected > strong,
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-card-date,
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-card-location,
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-card-hours {
+  color: #0e342c;
+  text-shadow: none;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-card-address {
+  color: #1e483d;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected input {
+  accent-color: #0f473b;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-tournament-card.is-selected .vol-season-selected-pill {
+  border: 1px solid rgba(255, 255, 255, .19);
+  background: #124a3c;
+  color: #fff8d7;
+  box-shadow: 0 3px 10px rgba(9, 53, 39, .23);
+}
+@media (max-width: 600px) {
+  #volunteer-signup .volunteer-view-tabs button {
+    min-width: 0;
+    min-height: 48px;
+    gap: 6px;
+    padding: 9px 8px;
+    font-size: .69rem;
+  }
+  #volunteer-signup .volunteer-view-tabs button svg { width: 18px; height: 18px; flex-basis: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #volunteer-signup .volunteer-view-tabs button,
+  #volunteer-signup .volunteer-view-tabs button::before,
+  #volunteer-signup .volunteer-view-tabs button::after { transition: none; }
+  #volunteer-signup .volunteer-view-tabs button:hover { transform: none; }
+}
+
+/* Keep the two tab identities: deep teal for signup and deep blue for roster. */
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="signup"] {
+  --tab-line: #fff;
+  --tab-glow: rgba(255, 255, 255, .34);
+  --tab-icon: #f7d15c;
+  --tab-start: #092c30;
+  --tab-active-start: #0e464a;
+  --tab-hover-start: #134f52;
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"] {
+  --tab-line: #fff;
+  --tab-glow: rgba(255, 255, 255, .34);
+  --tab-icon: #8bd1ff;
+  --tab-start: #152e4b;
+  --tab-active-start: #204c70;
+  --tab-hover-start: #27577c;
+}
+#volunteer-signup .volunteer-view-tabs button,
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"] {
+  background: var(--tab-start);
+  color: #fff;
+  font-size: .897rem;
+  opacity: .86;
+}
+#volunteer-signup .volunteer-view-tabs button[aria-selected="true"] {
+  border-color: var(--tab-line);
+  background: var(--tab-active-start);
+  color: #fff;
+  opacity: 1;
+}
+#volunteer-signup .volunteer-view-tabs button:hover,
+#volunteer-signup .volunteer-view-tabs button:focus-visible {
+  background: var(--tab-hover-start);
+  color: #fff;
+  opacity: 1;
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="signup"][aria-selected="true"],
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="signup"][aria-selected="true"]:hover,
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="signup"][aria-selected="true"]:focus-visible {
+  background: #0e464a;
+}
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"][aria-selected="true"],
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"][aria-selected="true"]:hover,
+#volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"][aria-selected="true"]:focus-visible {
+  background: #204c70;
+}
+
+/* One continuous track replaces the segmented, tab-shaped stepper. */
+#volunteer-signup-panel #volunteer-modal .vol-stepper {
+  display: block !important;
+  margin: 15px clamp(16px, 2vw, 24px) 19px;
+  padding: 0;
+  border: 0;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-heading > span {
+  color: #f5fff9;
+  font: 700 .65rem/1.2 'Josefin Sans', sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-heading > span::after { content: none; }
+#volunteer-signup-panel #volunteer-modal .vol-progress-heading strong {
+  flex: 0 0 auto;
+  padding: 5px 10px 4px;
+  border: 1px solid rgba(242, 209, 107, .55);
+  border-radius: 999px;
+  background: rgba(242, 209, 107, .11);
+  color: #ffe49a;
+  font: 700 .77rem/1.1 'Josefin Sans', sans-serif;
+  letter-spacing: .05em;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-track {
+  box-sizing: border-box;
+  height: 10.5px;
+  overflow: hidden;
+  border: 1px solid rgba(169, 230, 205, .36);
+  border-radius: 999px;
+  background: rgba(0, 18, 19, .8);
+  box-shadow: inset 0 2px 5px rgba(0, 7, 8, .55), 0 0 0 3px rgba(154, 222, 194, .045);
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-fill {
+  position: relative;
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(240, 255, 248, .7), transparent 40%), linear-gradient(90deg, #066e5e 0%, #15937b 30%, #48bc99 70%, #8bd0b5 100%);
+  box-shadow: 0 0 15px rgba(68, 201, 150, .5), inset 0 1px rgba(255, 255, 255, .75), inset 0 -2px 3px rgba(0, 69, 55, .3);
+  transition: width .55s cubic-bezier(.22, 1, .36, 1);
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-fill::after {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  bottom: 1px;
+  width: 8px;
+  border-radius: 50%;
+  background: #e9fff5;
+  box-shadow: 0 0 9px 3px rgba(139, 217, 183, .9);
+  content: "";
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 11px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #bcd6cb;
+  font: 700 .61rem/1.3 'Josefin Sans', sans-serif;
+  letter-spacing: .035em;
+  text-transform: uppercase;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span:not(:last-child)::after { content: none; }
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span b {
+  display: grid;
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border: 1px solid rgba(192, 231, 209, .46);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .05);
+  color: #d5e9dd;
+  font: 700 .62rem/1 'Josefin Sans', sans-serif;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span.is-active { color: #fff5c3; }
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span.is-active b {
+  border-color: #f2d16b;
+  background: #f2d16b;
+  color: #062b28;
+}
+#volunteer-signup-panel #volunteer-modal .vol-progress-steps > span.is-current b {
+  box-shadow: 0 0 0 3px rgba(242, 209, 107, .17), 0 0 13px rgba(242, 209, 107, .48);
+}
+
+/* The title uses the full left column; only the description narrows beside the counter. */
+#volunteer-signup-panel #volunteer-modal .vol-season-intro {
+  min-height: 140px;
+  margin: 0 0 12px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-intro .vol-season-screen-heading {
+  min-width: 0;
+  margin: 0 0 8px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-intro .vol-season-screen-heading > div { min-width: 0; }
+#volunteer-signup-panel #volunteer-modal .vol-season-intro-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-intro-description {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: var(--signup-muted);
+  font-size: .76rem;
+  line-height: 1.6;
+}
+#volunteer-signup-panel #volunteer-modal .vol-season-intro-description strong { color: var(--signup-gold); }
+#volunteer-signup-panel #volunteer-modal .vol-season-intro-divider {
+  align-self: stretch;
+  max-height: 125px;
+  background: linear-gradient(180deg, transparent, rgba(255, 229, 147, .6) 28%, #fff3bb 50%, rgba(255, 229, 147, .6) 72%, transparent);
+  filter: drop-shadow(0 0 5px rgba(255, 225, 133, .72));
+}
+@media (min-width: 901px) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro h3 { white-space: nowrap; }
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment {
+  display: flex;
+  flex-direction: column;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-heading h4 {
+  font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+  white-space: nowrap;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-card-copy strong {
+  font-size: clamp(.78rem, 1.7vw, 1.08rem);
+  white-space: nowrap;
+}
+#volunteer-signup-panel #volunteer-modal #vol-day-continue { margin-top: auto; }
+@media (min-width: 901px) {
+  #volunteer-signup-panel #volunteer-modal .vol-day-commitment {
+    justify-content: space-between;
+  }
+  #volunteer-signup-panel #volunteer-modal #vol-day-continue { margin-top: 0; }
+}
+/* A status badge, not a clickable action: its circular counter updates with selections. */
+#volunteer-signup-panel #volunteer-modal .vol-season-selection-count {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: 11px;
+  width: max-content;
+  max-width: 100%;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 6px 19px 6px 8px;
+  border: 1px solid #ffe9a9;
+  border-radius: 999px;
+  background: linear-gradient(145deg, #ffe59a, #f2d16b);
+  box-shadow: inset 0 1px rgba(255, 255, 255, .7), 0 6px 18px rgba(0, 13, 14, .3);
+  color: #0e342c;
+  text-align: left;
+}
+#volunteer-signup-panel #volunteer-modal .vol-selection-number {
+  display: grid;
+  box-sizing: border-box;
+  flex: 0 0 40px;
+  width: 40px;
+  height: 40px;
+  place-items: center;
+  padding-bottom: 12px;
+  border: 1px solid #41846f;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 25%, #1c6352, #0e3f36 75%);
+  box-shadow: 0 0 0 3px rgba(14, 63, 54, .15), 0 0 12px rgba(14, 63, 54, .35);
+  color: #fff;
+  font: 700 1.3rem/1 'Cormorant Garamond', serif;
+}
+#volunteer-signup-panel #volunteer-modal .vol-selection-copy {
+  color: #0e342c;
+  font: 700 .748rem/1.25 'Josefin Sans', sans-serif;
+  letter-spacing: .025em;
+}
+/* Confirmed commitment uses the same solid selected state as a chosen date. */
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed,
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed:hover {
+  border-color: #ffe693;
+  background: #f2d16b;
+  color: #0e342c;
+  box-shadow: inset 0 1px rgba(255, 255, 255, .7), 0 10px 23px rgba(0, 19, 17, .28);
+  transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-card-icon,
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-card-copy > span {
+  color: #0e342c;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle {
+  border-color: rgba(255, 255, 255, .19);
+  background: #124a3c;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-off { color: #b7dbcb; }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-on { color: #fff8d7; }
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-toggle-track {
+  border-color: #81ac98;
+  background: #0a382f;
+}
+#volunteer-signup-panel #volunteer-modal .vol-day-commitment-card.is-confirmed .vol-day-duration {
+  background: rgba(13, 62, 47, .13);
+  color: #0e342c;
+}
+
+/* Tournament statistics are scoped to one date; the roster remains grouped by person. */
+.tournaments-page #volunteer-signup .vol-roster-view-chooser {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 14px 18px;
+  border: 1px solid rgba(130, 189, 241, .48);
+  border-radius: 9px;
+  background: #0b2447;
+  color: #f6ebce;
+  font: 700 .8rem 'Josefin Sans', sans-serif;
+}
+.tournaments-page #volunteer-signup .vol-roster-view-options {
+  display: flex;
+  gap: 6px;
+}
+.tournaments-page #volunteer-signup .vol-roster-view-options button {
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid rgba(151, 196, 234, .5);
+  border-radius: 6px;
+  background: #112f56;
+  color: #e4f3ff;
+  font: 700 .78rem 'Josefin Sans', sans-serif;
+  cursor: pointer;
+}
+.tournaments-page #volunteer-signup .vol-roster-view-options button[aria-pressed="true"] {
+  background: #f2d16b;
+  border-color: #ffe5a0;
+  color: #123b35;
+}
+.tournaments-page #volunteer-signup .vol-roster-view-options button:focus-visible,
+.tournaments-page #volunteer-signup .vol-stats-tournament-select:focus-visible { outline: 2px solid #ffe5a0; outline-offset: 2px; }
+.tournaments-page #volunteer-signup .vol-stats-picker {
+  display: grid;
+  gap: 7px;
+  max-width: 580px;
+  margin: 16px auto 8px;
+  color: #f3cf59;
+  font: 700 .72rem 'Josefin Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.tournaments-page #volunteer-signup .vol-stats-tournament-select {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 12px;
+  border: 1px solid rgba(165, 208, 245, .55);
+  border-radius: 6px;
+  background: #0c284c;
+  color: #fff;
+  font: 700 .8rem 'Josefin Sans', sans-serif;
+  text-transform: none;
+  letter-spacing: 0;
+  cursor: pointer;
+}
+.tournaments-page #volunteer-signup .vol-stats-tournament-select option { color: #0c223e; background: #fff; }
+.tournaments-page #volunteer-signup .vol-stats-prompt,
+.tournaments-page #volunteer-signup .vol-stats-explanation {
+  margin: 10px 0 2px;
+  color: #c8dff2;
+  text-align: center;
+  font: 600 .73rem/1.4 'Josefin Sans', sans-serif;
+}
+.tournaments-page #volunteer-signup .vol-roster-metrics[hidden],
+.tournaments-page #volunteer-signup .vol-stats-explanation[hidden],
+.tournaments-page #volunteer-signup .vol-stats-prompt[hidden],
+.tournaments-page #volunteer-signup .vol-roster-coverage small[hidden] { display: none !important; }
+.tournaments-page #volunteer-signup .vol-results-card[data-view="volunteer"] .vol-roster-stats-panel,
+.tournaments-page #volunteer-signup .vol-results-card[data-view="tournament"] .vol-roster-filter-box { display: none; }
+.tournaments-page #volunteer-signup .vol-results-column {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 15px;
+}
+.tournaments-page #volunteer-signup .vol-roster-stats-panel,
+.tournaments-page #volunteer-signup .vol-public-roster { width: 100%; box-sizing: border-box; }
+.tournaments-page #volunteer-signup .vol-roster-stats-panel { padding-bottom: 14px; }
+.tournaments-page #volunteer-signup .vol-roster-metrics {
+  max-width: 970px;
+  margin: 14px auto 7px;
+  gap: 20px;
+}
+.tournaments-page #volunteer-signup .vol-season-legacy-note { text-align: center; }
+.tournaments-page #volunteer-signup .vol-public-roster { overflow: visible; }
+.tournaments-page #volunteer-signup .vol-roster-controls {
+  grid-template-columns: minmax(150px, 1.3fr) minmax(200px, 1fr) minmax(200px, 1.1fr) 76px;
+  gap: 12px;
+  margin: 8px 0 22px;
+}
+.tournaments-page #volunteer-signup .vol-results-card[data-view="tournament"] .vol-roster-controls {
+  grid-template-columns: minmax(150px, 1.3fr) minmax(200px, 1fr) 76px;
+}
+.tournaments-page #volunteer-signup .vol-roster-filter-box { align-items: center; }
+.tournaments-page #volunteer-signup .vol-roster-tournament-filter {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: #d6f4de;
+  font: 700 .69rem 'Josefin Sans', sans-serif;
+  cursor: pointer;
+  padding: 8px 4px;
+}
+.tournaments-page #volunteer-signup .vol-roster-tournament-filter option { color: #0c223e; }
+.tournaments-page #volunteer-signup .vol-roster-table-head,
+.tournaments-page #volunteer-signup .vol-roster-row {
+  grid-template-columns: minmax(150px, 1fr) minmax(0, 2fr) minmax(145px, .8fr);
+}
+.tournaments-page #volunteer-signup .vol-roster-row > div {
+  justify-content: flex-start;
+  text-align: left;
+  padding: 14px 18px;
+}
+.tournaments-page #volunteer-signup .vol-roster-initials {
+  display: grid;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid rgba(129, 209, 246, .5);
+  border-radius: 50%;
+  background: rgba(47, 125, 169, .25);
+  color: #d0f6ff;
+  font: 700 .75rem 'Josefin Sans', sans-serif;
+}
+.tournaments-page #volunteer-signup .vol-roster-availability { flex-wrap: wrap; gap: 7px; }
+.tournaments-page #volunteer-signup .vol-roster-date {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 145px;
+  padding: 8px 11px;
+  border: 1px solid rgba(133, 199, 237, .32);
+  border-radius: 6px;
+  background: rgba(12, 64, 98, .5);
+  color: #f4faff;
+  line-height: 1.25;
+}
+.tournaments-page #volunteer-signup .vol-roster-date strong { font-size: .72rem; }
+.tournaments-page #volunteer-signup .vol-roster-date small { color: #bbd3e7; font-size: .58rem; }
+.tournaments-page #volunteer-signup .vol-roster-coverage {
+  align-items: flex-start !important;
+  gap: 6px !important;
+  padding: 14px 18px !important;
+}
+.tournaments-page #volunteer-signup .vol-roster-coverage .vol-coverage-tag {
+  width: auto;
+  height: auto;
+  min-height: 30px;
+  padding: 8px 13px;
+}
+.tournaments-page #volunteer-signup .vol-roster-coverage small { padding-left: 2px; }
+@media (max-width: 850px) {
+  .tournaments-page #volunteer-signup .vol-roster-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tournaments-page #volunteer-signup .vol-results-card[data-view="tournament"] .vol-roster-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tournaments-page #volunteer-signup .vol-roster-table-head,
+  .tournaments-page #volunteer-signup .vol-roster-row { grid-template-columns: minmax(130px, 1fr) minmax(0, 2fr) minmax(130px, .8fr); }
+}
+@media (max-width: 600px) {
+  .tournaments-page #volunteer-signup .vol-roster-view-chooser { justify-content: center; text-align: center; }
+  .tournaments-page #volunteer-signup .vol-roster-view-options { width: 100%; }
+  .tournaments-page #volunteer-signup .vol-roster-view-options button { flex: 1; padding: 9px 8px; }
+  .tournaments-page #volunteer-signup .vol-roster-metrics { gap: 4px; }
+  .tournaments-page #volunteer-signup .vol-public-roster { padding: 16px; }
+  .tournaments-page #volunteer-signup .vol-roster-controls { grid-template-columns: minmax(0, 1fr); }
+  .tournaments-page #volunteer-signup .vol-results-card[data-view="tournament"] .vol-roster-controls { grid-template-columns: minmax(0, 1fr); }
+  .tournaments-page #volunteer-signup .vol-roster-table-head { display: none; }
+  .tournaments-page #volunteer-signup .vol-roster-row { grid-template-columns: minmax(0, 1fr); }
+  .tournaments-page #volunteer-signup .vol-roster-row > div,
+  .tournaments-page #volunteer-signup .vol-roster-coverage { padding: 30px 14px 12px !important; }
+  .tournaments-page #volunteer-signup .vol-roster-date { min-width: 0; }
+}
+
+/* Three equal fields above two equal fields; phone and debater align at the bottom. */
+@media (min-width: 901px) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-grid > .vol-form-field:not(.vol-notes-wide) {
+    grid-column: span 2;
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-grid > .vol-form-field.vol-phone-field,
+  #volunteer-signup-panel #volunteer-modal .vol-season-info-fields .vol-form-grid > .vol-form-field.vol-debater-field {
+    grid-column: span 3;
+  }
+}
+#volunteer-signup-panel #volunteer-modal .vol-debater-field label span { color: var(--signup-muted); }
+@media (min-width: 901px) and (max-width: 1100px) {
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro { min-height: 225px; }
+}
+@media (max-width: 600px) {
+  #volunteer-signup .volunteer-view-tabs button,
+  #volunteer-signup .volunteer-view-tabs button[data-volunteer-view="results"] { font-size: .794rem; }
+  #volunteer-signup-panel #volunteer-modal .vol-stepper { margin: 13px 14px 17px; }
+  #volunteer-signup-panel #volunteer-modal .vol-progress-steps > span { align-items: flex-start; font-size: .56rem; }
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro {
+    min-height: 0;
+    margin-bottom: 17px;
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro-bottom {
+    display: flex;
+    align-items: stretch;
+    flex-direction: column;
+    gap: 13px;
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro-description { width: 100%; }
+  #volunteer-signup-panel #volunteer-modal .vol-season-intro-divider {
+    align-self: stretch;
+    flex: 0 0 2px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 229, 147, .75) 25%, #fff3bb 50%, rgba(255, 229, 147, .75) 75%, transparent);
+  }
+  #volunteer-signup-panel #volunteer-modal .vol-season-selection-count { align-self: flex-end; }
+  #volunteer-signup-panel #volunteer-modal #vol-day-continue { margin-top: 10px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #volunteer-signup-panel #volunteer-modal .vol-progress-fill { transition: none; }
+}

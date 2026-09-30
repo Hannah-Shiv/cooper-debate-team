@@ -2,6 +2,9 @@ const crypto = require("node:crypto");
 const path = require("node:path");
 const PDFDocument = require("pdfkit");
 const { FieldValue } = require("firebase-admin/firestore");
+const { TOURNAMENT_IDS } = require("./season-volunteer");
+const { createSeasonLetter } = require("./season-volunteer-letter");
+const { buildSeasonAvailabilityEmail } = require("./season-volunteer-email");
 
 const SENDER = "Cooper Debate Team <admin@cooperdebateteam.com>";
 const TIME_ZONE = "America/New_York";
@@ -40,6 +43,33 @@ const APPROVED_CONTACT = Object.freeze([
   "Coach Pamela Konde · pgkonde@fcps.edu",
   "On tournament day, look for a coach or any student volunteer — we're here to help!",
 ]);
+const SEASON_TOURNAMENT_DATES = Object.freeze({
+  "2026-10-24": "October 24, 2026",
+  "2026-11-14": "November 14, 2026",
+  "2026-12-05": "December 5, 2026",
+  "2027-01-30": "January 30, 2027",
+  "2027-02-20": "February 20, 2027",
+});
+const SEASON_TOURNAMENT_NAMES = Object.freeze({
+  "2026-10-24": "Congressional Middle School",
+  "2026-11-14": "Cooper Middle School",
+  "2026-12-05": "Longfellow Middle School",
+  "2027-01-30": "Norwood Middle School",
+  "2027-02-20": "Online — Virtual Tournament",
+});
+
+function seasonTournamentSelections(ids) {
+  return (Array.isArray(ids) ? ids : [])
+    .filter(id => Object.hasOwn(SEASON_TOURNAMENT_DATES, id))
+    .map(id => ({ name: SEASON_TOURNAMENT_NAMES[id], date: SEASON_TOURNAMENT_DATES[id] }));
+}
+
+async function seasonAvailabilityAttachment(submission, selections, testPreview = false) {
+  if (!Array.isArray(selections) || !selections.length || selections.length > TOURNAMENT_IDS.length) {
+    throw new Error("Season availability must include valid tournament selections.");
+  }
+  return createSeasonLetter(submission, selections, testPreview);
+}
 
 function cleanText(value, maxLength) {
   return typeof value === "string" ? value.trim().slice(0, maxLength) : "";
@@ -264,8 +294,10 @@ function calendarAttachment(event, signupId, cancelled = false) {
   };
 }
 
-function itineraryAttachment(event, signup) {
-  const suppliedPdf = cleanText(signup.confirmationPdfBase64, 900000);
+function itineraryAttachment(event, signup, options = {}) {
+  const seasonSelections = options.seasonSelections;
+  const isSeasonLetter = Array.isArray(seasonSelections);
+  const suppliedPdf = isSeasonLetter ? "" : cleanText(signup.confirmationPdfBase64, 900000);
   if (/^[A-Za-z0-9+/]+={0,2}$/.test(suppliedPdf)) {
     const bytes = Buffer.from(suppliedPdf, "base64");
     if (bytes.length <= 700000 && bytes.subarray(0, 5).toString("ascii") === "%PDF-") {
@@ -280,9 +312,11 @@ function itineraryAttachment(event, signup) {
       size: "LETTER",
       margins: { top: 0, right: 0, bottom: 0, left: 0 },
       info: {
-        Title: `${cleanText(event.title, 160) || "Tournament"} judge confirmation`,
+        Title: isSeasonLetter
+          ? "2026–27 Judge Volunteer Availability"
+          : `${cleanText(event.title, 160) || "Tournament"} judge confirmation`,
         Author: "Cooper Debate Team",
-        Subject: "Volunteer judge confirmation letter",
+        Subject: isSeasonLetter ? "Selected tournament availability" : "Volunteer judge confirmation letter",
       },
     });
     const chunks = [];
@@ -426,25 +460,59 @@ function itineraryAttachment(event, signup) {
     document.roundedRect(29, 104, 36, 36, 6).fill(navy);
     document.image(icons.confirmation, 31, 106, { fit: [32, 32], align: "center", valign: "center" });
     document.rect(74, 106, 2, 32).fill(navy);
-    document.fillColor(navy).font("Times-Bold").fontSize(11.5)
-      .text("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114, { width: 285, lineBreak: false });
+    document.fillColor(navy).font("Times-Bold").fontSize(11.5);
+    if (isSeasonLetter) {
+      document.text("SEASON  JUDGE  AVAILABILITY", 88, options.testPreview ? 109 : 114,
+        { width: 285, lineBreak: false });
+      if (options.testPreview) {
+        document.fillColor(navy).font("Helvetica-Bold").fontSize(7.2)
+          .text("TEST PREVIEW - NOT A REAL REGISTRATION", 88, 129,
+            { width: 285, lineBreak: false });
+      }
+    } else {
+      document.text("TOURNAMENT  JUDGE  CONFIRMATION", 88, 114, { width: 285, lineBreak: false });
+    }
     const headline = fitHeadline(personalizedHeadline, 365);
     document.fillColor(navy).font("Times-Bold").fontSize(headline.size);
     headline.rows.forEach((row, index) => {
       document.text(row, 22, 153 + index * headline.leading, { width: 365, height: headline.leading, lineBreak: false });
     });
     document.fillColor(ink).font("Helvetica").fontSize(8.5)
-      .text("Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.", 22, 181, { width: 365, height: 41, lineGap: 1.5 });
-    document.text("This document confirms your signup details and includes important tournament information. Please review everything carefully.", 22, 226, { width: 365, height: 21, lineGap: 1.5 });
+      .text(isSeasonLetter
+        ? "Thank you for volunteering to judge with Cooper Debate this season! You will represent our team at the dates you selected. To support fair and unbiased rounds, you will not judge Cooper teams."
+        : "Thank you for volunteering to judge at the upcoming tournament! You are representing the Cooper Debate Team at this event. To support a fair and unbiased tournament, you will not judge Cooper teams and may be assigned to rounds involving other schools.",
+      22, 181, { width: 365, height: 41, lineGap: 1.5 });
+    document.text(isSeasonLetter
+      ? "Your dates are listed below. The coach will link your Tabroom account and handle registration."
+      : "This document confirms your signup details and includes important tournament information. Please review everything carefully.",
+    22, 226, { width: 365, height: 21, lineGap: 1.5 });
 
     document.roundedRect(402, 100, 188, 141, 8).fillAndStroke("#dceefa", navy);
-    document.fillColor(navy).font("Helvetica-Bold").fontSize(7).text("TOURNAMENT INFORMATION", 416, 110);
-    document.font("Times-BoldItalic").fontSize(fitTournamentTitle(eventName, 160))
-      .text(eventName, 416, 126, { width: 160, height: 16, lineBreak: false });
-    document.fillColor(ink).font("Helvetica").fontSize(8.5).text(displayDate(event.date) || "Date to be announced", 416, 157, { width: 160, height: 20 });
+    document.fillColor(navy).font("Helvetica-Bold").fontSize(7)
+      .text(isSeasonLetter ? "SEASON INFORMATION" : "TOURNAMENT INFORMATION", 416, 110);
+    if (isSeasonLetter) {
+      document.font("Times-BoldItalic").fontSize(13)
+        .text("2026–27 Season", 416, 126, { width: 160, height: 16, lineBreak: false });
+    } else {
+      document.font("Times-BoldItalic").fontSize(fitTournamentTitle(eventName, 160))
+        .text(eventName, 416, 126, { width: 160, height: 16, lineBreak: false });
+    }
     const location = [cleanText(event.location, 200), cleanText(event.address, 240)].filter(Boolean).join("\n") || "Location to be announced";
-    document.fontSize(8).text(location, 416, 184, { width: 160, height: 32, ellipsis: true, lineGap: 3 });
-    document.font("Helvetica-Bold").fontSize(7.5).text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 416, 222, { width: 160, height: 12, ellipsis: true });
+    if (isSeasonLetter) {
+      document.fillColor(ink).font("Helvetica").fontSize(8.5)
+        .text(`${seasonSelections.length} tournament ${seasonSelections.length === 1 ? "date" : "dates"} selected`, 416, 157, { width: 160, height: 18 });
+      document.fontSize(8).text("Full day: 8:00 AM–5:30 PM for every selected date", 416, 182,
+        { width: 160, height: 32, lineGap: 2 });
+      document.font("Helvetica-Bold").fontSize(7.5).text("Coach coordinates Tabroom registration", 416, 220,
+        { width: 160, height: 17 });
+    } else {
+      document.fillColor(ink).font("Helvetica").fontSize(8.5)
+        .text(displayDate(event.date) || "Date to be announced", 416, 157, { width: 160, height: 20 });
+      document.fontSize(8).text(location, 416, 184, { width: 160, height: 32, ellipsis: true, lineGap: 3 });
+      document.font("Helvetica-Bold").fontSize(7.5)
+        .text(`Hosted by: ${cleanText(event.host, 160) || "Cooper Debate Team"}`, 416, 222,
+          { width: 160, height: 12, ellipsis: true });
+    }
 
     const left = 22;
     const right = 304;
@@ -459,8 +527,11 @@ function itineraryAttachment(event, signup) {
       ["Your Debater", cleanText(signup.studentName, 120) || "Not provided"],
       ["Email", cleanText(signup.email, 160) || "Not provided"],
       ["Phone", cleanText(signup.phone, 40) || "Not provided"],
-      ["Availability", timeRange(signup.availabilityStart, signup.availabilityEnd) || "To be announced"],
-      ["Location", location.replace("\n", " · ")],
+      ["Availability", isSeasonLetter ? "8:00 AM–5:30 PM for each date"
+        : timeRange(signup.availabilityStart, signup.availabilityEnd) || "To be announced"],
+      [isSeasonLetter ? "Tabroom" : "Location", isSeasonLetter
+        ? cleanText(signup.tabroomUsernameOrEmail, 160) || "Not provided"
+        : location.replace("\n", " · ")],
       ["Notes", compactNotes || "No notes provided."],
     ];
     let rowY = 282;
@@ -479,17 +550,68 @@ function itineraryAttachment(event, signup) {
       rowY += height;
     });
 
-    sectionBar(right, 254, rightW, "Tournament Resolution", icons.resolution);
-    document.roundedRect(right, 278, rightW, 74, 5).fillAndStroke("#f5f9fc", line);
-    labeledParagraph("Resolved:", APPROVED_RESOLUTION, right + 10, 290, rightW - 20);
-    sectionBar(right, 362, rightW, "What to Expect", icons.expectations);
-    document.roundedRect(right, 386, rightW, 116, 5).fillAndStroke("#f5f9fc", line);
-    bullets(APPROVED_EXPECTATIONS, right + 10, 395, rightW - 20, 7.2, 20, 17);
+    if (isSeasonLetter) {
+      sectionBar(right, 254, rightW, "Your Selected Tournaments", icons.signup);
+      document.roundedRect(right, 278, rightW, 224, 5).fillAndStroke("#f5f9fc", line);
+      const tableX = right + 9;
+      const tableW = rightW - 18;
+      document.rect(tableX, 287, tableW, 22).fill("#d9eafa");
+      document.fillColor(navy).font("Helvetica-Bold").fontSize(7.3)
+        .text("DATE", tableX + 7, 294, { width: 90, lineBreak: false })
+        .text("TOURNAMENT", tableX + 105, 294, { width: 151, lineBreak: false });
+      seasonSelections.forEach(({ name, date }, index) => {
+        const top = 309 + index * 29;
+        document.rect(tableX, top, tableW, 29).fill(index % 2 ? "#f5f9fc" : "#eaf4fc");
+        document.fillColor(ink).font("Helvetica").fontSize(7.6)
+          .text(cleanText(date, 35), tableX + 7, top + 9,
+            { width: 91, height: 18, lineBreak: false, ellipsis: true });
+        document.font("Helvetica-Bold").fontSize(7.8)
+          .text(cleanText(name, 80), tableX + 105, top + 9,
+            { width: 155, height: 18, lineBreak: false, ellipsis: true });
+      });
+      document.fillColor(ink).font("Helvetica-Bold").fontSize(7.5)
+        .text("Full day for every date: 8:00 AM–5:30 PM", right + 10, 465,
+          { width: rightW - 20, height: 12 });
+      document.font("Helvetica").fontSize(7.2)
+        .text("Availability only; the coach handles registration.", right + 10, 482,
+          { width: rightW - 20, height: 12 });
+    } else {
+      sectionBar(right, 254, rightW, "Tournament Resolution", icons.resolution);
+      document.roundedRect(right, 278, rightW, 74, 5).fillAndStroke("#f5f9fc", line);
+      labeledParagraph("Resolved:", APPROVED_RESOLUTION, right + 10, 290, rightW - 20);
+      sectionBar(right, 362, rightW, "What to Expect", icons.expectations);
+      document.roundedRect(right, 386, rightW, 116, 5).fillAndStroke("#f5f9fc", line);
+      bullets(APPROVED_EXPECTATIONS, right + 10, 395, rightW - 20, 7.2, 20, 17);
+    }
 
     const boxY = 512;
     const boxGap = 8;
     const boxW = (pageWidth - 44 - boxGap * 3) / 4;
-    const boxData = [
+    const seasonBoxData = [
+      ["Check-In & Access", icons.arrival, [
+        "Check event details for a venue or online link.",
+        "Arrive or sign in early for 8:00 AM check-in.",
+        "Follow the host's judge check-in instructions.",
+        "Ask the coach about access or travel in advance.",
+      ], "#eef5fb", "#c9deed"],
+      ["Refreshments", icons.meals, [
+        "Meal plans vary by tournament and venue.",
+        "Bring water and plan for a full day.",
+        "Ask ahead about meals or dietary needs.",
+      ], "#fff8df", "#eadca7"],
+      ["Information", icons.information, [
+        "Judge pairings and schedules come from the tournament.",
+        "The coach will share date-specific instructions.",
+        "You will not judge Cooper teams.",
+        "Keep your Tabroom account ready for rounds.",
+      ], "#f3effa", "#d9cdec"],
+      ["Contact Support", icons.contact, [
+        "Questions before a date? Contact the coach.",
+        APPROVED_CONTACT[1],
+        "If you need help during a tournament, contact the coach.",
+      ], "#fff2e5", "#ebcfb1"],
+    ];
+    const boxData = isSeasonLetter ? seasonBoxData : [
       ["Arrival & Parking", icons.arrival, APPROVED_ARRIVAL, "#eef5fb", "#c9deed"],
       ["Refreshments", icons.meals, APPROVED_MEAL_ITEMS, "#fff8df", "#eadca7"],
       ["Information", icons.information, APPROVED_IMPORTANT_INFORMATION, "#f3effa", "#d9cdec"],
@@ -510,7 +632,9 @@ function itineraryAttachment(event, signup) {
     document.fillColor(navy).font("Times-Bold").fontSize(13)
       .text("Thank you again for representing\nthe Cooper Debate Team!", 322, 706, { width: 254, lineGap: 1 });
     document.font("Times-BoldItalic").fontSize(8.5)
-      .text("We look forward to seeing you at the tournament!", 322, 741, { width: 254 });
+      .text(isSeasonLetter
+        ? "We look forward to seeing you at the tournaments!"
+        : "We look forward to seeing you at the tournament!", 322, 741, { width: 254 });
     document.end();
   });
 }
@@ -755,6 +879,173 @@ async function runWithConcurrency(items, maximum, worker) {
 }
 
 function createVolunteerEmailService({ db, resendSecret }) {
+  async function sendSeasonWithdrawalCoachNotice(cancelled, recipients) {
+    if (!recipients.length) {
+      throw new Error("No authorized coaches are available for the withdrawal notice.");
+    }
+    const apiKey = resendSecret.value();
+    if (!apiKey) throw new Error("The Resend email secret is not available.");
+    const name = cleanText(cancelled.parentName, 120) ||
+      [cleanText(cancelled.parentFirstName, 60), cleanText(cancelled.parentLastName, 60)].filter(Boolean).join(" ") ||
+      "Volunteer";
+    const selected = Array.isArray(cancelled.selectedTournamentIds)
+      ? TOURNAMENT_IDS.filter(id => cancelled.selectedTournamentIds.includes(id))
+      : [];
+    const dates = selected.map(id => `${SEASON_TOURNAMENT_NAMES[id]} — ${SEASON_TOURNAMENT_DATES[id]}`);
+    const dateText = dates.length ? dates.map(date => `• ${date}`).join("\n") : "No tournament dates recorded.";
+    const subject = "Volunteer withdrew from the 2026–27 season signup";
+    const intro = `${name}'s 2026–27 season volunteer signup was removed from the Cooper Debate website and public roster after email confirmation. Update any tournament plans that relied on this signup.`;
+    const html = emailShell(subject, intro,
+      `<p>Previously selected tournaments:</p><ul>${dates.length
+        ? dates.map(date => `<li>${escapeHtml(date)}</li>`).join("")
+        : "<li>No tournament dates recorded.</li>"}</ul>`,
+      "This affects the Cooper Debate website signup only, not external tournament registrations.");
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": crypto.createHash("sha256")
+          .update(`season-withdrawal-coaches:${cancelled.notificationId}`).digest("hex"),
+      },
+      body: JSON.stringify({
+        from: SENDER,
+        to: [recipients[0]],
+        ...(recipients.length > 1 ? { bcc: recipients.slice(1) } : {}),
+        subject,
+        text: `${intro}\n\nPreviously selected tournaments:\n${dateText}`,
+        html,
+      }),
+    });
+    if (!response.ok) throw new Error(`Coach withdrawal email provider returned ${response.status}.`);
+    return { accepted: true };
+  }
+
+  async function sendSeasonCancellationEmail({ email, parentFirstName, token }) {
+    const apiKey = resendSecret.value();
+    if (!apiKey) throw new Error("The Resend email secret is not available.");
+    const name = cleanText(parentFirstName, 60) || "Volunteer";
+    const isLink = Boolean(token);
+    const url = isLink ? `${VOLUNTEER_SIGNUP_URL}#cancel-season=${token}` : VOLUNTEER_SIGNUP_URL;
+    const subject = isLink
+      ? "Confirm removal of your Cooper Debate volunteer registration"
+      : "Your Cooper Debate volunteer registration was removed";
+    const details = isLink
+      ? "A request was made to remove your 2026–27 season volunteer registration from the Cooper Debate website. It has not been removed yet. Use the link below within 30 minutes and confirm the removal on the website. If you did not request this, ignore this email."
+      : "Your 2026–27 season volunteer registration was removed from the Cooper Debate website and public volunteer roster. If you did not authorize this, contact Coach Pamela Konde at pgkonde@fcps.edu.";
+    const html = emailShell(subject, `Hi ${name}, ${details}`,
+      `<p><a href="${escapeHtml(url)}">${isLink ? "Review and confirm removal" : "Visit the volunteer signup page"}</a></p>`,
+      "Only your Cooper Debate website volunteer registration is affected.");
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "Idempotency-Key": crypto.createHash("sha256").update(
+          isLink ? `season-cancel-link:${token}` : `season-cancel-receipt:${crypto.randomBytes(12).toString("hex")}`
+        ).digest("hex"),
+      },
+      body: JSON.stringify({
+        from: SENDER,
+        to: [email],
+        subject,
+        text: `Hi ${name},\n\n${details}\n\n${url}`,
+        html,
+      }),
+    });
+    if (!response.ok) throw new Error(`Cancellation email provider returned ${response.status}.`);
+    return { accepted: true };
+  }
+
+  async function sendSeasonAvailabilityConfirmation(submission, updatedExisting = false) {
+    const key = crypto.createHash("sha256")
+      .update(`season-availability:${submission.id}:${submission.confirmationRequestId}`)
+      .digest("hex");
+    const reference = db.collection("volunteer_email_notifications").doc(key);
+    const reservation = await db.runTransaction(async transaction => {
+      const snapshot = await transaction.get(reference);
+      if (snapshot.exists) {
+        const existing = snapshot.data() || {};
+        if (existing.status === "sent") return "sent";
+        const startedAt = existing.startedAt && existing.startedAt.toMillis
+          ? existing.startedAt.toMillis()
+          : 0;
+        if (existing.status === "sending" && startedAt && Date.now() - startedAt < STALE_SEND_MS) {
+          return "sending";
+        }
+      }
+      transaction.set(reference, {
+        kind: "season-availability-confirmation",
+        status: "sending",
+        signupId: submission.id,
+        season: cleanText(submission.season, 40),
+        attemptCount: FieldValue.increment(1),
+        startedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      return "reserved";
+    });
+    if (reservation === "sent") return { accepted: true, alreadyAccepted: true };
+    if (reservation === "sending") return { accepted: false, pending: true };
+
+    try {
+      const apiKey = resendSecret.value();
+      if (!apiKey) throw new Error("The Resend email secret is not available.");
+      const selections = seasonTournamentSelections(submission.selectedTournamentIds);
+      if (!selections.length) throw new Error("Season confirmation has no valid tournaments.");
+      const subject = updatedExisting
+        ? "Your 2026–27 judge availability was updated."
+        : "Your 2026–27 judge availability is saved.";
+      const { html, text } = buildSeasonAvailabilityEmail(submission, selections, {
+        updatedExisting,
+        volunteerSignupUrl: VOLUNTEER_SIGNUP_URL,
+        tournamentPageUrl: TOURNAMENT_PAGE_URL,
+      });
+      const attachment = await seasonAvailabilityAttachment(submission, selections);
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "Idempotency-Key": key,
+        },
+        body: JSON.stringify({
+          from: SENDER,
+          to: [submission.email],
+          subject,
+          text,
+          html,
+          attachments: [attachment],
+        }),
+      });
+      const body = await response.text();
+      let result = {};
+      try {
+        result = body ? JSON.parse(body) : {};
+      } catch (_) {
+        result = {};
+      }
+      if (!response.ok) {
+        throw new Error(`Resend returned ${response.status}: ${cleanText(result.message || body, 200)}`);
+      }
+      await reference.set({
+        status: "sent",
+        providerId: cleanText(result.id, 160),
+        sentAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      return { accepted: true };
+    } catch (error) {
+      await reference.set({
+        status: "failed",
+        error: safeError(error),
+        failedAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      throw error;
+    }
+  }
+
   async function reserveNotification({ key, kind, signup, event }) {
     const reference = db.collection("volunteer_email_notifications").doc(key);
     return db.runTransaction(async transaction => {
@@ -922,6 +1213,9 @@ function createVolunteerEmailService({ db, resendSecret }) {
 
   return {
     changedEventFields,
+    sendSeasonAvailabilityConfirmation,
+    sendSeasonCancellationEmail,
+    sendSeasonWithdrawalCoachNotice,
     sendSignupConfirmation,
     sendSignupCancellation,
     sendEventUpdate,
@@ -934,4 +1228,6 @@ function createVolunteerEmailService({ db, resendSecret }) {
 module.exports = {
   createVolunteerEmailService,
   createVolunteerItineraryAttachment: itineraryAttachment,
+  createSeasonAvailabilityAttachment: seasonAvailabilityAttachment,
+  seasonTournamentSelections,
 };

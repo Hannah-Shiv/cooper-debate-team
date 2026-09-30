@@ -3,9 +3,21 @@
   "use strict";
 
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/publicVolunteerSignup";
+  const ROSTER_ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/publicSeasonVolunteerRoster";
+  const DEV_SEASON_ENDPOINT = "/api/dev/season-volunteers";
+  const SEASON_SUBMISSION_HOSTS = Object.freeze(["cooperdebateteam.com", "www.cooperdebateteam.com"]);
+  const SEASON_DRAFT_SESSION_KEY = "cooper-debate:season-volunteer:2026-2027";
   const WASDL_FULL_DAY_START = "08:00";
   const WASDL_FULL_DAY_END = "17:30";
   const WASDL_FULL_DAY_DURATION = 570;
+  const SEASON = "2026-2027";
+  const SEASON_TOURNAMENTS = Object.freeze([
+    Object.freeze({ id: "2026-10-24", name: "Congressional Middle School", date: "Saturday, October 24, 2026", location: "Congressional School", address: "3229 Sleepy Hollow Rd, Falls Church, VA 22042", judgeTarget: 12 }),
+    Object.freeze({ id: "2026-11-14", name: "Cooper Middle School", date: "Saturday, November 14, 2026", location: "Cooper Middle School", address: "977 Balls Hill Rd, McLean, VA 22101", judgeTarget: 12 }),
+    Object.freeze({ id: "2026-12-05", name: "Longfellow Middle School", date: "Saturday, December 5, 2026", location: "Longfellow Middle School", address: "2000 Westmoreland St, Falls Church, VA 22043", judgeTarget: 12 }),
+    Object.freeze({ id: "2027-01-30", name: "Norwood Middle School", date: "Saturday, January 30, 2027", location: "Norwood School", address: "8821 River Rd, Bethesda, MD 20817", judgeTarget: 12 }),
+    Object.freeze({ id: "2027-02-20", name: "Online — Virtual Tournament", date: "Saturday, February 20, 2027", location: "Online", address: "Virtual tournament", judgeTarget: 12 }),
+  ]);
   const APPROVED_MEAL_ITEMS = Object.freeze([
     "A complimentary lunch will be provided for all judges.",
     "Light refreshments (coffee, water, snacks) will be available throughout the day.",
@@ -42,6 +54,8 @@
     "volunteer-signup-acceptance-test": Object.freeze({ start: "08:00", end: "17:30" }),
   });
   let volunteerEvents = [];
+  let seasonSignups = [];
+  let seasonSignupsAvailable = false;
   let selectedEvent = null;
   let selectedRole = null;
   let confirmedPdfBlob = null;
@@ -49,12 +63,25 @@
   let wizardStep = 1;
   let turnstileLoaded = false;
   let turnstileWidgetId = null;
+  let cancellationTurnstileWidgetId = null;
+  let pendingCancellationToken = "";
+  let developmentCancellationToken = "";
   let submitPendingTurnstile = false;
   let signupSubmitting = false;
+  let selectedTournamentIds = new Set();
+  let tabroomLinkOpened = false;
 
   let confirmedSignupId = "";
+  let confirmedTestSubmission = false;
   let confirmedRetryToken = "";
+  let confirmedRegistrationEmail = "";
+  let cancellationReturnFocus = null;
   const $ = id => document.getElementById(id);
+  const isDevelopmentPreview = () => ["localhost", "127.0.0.1"].includes(window.location.hostname) ||
+    window.location.hostname.endsWith(".replit.dev");
+  const canSubmitSeasonAvailability = () => isDevelopmentPreview() ||
+    SEASON_SUBMISSION_HOSTS.includes(window.location.hostname);
+  const seasonSubmissionEndpoint = () => isDevelopmentPreview() ? DEV_SEASON_ENDPOINT : ENDPOINT;
   const escapeHtml = value => String(value || "")
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -260,22 +287,37 @@
     if (!body) return;
     const pageSize = 8;
     const search = controls.querySelector(".vol-roster-search-input")?.value.trim().toLowerCase() || "";
-    const activeFilter = controls.querySelector(".vol-roster-filter-btn.active")?.dataset.coverage || "";
+    const results = roster.closest(".vol-results-card");
+    const tournamentView = results?.dataset.view === "tournament";
+    const activeFilter = tournamentView
+      ? results.querySelector(".vol-stats-tournament-select")?.value || ""
+      : controls.querySelector(".vol-roster-tournament-filter")?.value || "";
+    const awaitingTournament = tournamentView && !activeFilter;
     const activeSort = controls.querySelector(".vol-roster-sort-btn.active");
     const sortKey = activeSort?.dataset.sort || "name";
     const direction = activeSort?.dataset.direction === "desc" ? -1 : 1;
     const rows = Array.from(body.querySelectorAll(".vol-roster-row"));
+    if (!rows.length) {
+      const empty = body.querySelector(".vol-roster-empty");
+      if (empty) empty.textContent = awaitingTournament
+        ? "Choose a tournament above to see its volunteers."
+        : "No volunteers are listed yet. Season availability will appear here when signups are available.";
+      return;
+    }
 
+    const sortValue = row => sortKey === "coverage" && tournamentView && activeFilter
+      ? (row.dataset.fullDayIds.split("|").includes(activeFilter) ? "full" : "partial")
+      : row.dataset[sortKey] || "";
     rows.sort((a, b) =>
-      (a.dataset[sortKey] || "").localeCompare(b.dataset[sortKey] || "", undefined, {
+      sortValue(a).localeCompare(sortValue(b), undefined, {
         numeric: true,
         sensitivity: "base",
       }) * direction
     );
 
-    const matches = rows.filter(row => {
-      const matchesSearch = !search || `${row.dataset.name} ${row.dataset.debater}`.toLowerCase().includes(search);
-      const matchesFilter = !activeFilter || row.dataset.coverage === activeFilter;
+    const matches = (awaitingTournament ? [] : rows).filter(row => {
+      const matchesSearch = !search || row.dataset.search.toLowerCase().includes(search);
+      const matchesFilter = !activeFilter || row.dataset.tournamentIds.split("|").includes(activeFilter);
       return matchesSearch && matchesFilter;
     });
     const totalPages = Math.max(1, Math.ceil(matches.length / pageSize));
@@ -285,6 +327,14 @@
     controls.dataset.page = String(currentPage);
 
     rows.forEach(row => {
+      const isFull = tournamentView && activeFilter
+        ? row.dataset.fullDayIds.split("|").includes(activeFilter)
+        : row.dataset.coverage === "full";
+      const tag = row.querySelector(".vol-coverage-tag");
+      tag.classList.toggle("is-full", isFull);
+      tag.classList.toggle("is-custom", !isFull);
+      tag.textContent = isFull ? "Full day" : tournamentView ? "Other coverage" : "Varies by date";
+      row.querySelector(".vol-roster-coverage small").hidden = !isFull || results.dataset.seasonRoster !== "true";
       row.hidden = true;
       body.appendChild(row);
     });
@@ -297,9 +347,11 @@
     if (!empty) {
       empty = document.createElement("div");
       empty.className = "vol-roster-filter-empty";
-      empty.textContent = "No volunteers match these controls.";
       body.appendChild(empty);
     }
+    empty.textContent = awaitingTournament
+      ? "Choose a tournament above to see its volunteers."
+      : "No volunteers match these controls.";
     empty.hidden = matches.length > 0;
 
     if (pagination) {
@@ -329,208 +381,183 @@
     const root = $("volunteer-events");
     if (!root) return;
     renderVolunteerSummary();
-
-    if (!volunteerEvents.length) {
-      root.innerHTML = `
-        <div class="vol-empty">
-          <span aria-hidden="true">📬</span>
-          <h3>No judge openings are posted yet</h3>
-          <p>When a tournament needs volunteer judges, the signup will appear here. Please check back soon.</p>
-        </div>`;
-      return;
-    }
-
-    root.innerHTML = volunteerEvents.map(event => {
-      const stats = eventSignupStats(event);
-      const invitationUrl = safeExternalUrl(event.invitationUrl);
-      const formatMark = (event.debateFormat || "Judge").split(/\s+/).map(word => word[0]).join("").slice(0, 2).toUpperCase();
-      const availableRole = event.roles
-        .filter(role => role.label !== "Duplicate-check test")
-        .find(role => Math.max(0, Number(role.capacity || 0) - Number(role.taken || 0)) > 0);
-      const choices = availabilityChoices(event).filter(choice => choice.id === "full");
-      const publicSignups = Array.isArray(event.signups)
-        ? event.signups.filter(signup => signup.parentName && signup.roleId)
-        : [];
-      const rosterMarkup = publicSignups.length
-        ? publicSignups.map(signup => {
-          const availability = timeRange(signup.availabilityStart, signup.availabilityEnd) || "Availability shared with coaches";
-          const coverage = coverageForSignup(signup, event);
-          return `
-            <div class="vol-roster-row" role="row" data-name="${escapeHtml(signup.parentName)}" data-debater="${escapeHtml(signup.studentName || "")}" data-time="${escapeHtml(signup.availabilityStart || "")}" data-coverage="${escapeHtml(coverage.className)}">
-              <div class="vol-roster-volunteer" role="cell" data-label="Volunteer">
-                <strong>${escapeHtml(signup.parentName)}</strong>
-              </div>
-              <div class="vol-roster-availability" role="cell" data-label="Availability">
-                ${modalIcon("clock")}<span>${escapeHtml(availability)}</span>
-              </div>
-              <div class="vol-roster-coverage" role="cell" data-label="Coverage">
-                <span class="vol-coverage-tag ${coverage.className}">${escapeHtml(coverage.label)}</span>
-              </div>
-              <div class="vol-roster-debater" role="cell" data-label="Debater">
-                ${modalIcon("debate")}<span>${escapeHtml(signup.studentName || "Not listed")}</span>
-              </div>
-              <div class="vol-roster-action" role="cell" data-label="Details">
-                <button class="vol-roster-details" type="button"
-                  data-volunteer="${escapeHtml(signup.parentName)}"
-                  data-debater="${escapeHtml(signup.studentName || "Not listed")}"
-                  data-availability="${escapeHtml(availability)}"
-                  data-coverage="${escapeHtml(coverage.label)}"
-                  data-role="${escapeHtml(roleDisplayLabel({ label: signup.roleLabel }))}"
-                  data-event="${escapeHtml(event.title)}"
-                  data-date="${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}"
-                  aria-label="View public details for ${escapeHtml(signup.parentName)}">Details</button>
-              </div>
-            </div>`;
-        }).join("")
-        : `<div class="vol-roster-empty" role="row">Be the first person to volunteer for this tournament.</div>`;
-      const availabilityIconNames = ["full-day", "morning", "afternoon", "other"];
-      const availabilityMarkup = choices.map((choice, index) => `
-        <label class="vol-availability-option vol-confirm-commitment">
-          <input type="checkbox" name="availability-${escapeHtml(event.id)}" value="${escapeHtml(choice.id)}" data-start="${escapeHtml(choice.start)}" data-end="${escapeHtml(choice.end)}" ${availableRole ? "" : "disabled"}>
-          <span class="vol-availability-icon" aria-hidden="true"><img src="assets/icons/volunteer-${availabilityIconNames[index] || "other"}.png" alt=""></span>
-          <span class="vol-availability-copy"><strong>Full-Day Commitment</strong><small>${escapeHtml(choice.label)} · I can be present for the complete WASDL volunteer day.</small></span>
-          <span class="vol-commitment-toggle" aria-hidden="true">
-            <span class="vol-toggle-label vol-toggle-label--off">Not confirmed</span>
-            <span class="vol-toggle-track"><i></i></span>
-            <span class="vol-toggle-label vol-toggle-label--on">Confirmed</span>
-          </span>
-          ${choice.duration ? `<span class="vol-availability-duration">${escapeHtml(choice.duration)}</span>` : ""}
-        </label>`).join("");
-
+    if (!window.CooperVolunteerDashboard) throw new Error("The volunteer roster dashboard could not load.");
+    window.CooperVolunteerDashboard.render(root, {
+      season: SEASON,
+      tournaments: SEASON_TOURNAMENTS,
+      signups: seasonSignups,
+      available: seasonSignupsAvailable,
+      testMode: isDevelopmentPreview(),
+    });
+    return;
+    // Prefer season submissions; older event signups remain visible until the season roster is populated.
+    const legacyByName = new Map();
+    volunteerEvents.forEach(event => (event.signups || []).forEach(signup => {
+      if (!signup.parentName || !signup.roleId) return;
+      const key = signup.parentName.trim().toLocaleLowerCase();
+      if (!legacyByName.has(key)) legacyByName.set(key, { parentName: signup.parentName, dates: [], fullDay: true });
+      const entry = legacyByName.get(key);
+      const fullDay = coverageForSignup(signup, event).className === "is-full";
+      const [startHour, startMinute] = (signup.availabilityStart || "").split(":").map(Number);
+      const [endHour, endMinute] = (signup.availabilityEnd || "").split(":").map(Number);
+      const hours = Number.isFinite(startHour) && Number.isFinite(startMinute) &&
+        Number.isFinite(endHour) && Number.isFinite(endMinute)
+        ? Math.max(0, (endHour * 60 + endMinute - startHour * 60 - startMinute) / 60) : 0;
+      entry.dates.push({ id: event.date || event.id, name: event.title, date: event.date, fullDay, hours });
+      entry.fullDay = entry.fullDay && fullDay;
+    }));
+    const roster = seasonSignups.length
+      ? seasonSignups.filter(signup => signup.parentName && Array.isArray(signup.selectedTournamentIds))
+        .map(signup => ({
+          parentName: signup.parentName,
+          dates: SEASON_TOURNAMENTS.filter(tournament => signup.selectedTournamentIds.includes(tournament.id))
+            .map(tournament => ({ id: tournament.id, name: tournament.name, date: tournament.date, fullDay: true, hours: 9.5 })),
+          fullDay: true,
+        }))
+      : [...legacyByName.values()];
+    const rosterMarkup = roster.map(person => {
+      const initials = person.parentName.trim().split(/\s+/).slice(0, 2).map(part => part[0]).join("").toUpperCase();
+      const dates = [...person.dates].sort((a, b) => a.id.localeCompare(b.id));
       return `
-        <article class="vol-event-card vol-unified-card">
-          <section class="vol-opportunity-panel" aria-label="Judge Volunteer Opportunity">
-            <div class="vol-panel-purpose vol-panel-purpose--entry">
-              <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("clock")}</div>
-              <div class="vol-panel-purpose-flow">
-                <strong>Judge Volunteer Opportunity</strong>
-                <i class="vol-purpose-arrow" aria-hidden="true"></i>
-                <span>Confirm Full-Day Availability</span>
-              </div>
-              <div class="vol-panel-purpose-icon" aria-hidden="true">⚖</div>
+        <div class="vol-roster-row" role="row"
+          data-name="${escapeHtml(person.parentName)}"
+          data-datecount="${dates.length}"
+          data-coverage="${person.fullDay ? "full" : "partial"}"
+          data-full-day-ids="${escapeHtml(dates.filter(date => date.fullDay).map(date => date.id).join("|"))}"
+          data-tournament-ids="${escapeHtml(dates.map(date => date.id).join("|"))}"
+          data-search="${escapeHtml(`${person.parentName} ${dates.map(date => date.name).join(" ")}`)}">
+          <div class="vol-roster-volunteer" role="cell" data-label="Volunteer Name">
+            <span class="vol-roster-initials" aria-hidden="true">${escapeHtml(initials)}</span>
+            <strong>${escapeHtml(person.parentName)}</strong>
+          </div>
+          <div class="vol-roster-availability" role="cell" data-label="Tournament Availability">
+            ${dates.map(date => `<span class="vol-roster-date"><strong>${escapeHtml(date.name)}</strong><small>${escapeHtml(date.date ? dateLabel(date.date) : "Date to be announced")}</small></span>`).join("")}
+          </div>
+          <div class="vol-roster-coverage" role="cell" data-label="Coverage">
+            <span class="vol-coverage-tag ${person.fullDay ? "is-full" : "is-custom"}">${person.fullDay ? "Full day" : "Varies by date"}</span>
+            <small ${person.fullDay && seasonSignups.length ? "" : "hidden"}>8:00 AM–5:30 PM</small>
+          </div>
+        </div>`;
+    }).join("");
+    root.innerHTML = `
+        <article class="vol-event-card vol-unified-card vol-results-card" data-view="tournament" data-season-roster="${seasonSignups.length > 0}">
+          <div class="vol-roster-view-chooser" role="group" aria-label="Choose how to view volunteers">
+            <span>What would you like to check?</span>
+            <div class="vol-roster-view-options">
+              <button type="button" data-roster-view="tournament" aria-pressed="true">By tournament</button>
+              <button type="button" data-roster-view="volunteer" aria-pressed="false">By volunteer</button>
             </div>
-            <header class="vol-unified-header">
-              <div class="vol-format-mark" aria-hidden="true">${escapeHtml(formatMark)}</div>
-              <div class="vol-unified-title">
-                <h3>${escapeHtml(event.title)}</h3>
-                ${event.debateFormat ? `<p>${escapeHtml(event.debateFormat)}</p>` : ""}
-              </div>
-              <div class="vol-entry-status">
-                <div class="vol-open-status"><b aria-hidden="true">✓</b><span>Sign Up Open</span></div>
-                <div class="vol-entry-deadline"><b aria-hidden="true"><img src="assets/icons/volunteer-calendar.png" alt=""></b><div><span>Signup deadline</span><strong>${escapeHtml(event.signupDeadline ? dateLabel(event.signupDeadline) : "Open")}</strong></div></div>
-              </div>
-            </header>
-            <div class="vol-unified-facts">
-              <div><span class="vol-unified-icon"><img src="assets/icons/volunteer-calendar.png" alt=""></span><p><small>Date</small><strong>${escapeHtml(event.date ? dateLabel(event.date) : "To be announced")}</strong></p></div>
-              <div><span class="vol-unified-icon">${modalIcon("clock")}</span><p><small>Time</small><strong>${escapeHtml(timeRange(event.startTime, event.endTime) || "To be announced")}</strong></p></div>
-              <div><span class="vol-unified-icon"><img src="assets/icons/volunteer-location.png" alt=""></span><p><small>Location</small><strong>${escapeHtml(event.location || "Location to be announced")}</strong>${event.address ? `<em>${escapeHtml(event.address)}</em>` : ""}</p></div>
-              <div><span class="vol-unified-icon">♟</span><p><small>Hosted by</small><strong>${escapeHtml(event.host || "Cooper Debate Team")}</strong></p></div>
-            </div>
-            <div class="vol-unified-brief${invitationUrl ? "" : " no-invitation"}">
-              <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true">▤</b><section><span>Resolution / topic</span><p>${escapeHtml(APPROVED_RESOLUTION)}</p></section></div>
-              <div class="vol-brief-item"><b class="vol-brief-icon" aria-hidden="true"><img src="assets/icons/volunteer-meals.png" alt=""></b><section><span>Meals / refreshments</span><p>${escapeHtml(APPROVED_MEAL_INFO)}</p></section></div>
-              ${invitationUrl ? `<a href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
-            </div>
-            <div class="vol-unified-signup">
-              <div class="vol-role-area">
-                <div class="vol-role-heading"><span>${modalIcon("clock")}</span><div><h4>Full-day judge commitment</h4><p>Confirm the required WASDL volunteer hours below.</p></div></div>
-                <div class="vol-full-day-notice" role="note">
-                  <span class="vol-full-day-notice-icon" aria-hidden="true">i</span>
-                  <span class="vol-full-day-notice-copy"><strong>WASDL full-day volunteers only</strong><span>Only full-day judge slots are currently open. Volunteers must be present from 8:00 AM to 5:30 PM.</span></span>
-                </div>
-                <div class="vol-availability-options">${availabilityMarkup}</div>
-                <button type="button" class="vol-inline-continue" disabled data-event-id="${escapeHtml(event.id)}" data-role-id="${escapeHtml(availableRole?.id || "")}">
-                  ${availableRole ? "Confirm the full-day commitment above" : "All judge spots are filled"}
-                </button>
-              </div>
-            </div>
-          </section>
+          </div>
           <div class="vol-results-column">
-            <section class="vol-roster-stats-panel" aria-label="Volunteer signup statistics">
+            <section class="vol-roster-stats-panel" aria-label="Statistics for the selected tournament">
               <div class="vol-panel-purpose vol-panel-purpose--stats">
                 <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
                 <div class="vol-panel-purpose-flow">
-                  <strong>Volunteer Statistics</strong>
+                  <strong>Grouped by Tournament</strong>
                   <i class="vol-purpose-arrow" aria-hidden="true"></i>
-                  <span>Current Signup Progress</span>
+                  <span class="vol-stats-context">Choose a tournament</span>
                 </div>
                 <div class="vol-panel-purpose-icon" aria-hidden="true">%</div>
               </div>
-              <div class="vol-roster-metrics" aria-label="Volunteer signup progress">
-                <div class="capacity"><div class="vol-metric-circle"><strong>${stats.capacity}</strong></div><span>Judge capacity</span></div>
-                <div class="confirmed"><div class="vol-metric-circle"><strong>${stats.confirmed}</strong></div><span>Confirmed</span></div>
-                <div class="fill-rate"><div class="vol-metric-circle" style="--fill:${Math.max(0, Math.min(100, stats.fillRate))}%"><strong>${stats.fillRate}%</strong></div><span>Filled</span></div>
-                <div class="available"><div class="vol-metric-circle"><strong>${stats.available}</strong></div><span>Open spots</span></div>
+              <label class="vol-stats-picker">Tournament
+                <select class="vol-stats-tournament-select">
+                  <option value="">Select a tournament to view its statistics</option>
+                  ${SEASON_TOURNAMENTS.map(tournament => `<option value="${escapeHtml(tournament.id)}">${escapeHtml(tournament.name)} · ${escapeHtml(dateLabel(tournament.id))}</option>`).join("")}
+                </select>
+              </label>
+              <p class="vol-stats-prompt">Choose a tournament to see its volunteer availability and coverage.</p>
+              <div class="vol-roster-metrics" aria-label="Selected tournament volunteer statistics" aria-live="polite" hidden>
+                <div class="capacity"><div class="vol-metric-circle"><strong>0</strong></div><span>Available volunteers</span></div>
+                <div class="confirmed"><div class="vol-metric-circle"><strong>0</strong></div><span>Full-day volunteers</span></div>
+                <div class="fill-rate"><div class="vol-metric-circle"><strong>0</strong></div><span>Other coverage</span></div>
+                <div class="available"><div class="vol-metric-circle"><strong>0</strong></div><span>Full-day hours offered</span></div>
               </div>
+              <p class="vol-stats-explanation" hidden>Availability is not a confirmed judging assignment. Full-day hours count 9.5 hours per volunteer.</p>
+              ${!seasonSignups.length && roster.length ? '<p class="vol-season-legacy-note">Showing earlier tournament signups until season availability is listed.</p>' : ""}
             </section>
             <section class="vol-public-roster" aria-label="Volunteers signed up to judge">
             <div class="vol-panel-purpose vol-panel-purpose--results">
               <div class="vol-panel-purpose-art" aria-hidden="true">${modalIcon("users")}</div>
               <div class="vol-panel-purpose-flow">
-                <strong>Volunteers Already Signed Up</strong>
+                 <strong>Grouped by Volunteer</strong>
                 <i class="vol-purpose-arrow" aria-hidden="true"></i>
-                <span>Results panel</span>
+                   <span class="vol-roster-context">Choose a tournament</span>
               </div>
               <div class="vol-panel-purpose-icon" aria-hidden="true">✓</div>
             </div>
             <div class="vol-roster-summary">
-              ${publicSignups.length ? `
               <div class="vol-roster-controls" aria-label="Search, sort, and filter volunteers">
                 <label class="vol-roster-search-box">
                   <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-                  <input class="vol-roster-search-input" type="search" placeholder="Volunteer or debater…" aria-label="Search volunteers or debaters">
+                  <input class="vol-roster-search-input" type="search" placeholder="Volunteer or tournament…" aria-label="Search volunteers or tournaments">
                 </label>
                 <div class="vol-roster-sort-box" aria-label="Sort volunteers">
                   <button type="button" class="vol-roster-sort-btn active" data-sort="name" data-label="Name" data-direction="asc">Name ↑</button>
-                  <button type="button" class="vol-roster-sort-btn" data-sort="time" data-label="Time" data-direction="asc">Time</button>
-                  <button type="button" class="vol-roster-sort-btn" data-sort="debater" data-label="Debater" data-direction="asc">Debater</button>
+                  <button type="button" class="vol-roster-sort-btn" data-sort="datecount" data-label="Dates" data-direction="asc">Dates</button>
+                  <button type="button" class="vol-roster-sort-btn" data-sort="coverage" data-label="Coverage" data-direction="asc">Coverage</button>
                 </div>
-                <div class="vol-roster-filter-box">
-                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-morning" aria-pressed="false" aria-label="Filter by morning coverage">Morning</button>
-                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-full" aria-pressed="false" aria-label="Filter by all-day coverage">All day</button>
-                  <button type="button" class="vol-roster-filter-btn" data-coverage="is-afternoon" aria-pressed="false" aria-label="Filter by afternoon coverage">Afternoon</button>
-                </div>
+                <label class="vol-roster-filter-box"><span class="vol-season-sr-only">Filter by tournament date</span>
+                  <select class="vol-roster-tournament-filter" aria-label="Filter by tournament date">
+                    <option value="">All tournaments</option>
+                    ${SEASON_TOURNAMENTS.map(tournament => `<option value="${escapeHtml(tournament.id)}">${escapeHtml(tournament.name)}</option>`).join("")}
+                  </select>
+                </label>
                 <button type="button" class="vol-roster-reset-btn" aria-label="Reset volunteer search, sort, and filter">Reset</button>
-              </div>` : ""}
-            </div>
-            <div class="vol-roster-table" role="table" aria-label="Volunteer coverage roster">
-              <div class="vol-roster-table-head" role="row">
-                <span role="columnheader">Volunteer</span><span role="columnheader">Availability</span><span role="columnheader">Coverage</span><span role="columnheader">Debater</span><span role="columnheader">Details</span>
               </div>
-              <div class="vol-roster-table-body">${rosterMarkup}</div>
             </div>
-            ${publicSignups.length ? `<div class="vol-roster-pagination" hidden><span class="vol-roster-page-info"></span><div class="vol-roster-page-nav" aria-label="Volunteer roster pages"></div></div>` : ""}
-            <p class="vol-public-roster-note">Volunteer names, debaters, roles, and confirmed availability are visible to the tournament community. Contact details and notes remain private.</p>
+            <div class="vol-roster-table" role="table" aria-label="Season volunteer roster">
+              <div class="vol-roster-table-head" role="row">
+                <span role="columnheader">Volunteer Name</span><span role="columnheader">Tournament Availability</span><span role="columnheader">Coverage</span>
+              </div>
+              <div class="vol-roster-table-body">${rosterMarkup || '<div class="vol-roster-empty" role="row">No volunteers are listed yet. Season availability will appear here when signups are available.</div>'}</div>
+            </div>
+            <div class="vol-roster-pagination" hidden><span class="vol-roster-page-info"></span><div class="vol-roster-page-nav" aria-label="Volunteer roster pages"></div></div>
+            <p class="vol-public-roster-note">Volunteer names and tournament availability are public. Contact details, student names, and notes remain private.</p>
             </section>
           </div>
         </article>`;
-    }).join("");
 
-    root.querySelectorAll(".vol-availability-option input").forEach(input => {
-      input.addEventListener("change", () => {
-        const options = input.closest(".vol-availability-options");
-        const selectedOption = input.closest(".vol-availability-option");
-        options.querySelectorAll(".vol-availability-option").forEach(option => {
-          option.classList.toggle("is-selected", option === selectedOption && input.checked);
-        });
-        selectedOption.classList.remove("is-leaving", "is-entering");
-        if (input.checked) {
-          void selectedOption.offsetWidth;
-          selectedOption.classList.add("is-entering");
-          selectedOption.addEventListener("animationend", () => {
-            selectedOption.classList.remove("is-entering");
-          }, { once:true });
-        }
-        const continueButton = input.closest(".vol-unified-card")?.querySelector(".vol-inline-continue");
-        if (continueButton) {
-          continueButton.disabled = !input.checked || !continueButton.dataset.roleId;
-          continueButton.textContent = input.checked && continueButton.dataset.roleId
-            ? "Continue to Your Sign-Up →"
-            : (continueButton.dataset.roleId ? "Confirm the full-day commitment above" : "All judge spots are filled");
-        }
-      });
-    });
     root.querySelectorAll(".vol-roster-controls").forEach(controls => {
+      const results = controls.closest(".vol-results-card");
+      const tournamentPicker = results.querySelector(".vol-stats-tournament-select");
+      const metrics = results.querySelector(".vol-roster-metrics");
+      const explanation = results.querySelector(".vol-stats-explanation");
+      const prompt = results.querySelector(".vol-stats-prompt");
+      const updateTournament = () => {
+        const tournament = SEASON_TOURNAMENTS.find(item => item.id === tournamentPicker.value);
+        results.querySelector(".vol-stats-context").textContent = tournament?.name || "Choose a tournament";
+        results.querySelector(".vol-roster-context").textContent = results.dataset.view === "volunteer"
+          ? "All tournament dates" : tournament?.name || "Choose a tournament";
+        metrics.hidden = !tournament;
+        explanation.hidden = !tournament;
+        prompt.hidden = !!tournament;
+        if (tournament) {
+          const available = roster.filter(person => person.dates.some(date => date.id === tournament.id));
+          const fullDay = available.filter(person => person.dates.some(date =>
+            date.id === tournament.id && date.fullDay)).length;
+          metrics.querySelector(".capacity strong").textContent = String(available.length);
+          metrics.querySelector(".confirmed strong").textContent = String(fullDay);
+          metrics.querySelector(".fill-rate strong").textContent = String(available.length - fullDay);
+          const fullDayHours = available.reduce((total, person) => {
+            const date = person.dates.find(item => item.id === tournament.id);
+            return total + (date?.fullDay ? date.hours || 0 : 0);
+          }, 0);
+          metrics.querySelector(".available strong").textContent = String(Number(fullDayHours.toFixed(1)));
+        }
+        controls.dataset.page = "1";
+        applyRosterControls(controls);
+      };
+      tournamentPicker.addEventListener("change", updateTournament);
+      results.querySelectorAll("[data-roster-view]").forEach(button => button.addEventListener("click", () => {
+        results.dataset.view = button.dataset.rosterView;
+        results.querySelectorAll("[data-roster-view]").forEach(option =>
+          option.setAttribute("aria-pressed", String(option === button)));
+        controls.querySelector(".vol-roster-tournament-filter").value = "";
+        results.querySelector(".vol-roster-context").textContent = results.dataset.view === "volunteer"
+          ? "All tournament dates" : SEASON_TOURNAMENTS.find(item => item.id === tournamentPicker.value)?.name || "Choose a tournament";
+        controls.dataset.page = "1";
+        applyRosterControls(controls);
+      }));
       controls.querySelector(".vol-roster-search-input")?.addEventListener("input", () => {
         controls.dataset.page = "1";
         applyRosterControls(controls);
@@ -549,21 +576,9 @@
           applyRosterControls(controls);
         });
       });
-      controls.querySelectorAll(".vol-roster-filter-btn").forEach(button => {
-        button.addEventListener("click", event => {
-          const selected = event.currentTarget;
-          const shouldActivate = !selected.classList.contains("active");
-          controls.querySelectorAll(".vol-roster-filter-btn").forEach(item => {
-            item.classList.remove("active");
-            item.setAttribute("aria-pressed", "false");
-          });
-          if (shouldActivate) {
-            selected.classList.add("active");
-            selected.setAttribute("aria-pressed", "true");
-          }
-          controls.dataset.page = "1";
-          applyRosterControls(controls);
-        });
+      controls.querySelector(".vol-roster-tournament-filter")?.addEventListener("change", () => {
+        controls.dataset.page = "1";
+        applyRosterControls(controls);
       });
       controls.querySelector(".vol-roster-reset-btn")?.addEventListener("click", () => {
         const search = controls.querySelector(".vol-roster-search-input");
@@ -573,10 +588,7 @@
           button.dataset.direction = "asc";
           button.textContent = button.dataset.label;
         });
-        controls.querySelectorAll(".vol-roster-filter-btn").forEach(button => {
-          button.classList.remove("active");
-          button.setAttribute("aria-pressed", "false");
-        });
+        controls.querySelector(".vol-roster-tournament-filter").value = "";
         controls.dataset.page = "1";
         applyRosterControls(controls);
         search?.focus();
@@ -588,17 +600,7 @@
         applyRosterControls(controls);
         controls.closest(".vol-public-roster")?.querySelector(".vol-roster-table")?.scrollIntoView({ behavior:"smooth", block:"nearest" });
       });
-      applyRosterControls(controls);
-    });
-    root.querySelectorAll(".vol-inline-continue").forEach(button => {
-      button.addEventListener("click", () => {
-        const card = button.closest(".vol-unified-card");
-        const selected = card?.querySelector(".vol-availability-option input:checked");
-        openSignup(button.dataset.eventId, button.dataset.roleId, {
-          start: selected?.dataset.start || "",
-          end: selected?.dataset.end || "",
-        });
-      });
+      updateTournament();
     });
   }
 
@@ -657,10 +659,33 @@
     if (!root) return;
     root.innerHTML = `<div class="vol-loading" aria-live="polite">Loading judge volunteer opportunities…</div>`;
     try {
-      const response = await fetch(ENDPOINT, { headers: { Accept: "application/json" } });
-      if (!response.ok) throw new Error("Unable to load volunteer events.");
-      const payload = await response.json();
-      volunteerEvents = Array.isArray(payload.events) ? payload.events : [];
+      const [eventResult, rosterResult] = await Promise.allSettled([
+        fetch(ENDPOINT, { headers: { Accept: "application/json" } }),
+        fetch(isDevelopmentPreview() ? DEV_SEASON_ENDPOINT : ROSTER_ENDPOINT, {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+        }),
+      ]);
+      if (eventResult.status === "fulfilled" && eventResult.value.ok) {
+        const payload = await eventResult.value.json();
+        volunteerEvents = Array.isArray(payload.events) ? payload.events : [];
+      } else {
+        volunteerEvents = [];
+        console.warn("Tournament event details could not load.");
+      }
+      seasonSignupsAvailable = false;
+      seasonSignups = [];
+      if (rosterResult.status === "fulfilled" && rosterResult.value.ok) {
+        const payload = await rosterResult.value.json();
+        if (payload.season === SEASON && Array.isArray(payload.seasonSignups)) {
+          seasonSignups = payload.seasonSignups;
+          seasonSignupsAvailable = true;
+        } else {
+          console.warn("Season volunteer roster response was incomplete.");
+        }
+      } else {
+        console.warn("Season volunteer roster could not load.", rosterResult.reason || rosterResult.value?.status);
+      }
       renderEvents();
     } catch (error) {
       console.warn("Volunteer opportunities could not load:", error);
@@ -690,7 +715,7 @@
 
   function renderTurnstile() {
     const root = $("vol-turnstile");
-    if (!root || !turnstileLoaded || !window.turnstile || turnstileWidgetId !== null || !isTurnstileConfigured()) return;
+    if (isDevelopmentPreview() || !canSubmitSeasonAvailability() || !root || !turnstileLoaded || !window.turnstile || turnstileWidgetId !== null || !isTurnstileConfigured()) return;
     turnstileWidgetId = window.turnstile.render(root, {
       sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
       theme: "dark",
@@ -706,10 +731,155 @@
     });
   }
 
+  function renderCancellationTurnstile() {
+    const root = $("vol-cancel-turnstile");
+    if (isDevelopmentPreview() || $("vol-cancel-modal")?.hidden || !root || !turnstileLoaded || !window.turnstile ||
+      cancellationTurnstileWidgetId !== null || !isTurnstileConfigured()) return;
+    cancellationTurnstileWidgetId = window.turnstile.render(root, {
+      sitekey: window.COOPER_TURNSTILE_SITE_KEY.trim(),
+      theme: "dark",
+    });
+  }
+
   window.onTurnstileLoad = () => {
     turnstileLoaded = true;
     renderTurnstile();
+    renderCancellationTurnstile();
   };
+
+  function syncWithdrawButton() {
+    const button = $("vol-withdraw");
+    if (button) button.disabled = !confirmedRegistrationEmail;
+  }
+
+  function openCancellationModal({ confirm = false, trigger = null } = {}) {
+    const modal = $("vol-cancel-modal");
+    if (!modal) return;
+    if (trigger) cancellationReturnFocus = trigger;
+    $("vol-cancel-request").hidden = confirm;
+    $("vol-cancel-confirm").hidden = !confirm;
+    modal.querySelector('[role="dialog"]').setAttribute("aria-describedby",
+      confirm ? "vol-cancel-confirm-status" : "vol-cancel-explainer");
+    if (!confirm) {
+      $("vol-cancel-email").value = confirmedRegistrationEmail || $("vol-cancel-email").value;
+      pendingCancellationToken = "";
+    }
+    modal.hidden = false;
+    document.body.classList.add("vol-cancel-modal-open");
+    renderCancellationTurnstile();
+    requestAnimationFrame(() => {
+      (confirm ? $("vol-cancel-confirm-title") : $("vol-cancel-email"))
+        ?.focus({ preventScroll: true });
+    });
+  }
+
+  function closeCancellationModal() {
+    $("vol-cancel-modal").hidden = true;
+    document.body.classList.remove("vol-cancel-modal-open");
+    pendingCancellationToken = "";
+    if (cancellationReturnFocus?.isConnected) cancellationReturnFocus.focus({ preventScroll: true });
+    cancellationReturnFocus = null;
+  }
+
+  function showSeasonCancellationConfirmation(token) {
+    const panel = $("vol-cancel-confirm");
+    const status = $("vol-cancel-confirm-status");
+    if (!panel || !status) return;
+    selectVolunteerView("signup");
+    pendingCancellationToken = /^[a-f0-9]{64}$/.test(token || "") ? token : "";
+    status.textContent = pendingCancellationToken
+      ? "Nothing has been deleted yet. Choose Delete my website registration to confirm."
+      : "This cancellation link is invalid. Request a new link.";
+    $("vol-cancel-confirm-button").disabled = !pendingCancellationToken;
+    openCancellationModal({ confirm: true });
+    panel.querySelector("h4")?.setAttribute("tabindex", "-1");
+  }
+
+  function readSeasonCancellationLink() {
+    if (!window.location.hash.startsWith("#cancel-season=")) return;
+    const token = window.location.hash.slice("#cancel-season=".length);
+    window.history.replaceState(null, "", window.location.pathname + window.location.search);
+    showSeasonCancellationConfirmation(token);
+  }
+
+  async function requestSeasonCancellation(event) {
+    event.preventDefault();
+    const form = event.currentTarget;
+    const button = form.querySelector('button[type="submit"]');
+    const status = $("vol-cancel-request-status");
+    const token = !isDevelopmentPreview() && window.turnstile && cancellationTurnstileWidgetId !== null
+      ? window.turnstile.getResponse(cancellationTurnstileWidgetId)
+      : "";
+    if (!isDevelopmentPreview() && !token) {
+      status.textContent = "Complete the verification before requesting a cancellation link.";
+      renderCancellationTurnstile();
+      return;
+    }
+    button.disabled = true;
+    status.textContent = "Checking your request…";
+    $("vol-cancel-test-link").hidden = true;
+    try {
+      const response = await fetch(seasonSubmissionEndpoint(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          action: "request-season-cancellation",
+          email: $("vol-cancel-email").value,
+          turnstileToken: token,
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.ok) throw new Error(result.error || "Could not request a cancellation link.");
+      developmentCancellationToken = isDevelopmentPreview() ? result.testToken || "" : "";
+      $("vol-cancel-test-link").hidden = !developmentCancellationToken;
+      status.textContent = isDevelopmentPreview()
+        ? developmentCancellationToken
+          ? "Test confirmation is ready. No email was sent and no real registration was changed."
+          : "No matching test registration exists in this preview. No email was sent."
+        : "If a season registration exists for that email, a confirmation link will arrive shortly. Nothing has been deleted yet. If no email arrives, contact a coach.";
+    } catch (error) {
+      status.textContent = error.message || "Could not request a cancellation link.";
+    } finally {
+      button.disabled = false;
+      if (!isDevelopmentPreview() && window.turnstile && cancellationTurnstileWidgetId !== null) {
+        window.turnstile.reset(cancellationTurnstileWidgetId);
+      }
+    }
+  }
+
+  async function confirmSeasonCancellation() {
+    if (!pendingCancellationToken) return;
+    const button = $("vol-cancel-confirm-button");
+    const status = $("vol-cancel-confirm-status");
+    button.disabled = true;
+    status.textContent = "Removing your website registration…";
+    try {
+      const response = await fetch(seasonSubmissionEndpoint(), {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify({
+          action: "confirm-season-cancellation",
+          token: pendingCancellationToken,
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.deleted) throw new Error(result.error || "Could not confirm the cancellation.");
+      pendingCancellationToken = "";
+      developmentCancellationToken = "";
+      confirmedRegistrationEmail = "";
+      syncWithdrawButton();
+      $("vol-cancel-test-link").hidden = true;
+      status.textContent = result.testSubmission
+        ? "Test registration removed from the development roster. No Firebase record was changed or email sent."
+        : result.emailStatus === "failed"
+          ? "Your registration was deleted from Firebase and the website roster, but the receipt email could not be sent."
+          : "Your registration was deleted from Firebase and the website roster. A receipt email was requested.";
+      loadVolunteerEvents().catch(() => {});
+    } catch (error) {
+      status.textContent = error.message || "Could not confirm the cancellation.";
+      button.disabled = false;
+    }
+  }
 
   function renderTournamentBrief() {
     const root = $("vol-tournament-brief");
@@ -1235,35 +1405,71 @@
     }
   }
 
-  function showStep(step) {
-    wizardStep = Math.max(1, Math.min(2, step));
+  function selectVolunteerView(view, focusTab = false) {
+    const chosen = view === "results" ? "results" : "signup";
+    document.querySelector(".volunteer-change")?.removeAttribute("open");
+    document.querySelectorAll("[data-volunteer-view]").forEach(tab => {
+      const selected = tab.dataset.volunteerView === chosen;
+      tab.setAttribute("aria-selected", String(selected));
+      tab.tabIndex = selected ? 0 : -1;
+      if (selected && focusTab) tab.focus();
+    });
+    $("volunteer-signup-panel").hidden = chosen !== "signup";
+    $("volunteer-results-panel").hidden = chosen !== "results";
+  }
+
+  function showStep(step, { focus = true } = {}) {
+    wizardStep = Math.max(1, Math.min(3, step));
     document.querySelectorAll("[data-vol-step]").forEach(panel => {
       panel.hidden = Number(panel.dataset.volStep) !== wizardStep;
       if (!panel.hidden) {
         panel.classList.remove("is-entering");
         requestAnimationFrame(() => panel.classList.add("is-entering"));
+        const heading = panel.querySelector(".vol-season-screen-heading h3");
+        if (heading && focus) {
+          heading.tabIndex = -1;
+          heading.focus();
+        }
       }
     });
     document.querySelectorAll("[data-vol-progress]").forEach(item => {
       const active = Number(item.dataset.volProgress) <= wizardStep;
       item.classList.toggle("is-active", active);
       item.classList.toggle("is-current", Number(item.dataset.volProgress) === wizardStep);
+      if (Number(item.dataset.volProgress) === wizardStep) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
     });
-    if (wizardStep === 2) {
-      renderReview();
-      renderTurnstile();
+    const percentage = Math.round(wizardStep / 3 * 100);
+    const progressTrack = $("vol-progress-track");
+    const progressFill = $("vol-progress-fill");
+    const progressPercent = $("vol-progress-percent");
+    const progressLabels = ["Tournament dates", "Your information", "Review & submit"];
+    if (progressTrack) {
+      progressTrack.setAttribute("aria-valuenow", String(percentage));
+      progressTrack.setAttribute("aria-valuetext", `Step ${wizardStep} of 3: ${progressLabels[wizardStep - 1]}`);
     }
+    if (progressFill) progressFill.style.width = `${percentage}%`;
+    if (progressPercent) progressPercent.textContent = `${percentage}% complete`;
+    renderSeasonAvailabilitySummary();
+    if (wizardStep === 3) renderSeasonReview();
+    if (wizardStep === 3) renderTurnstile();
+    const submitButton = $("vol-submit");
+    const canSubmit = canSubmitSeasonAvailability();
+    if (submitButton) submitButton.disabled = wizardStep === 3 && !canSubmit;
     setStatus("");
-    const modal = $("volunteer-modal");
-    if (modal && modal.style.display === "flex" && window.matchMedia("(max-width: 980px)").matches) {
-      requestAnimationFrame(() => {
-        const card = modal.querySelector(".vol-judge-modal");
-        if (card) card.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-      });
-    }
   }
 
   function validateStep(step) {
+    if (step === 1) {
+      const error = $("vol-season-selection-error");
+      const hasSelection = selectedTournamentIds.size > 0;
+      const committed = $("vol-full-day-commitment")?.checked === true;
+      if (error) error.hidden = hasSelection;
+      if ($("vol-day-confirmation-error")) $("vol-day-confirmation-error").hidden = committed;
+      if (!hasSelection) $("vol-season-tournament-choices")?.querySelector("input")?.focus();
+      else if (!committed) $("vol-full-day-commitment")?.focus();
+      return hasSelection && committed;
+    }
     const panel = document.querySelector(`[data-vol-step="${step}"]`);
     const fields = panel ? [...panel.querySelectorAll("input[required], textarea[required]")] : [];
     return fields.every(field => {
@@ -1273,53 +1479,249 @@
     });
   }
 
-  function openSignup(eventId, roleId, availability) {
-    selectedEvent = volunteerEvents.find(event => event.id === eventId) || null;
-    selectedRole = selectedEvent && selectedEvent.roles.find(role => role.id === roleId);
+  function readSeasonFormValues() {
+    return {
+      parentFirstName: $("vol-parent-first-name")?.value || "",
+      parentLastName: $("vol-parent-last-name")?.value || "",
+      email: $("vol-email")?.value || "",
+      phone: $("vol-phone")?.value || "",
+      studentName: $("vol-student-name")?.value || "",
+      tabroomUsernameOrEmail: $("vol-tabroom-identifier")?.value || "",
+      notes: $("vol-notes")?.value || "",
+    };
+  }
+
+  function syncFullDayCommitment() {
+    const confirmed = $("vol-full-day-commitment")?.checked === true;
+    $("vol-full-day-commitment")?.closest(".vol-day-commitment-card")?.classList.toggle("is-confirmed", confirmed);
+    const continueButton = $("vol-day-continue");
+    if (continueButton) {
+      continueButton.disabled = !confirmed;
+      continueButton.textContent = confirmed
+        ? "CONTINUE TO YOUR INFORMATION →"
+        : "CONFIRM THE FULL-DAY COMMITMENT ABOVE";
+    }
+    if (confirmed && $("vol-day-confirmation-error")) $("vol-day-confirmation-error").hidden = true;
+  }
+
+  function persistSeasonDraft() {
+    try {
+      const form = readSeasonFormValues();
+      const fullDayCommitment = $("vol-full-day-commitment")?.checked === true;
+      const hasData = fullDayCommitment || selectedTournamentIds.size > 0 || Object.values(form).some(value => value.trim());
+      if (!hasData) {
+        window.sessionStorage.removeItem(SEASON_DRAFT_SESSION_KEY);
+        return true;
+      }
+      const draft = {
+        season: SEASON,
+        form,
+        selectedTournamentIds: SEASON_TOURNAMENTS
+          .filter(tournament => selectedTournamentIds.has(tournament.id))
+          .map(tournament => tournament.id),
+        fullDayCommitment,
+        savedAt: new Date().toISOString(),
+      };
+      window.sessionStorage.setItem(SEASON_DRAFT_SESSION_KEY, JSON.stringify(draft));
+      return true;
+    } catch (error) {
+      console.warn("Season signup draft could not be saved in this browser session.", error);
+      return false;
+    }
+  }
+
+  function restoreSeasonDraft() {
+    try {
+      const saved = window.sessionStorage.getItem(SEASON_DRAFT_SESSION_KEY);
+      if (!saved) return { restored: false, error: false };
+      let draft;
+      try {
+        draft = JSON.parse(saved);
+      } catch (_) {
+        window.sessionStorage.removeItem(SEASON_DRAFT_SESSION_KEY);
+        return { restored: false, error: true };
+      }
+      if (!draft || draft.season !== SEASON || !draft.form || typeof draft.form !== "object") {
+        window.sessionStorage.removeItem(SEASON_DRAFT_SESSION_KEY);
+        return { restored: false, error: true };
+      }
+      const fields = {
+        parentFirstName: "vol-parent-first-name",
+        parentLastName: "vol-parent-last-name",
+        email: "vol-email",
+        phone: "vol-phone",
+        studentName: "vol-student-name",
+        tabroomUsernameOrEmail: "vol-tabroom-identifier",
+        notes: "vol-notes",
+      };
+      Object.entries(fields).forEach(([key, id]) => {
+        if (typeof draft.form[key] === "string" && $(id)) $(id).value = draft.form[key];
+      });
+      const allowedIds = new Set(SEASON_TOURNAMENTS.map(tournament => tournament.id));
+      selectedTournamentIds = new Set(
+        Array.isArray(draft.selectedTournamentIds)
+          ? draft.selectedTournamentIds.filter(id => allowedIds.has(id))
+          : []
+      );
+      if ($("vol-full-day-commitment")) $("vol-full-day-commitment").checked = draft.fullDayCommitment === true;
+      return { restored: true, error: false };
+    } catch (error) {
+      console.warn("Season signup draft could not be restored from this browser session.", error);
+      return { restored: false, error: true };
+    }
+  }
+
+  function clearSeasonDraft() {
+    try {
+      window.sessionStorage.removeItem(SEASON_DRAFT_SESSION_KEY);
+      return true;
+    } catch (error) {
+      console.warn("Season signup draft could not be removed from this browser session.", error);
+      return false;
+    }
+  }
+
+  function updateSeasonSelectionCount() {
+    const count = $("vol-season-selection-count");
+    if (!count) return;
+    const number = count.querySelector(".vol-selection-number");
+    const copy = count.querySelector(".vol-selection-copy");
+    if (number) number.textContent = String(selectedTournamentIds.size);
+    if (copy) copy.textContent = `of ${SEASON_TOURNAMENTS.length} tournament dates selected`;
+  }
+
+  function renderSeasonTournamentChoices() {
+    const root = $("vol-season-tournament-choices");
+    if (!root) return;
+    root.innerHTML = SEASON_TOURNAMENTS.map((tournament, index) => {
+      const physicalAddress = tournament.address.match(/^(.+), ([^,]+), ([A-Z]{2}) \d{5}(?:-\d{4})?$/);
+      return `
+      <label class="vol-season-tournament-card${selectedTournamentIds.has(tournament.id) ? " is-selected" : ""}" for="vol-season-tournament-${index}">
+        <input id="vol-season-tournament-${index}" type="checkbox" name="selectedTournamentIds" value="${escapeHtml(tournament.id)}" ${selectedTournamentIds.has(tournament.id) ? "checked" : ""} aria-label="${escapeHtml(`${tournament.name}, ${tournament.date}, full day 8:00 AM to 5:30 PM`)}">
+        <span class="vol-season-card-date">${escapeHtml(tournament.date)}</span>
+        <strong>${escapeHtml(tournament.name)}</strong>
+        <span class="vol-season-card-venue">
+          <span class="vol-season-card-location">${escapeHtml(tournament.location)}</span>
+          <span class="vol-season-card-address">${escapeHtml(physicalAddress ? physicalAddress[1] : tournament.address)}</span>
+          ${physicalAddress ? `<span class="vol-season-card-city">${escapeHtml(physicalAddress[2])}, ${escapeHtml(physicalAddress[3])}</span>` : ""}
+        </span>
+        <span class="vol-season-card-hours">8:00 AM – 5:30 PM · Full day</span>
+        <span class="vol-season-selected-pill" aria-hidden="true">Selected</span>
+      </label>`;
+    }).join("");
+    root.querySelectorAll("input[name='selectedTournamentIds']").forEach(input => {
+      input.addEventListener("change", () => {
+        if (input.checked) selectedTournamentIds.add(input.value);
+        else selectedTournamentIds.delete(input.value);
+        input.closest(".vol-season-tournament-card")?.classList.toggle("is-selected", input.checked);
+        updateSeasonSelectionCount();
+        if (selectedTournamentIds.size) {
+          const error = $("vol-season-selection-error");
+          if (error) error.hidden = true;
+        }
+        renderSeasonAvailabilitySummary();
+        if (!persistSeasonDraft()) {
+          const reminder = $("vol-tabroom-return-reminder");
+          if (reminder) reminder.textContent = "This browser session could not save your draft. Keep this tab open until you submit or copy your details elsewhere.";
+        }
+      });
+    });
+    updateSeasonSelectionCount();
+  }
+
+  function renderSeasonAvailabilitySummary() {
+    const summary = $("vol-season-selection-summary");
+    if (!summary) return;
+    const selected = SEASON_TOURNAMENTS.filter(tournament => selectedTournamentIds.has(tournament.id));
+    const count = $("vol-season-summary-count");
+    const list = $("vol-season-summary-list");
+    if (count) count.textContent = `${selected.length} of ${SEASON_TOURNAMENTS.length} tournament dates selected`;
+    if (list) list.innerHTML = selected.length
+      ? selected.map(tournament => `<li><span aria-hidden="true">✓</span><svg class="vol-summary-tournament-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#vol-icon-${tournament.name.toLowerCase().includes("online") ? "document" : "school"}"></use></svg><strong>${escapeHtml(tournament.name)}</strong><time datetime="${escapeHtml(tournament.id)}"><svg class="vol-summary-date-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#vol-icon-calendar"></use></svg>${escapeHtml(tournament.date.replace(/^[^,]+, /, ""))}</time></li>`).join("")
+      : `<li class="vol-season-summary-empty">Choose at least one date to continue.</li>`;
+  }
+
+  function renderSeasonReview() {
+    const root = $("vol-review");
+    if (!root) return;
+    const selected = SEASON_TOURNAMENTS.filter(tournament => selectedTournamentIds.has(tournament.id));
+    const parentName = `${$("vol-parent-first-name")?.value.trim() || ""} ${$("vol-parent-last-name")?.value.trim() || ""}`.trim();
+    const details = [
+      ["Parent / volunteer", parentName, "users"],
+      ["Email", $("vol-email")?.value.trim(), "mail"],
+      ["Cell phone", $("vol-phone")?.value.trim(), "phone"],
+      ["Student / debater", $("vol-student-name")?.value.trim() || "Not provided", "school"],
+      ["Tabroom username / email", $("vol-tabroom-identifier")?.value.trim(), "debate"],
+      ["Notes for the coach", $("vol-notes")?.value.trim() || "None", "document"],
+    ];
+    root.innerHTML = `
+      <section class="vol-season-review-section">
+        <div class="vol-review-card-heading"><span class="vol-review-card-icon vol-review-card-icon--person" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#vol-icon-users"></use></svg></span><div><h4>Your information</h4><p>Review your contact details and Tabroom account.</p></div><button type="button" class="vol-season-edit-selection" data-vol-back="2">Edit your information</button></div>
+        <dl>${details.map(([label, value, icon]) => `<div><svg class="vol-review-row-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#vol-icon-${icon}"></use></svg><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value || "")}</dd></div>`).join("")}</dl>
+      </section>
+      <section class="vol-season-review-section">
+        <div class="vol-season-review-heading">
+          <span class="vol-review-card-icon vol-review-card-icon--calendar" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#vol-icon-calendar"></use></svg></span>
+          <div><h4>Your full-day tournament commitments</h4><p>${selected.length} of ${SEASON_TOURNAMENTS.length} dates · Available 8:00 AM–5:30 PM for every date listed</p></div>
+          <button type="button" class="vol-season-edit-selection" data-vol-back="1">Edit tournament dates</button>
+        </div>
+        <ul class="vol-season-review-tournaments">${selected.map(tournament => `<li><span aria-hidden="true">✓</span><svg class="vol-review-tournament-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#vol-icon-${tournament.name.toLowerCase().includes("online") ? "document" : "school"}"></use></svg><div><strong>${escapeHtml(tournament.name)}</strong><span><svg class="vol-review-date-icon" aria-hidden="true" viewBox="0 0 24 24"><use href="#vol-icon-calendar"></use></svg>${escapeHtml(tournament.date)} · Full day, 8:00 AM–5:30 PM</span></div></li>`).join("")}</ul>
+      </section>`;
+    const emailCheck = $("vol-review-email-check");
+    if (emailCheck) emailCheck.innerHTML = `
+      <span class="vol-review-card-icon vol-review-card-icon--mail" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#vol-icon-mail"></use></svg></span>
+      <div><strong>Double-check your email address</strong><p>Your season-availability confirmation will be sent to:</p><b class="vol-review-email-pill">${escapeHtml($("vol-email")?.value.trim())}</b></div>`;
+  }
+
+  function openSignup({ focus = false } = {}) {
+    selectedEvent = null;
+    selectedRole = null;
     const form = $("volunteer-signup-form");
-    if (!selectedEvent || !selectedRole || !form) return;
+    if (!form) return;
     confirmedPdfBlob = null;
     confirmedSignupId = "";
+    confirmedTestSubmission = false;
     confirmedRetryToken = "";
-
-    $("vol-modal-title").textContent = "Judge Volunteer Signup";
-    $("vol-modal-context").textContent = `${selectedEvent.title} · ${roleDisplayLabel(selectedRole)}`;
+    selectedTournamentIds = new Set();
+    tabroomLinkOpened = false;
     form.reset();
+    const draftStatus = restoreSeasonDraft();
+    syncFullDayCommitment();
     form.querySelectorAll(".is-complete").forEach(field => field.classList.remove("is-complete"));
-    $("vol-availability-start").min = WASDL_FULL_DAY_START;
-    $("vol-availability-start").max = WASDL_FULL_DAY_START;
-    $("vol-availability-end").min = WASDL_FULL_DAY_END;
-    $("vol-availability-end").max = WASDL_FULL_DAY_END;
-    $("vol-availability-start").value = WASDL_FULL_DAY_START;
-    $("vol-availability-end").value = WASDL_FULL_DAY_END;
-    $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
-    renderSignupSidebar();
+    renderSeasonTournamentChoices();
+    renderSeasonAvailabilitySummary();
+    if ($("vol-season-selection-error")) $("vol-season-selection-error").hidden = true;
+    const tabroomReminder = $("vol-tabroom-return-reminder");
+    if (tabroomReminder) {
+      tabroomReminder.textContent = draftStatus.restored
+        ? "Your saved season draft has been restored in this browser session. If you just created a Tabroom account, enter its username or email before continuing."
+        : "After creating an account, return here and enter its username or email to continue.";
+    }
     if (window.turnstile && turnstileWidgetId !== null) window.turnstile.reset(turnstileWidgetId);
-    $("volunteer-modal").style.display = "flex";
+    $("volunteer-modal").style.display = "block";
     $("volunteer-exit-modal").style.display = "none";
-    document.body.classList.add("vol-modal-open");
-    showStep(1);
-    $("vol-parent-first-name").focus();
+    showStep(1, { focus });
+    if (draftStatus.error) {
+      setStatus("Your saved season draft could not be restored. Please re-enter your information; if you need to update a previous signup, contact a Cooper Debate coach.", true);
+    }
   }
 
   function closeSignup() {
-    const modal = $("volunteer-modal");
-    if (modal) modal.style.display = "none";
     document.body.classList.remove("vol-modal-open");
-    selectedEvent = null;
-    selectedRole = null;
-    wizardStep = 1;
+    openSignup();
   }
 
   function hasEnteredSignupData() {
-    return [
+    const enteredData = [
       "vol-parent-first-name",
       "vol-parent-last-name",
       "vol-phone",
       "vol-email",
       "vol-student-name",
+      "vol-tabroom-identifier",
       "vol-notes",
     ].some(id => Boolean($(id)?.value.trim()));
+    return selectedTournamentIds.size > 0 || $("vol-full-day-commitment")?.checked === true || enteredData;
   }
 
   function hideExitConfirmation() {
@@ -1341,19 +1743,26 @@
 
   function renderThankYouEmailStatus(emailStatus) {
     const note = $("vol-thank-you-email-note");
-    const retry = $("vol-retry-email");
     if (!note) return;
-    const accepted = emailStatus === "accepted";
+    const accepted = emailStatus === "accepted" || emailStatus === "sent";
     note.querySelector("span").textContent = accepted
-      ? "Your confirmation email and calendar invitation were accepted for delivery. If they do not arrive soon, check your spam or junk folder."
-      : "Your signup is saved, but the confirmation email has not been accepted for delivery yet. You can safely retry without creating another signup.";
-    note.classList.toggle("is-email-delayed", !accepted);
-    if (retry) retry.hidden = !confirmedSignupId || !confirmedRetryToken;
+      ? "A confirmation email was accepted for delivery. If it does not arrive soon, check your spam or junk folder."
+      : emailStatus === "test"
+        ? "Test only: no confirmation email or PDF was sent. Download the test PDF below to preview it. The real signup database was not changed."
+      : emailStatus === "failed"
+        ? "Your season availability was saved, but the confirmation email could not be sent. Please contact the coach if you need a copy."
+        : "Your season availability was saved. A confirmation email may take a few minutes to arrive.";
+    note.classList.toggle("is-email-delayed", !accepted && emailStatus !== "test");
   }
   function openThankYou(emailStatus) {
     const modal = $("volunteer-thank-you-modal");
     if (!modal) return;
     renderThankYouEmailStatus(emailStatus);
+    const editButton = $("vol-thank-you-edit");
+    if (editButton) editButton.hidden = false;
+    const pdfButton = $("vol-thank-you-test-pdf");
+    if (pdfButton) pdfButton.hidden = !confirmedTestSubmission || !isDevelopmentPreview();
+    if ($("vol-test-pdf-status")) $("vol-test-pdf-status").textContent = "";
     const preview = $("vol-confirmation-letter-preview");
     if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
     modal.style.display = "flex";
@@ -1370,13 +1779,67 @@
     if (modal) modal.style.display = "none";
     closeSignup();
     confirmedPdfBlob = null;
+    confirmedTestSubmission = false;
     confirmedLetterPreviewUrl = "";
+  }
+
+  async function downloadTestSeasonPdf() {
+    const button = $("vol-thank-you-test-pdf");
+    const status = $("vol-test-pdf-status");
+    if (!button || !status || !confirmedTestSubmission || !isDevelopmentPreview() || !confirmedSignupId) return;
+    button.disabled = true;
+    status.textContent = "Preparing your test PDF…";
+    try {
+      const response = await fetch(
+        `${DEV_SEASON_ENDPOINT}/${encodeURIComponent(confirmedSignupId)}/confirmation.pdf`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          cache: "no-store",
+          body: JSON.stringify({
+            email: $("vol-email").value.trim(),
+            phone: $("vol-phone").value.trim(),
+            studentName: $("vol-student-name").value.trim(),
+            notes: $("vol-notes").value.trim(),
+            tabroomUsernameOrEmail: $("vol-tabroom-identifier").value.trim(),
+          }),
+        }
+      );
+      if (!response.ok || !response.headers.get("content-type")?.includes("application/pdf")) {
+        throw new Error("The test PDF could not be prepared. Please try again.");
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "Cooper_Debate_2026-27_Judge_Availability_TEST.pdf";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      status.textContent = "Test PDF downloaded. No email was sent.";
+    } catch (error) {
+      status.textContent = error.message || "The test PDF could not be downloaded. Please try again.";
+    } finally {
+      button.disabled = false;
+    }
+  }
+
+  function reopenSeasonAvailability() {
+    const thankYou = $("volunteer-thank-you-modal");
+    if (thankYou) thankYou.style.display = "none";
+    selectVolunteerView("signup");
+    $("volunteer-exit-modal").style.display = "none";
+    document.body.classList.remove("vol-modal-open");
+    showStep(1);
+    const selectedDate = $("vol-season-tournament-choices")?.querySelector("input:checked");
+    (selectedDate || $("vol-season-tournament-choices")?.querySelector("input"))?.focus({ preventScroll: true });
   }
 
   async function submitSignup(event) {
     event.preventDefault();
-    if (!selectedEvent || !selectedRole || signupSubmitting) return;
-    if (wizardStep < 2) {
+    if (signupSubmitting) return;
+    if (wizardStep < 3) {
       if (validateStep(wizardStep)) showStep(wizardStep + 1);
       return;
     }
@@ -1385,60 +1848,76 @@
     const turnstileToken = window.turnstile && turnstileWidgetId !== null
       ? window.turnstile.getResponse(turnstileWidgetId)
       : "";
+    if (!canSubmitSeasonAvailability()) {
+      setStatus("This development preview cannot submit season availability. Your information has not been sent or saved.", true);
+      return;
+    }
+
+    if (!validateStep(1)) {
+      showStep(1);
+      return;
+    }
+    if (!validateStep(2)) {
+      showStep(2);
+      return;
+    }
+    if (!turnstileToken && !isDevelopmentPreview()) {
+      submitPendingTurnstile = true;
+      setStatus("Complete the volunteer verification to submit your season availability.", false);
+      return;
+    }
+    submitPendingTurnstile = false;
     const payload = {
-      eventId: selectedEvent.id,
-      roleId: selectedRole.id,
+      action: "submit-season-availability",
+      season: SEASON,
+      selectedTournamentIds: SEASON_TOURNAMENTS
+        .filter(tournament => selectedTournamentIds.has(tournament.id))
+        .map(tournament => tournament.id),
       parentFirstName: $("vol-parent-first-name").value,
       parentLastName: $("vol-parent-last-name").value,
       email: $("vol-email").value,
       phone: $("vol-phone").value,
       studentName: $("vol-student-name").value,
       notes: $("vol-notes").value,
-      availabilityStart: WASDL_FULL_DAY_START,
-      availabilityEnd: WASDL_FULL_DAY_END,
+      tabroomUsernameOrEmail: $("vol-tabroom-identifier").value,
+      fullDayCommitment: $("vol-full-day-commitment")?.checked === true,
       company: $("vol-company").value,
       turnstileToken,
     };
 
-    if (!validateStep(1)) return;
-    if (!turnstileToken) {
-      submitPendingTurnstile = true;
-      setStatus("Complete the volunteer verification to continue your signup.", false);
-      return;
-    }
-    submitPendingTurnstile = false;
     signupSubmitting = true;
     button.disabled = true;
-    button.textContent = "Preparing confirmation…";
+    button.textContent = "Submitting season availability…";
     setStatus("");
-    const pdfPromise = buildVolunteerReviewPdf().catch(() => null);
 
     try {
-      const preparedPdf = await pdfPromise;
-      if (!preparedPdf) throw new Error("The confirmation one-pager could not be prepared. Please try again.");
-      const pdfDataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result || ""));
-        reader.onerror = () => reject(new Error("The confirmation one-pager could not be prepared. Please try again."));
-        reader.readAsDataURL(preparedPdf);
-      });
-      payload.confirmationPdfBase64 = pdfDataUrl.split(",", 2)[1] || "";
-      button.textContent = "Saving & emailing…";
-      const response = await fetch(ENDPOINT, {
+      const response = await fetch(seasonSubmissionEndpoint(), {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(payload),
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok || !result.ok) throw new Error(result.error || "Unable to save your signup.");
-      confirmedSignupId = result.signupId || "";
-      confirmedRetryToken = result.retryToken || "";
-      confirmedPdfBlob = preparedPdf;
-      setStatus(result.message || "You’re signed up. Thank you!", false);
-      $("volunteer-modal").style.display = "none";
+      if (!response.ok || !result.ok || !result.submissionId) {
+        throw new Error(result.error || "Your season availability could not be saved. Please try again or contact the coach.");
+      }
+      confirmedSignupId = result.submissionId;
+      confirmedTestSubmission = result.testSubmission === true;
+      confirmedRetryToken = "";
+      confirmedRegistrationEmail = payload.email.trim();
+      syncWithdrawButton();
+      persistSeasonDraft();
+      const confirmationMessage = result.testSubmission
+        ? `Test submission ${result.updatedExisting ? "updated" : "saved"} in this development preview. This is not a real registration.`
+        : result.updatedExisting
+          ? "Your season availability has been updated."
+          : "Your season availability has been submitted.";
+      if ($("vol-thank-you-message")) $("vol-thank-you-message").textContent = confirmationMessage;
+      const editNote = $("vol-thank-you-edit-note");
+      if (editNote && result.testSubmission) {
+        editNote.textContent = "Use the same email address and select every test date you want to keep. Test records disappear when the development server restarts.";
+      }
+      setStatus(confirmationMessage, false);
       openThankYou(result.emailStatus);
-      const preview = $("vol-confirmation-letter-preview");
-      if (preview && confirmedLetterPreviewUrl) preview.src = confirmedLetterPreviewUrl;
       loadVolunteerEvents().catch(() => {});
     } catch (error) {
       setStatus(error.message || "Unable to save your signup. Please try again.", true);
@@ -1448,7 +1927,7 @@
       }
       signupSubmitting = false;
       button.disabled = false;
-      button.textContent = "Confirm judge signup";
+      button.textContent = "Submit season availability";
     }
   }
 
@@ -1482,13 +1961,63 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    const workspace = $("volunteer-signup-workspace");
+    const signup = $("volunteer-modal");
+    if (workspace && signup) {
+      workspace.appendChild(signup);
+      selectVolunteerView("signup");
+      openSignup();
+    }
+    const viewTabs = [...document.querySelectorAll("[data-volunteer-view]")];
+    viewTabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => selectVolunteerView(tab.dataset.volunteerView));
+      tab.addEventListener("keydown", event => {
+        if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        const nextIndex = event.key === "Home" ? 0
+          : event.key === "End" ? viewTabs.length - 1
+            : (index + (event.key === "ArrowRight" ? 1 : -1) + viewTabs.length) % viewTabs.length;
+        selectVolunteerView(viewTabs[nextIndex].dataset.volunteerView, true);
+      });
+    });
+    const changeMenu = document.querySelector(".volunteer-change");
+    document.addEventListener("pointerdown", event => {
+      if (changeMenu?.open && !changeMenu.contains(event.target)) changeMenu.open = false;
+    });
     loadVolunteerEvents();
+    $("vol-withdraw")?.addEventListener("click", event => {
+      if (confirmedRegistrationEmail) openCancellationModal({ trigger: event.currentTarget });
+    });
+    $("vol-cancel-request-open")?.addEventListener("click", event => {
+      openCancellationModal({ trigger: event.currentTarget });
+    });
+    $("vol-cancel-close")?.addEventListener("click", closeCancellationModal);
+    $("vol-cancel-new-link")?.addEventListener("click", () => openCancellationModal());
+    $("vol-cancel-modal")?.addEventListener("click", event => {
+      if (event.target.id === "vol-cancel-modal") closeCancellationModal();
+    });
+    $("vol-cancel-request-form")?.addEventListener("submit", requestSeasonCancellation);
+    $("vol-cancel-confirm-button")?.addEventListener("click", confirmSeasonCancellation);
+    $("vol-cancel-test-link")?.addEventListener("click", () => {
+      showSeasonCancellationConfirmation(developmentCancellationToken);
+    });
+    window.addEventListener("hashchange", readSeasonCancellationLink);
+    readSeasonCancellationLink();
     $("volunteer-events")?.addEventListener("click", event => {
       const detailsButton = event.target.closest(".vol-roster-details");
       if (detailsButton) openDetailsModal(detailsButton);
     });
     $("volunteer-signup-form")?.addEventListener("submit", submitSignup);
-    $("vol-retry-email")?.addEventListener("click", retryConfirmationEmail);
+    $("vol-full-day-commitment")?.addEventListener("change", syncFullDayCommitment);
+    $("volunteer-signup-form")?.addEventListener("click", event => {
+      const nextButton = event.target.closest("[data-season-next]");
+      if (nextButton) {
+        if (validateStep(wizardStep)) showStep(Number(nextButton.dataset.seasonNext));
+        return;
+      }
+      const backButton = event.target.closest("[data-vol-back]");
+      if (backButton) showStep(Number(backButton.dataset.volBack));
+    });
     const phoneField = $("vol-phone");
     const emailField = $("vol-email");
     phoneField?.addEventListener("input", () => {
@@ -1512,27 +2041,33 @@
     $("vol-exit-stay")?.addEventListener("click", hideExitConfirmation);
     $("vol-exit-discard")?.addEventListener("click", () => {
       hideExitConfirmation();
+      const removed = clearSeasonDraft();
+      if (!removed) {
+        const message = $("vol-exit-message");
+        if (message) message.textContent = "This browser could not clear the saved draft. Keep editing and try again, or close the browser session to remove session-only data.";
+        $("volunteer-exit-modal").style.display = "flex";
+        return;
+      }
       closeSignup();
     });
     document.querySelectorAll("[data-close-volunteer-thank-you]").forEach(element => {
       element.addEventListener("click", closeThankYou);
     });
-    document.querySelectorAll("[data-vol-next]").forEach(button => {
-      button.addEventListener("click", () => {
-        if (validateStep(wizardStep)) showStep(Number(button.dataset.volNext));
-      });
+    $("vol-thank-you-edit")?.addEventListener("click", reopenSeasonAvailability);
+    $("vol-thank-you-test-pdf")?.addEventListener("click", downloadTestSeasonPdf);
+    $("vol-create-tabroom-account")?.addEventListener("click", () => {
+      tabroomLinkOpened = true;
+      const saved = persistSeasonDraft();
+      $("vol-tabroom-return-reminder").textContent = saved
+        ? "Your current selections and details are saved in this browser session. Tabroom opened in a new tab—return here afterward and enter your account username or email."
+        : "This browser could not save a draft. Keep this tab open while you create your Tabroom account, then return here and enter your username or email.";
     });
-    document.querySelectorAll("[data-vol-back]").forEach(button => {
-      button.addEventListener("click", () => showStep(Number(button.dataset.volBack)));
-    });
-    ["vol-availability-start", "vol-availability-end"].forEach(id => {
-      const updateCondensedSelection = () => {
-        if (!$("vol-condensed-event") || !selectedRole) return;
-        $("vol-condensed-event").textContent = `${roleDisplayLabel(selectedRole)} · ${timeRange($("vol-availability-start").value, $("vol-availability-end").value)}`;
-        renderSignupSidebar();
-      };
-      $(id)?.addEventListener("input", updateCondensedSelection);
-      $(id)?.addEventListener("change", updateCondensedSelection);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && tabroomLinkOpened) {
+        $("vol-tabroom-return-reminder").textContent = "Welcome back. Enter the username or email for the Tabroom account you created so the coach can link it to your selected tournaments.";
+        $("vol-tabroom-identifier")?.focus({ preventScroll: true });
+        tabroomLinkOpened = false;
+      }
     });
     document.querySelectorAll("#volunteer-signup-form input, #volunteer-signup-form textarea").forEach(field => {
       const updateCompletion = () => {
@@ -1542,9 +2077,14 @@
       field.addEventListener("input", updateCompletion);
       field.addEventListener("change", updateCompletion);
       field.addEventListener("blur", updateCompletion);
+      const saveDraft = () => {
+        if (persistSeasonDraft()) return;
+        const reminder = $("vol-tabroom-return-reminder");
+        if (reminder) reminder.textContent = "This browser session could not save your draft. Keep this tab open until you submit or copy your details elsewhere.";
+      };
+      field.addEventListener("input", saveDraft);
+      field.addEventListener("change", saveDraft);
     });
-    $("vol-print-itinerary")?.addEventListener("click", printVolunteerReviewPdf);
-    $("vol-save-pdf")?.addEventListener("click", saveVolunteerReviewPdf);
     $("volunteer-modal")?.addEventListener("click", event => {
       if (event.target.id === "volunteer-modal") requestCloseSignup();
     });
@@ -1555,7 +2095,26 @@
       if (event.target.id === "volunteer-thank-you-modal") closeThankYou();
     });
     document.addEventListener("keydown", event => {
+      if (!$("vol-cancel-modal")?.hidden && event.key === "Tab") {
+        const controls = [...$("vol-cancel-modal").querySelectorAll(
+          'button:not([disabled]):not([hidden]), input:not([disabled]):not([hidden]), [tabindex="-1"]'
+        )].filter(element => element.getClientRects().length && element.tabIndex >= 0);
+        const first = controls[0];
+        const last = controls.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+        return;
+      }
       if (event.key !== "Escape") return;
+      if (!$("vol-cancel-modal")?.hidden) {
+        closeCancellationModal();
+        return;
+      }
       if ($("volunteer-exit-modal")?.style.display === "flex") hideExitConfirmation();
       else if ($("volunteer-details-modal")?.classList.contains("is-open")) closeDetailsModal();
       else if ($("volunteer-thank-you-modal")?.style.display === "flex") closeThankYou();

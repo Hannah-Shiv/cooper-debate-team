@@ -290,6 +290,11 @@
     text-align: right !important;
   }
 
+  .tournaments-page .volunteer-section .tourney-panel-intro-title,
+  .tournaments-page .volunteer-section .tourney-panel-intro-title .section-title {
+    text-align: right !important;
+  }
+
   .tournaments-page .tourney-panel-intro-copy {
     grid-area: copy !important;
     width: auto;

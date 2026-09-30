@@ -5,7 +5,7 @@
 const { onDocumentCreated, onDocumentDeleted, onDocumentUpdated, onDocumentWritten } = require("firebase-functions/v2/firestore");
 const { onRequest }         = require("firebase-functions/v2/https");
 const { onSchedule }        = require("firebase-functions/v2/scheduler");
-const { initializeApp }     = require("firebase-admin/app");
+const { initializeApp, getApp } = require("firebase-admin/app");
 const { getAuth }           = require("firebase-admin/auth");
 const { getMessaging }      = require("firebase-admin/messaging");
 const { getFirestore, FieldValue, Timestamp } = require("firebase-admin/firestore");
@@ -17,6 +17,19 @@ const { createTryoutBoardHandler } = require("./tryout-board");
 const { createDebateWorkHandler } = require("./debate-work");
 const { createPrivateMemberPdfHandler } = require("./private-member-pdf");
 const {
+  SEASON,
+  TOURNAMENT_IDS,
+  normalizeSeasonAvailability,
+  saveSeasonAvailability,
+  seasonSignupAdminUpdate,
+  submissionIdFor,
+} = require("./season-volunteer");
+const {
+  processSeasonCancellationRequest,
+  confirmSeasonCancellation,
+  seasonCancellationCoachEmails,
+} = require("./season-volunteer-cancellation");
+const {
   isPublicVolunteerEvent,
   newYorkCalendarDate,
   sanitizeEventType,
@@ -24,42 +37,46 @@ const {
 } = require("./tournament-events");
 
 initializeApp();
-const portalAuthApp = initializeApp({ projectId: "cooper-debate-team" }, "debate-work-portal-auth");
+const portalAuthApp = initializeApp({ projectId: "cooper-debate-team" }, "scout-portal-auth");
 const DEBATE_WORK_SESSION_SECRET = defineSecret("SESSION_SECRET");
-const LEGACY_MEMBERS = new Set([
+const OCTOBER_TOURNAMENT_LEGACY_MEMBERS = new Set([
   "pgkonde@fcps.edu",
   "pgkonde@fcpsschools.net",
   "hannahbshiv@gmail.com",
   "cooperdebateteam@gmail.com",
   "1806950@fcpsschools.net",
 ]);
+const PRIVATE_MEMBER_DOCUMENT_COLLECTION = "private_member_documents";
+const PRIVATE_MEMBER_DOCUMENT_OPTIONS = {
+  region: "us-central1",
+  cors: [
+    "https://cooperdebateteam.com",
+    "https://www.cooperdebateteam.com",
+    "http://localhost:5000",
+    "http://127.0.0.1:5000",
+  ],
+  maxInstances: 10,
+};
 
-// The PDF is stored in Firestore, never in the public site repository.
-exports.memberMembershipContract = onRequest(
-  {
-    region: "us-central1",
-    cors: [
-      "https://cooperdebateteam.com",
-      "https://www.cooperdebateteam.com",
-      "http://localhost:5000",
-      "http://127.0.0.1:5000",
-    ],
-    maxInstances: 10,
-  },
-  async (req, res) => {
+function privateMemberPdf(documentId, fileName) {
+  return onRequest(PRIVATE_MEMBER_DOCUMENT_OPTIONS, async (req, res) => {
     res.set("Cache-Control", "private, no-store, no-cache, max-age=0, must-revalidate");
     res.set("Pragma", "no-cache");
     res.set("X-Content-Type-Options", "nosniff");
 
+    // This website's portal directory and document live only in its own
+    // Firebase project. Never serve them from the isolated SCOUT project.
     if ((process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT) !== "cooper-debate-team") {
       res.status(503).json({ error: "This private document is unavailable in this environment." });
       return;
     }
+
     if (req.method !== "GET") {
       res.set("Allow", "GET");
       res.status(405).json({ error: "Method not allowed." });
       return;
     }
+
     const token = cleanText(req.headers.authorization, 4096).replace(/^Bearer\s+/i, "");
     if (!token) {
       res.status(401).json({ error: "Sign in to access this document." });
@@ -73,29 +90,36 @@ exports.memberMembershipContract = onRequest(
       res.status(401).json({ error: "Your sign-in session has expired. Please sign in again." });
       return;
     }
+
     const email = cleanEmail(decoded.email);
     const provider = cleanText(decoded.firebase && decoded.firebase.sign_in_provider, 80);
-    const verifiedIdentity = decoded.email_verified === true &&
+    const verifiedAllowedIdentity = decoded.email_verified === true &&
       (provider !== "google.com" || /@(fcps\.edu|fcpsschools\.net)$/.test(email));
-    if (!verifiedIdentity || !email) {
+    if (!verifiedAllowedIdentity || !email) {
       res.status(403).json({ error: "Use your verified, approved portal sign-in to access this document." });
       return;
     }
 
     try {
-      const member = await getFirestore().collection("portal_members").doc(email).get();
-      const approved = member.exists
-        ? (member.data() || {}).active === true
-        : LEGACY_MEMBERS.has(email);
+      const memberSnapshot = await getFirestore().collection("portal_members").doc(email).get();
+      // Match Firestore's server-side isApprovedMember rule: a directory record
+      // is authoritative (including inactive records); only its explicit legacy
+      // fallback emails remain eligible when no record exists.
+      const approved = memberSnapshot.exists
+        ? (memberSnapshot.data() || {}).active === true
+        : OCTOBER_TOURNAMENT_LEGACY_MEMBERS.has(email);
       if (!approved) {
         res.status(403).json({ error: "Only active, approved portal members can access this document." });
         return;
       }
-      const snapshot = await getFirestore()
-        .collection("private_member_documents")
-        .doc("membership_contract_2026_2027")
+
+      // Firestore rules deny all client access to this private document.
+      // Read its fixed ID only through Admin SDK after the member check above.
+      const privateDocument = await getFirestore()
+        .collection(PRIVATE_MEMBER_DOCUMENT_COLLECTION)
+        .doc(documentId)
         .get();
-      const payload = snapshot.exists ? snapshot.data() || {} : {};
+      const payload = privateDocument.exists ? privateDocument.data() || {} : {};
       const encodedPdf = payload.pdfBase64;
       if (
         payload.mimeType !== "application/pdf" ||
@@ -104,12 +128,16 @@ exports.memberMembershipContract = onRequest(
         encodedPdf.length % 4 !== 0 ||
         !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(encodedPdf)
       ) {
-        res.status(503).json({ error: "The private document has not yet been securely uploaded by an admin." });
+        res.status(503).json({
+          error: "The private document has not yet been securely uploaded by an admin.",
+        });
         return;
       }
       const pdfBytes = Buffer.from(encodedPdf, "base64");
       if (pdfBytes.length > 675000 || pdfBytes.subarray(0, 5).toString("ascii") !== "%PDF-") {
-        res.status(503).json({ error: "The private document has not yet been securely uploaded by an admin." });
+        res.status(503).json({
+          error: "The private document has not yet been securely uploaded by an admin.",
+        });
         return;
       }
       res.set("Content-Type", "application/pdf");
@@ -117,42 +145,31 @@ exports.memberMembershipContract = onRequest(
       res.set(
         "Content-Disposition",
         req.query && req.query.download === "1"
-          ? 'attachment; filename="Cooper-Debate-Membership-Contract-2026-2027.pdf"'
-          : 'inline; filename="Cooper-Debate-Membership-Contract-2026-2027.pdf"'
+          ? `attachment; filename="${fileName}"`
+          : `inline; filename="${fileName}"`
       );
       res.status(200).send(pdfBytes);
     } catch (error) {
       console.error("private member document failed:", error);
       res.status(500).json({ error: "Unable to load the document right now." });
     }
-  }
-);
+  });
+}
 
-const PRIVATE_MEMBER_DOCUMENT_OPTIONS = {
-  region: "us-central1",
-  cors: [
-    "https://cooperdebateteam.com",
-    "https://www.cooperdebateteam.com",
-    "http://localhost:5000",
-    "http://127.0.0.1:5000",
-  ],
-  maxInstances: 10,
-};
+exports.memberOctoberDocument = privateMemberPdf("october_24_tournament", "October-24-Debate-Tournament.pdf");
+exports.memberMembershipContract = privateMemberPdf("membership_contract_2026_2027", "Cooper-Debate-Membership-Contract-2026-2027.pdf");
 
 function additionalPrivateMemberPdf(documentId, fileName) {
   return onRequest(PRIVATE_MEMBER_DOCUMENT_OPTIONS, createPrivateMemberPdfHandler({
     db: getFirestore(),
     verifyIdToken: token => getAuth(portalAuthApp).verifyIdToken(token),
     projectId: "cooper-debate-team",
-    legacyMembers: LEGACY_MEMBERS,
+    legacyMembers: OCTOBER_TOURNAMENT_LEGACY_MEMBERS,
     documentId,
     fileName,
   }));
 }
 
-exports.memberOctoberDocument = additionalPrivateMemberPdf(
-  "october_24_tournament", "October-24-Debate-Tournament.pdf"
-);
 exports.memberWasdlPermissionSlip = additionalPrivateMemberPdf(
   "wasdl_tournament_permission_slip_2026_2027", "WASDL-Tournament-Permission-Slip-2026-2027.pdf"
 );
@@ -199,10 +216,16 @@ async function sendToAllTokens(title, body, link, skipTokensForEmails = []) {
 
   const tokensSnap = await db.collection("fcm-tokens").get();
   if (tokensSnap.empty) return;
+  const tokenDocuments = tokensSnap.docs.filter(
+    document => !skipTokensForEmails.includes(document.id.toLowerCase())
+  );
+  await sendToTokenDocuments(tokenDocuments, title, body, link, tokensSnap);
+}
 
+async function sendToTokenDocuments(tokenDocuments, title, body, link, cleanupSnapshot = null) {
+  const db = getFirestore();
   const tokens = [];
-  tokensSnap.forEach(doc => {
-    if (skipTokensForEmails.includes(doc.id.toLowerCase())) return;
+  tokenDocuments.forEach(doc => {
     const t = doc.data().token;
     if (t) tokens.push(t);
   });
@@ -253,7 +276,7 @@ async function sendToAllTokens(title, body, link, skipTokensForEmails = []) {
   if (staleTokens.length > 0) {
     const batch = db.batch();
     const affectedEmails = [];
-    tokensSnap.forEach(doc => {
+    (cleanupSnapshot ? cleanupSnapshot.docs : tokenDocuments).forEach(doc => {
       if (staleTokens.includes(doc.data().token)) {
         affectedEmails.push(doc.id); // doc.id is the member's email
         batch.delete(doc.ref);
@@ -406,9 +429,9 @@ const COACH_EMAILS = new Set([
   "hannahbshiv@gmail.com",
 ]);
 const PROTECTED_WEBSITE_ADMIN_REVIEWERS = new Set([
+  "1806950@fcpsschools.net",
   "hannahbshiv@gmail.com",
 ]);
-
 function debateStudentIdFromEmail(email) {
   const normalizedEmail = cleanEmail(email);
   const localPart = normalizedEmail.split("@")[0] || "";
@@ -433,8 +456,7 @@ async function resolveDebateStudentAccess({ email, fcpsId }) {
   const emailId = debateStudentIdFromEmail(normalizedEmail);
   const isHannahWebsiteAdmin = normalizedEmail === "hannahbshiv@gmail.com" &&
     fcpsId === "1806950" &&
-    PROTECTED_WEBSITE_ADMIN_REVIEWERS.has(normalizedEmail) &&
-    await hasFullAdminAccess(normalizedEmail);
+    await hasWebsiteAdminAccess(normalizedEmail);
   if (isHannahWebsiteAdmin) {
     return { active: true, displayName: "Hannah Shiv" };
   }
@@ -494,6 +516,28 @@ async function hasFullAdminAccess(email) {
   const data = membership.data() || {};
   return data.active === true &&
     (COACH_EMAILS.has(normalizedEmail) || ["coach", "website-admin"].includes(data.role));
+}
+// Keep the member/admin access check without bundling the isolated SCOUT service.
+function createWebsiteAdminAccessResolver({ db, protectedEmails = [] }) {
+  const protectedIdentities = new Set([...protectedEmails]
+    .map(email => cleanText(email, 320).toLowerCase())
+    .filter(Boolean));
+  return async function hasWebsiteAdminAccess(email) {
+    const normalizedEmail = cleanText(email, 320).toLowerCase();
+    if (!normalizedEmail) return false;
+    const membership = await db.collection("portal_members").doc(normalizedEmail).get();
+    if (!membership.exists) return protectedIdentities.has(normalizedEmail);
+    const data = membership.data() || {};
+    if (data.active !== true) return false;
+    return protectedIdentities.has(normalizedEmail) || data.role === "website-admin";
+  };
+}
+const websiteAdminAccessResolver = createWebsiteAdminAccessResolver({
+  db: getFirestore(),
+  protectedEmails: PROTECTED_WEBSITE_ADMIN_REVIEWERS,
+});
+async function hasWebsiteAdminAccess(email) {
+  return websiteAdminAccessResolver(email);
 }
 async function hasApplicationReviewerAccess(email) {
   const normalizedEmail = cleanEmail(email);
@@ -985,6 +1029,15 @@ function publicVolunteerSignup(data) {
   };
 }
 
+function publicSeasonVolunteerSignup(data) {
+  return {
+    parentName: cleanText(data.parentName, 120),
+    selectedTournamentIds: Array.isArray(data.selectedTournamentIds)
+      ? data.selectedTournamentIds.filter(id => TOURNAMENT_IDS.includes(id))
+      : [],
+  };
+}
+
 async function verifyTurnstile(token) {
   const secret = turnstileSecret.value();
   if (!secret) {
@@ -1004,6 +1057,36 @@ async function verifyTurnstile(token) {
   }
 }
 
+// Separate public read surface: deploying this function does not replace signup POST routes.
+exports.publicSeasonVolunteerRoster = onRequest(
+  { region: "us-central1", cors: true },
+  async (req, res) => {
+    if (req.method !== "GET") {
+      res.set("Allow", "GET");
+      res.status(405).json({ error: "Method not allowed." });
+      return;
+    }
+
+    try {
+      const snapshot = await getFirestore()
+        .collection("volunteer_season_signups")
+        .where("season", "==", SEASON)
+        .get();
+      const seasonSignups = snapshot.docs
+        .map(doc => doc.data())
+        .filter(data => data.season === SEASON &&
+          (data.status === "submitted" || data.status === "coach_confirmed"))
+        .map(publicSeasonVolunteerSignup)
+        .filter(signup => signup.parentName && signup.selectedTournamentIds.length);
+      res.set("Cache-Control", "no-store");
+      res.status(200).json({ season: SEASON, seasonSignups });
+    } catch (error) {
+      console.error("publicSeasonVolunteerRoster GET failed:", error);
+      res.status(500).json({ error: "Volunteer roster is temporarily unavailable." });
+    }
+  }
+);
+
 exports.publicVolunteerSignup = onRequest(
   { region: "us-central1", cors: true, secrets: [turnstileSecret, resendSecret] },
   async (req, res) => {
@@ -1011,7 +1094,11 @@ exports.publicVolunteerSignup = onRequest(
 
     if (req.method === "GET") {
       try {
-        const snap = await db.collection("volunteer_events").get();
+        res.set("Cache-Control", "no-store");
+        const [snap, seasonSnap] = await Promise.all([
+          db.collection("volunteer_events").get(),
+          db.collection("volunteer_season_signups").where("season", "==", SEASON).get(),
+        ]);
         const todayInNewYork = newYorkCalendarDate();
         const events = await Promise.all(snap.docs.map(async doc => {
           if (!isPublicVolunteerEvent(doc.data(), todayInNewYork)) return null;
@@ -1030,7 +1117,12 @@ exports.publicVolunteerSignup = onRequest(
           .filter(Boolean)
           .filter(event => event.title && event.roles.length)
           .sort((a, b) => (a.date || "").localeCompare(b.date || ""));
-        res.status(200).json({ events: publishedEvents });
+        res.status(200).json({
+          events: publishedEvents,
+          seasonSignups: seasonSnap.docs
+            .map(doc => publicSeasonVolunteerSignup(doc.data()))
+            .filter(signup => signup.parentName && signup.selectedTournamentIds.length),
+        });
       } catch (error) {
         console.error("publicVolunteerSignup GET failed:", error);
         res.status(500).json({ error: "Volunteer opportunities are temporarily unavailable." });
@@ -1045,6 +1137,83 @@ exports.publicVolunteerSignup = onRequest(
     }
 
     const body = req.body || {};
+    if (body.action === "request-season-cancellation") {
+      if (body.company) {
+        res.status(200).json({ ok: true });
+        return;
+      }
+      const email = cleanText(body.email, 160).toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        res.status(400).json({ error: "Enter a valid email address." });
+        return;
+      }
+      const turnstileToken = cleanText(body.turnstileToken, 4096);
+      if (!turnstileToken) {
+        res.status(400).json({ error: "Complete the volunteer verification." });
+        return;
+      }
+      try {
+        await verifyTurnstile(turnstileToken);
+      } catch (error) {
+        res.status(400).json({ error: "Complete the volunteer verification and try again." });
+        return;
+      }
+      try {
+        // Always queue the same kind of work, whether the address has a signup
+        // or not. Email delivery happens after the public response.
+        await db.collection("volunteer_season_cancellation_requests")
+          .doc(crypto.randomBytes(16).toString("hex"))
+          .set({
+            signupId: submissionIdFor(SEASON, email),
+            requestedAt: FieldValue.serverTimestamp(),
+          });
+      } catch (error) {
+        console.error("Season cancellation link request failed:", cleanText(error && error.message, 300));
+        res.status(503).json({ error: "We could not process your request. Please try again later." });
+        return;
+      }
+      res.status(200).json({ ok: true });
+      return;
+    }
+
+    if (body.action === "confirm-season-cancellation") {
+      let cancelled;
+      try {
+        cancelled = await confirmSeasonCancellation({ db, token: body.token });
+      } catch (error) {
+        if (error && error.message === "This cancellation link is invalid or has expired.") {
+          res.status(400).json({ error: "This cancellation link is invalid or has expired. Request a new link." });
+        } else {
+          console.error("Season cancellation confirmation failed:", cleanText(error && error.message, 300));
+          res.status(503).json({ error: "We could not process the cancellation right now. Please try again." });
+        }
+        return;
+      }
+      let emailStatus = "accepted";
+      try {
+        await volunteerEmail.sendSeasonCancellationEmail(cancelled);
+      } catch (error) {
+        emailStatus = "failed";
+        console.error("Season registration was deleted, but the cancellation receipt failed:",
+          cleanText(error && error.message, 300));
+      }
+      // Development previews and emulators must not email the real coaching team.
+      if ((process.env.GCLOUD_PROJECT || process.env.GCP_PROJECT) === "cooper-debate-team" &&
+        process.env.FUNCTIONS_EMULATOR !== "true") {
+        try {
+          const recipients = await seasonCancellationCoachEmails({
+            db, fallbackEmails: [...COACH_EMAILS],
+          });
+          await volunteerEmail.sendSeasonWithdrawalCoachNotice(cancelled, recipients);
+        } catch (error) {
+          console.error("Season registration was deleted, but the coach withdrawal notice failed:",
+            cleanText(error && error.message, 300));
+        }
+      }
+      res.status(200).json({ ok: true, deleted: true, emailStatus });
+      return;
+    }
+
     if (body.action === "retry-confirmation-email") {
       const retrySignupId = cleanText(body.signupId, 64);
       const retryToken = cleanText(body.retryToken, 256);
@@ -1141,6 +1310,70 @@ exports.publicVolunteerSignup = onRequest(
           emailStatus: "failed",
         });
       }
+      return;
+    }
+
+    if (body.action === "submit-season-availability") {
+      // Hidden honeypot field. Bots should not receive a useful success response.
+      if (body.company) {
+        res.status(200).json({ ok: true });
+        return;
+      }
+
+      let submission;
+      try {
+        submission = normalizeSeasonAvailability(body);
+      } catch (error) {
+        res.status(400).json({ error: error.message });
+        return;
+      }
+      const turnstileToken = cleanText(body.turnstileToken, 4096);
+      if (!turnstileToken) {
+        res.status(400).json({ error: "Please complete the volunteer verification." });
+        return;
+      }
+
+      try {
+        await verifyTurnstile(turnstileToken);
+      } catch (error) {
+        res.status(400).json({
+          error: cleanText(error && error.message, 240) ||
+            "Please complete the volunteer verification and try again.",
+        });
+        return;
+      }
+
+      let saved;
+      try {
+        saved = await saveSeasonAvailability({
+          db,
+          submission,
+          confirmationRequestId: crypto.randomBytes(12).toString("hex"),
+          serverTimestamp: () => FieldValue.serverTimestamp(),
+        });
+      } catch (error) {
+        console.error("Season volunteer availability save failed:", cleanText(error && error.message, 300));
+        res.status(503).json({ error: "We could not save your season availability. Please try again shortly." });
+        return;
+      }
+
+      let emailStatus = "delayed";
+      try {
+        const emailResult = await volunteerEmail.sendSeasonAvailabilityConfirmation(saved.record, saved.updatedExisting);
+        emailStatus = emailResult.accepted ? "accepted" : "delayed";
+      } catch (error) {
+        emailStatus = "failed";
+        console.error("Season availability was saved, but its confirmation email failed.", {
+          submissionId: saved.submissionId,
+          error: cleanText(error && error.message, 300),
+        });
+      }
+      res.status(201).json({
+        ok: true,
+        submissionId: saved.submissionId,
+        updatedExisting: saved.updatedExisting,
+        emailStatus,
+      });
       return;
     }
 
@@ -1381,6 +1614,34 @@ exports.publicVolunteerSignup = onRequest(
         : "We could not complete your signup. Please try again.";
       console.error("publicVolunteerSignup POST failed:", error);
       res.status(400).json({ error: message });
+    }
+  }
+);
+
+exports.sendSeasonCancellationLink = onDocumentCreated(
+  {
+    document: "volunteer_season_cancellation_requests/{requestId}",
+    region: "us-central1",
+    secrets: [resendSecret],
+    retry: true,
+  },
+  async event => {
+    if (!event.data) return;
+    try {
+      const result = await processSeasonCancellationRequest({
+        db: getFirestore(),
+        requestRef: event.data.ref,
+        requestId: event.params.requestId,
+        sendEmail: issued => volunteerEmail.sendSeasonCancellationEmail(issued),
+        incrementAttempt: () => FieldValue.increment(1),
+      });
+      if (result === "exhausted") {
+        console.error("Season cancellation link exhausted delivery attempts.");
+      }
+    } catch (error) {
+      console.error("Season cancellation link delivery failed:",
+        cleanText(error && error.message, 300));
+      throw error;
     }
   }
 );
@@ -2473,6 +2734,34 @@ exports.manageVolunteerSignup = onRequest(
     const db = getFirestore();
 
     try {
+      if (action === "updateSeasonSignupStatus") {
+        const submissionId = cleanText(body.submissionId, 64);
+        if (!/^[a-f0-9]{64}$/.test(submissionId)) {
+          throw new Error("A valid season signup is required.");
+        }
+        const signupRef = db.collection("volunteer_season_signups").doc(submissionId);
+        const coachEmail = cleanEmail(decoded.email);
+        await db.runTransaction(async transaction => {
+          const snapshot = await transaction.get(signupRef);
+          if (!snapshot.exists) throw new Error("That season signup no longer exists.");
+          const existing = snapshot.data() || {};
+          if (submissionIdFor(existing.season, cleanEmail(existing.email)) !== submissionId) {
+            throw new Error("That season signup could not be verified.");
+          }
+          const updates = seasonSignupAdminUpdate(existing, body);
+          transaction.update(signupRef, {
+            ...updates,
+            updatedAt: FieldValue.serverTimestamp(),
+            updatedBy: coachEmail,
+            ...(updates.status === "coach_confirmed"
+              ? { coachConfirmedAt: FieldValue.serverTimestamp() }
+              : { coachConfirmedAt: FieldValue.delete() }),
+          });
+        });
+        res.status(200).json({ ok: true });
+        return;
+      }
+
       if (action === "removeSignup") {
         const signupId = cleanText(body.signupId, 128);
         if (!signupId) throw new Error("A signup is required.");

@@ -1,0 +1,88 @@
+/* Withdrawal is a separate dialog, never a card below the signup form. */
+.volunteer-manage-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.volunteer-manage-actions button {
+  min-height: 44px;
+  padding: 9px 15px;
+  border: 1px solid #f2d16b;
+  border-radius: 6px;
+  background: #f2d16b;
+  color: #103d34;
+  cursor: pointer;
+  font: 700 .8rem/1.25 'Josefin Sans', sans-serif;
+}
+.volunteer-manage-actions #vol-cancel-request-open {
+  background: transparent;
+  color: #ffe082;
+}
+.volunteer-manage-actions #vol-withdraw:disabled {
+  border-color: rgba(242, 209, 107, .32);
+  background: rgba(242, 209, 107, .12);
+  color: #c3cabb;
+  cursor: not-allowed;
+}
+.volunteer-manage-actions button:focus-visible,
+.vol-season-cancellation button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+.vol-cancel-overlay {
+  position: fixed;
+  z-index: 100000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0, 14, 17, .82);
+}
+.vol-cancel-overlay[hidden] { display: none !important; }
+body.vol-cancel-modal-open { overflow: hidden; }
+.vol-cancel-overlay .vol-season-cancellation {
+  position: relative;
+  box-sizing: border-box;
+  width: min(100%, 760px);
+  max-height: calc(100vh - 32px);
+  margin: 0;
+  overflow-y: auto;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, .55);
+}
+.vol-cancel-overlay .vol-season-cancellation h3 { padding-right: 25px; }
+.vol-cancel-overlay .vol-modal-kicker {
+  display: block;
+  padding-right: 44px;
+}
+.vol-cancel-overlay .vol-season-cancellation .vol-cancel-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font: 400 1.8rem/1 sans-serif;
+}
+.vol-cancel-overlay .vol-season-cancellation button:disabled {
+  cursor: not-allowed;
+}
+#vol-cancel-new-link {
+  margin-left: 8px;
+  background: transparent;
+  color: #ffe082;
+}
+@media (max-width: 600px) {
+  .volunteer-manage-actions { align-items: stretch; flex-direction: column; }
+  .volunteer-manage-actions button { width: 100%; }
+  .vol-cancel-overlay .vol-season-cancellation { padding: 22px 16px; }
+  .vol-cancel-overlay .vol-cancel-row { flex-direction: column; }
+  .vol-cancel-overlay .vol-cancel-row input { flex: 0 1 auto; width: 100%; box-sizing: border-box; }
+  #vol-cancel-new-link { margin: 8px 0 0; }
+}
