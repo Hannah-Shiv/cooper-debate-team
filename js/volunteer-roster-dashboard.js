@@ -33,6 +33,8 @@
     const state = { view: "tournament", selected: "", filter: "", query: "", sort: "name", descending: false };
 
     const shown = value => available ? value : "—";
+    const accentTitle = (title, length) =>
+      `<span class="vdb-heading-accent">${escape(title.slice(0, length))}</span>${escape(title.slice(length))}`;
     const personRows = () => {
       const chosen = state.view === "tournament" ? state.selected : state.filter;
       const rows = people.filter(person =>
@@ -46,9 +48,15 @@
       });
       return rows;
     };
+    const resultCount = () => {
+      const count = personRows().length;
+      const context = tournaments.find(item => item.id ===
+        (state.view === "tournament" ? state.selected : state.filter))?.name || "All tournaments";
+      return `<span class="vdb-result-number">${shown(count)}</span> <span class="vdb-result-label">volunteer${count === 1 ? "" : "s"} · ${escape(context)}</span>`;
+    };
     const metric = (label, value, description, icon) => `
-      <div class="vdb-metric"><span class="vdb-metric-icon" aria-hidden="true">${icon}</span>
-        <div class="vdb-metric-copy"><span class="vdb-metric-label">${label}</span>
+      <div class="vdb-metric"><span class="vdb-metric-icon" aria-hidden="true"><img src="images/volunteer-roster-${icon}.png" alt="" width="240" height="240"></span>
+        <div class="vdb-metric-copy"><span class="vdb-metric-label">${escape(label)}</span>
           <span class="vdb-metric-value"><strong>${value}</strong><small>${description}</small></span></div>
       </div>`;
     const bar = (value, maximum) => `<span class="vdb-bar-track" aria-hidden="true"><span style="width:${Math.min(100, Math.round(value / Math.max(maximum, 1) * 100))}%"></span></span>`;
@@ -58,12 +66,12 @@
       const color = !available ? "" : !gap ? "covered" : count >= tournament.judgeTarget / 2 ? "close" : "needs";
       return `<button class="vdb-tournament-card ${color} ${state.selected === tournament.id ? "is-selected" : ""}"
           type="button" data-tournament="${escape(tournament.id)}" aria-pressed="${state.selected === tournament.id}"
-          aria-label="${escape(tournament.name)}: ${available ? `${count} of ${tournament.judgeTarget} volunteers available` : "volunteer data unavailable"}. ${state.selected === tournament.id ? "Clear filter" : "Filter roster"}">
-          <span class="vdb-card-top"><span class="vdb-card-icon" aria-hidden="true">${tournament.location === "Online" ? "▣" : "♜"}</span>
-            <strong>${escape(tournament.name)}</strong><span class="vdb-status">${shown(gap ? `Needs ${gap}` : "Covered")}</span></span>
-          <span class="vdb-card-meta">${escape(tournament.date)}<br>${escape(tournament.location)}</span>
-          <span class="vdb-card-counts"><span><small>Judge target</small><b>${tournament.judgeTarget}</b></span>
-            <span><small>Volunteers</small><b>${shown(count)}</b></span></span>
+          aria-label="${escape(tournament.name)} at ${escape(tournament.location)}, ${escape(tournament.date)}: ${available ? `${count} of ${tournament.judgeTarget} volunteers available` : "volunteer data unavailable"}. ${state.selected === tournament.id ? "Clear filter" : "Filter roster"}">
+          <span class="vdb-card-top"><strong>${escape(tournament.name)}</strong>
+            <span class="vdb-status">${shown(gap ? `Needs ${gap}` : "Covered")}</span></span>
+          <span class="vdb-card-meta"><span class="vdb-card-meta-copy"><small>Tournament date</small><b>${escape(tournament.date)}</b></span></span>
+          <span class="vdb-card-counts"><span><span class="vdb-card-stat-copy"><small>Judge target</small><b>${tournament.judgeTarget}</b></span></span>
+            <span><span class="vdb-card-stat-copy"><small>Volunteers</small><b>${shown(count)}</b></span></span></span>
           <span class="vdb-card-caption">Coverage <b>${shown(`${Math.min(100, Math.round(count / tournament.judgeTarget * 100))}%`)}</b></span>
           ${bar(count, tournament.judgeTarget)}
         </button>`;
@@ -84,8 +92,8 @@
           `<tr><td class="vdb-table-empty" colspan="${tournaments.length + 3}">${!available ? "—" : people.length ? "No volunteers match this selection." : "No completed season registrations are listed yet."}</td></tr>`}
         </tbody></table></div>`;
     };
-    const participation = () => `<div class="vdb-panel vdb-participation"><h4>Availability by tournament</h4>
-        <p>Completed volunteer registrations compared with the target of 12.</p>
+    const participation = () => `<div class="vdb-panel vdb-participation"><div class="vdb-participation-heading">
+        <h4>${accentTitle("Availability by tournament", 5)}</h4><p>Completed volunteer registrations compared with the target of 12.</p></div>
         <div class="vdb-bars">${tournaments.map(item => `<div class="vdb-bar-row">
           <span>${escape(item.name.replace(" Middle School", "").replace(" — Virtual Tournament", " · Virtual"))}</span>
           ${bar(counts[item.id], item.judgeTarget)}
@@ -93,19 +101,23 @@
     const attention = () => {
       const gaps = tournaments.map(item => ({ ...item, gap: Math.max(item.judgeTarget - counts[item.id], 0) }))
         .filter(item => item.gap).sort((a, b) => b.gap - a.gap);
-      return `<div class="vdb-panel vdb-attention"><h4>Needs attention</h4>
-        <p>Tournaments below their volunteer target.</p>
-        ${!available ? '<p class="vdb-good">—</p>' : gaps.length ? gaps.map(item => `<div class="vdb-attention-row"><span>${escape(item.name)}</span><strong>Needs ${item.gap}</strong></div>`).join("")
+      return `<div class="vdb-panel vdb-attention"><div class="vdb-attention-heading">
+        <div class="vdb-attention-heading-copy"><h4>${accentTitle("Needs attention", 5)}</h4><p>Tournaments below their volunteer target.</p></div></div>
+        ${!available ? '<p class="vdb-good">—</p>' : gaps.length
+          ? `<div class="vdb-attention-list">${gaps.map((item, index) => `
+            <div class="vdb-attention-row"><span class="vdb-attention-rank" aria-label="Rank ${index + 1}">${index + 1}</span>
+              <span class="vdb-attention-name">${escape(item.name.replace(" Middle School", "").replace(" — Virtual Tournament", " · Virtual"))}</span>
+              <time datetime="${escape(item.id)}">${shortDate(item.id)}</time><strong>Needs ${item.gap}</strong></div>`).join("")}</div>`
           : '<p class="vdb-good">All tournaments have reached their volunteer targets.</p>'}</div>`;
     };
-    const distributionPanel = () => `<div class="vdb-panel vdb-distribution"><h4>Volunteer commitment distribution</h4>
+    const distributionPanel = () => `<div class="vdb-panel vdb-distribution"><h4>${accentTitle("Volunteer commitment distribution", 6)}</h4>
         <p>Number of volunteers by tournaments selected.</p>
         <div class="vdb-distribution-bars">${distribution.map((count, index) => `<div>
           <strong>${shown(count)}</strong><span class="vdb-vertical-bar" style="height:${Math.max(count ? 8 : 2, Math.round(count / Math.max(...distribution, 1) * 100))}%"></span>
           <small>${index + 1} ${index ? "dates" : "date"}</small></div>`).join("")}</div></div>`;
     const insights = () => {
       const fewest = [...tournaments].sort((a, b) => counts[a.id] - counts[b.id])[0];
-      return `<div class="vdb-panel vdb-insights"><h4>Key insights</h4>
+      return `<div class="vdb-panel vdb-insights"><h4>${accentTitle("Key insights", 3)}</h4>
         ${available ? `<p><strong>${distribution[distribution.length - 1]}</strong> volunteer${distribution[distribution.length - 1] === 1 ? "" : "s"} selected all five tournaments.</p>
         <p><strong>${distribution[0]}</strong> volunteer${distribution[0] === 1 ? "" : "s"} selected one tournament.</p>
         <p><strong>${escape(fewest.name)}</strong> has the fewest volunteers (${counts[fewest.id]} of ${fewest.judgeTarget}).</p>` : '<p>—</p>'}
@@ -115,26 +127,30 @@
     const draw = () => {
       const selectedItem = tournaments.find(item => item.id === state.selected);
       root.innerHTML = `<div class="vdb-dashboard" data-view="${state.view}">
-        <header class="vdb-header"><div><p class="vdb-eyebrow">COOPER DEBATE TEAM · ${escape(season.replace("-", "–"))}</p>
-          <h3>Judge Volunteer Coverage</h3><p>Season-wide volunteer availability across five tournaments.</p></div>
-          <div class="vdb-header-actions"><span class="vdb-season">▦ &nbsp; ${testMode ? "Development test roster · resets on restart" : `Season ${escape(season.replace("-", "–"))}`}</span>
-            <div class="vdb-switch" role="group" aria-label="Volunteer roster view">
-              <button type="button" data-view="tournament" aria-pressed="${state.view === "tournament"}">By Tournament</button>
-              <button type="button" data-view="volunteer" aria-pressed="${state.view === "volunteer"}">By Volunteer</button>
-            </div></div></header>
+        <header class="vdb-header"><div class="vdb-heading-row"><h3>${accentTitle("Judge Volunteer Coverage", 5)}</h3>
+          <div class="vdb-switch" role="group" aria-label="Volunteer roster view">
+            <button type="button" data-view="tournament" aria-pressed="${state.view === "tournament"}">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18M7 14h3m4 0h3m-10 4h3"/></svg>By Tournament</button>
+            <button type="button" data-view="volunteer" aria-pressed="${state.view === "volunteer"}">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M2 20v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2H2Zm14-15a3 3 0 0 1 0 6m3 9v-2a5 5 0 0 0-3-4.6"/></svg>By Volunteer</button>
+          </div>
+          <div class="vdb-heading-meta"><p class="vdb-eyebrow">COOPER DEBATE TEAM · ${escape(season.replace("-", "–"))}</p>
+            <p>Season-wide volunteer availability across five tournaments.</p></div>
+          <div class="vdb-header-actions"><span class="vdb-season">▦ &nbsp; ${testMode ? "Development test roster · resets on restart" : `Season ${escape(season.replace("-", "–"))}`}</span></div></div></header>
         <div class="vdb-metrics" aria-label="Season volunteer summary">
-          ${metric("Parent volunteers", shown(people.length), "Completed registrations", "♧")}
-          ${metric("Tournament commitments", shown(commitments), "Selected dates", "▤")}
-          ${metric("Overall coverage", shown(`${target ? Math.round(filled / target * 100) : 0}%`), available ? `${filled} of ${target} volunteer target spots covered` : `Target: ${target} volunteer spots`, "◉")}
-          ${metric("Tournaments", tournaments.length, "In this season", "▦")}
-          ${metric("Unfilled judge spots", shown(unfilled), "Across all tournaments", "♙")}
+          ${metric("Parent volunteers", shown(people.length), "Completed registrations", "parents")}
+          ${metric("Tournament commitments", shown(commitments), "Selected dates", "commitments")}
+          ${metric("Overall average", shown(`${target ? Math.round(filled / target * 100) : 0}%`), available ? `${filled}/${target} spots filled` : `Target: ${target} spots`, "average")}
+          ${metric("Tournaments", tournaments.length, "In this season", "tournaments")}
+          ${metric("Unfilled judge spots", shown(unfilled), "Across all tournaments", "unfilled")}
         </div>
         ${state.view === "tournament" ? `<section class="vdb-panel vdb-tournaments" aria-labelledby="vdb-tournaments-heading">
-          <div class="vdb-panel-heading"><div><h4 id="vdb-tournaments-heading">Tournaments</h4><p>Choose a tournament to filter the volunteer matrix below.</p></div>
+          <div class="vdb-panel-heading"><div><h4 id="vdb-tournaments-heading">${accentTitle("Tournaments", 4)}</h4><p>Choose a tournament to filter the volunteer matrix below.</p></div>
             ${state.selected ? '<button type="button" class="vdb-clear" data-clear>Show all tournaments</button>' : ""}</div>
           <div class="vdb-tournament-grid">${tournaments.map(card).join("")}</div></section>` : ""}
         <section class="vdb-panel vdb-matrix-panel" aria-labelledby="vdb-matrix-heading">
-          <div class="vdb-panel-heading"><div><h4 id="vdb-matrix-heading">${state.view === "tournament" ? "Tournament coverage matrix" : "Parent volunteers"}</h4>
+          <div class="vdb-panel-heading"><div><h4 id="vdb-matrix-heading">${state.view === "tournament"
+            ? accentTitle("Tournament coverage matrix", 6) : accentTitle("Parent volunteers", 4)}</h4>
             <p>${state.view === "tournament" ? selectedItem ? `Showing volunteers available for ${escape(selectedItem.name)}.` : "Every completed registration, across all five dates." : "Each row shows one completed season registration."}</p></div>
             <div class="vdb-controls"><label class="vdb-search"><span class="vdb-sr-only">Search volunteer name</span><input type="search" data-search placeholder="Search volunteer name…" value="${escape(state.query)}"></label>
               ${state.view === "volunteer" ? `<label class="vdb-sr-only" for="vdb-filter">Filter by tournament</label><select id="vdb-filter" data-filter>
@@ -145,21 +161,19 @@
                 <option value="count-desc" ${state.sort === "count" && state.descending ? "selected" : ""}>Most dates</option>
                 <option value="count" ${state.sort === "count" && !state.descending ? "selected" : ""}>Fewest dates</option>
               </select></div></div>
-          <p class="vdb-result-count" aria-live="polite">${shown(personRows().length)} volunteer${personRows().length === 1 ? "" : "s"} · ${escape(state.view === "tournament" ? state.selected ? selectedItem.name : "All tournaments" : state.filter ? tournaments.find(item => item.id === state.filter).name : "All tournaments")}</p>
+          <p class="vdb-result-count" aria-live="polite">${resultCount()}</p>
           <div class="vdb-matrix">${matrix(personRows())}</div>
         </section>
         <div class="vdb-lower">${state.view === "tournament"
           ? `${participation()}${attention()}`
-          : `${distributionPanel()}${participation()}${insights()}`}</div>
+          : `${participation()}${distributionPanel()}${insights()}`}</div>
         <footer class="vdb-footer"><p>Availability is not a confirmed judging assignment. Names and selected dates are public; contact and student details remain private.</p>
           <div><button type="button" data-export ${available ? "" : "disabled"}>Export public CSV</button><button type="button" data-print>Print view</button></div></footer>
       </div>`;
     };
     const refreshMatrix = () => {
       root.querySelector(".vdb-matrix").innerHTML = matrix(personRows());
-      const count = personRows().length;
-      root.querySelector(".vdb-result-count").textContent = `${shown(count)} volunteer${count === 1 ? "" : "s"} · ${
-        tournaments.find(item => item.id === (state.view === "tournament" ? state.selected : state.filter))?.name || "All tournaments"}`;
+      root.querySelector(".vdb-result-count").innerHTML = resultCount();
     };
 
     root.onclick = event => {
