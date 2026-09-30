@@ -31,6 +31,8 @@
     const unfilled = tournaments.reduce((sum, item) => sum + Math.max(item.judgeTarget - counts[item.id], 0), 0);
     const distribution = tournaments.map((_, index) => people.filter(person => person.dates.length === index + 1).length);
     const state = { view: "tournament", selected: "", filter: "", query: "", sort: "name", descending: false };
+    let pdfMessage = "";
+    let pdfError = false;
 
     const shown = value => available ? value : "—";
     const accentTitle = (title, length) =>
@@ -136,7 +138,19 @@
           </div>
           <div class="vdb-heading-meta"><p class="vdb-eyebrow">COOPER DEBATE TEAM · ${escape(season.replace("-", "–"))}</p>
             <p>Season-wide volunteer availability across five tournaments.</p></div>
-          <div class="vdb-header-actions"><span class="vdb-season">▦ &nbsp; ${testMode ? "Development test roster · resets on restart" : `Season ${escape(season.replace("-", "–"))}`}</span></div></div></header>
+          <div class="vdb-header-actions"><span class="vdb-season"
+            ${testMode ? 'title="Development test roster · resets on restart. Downloaded reports are labeled TEST DATA."' : ""}>▦ &nbsp; Season ${escape(season.replace("-", "–"))}</span>
+            <button type="button" class="vdb-save-pdf" data-save-pdf
+              aria-label="Save PDF for season ${escape(season)}"
+              title="${available ? "Download the complete season report, including all volunteers and tournaments" : "PDF unavailable until the season roster loads"}"
+              ${!available || root.dataset.pdfSaving === "true" ? "disabled" : ""}
+              aria-busy="${root.dataset.pdfSaving === "true"}">
+              <img src="images/volunteer-save-pdf.png?v=1" alt="" width="1828" height="538">
+              <span class="vdb-sr-only">Save PDF</span><span class="vdb-pdf-busy" aria-hidden="true">Creating PDF…</span>
+            </button>
+            <p class="vdb-pdf-feedback ${pdfError ? "" : "vdb-sr-only"}" role="${pdfError ? "alert" : "status"}" aria-live="polite" ${pdfMessage ? "" : "hidden"}>${escape(pdfMessage)}</p>
+          </div></div>
+        </header>
         <div class="vdb-metrics" aria-label="Season volunteer summary">
           ${metric("Parent volunteers", shown(people.length), "Completed registrations", "parents")}
           ${metric("Tournament commitments", shown(commitments), "Selected dates", "commitments")}
@@ -175,6 +189,46 @@
       root.querySelector(".vdb-matrix").innerHTML = matrix(personRows());
       root.querySelector(".vdb-result-count").innerHTML = resultCount();
     };
+    const updatePdfControls = () => {
+      const busy = root.dataset.pdfSaving === "true";
+      const button = root.querySelector("[data-save-pdf]");
+      if (button) {
+        button.disabled = !available || busy;
+        button.setAttribute("aria-busy", String(busy));
+      }
+      const feedback = root.querySelector(".vdb-pdf-feedback");
+      if (feedback) {
+        feedback.hidden = !pdfMessage;
+        feedback.setAttribute("role", pdfError ? "alert" : "status");
+        feedback.classList.toggle("vdb-sr-only", !pdfError);
+        feedback.textContent = pdfMessage;
+      }
+    };
+    const savePdf = async () => {
+      if (!available || root.dataset.pdfSaving === "true") return;
+      root.dataset.pdfSaving = "true";
+      pdfError = false;
+      pdfMessage = "Creating the complete season PDF…";
+      updatePdfControls();
+      try {
+        if (!window.CooperVolunteerCoveragePdf) throw new Error("PDF creation could not load. Refresh the page and try again.");
+        await window.CooperVolunteerCoveragePdf.save({
+          tournaments: tournaments.map(item => ({
+            id: item.id, name: item.name, location: item.location, date: item.date, judgeTarget: item.judgeTarget,
+          })),
+          people: people.map(person => ({ name: person.name, dates: [...person.dates] })),
+          season,
+          sampleData: testMode,
+        });
+        pdfMessage = "Season PDF downloaded.";
+      } catch (error) {
+        pdfError = true;
+        pdfMessage = error?.message || "Could not create the season PDF. Please try again.";
+      } finally {
+        delete root.dataset.pdfSaving;
+        updatePdfControls();
+      }
+    };
 
     root.onclick = event => {
       const button = event.target.closest("button");
@@ -183,6 +237,7 @@
       if (button.dataset.tournament) { state.selected = state.selected === button.dataset.tournament ? "" : button.dataset.tournament; draw(); }
       if (button.hasAttribute("data-clear")) { state.selected = ""; draw(); }
       if (button.hasAttribute("data-print")) window.print();
+      if (button.hasAttribute("data-save-pdf")) void savePdf();
       if (button.hasAttribute("data-export") && available) {
         const header = ["Parent volunteer", ...tournaments.map(item => item.name), "Dates selected", "Status"];
         const rows = personRows().map(person => [person.name, ...tournaments.map(item => person.dates.includes(item.id) ? "Yes" : "No"), person.dates.length, "Complete"]);

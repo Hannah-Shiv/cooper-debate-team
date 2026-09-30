@@ -104,13 +104,18 @@
   line-height: 1.2;
 }
 .tournaments-page #volunteer-signup .vdb-header-actions {
+  position: relative;
   display: flex;
   flex: none;
   align-items: center;
   justify-content: flex-end;
   gap: 10px;
+  padding-right: 12px;
 }
 .tournaments-page #volunteer-signup .vdb-season {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
   padding: 8px 9px;
   border: 1px solid #2b668d;
   border-radius: 7px;
@@ -118,6 +123,67 @@
   color: var(--vdb-gold);
   font-size: .64rem;
   white-space: nowrap;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 124px;
+  min-height: 42px;
+  padding: 3px 0;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf img {
+  display: block;
+  width: 124px;
+  height: auto;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+.tournaments-page #volunteer-signup .vdb-pdf-busy {
+  display: none;
+  color: #ffe16b;
+  font-size: .75rem;
+  font-weight: 700;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf[aria-busy="true"] img {
+  display: none;
+}
+.tournaments-page #volunteer-signup .vdb-save-pdf[aria-busy="true"] .vdb-pdf-busy {
+  display: block;
+}
+.tournaments-page #volunteer-signup .vdb-pdf-feedback {
+  margin: 0;
+  color: #bed2e6;
+  font-size: .75rem;
+  line-height: 1.35;
+}
+.tournaments-page #volunteer-signup .vdb-pdf-feedback[hidden] { display: none; }
+.tournaments-page #volunteer-signup .vdb-pdf-feedback[role="alert"] {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 12px;
+  z-index: 10;
+  width: min(320px, calc(100vw - 48px));
+  padding: 10px 12px;
+  border: 1px solid #ba6f7e;
+  border-radius: 7px;
+  background: #0b2a49;
+  color: #ffb5bd;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, .3);
 }
 .tournaments-page #volunteer-signup .vdb-switch {
   position: relative;
@@ -798,7 +864,7 @@
   .tournaments-page #volunteer-signup .vdb-insights { grid-column: 1 / -1; }
 }
 @media (min-width: 1001px) and (max-width: 1100px) {
-  .tournaments-page #volunteer-signup .vdb-heading-row { flex-wrap: nowrap; gap: 8px; }
+  .tournaments-page #volunteer-signup .vdb-heading-row { flex-wrap: wrap; gap: 8px; }
   .tournaments-page #volunteer-signup .vdb-header h3 { margin-right: 16px; font-size: 1.35rem; }
   .tournaments-page #volunteer-signup .vdb-header h3::after { right: -12px; }
   .tournaments-page #volunteer-signup .vdb-switch { margin-right: 4px; }
@@ -807,7 +873,7 @@
   .tournaments-page #volunteer-signup .vdb-heading-meta { flex: 1 1 0; padding-left: 9px; }
   .tournaments-page #volunteer-signup .vdb-eyebrow { white-space: normal; font-size: .58rem; letter-spacing: .04em; }
   .tournaments-page #volunteer-signup .vdb-heading-meta > p:last-child { font-size: .6rem; }
-  .tournaments-page #volunteer-signup .vdb-header-actions { margin-left: 0; }
+  .tournaments-page #volunteer-signup .vdb-header-actions { margin-left: auto; }
   .tournaments-page #volunteer-signup .vdb-season { padding: 6px 7px; font-size: .55rem; }
 }
 @media (max-width: 1000px) {
