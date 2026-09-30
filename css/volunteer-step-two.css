@@ -108,18 +108,20 @@
 }
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--create {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr);
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 3px;
-  padding: 6px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  padding: 0;
+  overflow: hidden;
 }
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-create-copy {
   display: flex;
+  grid-column: 1;
+  grid-row: 1;
   flex-direction: column;
   justify-content: center;
   gap: 5px;
   min-width: 0;
-  padding: 3px 4px;
+  padding: 10px 12px;
 }
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--existing {
   border-color: rgba(145, 192, 152, .48);
@@ -147,24 +149,25 @@
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--create a {
   display: inline-flex;
   flex-direction: row;
-  grid-column: 1 / -1;
-  grid-row: 2;
+  grid-column: 2;
+  grid-row: 1;
   align-self: stretch;
+  align-items: center;
   justify-content: center;
   gap: 5px;
   width: 100%;
-  min-height: 44px;
+  min-height: 100px;
   margin: 0;
-  padding: 7px 9px;
-  border: 1px solid #f5da78;
-  border-radius: 999px;
+  padding: 10px;
+  border: 0;
+  border-radius: 0;
   background: #f2d16b;
   color: #0e342d;
   font-size: .736rem;
   font-weight: 700;
   line-height: 1.2;
-  white-space: nowrap;
-  box-shadow: 0 3px 10px rgba(243, 196, 75, .24);
+  white-space: normal;
+  text-wrap: balance;
 }
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--create a::before {
   content: none;
@@ -407,24 +410,6 @@
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--existing .vol-entry-control input {
   min-height: 36px;
 }
-#volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-art {
-  display: grid;
-  grid-column: 2;
-  grid-row: 1;
-  min-width: 0;
-  min-height: 62px;
-  place-items: center;
-  background: radial-gradient(circle, rgba(57, 175, 111, .12), transparent 72%);
-}
-#volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-art::before {
-  content: none;
-}
-#volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-art img {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: brightness(.85) drop-shadow(0 0 10px rgba(48, 185, 149, .32));
-}
 #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-or {
   align-self: stretch;
   justify-self: center;
@@ -650,10 +635,10 @@
     padding: 7px;
   }
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--create {
-    padding: 6px;
+    padding: 0;
   }
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-create-copy {
-    padding: 3px 4px;
+    padding: 8px 10px;
   }
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option strong,
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--existing label {
@@ -662,9 +647,6 @@
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-option--create a {
     padding-inline: 6px;
     font-size: .633rem;
-  }
-  #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-art {
-    min-height: 62px;
   }
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-tabroom-return-reminder,
   #volunteer-signup-panel #volunteer-modal [data-vol-step="2"] .vol-season-draft-note {
