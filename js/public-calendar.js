@@ -321,7 +321,10 @@
     const hours = Math.floor((diff % 86400000) / 3600000);
     const titleParts = (next.countdownTitle || next.title).split(/:\s*/, 2);
     const headline = titleParts[0];
-    const resolution = titleParts[1] || "";
+    const tournamentDate = nyDateKey(nextStart);
+    const resolution = /^2026-(11|12)-/.test(tournamentDate || "")
+      ? "Resolved: European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons."
+      : titleParts[1] || "";
     const weekday = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", weekday:"long" });
     const month = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", month:"short" });
     const day = nextStart.toLocaleDateString("en-US", { timeZone:"America/New_York", day:"numeric" });

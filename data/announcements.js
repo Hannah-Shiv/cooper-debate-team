@@ -11,6 +11,16 @@
 
 const ANNOUNCEMENTS = [
   {
+    id: 4,
+    date: "November 1, 2026",
+    tag: "resolution",
+    tagLabel: "New Resolution",
+    emoji: "📋",
+    title: "Nov/Dec 2026 Topic — NATO and the Nuclear Weapons Ban Treaty",
+    href: "resources.html#topic-center",
+    body: `The November/December 2026 Public Forum topic is out:\n\n"Resolved: European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons."\n\nOur next tournament is Saturday, November 14, 2026, at Cooper Middle School in McLean. This resolution also applies to the December 5 tournament at Longfellow Middle School.\n\nVisit the PF Topic Center to begin researching the treaty, NATO, nuclear deterrence, and disarmament. September/October data-center materials remain available as archived resources.`
+  },
+  {
     id: 3,
     date: "September 25, 2026",
     tag: "team",

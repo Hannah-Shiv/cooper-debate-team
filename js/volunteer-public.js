@@ -25,6 +25,13 @@
   ]);
   const APPROVED_MEAL_INFO = APPROVED_MEAL_ITEMS.join(" ");
   const APPROVED_RESOLUTION = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+  const NOV_DEC_RESOLUTION = "European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons.";
+
+  function resolutionForEvent(event) {
+    return /^2026-(11|12)-/.test(String(event?.date || ""))
+      ? NOV_DEC_RESOLUTION
+      : (event?.resolution || APPROVED_RESOLUTION);
+  }
   const APPROVED_EXPECTATIONS = Object.freeze([
     "You will be assigned to multiple rounds throughout the day.",
     "Each round is about a 60-minute session, followed by a short feedback period.",
@@ -896,7 +903,7 @@
       <div class="vol-brief-grid">
         <div class="vol-brief-facts">${eventFacts(selectedEvent)}</div>
         <div class="vol-brief-debate">
-          <div class="vol-brief-resolution">${modalIcon("document")}<div><span>Resolution / topic</span><p>${escapeHtml(APPROVED_RESOLUTION)}</p></div></div>
+          <div class="vol-brief-resolution">${modalIcon("document")}<div><span>Resolution / topic</span><p>${escapeHtml(resolutionForEvent(selectedEvent))}</p></div></div>
           <div class="vol-brief-callout">${modalIcon("info")}<div><strong>Important information</strong><p>${escapeHtml(APPROVED_IMPORTANT_INFORMATION.join(" "))}</p></div></div>
           ${invitationUrl ? `<a class="vol-invitation-link" href="${escapeHtml(invitationUrl)}" target="_blank" rel="noopener">View full invitation ↗</a>` : ""}
         </div>
@@ -915,7 +922,7 @@
       { icon: "utensils", title: "Meals", label: APPROVED_MEAL_INFO },
       { icon: "pin", title: "Location", label: [selectedEvent.location, selectedEvent.address].filter(Boolean).join(" · ") || "The location will be announced." },
       { icon: "trophy", title: "Hosted by", label: selectedEvent.host || "Cooper Debate Team" },
-      { icon: "document", title: "Resolution / topic", label: APPROVED_RESOLUTION },
+      { icon: "document", title: "Resolution / topic", label: resolutionForEvent(selectedEvent) },
       { icon: "info", title: "Important information", label: APPROVED_IMPORTANT_INFORMATION.join(" ") },
       { icon: "question", title: "What to expect", label: APPROVED_EXPECTATIONS.join(" ") },
       { icon: "users", title: "Coach contact", label: APPROVED_CONTACT.join(" "), email: "pgkonde@fcps.edu" },
@@ -1060,7 +1067,7 @@
     const availability = timeRange($("vol-availability-start")?.value, $("vol-availability-end")?.value) || "To be announced";
     const location = value(event.location, "Location to be announced");
     const address = event.address || "";
-    const resolution = APPROVED_RESOLUTION;
+    const resolution = resolutionForEvent(event);
     const expected = [
       "You will be assigned to multiple rounds throughout the day.",
       "Each round is about a 60-minute session, followed by a short feedback period.",

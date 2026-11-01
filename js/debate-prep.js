@@ -7,7 +7,7 @@
     appId: "1:112813790184:web:ac559cb64747d7fd590a5d"
   };
   var ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/debateWork";
-  var TOPIC = "2026-data-centers";
+  var TOPIC = "2026-nov-dec-nuclear-weapons";
   var STAGES = [
     ["prep", "Prep", "Get ready", "Understand the resolution before building your case."],
     ["constructive", "Constructive", "4 min speaking time", "State your position, define the problem, and make your clearest first claim."],
@@ -136,7 +136,7 @@
     $("workCards").innerHTML = '<div class="loading">Loading your debate work…</div>';
     try {
       var response = await request("listStudentWorks");
-      works = (response.works || []).map(function (work) { return normalizeWork(work, work.side); });
+      works = (response.works || []).filter(function (work) { return work.topicId === TOPIC; }).map(function (work) { return normalizeWork(work, work.side); });
       renderCards();
     } catch (error) {
       if (/session|token|auth|expired|recognized/i.test(error.message)) {
@@ -172,11 +172,11 @@
       return '<label class="prep-question"><span>' + number + '. ' + label + '</span><textarea data-prep="' + key + '" placeholder="' + placeholder + '"' + (readOnly ? ' disabled' : '') + '>' + escape(values[key]) + '</textarea></label>';
     }
     $("stageContent").innerHTML = feedbackNote + (readOnly ? '<div class="notice">Submitted for review. This preparation is read-only until a coach requests revisions.</div>' : '') +
-      '<section class="prep-intro"><div><div class="eyebrow">Prep · Understand the Resolution</div><h3>Think. Research. Organize.</h3><p>This is an ungraded thinking exercise, not part of coach review.</p></div><div class="prep-resolution">The United States federal government should enact a moratorium on hyperscale data center construction.</div></section>' +
+      '<section class="prep-intro"><div><div class="eyebrow">Prep · November / December 2026</div><h3>Think. Research. Organize.</h3><p>This is an ungraded thinking exercise, not part of coach review.</p></div><div class="prep-resolution">Resolved: European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons.</div></section>' +
       '<section class="prep-section"><div class="prep-section-head"><h4>Quick preparation worksheet</h4><p>Questions 1–6 are shared between PRO and CON.</p></div><div class="prep-question-grid">' +
-      question("qHyperscale", "1", "What is a hyperscale data center?", "Type your answer…") +
-      question("qMoratorium", "2", "What does “moratorium” mean?", "Type your answer…") +
-      question("qFederal", "3", "Why does the resolution specify the federal government?", "Type your answer…") +
+      question("qHyperscale", "1", "What does the Treaty on the Prohibition of Nuclear Weapons require?", "Type your answer…") +
+      question("qMoratorium", "2", "What does ratification mean, and how does it differ from signing a treaty?", "Type your answer…") +
+      question("qFederal", "3", "Which European countries are NATO members, and how could ratification affect their alliance commitments?", "Type your answer…") +
       question("qIssues", "4", "What are the core issues in this debate?", "Type your answer…") +
       question("qNuances", "5", "What are some important nuances?", "Type your answer…") +
       question("qImpacts", "6", "What are the potential impacts?", "Type your answer…") +

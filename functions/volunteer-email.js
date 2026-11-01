@@ -18,6 +18,13 @@ const APPROVED_MEAL_ITEMS = Object.freeze([
 ]);
 const APPROVED_MEAL_INFO = APPROVED_MEAL_ITEMS.join(" ");
 const APPROVED_RESOLUTION = "The United States federal government should substantially restrict the development and/or use of hyperscale data centers in the United States.";
+const NOV_DEC_RESOLUTION = "European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons.";
+
+function resolutionForEvent(event) {
+  return /^2026-(11|12)-/.test(String(event?.date || ""))
+    ? NOV_DEC_RESOLUTION
+    : (cleanText(event?.resolution, 900) || APPROVED_RESOLUTION);
+}
 const APPROVED_EXPECTATIONS = Object.freeze([
   "You will be assigned to multiple rounds throughout the day.",
   "Each round is about a 60-minute session, followed by a short feedback period.",
@@ -207,7 +214,7 @@ function eventSummary(event, signup, useApprovedOnePager = false) {
     ["Location", cleanText(event.location, 200)],
     ["Address", cleanText(event.address, 240)],
     ["Meals", APPROVED_MEAL_INFO],
-    ["Topic / resolution", useApprovedOnePager ? APPROVED_RESOLUTION : cleanText(event.resolution, 900)],
+    ["Topic / resolution", useApprovedOnePager || /^2026-(11|12)-/.test(String(event.date || "")) ? resolutionForEvent(event) : cleanText(event.resolution, 900)],
     ["Coach contact", useApprovedOnePager ? APPROVED_CONTACT[1] : coachContact(event)],
   ].filter(([, value]) => value);
   return rows;
@@ -578,7 +585,7 @@ function itineraryAttachment(event, signup, options = {}) {
     } else {
       sectionBar(right, 254, rightW, "Tournament Resolution", icons.resolution);
       document.roundedRect(right, 278, rightW, 74, 5).fillAndStroke("#f5f9fc", line);
-      labeledParagraph("Resolved:", APPROVED_RESOLUTION, right + 10, 290, rightW - 20);
+      labeledParagraph("Resolved:", resolutionForEvent(event), right + 10, 290, rightW - 20);
       sectionBar(right, 362, rightW, "What to Expect", icons.expectations);
       document.roundedRect(right, 386, rightW, 116, 5).fillAndStroke("#f5f9fc", line);
       bullets(APPROVED_EXPECTATIONS, right + 10, 395, rightW - 20, 7.2, 20, 17);
@@ -1226,6 +1233,7 @@ function createVolunteerEmailService({ db, resendSecret }) {
 }
 
 module.exports = {
+  resolutionForEvent,
   createVolunteerEmailService,
   createVolunteerItineraryAttachment: itineraryAttachment,
   createSeasonAvailabilityAttachment: seasonAvailabilityAttachment,

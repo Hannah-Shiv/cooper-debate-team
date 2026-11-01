@@ -80,6 +80,6 @@
       mobile.addEventListener('change', () => centerSelected(false));
       new ResizeObserver(() => centerSelected(false)).observe(track);
     }
-    showMilestone(isTeamJourney ? milestones[1] : nextMilestone || milestones[milestones.length - 1], false);
+    showMilestone(nextMilestone || milestones[milestones.length - 1], false);
   });
 })();

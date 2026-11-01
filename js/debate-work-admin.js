@@ -11,7 +11,7 @@
     appId: "1:112813790184:web:ac559cb64747d7fd590a5d",
   };
   const ENDPOINT = "https://us-central1-cooper-debate-team.cloudfunctions.net/debateWork";
-  const TOPIC_ID = "2026-data-centers";
+  const TOPIC_ID = "2026-nov-dec-nuclear-weapons";
   const STAGES = [
     ["constructive", "Constructive"],
     ["crossfire", "Crossfire"],

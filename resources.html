@@ -78,6 +78,25 @@
        border-left: 3px solid var(--gold);
         color: #fff;
      }
+      .topic-context-photo {
+        width:100%;
+        margin:18px 0 22px;
+      }
+      .topic-context-photo img {
+        display:block;
+        width:100%;
+        height:auto;
+        object-fit:cover;
+        object-position:center 45%;
+        border:1px solid rgba(242,209,107,.58);
+        border-radius:9px;
+      }
+      .topic-context-photo figcaption {
+        margin-top:6px;
+        color:#c8d7eb;
+        font-size:.68rem;
+        line-height:1.4;
+      }
       .resources-page .arg-card-pro {
          background: #0b3b35;
          border-color: rgba(91,196,169,0.62);
@@ -220,7 +239,8 @@
       padding: 22px 28px; border-left: 3px solid var(--gold);
       background: #242832; border-radius: 0 10px 10px 0;
       box-shadow: 0 10px 26px rgba(0,0,0,0.28);
-      white-space: nowrap;
+       white-space: normal;
+       overflow-wrap: break-word;
     }
 
     .pro-con-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
@@ -615,8 +635,12 @@
     <h2 class="section-title" style="margin-bottom:32px;">PF Topic Center</h2>
 
     <div class="topic-box">
-      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Sept/Oct 2026</p>
-      <div class="topic-resolution">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+      <p style="font-size:0.68rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;">Active PF Resolution — Nov/Dec 2026 · November 14 at Cooper</p>
+      <figure class="topic-context-photo">
+        <img src="images/nato/meeting-chamber.webp?v=1" alt="Delegates seated around a circular table with the NATO compass emblem at its center." loading="lazy" width="775" height="505">
+        <figcaption>NATO meeting chamber.</figcaption>
+      </figure>
+      <div class="topic-resolution">"Resolved: European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons."</div>
 
       <article class="topic-deck-feature" id="topic-analysis">
         <button class="topic-deck-feature__cover" type="button" data-topic-deck-open aria-label="Quick view the September tournament topic analysis">
@@ -624,10 +648,10 @@
           <span class="topic-deck-feature__play" aria-hidden="true">▶</span>
         </button>
         <div>
-          <p class="topic-deck-feature__eyebrow">7-slide student guide</p>
-          <h3>September Tournament Topic Analysis</h3>
+          <p class="topic-deck-feature__eyebrow">Archived · September/October 2026 · 7-slide student guide</p>
+          <h3>Previous Topic: Hyperscale Data Centers</h3>
           <p class="topic-deck-feature__byline">Prepared by Jacob Gibbons</p>
-          <p class="topic-deck-feature__desc">A concise introduction to hyperscale data centers, what a construction moratorium means, and the strongest arguments available to both sides.</p>
+          <p class="topic-deck-feature__desc">This archived guide covers the previous hyperscale data-center resolution, not the current NATO and nuclear weapons treaty topic.</p>
           <div class="topic-deck-feature__actions">
             <button class="topic-deck-feature__action topic-deck-feature__action--primary" type="button" data-topic-deck-open>Quick View</button>
             <a class="topic-deck-feature__action topic-deck-feature__action--open" href="docs/topic-analysis-sept-oct-2026.pdf?v=1" target="_blank" rel="noopener">Open Full Deck ↗</a>
@@ -638,18 +662,18 @@
 
       <div class="pro-con-grid">
         <div class="arg-card arg-card-pro">
-          <div class="arg-label arg-label-pro">✓ Pro Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>A pause could protect communities from rising electricity bills and heavy water use</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Temporary limits could reduce pollution and pressure on the electric grid</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>A moratorium could prevent wasteful overbuilding while stronger protections are developed</span></div>
-          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Communities would gain more control over the local effects of large technology projects</span></div>
+          <div class="arg-label arg-label-pro">✓ Pro Research Questions</div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Could ratification strengthen international norms against nuclear weapons?</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Could European NATO members advance disarmament through treaty participation?</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>How should humanitarian consequences and escalation risks be weighed?</span></div>
+          <div class="arg-point"><span class="arg-bullet-pro">+</span><span>Could NATO maintain collective security through non-nuclear capabilities?</span></div>
         </div>
         <div class="arg-card arg-card-con">
-          <div class="arg-label arg-label-con">✗ Con Arguments</div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Data-center projects can finance clean-energy production and grid upgrades</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>A broad pause could slow AI research, scientific computing, and job creation</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Projects may move overseas, reducing U.S. investment and control</span></div>
-          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Targeted regulation could address harms without stopping construction nationwide</span></div>
+          <div class="arg-label arg-label-con">✗ Con Research Questions</div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>How could ratification affect NATO's nuclear deterrence and security commitments?</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Could treaty obligations create conflicts with nuclear sharing or alliance policy?</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>What security risks arise if nuclear-armed adversaries do not join?</span></div>
+          <div class="arg-point"><span class="arg-bullet-con">–</span><span>Would other arms-control approaches offer stronger verification or wider participation?</span></div>
         </div>
       </div>
 
@@ -668,13 +692,13 @@
       <div class="resource-card fade-up">
         <div class="resource-icon"><img src="images/icons/icon-research-gov.png" alt="" style="height:84px;width:auto;display:block;"></div>
         <div class="resource-title">Government Sources</div>
-        <p class="resource-desc">CISA, DNI, DOD, and Congressional Research Service reports on AI in national security — the gold standard for pro evidence.</p>
+        <p class="resource-desc">Research NATO policy, European security, nuclear deterrence, and arms control through government and Congressional Research Service reports. Compare these with the treaty text.</p>
         <a href="https://crsreports.congress.gov" target="_blank" rel="noopener" class="resource-link">CRS Reports →</a>
       </div>
       <div class="resource-card fade-up">
         <div class="resource-icon"><img src="images/icons/icon-research-journal.png" alt="" style="height:84px;width:auto;display:block;"></div>
         <div class="resource-title">Academic Journals</div>
-        <p class="resource-desc">Peer-reviewed research on AI ethics, surveillance, civil liberties, and international security from major universities.</p>
+        <p class="resource-desc">Find peer-reviewed research on nuclear deterrence, disarmament, treaty verification, humanitarian impacts, and European security.</p>
         <a href="https://scholar.google.com" target="_blank" rel="noopener" class="resource-link">Google Scholar →</a>
       </div>
     </div>

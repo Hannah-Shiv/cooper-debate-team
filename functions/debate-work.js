@@ -1,7 +1,7 @@
 const crypto = require("node:crypto");
 const { FieldValue, Timestamp } = require("firebase-admin/firestore");
 
-const TOPIC_ID = "2026-data-centers";
+const TOPIC_ID = "2026-nov-dec-nuclear-weapons";
 const SIDES = new Set(["PRO", "CON"]);
 const STAGES = ["prep", "constructive", "crossfire", "rebuttal", "summary", "finalFocus"];
 const SESSION_TTL_MS = 12 * 60 * 60 * 1000;
@@ -35,7 +35,8 @@ function fcpsId(value) {
 }
 
 function identityKey(id) {
-  return crypto.createHash("sha256").update(`${TOPIC_ID}:${id}`).digest("hex");
+  // Keep student identities stable when the active debate topic changes.
+  return crypto.createHash("sha256").update(`2026-data-centers:${id}`).digest("hex");
 }
 
 function safeSide(value) {
@@ -129,7 +130,7 @@ function publicWork(id, data) {
   const feedback = data.feedback && typeof data.feedback === "object" ? data.feedback : {};
   return {
     id,
-    topicId: TOPIC_ID,
+    topicId: data.topicId || TOPIC_ID,
     side: data.side,
     title: text(data.title, 200),
     resolution: text(data.resolution, 1000),
@@ -226,7 +227,8 @@ function createDebateWorkHandler({
   }
 
   function workRef(studentKey, side) {
-    return works.doc(`${studentKey}_${side.toLowerCase()}`);
+    // A new topic must never reuse or overwrite a previous topic's work.
+    return works.doc(`${studentKey}_${TOPIC_ID}_${side.toLowerCase()}`);
   }
 
   async function authenticate(body) {

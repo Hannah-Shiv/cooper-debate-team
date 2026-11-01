@@ -5,15 +5,12 @@
   if (!root) return;
 
   const tournaments = [
-    { date: '2026-10-24T08:00:00-04:00', title: 'October 24, 2026', place: 'Congressional School · Falls Church', cardPlace: 'Congressional School\nFalls Church, VA' },
-    { date: '2026-11-14T08:00:00-05:00', title: 'November 14, 2026', place: 'Cooper Middle School · McLean' },
+    { date: '2026-11-14T08:00:00-05:00', title: 'November 14, 2026', place: 'Cooper Middle School · McLean', cardPlace: 'Cooper Middle School\nMcLean, VA' },
     { date: '2026-12-05T08:00:00-05:00', title: 'December 5, 2026', place: 'Longfellow Middle School · McLean' },
     { date: '2027-01-30T08:00:00-05:00', title: 'January 30, 2027', place: 'Norwood School · Bethesda' },
     { date: '2027-02-20T08:00:00-05:00', title: 'February 20, 2027', place: 'Online tournament' }
   ];
   const events = [
-    { date: '2026-09-29T14:30:00-04:00', label: 'First team meeting', detail: 'Cooper Middle School · 2:30–4:30 p.m.', href: 'tournaments.html?tab=calendar-results' },
-    { date: '2026-09-29T19:30:00-04:00', label: 'Parent/guardian meeting', detail: 'Google Meet · 7:30 p.m. · details from Coach Konde', href: 'tournaments.html?tab=parent-info' },
     ...tournaments.map(t => ({ date: t.date, label: 'WASDL tournament', detail: t.place, href: 'tournaments.html?tab=calendar-results' })),
     { date: '2027-03-12T08:00:00-05:00', label: 'Metro Finals', detail: 'March 12–13 · for qualifying teams', href: 'tournaments.html?tab=calendar-results' }
   ];
@@ -86,7 +83,7 @@
   }).formatToParts(now);
   const currentMonth = Number(ny.find(p => p.type === 'month')?.value);
   const currentYear = Number(ny.find(p => p.type === 'year')?.value);
-  if (currentYear > 2026 || (currentYear === 2026 && currentMonth > 10)) {
+    if (currentYear > 2026) {
     document.getElementById('sh-topic-kicker').textContent = 'Public Forum · Season resources';
     document.getElementById('sh-topic-title').textContent = 'The conversation continues.';
     document.getElementById('sh-topic-resolution').textContent =

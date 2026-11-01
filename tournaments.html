@@ -180,6 +180,26 @@
       font-size:clamp(1.22rem,2.5vw,1.43rem);
       line-height:1.3;
     }
+    .tournaments-page .resolution-context-photo {
+      display:block;
+      width:min(100%,720px);
+      margin:0 0 18px;
+    }
+    .tournaments-page .resolution-context-photo img {
+      display:block;
+      width:100%;
+      height:clamp(135px,18vw,210px);
+      object-fit:cover;
+      object-position:center 48%;
+      border:1px solid rgba(242,209,107,.55);
+      border-radius:8px;
+    }
+    .tournaments-page .resolution-context-photo figcaption {
+      margin-top:6px;
+      color:#c8d7eb;
+      font-size:.64rem;
+      line-height:1.35;
+    }
     .tournaments-page .resolution-layout {
       display:grid;
       grid-template-columns:repeat(2,minmax(0,1fr));
@@ -6359,9 +6379,13 @@
     <div class="resolution-card">
       <div class="resolution-layout">
         <div class="resolution-main">
-          <div class="resolution-period">Sept / Oct 2026 · Public Forum</div>
+          <figure class="resolution-context-photo">
+            <img src="images/nato/headquarters-ceremony.webp?v=1" alt="Member-nation flags outside NATO headquarters during a flag ceremony." loading="lazy" width="1800" height="1200">
+            <figcaption>NATO headquarters and member-nation flags.</figcaption>
+          </figure>
+          <div class="resolution-period">Nov / Dec 2026 · Public Forum</div>
           <div class="resolution-label">What We're Debating This Season</div>
-          <div class="resolution-text">"Resolved: The United States federal government should enact a moratorium on hyperscale data center construction."</div>
+          <div class="resolution-text">"Resolved: European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons."</div>
           <div class="resolution-actions">
             <a href="resources.html" class="btn btn-gold" style="font-size:0.75rem;padding:10px 22px;">Start Researching →</a>
             <a href="tournaments.html?tab=partner-signup&amp;v=20260830-1" class="btn partner-cta" style="font-size:0.75rem;padding:10px 22px;">Find a debate partner →</a>
@@ -6369,8 +6393,8 @@
         </div>
         <aside class="resolution-deck" aria-label="September tournament topic analysis">
           <div class="resolution-deck-heading">
-            <p class="resolution-deck-kicker">Featured 7-slide guide</p>
-            <h3 class="resolution-deck-title">September Tournament Topic Analysis</h3>
+            <p class="resolution-deck-kicker">Archived · Sept / Oct 2026</p>
+            <h3 class="resolution-deck-title">Previous Topic Analysis</h3>
           </div>
           <div class="resolution-deck-stack">
             <button class="resolution-deck-cover" id="open-topic-deck" type="button" aria-label="Open the September tournament topic analysis slide viewer">
@@ -6378,7 +6402,7 @@
               <span class="resolution-deck-play" aria-hidden="true">▶</span>
             </button>
           </div>
-          <p class="resolution-deck-summary">Quickly understand the resolution and both sides →</p>
+          <p class="resolution-deck-summary">Previous topic: hyperscale data centers. This guide does not cover the November/December resolution.</p>
         </aside>
       </div>
     </div>
@@ -7809,11 +7833,11 @@ document.addEventListener('DOMContentLoaded', function() {
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
-<script src="js/public-calendar.js?v=19"></script>
+<script src="js/public-calendar.js?v=20"></script>
 <script src="data/turnstile-config.js?v=2"></script>
 <script src="js/volunteer-coverage-pdf.js?v=1"></script>
 <script src="js/volunteer-roster-dashboard.js?v=22"></script>
-  <script src="js/volunteer-public.js?v=136"></script>
+  <script src="js/volunteer-public.js?v=139"></script>
   <script src="js/tryout-tournament-tab.js?v=35"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad&render=explicit" async defer></script>
 <script src="js/public-footer.js?v=5"></script>

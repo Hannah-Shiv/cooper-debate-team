@@ -38,7 +38,7 @@
     .ann-featured {
       position: relative;
       display: grid;
-      grid-template-columns: 108px minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr);
       align-items: center;
       gap: 20px;
       overflow: hidden;
@@ -60,15 +60,15 @@
       box-shadow: 0 14px 34px rgba(0,0,0,0.34), 0 0 22px rgba(191,23,29,0.2);
       transform: translateY(-2px);
     }
-    .ann-featured-icon {
-      position: relative;
-      z-index: 2;
+    .ann-topic-photo {
       display: block;
-      width: 108px;
-      height: 82px;
-      margin: 0 auto;
-      object-fit: contain;
-      filter: drop-shadow(0 4px 7px rgba(35,0,0,0.32));
+      width: 100%;
+      height: auto;
+      margin: 0 0 24px;
+      object-fit: cover;
+      border: 1px solid rgba(242,209,107,.68);
+      border-radius: 8px;
+      box-shadow: 0 5px 14px rgba(35,0,0,0.32);
     }
     .ann-featured-copy { position: relative; z-index: 2; }
     .ann-featured-label {
@@ -281,7 +281,6 @@
         padding: 22px 20px 20px;
         text-align: center;
       }
-      .ann-featured-icon { width: 96px; height: 66px; }
       .ann-featured-copy { display: flex; flex-direction: column; align-items: center; }
       .ann-featured-title { font-size: 1.85rem; }
       .ann-featured-resolution { font-size: 1.12rem; }
@@ -333,16 +332,16 @@
 </div>
 <section class="section" style="background:var(--navy-dark);">
   <div class="section-wrap">
-    <a class="ann-featured" href="resources.html" aria-label="Research the new hyperscale data centers topic in Resources">
-      <img class="ann-featured-icon" src="images/announcement-megaphone.png?v=1" alt="Megaphone"/>
+    <a class="ann-featured" href="resources.html#topic-center" aria-label="Research the November/December nuclear weapons treaty topic in Resources">
       <div class="ann-featured-copy">
-        <div class="ann-featured-title">Tournament Topic Released: Hyperscale Data Centers</div>
+        <div class="ann-featured-title">Nov / Dec Topic Released · November 14 at Cooper</div>
         <div class="ann-featured-detail">
-          <p class="ann-featured-resolution"><em>Resolved:</em> The United States federal government should enact a moratorium on hyperscale data center construction.</p>
+          <p class="ann-featured-resolution"><em>Resolved:</em> European members of the North Atlantic Treaty Organization should ratify the Treaty on the Prohibition of Nuclear Weapons.</p>
           <span class="ann-featured-cta">Start Researching →</span>
         </div>
       </div>
     </a>
+    <img class="ann-topic-photo" src="images/nato/headquarters-aerial.webp?v=1" alt="NATO headquarters with its entrance plaza and national flags." loading="lazy" width="741" height="414"/>
     <p style="margin:0 0 22px"><a href="team-2026-2027.html" class="btn btn-gold">Meet the 2026–27 team →</a></p>
     <div role="note" style="margin-bottom:28px;padding:18px 22px;border-left:4px solid #d4a017;background:#11294a;color:#fff">
       <strong>Required Debate Team Meetings every Tuesday from 2:30–4:30 PM.</strong>
@@ -403,7 +402,7 @@
 <script src="js/dome-nav.js?v=2"></script>
 <script src="js/main.js"></script>
 <script src="js/public-footer.js?v=5"></script>
-<script src="data/announcements.js?v=3"></script>
+<script src="data/announcements.js?v=4"></script>
 <script>
   const tagClasses = {
     resolution: 'tag-resolution',
